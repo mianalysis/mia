@@ -6,6 +6,13 @@ MIA (ModularImageAnalysis)
 
 This ImageJ/Fiji plugin provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.
 
+MIA is developed in the Wolfson Bioimaging Facility at the University of Bristol.
+
+<br>
+<p align="center">
+  <a href="http://www.bristol.ac.uk/wolfson-bioimaging/"><img src="./docs/images/wbif-colour-logo.png" width="300"></a>
+</p>
+<br>
 
 Installation
 ------------

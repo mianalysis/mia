@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.AddParametersButton;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -59,11 +59,20 @@ public class ParameterGroup extends Parameter {
         // Create new copy of template collections
         ParameterCollection newParameters = new ParameterCollection();
         for (Parameter templateParameter:templateParameters) {
-            newParameters.add(templateParameter.duplicate());
+            Parameter newParameter = templateParameter.duplicate();
+
+            // New parameters should inherit the visibility of the add button
+            newParameter.setVisible(isVisible());
+
+            // Adding parameter to the collection
+            newParameters.add(newParameter);
+
         }
 
         // Adding the necessary RemoveParameter Parameter
-        newParameters.add(new RemoveParameters("Remove collections",module,this,newParameters));
+        RemoveParameters removeParameters = new RemoveParameters("Remove collections",module,this,newParameters);
+        removeParameters.setVisible(isVisible());
+        newParameters.add(removeParameters);
 
         collections.add(newParameters);
 

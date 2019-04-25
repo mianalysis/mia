@@ -183,7 +183,7 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
-    public void updateModuleStates() {
+    public void updateModuleStates(boolean verbose) {
 
     }
 

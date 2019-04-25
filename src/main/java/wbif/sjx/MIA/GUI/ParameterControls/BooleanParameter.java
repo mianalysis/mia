@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ParameterControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.BooleanType;
 
 import javax.swing.*;
@@ -39,8 +38,9 @@ public class BooleanParameter extends ParameterControl implements ActionListener
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        GUI.updateModules(true);
+        GUI.updateModules();
         GUI.populateModuleParameters();
+        GUI.updateModuleStates(true);
 
         updateControl();
 

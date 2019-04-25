@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.ColourFactory;
@@ -32,6 +33,7 @@ public class HoughObjectDetection extends Module {
     public static final String SAMPLE_FRACTION = "Sample fraction (0 = none, 1 = all)";
     public static final String DETECTION_THRESHOLD = "Detection threshold";
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
+    public static final String SHOW_DETECTION_IMAGE = "Show detection image";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
@@ -76,6 +78,7 @@ public class HoughObjectDetection extends Module {
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
+        boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE);
         boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
         int labelSize = parameters.getValue(LABEL_SIZE);
 
@@ -110,8 +113,9 @@ public class HoughObjectDetection extends Module {
                     circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
-                    if (showTransformImage) {
+                    if (showOutput && showTransformImage) {
                         ImagePlus showIpl = new Duplicator().run(circleHoughTransform.getAccumulatorAsImage());
+                        IntensityMinMax.run(showIpl,true);
                         showIpl.setTitle("Accumulator");
                         showIpl.show();
                     }
@@ -166,7 +170,7 @@ public class HoughObjectDetection extends Module {
         ipl.setPosition(1,1,1);
         workspace.addObjects(outputObjects);
 
-        if (showOutput) {
+        if (showOutput && showDetectionImage) {
             ImagePlus dispIpl = new Duplicator().run(ipl);
             IntensityMinMax.run(dispIpl,true);
 
@@ -174,13 +178,15 @@ public class HoughObjectDetection extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             HashMap<Integer, String> IDs = null;
-            if (showHoughScore) {
-                DecimalFormat df = LabelFactory.getDecimalFormat(0,true);
-                IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,df);
-            }
-
             try {
+                if (showHoughScore) {
+                    DecimalFormat df = LabelFactory.getDecimalFormat(0,true);
+                    IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,df);
+                    new AddObjectsOverlay().createLabelOverlay(dispIpl,outputObjects,hues,IDs,true,labelSize,false);
+                }
+
                 new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.3,false);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -205,7 +211,8 @@ public class HoughObjectDetection extends Module {
         parameters.add(new DoubleP(SAMPLE_FRACTION,this,0.5));
         parameters.add(new DoubleP(DETECTION_THRESHOLD,this,1.0));
         parameters.add(new IntegerP(EXCLUSION_RADIUS,this,10));
-        parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,false));
+        parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,true));
+        parameters.add(new BooleanP(SHOW_DETECTION_IMAGE,this,true));
         parameters.add(new BooleanP(SHOW_HOUGH_SCORE,this,false));
         parameters.add(new IntegerP(LABEL_SIZE,this,12));
 
@@ -229,11 +236,13 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
 
-        returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
-        if (parameters.getValue(SHOW_HOUGH_SCORE)) {
-            returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+        returnedParameters.add(parameters.getParameter(SHOW_DETECTION_IMAGE));
+        if (parameters.getValue(SHOW_DETECTION_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
+            if (parameters.getValue(SHOW_HOUGH_SCORE)) {
+                returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+            }
         }
-
 
         return returnedParameters;
 

@@ -12,7 +12,7 @@ public class AnalysisTester {
 
             module.setRunnable(runnable);
 
-            if (runnable) nRunnable++;
+            if (runnable && module.isEnabled()) nRunnable++;
 
         }
 

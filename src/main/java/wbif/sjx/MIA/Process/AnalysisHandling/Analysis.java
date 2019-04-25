@@ -16,7 +16,7 @@ import java.io.Serializable;
  * Abstract Analysis-type class, which will be extended by particular analyses
  *
  */
-public class Analysis implements Serializable {
+public class Analysis {
     public ModuleCollection modules = new ModuleCollection();
     public InputControl inputControl = new InputControl();
     public OutputControl outputControl = new OutputControl();
@@ -113,5 +113,12 @@ public class Analysis implements Serializable {
 
     public void setAnalysisFilename(String analysisFilename) {
         this.analysisFilename = analysisFilename;
+    }
+
+    public boolean hasVisibleParameters() {
+        return (inputControl.hasVisibleParameters()
+                | outputControl.hasVisibleParameters()
+                | modules.hasVisibleParameters());
+
     }
 }

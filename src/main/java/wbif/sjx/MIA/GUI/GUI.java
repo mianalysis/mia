@@ -11,6 +11,7 @@ import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -64,6 +65,10 @@ public class GUI {
         }
         initialised = true;
 
+        // Adding a new ImageLoader module to the empty analysis
+        analysis.getModules().add(new ImageLoader<>());
+
+        // Determining which panel should be shown
         if (MIA.isDebug()) {
             mainPanel = editingPan;
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -176,8 +181,8 @@ public class GUI {
         mainPanel.updateHelpNotes();
     }
 
-    public static void updateModuleStates() {
-        mainPanel.updateModuleStates();
+    public static void updateModuleStates(boolean verbose) {
+        mainPanel.updateModuleStates(verbose);
     }
 
     public static ComponentFactory getComponentFactory() {
@@ -204,13 +209,7 @@ public class GUI {
         mainPanel.setProgress(val);
     }
 
-    public static void updateModules(boolean verbose) {
-        int nRunnable = AnalysisTester.testModules(analysis.getModules());
-        int nActive = 0;
-        for (Module module:analysis.getModules()) if (module.isEnabled()) nActive++;
-        int nModules = analysis.getModules().size();
-        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
-
+    public static void updateModules() {
         mainPanel.updateModules();
         mainPanel.updateHelpNotes();
 

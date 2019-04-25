@@ -59,7 +59,10 @@ public class ParametersPanel extends JScrollPane {
         c.anchor = GridBagConstraints.WEST;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
-        if (module == null) return;
+        if (module == null) {
+            showUsageMessage();
+            return;
+        }
 
         boolean isInput = module.getClass().isInstance(new InputControl());
         boolean isOutput = module.getClass().isInstance(new OutputControl());
@@ -222,6 +225,42 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
+    public void showUsageMessage() {
+        panel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JTextPane usageMessage = new JTextPane();
+        usageMessage.setContentType("text/html");
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
+                "To change parameters for an existing module, click the module name on the list to the left."+
+                "<br><br>" +
+                "Modules can be added, removed and re-ordered using the \"+\", \"-\", \"▲\" and \"▼\" buttons." +
+                "<br><br>" +
+                "Modules can also be disabled using the power icons to the right of each module name.  " +
+                "<br><br>Any modules highlighted in red are currently mis-configured " +
+                "<br>(possibly missing outputs from previous modules) and won't run." +
+                "<br><br>" +
+                "To execute a full analysis, click \"Run\".  " +
+                "<br>Alternatively, step through an analysis using the arrow icons to the right of each module name." +
+                "</font></center></html>");
+        usageMessage.setEditable(false);
+        usageMessage.setBackground(null);
+        panel.add(usageMessage);
+
+        panel.revalidate();
+        panel.repaint();
+
+    }
+
     private JSeparator getInvisibleSeparator() {
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0,15));
@@ -231,4 +270,5 @@ public class ParametersPanel extends JScrollPane {
         return separator;
 
     }
+
 }
