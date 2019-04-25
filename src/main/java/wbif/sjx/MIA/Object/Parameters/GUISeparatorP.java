@@ -1,41 +1,52 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.SeparatorParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class GUISeparatorP extends Parameter {
-    public GUISeparatorP(String name, Module module) {
+    private String headingText;
+
+    public GUISeparatorP(String name, Module module, String headingText) {
         super(name, module);
+        this.headingText = headingText;
+
+        setExported(false);
+
     }
 
     @Override
     protected ParameterControl initialiseControl() {
-        return null;
+        return new SeparatorParameter(this);
+
     }
 
     @Override
     public <T> T getValue() {
-        return null;
+        return (T) headingText;
     }
 
     @Override
     public <T> void setValue(T value) {
-
+        headingText = (String) value;
     }
 
     @Override
     public String getValueAsString() {
-        return null;
+        return headingText;
     }
 
     @Override
     public boolean verify() {
-        return false;
+        return true;
     }
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return null;
+        return (T) new GUISeparatorP(name,module,headingText);
     }
 }

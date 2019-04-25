@@ -14,16 +14,19 @@ public class MessageP extends TextDisplayP {
     public MessageP(String name, Module module, Color color) {
         super(name, module);
         this.color = color;
+        setExported(false);
     }
 
     public MessageP(String name, Module module, @Nonnull String value, Color color) {
         super(name, module, value);
         this.color = color;
+        setExported(false);
     }
 
     public MessageP(String name, Module module, @Nonnull String value, Color color, String description) {
         super(name, module, value, description);
         this.color = color;
+        setExported(false);
     }
 
     public Color getColor() {

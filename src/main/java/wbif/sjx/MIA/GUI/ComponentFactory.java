@@ -49,7 +49,15 @@ public class ComponentFactory {
         if (parameter instanceof MessageP) {
             String value = parameter.getValueAsString();
             parameterComponent.setToolTipText(value == null ? "" : value);
-            c.insets = new Insets(10,3,0,0);
+            c.insets = new Insets(10,3,0,5);
+            paramPanel.add(parameterComponent,c);
+
+        } else if (parameter instanceof GUISeparatorP) {
+            if (module.updateAndGetParameters().iterator().next() == parameter) {
+                c.insets = new Insets(0, 5, 5, 8);
+            } else {
+                c.insets = new Insets(30, 5, 5, 8);
+            }
             paramPanel.add(parameterComponent,c);
 
         } else {
@@ -76,6 +84,14 @@ public class ComponentFactory {
                 if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
                 paramPanel.add(parameterComponent, c);
             }
+
+            c.insets = new Insets(2, 5, 0, 5);
+            c.gridx++;
+            c.weightx = 0;
+            c.anchor = GridBagConstraints.EAST;
+            VisibleCheck visibleCheck = new VisibleCheck(parameter);
+            visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+            paramPanel.add(visibleCheck, c);
 
         }
 

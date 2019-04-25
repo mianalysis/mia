@@ -274,6 +274,9 @@ public class Exporter {
         Element parametersElement = doc.createElement("PARAMETERS");
 
         for (Parameter currParam:parameters) {
+            // Check if the parameter is to be exported
+            if (!currParam.isExported()) continue;
+
             // ParameterGroups are treated differently
             if (currParam.getClass() == ParameterGroup.class) {
                 LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
@@ -524,6 +527,9 @@ public class Exporter {
         paramRow++;
 
         for (Parameter currParam : parameters) {
+            // Check if the parameter is to be exported
+            if (!currParam.isExported()) continue;
+
             int paramCol = 0;
             Row row = sheet.createRow(paramRow++);
 

@@ -163,10 +163,11 @@ public class ParametersPanel extends JScrollPane {
 
         // Creating the notes/help field at the bottom of the panel
         JSeparator separator = new JSeparator();
-        separator.setOpaque(false);
+        separator.setOpaque(true);
         separator.setSize(new Dimension(0,0));
         c.weighty = 1;
         c.gridy++;
+        c.insets = new Insets(20,0,0,0);
         c.fill = GridBagConstraints.VERTICAL;
         panel.add(separator,c);
 
@@ -188,17 +189,25 @@ public class ParametersPanel extends JScrollPane {
         c.gridy++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
-        JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
-        panel.add(paramPanel, c);
 
-        c.insets = new Insets(2, 5, 0, 5);
-        c.gridx++;
-        c.weightx = 0;
-        c.anchor = GridBagConstraints.EAST;
-        VisibleCheck visibleCheck = new VisibleCheck(parameter);
-        visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-        panel.add(visibleCheck, c);
+//        if (parameter instanceof MessageP || parameter instanceof GUISeparatorP) {
+            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
+//            c.gridwidth = 2;
+            panel.add(paramPanel, c);
 
+//        } else {
+//            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
+//            c.gridwidth = 1;
+//            panel.add(paramPanel, c);
+//
+//            c.insets = new Insets(2, 5, 0, 5);
+//            c.gridx++;
+//            c.weightx = 0;
+//            c.anchor = GridBagConstraints.EAST;
+//            VisibleCheck visibleCheck = new VisibleCheck(parameter);
+//            visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+//            panel.add(visibleCheck, c);
+//        }
     }
 
     public void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {
