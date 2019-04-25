@@ -360,7 +360,7 @@ public class TrackObjects extends Module {
         String units = currObj.getCalibratedUnits();
 
         // Creating a new track object
-        Obj track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units, currObj.is2D());
+        Obj track = new Obj(trackObjectsName, trackObjects.getAndIncrementID(), dppXY, dppZ, units, currObj.is2D());
 
         // Setting relationship between the current object and track
         track.addChild(currObj);

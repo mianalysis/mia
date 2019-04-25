@@ -90,7 +90,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                             if (singleObject && imageID != 0) imageID = 1;
 
                             if (imageID != 0) {
-                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
+                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getAndIncrementID());
                                 int outID = IDlink.get(imageID);
 
                                 outputObjects.computeIfAbsent(outID, k ->

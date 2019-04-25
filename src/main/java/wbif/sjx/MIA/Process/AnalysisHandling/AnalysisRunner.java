@@ -32,7 +32,7 @@ public class AnalysisRunner {
         if (inputFile == null) return;
 
         // Initialising Exporter
-        String exportName = getExportName(inputControl,inputFile);
+        String exportName = getExportName(inputControl,outputControl,inputFile);
         Exporter exporter = initialiseExporter(outputControl,exportName);
 
         // Initialising BatchProcessor
@@ -79,27 +79,53 @@ public class AnalysisRunner {
 
     }
 
-    public static String getExportName(InputControl inputControl, File inputFile) {
+    public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
         String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
         String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
+        String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
+        String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
+        String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);
+        String saveFileName = outputControl.getParameterValue(OutputControl.SAVE_FILE_NAME);
 
-        if (inputFile.isFile()) {
-            switch (seriesMode) {
-                case InputControl.SeriesModes.ALL_SERIES:
-                    return FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-                case InputControl.SeriesModes.SERIES_LIST:
-                    return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesList.replace(" ", "");
-            }
-        } else if (inputFile.isDirectory()) {
-            switch (seriesMode) {
-                case InputControl.SeriesModes.ALL_SERIES:
-                    return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName();
-                case InputControl.SeriesModes.SERIES_LIST:
-                    return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName() + "_S" + seriesList.replace(" ","");
-            }
+        // Determining the file path
+        String path = "";
+        switch (saveLocation) {
+            case OutputControl.SaveLocations.SAVE_WITH_INPUT:
+                if (inputFile.isFile()) {
+                    path = inputFile.getParent() + MIA.getSlashes();
+                } else {
+                    path = inputFile.getAbsolutePath() + MIA.getSlashes();
+                }
+                break;
+
+            case OutputControl.SaveLocations.SPECIFIC_LOCATION:
+                path = saveFilePath + MIA.getSlashes();
+                break;
         }
 
-        return "";
+        // Determining the file name
+        String name = "";
+        switch (saveNameMode) {
+            case OutputControl.SaveNameModes.MATCH_INPUT:
+                if (inputFile.isFile()) {
+                    name = FilenameUtils.removeExtension(inputFile.getName());
+                } else {
+                    name = inputFile.getName();
+                }
+                break;
+
+            case OutputControl.SaveNameModes.SPECIFIC_NAME:
+                name = saveFileName;
+                break;
+        }
+
+        // Determining the suffix
+        String suffix = "";
+        if (seriesMode.equals(InputControl.SeriesModes.SERIES_LIST)) {
+            suffix = "_S" + seriesList.replace(" ", "");
+        }
+
+        return path + name + suffix;
 
     }
 
@@ -154,6 +180,11 @@ public class AnalysisRunner {
 
                 case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
                     exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
+                    break;
+
+                case OutputControl.SummaryModes.GROUP_BY_METADATA:
+                    exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
+                    exporter.setMetadataItemForSummary(outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
                     break;
             }
 

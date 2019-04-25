@@ -153,7 +153,7 @@ public class ExpandShrinkObjects extends Module {
             if (updateInputObjects) {
                 inputObject.setPoints(newObject.getPoints());
             } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,twoD);
+                Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,twoD);
                 outputObject.setPoints(newObject.getPoints());
                 outputObjects.add(outputObject);
             }

@@ -170,7 +170,7 @@ public class ActiveContourObjectDetection extends Module {
                     inputObject.clearPoints();
                     inputObject.addPointsFromRoi(newRoi,z);
                 } else {
-                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
+                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi,z);
                     outputObjects.add(outputObject);

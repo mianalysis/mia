@@ -47,7 +47,7 @@ public class MergeObjects extends Module {
 
         // Doing object merging
         for (Obj obj1:inputObjects1.values()) {
-            int ID = outputObjects.getNextID();
+            int ID = outputObjects.getAndIncrementID();
             double distXY = obj1.getDistPerPxXY();
             double distZ = obj1.getDistPerPxZ();
             String units = obj1.getCalibratedUnits();
@@ -61,7 +61,7 @@ public class MergeObjects extends Module {
         }
 
         for (Obj obj2:inputObjects2.values()) {
-            int ID = outputObjects.getNextID();
+            int ID = outputObjects.getAndIncrementID();
             double distXY = obj2.getDistPerPxXY();
             double distZ = obj2.getDistPerPxZ();
             String units = obj2.getCalibratedUnits();

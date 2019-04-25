@@ -163,7 +163,7 @@ public class RunTrackMate extends Module {
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot : spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
-                Obj spotObject = new Obj(spotObjectsName, spotObjects.getNextID(), dppXY, dppZ, calibrationUnits,is2D);
+                Obj spotObject = new Obj(spotObjectsName, spotObjects.getAndIncrementID(), dppXY, dppZ, calibrationUnits,is2D);
 
                 spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
                 spotObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_CAL),spot.getFeature(Spot.RADIUS)*dppXY,this));

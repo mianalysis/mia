@@ -417,7 +417,7 @@ public class RelateObjects extends Module {
             if (currChildObjects.size() == 0) continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getNextID(),dppXY,dppZ,calibratedUnits,twoD);
+            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,twoD);
             relatedObject.setT(parentObj.getT());
             relatedObjects.add(relatedObject);
 

@@ -4,11 +4,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.MIA.GUI.InputOutput.InputControl;
+import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -32,10 +35,12 @@ public class ImageSaver extends Module {
 
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
+        String MIRRORED_DIRECTORY_FROM_OUTPUT_CONTROL = "Mirrored directory (using Output Control)";
+        String OUTPUT_CONTROL_FOLDER = "Use Output Control folder";
         String SAVE_WITH_INPUT = "Save with input file";
         String SPECIFIC_LOCATION = "Specific location";
 
-        String[] ALL = new String[]{MIRRORED_DIRECTORY, SAVE_WITH_INPUT, SPECIFIC_LOCATION};
+        String[] ALL = new String[]{MIRRORED_DIRECTORY, MIRRORED_DIRECTORY_FROM_OUTPUT_CONTROL, OUTPUT_CONTROL_FOLDER, SAVE_WITH_INPUT, SPECIFIC_LOCATION};
 
     }
 
@@ -88,6 +93,28 @@ public class ImageSaver extends Module {
         }
     }
 
+    private static String getMirroredDirectory(Workspace workspace, String mirroredDirectoryRoot) {
+        File rootFile = workspace.getMetadata().getFile();
+        int fileDepth;
+        if (workspace.getMetadata().get("FILE_DEPTH") == null) {
+            fileDepth = 0;
+        } else {
+            fileDepth = (int) workspace.getMetadata().get("FILE_DEPTH");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        File parentFile = rootFile.getParentFile();
+        for (int i=0;i<fileDepth;i++) {
+            sb.insert(0,parentFile.getName()+MIA.getSlashes());
+            parentFile = parentFile.getParentFile();
+        }
+
+        new File(mirroredDirectoryRoot+ MIA.getSlashes() +sb).mkdirs();
+
+        return mirroredDirectoryRoot+ MIA.getSlashes() +sb+FilenameUtils.removeExtension(rootFile.getName());
+
+    }
+
     @Override
     public String getTitle() {
         return "Save image";
@@ -131,7 +158,6 @@ public class ImageSaver extends Module {
                 IntensityMinMax.run(inputImagePlus,true);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
             } else {
-//                IntensityMinMax.process(inputImagePlus,false);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus = inputImagePlus.flatten();
             }
         }
@@ -139,30 +165,34 @@ public class ImageSaver extends Module {
         String path;
         switch (saveLocation) {
             case SaveLocations.MIRRORED_DIRECTORY:
+                path = getMirroredDirectory(workspace,mirroredDirectoryRoot);
+                break;
+
+            case SaveLocations.MIRRORED_DIRECTORY_FROM_OUTPUT_CONTROL:
+                Analysis analysis = workspace.getAnalysis();
+                if (analysis == null) {
+                    System.err.println("No analysis found attached to workspace.  Can't get output path.");
+                    return false;
+                }
+                String outputPath = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_FILE_PATH);
+                path = getMirroredDirectory(workspace,outputPath);
+                break;
+
+            case SaveLocations.OUTPUT_CONTROL_FOLDER:
+                analysis = workspace.getAnalysis();
+                if (analysis == null) {
+                    System.err.println("No analysis found attached to workspace.  Can't get output path.");
+                    return false;
+                }
                 File rootFile = workspace.getMetadata().getFile();
-                int fileDepth;
-                if (workspace.getMetadata().get("FILE_DEPTH") == null) {
-                    fileDepth = 0;
-                } else {
-                    fileDepth = (int) workspace.getMetadata().get("FILE_DEPTH");
-                }
-
-                StringBuilder sb = new StringBuilder();
-                File parentFile = rootFile.getParentFile();
-                for (int i=0;i<fileDepth;i++) {
-                    sb.insert(0,parentFile.getName()+MIA.getSlashes());
-                    parentFile = parentFile.getParentFile();
-                }
-
-                new File(mirroredDirectoryRoot+ MIA.getSlashes() +sb).mkdirs();
-
-                path = mirroredDirectoryRoot+ MIA.getSlashes() +sb+FilenameUtils.removeExtension(rootFile.getName());
+                outputPath = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_FILE_PATH);
+                path = outputPath + MIA.getSlashes() + FilenameUtils.removeExtension(rootFile.getName());
                 break;
 
             case SaveLocations.SAVE_WITH_INPUT:
             default:
                 rootFile = workspace.getMetadata().getFile();
-                path = rootFile.getParent()+ MIA.getSlashes() +FilenameUtils.removeExtension(rootFile.getName());
+                path = rootFile.getParent() + MIA.getSlashes() + FilenameUtils.removeExtension(rootFile.getName());
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:
@@ -185,7 +215,7 @@ public class ImageSaver extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
-        parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+        parameters.add(new FilePathP(SAVE_FILE_PATH,this));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
