@@ -89,7 +89,7 @@ public class ComponentFactory {
         // Adding the module enabled checkbox
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(2, 2, 0, 0);
+        c.insets = new Insets(2, 5, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ModuleEnabledButton enabledCheck = new ModuleEnabledButton(module);
@@ -97,6 +97,7 @@ public class ComponentFactory {
         modulePanel.add(enabledCheck,c);
 
         c.gridx++;
+        c.insets = new Insets(2, 2, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ShowOutputButton showOutput = new ShowOutputButton(module);
@@ -108,7 +109,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(module);
-        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
+        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight,elementHeight));
         group.add(button);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);
@@ -118,7 +119,7 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx++;
         c.weightx = 0;
-        c.insets = new Insets(2, 2, 0, 0);
+        c.insets = new Insets(2, 2, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         EvalButton evalButton = new EvalButton(module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));

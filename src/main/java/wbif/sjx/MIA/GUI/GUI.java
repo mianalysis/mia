@@ -11,6 +11,7 @@ import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -64,6 +65,10 @@ public class GUI {
         }
         initialised = true;
 
+        // Adding a new ImageLoader module to the empty analysis
+        analysis.getModules().add(new ImageLoader<>());
+
+        // Determining which panel should be shown
         if (MIA.isDebug()) {
             mainPanel = editingPan;
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

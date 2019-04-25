@@ -66,8 +66,6 @@ public class HelpPanel extends JPanel {
     }
 
     public void showUsageMessage() {
-        Module activeModule = GUI.getActiveModule();
-
         removeAll();
 
         GridBagConstraints c = new GridBagConstraints();

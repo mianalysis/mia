@@ -41,7 +41,7 @@ public class MIA implements PlugIn {
     private static final boolean imagePlusMode = true;
 
     public static void main(String[] args) throws Exception {
-        debug = true;
+        debug = false;
 
         // Determining the version number from the pom file
         try {
