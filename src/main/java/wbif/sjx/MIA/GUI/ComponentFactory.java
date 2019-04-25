@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -309,7 +310,8 @@ public class ComponentFactory {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                     expandedBasic.flipBoolean();
-                    GUI.updateModules(true);
+                    GUI.updateModules();
+
                 }
             }
 
@@ -363,20 +365,26 @@ public class ComponentFactory {
         if (!module.isRunnable() &! module.invalidParameterIsVisible()) return modulePanel;
 
         c.insets = new Insets(0,35,0,0);
-        for (Parameter parameter : module.updateAndGetParameters()) {
-            if (parameter.getClass() == ParameterGroup.class) {
-
-            } else {
-                if (parameter.isVisible()) {
-                    JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
-                    c.gridy++;
-                    modulePanel.add(paramPanel, c);
-                }
-            }
-        }
+        addParameters(module,module.updateAndGetParameters(),modulePanel,c);
 
         return modulePanel;
 
+    }
+
+    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c) {
+        for (Parameter parameter : parameters) {
+            if (parameter.isVisible()) {
+                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
+                c.gridy++;
+                modulePanel.add(paramPanel, c);
+            }
+
+            if (parameter.getClass() == ParameterGroup.class) {
+                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) parameter).getCollections();
+                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c);
+
+            }
+        }
     }
 
     private JPanel createMeasurementExportLabels() {

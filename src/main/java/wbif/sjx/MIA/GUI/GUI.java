@@ -181,8 +181,8 @@ public class GUI {
         mainPanel.updateHelpNotes();
     }
 
-    public static void updateModuleStates() {
-        mainPanel.updateModuleStates();
+    public static void updateModuleStates(boolean verbose) {
+        mainPanel.updateModuleStates(verbose);
     }
 
     public static ComponentFactory getComponentFactory() {
@@ -209,13 +209,7 @@ public class GUI {
         mainPanel.setProgress(val);
     }
 
-    public static void updateModules(boolean verbose) {
-        int nRunnable = AnalysisTester.testModules(analysis.getModules());
-        int nActive = 0;
-        for (Module module:analysis.getModules()) if (module.isEnabled()) nActive++;
-        int nModules = analysis.getModules().size();
-        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
-
+    public static void updateModules() {
         mainPanel.updateModules();
         mainPanel.updateHelpNotes();
 

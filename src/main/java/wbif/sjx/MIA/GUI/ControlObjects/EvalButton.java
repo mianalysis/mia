@@ -89,7 +89,7 @@ public class EvalButton extends JButton implements ActionListener {
         if (idx == GUI.getModuleBeingEval()) {
             System.out.println("Stopping");
             GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates();
+            GUI.updateModuleStates(true);
             t.stop();
             return;
         }
@@ -103,7 +103,7 @@ public class EvalButton extends JButton implements ActionListener {
                     evaluateModule(module);
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
-                    GUI.updateModuleStates();
+                    GUI.updateModuleStates(true);
                     e1.printStackTrace();
                 }
             });
@@ -134,14 +134,14 @@ public class EvalButton extends JButton implements ActionListener {
         // Setting the index to the previous module.  This will make the currently-evaluated module go red
         GUI.setLastModuleEval(modules.indexOf(module) - 1);
         GUI.setModuleBeingEval(modules.indexOf(module));
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(true);
 
         Module.setVerbose(true);
         module.execute(testWorkspace);
         GUI.setLastModuleEval(modules.indexOf(module));
         GUI.setModuleBeingEval(-1);
 
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(true);
 
     }
 }

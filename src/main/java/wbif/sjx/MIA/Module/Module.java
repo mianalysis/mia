@@ -200,6 +200,15 @@ public abstract class Module implements Comparable {
         this.runnable = runnable;
     }
 
+    public boolean hasVisibleParameters() {
+        for (Parameter parameter:updateAndGetParameters()) {
+            if (parameter.isVisible()) return true;
+        }
+
+        return false;
+
+    }
+
     @Override
     public int compareTo(Object o) {
         return getTitle().compareTo(((Module) o).getTitle());

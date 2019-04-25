@@ -4,12 +4,14 @@
 
 package wbif.sjx.MIA.Object;
 
+import net.imglib2.IterableInterval;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
@@ -128,6 +130,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         // Getting a list of available images
         LinkedHashSet<OutputObjectsP> objects = getParametersMatchingType(OutputObjectsP.class,cutoffModule);
 
+        // Remove any images without a name
+        objects.removeIf(outputObjectsP -> outputObjectsP.getObjectsName().equals(""));
+
         if (!ignoreRemoved) return objects;
 
         // Removing any objects which have since been removed from the workspace
@@ -152,6 +157,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
         LinkedHashSet<OutputImageP> images = getParametersMatchingType(OutputImageP.class,cutoffModule);
+
+        // Remove any images without a name
+        images.removeIf(outputImageP -> outputImageP.getImageName().equals(""));
 
         if (!ignoreRemoved) return images;
 
@@ -187,6 +195,15 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     public RelationshipCollection getRelationships() {
         return getRelationships(null);
+
+    }
+
+    public boolean hasVisibleParameters() {
+        for (Module module:this) {
+            if (module.hasVisibleParameters()) return true;
+        }
+
+        return false;
 
     }
 

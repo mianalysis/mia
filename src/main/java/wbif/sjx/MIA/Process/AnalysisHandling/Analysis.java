@@ -114,4 +114,11 @@ public class Analysis {
     public void setAnalysisFilename(String analysisFilename) {
         this.analysisFilename = analysisFilename;
     }
+
+    public boolean hasVisibleParameters() {
+        return (inputControl.hasVisibleParameters()
+                | outputControl.hasVisibleParameters()
+                | modules.hasVisibleParameters());
+
+    }
 }

@@ -81,7 +81,7 @@ public class MIA implements PlugIn {
 
     @Override
     public void run(String s) {
-        debug = false;
+        debug = true;
 
         // Determining the version number from the pom file
         try {

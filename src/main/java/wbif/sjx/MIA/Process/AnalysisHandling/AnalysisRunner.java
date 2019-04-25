@@ -182,7 +182,7 @@ public class AnalysisRunner {
             batchProcessor.stopAnalysis();
         } else {
             GUI.setModuleBeingEval(-1);
-            GUI.updateModules(false);
+            GUI.updateModules();
             Thread.currentThread().getThreadGroup().stop();
             System.out.println("Shutdown complete!");
         }

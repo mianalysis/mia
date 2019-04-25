@@ -65,8 +65,8 @@ public class BasicControlPanel extends JScrollPane {
         c.insets = new Insets(0,5,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Check if there are no modules (or if there is only the default ImageLoader)
-        if (analysis.modules.size() ==0 || (analysis.modules.size()==1 && analysis.modules.get(0) instanceof ImageLoader)) {
+        // Check if there are no controls to be displayed
+        if (!analysis.hasVisibleParameters()) {
             showUsageMessage();
             return;
         }
@@ -162,4 +162,5 @@ public class BasicControlPanel extends JScrollPane {
         panel.repaint();
 
     }
+
 }

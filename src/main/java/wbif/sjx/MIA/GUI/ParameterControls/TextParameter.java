@@ -40,7 +40,7 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
         updateControl();
 
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(true);
 //        GUI.updateModules(true);
 
     }
