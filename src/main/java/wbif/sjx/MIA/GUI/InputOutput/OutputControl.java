@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.InputOutput;
 
+import wbif.sjx.MIA.Module.InputOutput.ImageSaver;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.MetadataRefCollection;
@@ -11,6 +12,10 @@ import wbif.sjx.MIA.Object.Workspace;
  * Created by Stephen on 29/07/2017.
  */
 public class OutputControl extends Module {
+    public static final String SAVE_LOCATION = "Save location";
+    public static final String SAVE_FILE_PATH = "File path";
+    public static final String SAVE_NAME_MODE = "Save name mode";
+    public static final String SAVE_FILE_NAME = "File name";
     public static final String EXPORT_MODE = "Export mode";
     public static final String METADATA_ITEM_FOR_GROUPING = "Metadata item for grouping";
     public static final String EXPORT_SUMMARY = "Export summary";
@@ -28,6 +33,22 @@ public class OutputControl extends Module {
     public static final String SAVE_EVERY_N = "Save every n files";
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SELECT_MEASUREMENTS = "Show measurement selection";
+
+    public interface SaveLocations {
+        String SAVE_WITH_INPUT = "Save with input file";
+        String SPECIFIC_LOCATION = "Specific location";
+
+        String[] ALL = new String[]{SAVE_WITH_INPUT, SPECIFIC_LOCATION};
+
+    }
+
+    public interface SaveNameModes {
+        String MATCH_INPUT = "Match input file/folder name";
+        String SPECIFIC_NAME = "Specific name";
+
+        String[] ALL = new String[]{MATCH_INPUT, SPECIFIC_NAME};
+
+    }
 
     public interface ExportModes {
         String ALL_TOGETHER = "All together";
@@ -80,6 +101,10 @@ public class OutputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
+        parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+        parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL));
+        parameters.add(new StringP(SAVE_FILE_NAME,this));
         parameters.add(new ChoiceP(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_GROUPING,this));
         parameters.add(new BooleanP(EXPORT_SUMMARY,this,true));
@@ -103,6 +128,20 @@ public class OutputControl extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(SAVE_LOCATION));
+        switch ((String) parameters.getValue(SAVE_LOCATION)) {
+            case SaveLocations.SPECIFIC_LOCATION:
+                returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
+        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+            case SaveNameModes.SPECIFIC_NAME:
+                returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
+                break;
+        }
 
         ChoiceP exportMode = (ChoiceP) parameters.getParameter(EXPORT_MODE);
         returnedParameters.add(exportMode);

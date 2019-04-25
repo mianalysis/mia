@@ -120,7 +120,7 @@ public class FitEllipsoid extends Module {
         String units = inputObject.getCalibratedUnits();
         boolean is2D = inputObject.is2D();
 
-        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),dppXY,dppZ,units,is2D);
+        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
         ellipsoidObject.setPoints(ellipsoid.getPoints());
         ellipsoidObject.setT(inputObject.getT());
 

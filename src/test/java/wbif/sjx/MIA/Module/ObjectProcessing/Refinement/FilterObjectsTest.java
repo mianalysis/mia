@@ -256,7 +256,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
+                Obj childObject = new Obj("Children", childObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -305,7 +305,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
+                Obj childObject = new Obj("Children", childObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -353,7 +353,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -398,7 +398,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

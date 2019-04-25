@@ -98,7 +98,7 @@ public class FitEllipse extends Module {
         String units = inputObject.getCalibratedUnits();
         boolean is2D = inputObject.is2D();
 
-        Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),dppXY,dppZ,units,is2D);
+        Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
         ellipseObject.setPoints(ellipse.getPoints());
         ellipseObject.setT(inputObject.getT());
 

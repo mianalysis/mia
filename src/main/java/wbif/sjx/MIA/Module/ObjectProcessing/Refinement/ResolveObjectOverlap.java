@@ -160,7 +160,7 @@
 //            if (overlap2[1] != object1.getID()) continue;
 //
 //            // Merge objects and adding to output objects
-//                Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getNextID(),
+//                Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(),
 //                        object1.getDistPerPxXY(), object1.getDistPerPxZ(), object1.getCalibratedUnits(), object1.is2D());
 //
 //                // Adding measurements

@@ -131,7 +131,7 @@ public class RidgeDetection extends Module {
                     // Getting the unique LineGroups
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
-                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
+                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), dppXY, dppZ,
                                 calibrationUnits,twoD);
 
                         double estimatedLength = 0;
