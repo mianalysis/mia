@@ -9,12 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GUISeparatorP extends Parameter {
-    private String headingText;
-
-    public GUISeparatorP(String name, Module module, String headingText) {
+    public GUISeparatorP(String name, Module module) {
         super(name, module);
-        this.headingText = headingText;
-
         setExported(false);
 
     }
@@ -27,17 +23,17 @@ public class GUISeparatorP extends Parameter {
 
     @Override
     public <T> T getValue() {
-        return (T) headingText;
+        return null;
     }
 
     @Override
     public <T> void setValue(T value) {
-        headingText = (String) value;
+
     }
 
     @Override
     public String getValueAsString() {
-        return headingText;
+        return null;
     }
 
     @Override
@@ -47,6 +43,6 @@ public class GUISeparatorP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new GUISeparatorP(name,module,headingText);
+        return (T) new GUISeparatorP(name,module);
     }
 }

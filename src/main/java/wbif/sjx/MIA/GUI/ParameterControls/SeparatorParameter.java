@@ -31,7 +31,7 @@ public class SeparatorParameter extends ParameterControl {
         control.add(separatorLeft,c);
 
         JLabel label = new JLabel();
-        label.setText(parameter.getValueAsString());
+        label.setText(parameter.getName());
         label.setForeground(Color.BLUE);
         c.weightx = 0;
         c.gridx++;

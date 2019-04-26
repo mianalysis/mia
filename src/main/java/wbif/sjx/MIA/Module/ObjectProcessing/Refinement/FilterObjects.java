@@ -26,9 +26,12 @@ import java.util.LinkedHashMap;
  * Created by sc13967 on 23/05/2017.
  */
 public class FilterObjects extends Module implements ActionListener {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String MOVE_FILTERED = "Move filtered objects to new class";
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
+
+    public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
@@ -430,9 +433,12 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(MOVE_FILTERED,this,false));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
+
+        parameters.add(new GUISeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
@@ -456,12 +462,14 @@ public class FilterObjects extends Module implements ActionListener {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(MOVE_FILTERED));
         if (parameters.getValue(MOVE_FILTERED)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
         }
 
+        returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
 
         switch ((String) parameters.getValue(FILTER_METHOD)) {

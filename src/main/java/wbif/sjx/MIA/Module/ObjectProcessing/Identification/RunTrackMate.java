@@ -29,20 +29,25 @@ import java.util.Set;
  * Created by sc13967 on 15/05/2017.
  */
 public class RunTrackMate extends Module {
+    public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_SPOT_OBJECTS = "Output spot objects";
+
+    public static final String SPOT_SEPARATOR = "Spot detection";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String DO_SUBPIXEL_LOCALIZATION = "Do sub-pixel localisation";
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
     public static final String RADIUS = "Radius";
     public static final String THRESHOLD = "Threshold";
     public static final String NORMALISE_INTENSITY = "Normalise intensity";
+    public static final String ESTIMATE_SIZE = "Estimate spot size";
+
+    public static final String TRACK_SEPARATOR = "Spot tracking";
     public static final String DO_TRACKING = "Run tracking";
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
-    public static final String ESTIMATE_SIZE = "Estimate spot size";
 
 
     public interface Measurements {
@@ -336,8 +341,11 @@ public class RunTrackMate extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new GUISeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this));
+
+        parameters.add(new GUISeparatorP(SPOT_SEPARATOR, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this,false));
         parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true));
         parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false));
@@ -345,6 +353,8 @@ public class RunTrackMate extends Module {
         parameters.add(new DoubleP(THRESHOLD, this,5000.0));
         parameters.add(new BooleanP(NORMALISE_INTENSITY, this,false));
         parameters.add(new BooleanP(ESTIMATE_SIZE, this,false));
+
+        parameters.add(new GUISeparatorP(TRACK_SEPARATOR, this));
         parameters.add(new BooleanP(DO_TRACKING, this,true));
         parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0));
         parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0));
@@ -357,9 +367,11 @@ public class RunTrackMate extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_SPOT_OBJECTS));
 
+        returnedParameters.add(parameters.getParameter(SPOT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(DO_SUBPIXEL_LOCALIZATION));
         returnedParameters.add(parameters.getParameter(DO_MEDIAN_FILTERING));
@@ -368,6 +380,7 @@ public class RunTrackMate extends Module {
         returnedParameters.add(parameters.getParameter(NORMALISE_INTENSITY));
         returnedParameters.add(parameters.getParameter(ESTIMATE_SIZE));
 
+        returnedParameters.add(parameters.getParameter(TRACK_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DO_TRACKING));
         if (parameters.getValue(DO_TRACKING)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));

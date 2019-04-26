@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.MetadataRefCollection;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.GUISeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
 import wbif.sjx.MIA.Object.RelationshipCollection;
@@ -14,7 +15,9 @@ import wbif.sjx.MIA.Object.Workspace;
  * Created by sc13967 on 30/06/2017.
  */
 public class RemoveImage extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String REMOVAL_CONTROLS = "Image removal controls";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
     @Override
@@ -48,7 +51,9 @@ public class RemoveImage extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new RemovedImageP(INPUT_IMAGE,this));
+        parameters.add(new GUISeparatorP(REMOVAL_CONTROLS,this));
         parameters.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
 
     }
