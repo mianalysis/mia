@@ -6,11 +6,15 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 
 public class MeasureObjectColocalisation extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String COLOC_SEPARATOR = "Images to measure";
     public static final String INPUT_IMAGE_1 = "Input image 1";
     public static final String INPUT_IMAGE_2 = "Input image 2";
 
@@ -77,7 +81,10 @@ public class MeasureObjectColocalisation extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(COLOC_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE_1, this));
         parameters.add(new InputImageP(INPUT_IMAGE_2, this));
 

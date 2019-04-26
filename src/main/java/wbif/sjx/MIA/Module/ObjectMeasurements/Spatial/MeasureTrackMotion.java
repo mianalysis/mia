@@ -3,10 +3,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
-import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Timepoint;
@@ -18,8 +15,11 @@ import java.util.TreeMap;
  * Created by steph on 24/05/2017.
  */
 public class MeasureTrackMotion extends Module {
+    public static final String INPUT_SEPARATOR = "Input objects";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
+
+    public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String SUBTRACT_AVERAGE_MOTION = "Subtract average motion";
 
 
@@ -413,8 +413,11 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
+
+        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(SUBTRACT_AVERAGE_MOTION,this,false));
 
     }
@@ -422,15 +425,19 @@ public class MeasureTrackMotion extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SUBTRACT_AVERAGE_MOTION));
 
         return returnedParameters;
+
     }
 
     @Override
