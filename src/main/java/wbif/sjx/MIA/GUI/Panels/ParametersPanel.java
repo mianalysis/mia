@@ -190,8 +190,8 @@ public class ParametersPanel extends JScrollPane {
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
 
-//        if (parameter instanceof MessageP || parameter instanceof GUISeparatorP) {
-            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
+//        if (parameter instanceof MessageP || parameter instanceof ParamSeparatorP) {
+            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule, true);
 //            c.gridwidth = 2;
             panel.add(paramPanel, c);
 
@@ -213,9 +213,6 @@ public class ParametersPanel extends JScrollPane {
     public void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashSet<ParameterCollection> collections = group.getCollections();
-
-        c.gridy++;
-        panel.add(getInvisibleSeparator(), c);
 
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters

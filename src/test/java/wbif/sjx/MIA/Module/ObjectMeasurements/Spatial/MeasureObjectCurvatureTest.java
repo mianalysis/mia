@@ -56,7 +56,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature();
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
@@ -109,7 +109,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature();
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
@@ -171,7 +171,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature();
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");

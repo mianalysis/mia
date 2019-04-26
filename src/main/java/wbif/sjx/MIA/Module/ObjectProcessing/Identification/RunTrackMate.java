@@ -341,11 +341,11 @@ public class RunTrackMate extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this));
 
-        parameters.add(new GUISeparatorP(SPOT_SEPARATOR, this));
+        parameters.add(new ParamSeparatorP(SPOT_SEPARATOR, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this,false));
         parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true));
         parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false));
@@ -354,7 +354,7 @@ public class RunTrackMate extends Module {
         parameters.add(new BooleanP(NORMALISE_INTENSITY, this,false));
         parameters.add(new BooleanP(ESTIMATE_SIZE, this,false));
 
-        parameters.add(new GUISeparatorP(TRACK_SEPARATOR, this));
+        parameters.add(new ParamSeparatorP(TRACK_SEPARATOR, this));
         parameters.add(new BooleanP(DO_TRACKING, this,true));
         parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0));
         parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0));
@@ -425,7 +425,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

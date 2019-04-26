@@ -1,16 +1,15 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-import wbif.sjx.MIA.Object.Parameters.GUISeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SeparatorParameter extends ParameterControl {
-    protected GUISeparatorP parameter;
+    protected ParamSeparatorP parameter;
     protected JPanel control;
 
-    public SeparatorParameter(GUISeparatorP parameter) {
+    public SeparatorParameter(ParamSeparatorP parameter) {
         this.parameter = parameter;
 
         control = new JPanel(new GridBagLayout());

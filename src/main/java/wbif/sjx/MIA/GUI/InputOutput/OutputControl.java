@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.GUI.InputOutput;
 
-import wbif.sjx.MIA.Module.InputOutput.ImageSaver;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.MetadataRefCollection;
@@ -107,7 +106,7 @@ public class OutputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(EXPORT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(EXPORT_SEPARATOR,this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL));
@@ -118,7 +117,7 @@ public class OutputControl extends Module {
         parameters.add(new IntegerP(SAVE_EVERY_N,this,10));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE,this,AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
 
-        parameters.add(new GUISeparatorP(SUMMARY_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(SUMMARY_SEPARATOR,this));
         parameters.add(new BooleanP(EXPORT_SUMMARY,this,true));
         parameters.add(new ChoiceP(SUMMARY_MODE,this,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_SUMMARY,this));
@@ -131,7 +130,7 @@ public class OutputControl extends Module {
         parameters.add(new BooleanP(CALCULATE_COUNT_SUM,this,true));
         parameters.add(new BooleanP(EXPORT_INDIVIDUAL_OBJECTS,this,true));
 
-        parameters.add(new GUISeparatorP(MEASUREMENT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(SELECT_MEASUREMENTS,this,false));
 
     }
@@ -216,7 +215,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

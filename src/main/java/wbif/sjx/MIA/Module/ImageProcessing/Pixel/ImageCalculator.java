@@ -251,13 +251,13 @@ public class ImageCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE1,this));
         parameters.add(new InputImageP(INPUT_IMAGE2,this));
         parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new BooleanP(OUTPUT_32BIT,this,false));
-        parameters.add(new GUISeparatorP(CALCULATION_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_METHOD,this,CalculationMethods.ADD,CalculationMethods.ALL));
         parameters.add(new BooleanP(SET_NAN_TO_ZERO,this,false));
 
@@ -297,7 +297,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -32,7 +32,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module, boolean showVisibleControl) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -52,7 +52,7 @@ public class ComponentFactory {
             c.insets = new Insets(10,3,0,5);
             paramPanel.add(parameterComponent,c);
 
-        } else if (parameter instanceof GUISeparatorP) {
+        } else if (parameter instanceof ParamSeparatorP) {
             if (module.updateAndGetParameters().iterator().next() == parameter) {
                 c.insets = new Insets(0, 5, 5, 8);
             } else {
@@ -85,14 +85,15 @@ public class ComponentFactory {
                 paramPanel.add(parameterComponent, c);
             }
 
-            c.insets = new Insets(2, 5, 0, 5);
-            c.gridx++;
-            c.weightx = 0;
-            c.anchor = GridBagConstraints.EAST;
-            VisibleCheck visibleCheck = new VisibleCheck(parameter);
-            visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-            paramPanel.add(visibleCheck, c);
-
+            if (showVisibleControl) {
+                c.insets = new Insets(2, 5, 0, 5);
+                c.gridx++;
+                c.weightx = 0;
+                c.anchor = GridBagConstraints.EAST;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+                paramPanel.add(visibleCheck, c);
+            }
         }
 
         return paramPanel;
@@ -382,24 +383,24 @@ public class ComponentFactory {
         if (!module.isRunnable() &! module.invalidParameterIsVisible()) return modulePanel;
 
         c.insets = new Insets(0,35,0,0);
-        addParameters(module,module.updateAndGetParameters(),modulePanel,c);
+        addParameters(module,module.updateAndGetParameters(),modulePanel,c,false);
 
         return modulePanel;
 
     }
 
-    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c) {
+    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c, boolean showVisibleControl) {
         for (Parameter parameter : parameters) {
-            if (parameter.isVisible()) {
-                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
-                c.gridy++;
-                modulePanel.add(paramPanel, c);
-            }
-
             if (parameter.getClass() == ParameterGroup.class) {
                 LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) parameter).getCollections();
-                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c);
+                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c,showVisibleControl);
 
+            }
+
+            if (parameter.isVisible()) {
+                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module,showVisibleControl);
+                c.gridy++;
+                modulePanel.add(paramPanel, c);
             }
         }
     }

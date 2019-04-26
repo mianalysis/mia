@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
@@ -23,24 +22,39 @@ import java.util.Date;
  * Created by sc13967 on 26/06/2017.
  */
 public class ImageSaver extends Module {
+    public static final String LOADER_SEPARATOR = "Image saving";
     public static final String INPUT_IMAGE = "Input image";
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
+
+    public static final String NAME_SEPARATOR = "Output image name";
+    public static final String SAVE_NAME_MODE = "Save name mode";
+    public static final String SAVE_FILE_NAME = "File name";
     public static final String APPEND_SERIES_MODE = "Append series mode";
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
+
+    public static final String FORMAT_SEPARATOR = "Output image format";
     public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
+
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
-        String MIRRORED_DIRECTORY_FROM_OUTPUT_CONTROL = "Mirrored directory (using Output Control)";
-        String OUTPUT_CONTROL_FOLDER = "Use Output Control folder";
+        String MATCH_OUTPUT_CONTROL = "Match Output Control";
         String SAVE_WITH_INPUT = "Save with input file";
         String SPECIFIC_LOCATION = "Specific location";
 
-        String[] ALL = new String[]{MIRRORED_DIRECTORY, MIRRORED_DIRECTORY_FROM_OUTPUT_CONTROL, OUTPUT_CONTROL_FOLDER, SAVE_WITH_INPUT, SPECIFIC_LOCATION};
+        String[] ALL = new String[]{MIRRORED_DIRECTORY, MATCH_OUTPUT_CONTROL, SAVE_WITH_INPUT, SPECIFIC_LOCATION};
+
+    }
+
+    public interface SaveNameModes {
+        String MATCH_INPUT = "Match input file name";
+        String SPECIFIC_NAME = "Specific name";
+
+        String[] ALL = new String[]{MATCH_INPUT, SPECIFIC_NAME};
 
     }
 
@@ -109,9 +123,9 @@ public class ImageSaver extends Module {
             parentFile = parentFile.getParentFile();
         }
 
-        new File(mirroredDirectoryRoot+ MIA.getSlashes() +sb).mkdirs();
+        new File(mirroredDirectoryRoot + MIA.getSlashes() +sb).mkdirs();
 
-        return mirroredDirectoryRoot+ MIA.getSlashes() +sb+FilenameUtils.removeExtension(rootFile.getName());
+        return mirroredDirectoryRoot + MIA.getSlashes() +sb;
 
     }
 
@@ -137,6 +151,8 @@ public class ImageSaver extends Module {
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
         String suffix = parameters.getValue(SAVE_SUFFIX);
@@ -149,7 +165,6 @@ public class ImageSaver extends Module {
 
         // If the image is being altered make a copy
         if (saveAsRGB || flattenOverlay) inputImagePlus = inputImagePlus.duplicate();
-
         if (saveAsRGB) new ImageConverter(inputImagePlus).convertToRGB();
 
         if (flattenOverlay) {
@@ -162,45 +177,59 @@ public class ImageSaver extends Module {
             }
         }
 
+        // If using the same settings as OutputControl, update saveLocation and filePath (if necessary)
+        if (saveLocation.equals(SaveLocations.MATCH_OUTPUT_CONTROL)) {
+            Analysis analysis = workspace.getAnalysis();
+            if (analysis == null) {
+                System.err.println("No analysis found attached to workspace.  Can't get output path.");
+                return false;
+            }
+
+            String outputSaveLocation = analysis.outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
+            switch (outputSaveLocation) {
+                case OutputControl.SaveLocations.SAVE_WITH_INPUT:
+                    saveLocation = SaveLocations.SAVE_WITH_INPUT;
+                    break;
+
+                case OutputControl.SaveLocations.SPECIFIC_LOCATION:
+                    saveLocation = SaveLocations.SPECIFIC_LOCATION;
+                    filePath = analysis.outputControl.getParameterValue(SAVE_FILE_PATH);
+                    break;
+            }
+        }
+
         String path;
         switch (saveLocation) {
             case SaveLocations.MIRRORED_DIRECTORY:
                 path = getMirroredDirectory(workspace,mirroredDirectoryRoot);
                 break;
 
-            case SaveLocations.MIRRORED_DIRECTORY_FROM_OUTPUT_CONTROL:
-                Analysis analysis = workspace.getAnalysis();
-                if (analysis == null) {
-                    System.err.println("No analysis found attached to workspace.  Can't get output path.");
-                    return false;
-                }
-                String outputPath = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_FILE_PATH);
-                path = getMirroredDirectory(workspace,outputPath);
-                break;
-
-            case SaveLocations.OUTPUT_CONTROL_FOLDER:
-                analysis = workspace.getAnalysis();
-                if (analysis == null) {
-                    System.err.println("No analysis found attached to workspace.  Can't get output path.");
-                    return false;
-                }
-                File rootFile = workspace.getMetadata().getFile();
-                outputPath = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_FILE_PATH);
-                path = outputPath + MIA.getSlashes() + FilenameUtils.removeExtension(rootFile.getName());
-                break;
-
             case SaveLocations.SAVE_WITH_INPUT:
             default:
-                rootFile = workspace.getMetadata().getFile();
-                path = rootFile.getParent() + MIA.getSlashes() + FilenameUtils.removeExtension(rootFile.getName());
+                File rootFile = workspace.getMetadata().getFile();
+                path = rootFile.getParent() + MIA.getSlashes();
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:
-                path = FilenameUtils.removeExtension(filePath);
+                path = filePath + MIA.getSlashes();
+                break;
+        }
+
+        String name;
+        switch (saveNameMode) {
+            case SaveNameModes.MATCH_INPUT:
+                default:
+                File rootFile = workspace.getMetadata().getFile();
+                name = FilenameUtils.removeExtension(rootFile.getName());
+                break;
+
+            case SaveNameModes.SPECIFIC_NAME:
+                name = FilenameUtils.removeExtension(saveFileName);
                 break;
         }
 
         // Adding last bits to name
+        path = path + name;
         path = appendSeries(path,workspace,appendSeriesMode);
         path = path + suffix + ".tif";
         path = appendDateTime(path,appendDateTimeMode);
@@ -212,13 +241,20 @@ public class ImageSaver extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
-        parameters.add(new FilePathP(SAVE_FILE_PATH,this));
+        parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+
+        parameters.add(new ParamSeparatorP(NAME_SEPARATOR,this));
+        parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL));
+        parameters.add(new StringP(SAVE_FILE_NAME,this));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
+
+        parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR,this));
         parameters.add(new BooleanP(SAVE_AS_RGB, this,false));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
 
@@ -228,6 +264,7 @@ public class ImageSaver extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(SAVE_LOCATION));
 
@@ -242,11 +279,20 @@ public class ImageSaver extends Module {
 
         }
 
+        returnedParameters.add(parameters.getParameter(NAME_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
+        switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+            case SaveNameModes.SPECIFIC_NAME:
+                returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
         returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
         returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
-        returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
 
+        returnedParameters.add(parameters.getParameter(FORMAT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
         if (parameters.getValue(SAVE_AS_RGB)) {
             returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
         }
@@ -266,7 +312,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

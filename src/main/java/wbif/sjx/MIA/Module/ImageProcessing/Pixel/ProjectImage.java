@@ -152,10 +152,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new GUISeparatorP(PROJECTION_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(PROJECTION_SEPARATOR,this));
         parameters.add(new ChoiceP(PROJECTION_MODE,this,ProjectionModes.AVERAGE,ProjectionModes.ALL));
 
     }
@@ -176,7 +176,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -50,7 +50,7 @@ public class FilterObjectsTest extends ModuleTest {
         ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
@@ -80,7 +80,7 @@ public class FilterObjectsTest extends ModuleTest {
         ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_SMALLER_THAN);
@@ -110,7 +110,7 @@ public class FilterObjectsTest extends ModuleTest {
         ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MISSING_MEASUREMENTS);
@@ -146,7 +146,7 @@ public class FilterObjectsTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
@@ -181,7 +181,7 @@ public class FilterObjectsTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
@@ -217,7 +217,7 @@ public class FilterObjectsTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
@@ -266,7 +266,7 @@ public class FilterObjectsTest extends ModuleTest {
             counter++;
         }
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MIN_NUMBER_OF_CHILDREN);
@@ -316,7 +316,7 @@ public class FilterObjectsTest extends ModuleTest {
 
         }
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MAX_NUMBER_OF_CHILDREN);
@@ -362,7 +362,7 @@ public class FilterObjectsTest extends ModuleTest {
             }
         }
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.NO_PARENT);
@@ -407,7 +407,7 @@ public class FilterObjectsTest extends ModuleTest {
             }
         }
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.WITH_PARENT);

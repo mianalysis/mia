@@ -387,7 +387,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

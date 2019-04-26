@@ -482,7 +482,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

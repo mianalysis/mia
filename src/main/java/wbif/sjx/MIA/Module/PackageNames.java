@@ -16,6 +16,7 @@ public class PackageNames {
     public final static String OBJECT_PROCESSING_IDENTIFICATION = "Object processing\\Identification\\";
     public final static String OBJECT_PROCESSING_MISCELLANEOUS = "Object processing\\Miscellaneous\\";
     public final static String OBJECT_PROCESSING_REFINEMENT = "Object processing\\Refinement\\";
+    public final static String OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS = "Object processing\\Refinement\\Filter objects\\";
     public final static String VISUALISATION = "Visualisation\\";
     public final static String VISUALISATION_OVERLAYS = "Visualisation\\Overlays\\";
 

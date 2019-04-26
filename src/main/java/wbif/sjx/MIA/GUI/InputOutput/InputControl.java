@@ -260,13 +260,13 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(IMPORT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR,this));
         parameters.add(new FileFolderPathP(INPUT_PATH,this,"","The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1,"The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
         parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1","Comma-separated list of series numbers to be processed."));
 
-        parameters.add(new GUISeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
 
         ParameterCollection collection = new ParameterCollection();
         collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.FILENAME,FilterSources.ALL,"Type of filter to add."));
@@ -316,7 +316,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

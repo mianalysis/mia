@@ -122,11 +122,11 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new GUISeparatorP(CROP_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(CROP_SEPARATOR,this));
         parameters.add(new IntegerP(LEFT,this,0));
         parameters.add(new IntegerP(TOP,this,0));
         parameters.add(new IntegerP(WIDTH,this,512));
@@ -166,7 +166,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

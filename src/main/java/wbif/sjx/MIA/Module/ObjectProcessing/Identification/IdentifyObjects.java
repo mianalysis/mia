@@ -167,11 +167,11 @@ public class IdentifyObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
 
-        parameters.add(new InputImageP(IDENTIFICATION_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(IDENTIFICATION_SEPARATOR,this));
         parameters.add(new BooleanP(WHITE_BACKGROUND,this,true));
         parameters.add(new BooleanP(SINGLE_OBJECT,this,false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
@@ -194,7 +194,7 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

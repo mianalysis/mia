@@ -4,14 +4,12 @@
 
 package wbif.sjx.MIA.Object;
 
-import net.imglib2.IterableInterval;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
@@ -85,7 +83,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MetadataRefCollection currentMetadataReferences = module.updateAndGetImageMetadataReferences();
+            MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
             if (currentMetadataReferences == null) continue;
 
             metadataRefs.putAll(currentMetadataReferences);

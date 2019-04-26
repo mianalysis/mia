@@ -28,7 +28,7 @@ import java.util.LinkedHashMap;
 public class FilterObjects extends Module implements ActionListener {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String MOVE_FILTERED = "Move filtered objects to new class";
+    public static final String FILTER_MODE = "Filter mode";
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
 
     public static final String FILTER_SEPARATOR = "Object filtering";
@@ -55,6 +55,15 @@ public class FilterObjects extends Module implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
+
+    public interface FilterModes {
+        String DO_NOTHING = "Do nothing";
+        String MOVE_FILTERED_OBJECTS = "Move filtered objects to new class";
+        String REMOVE_FILTERED_OBJECTS = "Remove filtered objects";
+
+        String[] ALL = new String[]{DO_NOTHING,MOVE_FILTERED_OBJECTS,REMOVE_FILTERED_OBJECTS};
+
+    }
 
     public interface FilterMethods {
         String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
@@ -120,7 +129,42 @@ public class FilterObjects extends Module implements ActionListener {
 
     }
 
-    public void filterObjectsOnImageEdge(ObjCollection inputObjects, Image inputImage, @Nullable ObjCollection outputObjects, boolean includeZ) {
+    public String getFullName(String inputObjectsName, String filterMethod, @Nullable String referenceName, @Nullable String filterValue) {
+        switch (filterMethod) {
+            case FilterMethods.MISSING_MEASUREMENTS:
+                return "FILTER // NUM_" + inputObjectsName + "_MISSING_" + referenceName + "_MEAS";
+
+            case FilterMethods.NO_PARENT:
+                return "FILTER // NUM_" + inputObjectsName + "_MISSING_" + referenceName + "_PARENT";
+
+            case FilterMethods.WITH_PARENT:
+                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName + "_PARENT";
+
+            case FilterMethods.MIN_NUMBER_OF_CHILDREN:
+                return "FILTER // NUM_" + inputObjectsName + "_LESS_THAN_" + filterValue + "_" + referenceName;
+
+            case FilterMethods.MAX_NUMBER_OF_CHILDREN:
+                return "FILTER // NUM_" + inputObjectsName + "_MORE_THAN_" + filterValue + "_" + referenceName;
+
+            case FilterMethods.MEASUREMENTS_SMALLER_THAN:
+                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName+ "_SMALLER_THAN_" + filterValue;
+
+            case FilterMethods.MEASUREMENTS_LARGER_THAN:
+                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName+ "_LARGER_THAN_" + filterValue;
+
+            case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
+                return "FILTER // NUM_" + inputObjectsName + "_ON_" + referenceName + "_EDGE_2D";
+
+            case FilterMethods.RUNTIME_OBJECT_ID:
+                return "FILTER // NUM_" + inputObjectsName + "_MATCHING_GIVEN_ID";
+
+        }
+
+        return "";
+
+    }
+
+    public void filterObjectsOnImageEdge(ObjCollection inputObjects, Image inputImage, @Nullable ObjCollection outputObjects, boolean remove, boolean includeZ) {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
@@ -138,55 +182,55 @@ public class FilterObjects extends Module implements ActionListener {
 
             for (int i=0;i<x.size();i++) {
                 if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
-                    processRemoval(inputObject,outputObjects,iterator);
+                    if (remove) processRemoval(inputObject,outputObjects,iterator);
                     break;
                 }
 
                 // Only consider Z if the user requested this
                 if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ)) {
-                    processRemoval(inputObject,outputObjects,iterator);
+                    if (remove) processRemoval(inputObject,outputObjects,iterator);
                     break;
                 }
             }
         }
     }
 
-    public void filterObjectsWithMissingMeasurement(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurement) {
+    public void filterObjectsWithMissingMeasurement(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String measurement) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             if (Double.isNaN(inputObject.getMeasurement(measurement).getValue())) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
     }
 
-    public void filterObjectsWithoutAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String parentObjectName) {
+    public void filterObjectsWithoutAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String parentObjectName) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) == null) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
     }
 
-    public void filterObjectsWithAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String parentObjectName) {
+    public void filterObjectsWithAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String parentObjectName) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) != null) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
     }
 
-    public void filterObjectsWithMinNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String childObjectsName, double minChildN) {
+    public void filterObjectsWithMinNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String childObjectsName, double minChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
@@ -194,18 +238,18 @@ public class FilterObjects extends Module implements ActionListener {
 
             // Removing the object if it has no children
             if (childObjects == null) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
                 continue;
             }
 
             // Removing the object if it has too few children
             if (childObjects.size() < minChildN) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
     }
 
-    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String childObjectsName, double maxChildN) {
+    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String childObjectsName, double maxChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
@@ -215,12 +259,12 @@ public class FilterObjects extends Module implements ActionListener {
 
             // Removing the object if it has too few children
             if (childObjects.size() > maxChildN) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
     }
 
-    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurementName, MeasRef measurementReference) {
+    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
@@ -228,27 +272,31 @@ public class FilterObjects extends Module implements ActionListener {
             // Removing the object if it has no children
             Measurement measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
                 continue;
             }
 
             double value = measurement.getValue();
             double referenceValue = measurementReference.getValue(inputObject);
 
-            if (Double.isNaN(referenceValue)) processRemoval(inputObject,outputObjects,iterator);
-            if (value < referenceValue || Double.isNaN(value)) processRemoval(inputObject,outputObjects,iterator);
+            if (Double.isNaN(referenceValue)) {
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
+            }
 
+            if (value < referenceValue || Double.isNaN(value)) {
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
+            }
         }
     }
 
-    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurementName, MeasRef measurementReference) {
+    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             Measurement measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
-                processRemoval(inputObject,outputObjects,iterator);
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
                 continue;
             }
 
@@ -256,13 +304,17 @@ public class FilterObjects extends Module implements ActionListener {
             double value = measurement.getValue();
             double referenceValue = measurementReference.getValue(inputObject);
 
-            if (Double.isNaN(referenceValue)) processRemoval(inputObject,outputObjects,iterator);
-            if (value > referenceValue || Double.isNaN(value)) processRemoval(inputObject,outputObjects,iterator);
+            if (Double.isNaN(referenceValue)) {
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
+            }
 
+            if (value > referenceValue || Double.isNaN(value)) {
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
+            }
         }
     }
 
-    public void filterObjectsByID(ObjCollection inputObjects, @Nullable Image image) {
+    public void filterObjectsByID(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, @Nullable Image image) {
         ImagePlus ipl = null;
         if (image != null) {
             ipl = image.getImagePlus().duplicate();
@@ -288,8 +340,14 @@ public class FilterObjects extends Module implements ActionListener {
 
         for (int id:ids) {
             Obj obj = inputObjects.get(id);
-            obj.removeRelationships();
-            inputObjects.remove(id);
+            if (remove) {
+                obj.removeRelationships();
+                if (outputObjects != null) {
+                    obj.setName(outputObjects.getName());
+                    outputObjects.add(obj);
+                }
+                inputObjects.remove(id);
+            }
         }
     }
 
@@ -325,7 +383,7 @@ public class FilterObjects extends Module implements ActionListener {
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
-        boolean moveFiltered = parameters.getValue(MOVE_FILTERED);
+        String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String method = parameters.getValue(FILTER_METHOD);
         String inputImageName = parameters.getValue(REFERENCE_IMAGE);
@@ -344,32 +402,35 @@ public class FilterObjects extends Module implements ActionListener {
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
-        ObjCollection outputObjects = moveFiltered ? new ObjCollection(outputObjectsName) : null;
+        ObjCollection outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
+                ? new ObjCollection(outputObjectsName) : null;
+
+        boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         // Removing objects with a missing measurement (i.e. value set to null)
         switch (method) {
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
-                filterObjectsOnImageEdge(inputObjects,inputImage,outputObjects,includeZ);
+                filterObjectsOnImageEdge(inputObjects,inputImage,outputObjects,remove,includeZ);
                 break;
 
             case FilterMethods.MISSING_MEASUREMENTS:
-                filterObjectsWithMissingMeasurement(inputObjects,outputObjects,measurement);
+                filterObjectsWithMissingMeasurement(inputObjects,outputObjects,remove,measurement);
                 break;
 
             case FilterMethods.NO_PARENT:
-                filterObjectsWithoutAParent(inputObjects,outputObjects,parentObjectName);
+                filterObjectsWithoutAParent(inputObjects,outputObjects,remove,parentObjectName);
                 break;
 
             case FilterMethods.WITH_PARENT:
-                filterObjectsWithAParent(inputObjects,outputObjects,parentObjectName);
+                filterObjectsWithAParent(inputObjects,outputObjects,remove,parentObjectName);
                 break;
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
-                filterObjectsWithMinNumOfChildren(inputObjects,outputObjects,childObjectsName,referenceValue);
+                filterObjectsWithMinNumOfChildren(inputObjects,outputObjects,remove,childObjectsName,referenceValue);
                 break;
 
             case FilterMethods.MAX_NUMBER_OF_CHILDREN:
-                filterObjectsWithMaxNumOfChildren(inputObjects,outputObjects,childObjectsName,referenceValue);
+                filterObjectsWithMaxNumOfChildren(inputObjects,outputObjects,remove,childObjectsName,referenceValue);
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
@@ -387,7 +448,7 @@ public class FilterObjects extends Module implements ActionListener {
                         break;
                 }
 
-                filterObjectsWithMeasSmallerThan(inputObjects,outputObjects,measurement,measurementReference);
+                filterObjectsWithMeasSmallerThan(inputObjects,outputObjects,remove,measurement,measurementReference);
                 break;
 
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
@@ -405,16 +466,16 @@ public class FilterObjects extends Module implements ActionListener {
                         break;
                 }
 
-                filterObjectsWithMeasLargerThan(inputObjects,outputObjects,measurement,measurementReference);
+                filterObjectsWithMeasLargerThan(inputObjects,outputObjects,remove,measurement,measurementReference);
                 break;
 
             case FilterMethods.RUNTIME_OBJECT_ID:
                 Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
-                filterObjectsByID(inputObjects,displayImage);
+                filterObjectsByID(inputObjects,outputObjects,remove,displayImage);
                 break;
         }
 
-        if (moveFiltered) workspace.addObjects(outputObjects);
+        if (filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)) workspace.addObjects(outputObjects);
 
         // Showing objects
         if (showOutput) {
@@ -433,12 +494,12 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new BooleanP(MOVE_FILTERED,this,false));
+        parameters.add(new ChoiceP(FILTER_MODE,this,FilterModes.REMOVE_FILTERED_OBJECTS,FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
-        parameters.add(new GUISeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
@@ -464,8 +525,8 @@ public class FilterObjects extends Module implements ActionListener {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(MOVE_FILTERED));
-        if (parameters.getValue(MOVE_FILTERED)) {
+        returnedParameters.add(parameters.getParameter(FILTER_MODE));
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
         }
 
@@ -550,7 +611,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -5,11 +5,8 @@ import wbif.sjx.MIA.GUI.ParameterControls.SeparatorParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class GUISeparatorP extends Parameter {
-    public GUISeparatorP(String name, Module module) {
+public class ParamSeparatorP extends Parameter {
+    public ParamSeparatorP(String name, Module module) {
         super(name, module);
         setExported(false);
 
@@ -33,7 +30,7 @@ public class GUISeparatorP extends Parameter {
 
     @Override
     public String getValueAsString() {
-        return null;
+        return "";
     }
 
     @Override
@@ -43,6 +40,6 @@ public class GUISeparatorP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new GUISeparatorP(name,module);
+        return (T) new ParamSeparatorP(name,module);
     }
 }

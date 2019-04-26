@@ -396,11 +396,11 @@ public class FilterImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply filter to."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output image created during the filtering process.  This image will be added to the workspace."));
-        parameters.add(new GUISeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_MODE, this,FilterModes.DOG2D,FilterModes.ALL, "Filter to be applied to the image.  Some filters have separate 2D and 3D variants."));
         parameters.add(new DoubleP(FILTER_RADIUS, this, 2d, "Range the filter is calculated over.  Often also referred to as \"sigma\".  Value specified in pixel units, unless \"calibrated units\" is enabled."));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this,false, "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\" units.  What units are used are controlled from \"Input control\"."));
@@ -449,7 +449,7 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

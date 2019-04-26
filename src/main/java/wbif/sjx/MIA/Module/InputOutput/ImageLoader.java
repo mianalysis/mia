@@ -192,6 +192,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int sizeZ = reader.getSizeZ();
         int bitDepth = reader.getBitsPerPixel();
 
+        // If 
+
         // If a specific bit depth is to be used
         if (intRange != null) {
             bitDepth = (int) intRange[0];
@@ -769,7 +771,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new GUISeparatorP(LOADER_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
         parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.IMAGE, OutputModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
@@ -787,7 +789,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new StringP(EXTENSION,this));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(FILE_PATH, this));
-        parameters.add(new GUISeparatorP(RANGE_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(SLICES,this,"1-end"));
         parameters.add(new StringP(FRAMES,this,"1-end"));
@@ -799,7 +801,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new IntegerP(TOP, this,0));
         parameters.add(new IntegerP(WIDTH, this,512));
         parameters.add(new IntegerP(HEIGHT, this,512));
-        parameters.add(new GUISeparatorP(CALIBRATION_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR,this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
         parameters.add(new DoubleP(Z_CAL, this, 1d));
@@ -961,7 +963,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
