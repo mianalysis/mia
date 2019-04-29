@@ -78,6 +78,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String EXTENSION = "Extension";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
+
     public static final String RANGE_SEPARATOR = "Dimension ranges and cropping";
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
@@ -90,6 +91,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
+
     public static final String CALIBRATION_SEPARATOR = "Spatial and intensity calibration";
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
@@ -191,8 +193,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int sizeT = reader.getSizeT();
         int sizeZ = reader.getSizeZ();
         int bitDepth = reader.getBitsPerPixel();
-
-        // If 
 
         // If a specific bit depth is to be used
         if (intRange != null) {

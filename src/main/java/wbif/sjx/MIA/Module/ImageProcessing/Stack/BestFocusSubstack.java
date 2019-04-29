@@ -1,6 +1,8 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import ij.IJ;
 import ij.ImagePlus;
+import ij.process.LUT;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
@@ -10,14 +12,41 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.ImgPlusTools;
 
-public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.TreeMap;
+
+public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
+    private JFrame frame;
+    private JTextField objectNumberField;
+    private DefaultListModel<Ref> listModel = new DefaultListModel<>();
+    private JList<Ref> list = new JList<>(listModel);
+    private JScrollPane objectsScrollPane = new JScrollPane(list);
+
+    private ImagePlus displayImagePlus;
+    private TreeMap<Integer,Integer> refs;
+
+    private static final String ADD = "Add";
+    private static final String REMOVE = "Remove";
+    private static final String FINISH = "Finish";
+
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -72,6 +101,66 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
+    private void showOptionsPanel() {
+        frame = new JFrame();
+        frame.setAlwaysOnTop(true);
+
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 3;
+        c.gridheight = 1;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5,5,5,5);
+
+        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following" +
+                "<br>(or click \"Finish adding objects\" at any time)." +
+                "<br>Different timepoints must be added as new objects.</html>");
+        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+
+        frame.add(headerLabel,c);
+
+        JButton newObjectButton = new JButton("Add reference");
+        newObjectButton.addActionListener(this);
+        newObjectButton.setActionCommand(ADD);
+        c.gridy++;
+        c.gridwidth = 1;
+        frame.add(newObjectButton,c);
+
+        JButton removeObjectButton = new JButton("Remove reference(s)");
+        removeObjectButton.addActionListener(this);
+        removeObjectButton.setActionCommand(REMOVE);
+        c.gridx++;
+        frame.add(removeObjectButton,c);
+
+        JButton finishButton = new JButton("Finish");
+        finishButton.addActionListener(this);
+        finishButton.setActionCommand(FINISH);
+        c.gridx++;
+        frame.add(finishButton,c);
+
+        objectsScrollPane.setPreferredSize(new Dimension(0,200));
+        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.gridheight = 3;
+        c.fill = GridBagConstraints.BOTH;
+        frame.add(objectsScrollPane,c);
+
+        frame.pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
+        frame.setVisible(true);
+
+    }
+
     int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, String bestFocusCalculation, int channel) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
@@ -97,8 +186,64 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    int[] getBestFocusManuel(Image<T> refImage) {
-        return null;
+    int[] getBestFocusManual(Image<T> refImage) {
+        if (refImage != null) {
+            displayImagePlus = refImage.getImagePlus().duplicate();
+            displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
+            displayImagePlus.show();
+        }
+
+        showOptionsPanel();
+
+        // All the while the control is open, do nothing
+        while (frame != null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // If an insufficient number of points were specified, perform polynomial fitting
+        int nFrames = refImage.getImagePlus().getNFrames();
+        if (refs.size() < nFrames) {
+            return getFitValues(nFrames);
+        } else {
+            return getRawValues();
+        }
+    }
+
+    int[] getFitValues(int nFrames) {
+        double[] x = new double[refs.size()];
+        double[] y = new double[refs.size()];
+
+        int i=0;
+        for (int t:refs.keySet()) {
+            x[i] = t;
+            y[i++] = refs.get(t);
+        }
+
+        SplineInterpolator splineInterpolator = new SplineInterpolator();
+        PolynomialSplineFunction splineFunction = splineInterpolator.interpolate(x,y);
+
+//        PolynomialCurveFitter fitter = PolynomialCurveFitter.create(nFrames-1);
+//        double[] c = fitter.fit(obs.toList());
+//        PolynomialFunction polynomialFunction = new PolynomialFunction(c);
+
+        int[] fitValues = new int[nFrames];
+        for (int j=0;j<nFrames;j++) {
+            fitValues[j] = (int) Math.floor(splineFunction.value(j+1));
+        }
+
+        return fitValues;
+
+    }
+
+    int[] getRawValues() {
+        int[] values = new int[refs.size()];
+        for (int t:refs.keySet()) values[t-1] = refs.get(t);
+
+        return values;
 
     }
 
@@ -145,6 +290,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         // Extracting the best-slice substack and adding it to the outputImage
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         for (int f=0;f<nFrames;f++) {
+            System.out.println(f+"_"+bestSlices[f]);
             extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
         }
 
@@ -317,7 +463,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         switch (bestFocusCalculation) {
             case BestFocusCalculations.MANUAL:
                 Image refImage = workspace.getImage(referenceImageName);
-                bestSlices = getBestFocusManuel(refImage);
+                bestSlices = getBestFocusManual(refImage);
                 break;
 
             case BestFocusCalculations.MAX_MEAN:
@@ -456,5 +602,116 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     @Override
     public RelationshipCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case (ADD):
+                addReference();
+                break;
+
+            case (REMOVE):
+                removeReference();
+                break;
+
+            case (FINISH):
+                if (checkEnds()) {
+                    complete();
+                    frame.dispose();
+                    frame = null;
+                    displayImagePlus.close();
+                } else {
+                    IJ.error("References must be provided for the first and last timepoints");
+                }
+
+                break;
+        }
+    }
+
+    public void addReference() {
+        // Getting currently-selected frame and slice
+        int t = displayImagePlus.getT();
+        int z = displayImagePlus.getZ();
+
+        // Creating a reference and adding to the list
+        Ref ref = new Ref(t,z);
+        listModel.addElement(ref);
+
+        // Ensuring the scrollbar is visible if necessary and moving to the bottom
+        JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
+        scrollBar.setValue(scrollBar.getMaximum()-1);
+        objectsScrollPane.revalidate();
+
+    }
+
+    public void removeReference() {
+        // Get selected ROIs
+        List<Ref> selected = list.getSelectedValuesList();
+
+        for (Ref ref : selected) listModel.removeElement(ref);
+
+    }
+
+    public boolean checkEnds() {
+        int first = 1;
+        int last = displayImagePlus.getNFrames();
+
+        boolean foundFirst = false;
+        boolean foundLast = false;
+
+        for (int i=0;i<listModel.size();i++) {
+            Ref ref = listModel.get(i);
+            if (ref == null) continue;
+
+            if (ref.getTimepoint() == first) foundFirst = true;
+            if (ref.getTimepoint() == last) foundLast = true;
+
+        }
+
+        return foundFirst && foundLast;
+
+    }
+
+    public void complete() {
+        refs = new TreeMap<>();
+
+        for (int i=0;i<listModel.size();i++) {
+            Ref ref = listModel.get(i);
+            if (ref != null) refs.put(ref.getTimepoint(),ref.getSlice());
+        }
+    }
+
+
+    class Ref {
+        private int timepoint;
+        private int slice;
+
+        Ref(int timepoint, int slice) {
+            this.timepoint = timepoint;
+            this.slice = slice;
+
+        }
+
+        public int getTimepoint() {
+            return timepoint;
+        }
+
+        public void setTimepoint(int timepoint) {
+            this.timepoint = timepoint;
+        }
+
+        public int getSlice() {
+            return slice;
+        }
+
+        public void setSlice(int slice) {
+            this.slice = slice;
+        }
+
+        @Override
+        public String toString() {
+            return "Timepoint "+timepoint+", slice "+slice;
+        }
     }
 }

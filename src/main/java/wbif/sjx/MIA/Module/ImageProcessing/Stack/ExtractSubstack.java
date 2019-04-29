@@ -21,8 +21,11 @@ import java.util.stream.Collectors;
  * Created by sc13967 on 18/01/2018.
  */
 public class ExtractSubstack extends Module implements ActionListener {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String RANGE_SEPARATOR = "Dimension ranges";
     public static final String SELECTION_MODE = "Selection mode";
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
@@ -247,8 +250,11 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new ChoiceP(SELECTION_MODE,this, SelectionModes.FIXED, SelectionModes.ALL));
         parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(SLICES,this,"1-end"));
@@ -263,8 +269,11 @@ public class ExtractSubstack extends Module implements ActionListener {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHANNELS));
         returnedParameters.add(parameters.getParameter(SLICES));
         returnedParameters.add(parameters.getParameter(FRAMES));

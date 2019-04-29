@@ -228,49 +228,6 @@ public class EditingPanel extends MainPanel {
 
             Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
-            Comparator<String> comparator = new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    // Getting the normal order
-                    int order = o1.compareTo(o2);
-
-                    String[] s1 = o1.split("\\\\");
-                    String[] s2 = o2.split("\\\\");
-                    int l1 = s1.length;
-                    int l2 = s2.length;
-
-                    System.out.println("    ");
-                    System.out.println(o1);
-                    System.out.println(o2);
-
-                    // If the name is one section shorter, the longer should be prioritised
-                    if (l2 == l1-1) {
-                        System.out.println("2 is shorter by 1");
-                        return -order;
-                    }
-                    if (l1 == l2-1) {
-                        System.out.println("1 is shorter by 1");
-                        return order;
-                    }
-
-                    int nSections = Math.min(l1,l2);
-                    for (int i=0;i<nSections;i++) {
-                        // If the current sections start with the same letter, move onto the next section
-                        if (s1[i].equals(s2[i])) {
-                            System.out.println("Level "+i+" is equal");
-                            continue;
-                        }
-
-                        System.out.println("Decided at level "+i+" as "+s1[i].compareTo(s2[i]));
-                        return s1[i].compareTo(s2[i]);
-
-                    }
-
-                    return order;
-
-                }
-            };
-
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();
             for (Class clazz : availableModules) {
@@ -283,7 +240,7 @@ public class EditingPanel extends MainPanel {
             }
 
             TreeSet<ModuleListMenu> topList = new TreeSet<>();
-            TreeSet<String> moduleNames = new TreeSet<>(comparator);
+            TreeSet<String> moduleNames = new TreeSet<>();
             moduleNames.addAll(modules.keySet());
 
             for (String name : moduleNames) {

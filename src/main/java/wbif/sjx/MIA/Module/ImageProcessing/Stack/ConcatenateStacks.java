@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import ij.process.LUT;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
@@ -14,6 +15,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.SetLookupTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -24,10 +26,14 @@ import wbif.sjx.common.Process.IntensityMinMax;
 import java.util.LinkedHashSet;
 
 public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String CONCAT_SEPARATOR = "Stack concatenation";
     public static final String AXIS_MODE = "Axis mode";
+
 
     public interface AxisModes {
         String X = "X";
@@ -211,15 +217,22 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    private void convertToComposite(Image<T> image) {
+    public void convertToComposite(Image<T> image) {
         ImagePlus ipl = image.getImagePlus();
 
-        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
+        ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite");
 
         // Updating the display range to help show all the colours
         IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
 
         image.setImagePlus(ipl);
+
+        // Setting LUTs to make them more colourblind-friendly
+        LUT magentaLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.MAGNETA);
+        LUT greenLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.GREEN);
+
+        SetLookupTable.setLUT(image,magentaLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,1);
+        SetLookupTable.setLUT(image,greenLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,2);
 
     }
 
@@ -270,10 +283,14 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     protected void initialiseParameters() {
         ParameterCollection collection = new ParameterCollection();
+
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         collection.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
 
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(CONCAT_SEPARATOR,this));
         parameters.add(new ChoiceP(AXIS_MODE,this,AxisModes.X,AxisModes.ALL));
 
     }
