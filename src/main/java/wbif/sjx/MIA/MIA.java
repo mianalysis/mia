@@ -14,6 +14,12 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods.FilterOnImageEdge;
+import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.ErrorLog;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
@@ -24,6 +30,8 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 
 /**

@@ -234,11 +234,36 @@ public class EditingPanel extends MainPanel {
                     // Getting the normal order
                     int order = o1.compareTo(o2);
 
-                    // Rank names with more slashes higher
-                    int l1 = o1.split("\\\\").length;
-                    int l2 = o2.split("\\\\").length;
-                    if (l2 < l1) {
-                        order = -order;
+                    String[] s1 = o1.split("\\\\");
+                    String[] s2 = o2.split("\\\\");
+                    int l1 = s1.length;
+                    int l2 = s2.length;
+
+                    System.out.println("    ");
+                    System.out.println(o1);
+                    System.out.println(o2);
+
+                    // If the name is one section shorter, the longer should be prioritised
+                    if (l2 == l1-1) {
+                        System.out.println("2 is shorter by 1");
+                        return -order;
+                    }
+                    if (l1 == l2-1) {
+                        System.out.println("1 is shorter by 1");
+                        return order;
+                    }
+
+                    int nSections = Math.min(l1,l2);
+                    for (int i=0;i<nSections;i++) {
+                        // If the current sections start with the same letter, move onto the next section
+                        if (s1[i].equals(s2[i])) {
+                            System.out.println("Level "+i+" is equal");
+                            continue;
+                        }
+
+                        System.out.println("Decided at level "+i+" as "+s1[i].compareTo(s2[i]));
+                        return s1[i].compareTo(s2[i]);
+
                     }
 
                     return order;

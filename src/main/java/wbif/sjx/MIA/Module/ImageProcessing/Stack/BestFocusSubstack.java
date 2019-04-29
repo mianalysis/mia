@@ -18,24 +18,31 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String CALCULATION_SEPARATOR = "Best focus calculation";
     public static final String BEST_FOCUS_CALCULATION = "Best-focus calculation";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String RELATIVE_START_SLICE = "Relative start slice";
     public static final String RELATIVE_END_SLICE = "Relative end slice";
+    public static final String SMOOTH_TIMESERIES = "Smooth timeseries";
+    public static final String SMOOTHING_RANGE = "Smoothing range (odd numbers)";
+
+    public static final String REFERENCE_SEPARATOR = "Reference controls";
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String CHANNEL = "Channel";
-    public static final String SMOOTH_TIMESERIES = "Smooth timeseries";
-    public static final String SMOOTHING_RANGE = "Smoothing range (odd numbers)";
 
 
     public interface BestFocusCalculations {
+        String MANUAL = "Manual";
         String MAX_MEAN = "Largest mean intensity";
         String MAX_STDEV = "Largest standard deviation";
 
-        String[] ALL = new String[]{MAX_MEAN,MAX_STDEV};
+        String[] ALL = new String[]{MANUAL,MAX_MEAN,MAX_STDEV};
 
     }
 
@@ -65,6 +72,36 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
+    int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, String bestFocusCalculation, int channel) {
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
+
+        // Iterating over frame, extracting the relevant substack, then appending it to the output
+        long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
+        int[] bestSlices = new int[(int) nFrames];
+        for (int f=0;f<nFrames;f++) {
+            // Determining the best slice
+            switch (bestFocusCalculation) {
+                case BestFocusCalculations.MAX_MEAN:
+                    bestSlices[f] = getMaxStatSlice(calculationImage,f,channel,Stat.MEAN);
+                    break;
+                case BestFocusCalculations.MAX_STDEV:
+                    bestSlices[f] = getMaxStatSlice(calculationImage,f,channel,Stat.STDEV);
+                    break;
+            }
+
+            writeMessage("Best focus for frame "+(f+1)+" at "+(bestSlices[f]+1) +" (provisional)");
+
+        }
+
+        return bestSlices;
+
+    }
+
+    int[] getBestFocusManuel(Image<T> refImage) {
+        return null;
+
+    }
+
     static int getMaxStatSlice(Image image, int frame, int channel, Stat stat) {
         ImagePlus inputIpl = image.getImagePlus();
 
@@ -77,10 +114,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         int bestSlice = 0;
         double bestVal = 0;
 
-                for (int c=startChannel;c<=endChannel;c++) {
-                    for (int z = 0; z < inputIpl.getNSlices(); z++) {
-                        inputIpl.setPosition(c+1,z+1,frame+1);
-                        double val = 0;
+        for (int c=startChannel;c<=endChannel;c++) {
+            for (int z = 0; z < inputIpl.getNSlices(); z++) {
+                inputIpl.setPosition(c+1,z+1,frame+1);
+                double val = 0;
                 switch (stat) {
                     case MEAN:
                         val = inputIpl.getProcessor().getStatistics().mean;
@@ -98,6 +135,27 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         }
 
         return bestSlice;
+    }
+
+    Image<T> extract(Image<T> inputImage, int relativeStart, int relativeEnd, int[] bestSlices, String outputImageName) {
+        // Creating the empty container image
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
+        ImgPlus<T> outputImg = getEmptyImage(inputImg,relativeStart,relativeEnd);
+
+        // Extracting the best-slice substack and adding it to the outputImage
+        long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
+        for (int f=0;f<nFrames;f++) {
+            extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
+        }
+
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
+        outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
+        if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z))==1) outputImagePlus.getCalibration().pixelDepth = 1;
+        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
+
+        // Adding the new image to the Workspace
+        return new Image<T>(outputImageName,outputImagePlus);
+
     }
 
     static <T extends RealType<T> & NativeType<T>> ImgPlus<T> getEmptyImage(ImgPlus<T> inputImg, int relativeStart, int relativeEnd) {
@@ -214,9 +272,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public String getHelp() {
-        return "Extract a Z-substack from an input stack based on an automatically-calculated best-focus slice.  " +
-                "Best focus is determined using the local 2D variance of pixels in each slice.  It is possible to " +
-                "extract a fixed number of slices above and below the determined best-focus slice.";
+        return "Extract a Z-substack from an input stack based on either manually-selected slices, " +
+                "or an automatically-calculated best-focus slice.  " +
+                "For automated methods, best focus is determined using the local 2D variance of pixels in each slice.  " +
+                "It is possible to extract a fixed number of slices above and below the determined best-focus slice.";
     }
 
     @Override
@@ -224,7 +283,6 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
-        ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Getting other parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -232,12 +290,12 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         int relativeStart = parameters.getValue(RELATIVE_START_SLICE);
         int relativeEnd = parameters.getValue(RELATIVE_END_SLICE);
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         String channelMode = parameters.getValue(CHANNEL_MODE);
-        int channel = parameters.getValue(CHANNEL);
+        int channel = ((int) parameters.getValue(CHANNEL)) - 1;
         boolean smoothTimeseries = parameters.getValue(SMOOTH_TIMESERIES);
         int smoothingRange = parameters.getValue(SMOOTHING_RANGE);
-
 
         // Making sure the start and end are the right way round
         if (relativeStart > relativeEnd) {
@@ -245,10 +303,6 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             relativeStart = relativeEnd;
             relativeEnd = a;
         }
-
-        // Setting the channel number to zero-indexed or -1 if using all channels
-        channel = channel-1;
-        if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
 
         // The input image will be used for calculation unless an external image was specified
         Image calculationImage = inputImage;
@@ -258,42 +312,29 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
                 break;
         }
 
-        // Creating the empty container image
-        ImgPlus<T> outputImg = getEmptyImage(inputImg,relativeStart,relativeEnd);
+        // Getting best focus slice indices
+        int[] bestSlices;
+        switch (bestFocusCalculation) {
+            case BestFocusCalculations.MANUAL:
+                Image refImage = workspace.getImage(referenceImageName);
+                bestSlices = getBestFocusManuel(refImage);
+                break;
 
-        // Iterating over frame, extracting the relevant substack, then appending it to the output
-        long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
-        int[] bestSlices = new int[(int) nFrames];
-        for (int f=0;f<nFrames;f++) {
-            // Determining the best slice
-            switch (bestFocusCalculation) {
-                case BestFocusCalculations.MAX_MEAN:
-                    bestSlices[f] = getMaxStatSlice(calculationImage,f,channel,Stat.MEAN);
-                    break;
-                case BestFocusCalculations.MAX_STDEV:
-                    bestSlices[f] = getMaxStatSlice(calculationImage,f,channel,Stat.STDEV);
-                    break;
-            }
+            case BestFocusCalculations.MAX_MEAN:
+            case BestFocusCalculations.MAX_STDEV:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,bestFocusCalculation,channel);
+                break;
 
-            writeMessage("Best focus for frame "+(f+1)+" at "+(bestSlices[f]+1) +" (provisional)");
-
+            default:
+                return false;
         }
 
         // Applying temporal smoothing of best focus slice index
         if (smoothTimeseries) bestSlices = rollingMedianFilter(bestSlices,smoothingRange);
 
-        // Extracting the best-slice substack and adding it to the outputImage
-        for (int f=0;f<nFrames;f++) {
-            extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
-        }
-
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
-        outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
-        if (outputImg.dimension(outputImg.dimensionIndex(Axes.Z))==1) outputImagePlus.getCalibration().pixelDepth = 1;
-        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
-
-        // Adding the new image to the Workspace
-        Image outputImage = new Image<T>(outputImageName,outputImagePlus);
+        Image outputImage = extract(inputImage,relativeStart,relativeEnd,bestSlices,outputImageName);
         workspace.addImage(outputImage);
 
         if (showOutput) outputImage.showImage();
@@ -304,17 +345,23 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image to extract substack from."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Substack image to be added to the current workspace."));
+
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new ChoiceP(BEST_FOCUS_CALCULATION,this,BestFocusCalculations.MAX_STDEV,BestFocusCalculations.ALL,"Method for determining the best-focus slice.  \""+BestFocusCalculations.MAX_STDEV+"\" calculates the standard deviation of each slice."));//"Method for determining the best-focus slice.  \""+BestFocusCalculations.MAX_MEAN_VARIANCE+"\" calculates the mean variance of each slice, then takes the slice with the largest mean.  \""+BestFocusCalculations.MAX_VARIANCE+"\" simply takes the slice with the largest variance."));
         parameters.add(new IntegerP(RELATIVE_START_SLICE,this,0,"Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus)."));
         parameters.add(new IntegerP(RELATIVE_END_SLICE,this,0,"Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus)."));
+        parameters.add(new BooleanP(SMOOTH_TIMESERIES,this,false,"Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames)."));
+        parameters.add(new IntegerP(SMOOTHING_RANGE,this,5,"Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1."));
+
+        parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR,this));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
         parameters.add(new ChoiceP(CALCULATION_SOURCE,this, UnwarpImages.CalculationSources.INTERNAL, UnwarpImages.CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
         parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.USE_SINGLE,ChannelModes.ALL,"How many channels to use when calculating the best-focus slice.  \""+ChannelModes.USE_ALL+"\" will use all channels, whereas \""+ChannelModes.USE_SINGLE+"\" will base the calculation on a single, user-defined channel."));
         parameters.add(new IntegerP(CHANNEL,this,1,"Channel to base the best-focus calculation on."));
-        parameters.add(new BooleanP(SMOOTH_TIMESERIES,this,false,"Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames)."));
-        parameters.add(new IntegerP(SMOOTHING_RANGE,this,5,"Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1."));
 
     }
 
@@ -322,28 +369,43 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(BEST_FOCUS_CALCULATION));
         returnedParameters.add(parameters.getParameter(RELATIVE_START_SLICE));
         returnedParameters.add(parameters.getParameter(RELATIVE_END_SLICE));
 
-        returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case UnwarpImages.CalculationSources.EXTERNAL:
-                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+        returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
+        switch ((String) parameters.getValue(BEST_FOCUS_CALCULATION)) {
+            case BestFocusCalculations.MANUAL:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
+
+            case BestFocusCalculations.MAX_MEAN:
+            case BestFocusCalculations.MAX_STDEV:
+                returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
+                if (parameters.getValue(SMOOTH_TIMESERIES)) {
+                    returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
+                }
+
+                returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+                switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+                    case UnwarpImages.CalculationSources.EXTERNAL:
+                        returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+                        break;
+                }
+
+                returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
+                switch ((String) parameters.getValue(CHANNEL_MODE)) {
+                    case ChannelModes.USE_SINGLE:
+                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                        break;
+                }
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
-        switch ((String) parameters.getValue(CHANNEL_MODE)) {
-            case ChannelModes.USE_SINGLE:
-                returnedParameters.add(parameters.getParameter(CHANNEL));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
-        if (parameters.getValue(SMOOTH_TIMESERIES)) returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
 
         return returnedParameters;
 
