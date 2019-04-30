@@ -30,11 +30,15 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
@@ -94,6 +98,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
+    public interface MetadataNames {
+        String SLICES =  "BEST_FOCUS // SLICES";
+    }
+
     enum Stat {
         MEAN,STDEV;
     }
@@ -119,9 +127,8 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,5,5);
 
-        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following" +
-                "<br>(or click \"Finish adding objects\" at any time)." +
-                "<br>Different timepoints must be added as new objects.</html>");
+        JLabel headerLabel = new JLabel("<html>Select a timepoint and slice for each reference." +
+                "<br>As a minimum, the first and last timepoints must contain a reference.</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
         frame.add(headerLabel,c);
@@ -162,6 +169,17 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
         frame.setVisible(true);
 
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Ref selected = list.getSelectedValue();
+                if (selected != null) {
+                    displayImagePlus.setT(selected.getTimepoint());
+                    displayImagePlus.setZ(selected.getSlice());
+                }
+            }
+        });
     }
 
     int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, String bestFocusCalculation, int channel) {
@@ -424,6 +442,9 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     protected boolean process(Workspace workspace) {
+        // Remove any previously-entered references
+        listModel.clear();
+
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -462,6 +483,8 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             case BestFocusCalculations.MANUAL:
                 Image refImage = workspace.getImage(referenceImageName);
                 bestSlices = getBestFocusManual(refImage);
+                String metadataString = Arrays.stream(bestSlices).mapToObj(String::valueOf).collect(Collectors.joining(","));
+                workspace.getMetadata().put(MetadataNames.SLICES,metadataString);
                 break;
 
             case BestFocusCalculations.MAX_MEAN:
@@ -594,7 +617,14 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        return null;
+        MetadataRefCollection metadataRefCollection = new MetadataRefCollection();
+
+        if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
+            metadataRefCollection.add(new MetadataReference(MetadataNames.SLICES));
+        }
+
+        return metadataRefCollection;
+
     }
 
     @Override
@@ -627,10 +657,16 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    public void addReference() {
+    private void addReference() {
         // Getting currently-selected frame and slice
         int t = displayImagePlus.getT();
         int z = displayImagePlus.getZ();
+
+        // Check if this timepoint has been pre-specified
+        if (checkTimepointExists(t)) {
+            IJ.error("Timepoint already specified.  Please remove existing reference first.");
+            return;
+        }
 
         // Creating a reference and adding to the list
         Ref ref = new Ref(t,z);
@@ -643,15 +679,25 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public void removeReference() {
+    private void removeReference() {
         // Get selected ROIs
         List<Ref> selected = list.getSelectedValuesList();
+        list.setSelectedIndex(-1);
 
         for (Ref ref : selected) listModel.removeElement(ref);
 
     }
 
-    public boolean checkEnds() {
+    private boolean checkTimepointExists(int t) {
+        for (int i=0;i<listModel.size();i++) {
+            if (listModel.get(i).getTimepoint() == t) return true;
+        }
+
+        return false;
+
+    }
+
+    private boolean checkEnds() {
         int first = 1;
         int last = displayImagePlus.getNFrames();
 
@@ -671,7 +717,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public void complete() {
+    private void complete() {
         refs = new TreeMap<>();
 
         for (int i=0;i<listModel.size();i++) {
