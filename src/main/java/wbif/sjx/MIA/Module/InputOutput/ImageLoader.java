@@ -60,10 +60,12 @@ import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRa
  * Created by Stephen on 15/05/2017.
  */
 public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
+    public static final String LOADER_SEPARATOR = "Core image loading controls";
     public static final String OUTPUT_MODE = "Output mode";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String IMPORT_MODE = "Import mode";
+    public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
     public static final String STARTING_INDEX = "Starting index";
     public static final String FRAME_INTERVAL = "Frame interval";
@@ -76,16 +78,21 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String EXTENSION = "Extension";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
+
+    public static final String RANGE_SEPARATOR = "Dimension ranges and cropping";
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
     public static final String CHANNEL = "Channel";
+    public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String CROP_MODE = "Crop mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
+
+    public static final String CALIBRATION_SEPARATOR = "Spatial and intensity calibration";
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
@@ -93,8 +100,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
-    public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
-    public static final String THREE_D_MODE = "Load 3D stacks as";
 
 
     public interface OutputModes {
@@ -766,10 +771,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
         parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.IMAGE, OutputModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
         parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.add(new BooleanP(USE_IMAGEJ_READER, this,false));
         parameters.add(new IntegerP(NUMBER_OF_ZEROES,this,4));
         parameters.add(new IntegerP(STARTING_INDEX,this,0));
         parameters.add(new IntegerP(FRAME_INTERVAL,this,1));
@@ -782,16 +789,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new StringP(EXTENSION,this));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(SLICES,this,"1-end"));
         parameters.add(new StringP(FRAMES,this,"1-end"));
         parameters.add(new IntegerP(CHANNEL,this,1));
+        parameters.add(new ChoiceP(THREE_D_MODE,this,ThreeDModes.ZSTACK,ThreeDModes.ALL));
         parameters.add(new ChoiceP(CROP_MODE,this,CropModes.NONE,CropModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE,this));
         parameters.add(new IntegerP(LEFT, this,0));
         parameters.add(new IntegerP(TOP, this,0));
         parameters.add(new IntegerP(WIDTH, this,512));
         parameters.add(new IntegerP(HEIGHT, this,512));
+        parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR,this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
         parameters.add(new DoubleP(Z_CAL, this, 1d));
@@ -799,8 +809,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.EIGHT,OutputBitDepths.ALL));
         parameters.add(new DoubleP(MIN_INPUT_INTENSITY, this, 0d));
         parameters.add(new DoubleP(MAX_INPUT_INTENSITY, this, 1d));
-        parameters.add(new BooleanP(USE_IMAGEJ_READER, this,false));
-        parameters.add(new ChoiceP(THREE_D_MODE,this,ThreeDModes.ZSTACK,ThreeDModes.ALL));
 
     }
 
@@ -808,6 +816,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
         switch ((String) parameters.getValue(OUTPUT_MODE)) {
             case OutputModes.IMAGE:
@@ -863,6 +872,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 break;
         }
 
+        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
+                || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)) {
+            returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
+        }
+
+        returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
         if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
                 !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
                         && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
@@ -870,6 +885,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(SLICES));
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
+        returnedParameters.add(parameters.getParameter(THREE_D_MODE));
 
         returnedParameters.add(parameters.getParameter(CROP_MODE));
         switch ((String) parameters.getValue(CROP_MODE)) {
@@ -884,6 +900,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SET_CAL));
         if (parameters.getValue(SET_CAL)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));
@@ -898,13 +915,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 returnedParameters.add(parameters.getParameter(MAX_INPUT_INTENSITY));
             }
         }
-
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
-                || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)) {
-            returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
-        }
-
-        returnedParameters.add(parameters.getParameter(THREE_D_MODE));
 
         return returnedParameters;
 
@@ -953,7 +963,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -1,15 +1,14 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class TextDisplayArea extends ParameterControl {
-    private TextType parameter;
-    private JPanel control;
-    private JTextArea textArea;
+    protected TextType parameter;
+    protected JPanel control;
+    protected JTextArea textArea;
 
     public TextDisplayArea(TextType parameter) {
         this.parameter = parameter;

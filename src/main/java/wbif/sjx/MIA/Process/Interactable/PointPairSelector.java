@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Object.Interactable;
+package wbif.sjx.MIA.Process.Interactable;
 
 import ij.IJ;
 import ij.ImagePlus;

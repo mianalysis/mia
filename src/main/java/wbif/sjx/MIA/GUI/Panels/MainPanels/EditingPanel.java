@@ -228,24 +228,6 @@ public class EditingPanel extends MainPanel {
 
             Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
-            Comparator<String> comparator = new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    // Getting the normal order
-                    int order = o1.compareTo(o2);
-
-                    // Rank names with more slashes higher
-                    int l1 = o1.split("\\\\").length;
-                    int l2 = o2.split("\\\\").length;
-                    if (l2 < l1) {
-                        order = -order;
-                    }
-
-                    return order;
-
-                }
-            };
-
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();
             for (Class clazz : availableModules) {
@@ -258,7 +240,7 @@ public class EditingPanel extends MainPanel {
             }
 
             TreeSet<ModuleListMenu> topList = new TreeSet<>();
-            TreeSet<String> moduleNames = new TreeSet<>(comparator);
+            TreeSet<String> moduleNames = new TreeSet<>();
             moduleNames.addAll(modules.keySet());
 
             for (String name : moduleNames) {
@@ -387,9 +369,14 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
-    public void updateModuleStates() {
-        AnalysisTester.testModules(GUI.getModules());
+    public void updateModuleStates(boolean verbose) {
+        int nRunnable = AnalysisTester.testModules(GUI.getModules());
+        int nActive = 0;
+        for (Module module:GUI.getModules()) if (module.isEnabled()) nActive++;
+        int nModules = GUI.getModules().size();
+        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
         modulesPanel.updateButtonStates();
+
     }
 
     @Override

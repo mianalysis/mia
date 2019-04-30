@@ -50,6 +50,7 @@ public class WiderDropDownCombo extends JComboBox {
         }
 
         return widest + 5;
+
     }
 
     public void doLayout() {

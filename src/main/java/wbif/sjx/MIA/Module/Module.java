@@ -85,7 +85,7 @@ public abstract class Module implements Comparable {
 
     public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
-    public abstract MetadataRefCollection updateAndGetImageMetadataReferences();
+    public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
     public MeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);
@@ -198,6 +198,15 @@ public abstract class Module implements Comparable {
 
     public void setRunnable(boolean runnable) {
         this.runnable = runnable;
+    }
+
+    public boolean hasVisibleParameters() {
+        for (Parameter parameter:updateAndGetParameters()) {
+            if (parameter.isVisible()) return true;
+        }
+
+        return false;
+
     }
 
     @Override

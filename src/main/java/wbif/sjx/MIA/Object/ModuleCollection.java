@@ -83,7 +83,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MetadataRefCollection currentMetadataReferences = module.updateAndGetImageMetadataReferences();
+            MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
             if (currentMetadataReferences == null) continue;
 
             metadataRefs.putAll(currentMetadataReferences);
@@ -128,6 +128,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         // Getting a list of available images
         LinkedHashSet<OutputObjectsP> objects = getParametersMatchingType(OutputObjectsP.class,cutoffModule);
 
+        // Remove any images without a name
+        objects.removeIf(outputObjectsP -> outputObjectsP.getObjectsName().equals(""));
+
         if (!ignoreRemoved) return objects;
 
         // Removing any objects which have since been removed from the workspace
@@ -152,6 +155,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
         LinkedHashSet<OutputImageP> images = getParametersMatchingType(OutputImageP.class,cutoffModule);
+
+        // Remove any images without a name
+        images.removeIf(outputImageP -> outputImageP.getImageName().equals(""));
 
         if (!ignoreRemoved) return images;
 
@@ -187,6 +193,15 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     public RelationshipCollection getRelationships() {
         return getRelationships(null);
+
+    }
+
+    public boolean hasVisibleParameters() {
+        for (Module module:this) {
+            if (module.hasVisibleParameters()) return true;
+        }
+
+        return false;
 
     }
 

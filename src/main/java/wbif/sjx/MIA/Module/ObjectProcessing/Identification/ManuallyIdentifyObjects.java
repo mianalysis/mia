@@ -35,10 +35,9 @@ import java.util.List;
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;
-    DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
-    JList<ObjRoi> list = new JList<>(listModel);
-    JScrollPane objectsScrollPane = new JScrollPane(list);
-    private final GridBagConstraints objectsC = new GridBagConstraints();
+    private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
+    private JList<ObjRoi> list = new JList<>(listModel);
+    private JScrollPane objectsScrollPane = new JScrollPane(list);
 
     private Workspace workspace;
     private ImagePlus displayImagePlus;
@@ -142,7 +141,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         objectNumberField = new JTextField();
         c.gridx++;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField,c);
 
@@ -369,7 +368,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
@@ -499,9 +498,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
         listModel.addElement(objRoi);
-
-        objectsC.gridy++;
-        objectsC.weighty = objectsC.weighty*1000;
 
         // Ensuring the scrollbar is visible if necessary and moving to the bottom
         JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();

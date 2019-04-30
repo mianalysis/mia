@@ -13,10 +13,13 @@ import wbif.sjx.MIA.Object.Parameters.*;
  * Created by sc13967 on 07/06/2017.
  */
 public class ImageTypeConverter extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_TYPE = "Output image type";
+
+    public static final String CONVERSION_SEPARATOR = "Image type conversion";
     public static final String SCALING_MODE = "Scaling mode";
 
 
@@ -195,10 +198,13 @@ public class ImageTypeConverter extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(OUTPUT_TYPE,this,OutputTypes.INT8,OutputTypes.ALL));
+
+        parameters.add(new ParamSeparatorP(CONVERSION_SEPARATOR,this));
         parameters.add(new ChoiceP(SCALING_MODE,this,ScalingModes.CLIP,ScalingModes.ALL));
 
     }
@@ -206,6 +212,8 @@ public class ImageTypeConverter extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -214,6 +222,8 @@ public class ImageTypeConverter extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_TYPE));
+
+        returnedParameters.add(parameters.getParameter(CONVERSION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SCALING_MODE));
 
         return returnedParameters;
@@ -231,7 +241,7 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

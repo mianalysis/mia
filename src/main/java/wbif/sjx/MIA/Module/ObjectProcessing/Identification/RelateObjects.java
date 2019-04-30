@@ -16,8 +16,11 @@ import java.util.Iterator;
  * Created by sc13967 on 04/05/2017.
  */
 public class RelateObjects extends Module {
+    public final static String INPUT_SEPARATOR = "Object input";
     public final static String PARENT_OBJECTS = "Parent (larger) objects";
     public final static String CHILD_OBJECTS = "Child (smaller) objects";
+
+    public final static String RELATE_SEPARATOR = "Relation controls";
     public final static String RELATE_MODE = "Method to relate objects";
     public final static String REFERENCE_POINT = "Reference point";
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
@@ -27,6 +30,8 @@ public class RelateObjects extends Module {
     public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+    public final static String OUTPUT_SEPARATOR = "Object output";
     public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
@@ -417,7 +422,7 @@ public class RelateObjects extends Module {
             if (currChildObjects.size() == 0) continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getNextID(),dppXY,dppZ,calibratedUnits,twoD);
+            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,twoD);
             relatedObject.setT(parentObj.getT());
             relatedObjects.add(relatedObject);
 
@@ -515,8 +520,11 @@ public class RelateObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
         parameters.add(new InputObjectsP(CHILD_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(RELATE_SEPARATOR,this));
         parameters.add(new ChoiceP(RELATE_MODE, this,RelateModes.MATCHING_IDS,RelateModes.ALL));
         parameters.add(new ChoiceP(REFERENCE_POINT,this,ReferencePoints.CENTROID,ReferencePoints.ALL));
         parameters.add(new ChildObjectsP(TEST_CHILD_OBJECTS,this));
@@ -526,6 +534,8 @@ public class RelateObjects extends Module {
         parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP,this,0d));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP,this,true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(MERGE_RELATED_OBJECTS,this,false));
         parameters.add(new OutputObjectsP(RELATED_OBJECTS,this));
 
@@ -535,8 +545,11 @@ public class RelateObjects extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
         returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+
+        returnedParameters.add(parameters.getParameter(RELATE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
         String referencePoint = parameters.getValue(REFERENCE_POINT);
@@ -580,6 +593,7 @@ public class RelateObjects extends Module {
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MERGE_RELATED_OBJECTS));
         if (parameters.getValue(MERGE_RELATED_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(RELATED_OBJECTS));
@@ -701,7 +715,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

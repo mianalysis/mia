@@ -13,16 +13,15 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Interactable.Interactable;
+import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector.PointPair;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -405,6 +404,26 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
+    static Image createOverlay(Image inputImage, Image referenceImage) {
+        // Only create the overlay if the two images have matching dimensions
+        ImagePlus ipl1 = inputImage.getImagePlus();
+        ImagePlus ipl2 = referenceImage.getImagePlus();
+
+        if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
+            ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+            String axis = ConcatenateStacks.AxisModes.CHANNEL;
+
+            Image displayImage = concatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
+            concatenateStacks.convertToComposite(displayImage);
+
+            return displayImage;
+
+        }
+
+        return inputImage;
+
+    }
+
     @Override
     public void doAction(Object[] objects) {
         writeMessage("Running test registration");
@@ -519,19 +538,23 @@ public class RegisterImages extends Module implements Interactable {
                 param.minInlierRatio = (float) minInlierRatio;
 
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
-
                 processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference, externalSource);
+
+                if (showOutput) createOverlay(inputImage,reference).showImage();
+
                 break;
 
             case AlignmentModes.MANUAL:
                 reference = workspace.getImage(referenceImageName);
                 processManual(inputImage,transformationMode,multithread,fillMode,reference);
+
+                if (showOutput) inputImage.showImage();
+
                 break;
         }
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
-        if (showOutput) inputImage.showImage();
 
         return true;
 
@@ -650,7 +673,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

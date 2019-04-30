@@ -27,8 +27,11 @@ import java.util.LinkedHashMap;
  * Created by sc13967 on 05/05/2017.
  */
 public class MeasureObjectIntensity extends Module {
+    public static final String INPUT_SEPARATOR = "Object and image input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
+
+    public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
     public static final String MEASURE_WEIGHTED_EDGE_DISTANCE = "Measure weighted distance to edge";
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
@@ -294,8 +297,11 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(MEASURE_WEIGHTED_CENTRE, this, false));
         parameters.add(new BooleanP(MEASURE_WEIGHTED_EDGE_DISTANCE, this, false));
         parameters.add(new ChoiceP(EDGE_DISTANCE_MODE,this,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
@@ -311,8 +317,11 @@ public class MeasureObjectIntensity extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_CENTRE));
         returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_EDGE_DISTANCE));
 
@@ -503,7 +512,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

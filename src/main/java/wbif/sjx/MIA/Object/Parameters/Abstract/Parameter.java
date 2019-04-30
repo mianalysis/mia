@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
 
 public abstract class Parameter {
@@ -10,6 +10,7 @@ public abstract class Parameter {
     private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
+    private boolean exported = true;
 
 
     // CONSTRUCTORS
@@ -83,5 +84,13 @@ public abstract class Parameter {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public boolean isExported() {
+        return exported;
+    }
+
+    public void setExported(boolean exported) {
+        this.exported = exported;
     }
 }

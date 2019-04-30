@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
@@ -58,7 +59,10 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                             break;
                     }
 
-                    GUI.setAnalysis(new Analysis());
+                    Analysis analysis = new Analysis();
+                    analysis.getModules().add(new ImageLoader<>());
+
+                    GUI.setAnalysis(analysis);
                     GUI.populateModuleList();
                     GUI.populateModuleParameters();
                     GUI.populateHelpNotes();
@@ -67,7 +71,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     break;
 
                 case LOAD_PIPELINE:
-                    Analysis analysis = AnalysisReader.loadAnalysis();
+                    analysis = AnalysisReader.loadAnalysis();
                     if (analysis == null) return;
 
                     GUI.setAnalysis(analysis);
@@ -133,6 +137,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                 case TOGGLE_HELP_NOTES:
                     GUI.setShowHelpNotes(!GUI.showHelpNotes());
                     GUI.updatePanel();
+                    GUI.populateHelpNotes();
                     break;
 
             }

@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ParameterControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.swing.*;
@@ -41,7 +40,7 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
         updateControl();
 
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(true);
 //        GUI.updateModules(true);
 
     }

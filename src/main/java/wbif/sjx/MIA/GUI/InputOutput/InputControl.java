@@ -21,7 +21,7 @@ import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -30,15 +30,18 @@ import java.util.*;
  * Created by Stephen on 29/07/2017.
  */
 public class InputControl extends Module {
+    public static final String IMPORT_SEPARATOR = "Core import controls";
     public static final String INPUT_PATH = "Input path";
+    public static final String SPATIAL_UNITS = "Spatial units";
     public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
+    public static final String FILTER_SEPARATOR = "File/folder filters";
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
-    public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String NO_LOAD_MESSAGE = "No load message";
 
 
     public static interface InputModes {
@@ -257,10 +260,13 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR,this));
         parameters.add(new FileFolderPathP(INPUT_PATH,this,"","The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1,"The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
         parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1","Comma-separated list of series numbers to be processed."));
+
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
 
         ParameterCollection collection = new ParameterCollection();
         collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.FILENAME,FilterSources.ALL,"Type of filter to add."));
@@ -270,12 +276,15 @@ public class InputControl extends Module {
 
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 
+        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Color.RED));
+
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(IMPORT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_PATH));
 
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
@@ -285,10 +294,12 @@ public class InputControl extends Module {
                 returnedParameters.add(parameters.getParameter(SERIES_LIST));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(ADD_FILTER));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
+
+        returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_FILTER));
+        returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
 
         return returnedParameters;
 
@@ -305,7 +316,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

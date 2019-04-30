@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
@@ -13,6 +14,7 @@ public class Workspace {
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
+    private Analysis analysis = null;
     private int ID;
 
     // CONSTRUCTOR
@@ -153,7 +155,15 @@ public class Workspace {
 
     // GETTERS AND SETTERS
 
-    public HashMap<String, ObjCollection> getObjects() {
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
+    }
+
+    public LinkedHashMap<String, ObjCollection> getObjects() {
         return objects;
     }
 
@@ -161,7 +171,7 @@ public class Workspace {
         this.objects = objects;
     }
 
-    public HashMap<String, Image<?>> getImages() {
+    public LinkedHashMap<String, Image<?>> getImages() {
         return images;
     }
 

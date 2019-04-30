@@ -192,7 +192,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -59,7 +59,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
         moduleListMenu.show(GUI.getFrame(), 0, 0);
         moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         moduleListMenu.setVisible(true);
-        GUI.updateModules(true);
+        GUI.updateModules();
+        GUI.updateModuleStates(true);
 
     }
 
@@ -77,7 +78,9 @@ public class ModuleControlButton extends JButton implements ActionListener {
             modules.remove(activeModule);
             activeModule = null;
 
-            GUI.updateModules(true);
+            GUI.setActiveModule(null);
+            GUI.updateModules();
+            GUI.updateModuleStates(true);
             GUI.populateModuleParameters();
             GUI.populateHelpNotes();
 
@@ -97,7 +100,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
 
                 modules.remove(activeModule);
                 modules.add(idx - 1, activeModule);
-                GUI.updateModules(true);
+                GUI.updateModules();
+                GUI.updateModuleStates(true);
 
             }
         }
@@ -116,7 +120,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
 
                 modules.remove(activeModule);
                 modules.add(idx + 1, activeModule);
-                GUI.updateModules(true);
+                GUI.updateModules();
+                GUI.updateModuleStates(true);
 
             }
         }

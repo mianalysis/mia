@@ -23,16 +23,23 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by sc13967 on 17/05/2017.
  */
 public class AddTracks extends Module {
+    public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String SPOT_OBJECTS = "Spot objects";
+
+    public static final String OUTPUT_SEPARATOR = "Image output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SPOT_OBJECTS = "Spot objects";
+
+    public static final String RENDERING_SEPARATOR = "Overlay rendering";
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
     public static final String LINE_WIDTH = "Line width";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private ColourServer colourServer;
@@ -163,15 +170,22 @@ public class AddTracks extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new BooleanP(LIMIT_TRACK_HISTORY, this,false));
         parameters.add(new IntegerP(TRACK_HISTORY, this,10));
         parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
+
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
@@ -184,10 +198,14 @@ public class AddTracks extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
 
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
@@ -196,7 +214,7 @@ public class AddTracks extends Module {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
         if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
@@ -204,6 +222,8 @@ public class AddTracks extends Module {
 
         returnedParameters.addAll(colourServer.updateAndGetParameters());
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -221,7 +241,7 @@ public class AddTracks extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

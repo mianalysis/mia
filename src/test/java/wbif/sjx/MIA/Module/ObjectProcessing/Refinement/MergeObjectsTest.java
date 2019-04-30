@@ -47,7 +47,7 @@ public class MergeObjectsTest extends ModuleTest {
         ObjCollection inputObj2 = new Spots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
-        // Initialising FilterObjects module
+        // Initialising FilterObjectsMethods module
         MergeObjects mergeObjects = new MergeObjects();
         mergeObjects.updateParameterValue(MergeObjects.INPUT_OBJECTS_1,"Input_obj_1");
         mergeObjects.updateParameterValue(MergeObjects.INPUT_OBJECTS_2,"Input_obj_2");

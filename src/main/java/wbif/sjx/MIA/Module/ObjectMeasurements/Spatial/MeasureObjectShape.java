@@ -6,6 +6,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
@@ -15,7 +16,10 @@ import java.util.ArrayList;
  * Created by sc13967 on 29/06/2017.
  */
 public class MeasureObjectShape extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
     public static final String MEASURE_VOLUME = "Measure volume";
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
@@ -160,7 +164,10 @@ public class MeasureObjectShape extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(MEASURE_VOLUME, this, true));
         parameters.add(new BooleanP(MEASURE_PROJECTED_AREA, this, false));
         parameters.add(new BooleanP(MEASURE_PROJECTED_DIA, this, false));
@@ -263,7 +270,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -22,11 +22,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddArrows extends Module {
+    public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String OUTPUT_SEPARATOR = "Image output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String RENDERING_SEPARATOR = "Overlay rendering";
     public static final String ORIENTATION_MODE = "Arrow orientation mode";
     public static final String PARENT_OBJECT_FOR_ORIENTATION = "Parent object for orientation";
     public static final String MEASUREMENT_FOR_ORIENTATION = "Measurement for orientation";
@@ -38,6 +43,8 @@ public class AddArrows extends Module {
     public static final String HEAD_SIZE = "Head size";
     public static final String LINE_WIDTH = "Line width";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private ColourServer colourServer;
@@ -215,11 +222,16 @@ public class AddArrows extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new ChoiceP(ORIENTATION_MODE, this, AddObjectsOverlay.OrientationModes.MEASUREMENT, AddObjectsOverlay.OrientationModes.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_ORIENTATION, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_ORIENTATION, this));
@@ -231,6 +243,8 @@ public class AddArrows extends Module {
         parameters.add(new IntegerP(HEAD_SIZE,this,3));
         parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
+
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
@@ -243,10 +257,13 @@ public class AddArrows extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
@@ -256,6 +273,7 @@ public class AddArrows extends Module {
             }
         }
 
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case AddObjectsOverlay.OrientationModes.MEASUREMENT:
@@ -302,6 +320,8 @@ public class AddArrows extends Module {
         returnedParameters.add(parameters.getParameter(HEAD_SIZE));
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -319,7 +339,7 @@ public class AddArrows extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

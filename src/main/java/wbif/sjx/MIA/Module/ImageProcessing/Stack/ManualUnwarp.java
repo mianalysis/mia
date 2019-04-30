@@ -7,7 +7,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PointRoi;
-import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -18,10 +17,10 @@ import wbif.sjx.MIA.Object.*;
 
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Interactable.Interactable;
+import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector.PointPair;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 import wbif.sjx.MIA.ThirdParty.bUnwarpJ_Mod;
 
 import java.awt.*;
@@ -482,7 +481,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

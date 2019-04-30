@@ -13,11 +13,13 @@ import wbif.sjx.MIA.Object.Parameters.*;
  * Created by sc13967 on 19/09/2017.
  */
 public class ImageCalculator extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE1 = "Input image 1";
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_32BIT = "Output 32-bit image";
+    public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_METHOD = "Calculation method";
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
@@ -249,11 +251,13 @@ public class ImageCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE1,this));
         parameters.add(new InputImageP(INPUT_IMAGE2,this));
         parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new BooleanP(OUTPUT_32BIT,this,false));
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_METHOD,this,CalculationMethods.ADD,CalculationMethods.ALL));
         parameters.add(new BooleanP(SET_NAN_TO_ZERO,this,false));
 
@@ -263,6 +267,7 @@ public class ImageCalculator extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE1));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
@@ -272,6 +277,8 @@ public class ImageCalculator extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
+
+        returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
 
@@ -290,7 +297,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

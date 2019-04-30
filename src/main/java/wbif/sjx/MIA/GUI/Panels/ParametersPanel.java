@@ -59,7 +59,10 @@ public class ParametersPanel extends JScrollPane {
         c.anchor = GridBagConstraints.WEST;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
-        if (module == null) return;
+        if (module == null) {
+            showUsageMessage();
+            return;
+        }
 
         boolean isInput = module.getClass().isInstance(new InputControl());
         boolean isOutput = module.getClass().isInstance(new OutputControl());
@@ -160,10 +163,11 @@ public class ParametersPanel extends JScrollPane {
 
         // Creating the notes/help field at the bottom of the panel
         JSeparator separator = new JSeparator();
-        separator.setOpaque(false);
+        separator.setOpaque(true);
         separator.setSize(new Dimension(0,0));
         c.weighty = 1;
         c.gridy++;
+        c.insets = new Insets(20,0,0,0);
         c.fill = GridBagConstraints.VERTICAL;
         panel.add(separator,c);
 
@@ -185,25 +189,30 @@ public class ParametersPanel extends JScrollPane {
         c.gridy++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
-        JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
-        panel.add(paramPanel, c);
 
-        c.insets = new Insets(2, 5, 0, 5);
-        c.gridx++;
-        c.weightx = 0;
-        c.anchor = GridBagConstraints.EAST;
-        VisibleCheck visibleCheck = new VisibleCheck(parameter);
-        visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-        panel.add(visibleCheck, c);
+//        if (parameter instanceof MessageP || parameter instanceof ParamSeparatorP) {
+            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule, true);
+//            c.gridwidth = 2;
+            panel.add(paramPanel, c);
 
+//        } else {
+//            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
+//            c.gridwidth = 1;
+//            panel.add(paramPanel, c);
+//
+//            c.insets = new Insets(2, 5, 0, 5);
+//            c.gridx++;
+//            c.weightx = 0;
+//            c.anchor = GridBagConstraints.EAST;
+//            VisibleCheck visibleCheck = new VisibleCheck(parameter);
+//            visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+//            panel.add(visibleCheck, c);
+//        }
     }
 
     public void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashSet<ParameterCollection> collections = group.getCollections();
-
-        c.gridy++;
-        panel.add(getInvisibleSeparator(), c);
 
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters
@@ -222,6 +231,42 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
+    public void showUsageMessage() {
+        panel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JTextPane usageMessage = new JTextPane();
+        usageMessage.setContentType("text/html");
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
+                "To change parameters for an existing module, click the module name on the list to the left."+
+                "<br><br>" +
+                "Modules can be added, removed and re-ordered using the \"+\", \"-\", \"▲\" and \"▼\" buttons." +
+                "<br><br>" +
+                "Modules can also be disabled using the power icons to the right of each module name.  " +
+                "<br><br>Any modules highlighted in red are currently mis-configured " +
+                "<br>(possibly missing outputs from previous modules) and won't run." +
+                "<br><br>" +
+                "To execute a full analysis, click \"Run\".  " +
+                "<br>Alternatively, step through an analysis using the arrow icons to the right of each module name." +
+                "</font></center></html>");
+        usageMessage.setEditable(false);
+        usageMessage.setBackground(null);
+        panel.add(usageMessage);
+
+        panel.revalidate();
+        panel.repaint();
+
+    }
+
     private JSeparator getInvisibleSeparator() {
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0,15));
@@ -231,4 +276,5 @@ public class ParametersPanel extends JScrollPane {
         return separator;
 
     }
+
 }

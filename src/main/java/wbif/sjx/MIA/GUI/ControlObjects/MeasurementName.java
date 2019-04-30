@@ -29,8 +29,9 @@ public class MeasurementName extends JTextField implements FocusListener {
     @Override
     public void focusLost(FocusEvent e) {
         measurementReference.setNickname(getText());
-        GUI.updateModules(true);
+        GUI.updateModules();
         GUI.populateModuleList();
+        GUI.updateModuleStates(true);
 
     }
 }

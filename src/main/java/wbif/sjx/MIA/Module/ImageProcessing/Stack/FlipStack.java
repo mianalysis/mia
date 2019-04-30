@@ -17,10 +17,14 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String FLIP_SEPARATOR = "Stack flip controls";
     public static final String AXIS_MODE = "Axis mode";
+
 
     public interface AxisModes {
         String X = "X";
@@ -137,9 +141,12 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(FLIP_SEPARATOR,this));
         parameters.add(new ChoiceP(AXIS_MODE, this,AxisModes.X,AxisModes.ALL));
 
     }
@@ -147,6 +154,8 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -154,6 +163,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(FLIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(AXIS_MODE));
 
         return returnedParameters;
@@ -171,7 +181,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

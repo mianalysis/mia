@@ -19,9 +19,11 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 public class CropImage < T extends RealType< T > & NativeType< T >> extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String CROP_SEPARATOR = "Crop selection";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
@@ -120,9 +122,11 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ParamSeparatorP(CROP_SEPARATOR,this));
         parameters.add(new IntegerP(LEFT,this,0));
         parameters.add(new IntegerP(TOP,this,0));
         parameters.add(new IntegerP(WIDTH,this,512));
@@ -133,6 +137,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -140,6 +145,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(CROP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LEFT));
         returnedParameters.add(parameters.getParameter(TOP));
         returnedParameters.add(parameters.getParameter(WIDTH));
@@ -160,7 +166,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

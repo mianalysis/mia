@@ -18,6 +18,7 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -33,6 +34,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -46,7 +48,7 @@ public class Exporter {
     }
 
     public enum SummaryMode {
-        PER_FILE, PER_TIMEPOINT_PER_FILE;
+        PER_FILE, PER_TIMEPOINT_PER_FILE, GROUP_BY_METADATA;
     }
 
     public enum AppendDateTimeMode {
@@ -68,6 +70,7 @@ public class Exporter {
     private boolean calculateCountStd = true;
     private boolean calculateCountSum = true;
     private SummaryMode summaryMode = SummaryMode.PER_FILE;
+    private String metadataItemForSummary = null;
     private boolean exportIndividualObjects = true;
     private boolean addMetadataToObjects = true;
     private AppendDateTimeMode appendDateTimeMode = AppendDateTimeMode.NEVER;
@@ -271,6 +274,9 @@ public class Exporter {
         Element parametersElement = doc.createElement("PARAMETERS");
 
         for (Parameter currParam:parameters) {
+            // Check if the parameter is to be exported
+            if (!currParam.isExported()) continue;
+
             // ParameterGroups are treated differently
             if (currParam.getClass() == ParameterGroup.class) {
                 LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
@@ -521,6 +527,9 @@ public class Exporter {
         paramRow++;
 
         for (Parameter currParam : parameters) {
+            // Check if the parameter is to be exported
+            if (!currParam.isExported()) continue;
+
             int paramCol = 0;
             Row row = sheet.createRow(paramRow++);
 
@@ -555,7 +564,7 @@ public class Exporter {
 
     private void prepareSummaryXLS(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
                                    SummaryMode summaryType) {
-        int headerCol = 0;
+        AtomicInteger headerCol = new AtomicInteger(0);
 
         // Adding header rows for the metadata sheet.
         Sheet summarySheet = workbook.createSheet("Summary");
@@ -563,27 +572,90 @@ public class Exporter {
 
         // Creating a HashMap to store column numbers
         HashMap<String,Integer> colNumbers = new HashMap<>();
+        addSummaryMetadataHeaders(summaryHeaderRow,modules,colNumbers,headerCol,summaryType);
+        addSummaryGroupHeader(summaryHeaderRow,colNumbers,headerCol,summaryType);
+        addSummaryImageHeaders(summaryHeaderRow,modules,colNumbers,headerCol);
+        addSummaryObjectHeaders(summaryHeaderRow,modules,colNumbers,headerCol);
 
-        // Adding metadata headers
-        String[] metadataNames = modules.getMetadataReferences(null).getMetadataNames();
-        // Running through all the metadata values, adding them as new columns
-        for (String name : metadataNames) {
-            Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-            String summaryDataName = getMetadataString(name);
-            summaryHeaderCell.setCellValue(summaryDataName);
-            colNumbers.put(summaryDataName,headerCol++);
+        // Running through each Workspace, adding a row
+        int summaryRow = 1;
+        switch (summaryType) {
+            case PER_FILE:
+                for (Workspace workspace:workspaces) {
+                    Row summaryValueRow = summarySheet.createRow(summaryRow++);
+                    populateSummaryRow(summaryValueRow, workspace, modules, colNumbers, null, null);
+                }
+                break;
 
+            case PER_TIMEPOINT_PER_FILE:
+                for (Workspace workspace:workspaces) {
+                    // For the current workspace, iterating over all available time points and creating a new workspace
+                    HashMap<Integer, Workspace> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
+                    for (Integer timepoint : currentWorkspaces.keySet()) {
+                        Workspace currentWorkspace = currentWorkspaces.get(timepoint);
+                        Row summaryValueRow = summarySheet.createRow(summaryRow++);
+                        populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, "TIMEPOINT", String.valueOf(timepoint));
+
+                    }
+                }
+                break;
+
+            case GROUP_BY_METADATA:
+                HashMap<String, Workspace> metadataWorkspaces = workspaces.getMetadataWorkspaces(metadataItemForSummary);
+                for (String metadataValue: metadataWorkspaces.keySet()) {
+                    Workspace currentWorkspace = metadataWorkspaces.get(metadataValue);
+                    Row summaryValueRow = summarySheet.createRow(summaryRow++);
+                    populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, metadataItemForSummary, metadataValue);
+
+                }
+                break;
         }
+    }
 
+    private void addSummaryMetadataHeaders(Row summaryHeaderRow, ModuleCollection modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, SummaryMode summaryType) {
+        switch (summaryType) {
+            case GROUP_BY_METADATA:
+                Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+                String summaryDataName = getMetadataString("Count");
+                summaryHeaderCell.setCellValue(summaryDataName);
+                colNumbers.put(summaryDataName, headerCol.getAndIncrement());
+                break;
+
+            case PER_FILE:
+            case PER_TIMEPOINT_PER_FILE:
+            // Adding metadata headers
+            String[] metadataNames = modules.getMetadataReferences(null).getMetadataNames();
+            // Running through all the metadata values, adding them as new columns
+            for (String name : metadataNames) {
+                summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+                summaryDataName = getMetadataString(name);
+                summaryHeaderCell.setCellValue(summaryDataName);
+                colNumbers.put(summaryDataName, headerCol.getAndIncrement());
+
+            }
+            break;
+        }
+    }
+
+    private void addSummaryGroupHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, SummaryMode summaryType) {
         // Add a column to record the timepoint
-        if (summaryType == SummaryMode.PER_TIMEPOINT_PER_FILE) {
-            Cell timepointHeaderCell = summaryHeaderRow.createCell(headerCol);
-            String timepointDataName = getMetadataString("TIMEPOINT");
-            timepointHeaderCell.setCellValue(timepointDataName);
-            colNumbers.put(timepointDataName,headerCol++);
+        switch (summaryType) {
+            case PER_TIMEPOINT_PER_FILE:
+                Cell timepointHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+                String timepointDataName = getMetadataString("TIMEPOINT");
+                timepointHeaderCell.setCellValue(timepointDataName);
+                colNumbers.put(timepointDataName,headerCol.getAndIncrement());
+                break;
+            case GROUP_BY_METADATA:
+                Cell metadataHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+                String metadataDataName = getMetadataString(metadataItemForSummary);
+                metadataHeaderCell.setCellValue(metadataDataName);
+                colNumbers.put(metadataDataName,headerCol.getAndIncrement());
+                break;
         }
+    }
 
-        // Adding image headers
+    private void addSummaryImageHeaders(Row summaryHeaderRow, ModuleCollection modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol) {
         LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null,true);
         if (availableImages != null) {
             for (OutputImageP availableImage : availableImages) {
@@ -598,15 +670,17 @@ public class Exporter {
                     if (!imageMeasurement.isExportGlobal()) continue;
 
                     String measurementName = imageMeasurement.getNickname();
-                    Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                    Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
                     String summaryDataName = getImageString(availableImageName, measurementName);
                     summaryHeaderCell.setCellValue(summaryDataName);
-                    colNumbers.put(summaryDataName, headerCol++);
+                    colNumbers.put(summaryDataName, headerCol.getAndIncrement());
 
                 }
             }
         }
+    }
 
+    private void addSummaryObjectHeaders(Row summaryHeaderRow, ModuleCollection modules, HashMap<String,Integer> colNumbers, AtomicInteger headerCol) {
         // Adding object headers
         LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects != null) {
@@ -617,54 +691,34 @@ public class Exporter {
 
                 // Adding the number of objects
                 if (showObjectCounts) {
-                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
                     summaryDataName = getObjectString(availableObjectName, "", "NUMBER");
                     summaryHeaderCell.setCellValue(summaryDataName);
                     addComment(summaryHeaderCell,"Num of \""+availableObjectName+"\" objects.");
-                    colNumbers.put(summaryDataName, headerCol++);
+                    colNumbers.put(summaryDataName, headerCol.getAndIncrement());
                 }
 
                 // Running through all the object's children
                 if (showChildCounts && modules.getRelationships().getChildNames(availableObjectName,false) != null) {
                     for (String child : modules.getRelationships().getChildNames(availableObjectName,false)) {
                         if (calculateCountMean) {
-                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(availableObjectName, "MEAN", "NUM_CHILDREN_" + child);
-                            summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Mean");
-                            colNumbers.put(summaryDataName, headerCol++);
+                            addSummaryObjectChildStatisticHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"MEAN","Mean");
                         }
 
                         if (calculateCountMin) {
-                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(availableObjectName, "MIN", "NUM_CHILDREN_" + child);
-                            summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Minimum");
-                            colNumbers.put(summaryDataName, headerCol++);
+                            addSummaryObjectChildStatisticHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"MIN","Minimum");
                         }
 
                         if (calculateCountMax) {
-                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(availableObjectName, "MAX", "NUM_CHILDREN_" + child);
-                            summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Maximum");
-                            colNumbers.put(summaryDataName, headerCol++);
+                            addSummaryObjectChildStatisticHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"MAX","Maximum");
                         }
 
                         if (calculateCountStd) {
-                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(availableObjectName, "STD", "NUM_CHILDREN_" + child);
-                            summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Standard deviation");
-                            colNumbers.put(summaryDataName, headerCol++);
+                            addSummaryObjectChildStatisticHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"STD","Standard deviation");
                         }
 
                         if (calculateCountSum) {
-                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(availableObjectName, "SUM", "NUM_CHILDREN_" + child);
-                            summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Sum");
-                            colNumbers.put(summaryDataName, headerCol++);
+                            addSummaryObjectChildStatisticHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"SUM","Sum");
                         }
                     }
                 }
@@ -681,71 +735,44 @@ public class Exporter {
                     if (!objectMeasurement.isExportGlobal()) continue;
 
                     if (objectMeasurement.isExportMean()) {
-                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "MEAN", objectMeasurement.getNickname());
-                        summaryHeaderCell.setCellValue(summaryDataName);
-                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Mean");
-                        colNumbers.put(summaryDataName, headerCol++);
+                        addSummaryObjectStatisticHeader(summaryHeaderRow,colNumbers,headerCol,objectMeasurement,"MEAN","Mean");
                     }
 
                     if (objectMeasurement.isExportMin()) {
-                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "MIN", objectMeasurement.getNickname());
-                        summaryHeaderCell.setCellValue(summaryDataName);
-                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Minimum");
-                        colNumbers.put(summaryDataName, headerCol++);
+                        addSummaryObjectStatisticHeader(summaryHeaderRow,colNumbers,headerCol,objectMeasurement,"MIN","Minimum");
                     }
 
                     if (objectMeasurement.isExportMax()) {
-                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "MAX", objectMeasurement.getNickname());
-                        summaryHeaderCell.setCellValue(summaryDataName);
-                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Maximum");
-                        colNumbers.put(summaryDataName, headerCol++);
+                        addSummaryObjectStatisticHeader(summaryHeaderRow,colNumbers,headerCol,objectMeasurement,"MAX","Maximum");
                     }
 
                     if (objectMeasurement.isExportStd()) {
-                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "STD", objectMeasurement.getNickname());
-                        summaryHeaderCell.setCellValue(summaryDataName);
-                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Standard deviation");
-                        colNumbers.put(summaryDataName, headerCol++);
+                        addSummaryObjectStatisticHeader(summaryHeaderRow,colNumbers,headerCol,objectMeasurement,"STD","Standard deviation");
                     }
 
                     if (objectMeasurement.isExportSum()) {
-                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "SUM", objectMeasurement.getNickname());
-                        summaryHeaderCell.setCellValue(summaryDataName);
-                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Sum");
-                        colNumbers.put(summaryDataName, headerCol++);
+                        addSummaryObjectStatisticHeader(summaryHeaderRow,colNumbers,headerCol,objectMeasurement,"SUM","Sum");
                     }
                 }
             }
         }
+    }
 
-        // Running through each Workspace, adding a row
-        int summaryRow = 1;
-        for (Workspace workspace:workspaces) {
-            switch (summaryType) {
-                case PER_FILE:
-                    Row summaryValueRow = summarySheet.createRow(summaryRow++);
-                    populateSummaryRow(summaryValueRow, workspace, modules, colNumbers, -Integer.MAX_VALUE);
+    private void addSummaryObjectChildStatisticHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, String objectName, String child, String shortName, String longName) {
+        Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+        String summaryDataName = getObjectString(objectName, shortName, "NUM_CHILDREN_" + child);
+        summaryHeaderCell.setCellValue(summaryDataName);
+        addNumberOfChildrenComment(summaryHeaderCell,objectName,child,longName);
+        colNumbers.put(summaryDataName, headerCol.getAndIncrement());
+    }
 
-                    break;
-
-                case PER_TIMEPOINT_PER_FILE:
-                    // For the current workspace, iterating over all available time points and creating a new workspace
-                    HashMap<Integer,Workspace> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
-                    for (Integer timepoint:currentWorkspaces.keySet()) {
-                        Workspace currentWorkspace = currentWorkspaces.get(timepoint);
-                        summaryValueRow = summarySheet.createRow(summaryRow++);
-                        populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, timepoint);
-
-                    }
-                    break;
-
-            }
-        }
+    private void addSummaryObjectStatisticHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, MeasurementRef objectMeasurement, String shortName, String longName) {
+        Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+        String availableObjectName = objectMeasurement.getImageObjName();
+        String summaryDataName = getObjectString(availableObjectName, shortName, objectMeasurement.getNickname());
+        summaryHeaderCell.setCellValue(summaryDataName);
+        addSummaryComment(summaryHeaderCell,objectMeasurement,longName);
+        colNumbers.put(summaryDataName, headerCol.getAndIncrement());
     }
 
     private void addNumberOfChildrenComment(Cell cell, String parent, String child, String calculation) {
@@ -785,22 +812,21 @@ public class Exporter {
     }
 
     private void populateSummaryRow(Row summaryValueRow, Workspace workspace, ModuleCollection modules,
-                                    HashMap<String,Integer> colNumbers, int timepoint) {
+                                    HashMap<String,Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
+
         // Adding metadata values
         HCMetadata metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
             String headerName = getMetadataString(name);
             if (!colNumbers.containsKey(headerName)) continue;
             int colNumber = colNumbers.get(headerName);
-            Cell metaValueCell = summaryValueRow.createCell(colNumber);
-            metaValueCell.setCellValue(metadata.getAsString(name));
+            summaryValueRow.createCell(colNumber).setCellValue(metadata.getAsString(name));
         }
 
-        if (timepoint != -Integer.MAX_VALUE) {
-            String timepointName = getMetadataString("TIMEPOINT");
+        if (groupTitle != null) {
+            String timepointName = getMetadataString(groupTitle);
             int colNumber = colNumbers.get(timepointName);
-            Cell timepointValueCell = summaryValueRow.createCell(colNumber);
-            timepointValueCell.setCellValue(String.valueOf(timepoint));
+            summaryValueRow.createCell(colNumber).setCellValue(groupValue);
         }
 
         // Adding image measurements
@@ -1323,4 +1349,11 @@ public class Exporter {
         this.calculateCountSum = calculateCountSum;
     }
 
+    public String getMetadataItemForSummary() {
+        return metadataItemForSummary;
+    }
+
+    public void setMetadataItemForSummary(String metadataItemForSummary) {
+        this.metadataItemForSummary = metadataItemForSummary;
+    }
 }

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -64,8 +65,11 @@ public class BasicControlPanel extends JScrollPane {
         c.insets = new Insets(0,5,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Check if there are no modules
-        if (analysis.modules.size()==0) return;
+        // Check if there are no controls to be displayed
+        if (!analysis.hasVisibleParameters()) {
+            showUsageMessage();
+            return;
+        }
 
         // Adding a separator between the input and main modules
         panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
@@ -129,4 +133,34 @@ public class BasicControlPanel extends JScrollPane {
         repaint();
 
     }
+
+    public void showUsageMessage() {
+        panel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JTextPane usageMessage = new JTextPane();
+        usageMessage.setContentType("text/html");
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
+                "To load an existing workflow,<br>click \"Load\" and select a .mia file."+
+                "<br><br>" +
+                "To start creating a new workflow,<br>go to View > Switch to editing view." +
+                "</font></center></html>");
+        usageMessage.setEditable(false);
+        usageMessage.setBackground(null);
+        panel.add(usageMessage);
+
+        panel.revalidate();
+        panel.repaint();
+
+    }
+
 }

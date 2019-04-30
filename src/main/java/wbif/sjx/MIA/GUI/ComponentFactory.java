@@ -3,21 +3,20 @@ package wbif.sjx.MIA.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.MeasurementRef;
 import wbif.sjx.MIA.Object.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.TextDisplayP;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -33,7 +32,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module, boolean showVisibleControl) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -47,29 +46,54 @@ public class ComponentFactory {
         parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
-        JLabel parameterName = new JLabel(parameter.getName());
-        parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        parameterName.setPreferredSize(new Dimension(0,elementHeight));
-        parameterName.setBorder(null);
-        parameterName.setOpaque(false);
-        parameterName.setToolTipText("<html><p width=\"500\">" +parameter.getDescription()+"</p></html>");
-        paramPanel.add(parameterName, c);
-
-        if (parameter.isValid()) {
-            parameterName.setForeground(Color.BLACK);
-        } else {
-            parameterName.setForeground(Color.RED);
-        }
-
-        // Adding the input component
-        c.gridx++;
-        c.weightx=1;
-        c.anchor = GridBagConstraints.EAST;
-        if (parameterComponent != null) {
+        if (parameter instanceof MessageP) {
             String value = parameter.getValueAsString();
             parameterComponent.setToolTipText(value == null ? "" : value);
-            if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
-            paramPanel.add(parameterComponent, c);
+            c.insets = new Insets(10,3,0,5);
+            paramPanel.add(parameterComponent,c);
+
+        } else if (parameter instanceof ParamSeparatorP) {
+            if (module.updateAndGetParameters().iterator().next() == parameter) {
+                c.insets = new Insets(0, 5, 5, 8);
+            } else {
+                c.insets = new Insets(30, 5, 5, 8);
+            }
+            paramPanel.add(parameterComponent,c);
+
+        } else {
+            JLabel parameterName = new JLabel(parameter.getName());
+            parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            parameterName.setPreferredSize(new Dimension(0, elementHeight));
+            parameterName.setBorder(null);
+            parameterName.setOpaque(false);
+            parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
+            paramPanel.add(parameterName, c);
+
+            if (parameter.isValid()) {
+                parameterName.setForeground(Color.BLACK);
+            } else {
+                parameterName.setForeground(Color.RED);
+            }
+
+            c.gridx++;
+            c.weightx=1;
+            c.anchor = GridBagConstraints.EAST;
+            if (parameterComponent != null) {
+                String value = parameter.getValueAsString();
+                parameterComponent.setToolTipText(value == null ? "" : value);
+                if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
+                paramPanel.add(parameterComponent, c);
+            }
+
+            if (showVisibleControl) {
+                c.insets = new Insets(2, 5, 0, 5);
+                c.gridx++;
+                c.weightx = 0;
+                c.anchor = GridBagConstraints.EAST;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+                paramPanel.add(visibleCheck, c);
+            }
         }
 
         return paramPanel;
@@ -83,7 +107,7 @@ public class ComponentFactory {
         // Adding the module enabled checkbox
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(2, 2, 0, 0);
+        c.insets = new Insets(2, 5, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ModuleEnabledButton enabledCheck = new ModuleEnabledButton(module);
@@ -91,6 +115,7 @@ public class ComponentFactory {
         modulePanel.add(enabledCheck,c);
 
         c.gridx++;
+        c.insets = new Insets(2, 2, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ShowOutputButton showOutput = new ShowOutputButton(module);
@@ -102,7 +127,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(module);
-        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
+        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight,elementHeight));
         group.add(button);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);
@@ -112,7 +137,7 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx++;
         c.weightx = 0;
-        c.insets = new Insets(2, 2, 0, 0);
+        c.insets = new Insets(2, 2, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         EvalButton evalButton = new EvalButton(module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -129,7 +154,7 @@ public class ComponentFactory {
         // Adding the module enabled checkbox
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(2, 2, 0, 0);
+        c.insets = new Insets(2, 5, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ModuleEnabledButton enabledCheck = new ModuleEnabledButton(module);
@@ -137,6 +162,7 @@ public class ComponentFactory {
         modulePanel.add(enabledCheck,c);
 
         c.gridx++;
+        c.insets = new Insets(2, 2, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         SeparatorButton leftArrowButton = new SeparatorButton(module,true);
@@ -148,7 +174,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(module);
-        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
+        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight,elementHeight));
         group.add(button);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);
@@ -158,7 +184,7 @@ public class ComponentFactory {
         // Adding the right arrow
         c.gridx++;
         c.weightx = 0;
-        c.insets = new Insets(2, 2, 0, 0);
+        c.insets = new Insets(2, 2, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         SeparatorButton rightArrowButton = new SeparatorButton(module,false);
         rightArrowButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -302,7 +328,8 @@ public class ComponentFactory {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                     expandedBasic.flipBoolean();
-                    GUI.updateModules(true);
+                    GUI.updateModules();
+
                 }
             }
 
@@ -356,20 +383,26 @@ public class ComponentFactory {
         if (!module.isRunnable() &! module.invalidParameterIsVisible()) return modulePanel;
 
         c.insets = new Insets(0,35,0,0);
-        for (Parameter parameter : module.updateAndGetParameters()) {
-            if (parameter.getClass() == ParameterGroup.class) {
-
-            } else {
-                if (parameter.isVisible()) {
-                    JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
-                    c.gridy++;
-                    modulePanel.add(paramPanel, c);
-                }
-            }
-        }
+        addParameters(module,module.updateAndGetParameters(),modulePanel,c,false);
 
         return modulePanel;
 
+    }
+
+    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c, boolean showVisibleControl) {
+        for (Parameter parameter : parameters) {
+            if (parameter.getClass() == ParameterGroup.class) {
+                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) parameter).getCollections();
+                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c,showVisibleControl);
+
+            }
+
+            if (parameter.isVisible()) {
+                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module,showVisibleControl);
+                c.gridy++;
+                modulePanel.add(paramPanel, c);
+            }
+        }
     }
 
     private JPanel createMeasurementExportLabels() {

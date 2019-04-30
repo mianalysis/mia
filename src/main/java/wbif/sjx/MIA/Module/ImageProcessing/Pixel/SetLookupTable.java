@@ -68,6 +68,18 @@ public class SetLookupTable extends Module {
         }
     }
 
+    public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
+        switch (channelMode) {
+            case ChannelModes.ALL_CHANNELS:
+                inputImage.getImagePlus().setLut(lut);
+                break;
+
+            case ChannelModes.SPECIFIC_CHANNELS:
+                ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut,channel);
+                break;
+        }
+    }
+
 
     @Override
     public String getTitle() {
@@ -96,15 +108,7 @@ public class SetLookupTable extends Module {
         int channel = parameters.getValue(CHANNEL);
         LUT lut = getLUT(lookupTableName);
 
-        switch (channelMode) {
-            case ChannelModes.ALL_CHANNELS:
-                inputImage.getImagePlus().setLut(lut);
-                break;
-
-            case ChannelModes.SPECIFIC_CHANNELS:
-                ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut,channel);
-                break;
-        }
+        setLUT(inputImage,lut,channelMode,channel);
 
         if (showOutput) inputImage.showImage();
 
@@ -150,7 +154,7 @@ public class SetLookupTable extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

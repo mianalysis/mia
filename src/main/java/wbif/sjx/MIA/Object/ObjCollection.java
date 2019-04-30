@@ -41,7 +41,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public int getNextID() {
+    public int getAndIncrementID() {
         maxID++;
         return maxID;
     }
