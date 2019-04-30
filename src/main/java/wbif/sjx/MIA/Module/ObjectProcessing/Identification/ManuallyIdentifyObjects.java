@@ -269,6 +269,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     @Override
     public boolean process(Workspace workspace) {// Local access to this is required for the action listeners
         this.workspace = workspace;
+        listModel.clear();
 
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
