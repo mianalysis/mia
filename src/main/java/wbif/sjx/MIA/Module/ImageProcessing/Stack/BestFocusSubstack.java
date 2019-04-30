@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.SplineFitter;
 import ij.process.LUT;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
@@ -12,6 +13,8 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -223,12 +226,8 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             y[i++] = refs.get(t);
         }
 
-        SplineInterpolator splineInterpolator = new SplineInterpolator();
+        LinearInterpolator splineInterpolator = new LinearInterpolator();
         PolynomialSplineFunction splineFunction = splineInterpolator.interpolate(x,y);
-
-//        PolynomialCurveFitter fitter = PolynomialCurveFitter.create(nFrames-1);
-//        double[] c = fitter.fit(obs.toList());
-//        PolynomialFunction polynomialFunction = new PolynomialFunction(c);
 
         int[] fitValues = new int[nFrames];
         for (int j=0;j<nFrames;j++) {
@@ -290,7 +289,6 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         // Extracting the best-slice substack and adding it to the outputImage
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         for (int f=0;f<nFrames;f++) {
-            System.out.println(f+"_"+bestSlices[f]);
             extractSubstack(inputImg, outputImg, bestSlices[f] + relativeStart, bestSlices[f] + relativeEnd, f);
         }
 

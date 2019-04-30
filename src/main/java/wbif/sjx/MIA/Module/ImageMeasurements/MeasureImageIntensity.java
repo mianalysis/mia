@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -13,6 +14,7 @@ import wbif.sjx.common.MathFunc.CumStat;
  * Created by sc13967 on 12/05/2017.
  */
 public class MeasureImageIntensity extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
 
 
@@ -68,6 +70,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
     }

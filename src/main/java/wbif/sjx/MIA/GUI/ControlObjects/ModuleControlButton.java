@@ -78,6 +78,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
             modules.remove(activeModule);
             activeModule = null;
 
+            GUI.setActiveModule(null);
             GUI.updateModules();
             GUI.updateModuleStates(true);
             GUI.populateModuleParameters();
