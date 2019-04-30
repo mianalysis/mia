@@ -186,7 +186,7 @@ public class MeasureRadialIntensityProfile extends Module {
 
         resultsTable.show("Radial intensity profile");
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -241,7 +241,7 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

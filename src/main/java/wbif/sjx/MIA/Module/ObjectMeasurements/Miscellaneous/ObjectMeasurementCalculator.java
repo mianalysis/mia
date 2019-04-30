@@ -98,7 +98,7 @@ public class ObjectMeasurementCalculator extends Module {
         }
 
         // Showing results
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -133,7 +133,7 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         // Creating new MeasurementRef

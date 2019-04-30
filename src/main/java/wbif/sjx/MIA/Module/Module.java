@@ -7,6 +7,8 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by sc13967 on 02/05/2017.
  */
@@ -83,7 +85,7 @@ public abstract class Module implements Comparable {
 
     public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
+    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs(@Nullable ModuleCollection modules);
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 

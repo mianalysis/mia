@@ -267,7 +267,7 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);

@@ -73,7 +73,7 @@ public class MeasureObjectColocalisation extends Module {
             measurePCC(inputObject,image1,image2);
         }
 
-        if (showOutput) objects.showMeasurements(this);
+        if (showOutput) objects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -101,7 +101,7 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);

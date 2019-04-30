@@ -404,8 +404,8 @@ public class MeasureTrackMotion extends Module {
 
         }
 
-        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this);
-        if (showOutput) trackObjects.showMeasurements(this);
+        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) trackObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -446,7 +446,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);

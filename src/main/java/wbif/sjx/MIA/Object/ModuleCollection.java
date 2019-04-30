@@ -59,8 +59,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementRefs =
-                    module.updateAndGetObjectMeasurementRefs();
+            MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs(this);
             if (currentMeasurementRefs == null) continue;
 
             for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {

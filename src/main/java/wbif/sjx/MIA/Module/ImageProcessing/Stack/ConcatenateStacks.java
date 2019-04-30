@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import ij.process.LUT;
 import net.imagej.ImgPlus;
@@ -307,7 +306,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

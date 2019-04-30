@@ -606,8 +606,29 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+        objectMeasurementRefs.setAllCalculated(false);
+
+        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+
+            // Getting object measurement references associated with this object set
+            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+
+            for (MeasurementRef reference:references.values()) {
+                MeasurementRef newRef = reference.duplicate();
+                newRef.setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.add(newRef);
+            }
+
+            return objectMeasurementRefs;
+
+        }
+
         return null;
+
     }
 
     @Override

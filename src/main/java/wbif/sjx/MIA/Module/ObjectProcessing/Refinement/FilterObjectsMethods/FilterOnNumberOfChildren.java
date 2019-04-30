@@ -3,14 +3,12 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods;
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
-import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -157,7 +155,27 @@ public class FilterOnNumberOfChildren extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+        objectMeasurementRefs.setAllCalculated(false);
+
+        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+
+            // Getting object measurement references associated with this object set
+            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+
+            for (MeasurementRef reference:references.values()) {
+                MeasurementRef newRef = reference.duplicate();
+                newRef.setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.add(newRef);
+            }
+
+            return objectMeasurementRefs;
+
+        }
+
         return null;
     }
 
