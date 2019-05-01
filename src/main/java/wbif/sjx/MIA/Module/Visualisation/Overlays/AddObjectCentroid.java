@@ -207,7 +207,7 @@ public class AddObjectCentroid extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

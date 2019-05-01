@@ -104,7 +104,7 @@
 //            e.printStackTrace();
 //        }
 //
-//        if (showOutput) inputObjects.showMeasurements(this);
+//        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 //
 //        return true;
 //

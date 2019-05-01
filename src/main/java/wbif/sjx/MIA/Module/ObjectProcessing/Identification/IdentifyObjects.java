@@ -189,7 +189,7 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

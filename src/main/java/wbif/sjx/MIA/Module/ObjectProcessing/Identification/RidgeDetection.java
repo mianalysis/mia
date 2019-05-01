@@ -312,7 +312,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);

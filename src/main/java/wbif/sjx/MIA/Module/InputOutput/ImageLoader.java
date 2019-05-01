@@ -61,9 +61,7 @@ import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRa
  */
 public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String LOADER_SEPARATOR = "Core image loading controls";
-    public static final String OUTPUT_MODE = "Output mode";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String IMPORT_MODE = "Import mode";
     public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
@@ -101,14 +99,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
 
-
-    public interface OutputModes {
-        String IMAGE = "Image";
-        String OBJECTS = "Objects";
-
-        String[] ALL = new String[]{IMAGE,OBJECTS};
-
-    }
 
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
@@ -544,9 +534,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     @Override
     public boolean process(Workspace workspace) {
         // Getting parameters
-        String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
         int numberOfZeroes = parameters.getValue(NUMBER_OF_ZEROES);
@@ -582,6 +570,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // Series number comes from the Workspace
         int seriesNumber = workspace.getMetadata().getSeriesNumber();
+
+        // ImageJ reader can't use crop
+        if (useImageJReader) cropMode = CropModes.NONE;
 
         String[] dimRanges = new String[]{channels,slices,frames};
 
@@ -726,42 +717,16 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Adding image to workspace
-        switch (outputMode) {
-            case OutputModes.IMAGE:
-                writeMessage("Adding image (" + outputImageName + ") to workspace");
-                Image outputImage = new Image(outputImageName, ipl);
-                workspace.addImage(outputImage);
+        writeMessage("Adding image (" + outputImageName + ") to workspace");
+        Image outputImage = new Image(outputImageName, ipl);
+        workspace.addImage(outputImage);
 
-                if (showOutput) outputImage.showImage();
+        if (showOutput) outputImage.showImage();
 
-                // If a crop was drawn, recording these coordinates as an image measurement
-                switch (cropMode) {
-                    case CropModes.FROM_REFERENCE:
-                        addCropMeasurements(outputImage, crop);
-                        break;
-                }
-
-                break;
-
-            case OutputModes.OBJECTS:
-                outputImage = new Image(outputObjectsName, ipl);
-                ObjCollection outputObjects = null;
-                try {
-                    outputObjects = outputImage.convertImageToObjects(outputObjectsName);
-                } catch (IntegerOverflowException e) {
-                    return false;
-                }
-
-                writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
-                workspace.addObjects(outputObjects);
-
-                if (showOutput) outputImage.showImage();
-                switch (cropMode) {
-                    case CropModes.FROM_REFERENCE:
-                        addCropMeasurements(outputObjects, crop);
-                        break;
-                }
-
+        // If a crop was drawn, recording these coordinates as an image measurement
+        switch (cropMode) {
+            case CropModes.FROM_REFERENCE:
+                addCropMeasurements(outputImage, crop);
                 break;
         }
 
@@ -772,16 +737,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
-        parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.IMAGE, OutputModes.ALL));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
-        parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.add(new BooleanP(USE_IMAGEJ_READER, this,false));
-        parameters.add(new IntegerP(NUMBER_OF_ZEROES,this,4));
-        parameters.add(new IntegerP(STARTING_INDEX,this,0));
-        parameters.add(new IntegerP(FRAME_INTERVAL,this,1));
-        parameters.add(new BooleanP(LIMIT_FRAMES,this,false));
-        parameters.add(new IntegerP(FINAL_INDEX,this,1));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name assigned to the image."));
+        parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL,"File reader mode to use." +
+                "<br>- \"Current file\" (default option) will import the current root-file for the workspace." +
+                "<br>- \"From ImageJ\" will load the active image fromm ImageJ." +
+                "<br>- \"Image sequence\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.  " +
+                "<br>- \"Matching format\" will load the image matching a filename based on the root-file for the workspace and a series of rules.  " +
+                "<br>- \"Specific file\" will load the image at a specific location."));
+        parameters.add(new BooleanP(USE_IMAGEJ_READER, this,false,"Use the stock ImageJ file reader, rather than the default BioFormats reader."));
+        parameters.add(new IntegerP(NUMBER_OF_ZEROES,this,4,"Number of digits in image sequence suffix."));
+        parameters.add(new IntegerP(STARTING_INDEX,this,0,"First number in sequence to load."));
+        parameters.add(new IntegerP(FRAME_INTERVAL,this,1,"Frame interval to use for loading."));
+        parameters.add(new BooleanP(LIMIT_FRAMES,this,false,"When \"true\" this will load a pre-determined number of frames.  When \"false\" it will load all the available images."));
+        parameters.add(new IntegerP(FINAL_INDEX,this,1,"Final number in sequence to load."));
         parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.HUYGENS,NameFormats.ALL));
         parameters.add(new StringP(COMMENT,this));
         parameters.add(new StringP(PREFIX,this));
@@ -817,17 +785,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
-        switch ((String) parameters.getValue(OUTPUT_MODE)) {
-            case OutputModes.IMAGE:
-                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-                break;
-
-            case OutputModes.OBJECTS:
-                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-                break;
-        }
-
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
         switch((String) parameters.getValue(IMPORT_MODE)) {
             case ImportModes.CURRENT_FILE:
@@ -878,26 +836,31 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
-        if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
-                !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
-                        && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
-            returnedParameters.add(parameters.getParameter(CHANNELS));
-            returnedParameters.add(parameters.getParameter(SLICES));
-            returnedParameters.add(parameters.getParameter(FRAMES));
+        if (!((boolean) parameters.getValue(USE_IMAGEJ_READER))) {
+            if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
+                    !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
+                            && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
+                returnedParameters.add(parameters.getParameter(CHANNELS));
+                returnedParameters.add(parameters.getParameter(SLICES));
+                returnedParameters.add(parameters.getParameter(FRAMES));
+            }
         }
+
         returnedParameters.add(parameters.getParameter(THREE_D_MODE));
 
-        returnedParameters.add(parameters.getParameter(CROP_MODE));
-        switch ((String) parameters.getValue(CROP_MODE)) {
-            case CropModes.FIXED:
-                returnedParameters.add(parameters.getParameter(LEFT));
-                returnedParameters.add(parameters.getParameter(TOP));
-                returnedParameters.add(parameters.getParameter(WIDTH));
-                returnedParameters.add(parameters.getParameter(HEIGHT));
-                break;
-            case CropModes.FROM_REFERENCE:
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-                break;
+        if (!((boolean) parameters.getValue(USE_IMAGEJ_READER))) {
+            returnedParameters.add(parameters.getParameter(CROP_MODE));
+            switch ((String) parameters.getValue(CROP_MODE)) {
+                case CropModes.FIXED:
+                    returnedParameters.add(parameters.getParameter(LEFT));
+                    returnedParameters.add(parameters.getParameter(TOP));
+                    returnedParameters.add(parameters.getParameter(WIDTH));
+                    returnedParameters.add(parameters.getParameter(HEIGHT));
+                    break;
+                case CropModes.FROM_REFERENCE:
+                    returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                    break;
+            }
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
@@ -907,12 +870,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(Z_CAL));
         }
 
-        returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
-        if (parameters.getValue(FORCE_BIT_DEPTH)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
-            if (!parameters.getValue(OUTPUT_BIT_DEPTH).equals(OutputBitDepths.THIRTY_TWO)) {
-                returnedParameters.add(parameters.getParameter(MIN_INPUT_INTENSITY));
-                returnedParameters.add(parameters.getParameter(MAX_INPUT_INTENSITY));
+        if (!((boolean) parameters.getValue(USE_IMAGEJ_READER))) {
+            returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
+            if (parameters.getValue(FORCE_BIT_DEPTH)) {
+                returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
+                if (!parameters.getValue(OUTPUT_BIT_DEPTH).equals(OutputBitDepths.THIRTY_TWO)) {
+                    returnedParameters.add(parameters.getParameter(MIN_INPUT_INTENSITY));
+                    returnedParameters.add(parameters.getParameter(MAX_INPUT_INTENSITY));
+                }
             }
         }
 
@@ -924,17 +889,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         imageMeasurementRefs.setAllCalculated(false);
 
-        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.IMAGE)) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-            switch ((String) parameters.getValue(CROP_MODE)) {
-                case CropModes.FROM_REFERENCE:
-                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputImageName));
-                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputImageName));
-                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputImageName));
-                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputImageName));
-                    break;
-            }
+        switch ((String) parameters.getValue(CROP_MODE)) {
+            case CropModes.FROM_REFERENCE:
+                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputImageName));
+                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputImageName));
+                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputImageName));
+                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputImageName));
+                break;
         }
 
         return imageMeasurementRefs;
@@ -942,23 +905,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
-
-        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.OBJECTS)) {
-            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-
-            switch ((String) parameters.getValue(CROP_MODE)) {
-                case CropModes.FROM_REFERENCE:
-                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputObjectsName));
-                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputObjectsName));
-                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputObjectsName));
-                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputObjectsName));
-                    break;
-            }
-        }
-
-        return objectMeasurementRefs;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+        return null;
 
     }
 

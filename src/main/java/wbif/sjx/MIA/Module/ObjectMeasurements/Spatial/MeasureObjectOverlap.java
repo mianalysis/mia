@@ -128,8 +128,8 @@ public class MeasureObjectOverlap extends Module {
 
         }
 
-        if (showOutput) inputObjects1.showMeasurements(this);
-        if (showOutput) inputObjects2.showMeasurements(this);
+        if (showOutput) inputObjects1.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects2.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -155,7 +155,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         String objects1Name = parameters.getValue(OBJECT_SET_1);

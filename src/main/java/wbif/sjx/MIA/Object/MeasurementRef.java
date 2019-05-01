@@ -137,6 +137,25 @@ public class MeasurementRef extends Reference {
         this.nickname = nickname;
     }
 
+    public MeasurementRef duplicate() {
+        MeasurementRef newRef = new MeasurementRef(name);
+
+        newRef.setCalculated(calculated);
+        newRef.setImageObjName(imageObjName);
+        newRef.setDescription(description);
+        newRef.setNickname(nickname);
+        newRef.setExportGlobal(exportGlobal);
+        newRef.setExportIndividual(exportIndividual);
+        newRef.setExportMean(exportMean);
+        newRef.setExportMin(exportMin);
+        newRef.setExportMax(exportMax);
+        newRef.setExportSum(exportSum);
+        newRef.setExportStd(exportStd);
+
+        return newRef;
+
+    }
+
     @Override
     public String toString() {
         return "Measurement reference ("+name+")";

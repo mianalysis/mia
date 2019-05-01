@@ -369,14 +369,8 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
-    public void updateModuleStates(boolean verbose) {
-        int nRunnable = AnalysisTester.testModules(GUI.getModules());
-        int nActive = 0;
-        for (Module module:GUI.getModules()) if (module.isEnabled()) nActive++;
-        int nModules = GUI.getModules().size();
-        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
+    public void updateModuleStates() {
         modulesPanel.updateButtonStates();
-
     }
 
     @Override

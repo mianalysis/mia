@@ -3,6 +3,7 @@ package wbif.sjx.MIA.GUI.Panels;
 import wbif.sjx.MIA.GUI.ControlObjects.HelpArea;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
@@ -25,6 +26,7 @@ public class HelpPanel extends JPanel {
 
     public void updatePanel() {
         Module activeModule = GUI.getActiveModule();
+        ModuleCollection modules = GUI.getModules();
 
         removeAll();
 
@@ -48,7 +50,7 @@ public class HelpPanel extends JPanel {
         add(separator,c);
 
         // If no Module is selected, also skip
-        HelpArea helpArea = new HelpArea(activeModule);
+        HelpArea helpArea = new HelpArea(activeModule,modules);
 
         JScrollPane jsp = new JScrollPane(helpArea);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

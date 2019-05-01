@@ -59,7 +59,7 @@ public class Workspace {
         }
 
         // Running garbage collector
-        Runtime.getRuntime().gc();
+//        Runtime.getRuntime().gc();
 
     }
 
@@ -75,7 +75,7 @@ public class Workspace {
         }
 
         // Running garbage collector
-        Runtime.getRuntime().gc();
+//        Runtime.getRuntime().gc();
 
     }
 

@@ -194,7 +194,7 @@ public class CalculateMeasurementPeriodogram extends Module {
             }
         }
 
-        if (showOutput) trackObjects.showMeasurements(this);
+        if (showOutput) trackObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -249,7 +249,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);

@@ -47,6 +47,7 @@ public class BasicControlPanel extends JScrollPane {
     public void updatePanel() {
         AnalysisTester.testModule(GUI.getAnalysis().getInputControl(),GUI.getModules());
         AnalysisTester.testModule(GUI.getAnalysis().getOutputControl(),GUI.getModules());
+        AnalysisTester.testModules(GUI.getModules());
 
         int frameWidth = GUI.getMinimumFrameWidth();
         Analysis analysis = GUI.getAnalysis();

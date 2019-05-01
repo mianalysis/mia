@@ -156,7 +156,7 @@ public class MeasureObjectShape extends Module {
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -186,7 +186,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

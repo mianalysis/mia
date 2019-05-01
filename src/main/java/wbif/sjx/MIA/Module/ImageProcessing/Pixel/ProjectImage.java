@@ -171,7 +171,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

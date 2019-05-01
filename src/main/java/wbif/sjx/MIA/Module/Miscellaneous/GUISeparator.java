@@ -2,13 +2,10 @@ package wbif.sjx.MIA.Module.Miscellaneous;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.MetadataRefCollection;
+import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.RelationshipCollection;
-import wbif.sjx.MIA.Object.Workspace;
 
 /**
  * Created by sc13967 on 14/03/2018.
@@ -62,7 +59,7 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

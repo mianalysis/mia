@@ -16,10 +16,14 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 
 public class MergeTracks extends Module implements ActionListener {
+    public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
+
+    public static final String DISPLAY_SEPARATOR = "Display controls";
     public static final String SHOW_IMAGE = "Show image";
     public static final String DISPLAY_IMAGE_NAME = "Image to display";
+    public static final String MEASUREMENT_WARNING = "Measurement warning";
 
     private static final String MERGE = "Merge";
     private static final String FINISH_ADDING = "Finish adding";
@@ -185,10 +189,14 @@ public class MergeTracks extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
+
+        parameters.add(new ParamSeparatorP(DISPLAY_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
+        parameters.add(new MessageP(MEASUREMENT_WARNING,this,"Previously-acquired measurements for merged objects may become invalid.  During merging, the measurement associated with the object specified first will be retained.",Color.RED));
 
     }
 
@@ -196,14 +204,17 @@ public class MergeTracks extends Module implements ActionListener {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
+        returnedParameters.add(parameters.getParameter(DISPLAY_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
         returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE_NAME));
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_WARNING));
 
         return returnedParameters;
 
@@ -215,7 +226,7 @@ public class MergeTracks extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

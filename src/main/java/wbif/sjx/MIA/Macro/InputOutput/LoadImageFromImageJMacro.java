@@ -26,9 +26,7 @@ public class LoadImageFromImageJMacro extends MacroOperation {
         ImageLoader imageLoader = new ImageLoader();
 
         // Updating parameters
-        imageLoader.updateParameterValue(ImageLoader.OUTPUT_MODE,ImageLoader.OutputModes.IMAGE);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,(String) objects[0]);
-        imageLoader.updateParameterValue(ImageLoader.OUTPUT_OBJECTS,"");
         imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE,ImageLoader.ImportModes.IMAGEJ);
         imageLoader.updateParameterValue(ImageLoader.NUMBER_OF_ZEROES,0);
         imageLoader.updateParameterValue(ImageLoader.STARTING_INDEX,0);

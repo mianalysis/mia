@@ -255,7 +255,7 @@ public class Exporter {
             MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
             prepareMeasurementRefsXML(doc, measurementsElement,imageReferences,"IMAGE");
 
-            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
+            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs(modules);
             prepareMeasurementRefsXML(doc, measurementsElement,objectReferences,"OBJECTS");
 
             moduleElement.appendChild(measurementsElement);

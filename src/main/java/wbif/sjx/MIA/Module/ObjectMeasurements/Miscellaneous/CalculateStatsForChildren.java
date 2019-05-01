@@ -106,7 +106,7 @@ public class CalculateStatsForChildren extends Module {
             processObject(parentObject,childObjectsName,measurement,statsToCalculate);
         }
 
-        if (showOutput) parentObjects.showMeasurements(this);
+        if (showOutput) parentObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -154,7 +154,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);

@@ -1,11 +1,8 @@
 package wbif.sjx.MIA.GUI.InputOutput;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.MetadataRefCollection;
+import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.RelationshipCollection;
-import wbif.sjx.MIA.Object.Workspace;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -210,7 +207,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         return null;
     }
 

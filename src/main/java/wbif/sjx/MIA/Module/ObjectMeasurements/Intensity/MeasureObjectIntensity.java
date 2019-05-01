@@ -289,7 +289,7 @@ public class MeasureObjectIntensity extends Module {
             for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl);
         }
 
-        if (showOutput) objects.showMeasurements(this);
+        if (showOutput) objects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -347,7 +347,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 

@@ -3,16 +3,17 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.MeasurementRef;
 import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
 
 public class HelpArea extends JTextPane {
-    public HelpArea(Module module) {
+    public HelpArea(Module module, ModuleCollection modules) {
         setContentType("text/html");
         if (module != null) {
-            setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(module)+"</font></body></html>");
+            setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(module,modules)+"</font></body></html>");
         }
 
         setBackground(null);
@@ -24,7 +25,7 @@ public class HelpArea extends JTextPane {
 
     }
 
-    private static String getHelpText(Module module) {
+    private static String getHelpText(Module module, ModuleCollection modules) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<b>DESCRIPTION</b><br>")
@@ -36,7 +37,7 @@ public class HelpArea extends JTextPane {
 
         sb.append("<br>");
 
-        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
+        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs(modules);
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");

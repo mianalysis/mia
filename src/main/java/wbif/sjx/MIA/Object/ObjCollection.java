@@ -202,9 +202,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
      * Displays measurement values from a specific Module
      * @param module
      */
-    public void showMeasurements(Module module) {
+    public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
+        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs(modules);
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();

@@ -679,7 +679,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
         objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
