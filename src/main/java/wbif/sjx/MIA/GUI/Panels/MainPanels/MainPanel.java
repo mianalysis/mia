@@ -7,7 +7,7 @@ import javax.swing.*;
 public abstract class MainPanel extends JPanel {
     public abstract void updatePanel();
     public abstract void updateModules();
-    public abstract void updateModuleStates(boolean verbose);
+    public abstract void updateModuleStates();
     public abstract void updateParameters();
     public abstract void updateHelpNotes();
 

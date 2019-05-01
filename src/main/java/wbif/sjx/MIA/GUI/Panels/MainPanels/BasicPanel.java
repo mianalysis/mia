@@ -183,8 +183,8 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
-    public void updateModuleStates(boolean verbose) {
-
+    public void updateModuleStates() {
+        controlPanel.updatePanel();
     }
 
     @Override

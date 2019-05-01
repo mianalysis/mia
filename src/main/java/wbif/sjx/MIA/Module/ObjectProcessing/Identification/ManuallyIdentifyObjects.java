@@ -269,7 +269,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     @Override
     public boolean process(Workspace workspace) {// Local access to this is required for the action listeners
         this.workspace = workspace;
-        listModel.clear();
 
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -294,7 +293,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
-        list.removeAll();
+        listModel.clear();
 
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName);
@@ -473,6 +472,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Processing each list of Rois, then converting them to objects
         for (int ID:rois.keySet()) {
             ArrayList<ObjRoi> currentRois = rois.get(ID);
+
+            // This Obj may be empty; if so, skip it
+            if (currentRois.size() == 0) continue;
 
             // Creating the new object
             Obj outputObject = new Obj(outputObjectsName, ID, dppXY, dppZ, calibrationUnits, twoD);

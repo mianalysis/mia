@@ -182,7 +182,14 @@ public class GUI {
     }
 
     public static void updateModuleStates(boolean verbose) {
-        mainPanel.updateModuleStates(verbose);
+        int nRunnable = AnalysisTester.testModules(getModules());
+        int nActive = 0;
+        for (Module module:getModules()) if (module.isEnabled()) nActive++;
+        int nModules = getModules().size();
+        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
+
+        mainPanel.updateModuleStates();
+
     }
 
     public static ComponentFactory getComponentFactory() {
