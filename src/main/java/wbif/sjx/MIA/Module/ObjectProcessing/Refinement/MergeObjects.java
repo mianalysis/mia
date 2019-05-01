@@ -6,6 +6,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
@@ -15,6 +16,7 @@ import java.util.HashMap;
  * Created by sc13967 on 31/01/2018.
  */
 public class MergeObjects extends Module {
+    public static final String INPUT_SEPARATOR = "Objects input/output";
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -89,6 +91,7 @@ public class MergeObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
