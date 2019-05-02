@@ -10,6 +10,7 @@ public abstract class MainPanel extends JPanel {
     public abstract void updateModuleStates();
     public abstract void updateParameters();
     public abstract void updateHelpNotes();
+    public abstract void repaintStatusPanel();
 
     public abstract int getPreferredWidth();
     public abstract int getMinimumWidth();

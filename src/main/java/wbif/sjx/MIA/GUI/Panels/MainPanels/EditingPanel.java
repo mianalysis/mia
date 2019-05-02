@@ -395,6 +395,11 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
+    public void repaintStatusPanel() {
+        statusPanel.repaint();
+    }
+
+    @Override
     public boolean showHelpNotes() {
         return showHelpNotes;
     }

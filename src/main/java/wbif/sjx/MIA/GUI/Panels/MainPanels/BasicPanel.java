@@ -215,6 +215,11 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
+    public void repaintStatusPanel() {
+        statusPanel.repaint();
+    }
+
+    @Override
     public int getPreferredWidth() {
         if (showHelpNotes) {
             return frameWidth + 315;

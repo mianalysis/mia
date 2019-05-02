@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.TimeUnit;
@@ -64,5 +66,11 @@ public class StatusTextField extends JLabel implements MouseListener{
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        GUI.repaintStatusPanel();
     }
 }

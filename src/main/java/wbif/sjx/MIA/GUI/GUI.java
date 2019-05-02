@@ -84,6 +84,7 @@ public class GUI {
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(),mainPanel.getPreferredHeight()));
+        frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"),"").getImage());
 
         mainPanel.updatePanel();
 
@@ -92,6 +93,8 @@ public class GUI {
         frame.pack();
         frame.setVisible(true);
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2, (screenSize.height - frameHeight) / 2);
+
+        updatePanel();
 
     }
 
@@ -198,6 +201,10 @@ public class GUI {
 
     public static JFrame getFrame() {
         return frame;
+    }
+
+    public static void repaintStatusPanel() {
+        mainPanel.repaintStatusPanel();
     }
 
     public static boolean isBasicGUI() {
