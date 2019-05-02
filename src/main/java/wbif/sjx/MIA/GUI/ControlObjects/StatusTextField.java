@@ -71,6 +71,6 @@ public class StatusTextField extends JLabel implements MouseListener{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        GUI.repaintStatusPanel();
+
     }
 }

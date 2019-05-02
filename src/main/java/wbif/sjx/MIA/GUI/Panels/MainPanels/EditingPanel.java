@@ -396,6 +396,7 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void repaintStatusPanel() {
+        System.out.println("repaint");
         statusPanel.repaint();
     }
 

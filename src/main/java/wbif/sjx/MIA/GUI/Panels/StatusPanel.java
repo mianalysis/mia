@@ -18,22 +18,21 @@ public class StatusPanel extends JPanel {
         setMinimumSize(new Dimension(0,statusHeight+15));
         setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
         setPreferredSize(new Dimension(frameWidth-30,statusHeight+15));
-        setOpaque(false);
 
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        Rectangle bounds = g.getClipBounds();
-        int width = logo.getIconWidth();
-        int height = logo.getIconHeight();
-
-        int x = bounds.width-width;
-        int y = (bounds.height-width)/2;
-
-        g.drawImage(logo.getImage(),x,0,null);
-
-    }
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//
+//        Rectangle bounds = g.getClipBounds();
+//        int width = logo.getIconWidth();
+//        int height = logo.getIconHeight();
+//
+//        int x = bounds.width-width;
+//        int y = (bounds.height-width)/2;
+//
+//        g.drawImage(logo.getImage(),x,0,null);
+//
+//    }
 }

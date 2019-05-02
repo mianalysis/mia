@@ -175,7 +175,6 @@ public class ManualUnwarp extends Module implements Interactable {
 
         // Invert the intensity before applying transformation if using white fill
         if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(inputIpl);
-        if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(outputIpl);
 
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
@@ -195,7 +194,7 @@ public class ManualUnwarp extends Module implements Interactable {
                     Runnable task = () -> {
                         ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
                         bUnwarpJ_.applyTransformToSource(tempPath, outputImage.getImagePlus(), slice);
-                        ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
+                        ImageTypeConverter.applyConversion(slice, inputIpl.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
 
                         getSetStack(outputIpl, finalT, finalC, finalZ, slice.getProcessor());
 
@@ -208,7 +207,6 @@ public class ManualUnwarp extends Module implements Interactable {
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        // If using white fill, invert the image again
         if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(outputIpl);
 
     }
@@ -252,7 +250,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
     }
 
-    public Image processManual(Image inputImage, String outputImageName, Image reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
+    public Image process(Image inputImage, String outputImageName, Image reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
         // Converting point pairs into format for bUnwarpJ
         Stack<Point> points1 = new Stack<>();
         Stack<Point> points2 = new Stack<>();
@@ -400,7 +398,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
         Image outputImage = null;
         try {
-            outputImage = processManual(inputImage, outputImageName, reference, pairs, param, fillMode, multithread);
+            outputImage = process(inputImage, outputImageName, reference, pairs, param, fillMode, multithread);
 
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.Converter;
 import ij.plugin.Duplicator;
 import ij.process.StackStatistics;
 import wbif.sjx.MIA.Module.Module;
@@ -77,18 +78,24 @@ public class ImageTypeConverter extends Module {
         }
 
         // Converting to requested type
-        switch (outputBitDepth) {
-            case 8:
-                IJ.run(inputImagePlus, "8-bit", null);
-                break;
-            case 16:
-                IJ.run(inputImagePlus, "16-bit", null);
-                break;
-            case 32:
-                IJ.run(inputImagePlus, "32-bit", null);
-                break;
+        for (int z = 0; z < inputImagePlus.getNSlices(); z++) {
+            for (int c = 0; c < inputImagePlus.getNChannels(); c++) {
+                for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
+                    inputImagePlus.setPosition(c+1,z+1,t+1);
+                    switch (outputBitDepth) {
+                        case 8:
+                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToByte(false));
+                            break;
+                        case 16:
+                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToShort(false));
+                            break;
+                        case 32:
+                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToFloat());
+                            break;
+                    }
+                }
+            }
         }
-
     }
 
     /**
