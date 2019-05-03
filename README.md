@@ -2,8 +2,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 [![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
-<img src="./docs/images/Logo_128.png" width="128" align="left"><h1>MIA (ModularImageAnalysis)</h1>
-______
+<img src="./docs/images/Logo_text_92.png" width="500">
 
 MIA is an ImageJ/Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.</div>
 
