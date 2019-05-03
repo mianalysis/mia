@@ -44,17 +44,19 @@ public class FilterOnMeasurement extends Module {
     }
 
 
-    public String getMetadataName(String inputObjectsName, String filterMethod, String parentObjectsName) {
+    public String getFixedValueFullName(String inputObjectsName, String filterMethod, String measName, String referenceValue) {
         String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
+        return "FILTER // NUM_" + inputObjectsName + " WITH " + measName + filterMethodSymbol + " " + referenceValue;
+    }
 
-        switch (filterMethod) {
-            case FilterMethods.WITH_PARENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITH " + parentObjectsName + " PARENT";
-            case FilterMethods.WITHOUT_PARENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + parentObjectsName + " PARENT";
-            default:
-                return "";
-        }
+    public String getImageMeasFullName(String inputObjectsName, String filterMethod, String measName, String imageName, String refName) {
+        String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
+        return "FILTER // NUM_" + inputObjectsName + " WITH " + imageName + " " + measName + filterMethodSymbol + " " + refName;
+    }
+
+    public String getParentMeasFullName(String inputObjectsName, String filterMethod, String measName, String parentName, String refName) {
+        String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
+        return "FILTER // NUM_" + inputObjectsName + " WITH " + parentName + " " + measName + filterMethodSymbol + " " + refName;
     }
 
 
@@ -83,7 +85,14 @@ public class FilterOnMeasurement extends Module {
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String filterMethod = parameters.getValue(FILTER_METHOD);
-        String parentObjectName = parameters.getValue(PARENT_OBJECT);
+        String measName = parameters.getValue(MEASUREMENT);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
+        double fixedValue = parameters.getValue(REFERENCE_VALUE);
+        String refImage = parameters.getValue(REFERENCE_VAL_IMAGE);
+        String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
+        String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
+        String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
+        double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS);
@@ -96,21 +105,38 @@ public class FilterOnMeasurement extends Module {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
-            boolean toRemove = false;
-            switch (filterMethod) {
-                case FilterMethods.WITH_PARENT:
-                    if (parents.get(parentObjectName) != null) {
-                        count++;
-                        if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    }
+            // Removing the object if it has no children
+            Measurement measurement = inputObject.getMeasurement(measName);
+            if (measurement == null) continue;
+
+            // Getting the values to filter on
+            double value = measurement.getValue();
+            double refValue;
+            switch (referenceMode) {
+                case ReferenceModes.FIXED_VALUE:
+                    refValue = fixedValue;
+                    refMultiplier = 1;
                     break;
-                case FilterMethods.WITHOUT_PARENT:
-                    if (parents.get(parentObjectName) == null) {
-                        count++;
-                        if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    }
+                case ReferenceModes.IMAGE_MEASUREMENT:
+                    refValue = workspace.getImage(refImage).getMeasurement(refImageMeas).getValue();
                     break;
+                case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                    Obj parentObject = inputObject.getParent(refParent);
+                    if (parentObject == null) continue;
+                    refValue = parentObject.getMeasurement(refParentMeas).getValue();
+                    break;
+                default:
+                    return false;
+            }
+            refValue = refValue*refMultiplier;
+
+            // Checking for blank measurements
+            if (Double.isNaN(refValue) || Double.isNaN(value)) continue;
+
+            // Checking the main filter
+            if (testFilter(value,refValue,filterMethod)) {
+                count++;
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
 
@@ -118,19 +144,22 @@ public class FilterOnMeasurement extends Module {
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectName);
+        String metadataName = "";
+        switch (referenceMode) {
+            case ReferenceModes.FIXED_VALUE:
+                metadataName = getFixedValueFullName(inputObjectsName,filterMethod,measName,String.valueOf(fixedValue));
+                break;
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                metadataName = getImageMeasFullName(inputObjectsName,filterMethod,measName,refImage,refImageMeas);
+                break;
+            case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                metadataName = getParentMeasFullName(inputObjectsName,filterMethod,measName,refParent,refParentMeas);
+                break;
+        }
         workspace.getMetadata().put(metadataName,count);
 
         // Showing objects
-        if (showOutput) {
-            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
-            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus();
-            dispIpl.setLut(LUTs.Random(true));
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
-        }
+        if (showOutput) showRemainingObjects(inputObjects);
 
         return true;
 
@@ -239,10 +268,28 @@ public class FilterOnMeasurement extends Module {
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String referenceMode = parameters.getValue(REFERENCE_MODE);
             String filterMethod = parameters.getValue(FILTER_METHOD);
-            String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+            String measName = parameters.getValue(MEASUREMENT);
+            double fixedValue = parameters.getValue(REFERENCE_VALUE);
+            String refImage = parameters.getValue(REFERENCE_VAL_IMAGE);
+            String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
+            String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
+            String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
+            double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
 
-            String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectsName);
+            String metadataName = "";
+            switch (referenceMode) {
+                case ReferenceModes.FIXED_VALUE:
+                    metadataName = getFixedValueFullName(inputObjectsName,filterMethod,measName,String.valueOf(fixedValue));
+                    break;
+                case ReferenceModes.IMAGE_MEASUREMENT:
+                    metadataName = getImageMeasFullName(inputObjectsName,filterMethod,measName,refImage,refImageMeas);
+                    break;
+                case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                    metadataName = getParentMeasFullName(inputObjectsName,filterMethod,measName,refParent,refParentMeas);
+                    break;
+            }
 
             metadataReferences.add(new MetadataReference(metadataName));
 

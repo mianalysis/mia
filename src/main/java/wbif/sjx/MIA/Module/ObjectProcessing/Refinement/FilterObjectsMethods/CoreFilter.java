@@ -1,8 +1,13 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods;
 
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.Object.LUTs;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class CoreFilter {
@@ -69,5 +74,16 @@ public abstract class CoreFilter {
             outputObjects.add(inputObject);
         }
         iterator.remove();
+    }
+
+    static void showRemainingObjects(ObjCollection inputObjects) {
+        HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
+        String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+        ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus();
+        dispIpl.setLut(LUTs.Random(true));
+        dispIpl.setPosition(1,1,1);
+        dispIpl.updateChannelAndDraw();
+        dispIpl.show();
+
     }
 }

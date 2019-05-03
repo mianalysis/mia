@@ -71,8 +71,8 @@ public class FilterObjects extends Module implements ActionListener {
         String WITH_PARENT = "Remove objects with a parent"; // TRANSFERRED
         String MIN_NUMBER_OF_CHILDREN = "Remove objects with fewer children than:"; // TRANSFERRED
         String MAX_NUMBER_OF_CHILDREN = "Remove objects with more children than:"; // TRANSFERRED
-        String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
-        String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
+        String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:"; // TRANSFERRED
+        String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:"; // TRANSFERRED
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)"; // TRANSFERRED
         String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)";
 
