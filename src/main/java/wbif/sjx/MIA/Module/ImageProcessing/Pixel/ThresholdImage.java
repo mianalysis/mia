@@ -4,10 +4,12 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -248,14 +250,14 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (!thresholdType.equals(ThresholdTypes.MANUAL) && inputImagePlus.getBitDepth() != 8) {
-            IntensityMinMax.run(inputImagePlus, true, 0, IntensityMinMax.PROCESS_PRECISE);
-            IJ.run(inputImagePlus, "8-bit", null);
+            new ImageJ();
+            ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
         }
 
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL:
-                writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
+                writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multiplier = "+thrMult+" x)");
                 threshold = runGlobalThresholdOnStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
 
                 break;

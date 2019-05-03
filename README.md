@@ -1,10 +1,11 @@
-MIA (ModularImageAnalysis)
-==========================
 [![TravisCI](https://travis-ci.com/SJCross/MIA.svg?branch=master)](https://travis-ci.com/SJCross/MIA)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 [![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
-This ImageJ/Fiji plugin provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.
+<img src="./docs/images/Logo_128.png" width="128" align="left"><h1>MIA (ModularImageAnalysis)</h1>
+______
+
+MIA is an ImageJ/Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.</div>
 
 MIA is developed in the Wolfson Bioimaging Facility at the University of Bristol.
 
