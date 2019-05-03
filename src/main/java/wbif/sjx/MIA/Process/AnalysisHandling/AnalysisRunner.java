@@ -49,7 +49,6 @@ public class AnalysisRunner {
         batchProcessor.run(analysis,exporter);
 
         // Cleaning up
-//        Runtime.getRuntime().gc();
         System.out.println("Complete!");
 
     }

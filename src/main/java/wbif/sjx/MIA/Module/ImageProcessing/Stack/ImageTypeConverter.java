@@ -67,7 +67,6 @@ public class ImageTypeConverter extends Module {
             case ScalingModes.CLIP:
                 applyClippedRange(inputImagePlus,outputBitDepth);
                 break;
-
             case ScalingModes.FILL:
                 applyFilledRange(inputImagePlus);
                 break;
