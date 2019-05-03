@@ -67,10 +67,4 @@ public class StatusTextField extends JLabel implements MouseListener{
     public void mouseExited(MouseEvent e) {
 
     }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-    }
 }

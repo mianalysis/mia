@@ -23,7 +23,10 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.PrintStream;
 
@@ -201,10 +204,6 @@ public class GUI {
 
     public static JFrame getFrame() {
         return frame;
-    }
-
-    public static void repaintStatusPanel() {
-        mainPanel.repaintStatusPanel();
     }
 
     public static boolean isBasicGUI() {

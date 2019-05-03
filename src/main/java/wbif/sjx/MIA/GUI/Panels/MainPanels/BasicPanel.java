@@ -162,6 +162,7 @@ public class BasicPanel extends MainPanel {
         c.weighty = 1;
         c.insets = new Insets(0,5,0,0);
         c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.BOTH;
 
         statusPanel.add(GUI.getTextField(),c);
         helpNotesPanel.setVisible(showHelpNotes);
@@ -212,11 +213,6 @@ public class BasicPanel extends MainPanel {
 
         helpPanel.updatePanel();
         notesPanel.updatePanel();
-    }
-
-    @Override
-    public void repaintStatusPanel() {
-        statusPanel.repaint();
     }
 
     @Override

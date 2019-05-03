@@ -6,8 +6,8 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-public class StatusPanel extends JPanel {
-    ImageIcon logo = new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_fade_35.png"),"");
+public class StatusPanel extends JLayeredPane {
+//    ImageIcon logo = new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_fade_35.png"),"");
 
     public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
@@ -20,19 +20,4 @@ public class StatusPanel extends JPanel {
         setPreferredSize(new Dimension(frameWidth-30,statusHeight+15));
 
     }
-
-//    @Override
-//    protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-//
-//        Rectangle bounds = g.getClipBounds();
-//        int width = logo.getIconWidth();
-//        int height = logo.getIconHeight();
-//
-//        int x = bounds.width-width;
-//        int y = (bounds.height-width)/2;
-//
-//        g.drawImage(logo.getImage(),x,0,null);
-//
-//    }
 }

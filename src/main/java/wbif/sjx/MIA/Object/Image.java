@@ -123,15 +123,19 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public void showImage(String title, LUT lut) {
+    public void showImage(String title, LUT lut, boolean normalise) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
-        IntensityMinMax.run(dispIpl,true);
+        if (normalise) IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
         dispIpl.setLut(lut);
         dispIpl.show();
 
+    }
+
+    public void showImage(String title, LUT lut) {
+        showImage(title,lut,true);
     }
 
     public void showImage(String title) {
