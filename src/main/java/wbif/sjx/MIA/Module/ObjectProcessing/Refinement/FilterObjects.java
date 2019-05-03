@@ -67,8 +67,8 @@ public class FilterObjects extends Module implements ActionListener {
 
     public interface FilterMethods {
         String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
-        String NO_PARENT = "Remove objects without parent";
-        String WITH_PARENT = "Remove objects with a parent";
+        String NO_PARENT = "Remove objects without parent"; // TRANSFERRED
+        String WITH_PARENT = "Remove objects with a parent"; // TRANSFERRED
         String MIN_NUMBER_OF_CHILDREN = "Remove objects with fewer children than:"; // TRANSFERRED
         String MAX_NUMBER_OF_CHILDREN = "Remove objects with more children than:"; // TRANSFERRED
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";

@@ -1,0 +1,258 @@
+package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods;
+
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.Object.LUTs;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
+import static wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods.CoreFilter.*;
+
+public class FilterOnMeasurement extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
+    public static final String INPUT_OBJECTS = "Input objects";
+    public static final String FILTER_MODE = "Filter mode";
+    public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
+
+    public static final String FILTER_SEPARATOR = "Object filtering";
+    public static final String FILTER_METHOD = "Method for filtering";
+    public static final String MEASUREMENT = "Measurement to filter on";
+    public static final String REFERENCE_MODE = "Reference mode";
+    public static final String REFERENCE_VALUE = "Reference value";
+    public static final String REFERENCE_VAL_IMAGE = "Reference value image";
+    public static final String REFERENCE_IMAGE_MEASUREMENT = "Reference image measurement";
+    public static final String REFERENCE_VAL_PARENT_OBJECT = "Reference value parent object";
+    public static final String REFERENCE_OBJECT_MEASUREMENT = "Reference object measurement";
+    public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
+    public static final String STORE_RESULTS = "Store filter results";
+
+
+    public interface ReferenceModes {
+        String FIXED_VALUE = "Fixed value";
+        String IMAGE_MEASUREMENT = "Image measurement";
+        String PARENT_OBJECT_MEASUREMENT = "Parent object measurement";
+
+        String[] ALL = new String[]{FIXED_VALUE,IMAGE_MEASUREMENT,PARENT_OBJECT_MEASUREMENT};
+
+    }
+
+
+    public String getMetadataName(String inputObjectsName, String filterMethod, String parentObjectsName) {
+        String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
+
+        switch (filterMethod) {
+            case FilterMethods.WITH_PARENT:
+                return "FILTER // NUM_" + inputObjectsName + " WITH " + parentObjectsName + " PARENT";
+            case FilterMethods.WITHOUT_PARENT:
+                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + parentObjectsName + " PARENT";
+            default:
+                return "";
+        }
+    }
+
+
+    @Override
+    public String getTitle() {
+        return "Based on measurement";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
+    }
+
+    @Override
+    public String getHelp() {
+        return "";
+    }
+
+    @Override
+    protected boolean process(Workspace workspace) {
+        // Getting input objects
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting parameters
+        String filterMode = parameters.getValue(FILTER_MODE);
+        String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+        String filterMethod = parameters.getValue(FILTER_METHOD);
+        String parentObjectName = parameters.getValue(PARENT_OBJECT);
+        boolean storeResults = parameters.getValue(STORE_RESULTS);
+
+        boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS);
+        boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
+
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
+
+        int count = 0;
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+            boolean toRemove = false;
+            switch (filterMethod) {
+                case FilterMethods.WITH_PARENT:
+                    if (parents.get(parentObjectName) != null) {
+                        count++;
+                        if (remove) processRemoval(inputObject,outputObjects,iterator);
+                    }
+                    break;
+                case FilterMethods.WITHOUT_PARENT:
+                    if (parents.get(parentObjectName) == null) {
+                        count++;
+                        if (remove) processRemoval(inputObject,outputObjects,iterator);
+                    }
+                    break;
+            }
+        }
+
+        // If moving objects, add them to the workspace
+        if (moveObjects) workspace.addObjects(outputObjects);
+
+        // If storing the result, create a new metadata item for it
+        String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectName);
+        workspace.getMetadata().put(metadataName,count);
+
+        // Showing objects
+        if (showOutput) {
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
+            dispIpl.show();
+        }
+
+        return true;
+
+    }
+
+    @Override
+    protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED_OBJECTS, FilterModes.ALL));
+        parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.EQUAL_TO, FilterMethods.ALL));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.FIXED_VALUE,ReferenceModes.ALL));
+        parameters.add(new DoubleP(REFERENCE_VALUE, this,1d));
+        parameters.add(new InputImageP(REFERENCE_VAL_IMAGE, this));
+        parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT, this));
+        parameters.add(new ParentObjectsP(REFERENCE_VAL_PARENT_OBJECT, this));
+        parameters.add(new ObjectMeasurementP(REFERENCE_OBJECT_MEASUREMENT, this));
+        parameters.add(new DoubleP(REFERENCE_MULTIPLIER, this, 1d));
+        parameters.add(new BooleanP(STORE_RESULTS, this, false));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(FILTER_MODE));
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
+        }
+
+        returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(FILTER_METHOD));
+        returnedParameters.add(parameters.getParameter(MEASUREMENT));
+        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
+        returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
+        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+            case ReferenceModes.FIXED_VALUE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                break;
+
+            case ReferenceModes.IMAGE_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
+                String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE);
+                ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT)).setImageName(referenceValueImageName);
+                break;
+
+            case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
+                String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
+                ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT)).setObjectName(referenceValueParentObjectsName);
+                break;
+        }
+        returnedParameters.add(parameters.getParameter(STORE_RESULTS));
+
+        return returnedParameters;
+
+    }
+
+    @Override
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+        objectMeasurementRefs.setAllCalculated(false);
+
+        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+
+            // Getting object measurement references associated with this object set
+            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+
+            for (MeasurementRef reference:references.values()) {
+                MeasurementRef newRef = reference.duplicate();
+                newRef.setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.add(newRef);
+            }
+
+            return objectMeasurementRefs;
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection metadataReferences = new MetadataRefCollection();
+
+        // Filter results are stored as a metadata item since they apply to the whole set
+        if (parameters.getValue(STORE_RESULTS)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String filterMethod = parameters.getValue(FILTER_METHOD);
+            String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+
+            String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectsName);
+
+            metadataReferences.add(new MetadataReference(metadataName));
+
+        }
+
+        return metadataReferences;
+    }
+
+    @Override
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
+    }
+}
