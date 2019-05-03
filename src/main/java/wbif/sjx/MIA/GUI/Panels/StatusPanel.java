@@ -6,7 +6,9 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-public class StatusPanel extends JPanel {
+public class StatusPanel extends JLayeredPane {
+//    ImageIcon logo = new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_fade_35.png"),"");
+
     public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
         int frameWidth = GUI.getMinimumFrameWidth();
@@ -16,7 +18,6 @@ public class StatusPanel extends JPanel {
         setMinimumSize(new Dimension(0,statusHeight+15));
         setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
         setPreferredSize(new Dimension(frameWidth-30,statusHeight+15));
-        setOpaque(false);
 
     }
 }

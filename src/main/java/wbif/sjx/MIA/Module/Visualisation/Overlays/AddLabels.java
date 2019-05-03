@@ -1,11 +1,17 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Overlay;
+import ij.gui.PointRoi;
+import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
@@ -14,9 +20,11 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
+import wbif.sjx.common.Object.Point;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddLabels extends Module {
+    TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -40,6 +49,7 @@ public class AddLabels extends Module {
     public static final String LABEL_SIZE = "Label size";
     public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
     public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
+    public static final String LABEL_POSITION = "Label position";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
@@ -49,14 +59,57 @@ public class AddLabels extends Module {
 
     public interface LabelModes extends LabelFactory.LabelModes {}
 
+    public interface LabelPositions {
+        String CENTRE = "Centre of object";
+        String INSIDE = "Inside largest part of object";
+
+        String[] ALL = new String[]{CENTRE,INSIDE};
+
+    }
+
+    public static double[] getMeanObjectLocation(Obj object, boolean renderInAllFrames) {
+        double xMean = object.getXMean(true);
+        double yMean = object.getYMean(true);
+        double zMean = object.getZMean(true, false);
+        int z = (int) Math.round(zMean + 1);
+        int t = renderInAllFrames ? 0 : object.getT() + 1;
+
+        return new double[]{xMean, yMean, z, t};
+
+    }
+
+    public static double[] getInsideObjectLocation(Obj obj, boolean renderInAllFrames) {
+        // Binarise object and calculate its distance map
+        Image binaryImage = obj.convertObjToImage("Binary");
+        InvertIntensity.process(binaryImage);
+        BinaryOperations2D.process(binaryImage,BinaryOperations2D.OperationModes.ERODE,1);
+        ImagePlus distanceMap = DistanceMap.getDistanceMap(binaryImage.getImagePlus(),true);
+
+        // Get location of largest value
+        Point<Integer> bestPoint = null;
+        double distance = Double.MIN_VALUE;
+        for (Point<Integer> point:obj.getPoints()) {
+            distanceMap.setPosition(1,point.getZ()+1,obj.getT()+1);
+            double currDistance = distanceMap.getProcessor().getPixelValue(point.getX(),point.getY());
+
+            if (currDistance > distance) {
+                distance = currDistance;
+                bestPoint = point;
+            }
+        }
+
+        int t = renderInAllFrames ? 0 : obj.getT() + 1;
+
+        // Returning this point
+        return new double[]{bestPoint.getX(),bestPoint.getY(),bestPoint.getZ()+1,t};
+
+    }
 
     public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Adding text label
-        TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label);
-        text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
-        text.setJustification(TextRoi.CENTER);
+        TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label, new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
         text.setStrokeColor(colour);
 
         if (ipl.isHyperStack()) {
@@ -64,6 +117,9 @@ public class AddLabels extends Module {
         } else {
             text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
         }
+
+        text.setLocation(text.getXBase()-text.getFloatWidth()/2+1,text.getYBase()-text.getFloatHeight()/2+1);
+        System.out.println(text.getBounds());
         ipl.getOverlay().addElement(text);
 
     }
@@ -123,7 +179,7 @@ public class AddLabels extends Module {
         boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
         String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
         String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
-
+        String labelPosition = parameters.getValue(LABEL_POSITION);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -155,16 +211,18 @@ public class AddLabels extends Module {
                     Color colour = ColourFactory.getColour(hue);
                     String label = labels == null ? "" : labels.get(object.getID());
 
-                    double xMean = object.getXMean(true);
-                    double yMean = object.getYMean(true);
-                    double zMean = object.getZMean(true, false);
-                    int z = (int) Math.round(zMean + 1);
-                    int t = object.getT() + 1;
+                    double[] location;
+                    switch (labelPosition) {
+                        case LabelPositions.CENTRE:
+                        default:
+                            location = getMeanObjectLocation(object,renderInAllFrames);
+                            break;
+                        case LabelPositions.INSIDE:
+                            location = getInsideObjectLocation(object,renderInAllFrames);
+                            break;
+                    }
 
-                    if (renderInAllFrames) t = 0;
-
-                    addLabelsOverlay(finalIpl, label, new double[]{xMean, yMean, z, t}, colour, labelSize);
-
+                    addLabelsOverlay(finalIpl, label, location, colour, labelSize);
                     writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
                 };
                 pool.submit(task);
@@ -205,6 +263,7 @@ public class AddLabels extends Module {
         parameters.add(new IntegerP(LABEL_SIZE, this,8));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL, this));
+        parameters.add(new ChoiceP(LABEL_POSITION,this,LabelPositions.CENTRE,LabelPositions.ALL));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
@@ -264,6 +323,7 @@ public class AddLabels extends Module {
         returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.add(parameters.getParameter(LABEL_POSITION));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

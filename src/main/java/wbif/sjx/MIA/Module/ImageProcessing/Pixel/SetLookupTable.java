@@ -16,9 +16,18 @@ import java.awt.*;
 
 public class SetLookupTable extends Module {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String LOOKUP_TABLE = "Lookup table";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String CHANNEL = "Channel";
+    public static final String LOOKUP_TABLE = "Lookup table";
+
+
+    public interface ChannelModes {
+        String ALL_CHANNELS = "All channels";
+        String SPECIFIC_CHANNELS = "Specific channels";
+
+        String[] ALL = new String[]{ALL_CHANNELS,SPECIFIC_CHANNELS};
+
+    }
 
     public interface LookupTables {
         String GREY = "Grey";
@@ -32,14 +41,6 @@ public class SetLookupTable extends Module {
         String RANDOM = "Random";
 
         String[] ALL = new String[]{GREY,RED,GREEN,BLUE,CYAN,MAGNETA,YELLOW,FIRE,RANDOM};
-
-    }
-
-    public interface ChannelModes {
-        String ALL_CHANNELS = "All channels";
-        String SPECIFIC_CHANNELS = "Specific channels";
-
-        String[] ALL = new String[]{ALL_CHANNELS,SPECIFIC_CHANNELS};
 
     }
 
@@ -119,9 +120,9 @@ public class SetLookupTable extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new ChoiceP(LOOKUP_TABLE,this,LookupTables.GREY,LookupTables.ALL));
         parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.ALL_CHANNELS,ChannelModes.ALL));
         parameters.add(new IntegerP(CHANNEL,this,1));
+        parameters.add(new ChoiceP(LOOKUP_TABLE,this,LookupTables.GREY,LookupTables.ALL));
 
     }
 
@@ -130,7 +131,6 @@ public class SetLookupTable extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
         returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
 
         switch ((String) parameters.getValue(CHANNEL_MODE)) {
@@ -138,6 +138,8 @@ public class SetLookupTable extends Module {
                 returnedParameters.add(parameters.getParameter(CHANNEL));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
 
         return returnedParameters;
 

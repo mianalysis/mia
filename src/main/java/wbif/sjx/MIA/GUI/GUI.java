@@ -23,7 +23,10 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.PrintStream;
 
@@ -84,6 +87,7 @@ public class GUI {
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
         frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(),mainPanel.getPreferredHeight()));
+        frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"),"").getImage());
 
         mainPanel.updatePanel();
 
@@ -92,6 +96,8 @@ public class GUI {
         frame.pack();
         frame.setVisible(true);
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2, (screenSize.height - frameHeight) / 2);
+
+        updatePanel();
 
     }
 

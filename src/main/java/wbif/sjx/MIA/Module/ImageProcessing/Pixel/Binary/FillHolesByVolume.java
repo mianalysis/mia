@@ -134,7 +134,6 @@ public class FillHolesByVolume extends Module {
             try {
                 process(inputImagePlus,minVolume,maxVolume,calibratedUnits,16);
             } catch (RuntimeException e2) {
-                System.err.println("Maximum number of labels reached while filling holes.  Switching to 32-bit mode.  No action necessary.");
                 process(inputImagePlus,minVolume,maxVolume,calibratedUnits,32);
             }
         } catch (LongOverflowException e) {

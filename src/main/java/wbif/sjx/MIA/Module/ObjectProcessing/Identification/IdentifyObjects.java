@@ -138,7 +138,6 @@ public class IdentifyObjects extends Module {
             try {
                 outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 16);
             } catch (RuntimeException e2) {
-                System.err.println("Maximum number of labels reached while identifying objects.  Switching to 32-bit mode.  No action necessary.");
                 outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 32);
             }
         } catch (IntegerOverflowException e3) {
