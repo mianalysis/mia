@@ -180,7 +180,6 @@ public class ManualUnwarp extends Module implements Interactable {
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
         int bitDepth = inputIpl.getBitDepth();
-
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 
@@ -194,6 +193,8 @@ public class ManualUnwarp extends Module implements Interactable {
                     Runnable task = () -> {
                         ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
                         bUnwarpJ_.applyTransformToSource(tempPath, outputImage.getImagePlus(), slice);
+                        slice.duplicate().show();
+                        IJ.runMacro("waitForUser");
                         ImageTypeConverter.applyConversion(slice, inputIpl.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
 
                         getSetStack(outputIpl, finalT, finalC, finalZ, slice.getProcessor());

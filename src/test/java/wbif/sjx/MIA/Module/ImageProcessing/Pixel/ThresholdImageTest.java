@@ -3,7 +3,9 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
+import ij.process.ImageConverter;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -697,8 +699,6 @@ public class ThresholdImageTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-//        new ImageJ();
-//        new Duplicator().generateModuleList(ipl).show();
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalIntermodesNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
