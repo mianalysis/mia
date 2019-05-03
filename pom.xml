@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.9.27</version>
+    <version>0.9.28</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>https://github.com/SJCross/MIA</url>
