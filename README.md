@@ -3,12 +3,19 @@
 [![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
 <img src="./docs/images/Logo_text_92.png" width="500" align="left"><img src="./docs/images/wbif-colour-logo.png" width="200" align="right">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-<p>
 MIA is an ImageJ/Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.</div>
 
 MIA is developed in the Wolfson Bioimaging Facility at the University of Bristol.
-</p>
+
 
 Installation
 ------------
