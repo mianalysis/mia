@@ -8,9 +8,6 @@
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
 
 MIA is an ImageJ/Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.</div>
 
