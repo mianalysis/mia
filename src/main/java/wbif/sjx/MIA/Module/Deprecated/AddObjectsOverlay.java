@@ -350,7 +350,6 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
-                System.out.println(parentObjectsForColourName+"_"+measurementForColour);
                 return ColourFactory.getParentMeasurementValueHues(inputObjects,parentObjectsForColourName,measurementForColour,true);
         }
     }

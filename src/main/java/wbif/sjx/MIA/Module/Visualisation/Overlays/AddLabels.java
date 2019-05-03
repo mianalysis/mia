@@ -119,7 +119,6 @@ public class AddLabels extends Module {
         }
 
         text.setLocation(text.getXBase()-text.getFloatWidth()/2+1,text.getYBase()-text.getFloatHeight()/2+1);
-        System.out.println(text.getBounds());
         ipl.getOverlay().addElement(text);
 
     }
