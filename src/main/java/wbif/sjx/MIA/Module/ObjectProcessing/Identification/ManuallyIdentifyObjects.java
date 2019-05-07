@@ -285,6 +285,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle("Draw objects on this image");
+
+        // Checking if we have a 2D or 3D image
+        twoD = displayImagePlus.getNSlices() == 1;
+
         overlay = displayImagePlus.getOverlay();
         if (overlay == null) {
             overlay = new Overlay();
