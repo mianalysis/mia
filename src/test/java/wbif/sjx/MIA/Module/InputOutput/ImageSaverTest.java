@@ -52,7 +52,7 @@ public class ImageSaverTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjectsMethods module
+        // Initialising FilterObjects module
         ImageSaver imageSaver = new ImageSaver();
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
@@ -94,7 +94,7 @@ public class ImageSaverTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjectsMethods module
+        // Initialising FilterObjects module
         ImageSaver imageSaver = new ImageSaver();
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");

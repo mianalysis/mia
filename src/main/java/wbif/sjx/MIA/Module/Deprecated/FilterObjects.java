@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
@@ -66,7 +66,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     public interface FilterMethods {
-        String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
+        String MISSING_MEASUREMENTS = "Remove objects with missing measurements"; // TRANSFERRED
         String NO_PARENT = "Remove objects without parent"; // TRANSFERRED
         String WITH_PARENT = "Remove objects with a parent"; // TRANSFERRED
         String MIN_NUMBER_OF_CHILDREN = "Remove objects with fewer children than:"; // TRANSFERRED
@@ -74,7 +74,7 @@ public class FilterObjects extends Module implements ActionListener {
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:"; // TRANSFERRED
         String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:"; // TRANSFERRED
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)"; // TRANSFERRED
-        String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)";
+        String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)"; // TRANSFERRED
 
         String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
                 MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN,
@@ -368,7 +368,7 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
+        return PackageNames.DEPRECATED;
     }
 
     @Override

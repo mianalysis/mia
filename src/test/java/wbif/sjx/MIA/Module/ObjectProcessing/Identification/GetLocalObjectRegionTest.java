@@ -45,7 +45,7 @@ public class GetLocalObjectRegionTest extends ModuleTest {
         ObjCollection testObjects = new Spots3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Initialising FilterObjectsMethods module
+        // Initialising FilterObjects module
         GetLocalObjectRegion getLocalObjectRegion = new GetLocalObjectRegion();
         getLocalObjectRegion.initialiseParameters();
         getLocalObjectRegion.updateParameterValue(GetLocalObjectRegion.INPUT_OBJECTS,inputObjectsName);

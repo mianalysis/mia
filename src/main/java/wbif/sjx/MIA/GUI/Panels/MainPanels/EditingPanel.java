@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Process.ClassHunter;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class EditingPanel extends MainPanel {
@@ -223,8 +224,8 @@ public class EditingPanel extends MainPanel {
             // Waiting until the add module button has been created
             while (addModuleButton == null) Thread.sleep(100);
 
-                addModuleButton.setEnabled(false);
-                addModuleButton.setToolTipText("Loading modules");
+            addModuleButton.setEnabled(false);
+            addModuleButton.setToolTipText("Loading modules");
 
             Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
@@ -232,6 +233,9 @@ public class EditingPanel extends MainPanel {
             TreeMap<String, Class> modules = new TreeMap<>();
             for (Class clazz : availableModules) {
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
+                    // Skip any abstract Modules
+                    if (Modifier.isAbstract(clazz.getModifiers())) continue;
+
                     Module module = (Module) clazz.newInstance();
                     String packageName = module.getPackageName();
                     String moduleName = module.getTitle();

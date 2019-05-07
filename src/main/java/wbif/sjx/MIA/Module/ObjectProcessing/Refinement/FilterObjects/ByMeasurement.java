@@ -1,21 +1,12 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods;
+package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import ij.ImagePlus;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
-import static wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods.CoreFilter.*;
-
-public class FilterOnMeasurement extends Module {
+public class ByMeasurement extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -95,7 +86,7 @@ public class FilterOnMeasurement extends Module {
         double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
-        boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS);
+        boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
@@ -169,7 +160,7 @@ public class FilterOnMeasurement extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED_OBJECTS, FilterModes.ALL));
+        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
@@ -194,7 +185,7 @@ public class FilterOnMeasurement extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
         }
 
@@ -241,7 +232,7 @@ public class FilterOnMeasurement extends Module {
         objectMeasurementRefs.setAllCalculated(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 

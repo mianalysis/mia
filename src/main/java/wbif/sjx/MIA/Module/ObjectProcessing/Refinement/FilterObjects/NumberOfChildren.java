@@ -1,21 +1,12 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods;
+package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import ij.ImagePlus;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
-import static wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods.CoreFilter.*;
-
-public class FilterOnParent extends Module {
+public class NumberOfChildren extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -23,36 +14,22 @@ public class FilterOnParent extends Module {
 
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
-    public static final String PARENT_OBJECT = "Parent object";
+    public static final String CHILD_OBJECTS = "Child objects";
+    public static final String REFERENCE_VALUE = "Reference value";
     public static final String STORE_RESULTS = "Store filter results";
 
 
-    public interface FilterMethods {
-        String WITH_PARENT = "Remove objects with parent";
-        String WITHOUT_PARENT = "Remove objects without parent";
-
-        String[] ALL = new String[]{WITH_PARENT,WITHOUT_PARENT};
-
-    }
-
-
-    public String getMetadataName(String inputObjectsName, String filterMethod, String parentObjectsName) {
+    public String getMetadataName(String inputObjectsName, String filterMethod, String childObjectsName, String referenceValue) {
         String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
 
-        switch (filterMethod) {
-            case FilterMethods.WITH_PARENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITH " + parentObjectsName + " PARENT";
-            case FilterMethods.WITHOUT_PARENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + parentObjectsName + " PARENT";
-            default:
-                return "";
-        }
+        return "FILTER // NUM_" + inputObjectsName + " " + filterMethodSymbol + " " + referenceValue + "_" + childObjectsName;
+
     }
 
 
     @Override
     public String getTitle() {
-        return "With / without parent";
+        return "Number of children";
     }
 
     @Override
@@ -75,10 +52,11 @@ public class FilterOnParent extends Module {
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String filterMethod = parameters.getValue(FILTER_METHOD);
-        String parentObjectName = parameters.getValue(PARENT_OBJECT);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        double referenceValue = parameters.getValue(REFERENCE_VALUE);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
-        boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS);
+        boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
@@ -87,22 +65,19 @@ public class FilterOnParent extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
+            ObjCollection childObjects = inputObject.getChildren(childObjectsName);
 
-            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
-            boolean toRemove = false;
-            switch (filterMethod) {
-                case FilterMethods.WITH_PARENT:
-                    if (parents.get(parentObjectName) != null) {
-                        count++;
-                        if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    }
-                    break;
-                case FilterMethods.WITHOUT_PARENT:
-                    if (parents.get(parentObjectName) == null) {
-                        count++;
-                        if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    }
-                    break;
+            // Removing the object if it has no children
+            if (childObjects == null) {
+                count++;
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                continue;
+            }
+
+            // Removing the object if it has too few children
+            if (testFilter(childObjects.size(),referenceValue,filterMethod)) {
+                count++;
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
 
@@ -110,7 +85,7 @@ public class FilterOnParent extends Module {
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectName);
+        String metadataName = getMetadataName(inputObjectsName,filterMethod,childObjectsName,String.valueOf(referenceValue));
         workspace.getMetadata().put(metadataName,count);
 
         // Showing objects
@@ -124,12 +99,13 @@ public class FilterOnParent extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED_OBJECTS, FilterModes.ALL));
+        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
-        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITH_PARENT, FilterMethods.ALL));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
+        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.EQUAL_TO, FilterMethods.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
+        parameters.add(new DoubleP(REFERENCE_VALUE, this,1d));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
     }
@@ -142,15 +118,16 @@ public class FilterOnParent extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
-        returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
+        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+        returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
         returnedParameters.add(parameters.getParameter(STORE_RESULTS));
-        ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
+        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         return returnedParameters;
 
@@ -166,7 +143,7 @@ public class FilterOnParent extends Module {
         objectMeasurementRefs.setAllCalculated(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
@@ -194,9 +171,10 @@ public class FilterOnParent extends Module {
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filterMethod = parameters.getValue(FILTER_METHOD);
-            String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+            String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+            String referenceValue = parameters.getValue(REFERENCE_VALUE).toString();
 
-            String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectsName);
+            String metadataName = getMetadataName(inputObjectsName,filterMethod,childObjectsName,referenceValue);
 
             metadataReferences.add(new MetadataReference(metadataName));
 
