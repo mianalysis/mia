@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 
@@ -178,7 +179,7 @@ public class WithWithoutMeasurement extends CoreFilter {
 
             String metadataName = getFullName(inputObjectsName,filterMethod,measName);
 
-            metadataReferences.add(new MetadataReference(metadataName));
+            metadataReferences.add(new MetadataRef(metadataName));
 
         }
 
@@ -186,7 +187,7 @@ public class WithWithoutMeasurement extends CoreFilter {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

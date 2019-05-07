@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;

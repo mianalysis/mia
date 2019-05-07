@@ -16,6 +16,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
 
@@ -454,7 +457,7 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

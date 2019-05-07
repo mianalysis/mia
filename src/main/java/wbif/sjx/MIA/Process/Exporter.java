@@ -14,6 +14,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
@@ -1046,7 +1049,7 @@ public class Exporter {
             }
 
             // Adding parent IDs
-            RelationshipCollection relationships = modules.getRelationships();
+            RelationshipRefCollection relationships = modules.getRelationships();
             String[] parents = relationships.getParentNames(objectName,false);
             if (parents != null) {
                 for (String parent : parents) {

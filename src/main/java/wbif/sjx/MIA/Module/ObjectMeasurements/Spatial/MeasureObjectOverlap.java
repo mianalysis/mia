@@ -6,6 +6,10 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Point;
 
 import java.util.HashSet;
@@ -211,7 +215,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

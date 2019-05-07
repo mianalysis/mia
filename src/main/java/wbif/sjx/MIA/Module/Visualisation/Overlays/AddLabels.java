@@ -1,11 +1,8 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -18,13 +15,15 @@ import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Object.Point;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -348,7 +347,7 @@ public class AddLabels extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

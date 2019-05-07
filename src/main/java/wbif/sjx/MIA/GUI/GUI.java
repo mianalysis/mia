@@ -18,15 +18,13 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.PrintStream;
 

@@ -6,6 +6,10 @@ import ij.Prefs;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import javax.annotation.Nullable;
 
@@ -100,7 +104,7 @@ public abstract class Module implements Comparable {
     /*
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
      */
-    public abstract RelationshipCollection updateAndGetRelationships();
+    public abstract RelationshipRefCollection updateAndGetRelationships();
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);

@@ -1,15 +1,16 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import javax.annotation.Nullable;import ij.ImagePlus;
+import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import ij.process.ImageProcessor;
 import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.common.Object.Point;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -201,7 +202,7 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

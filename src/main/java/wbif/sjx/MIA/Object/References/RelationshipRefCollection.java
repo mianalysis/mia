@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Object;
+package wbif.sjx.MIA.Object.References;
 
 
 import javax.annotation.Nullable;
@@ -9,13 +9,13 @@ import java.util.TreeSet;
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class RelationshipCollection extends LinkedHashSet<Relationship> {
+public class RelationshipRefCollection extends LinkedHashSet<RelationshipRef> {
 //    private LinkedHashMap<String,TreeSet<String>> parents = new LinkedHashMap<>();
 //    private LinkedHashMap<String,TreeSet<String>> children = new LinkedHashMap<>();
 
     public void addRelationship(String parent, String child) {
-        Relationship relationship = new Relationship(parent,child);
-        add(relationship);
+        RelationshipRef relationshipRef = new RelationshipRef(parent,child);
+        add(relationshipRef);
 
 //        parents.computeIfAbsent(child,k -> new TreeSet<>());
 //        parents.get(child).add(parent);
@@ -92,22 +92,22 @@ public class RelationshipCollection extends LinkedHashSet<Relationship> {
 
     }
 
-    private static TreeSet<String> getChildNames(RelationshipCollection relationships, String parentName) {
+    private static TreeSet<String> getChildNames(RelationshipRefCollection relationships, String parentName) {
         TreeSet<String> childNames = new TreeSet<>();
 
-        for (Relationship relationship:relationships) {
-            if (relationship.getParentName().equals(parentName)) childNames.add(relationship.getChildName());
+        for (RelationshipRef relationshipRef :relationships) {
+            if (relationshipRef.getParentName().equals(parentName)) childNames.add(relationshipRef.getChildName());
         }
 
         return childNames;
 
     }
 
-    private static TreeSet<String> getParentNames(RelationshipCollection relationships, String childName) {
+    private static TreeSet<String> getParentNames(RelationshipRefCollection relationships, String childName) {
         TreeSet<String> parentNames = new TreeSet<>();
 
-        for (Relationship relationship:relationships) {
-            if (relationship.getChildName().equals(childName)) parentNames.add(relationship.getParentName());
+        for (RelationshipRef relationshipRef :relationships) {
+            if (relationshipRef.getChildName().equals(childName)) parentNames.add(relationshipRef.getParentName());
         }
 
         return parentNames;

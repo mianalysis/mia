@@ -1,13 +1,12 @@
 package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
-import wbif.sjx.MIA.GUI.ControlObjects.VisibleCheck;
 import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;

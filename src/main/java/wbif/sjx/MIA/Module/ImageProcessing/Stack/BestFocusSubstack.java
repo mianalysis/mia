@@ -20,6 +20,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 import javax.swing.*;
@@ -613,7 +617,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         MetadataRefCollection metadataRefCollection = new MetadataRefCollection();
 
         if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
-            metadataRefCollection.add(new MetadataReference(MetadataNames.SLICES));
+            metadataRefCollection.add(new MetadataRef(MetadataNames.SLICES));
         }
 
         return metadataRefCollection;
@@ -621,7 +625,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

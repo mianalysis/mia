@@ -1,6 +1,6 @@
-package wbif.sjx.MIA.Object;
+package wbif.sjx.MIA.Object.References;
 
-public class Reference {
+public abstract class Reference {
     protected final String name;
 
     public Reference(String name) {
@@ -10,4 +10,5 @@ public class Reference {
     public String getName() {
         return name;
     }
+
 }

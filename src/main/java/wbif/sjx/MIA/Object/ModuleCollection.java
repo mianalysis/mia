@@ -7,6 +7,10 @@ package wbif.sjx.MIA.Object;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -171,8 +175,8 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public RelationshipCollection getRelationships(Module cutoffModule) {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection getRelationships(Module cutoffModule) {
+        RelationshipRefCollection relationships = new RelationshipRefCollection();
 
         for (Module module:this) {
             if (module == cutoffModule) {
@@ -180,7 +184,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
             }
 
             if (module.isEnabled()) {
-                RelationshipCollection currRelationships = module.updateAndGetRelationships();
+                RelationshipRefCollection currRelationships = module.updateAndGetRelationships();
                 if (currRelationships == null) continue;
                 relationships.addAll(currRelationships);
             }
@@ -190,7 +194,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public RelationshipCollection getRelationships() {
+    public RelationshipRefCollection getRelationships() {
         return getRelationships(null);
 
     }

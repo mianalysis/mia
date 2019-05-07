@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 
@@ -282,7 +283,7 @@ public class ByMeasurement extends CoreFilter {
                     break;
             }
 
-            metadataReferences.add(new MetadataReference(metadataName));
+            metadataReferences.add(new MetadataRef(metadataName));
 
         }
 
@@ -290,7 +291,7 @@ public class ByMeasurement extends CoreFilter {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

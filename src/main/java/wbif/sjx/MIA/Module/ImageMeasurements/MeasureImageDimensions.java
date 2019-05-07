@@ -6,6 +6,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class MeasureImageDimensions extends Module {
     public final static String INPUT_IMAGE = "Input image";
@@ -141,7 +145,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

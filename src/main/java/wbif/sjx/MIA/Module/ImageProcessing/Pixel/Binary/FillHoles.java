@@ -14,6 +14,9 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class FillHoles extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -141,7 +144,7 @@ public class FillHoles extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

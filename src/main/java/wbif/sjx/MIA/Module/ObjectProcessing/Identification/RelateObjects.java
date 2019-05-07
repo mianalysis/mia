@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Point;
 
 import java.util.Iterator;
@@ -720,8 +724,8 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection relationships = new RelationshipRefCollection();
 
         relationships.addRelationship(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
 

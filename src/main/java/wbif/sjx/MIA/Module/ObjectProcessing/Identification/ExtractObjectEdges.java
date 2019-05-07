@@ -9,6 +9,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
@@ -289,8 +292,8 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection relationships = new RelationshipRefCollection();
 
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 

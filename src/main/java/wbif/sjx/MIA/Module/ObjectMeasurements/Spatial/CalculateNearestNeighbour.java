@@ -4,13 +4,17 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 22/06/2017.
  */
 public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String RELATIONSHIP_MODE = "Relationship mode";
+    public static final String RELATIONSHIP_MODE = "RelationshipRef mode";
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
@@ -257,7 +261,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

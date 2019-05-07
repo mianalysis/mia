@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.annotation.Nullable;
@@ -271,7 +272,7 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
 
             String metadataName = getFullName(inputObjectsName,filterMethod,measName);
 
-            metadataReferences.add(new MetadataReference(metadataName));
+            metadataReferences.add(new MetadataRef(metadataName));
 
         }
 
@@ -279,7 +280,7 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

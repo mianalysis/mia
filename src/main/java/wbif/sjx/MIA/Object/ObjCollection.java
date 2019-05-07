@@ -4,6 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 
 import javax.annotation.Nullable;
 import java.util.*;

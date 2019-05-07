@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -140,8 +143,8 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection relationships = new RelationshipRefCollection();
 
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 

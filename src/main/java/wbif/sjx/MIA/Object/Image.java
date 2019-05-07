@@ -14,6 +14,8 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 

@@ -5,6 +5,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MetadataExtractors.*;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -472,56 +476,56 @@ public class MetadataExtractor extends Module {
                     case FilenameExtractors.GENERIC:
                         String groupString = parameters.getValue(GROUPS);
                         String[] groups = getGroups(groupString);
-                        for (String group:groups) metadataReferences.add(new MetadataReference(group));
+                        for (String group:groups) metadataReferences.add(new MetadataRef(group));
                         break;
 
                     case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.CHANNEL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
-                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
-                        metadataReferences.add(new MetadataReference(HCMetadata.TIMEPOINT));
-                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.ZPOSITION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.CHANNEL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataRef(HCMetadata.TIMEPOINT));
+                        metadataReferences.add(new MetadataRef(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.ZPOSITION));
                         break;
 
                     case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
-                        metadataReferences.add(new MetadataReference(HCMetadata.COMMENT));
-                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
-                        metadataReferences.add(new MetadataReference(HCMetadata.YEAR));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MONTH));
-                        metadataReferences.add(new MetadataReference(HCMetadata.DAY));
-                        metadataReferences.add(new MetadataReference(HCMetadata.HOUR));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MINUTE));
+                        metadataReferences.add(new MetadataRef(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.COMMENT));
+                        metadataReferences.add(new MetadataRef(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataRef(HCMetadata.YEAR));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MONTH));
+                        metadataReferences.add(new MetadataRef(HCMetadata.DAY));
+                        metadataReferences.add(new MetadataRef(HCMetadata.HOUR));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MINUTE));
                         break;
 
                     case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
-                        metadataReferences.add(new MetadataReference(HCMetadata.COMMENT));
-                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataRef(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.COMMENT));
+                        metadataReferences.add(new MetadataRef(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.FIELD));
                         break;
 
                     case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.ROW));
-                        metadataReferences.add(new MetadataReference(HCMetadata.COL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
-                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.ROW));
+                        metadataReferences.add(new MetadataRef(HCMetadata.COL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataRef(HCMetadata.WELL));
                         break;
 
                     case FilenameExtractors.YOKOGAWA_FILENAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
-                        metadataReferences.add(new MetadataReference(HCMetadata.PLATE_NAME));
-                        metadataReferences.add(new MetadataReference(HCMetadata.PLATE_MANUFACTURER));
-                        metadataReferences.add(new MetadataReference(HCMetadata.PLATE_MODEL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
-                        metadataReferences.add(new MetadataReference(HCMetadata.TIMEPOINT));
-                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
-                        metadataReferences.add(new MetadataReference(HCMetadata.TIMELINE_NUMBER));
-                        metadataReferences.add(new MetadataReference(HCMetadata.ACTION_NUMBER));
-                        metadataReferences.add(new MetadataReference(HCMetadata.ZPOSITION));
-                        metadataReferences.add(new MetadataReference(HCMetadata.CHANNEL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.PLATE_NAME));
+                        metadataReferences.add(new MetadataRef(HCMetadata.PLATE_MANUFACTURER));
+                        metadataReferences.add(new MetadataRef(HCMetadata.PLATE_MODEL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataRef(HCMetadata.TIMEPOINT));
+                        metadataReferences.add(new MetadataRef(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataRef(HCMetadata.TIMELINE_NUMBER));
+                        metadataReferences.add(new MetadataRef(HCMetadata.ACTION_NUMBER));
+                        metadataReferences.add(new MetadataRef(HCMetadata.ZPOSITION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.CHANNEL));
                         break;
                 }
 
@@ -530,49 +534,49 @@ public class MetadataExtractor extends Module {
             case ExtractorModes.FOLDERNAME_MODE:
                 switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
                     case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.YEAR));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MONTH));
-                        metadataReferences.add(new MetadataReference(HCMetadata.DAY));
-                        metadataReferences.add(new MetadataReference(HCMetadata.HOUR));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MINUTE));
-                        metadataReferences.add(new MetadataReference(HCMetadata.SECOND));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MAGNIFICATION));
-                        metadataReferences.add(new MetadataReference(HCMetadata.CELLTYPE));
-                        metadataReferences.add(new MetadataReference(HCMetadata.COMMENT));
+                        metadataReferences.add(new MetadataRef(HCMetadata.YEAR));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MONTH));
+                        metadataReferences.add(new MetadataRef(HCMetadata.DAY));
+                        metadataReferences.add(new MetadataRef(HCMetadata.HOUR));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MINUTE));
+                        metadataReferences.add(new MetadataRef(HCMetadata.SECOND));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MAGNIFICATION));
+                        metadataReferences.add(new MetadataRef(HCMetadata.CELLTYPE));
+                        metadataReferences.add(new MetadataRef(HCMetadata.COMMENT));
                         break;
 
                     case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference(HCMetadata.YEAR));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MONTH));
-                        metadataReferences.add(new MetadataReference(HCMetadata.DAY));
-                        metadataReferences.add(new MetadataReference(HCMetadata.HOUR));
-                        metadataReferences.add(new MetadataReference(HCMetadata.MINUTE));
-                        metadataReferences.add(new MetadataReference(HCMetadata.SECOND));
+                        metadataReferences.add(new MetadataRef(HCMetadata.YEAR));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MONTH));
+                        metadataReferences.add(new MetadataRef(HCMetadata.DAY));
+                        metadataReferences.add(new MetadataRef(HCMetadata.HOUR));
+                        metadataReferences.add(new MetadataRef(HCMetadata.MINUTE));
+                        metadataReferences.add(new MetadataRef(HCMetadata.SECOND));
                         break;
 
                     case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference("Barcode"));
+                        metadataReferences.add(new MetadataRef("Barcode"));
                         break;
                 }
                 break;
 
             case ExtractorModes.KEYWORD_MODE:
-                metadataReferences.add(new MetadataReference(HCMetadata.KEYWORD));
+                metadataReferences.add(new MetadataRef(HCMetadata.KEYWORD));
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
                 switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR)) {
                     case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
-                        metadataReferences.add(new MetadataReference("AreaName"));
+                        metadataReferences.add(new MetadataRef("AreaName"));
                         break;
 
                     case MetadataFileExtractors.CSV_FILE:
                         if (parameters.getValue(REGEX_SPLITTING)) {
                             String groupString = parameters.getValue(GROUPS);
                             String[] groups = getGroups(groupString);
-                            for (String group : groups) metadataReferences.add(new MetadataReference(group));
+                            for (String group : groups) metadataReferences.add(new MetadataRef(group));
                         } else {
-                            metadataReferences.add(new MetadataReference(parameters.getValue(METADATA_VALUE_NAME)));
+                            metadataReferences.add(new MetadataRef(parameters.getValue(METADATA_VALUE_NAME)));
                         }
                         break;
                 }
@@ -584,7 +588,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

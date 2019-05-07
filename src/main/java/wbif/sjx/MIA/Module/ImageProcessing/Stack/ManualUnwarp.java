@@ -17,6 +17,9 @@ import wbif.sjx.MIA.Object.*;
 
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
@@ -483,7 +486,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

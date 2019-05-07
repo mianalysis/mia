@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 23/03/2018.
@@ -95,7 +98,7 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

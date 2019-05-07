@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Object;
+package wbif.sjx.MIA.Object.References;
 
 import java.util.TreeMap;
 

@@ -5,6 +5,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 
@@ -240,8 +243,8 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection relationships = new RelationshipRefCollection();
 
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 

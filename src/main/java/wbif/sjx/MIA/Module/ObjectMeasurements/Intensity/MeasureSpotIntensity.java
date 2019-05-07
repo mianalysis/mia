@@ -6,6 +6,10 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -260,7 +264,7 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

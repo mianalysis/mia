@@ -6,8 +6,8 @@ import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -466,9 +466,9 @@ public class ComponentFactory {
     }
 
     private JPanel createMeasurementExportControls(MeasurementRef measurement, MeasurementExportCheck.Type type) {
-        ParameterCollection outputParamters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
-        BooleanP exportIndividual = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        BooleanP exportSummary = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_SUMMARY);
+        ParameterCollection outputParameters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
+        BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200,25));

@@ -6,6 +6,9 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.RemovedObjectsP;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 07/02/2018.
@@ -68,7 +71,7 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

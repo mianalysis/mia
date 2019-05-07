@@ -9,6 +9,10 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -187,7 +191,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

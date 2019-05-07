@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.util.ArrayList;
 
@@ -230,7 +234,7 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

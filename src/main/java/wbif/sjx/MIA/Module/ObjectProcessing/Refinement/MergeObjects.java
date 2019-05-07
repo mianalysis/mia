@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.util.HashMap;
@@ -119,7 +122,7 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

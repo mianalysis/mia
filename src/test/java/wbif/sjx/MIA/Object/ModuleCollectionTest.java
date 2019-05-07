@@ -16,6 +16,8 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ObjectClusterer;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.util.LinkedHashSet;
 
@@ -419,7 +421,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(objectClusterer);
 
         // Getting actual relationships
-        RelationshipCollection actualRelationships = modules.getRelationships();
+        RelationshipRefCollection actualRelationships = modules.getRelationships();
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
@@ -547,7 +549,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(objectClusterer);
 
         // Getting actual relationships
-        RelationshipCollection actualRelationships = modules.getRelationships(objectClusterer);
+        RelationshipRefCollection actualRelationships = modules.getRelationships(objectClusterer);
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
