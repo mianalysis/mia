@@ -687,13 +687,14 @@ public class TrackObjects extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
-        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
-        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
-        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
-        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
-        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
+        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID,type);
+        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID,type);
+        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION,type);
+        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX,type);
+        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX,type);
+        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX,type);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);

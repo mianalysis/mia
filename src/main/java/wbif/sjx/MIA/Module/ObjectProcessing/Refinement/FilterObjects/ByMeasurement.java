@@ -16,13 +16,13 @@ public class ByMeasurement extends CoreFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String MEASUREMENT = "Measurement to filter on";
-    public static final String REFERENCE_MODE = "Ref mode";
-    public static final String REFERENCE_VALUE = "Ref value";
-    public static final String REFERENCE_VAL_IMAGE = "Ref value image";
-    public static final String REFERENCE_IMAGE_MEASUREMENT = "Ref image measurement";
-    public static final String REFERENCE_VAL_PARENT_OBJECT = "Ref value parent object";
-    public static final String REFERENCE_OBJECT_MEASUREMENT = "Ref object measurement";
-    public static final String REFERENCE_MULTIPLIER = "Ref value multiplier";
+    public static final String REFERENCE_MODE = "Reference mode";
+    public static final String REFERENCE_VALUE = "Reference value";
+    public static final String REFERENCE_VAL_IMAGE = "Reference value image";
+    public static final String REFERENCE_IMAGE_MEASUREMENT = "Reference image measurement";
+    public static final String REFERENCE_VAL_PARENT_OBJECT = "Reference value parent object";
+    public static final String REFERENCE_OBJECT_MEASUREMENT = "Reference object measurement";
+    public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
     public static final String STORE_RESULTS = "Store filter results";
 
 
@@ -241,9 +241,8 @@ public class ByMeasurement extends CoreFilter {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

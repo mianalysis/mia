@@ -12,10 +12,12 @@ import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -130,6 +132,10 @@ public class AnalysisReader {
 
                         case "MEASUREMENTS":
                             populateModuleMeasurementRefs(moduleChildNodes.item(j), module);
+                            break;
+
+                        case "METADATA":
+                            populateModuleMetadataRefs(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -315,61 +321,32 @@ public class AnalysisReader {
                     measurementReference = module.getImageMeasurementRef(measurementName);
                     break;
 
-                case "OBJECTS":
+                case "OBJECT":
                     measurementReference = module.getObjectMeasurementRef(measurementName);
                     break;
-
             }
 
             if (measurementReference == null) continue;
+            measurementReference.setAttributesFromXML(attributes);
 
-            // Updating the reference's parameters
-            String measurementNickName = measurementName;
-            if (attributes.getNamedItem("NICKNAME") != null) measurementNickName = attributes.getNamedItem("NICKNAME").getNodeValue();
-            measurementReference.setNickname(measurementNickName);
-            measurementReference.setImageObjName(attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue());
+        }
+    }
 
-            boolean exportGlobal = true;
-            if (attributes.getNamedItem("EXPORT_GLOBAL") != null) {
-                exportGlobal= Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
-            }
-            measurementReference.setExportGlobal(exportGlobal);
+    public static void populateModuleMetadataRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
 
-            boolean exportIndividual = true;
-            if (attributes.getNamedItem("EXPORT_INDIVIDUAL") != null) {
-                exportIndividual = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue());
-            }
-            measurementReference.setExportIndividual(exportIndividual);
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
 
-            boolean exportMean = true;
-            if (attributes.getNamedItem("EXPORT_MEAN") != null) {
-                exportMean = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue());
-            }
-            measurementReference.setExportMean(exportMean);
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            String metadataName = attributes.getNamedItem("NAME").getNodeValue();
 
-            boolean exportMin = true;
-            if (attributes.getNamedItem("EXPORT_MIN") != null) {
-                exportMin = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue());
-            }
-            measurementReference.setExportMin(exportMin);
-
-            boolean exportMax = true;
-            if (attributes.getNamedItem("EXPORT_MAX") != null) {
-                exportMax = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue());
-            }
-            measurementReference.setExportMax(exportMax);
-
-            boolean exportSum = true;
-            if (attributes.getNamedItem("EXPORT_SUM") != null) {
-                exportSum = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue());
-            }
-            measurementReference.setExportSum(exportSum);
-
-            boolean exportStd = true;
-            if (attributes.getNamedItem("EXPORT_STD") != null) {
-                exportStd = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue());
-            }
-            measurementReference.setExportStd(exportStd);
+            // Acquiring the relevant reference
+            MetadataRef metadataRef = module.getMetadataRef(metadataName);
+            if (metadataName == null) continue;
+            metadataRef.setAttributesFromXML(attributes);
 
         }
     }

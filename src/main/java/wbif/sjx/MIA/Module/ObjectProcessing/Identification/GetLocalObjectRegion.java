@@ -17,7 +17,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 public class GetLocalObjectRegion extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
     public static final String USE_MEASUREMENT = "Use measurement for radius";

@@ -109,11 +109,12 @@ public class MeasureObjectColocalisation extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         objectMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +

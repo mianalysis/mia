@@ -248,9 +248,8 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

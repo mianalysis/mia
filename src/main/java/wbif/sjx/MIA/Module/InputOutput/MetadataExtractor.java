@@ -583,6 +583,7 @@ public class MetadataExtractor extends Module {
         }
 
         return metadataRefs;
+
     }
 
     @Override

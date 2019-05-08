@@ -164,44 +164,45 @@ public class MeasureObjectOverlap extends Module {
 
         String objects1Name = parameters.getValue(OBJECT_SET_1);
         String objects2Name = parameters.getValue(OBJECT_SET_2);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String name = getFullName(objects2Name, Measurements.OVERLAP_VOX_1);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects1Name);
         reference.setAvailable(true);
 
         name = getFullName(objects2Name, Measurements.OVERLAP_VOL_PX_1);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects1Name);
         reference.setAvailable(true);
 
         name = getFullName(objects2Name, Measurements.OVERLAP_VOL_CAL_1);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects1Name);
         reference.setAvailable(true);
 
         name = getFullName(objects2Name, Measurements.OVERLAP_PERCENT_1);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects1Name);
         reference.setAvailable(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOX_2);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects2Name);
         reference.setAvailable(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOL_PX_2);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects2Name);
         reference.setAvailable(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOL_CAL_2);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects2Name);
         reference.setAvailable(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_PERCENT_2);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(objects2Name);
         reference.setAvailable(true);
 

@@ -21,8 +21,4 @@ public abstract class Ref {
     public void setAvailable(boolean available) {
         this.available = available;
     }
-
-    public void appendXMLAttributes(Element element) {
-        element.setAttribute("NAME",name);
-    }
 }

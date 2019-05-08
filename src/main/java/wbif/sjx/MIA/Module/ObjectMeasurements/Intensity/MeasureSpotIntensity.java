@@ -218,38 +218,39 @@ public class MeasureSpotIntensity extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         if (parameters.getValue(MEASURE_MEAN)) {
             String name = getFullName(inputImageName, Measurements.MEAN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
             reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
             String name = getFullName(inputImageName, Measurements.MIN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
             reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
             String name = getFullName(inputImageName, Measurements.MAX);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
             reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
             String name = getFullName(inputImageName, Measurements.STDEV);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
             reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
             String name = getFullName(inputImageName, Measurements.SUM);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
             reference.setAvailable(true);
         }

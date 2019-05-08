@@ -266,55 +266,56 @@ public class FitEllipse extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
                 "object, \""+inputObjectsName+"\".  Measured in pixels.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENTRE_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENTRE_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
                 "object, \""+inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                 "units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTRE_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTRE_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
                 "object, \""+inputObjectsName+"\".  Measured in pixels.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENTRE_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENTRE_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
                 "object, \""+inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                 "units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MAJOR_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MAJOR_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
                 inputObjectsName+"\".  The semi-major axis passes from the centre of the ellipse to the furthest " +
                 "point on it's perimeter.  Measured in pixels.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SEMI_MAJOR_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SEMI_MAJOR_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
                 inputObjectsName+"\".  The semi-major axis passes from the centre of the ellipse to the furthest " +
                 "point on it's perimeter.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MINOR_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MINOR_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
                 inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction " +
                 "perpendiculart to the semi-major axis.  Measured in pixels.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SEMI_MINOR_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SEMI_MINOR_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
@@ -322,7 +323,7 @@ public class FitEllipse extends Module {
                 "perpendiculart to the semi-major axis.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") "+
                 "units.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ECCENTRICITY));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ECCENTRICITY),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Measurement of how much the ellipse fit to the 2D Z-projection of the object, \"" +
@@ -330,13 +331,13 @@ public class FitEllipse extends Module {
                 ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity " +
                 "has no units.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAJOR_MINOR_RATIO));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAJOR_MINOR_RATIO),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Ratio of semi-major axis length to semi-minor axis length for the ellipse fit to " +
                 "the 2D Z-projection of the object, \""+inputObjectsName+"\".  This measure has no units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_DEGS);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_DEGS,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \""+

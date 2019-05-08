@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Object.References;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 
 /**
@@ -7,15 +9,45 @@ import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
  */
 public class MeasurementRef extends ExportableRef {
     private String imageObjName = "";
+    private Type type;
+
+    public enum Type {IMAGE,OBJECT};
 
 
-    public MeasurementRef(String name) {
+    public MeasurementRef(String name, Type type) {
         super(name);
+        this.type = type;
     }
 
-    public MeasurementRef(String name, String imageObjName) {
+    public MeasurementRef(String name, Type type, String imageObjName) {
         super(name);
+        this.type = type;
         this.imageObjName = imageObjName;
+    }
+
+    @Override
+    public void appendXMLAttributes(Element element)  {
+        // Adding the values from ExportableRef
+        super.appendXMLAttributes(element);
+
+        element.setAttribute("IMAGE_OBJECT_NAME",imageObjName);
+
+        switch (type) {
+            case IMAGE:
+                element.setAttribute("TYPE","IMAGE");
+                break;
+            case OBJECT:
+                element.setAttribute("TYPE","OBJECT");
+                break;
+        }
+    }
+
+    @Override
+    public void setAttributesFromXML(NamedNodeMap attributes) {
+        super.setAttributesFromXML(attributes);
+
+        setImageObjName(attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue());
+
     }
 
     @Override
@@ -41,7 +73,7 @@ public class MeasurementRef extends ExportableRef {
     }
 
     public MeasurementRef duplicate() {
-        MeasurementRef newRef = new MeasurementRef(name);
+        MeasurementRef newRef = new MeasurementRef(name,type);
 
         newRef.setAvailable(isAvailable());
         newRef.setImageObjName(imageObjName);

@@ -168,11 +168,12 @@ public class MeasureImageColocalisation extends Module {
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         String inputImage1Name = parameters.getValue(INPUT_IMAGE_1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE_2);
+        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         imageMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImage2Name,Measurements.MEAN_PCC);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+        MeasurementRef reference = imageMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(inputImage1Name);
         reference.setAvailable(true);
 

@@ -17,12 +17,8 @@ public class MeasurementRefCollection extends RefCollection<MeasurementRef> {
         }
     }
 
-    public void add(MeasurementRef measurementReference) {
-        put(measurementReference.getName(),measurementReference);
-    }
-
-    public MeasurementRef getOrPut(Object key) {
-        putIfAbsent((String) key,new MeasurementRef((String) key));
+    public MeasurementRef getOrPut(Object key, MeasurementRef.Type type) {
+        putIfAbsent((String) key,new MeasurementRef((String) key,type));
         return super.get(key);
     }
 

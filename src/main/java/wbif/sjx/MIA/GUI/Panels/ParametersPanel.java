@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;
@@ -129,6 +130,9 @@ public class ParametersPanel extends JScrollPane {
             MetadataRefCollection metadataRefs = analysis.getModules().getMetadataRefs();
             addSummaryControls(metadataRefs,"Metadata",componentFactory,c);
 
+            RelationshipRefCollection relationshipRefs = analysis.getModules().getRelationshipRefs();
+            addSummaryControls(relationshipRefs,"Number of children",componentFactory,c);
+
         }
 
         // Creating the notes/help field at the bottom of the panel
@@ -182,24 +186,9 @@ public class ParametersPanel extends JScrollPane {
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
 
-//        if (parameter instanceof MessageP || parameter instanceof ParamSeparatorP) {
-            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule, true);
-//            c.gridwidth = 2;
-            panel.add(paramPanel, c);
+        JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule, true);
+        panel.add(paramPanel, c);
 
-//        } else {
-//            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
-//            c.gridwidth = 1;
-//            panel.add(paramPanel, c);
-//
-//            c.insets = new Insets(2, 5, 0, 5);
-//            c.gridx++;
-//            c.weightx = 0;
-//            c.anchor = GridBagConstraints.EAST;
-//            VisibleCheck visibleCheck = new VisibleCheck(parameter);
-//            visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-//            panel.add(visibleCheck, c);
-//        }
     }
 
     public void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {

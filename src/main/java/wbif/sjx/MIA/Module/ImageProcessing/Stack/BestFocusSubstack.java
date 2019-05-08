@@ -57,13 +57,13 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     public static final String CALCULATION_SEPARATOR = "Best focus calculation";
     public static final String BEST_FOCUS_CALCULATION = "Best-focus calculation";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String RELATIVE_START_SLICE = "Relative start slice";
     public static final String RELATIVE_END_SLICE = "Relative end slice";
     public static final String SMOOTH_TIMESERIES = "Smooth timeseries";
     public static final String SMOOTHING_RANGE = "Smoothing range (odd numbers)";
 
-    public static final String REFERENCE_SEPARATOR = "Ref controls";
+    public static final String REFERENCE_SEPARATOR = "Reference controls";
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CHANNEL_MODE = "Channel mode";

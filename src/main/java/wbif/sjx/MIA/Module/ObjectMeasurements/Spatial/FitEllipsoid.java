@@ -282,80 +282,81 @@ public class FitEllipsoid extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENT_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENT_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENT_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENT_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENT_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENT_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENT_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENT_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.Z_CENT_SLICE);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z_CENT_SLICE,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z_CENT_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z_CENT_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_1_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_1_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_1_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_1_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_2_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_2_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_2_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_2_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_3_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_3_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_3_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_3_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SURFACE_AREA_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SURFACE_AREA_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SURFACE_AREA_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SURFACE_AREA_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_PX,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL),type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_1);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_1,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_2);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_2,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY,type);
         reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
 

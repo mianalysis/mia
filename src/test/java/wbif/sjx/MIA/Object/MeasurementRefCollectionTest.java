@@ -10,17 +10,17 @@ public class MeasurementRefCollectionTest {
     @Test
     public void get() {
         // Creating some measurements
-        MeasurementRef ref1 = new MeasurementRef("Ref 1");
-        MeasurementRef ref2 = new MeasurementRef("Second ref");
-        MeasurementRef ref3 = new MeasurementRef("Ref 3");
-        MeasurementRef ref4 = new MeasurementRef("One more");
+        MeasurementRef ref1 = new MeasurementRef("Ref 1", MeasurementRef.Type.OBJECT);
+        MeasurementRef ref2 = new MeasurementRef("Second ref", MeasurementRef.Type.OBJECT);
+        MeasurementRef ref3 = new MeasurementRef("Ref 3", MeasurementRef.Type.OBJECT);
+        MeasurementRef ref4 = new MeasurementRef("One more", MeasurementRef.Type.OBJECT);
 
         // Populating the collection
         MeasurementRefCollection collection = new MeasurementRefCollection();
-        collection.add(ref1);
-        collection.add(ref2);
-        collection.add(ref3);
-        collection.add(ref4);
+        collection.put(ref1.getName(),ref1);
+        collection.put(ref2.getName(),ref2);
+        collection.put(ref3.getName(),ref3);
+        collection.put(ref4.getName(),ref4);
 
         assertEquals(ref1,collection.get("Ref 1"));
         assertEquals(ref3,collection.get("Ref 3"));
@@ -35,17 +35,17 @@ public class MeasurementRefCollectionTest {
     @Test
     public void updateImageObjectName() {
         // Creating some measurements
-        MeasurementRef ref1 = new MeasurementRef("Ref 1");
-        MeasurementRef ref2 = new MeasurementRef("Second ref");
-        MeasurementRef ref3 = new MeasurementRef("Ref 3");
-        MeasurementRef ref4 = new MeasurementRef("One more");
+        MeasurementRef ref1 = new MeasurementRef("Ref 1", MeasurementRef.Type.OBJECT);
+        MeasurementRef ref2 = new MeasurementRef("Second ref", MeasurementRef.Type.OBJECT);
+        MeasurementRef ref3 = new MeasurementRef("Ref 3", MeasurementRef.Type.OBJECT);
+        MeasurementRef ref4 = new MeasurementRef("One more", MeasurementRef.Type.OBJECT);
 
         // Populating the collection
         MeasurementRefCollection collection = new MeasurementRefCollection();
-        collection.add(ref1);
-        collection.add(ref2);
-        collection.add(ref3);
-        collection.add(ref4);
+        collection.put(ref1.getName(),ref1);
+        collection.put(ref2.getName(),ref2);
+        collection.put(ref3.getName(),ref3);
+        collection.put(ref4.getName(),ref4);
 
         // Checking the imageObjectName before changing
         assertEquals("",collection.get("Second ref").getImageObjName());

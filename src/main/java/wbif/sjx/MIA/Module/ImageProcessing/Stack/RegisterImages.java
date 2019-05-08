@@ -44,7 +44,7 @@ public class RegisterImages extends Module implements Interactable {
     public static final String RELATIVE_MODE = "Relative mode";
     public static final String ROLLING_CORRECTION = "Rolling correction";
     public static final String CORRECTION_INTERVAL = "Correction interval";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
@@ -657,13 +657,14 @@ public class RegisterImages extends Module implements Interactable {
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_Y,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_Y,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_Y,outputImageName));
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_X,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y,type).setImageObjName(outputImageName);
 
         }
 

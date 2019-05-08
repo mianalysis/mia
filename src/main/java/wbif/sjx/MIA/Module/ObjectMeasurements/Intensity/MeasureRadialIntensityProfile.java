@@ -21,7 +21,7 @@ import static wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution
 public class MeasureRadialIntensityProfile extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
-    public static final String REFERENCE_MODE = "Ref mode";
+    public static final String REFERENCE_MODE = "Reference mode";
     public static final String DISTANCE_MAP_IMAGE = "Distance map image";
     public static final String MASKING_MODE = "Masking mode";
     public static final String NUMBER_OF_RADIAL_SAMPLES = "Number of radial samples";

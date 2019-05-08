@@ -37,18 +37,18 @@ public class FilterObjects extends Module implements ActionListener {
 
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String CHILD_OBJECTS = "Child objects";
-    public static final String REFERENCE_MODE = "Ref mode";
-    public static final String REFERENCE_VALUE = "Ref value";
-    public static final String REFERENCE_VAL_IMAGE = "Ref value image";
-    public static final String REFERENCE_IMAGE_MEASUREMENT = "Ref image measurement";
-    public static final String REFERENCE_VAL_PARENT_OBJECT = "Ref value parent object";
-    public static final String REFERENCE_OBJECT_MEASUREMENT = "Ref object measurement";
-    public static final String REFERENCE_MULTIPLIER = "Ref value multiplier";
+    public static final String REFERENCE_MODE = "Reference mode";
+    public static final String REFERENCE_VALUE = "Reference value";
+    public static final String REFERENCE_VAL_IMAGE = "Reference value image";
+    public static final String REFERENCE_IMAGE_MEASUREMENT = "Reference image measurement";
+    public static final String REFERENCE_VAL_PARENT_OBJECT = "Reference value parent object";
+    public static final String REFERENCE_OBJECT_MEASUREMENT = "Reference object measurement";
+    public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
     public static final String SHOW_IMAGE = "Show image";
     public static final String DISPLAY_IMAGE_NAME = "Image to display";
 
@@ -622,9 +622,8 @@ public class FilterObjects extends Module implements ActionListener {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

@@ -233,6 +233,8 @@ public class MeasureObjectTexture extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+
         double xOffsIn = parameters.getValue(X_OFFSET);
         double yOffsIn = parameters.getValue(Y_OFFSET);
         double zOffsIn = parameters.getValue(Z_OFFSET);
@@ -240,22 +242,22 @@ public class MeasureObjectTexture extends Module {
         double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
 
         String name = getFullName(inputImageName,Measurements.ASM,offs,calibratedOffset);
-        MeasurementRef asm = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef asm = objectMeasurementRefs.getOrPut(name,type);
         asm.setImageObjName(inputObjectsName);
         asm.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.CONTRAST,offs,calibratedOffset);
-        MeasurementRef contrast = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef contrast = objectMeasurementRefs.getOrPut(name,type);
         contrast.setImageObjName(inputObjectsName);
         contrast.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.CORRELATION,offs,calibratedOffset);
-        MeasurementRef correlation = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef correlation = objectMeasurementRefs.getOrPut(name,type);
         correlation.setImageObjName(inputObjectsName);
         correlation.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.ENTROPY,offs,calibratedOffset);
-        MeasurementRef entropy = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef entropy = objectMeasurementRefs.getOrPut(name,type);
         entropy.setImageObjName(inputObjectsName);
         entropy.setAvailable(true);
 

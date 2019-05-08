@@ -15,7 +15,7 @@ public class OnImageEdge extends CoreFilter {
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
 
     public static final String FILTER_SEPARATOR = "Object filtering";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String STORE_RESULTS = "Store filter results";
 
@@ -159,9 +159,8 @@ public class OnImageEdge extends CoreFilter {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

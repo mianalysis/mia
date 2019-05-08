@@ -87,7 +87,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String CHANNEL = "Channel";
     public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String CROP_MODE = "Crop mode";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
@@ -893,13 +893,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         imageMeasurementRefs.setAllAvailable(false);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FROM_REFERENCE:
-                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputImageName));
-                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputImageName));
-                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputImageName));
-                imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputImageName));
+                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT,type).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP,type).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH,type).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT,type).setImageObjName(outputImageName);
+
                 break;
         }
 

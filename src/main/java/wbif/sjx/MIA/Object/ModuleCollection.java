@@ -53,9 +53,8 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
         for (MeasurementRef measurementRef:currentMeasurementRefs.values()) {
             if (measurementRef.getImageObjName() == null) continue;
-            if (measurementRef.getImageObjName().equals(imageName)
-                    & measurementRef.isAvailable())
-                measurementRefs.add(measurementRef);
+            if (measurementRef.getImageObjName().equals(imageName) & measurementRef.isAvailable())
+                measurementRefs.put(measurementRef.getName(),measurementRef);
 
         }
     }
@@ -89,11 +88,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs(this);
         if (currentMeasurementRefs == null) return;
 
-        for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
-            if (measurementReference.getImageObjName() == null) continue;
-            if (measurementReference.getImageObjName().equals(objectName)
-                    & measurementReference.isAvailable())
-                measurementRefs.add(measurementReference);
+        for (MeasurementRef ref:currentMeasurementRefs.values()) {
+            if (ref.getImageObjName() == null) continue;
+            if (ref.getImageObjName().equals(objectName) & ref.isAvailable()) measurementRefs.put(ref.getName(),ref);
 
         }
     }
@@ -129,29 +126,37 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public RelationshipRefCollection getRelationshipRefs(Module cutoffModule) {
-        RelationshipRefCollection relationships = new RelationshipRefCollection();
-
-        for (Module module:this) {
-            if (module == cutoffModule) {
-                break;
-            }
-
-            if (module.isEnabled()) {
-                RelationshipRefCollection currRelationships = module.updateAndGetRelationships();
-                if (currRelationships == null) continue;
-                relationships.addAll(currRelationships);
-            }
-        }
-
-        return relationships;
-
-    }
-
     public RelationshipRefCollection getRelationshipRefs() {
         return getRelationshipRefs(null);
 
     }
+
+    public RelationshipRefCollection getRelationshipRefs(Module cutoffModule) {
+        RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
+
+        addRelationshipRefs(inputControl, relationshipRefs);
+        addRelationshipRefs(outputControl, relationshipRefs);
+
+        for (Module module:this) {
+            if (module == cutoffModule) break;
+            addRelationshipRefs(module,relationshipRefs);
+        }
+
+        return relationshipRefs;
+
+    }
+
+    void addRelationshipRefs(Module module, RelationshipRefCollection relationshipRefs) {
+        if (!module.isEnabled()) return;
+
+        RelationshipRefCollection currentRelationshipRefs = module.updateAndGetRelationships();
+        if (currentRelationshipRefs == null) return;
+
+        relationshipRefs.putAll(currentRelationshipRefs);
+
+    }
+
+
 
     /*
      * Returns an LinkedHashSet of all parameters of a specific type

@@ -16,7 +16,7 @@ public class NumberOfChildren extends CoreFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String CHILD_OBJECTS = "Child objects";
-    public static final String REFERENCE_VALUE = "Ref value";
+    public static final String REFERENCE_VALUE = "Reference value";
     public static final String STORE_RESULTS = "Store filter results";
 
 
@@ -152,9 +152,8 @@ public class NumberOfChildren extends CoreFilter {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

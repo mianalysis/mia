@@ -6,10 +6,7 @@ import ij.Prefs;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 import javax.annotation.Nullable;
 
@@ -95,11 +92,15 @@ public abstract class Module implements Comparable {
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
     public MeasurementRef getImageMeasurementRef(String name) {
-        return imageMeasurementRefs.getOrPut(name);
+        return imageMeasurementRefs.getOrPut(name, MeasurementRef.Type.IMAGE);
     }
 
     public MeasurementRef getObjectMeasurementRef(String name) {
-        return objectMeasurementRefs.getOrPut(name);
+        return objectMeasurementRefs.getOrPut(name, MeasurementRef.Type.OBJECT);
+    }
+
+    public MetadataRef getMetadataRef(String name) {
+        return metadataRefs.getOrPut(name);
     }
 
     /*

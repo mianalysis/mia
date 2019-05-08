@@ -15,10 +15,10 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String TEST_MODE = "Test mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String REFERENCE_IMAGE_MEASUREMENT_MODE = "Ref image measurement mode";
-    public static final String REFERENCE_IMAGE_MEASUREMENT = "Ref image measurement";
-    public static final String REFERENCE_OBJECT_COUNT_MODE = "Ref object count mode";
-    public static final String REFERENCE_VALUE = "Ref value";
+    public static final String REFERENCE_IMAGE_MEASUREMENT_MODE = "Reference image measurement mode";
+    public static final String REFERENCE_IMAGE_MEASUREMENT = "Reference image measurement";
+    public static final String REFERENCE_OBJECT_COUNT_MODE = "Reference object count mode";
+    public static final String REFERENCE_VALUE = "Reference value";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 

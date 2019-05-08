@@ -31,7 +31,7 @@ public class UnwarpImages extends Module {
     public static final String RELATIVE_MODE = "Relative mode";
     public static final String ROLLING_CORRECTION = "Rolling correction";
     public static final String CORRECTION_INTERVAL = "Correction interval";
-    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";

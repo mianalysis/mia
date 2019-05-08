@@ -15,6 +15,8 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
@@ -250,16 +252,19 @@ public class Exporter {
             Element parametersElement = prepareParametersXML(doc,module.getAllParameters());
             moduleElement.appendChild(parametersElement);
 
-            // Adding references from this module
+            // Adding measurement references from this module
             Element measurementsElement = doc.createElement("MEASUREMENTS");
-
             MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
-            prepareMeasurementRefsXML(doc, measurementsElement,imageReferences,"IMAGE");
-
+            measurementsElement = prepareRefsXML(doc, measurementsElement,imageReferences,"MEASUREMENT");
             MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs(modules);
-            prepareMeasurementRefsXML(doc, measurementsElement,objectReferences,"OBJECTS");
-
+            measurementsElement = prepareRefsXML(doc, measurementsElement,objectReferences,"MEASUREMENT");
             moduleElement.appendChild(measurementsElement);
+
+            // Adding metadata references from this module
+            Element metadataElement = doc.createElement("METADATA");
+            MetadataRefCollection metadataRefs = module.updateAndGetMetadataReferences();
+            metadataElement = prepareRefsXML(doc, metadataElement,metadataRefs,"METADATUM");
+            moduleElement.appendChild(metadataElement);
 
             // Adding current module to modules
             modulesElement.appendChild(moduleElement);
@@ -336,32 +341,20 @@ public class Exporter {
 
     }
 
-    public static Element prepareMeasurementRefsXML(Document doc, Element measurementReferencesElement, MeasurementRefCollection measurementReferences, String type) {
-        if (measurementReferences == null) return measurementReferencesElement;
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
+        if (refs == null) return refsElement;
 
-        for (MeasurementRef measurementReference:measurementReferences.values()) {
+        for (ExportableRef ref:refs.values()) {
             // Don't export any measurements that aren't calculated
-            if (!measurementReference.isAvailable()) continue;
+            if (!ref.isAvailable()) continue;
 
-            Element measurementReferenceElement = doc.createElement("MEASUREMENT");
-
-            measurementReferenceElement.setAttribute("NAME",measurementReference.getName());
-            measurementReferenceElement.setAttribute("NICKNAME",measurementReference.getNickname());
-            measurementReferenceElement.setAttribute("EXPORT_GLOBAL",String.valueOf(measurementReference.isExportGlobal()));
-            measurementReferenceElement.setAttribute("EXPORT_INDIVIDUAL",String.valueOf(measurementReference.isExportIndividual()));
-            measurementReferenceElement.setAttribute("EXPORT_MEAN",String.valueOf(measurementReference.isExportMean()));
-            measurementReferenceElement.setAttribute("EXPORT_MIN",String.valueOf(measurementReference.isExportMin()));
-            measurementReferenceElement.setAttribute("EXPORT_MAX",String.valueOf(measurementReference.isExportMax()));
-            measurementReferenceElement.setAttribute("EXPORT_SUM",String.valueOf(measurementReference.isExportSum()));
-            measurementReferenceElement.setAttribute("EXPORT_STD",String.valueOf(measurementReference.isExportStd()));
-            measurementReferenceElement.setAttribute("TYPE",type);
-            measurementReferenceElement.setAttribute("IMAGE_OBJECT_NAME",measurementReference.getImageObjName());
-
-            measurementReferencesElement.appendChild(measurementReferenceElement);
+            Element element = doc.createElement(groupName);
+            ref.appendXMLAttributes(element);
+            refsElement.appendChild(element);
 
         }
 
-        return measurementReferencesElement;
+        return refsElement;
 
     }
 
