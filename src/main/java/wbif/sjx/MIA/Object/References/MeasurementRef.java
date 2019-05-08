@@ -1,32 +1,21 @@
 package wbif.sjx.MIA.Object.References;
 
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+
 /**
  * Created by sc13967 on 01/12/2017.
  */
-public class MeasurementRef extends Reference implements ExportableSummary {
+public class MeasurementRef extends ExportableRef {
     private String imageObjName = "";
-    private String description = "";
-    private String nickname = "";
-
-    private boolean calculated = true;
-    private boolean exportGlobal = true; // This is mainly for the GUI
-    private boolean exportIndividual = true;
-    private boolean exportMean = true;
-    private boolean exportMin = true;
-    private boolean exportMax = true;
-    private boolean exportSum = true;
-    private boolean exportStd = true;
 
 
     public MeasurementRef(String name) {
         super(name);
-        this.nickname = name;
     }
 
     public MeasurementRef(String name, String imageObjName) {
         super(name);
         this.imageObjName = imageObjName;
-        this.nickname = name;
     }
 
     @Override
@@ -51,30 +40,14 @@ public class MeasurementRef extends Reference implements ExportableSummary {
 
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     public MeasurementRef duplicate() {
         MeasurementRef newRef = new MeasurementRef(name);
 
-        newRef.setCalculated(calculated);
+        newRef.setAvailable(isAvailable());
         newRef.setImageObjName(imageObjName);
-        newRef.setDescription(description);
-        newRef.setNickname(nickname);
-        newRef.setExportGlobal(exportGlobal);
+        newRef.setDescription(getDescription());
+        newRef.setNickname(getNickname());
+        newRef.setExportGlobal(isExportGlobal());
         newRef.setExportIndividual(isExportIndividual());
         newRef.setExportMean(isExportMean());
         newRef.setExportMin(isExportMin());
@@ -91,75 +64,4 @@ public class MeasurementRef extends Reference implements ExportableSummary {
         return "Measurement reference ("+name+")";
     }
 
-
-    public boolean isCalculated() {
-        return calculated;
-    }
-
-    public MeasurementRef setCalculated(boolean calculated) {
-        this.calculated = calculated;
-        return this;
-    }
-
-    public void setExportGlobal(boolean exportGlobal) {
-        this.exportGlobal = exportGlobal;
-    }
-
-    public boolean isExportGlobal() {
-        return exportGlobal;
-    }
-
-    public boolean isExportIndividual() {
-        return exportIndividual;
-    }
-
-    public void setExportIndividual(boolean exportIndividual) {
-        this.exportIndividual = exportIndividual;
-
-    }
-
-    public boolean isExportMean() {
-        return exportMean;
-    }
-
-    public void setExportMean(boolean exportMean) {
-        this.exportMean = exportMean;
-
-    }
-
-    public boolean isExportMin() {
-        return exportMin;
-    }
-
-    public void setExportMin(boolean exportMin) {
-        this.exportMin = exportMin;
-
-    }
-
-    public boolean isExportMax() {
-        return exportMax;
-    }
-
-    public void setExportMax(boolean exportMax) {
-        this.exportMax = exportMax;
-
-    }
-
-    public boolean isExportSum() {
-        return exportSum;
-    }
-
-    public void setExportSum(boolean exportSum) {
-        this.exportSum = exportSum;
-
-    }
-
-    public boolean isExportStd() {
-        return exportStd;
-    }
-
-    public void setExportStd(boolean exportStd) {
-        this.exportStd = exportStd;
-
-    }
 }

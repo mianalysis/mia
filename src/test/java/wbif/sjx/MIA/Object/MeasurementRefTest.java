@@ -12,7 +12,7 @@ public class MeasurementRefTest {
 
         assertEquals("Test name",measurementReference.getName());
         assertEquals("",measurementReference.getImageObjName());
-        assertTrue(measurementReference.isCalculated());
+        assertTrue(measurementReference.isAvailable());
         assertTrue(measurementReference.isExportIndividual());
     }
 

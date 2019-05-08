@@ -87,7 +87,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String CHANNEL = "Channel";
     public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String CROP_MODE = "Crop mode";
-    public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String REFERENCE_IMAGE = "Ref image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
@@ -890,7 +890,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 

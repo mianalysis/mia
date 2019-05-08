@@ -138,13 +138,13 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         // Creating new MeasurementRef
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
         MeasurementRef measurementRef = objectMeasurementRefs.getOrPut(measurementName);
-        measurementRef.setCalculated(true);
+        measurementRef.setAvailable(true);
         measurementRef.setImageObjName(inputObjectsName);
         objectMeasurementRefs.add(measurementRef);
 

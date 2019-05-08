@@ -30,8 +30,8 @@ public class AnalysisWriter {
 
         // Creating a module collection holding the input and output
         ModuleCollection inOutModules = new ModuleCollection();
-        inOutModules.add(analysis.getInputControl());
-        inOutModules.add(analysis.getOutputControl());
+        inOutModules.add(analysis.getModules().getInputControl());
+        inOutModules.add(analysis.getModules().getOutputControl());
 
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();

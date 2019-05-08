@@ -52,7 +52,7 @@ public class ChildObjectsP extends ChoiceType {
         if (parentObjectsName == null) return null;
 
         ModuleCollection modules = GUI.getModules();
-        RelationshipRefCollection relationships = modules.getRelationships(module);
+        RelationshipRefCollection relationships = modules.getRelationshipRefs(module);
         return relationships.getChildNames(parentObjectsName, true);
 
     }

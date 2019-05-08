@@ -21,11 +21,11 @@ public class MeasureRelativeOrientation extends Module {
     public static final String ORIENTATION_IN_X_Y_MEASUREMENT = "Orientation in X/Y measurement";
     public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in XY/Z measurement";
     public static final String MEASUREMENT_RANGE = "Measurement range";
-    public static final String REFERENCE_MODE = "Reference mode";
-    public static final String REFERENCE_IMAGE = "Reference image";
-    public static final String REFERENCE_OBJECTS = "Reference objects";
+    public static final String REFERENCE_MODE = "Ref mode";
+    public static final String REFERENCE_IMAGE = "Ref image";
+    public static final String REFERENCE_OBJECTS = "Ref objects";
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
-    public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
+    public static final String MUST_BE_SAME_FRAME = "Ref must be in same frame";
 
 
     public interface OrientationModes {
@@ -468,7 +468,7 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
@@ -502,7 +502,7 @@ public class MeasureRelativeOrientation extends Module {
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
                 MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
                 measurementReference.setImageObjName(inputObjectsName);
-                measurementReference.setCalculated(true);
+                measurementReference.setAvailable(true);
 
                 String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
                 measurementReference.setDescription("Orientation of the object (specified by the measurements \""+

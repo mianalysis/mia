@@ -91,44 +91,44 @@ public class MeasureImageDimensions extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         String name = getFullName(Measurements.WIDTH);
         MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.HEIGHT);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.N_CHANNELS);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.N_SLICES);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.N_FRAMES);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.DIST_PER_PX_XY);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.DIST_PER_SLICE_Z);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         return imageMeasurementRefs;
 

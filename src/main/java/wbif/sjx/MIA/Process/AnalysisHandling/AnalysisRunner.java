@@ -24,8 +24,8 @@ public class AnalysisRunner {
 
     public static void startAnalysis(Analysis analysis) throws IOException, InterruptedException {
         // Getting input/output controls
-        InputControl inputControl = analysis.getInputControl();
-        OutputControl outputControl = analysis.getOutputControl();
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
 
         // Getting input file
         File inputFile = getInputFile(inputControl);

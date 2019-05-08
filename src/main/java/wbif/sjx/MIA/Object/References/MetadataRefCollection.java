@@ -1,20 +1,28 @@
 package wbif.sjx.MIA.Object.References;
 
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.util.TreeMap;
 
-public class MetadataRefCollection extends TreeMap<String,MetadataRef> {
+public class MetadataRefCollection extends RefCollection<MetadataRef> {
     public MetadataRefCollection() {
-        add(new MetadataRef(HCMetadata.FILE));
-        add(new MetadataRef(HCMetadata.FILENAME));
-        add(new MetadataRef(HCMetadata.SERIES_NUMBER));
-        add(new MetadataRef(HCMetadata.SERIES_NAME));
 
     }
 
     public String[] getMetadataNames() {
         return keySet().toArray(new String[0]);
+    }
+
+    public void setAllAvailable(boolean available) {
+        for (MetadataRef ref:values()) {
+            ref.setAvailable(available);
+        }
+    }
+
+    public MetadataRef getOrPut(Object key) {
+        putIfAbsent((String) key,new MetadataRef((String) key));
+        return super.get(key);
     }
 
     public void add(MetadataRef metadataRef) {

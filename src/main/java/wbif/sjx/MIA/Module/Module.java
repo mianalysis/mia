@@ -20,6 +20,7 @@ public abstract class Module implements Comparable {
     protected ParameterCollection parameters = new ParameterCollection();
     protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
     protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
+    protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
 
     private static boolean verbose = false;
     private String nickname;

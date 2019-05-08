@@ -10,18 +10,9 @@ import java.util.TreeSet;
  * different types of children these are stored in an ArrayList.
  */
 public class RelationshipRefCollection extends LinkedHashSet<RelationshipRef> {
-//    private LinkedHashMap<String,TreeSet<String>> parents = new LinkedHashMap<>();
-//    private LinkedHashMap<String,TreeSet<String>> children = new LinkedHashMap<>();
-
     public void addRelationship(String parent, String child) {
-        RelationshipRef relationshipRef = new RelationshipRef(parent,child);
+        RelationshipRef relationshipRef = new RelationshipRef(parent+" // "+child, parent,child);
         add(relationshipRef);
-
-//        parents.computeIfAbsent(child,k -> new TreeSet<>());
-//        parents.get(child).add(parent);
-//
-//        children.computeIfAbsent(parent, k -> new TreeSet<>());
-//        children.get(parent).add(child);
 
     }
 
@@ -31,11 +22,7 @@ public class RelationshipRefCollection extends LinkedHashSet<RelationshipRef> {
         // Adding each child and then the child of that
         TreeSet<String> childNames = getChildNames(this,parentName);
         if (childNames.size() == 0) return childNames;
-
-//        // Adding each parent and then the parent of that
-//        TreeSet<String> childNames = children.get(parentName);
-//        if (childNames == null) return new TreeSet<>();
-
+        
         // Appending root name
         TreeSet<String> newChildNames = new TreeSet<>();
         for (String childName:childNames) newChildNames.add(rootName+childName);

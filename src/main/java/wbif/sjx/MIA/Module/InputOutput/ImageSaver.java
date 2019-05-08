@@ -188,7 +188,8 @@ public class ImageSaver extends Module {
                 return false;
             }
 
-            String outputSaveLocation = analysis.outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
+            OutputControl outputControl = analysis.getModules().getOutputControl();
+            String outputSaveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
             switch (outputSaveLocation) {
                 case OutputControl.SaveLocations.SAVE_WITH_INPUT:
                     saveLocation = SaveLocations.SAVE_WITH_INPUT;
@@ -196,7 +197,7 @@ public class ImageSaver extends Module {
 
                 case OutputControl.SaveLocations.SPECIFIC_LOCATION:
                     saveLocation = SaveLocations.SPECIFIC_LOCATION;
-                    filePath = analysis.outputControl.getParameterValue(SAVE_FILE_PATH);
+                    filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
                     break;
             }
         }

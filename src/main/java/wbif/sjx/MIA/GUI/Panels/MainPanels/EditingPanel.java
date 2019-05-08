@@ -356,16 +356,18 @@ public class EditingPanel extends MainPanel {
     @Override
     public void updateModules() {
         Analysis analysis = GUI.getAnalysis();
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
 
-        boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
-        analysis.getInputControl().setRunnable(runnable);
+        boolean runnable = AnalysisTester.testModule(inputControl,analysis.getModules());
+        inputControl.setRunnable(runnable);
         inputPanel.updateButtonState();
-        inputPanel.updatePanel(analysis.getInputControl());
+        inputPanel.updatePanel(inputControl);
 
-        runnable = AnalysisTester.testModule(analysis.getOutputControl(),analysis.getModules());
-        analysis.getInputControl().setRunnable(runnable);
+        runnable = AnalysisTester.testModule(outputControl,analysis.getModules());
+        outputControl.setRunnable(runnable);
         outputPanel.updateButtonState();
-        outputPanel.updatePanel(analysis.getOutputControl());
+        outputPanel.updatePanel(outputControl);
 
         parametersPanel.updatePanel(GUI.getActiveModule());
         modulesPanel.updateButtonStates();

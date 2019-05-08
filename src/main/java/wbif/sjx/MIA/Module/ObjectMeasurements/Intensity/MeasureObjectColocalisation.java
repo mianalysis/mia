@@ -110,12 +110,12 @@ public class MeasureObjectColocalisation extends Module {
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);
 
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
         MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +
                 "within each \""+inputObjectsName+"\" object between images \""+inputImageName1+"\" and \""+
                 inputImageName2+"\".  PCC values range from -1 to +1, where -1 corresponds to perfect anti-correlation " +

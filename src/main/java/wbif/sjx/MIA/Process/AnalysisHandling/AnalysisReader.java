@@ -84,11 +84,11 @@ public class AnalysisReader {
             // If the module is an input, treat it differently
             if (module.getClass().isInstance(new InputControl())) {
                 addInputSpecificComponents(module,moduleNode);
-                analysis.setInputControl((InputControl) module);
+                analysis.getModules().setInputControl((InputControl) module);
 
             } else if (module.getClass().isInstance(new OutputControl())) {
                 addOutputSpecificComponents(module,moduleNode);
-                analysis.setOutputControl((OutputControl) module);
+                analysis.getModules().setOutputControl((OutputControl) module);
 
             } else {
                 addStandardModuleSpecificComponents(module, moduleNode);

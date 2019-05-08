@@ -1,6 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 
@@ -9,15 +11,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EnableMeasurementsButton extends JButton implements ActionListener {
-    private static final ImageIcon icon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/check-mark_black_12px.png"), "");
+public class DisableRefsButton extends JButton implements ActionListener {
+    private static final ImageIcon icon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/delete-2_black_12px.png"), "");
 
-    private MeasurementRefCollection measurementReferences;
+    private RefCollection<? extends ExportableRef> refs;
 
     // CONSTRUCTOR
 
-    public EnableMeasurementsButton(MeasurementRefCollection measurementReferences) {
-        this.measurementReferences = measurementReferences;
+    public DisableRefsButton(RefCollection<? extends ExportableRef> refs) {
+        this.refs = refs;
 
         JButton enableButton = new JButton();
         setMargin(new Insets(0,0,0,0));
@@ -33,8 +35,8 @@ public class EnableMeasurementsButton extends JButton implements ActionListener 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (MeasurementRef measurementReference:measurementReferences.values()) {
-            measurementReference.setExportGlobal(true);
+        for (ExportableRef measurementReference: refs.values()) {
+            measurementReference.setExportGlobal(false);
         }
 
         GUI.populateModuleParameters();

@@ -14,9 +14,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
@@ -343,7 +341,7 @@ public class Exporter {
 
         for (MeasurementRef measurementReference:measurementReferences.values()) {
             // Don't export any measurements that aren't calculated
-            if (!measurementReference.isCalculated()) continue;
+            if (!measurementReference.isAvailable()) continue;
 
             Element measurementReferenceElement = doc.createElement("MEASUREMENT");
 
@@ -515,8 +513,8 @@ public class Exporter {
 
 
         // Adding a new parameter to each row
-        appendModuleParameters(paramSheet,analysis.getInputControl());
-        appendModuleParameters(paramSheet,analysis.getOutputControl());
+        appendModuleParameters(paramSheet,analysis.getModules().getInputControl());
+        appendModuleParameters(paramSheet,analysis.getModules().getOutputControl());
 
         for (Module module:modules) appendModuleParameters(paramSheet,module);
 
@@ -626,17 +624,19 @@ public class Exporter {
 
             case PER_FILE:
             case PER_TIMEPOINT_PER_FILE:
-            // Adding metadata headers
-            String[] metadataNames = modules.getMetadataReferences(null).getMetadataNames();
-            // Running through all the metadata values, adding them as new columns
-            for (String name : metadataNames) {
-                summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
-                summaryDataName = getMetadataString(name);
-                summaryHeaderCell.setCellValue(summaryDataName);
-                colNumbers.put(summaryDataName, headerCol.getAndIncrement());
+                // Adding metadata headers
+                MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
+                // Running through all the metadata values, adding them as new columns
+                for (MetadataRef ref:metadataRefs.values()) {
+                    if (!ref.isExportGlobal()) continue;
+                    if (!ref.isExportIndividual()) continue;
 
-            }
-            break;
+                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
+                    summaryDataName = getMetadataString(ref.getName());
+                    summaryHeaderCell.setCellValue(summaryDataName);
+                    colNumbers.put(summaryDataName, headerCol.getAndIncrement());
+                }
+                break;
         }
     }
 
@@ -668,7 +668,7 @@ public class Exporter {
 
                 // Running through all the image measurement values, adding them as new columns
                 for (MeasurementRef imageMeasurement:availableMeasurements.values()) {
-                    if (!imageMeasurement.isCalculated()) continue;
+                    if (!imageMeasurement.isAvailable()) continue;
                     if (!imageMeasurement.isExportIndividual()) continue;
                     if (!imageMeasurement.isExportGlobal()) continue;
 
@@ -702,8 +702,8 @@ public class Exporter {
                 }
 
                 // Running through all the object's children
-                if (showChildCounts && modules.getRelationships().getChildNames(availableObjectName,false) != null) {
-                    for (String child : modules.getRelationships().getChildNames(availableObjectName,false)) {
+                if (showChildCounts && modules.getRelationshipRefs().getChildNames(availableObjectName,false) != null) {
+                    for (String child : modules.getRelationshipRefs().getChildNames(availableObjectName,false)) {
                         if (calculateCountMean) {
                             addSummaryObjectChildStatisticHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"MEAN","Mean");
                         }
@@ -733,7 +733,7 @@ public class Exporter {
 
                 // Running through all the object measurement values, adding them as new columns
                 for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                    if (!objectMeasurement.isCalculated()) continue;
+                    if (!objectMeasurement.isAvailable()) continue;
                     if (!objectMeasurement.isExportIndividual()) continue;
                     if (!objectMeasurement.isExportGlobal()) continue;
 
@@ -844,7 +844,7 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (MeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
-                if (!imageMeasurement.isCalculated()) continue;
+                if (!imageMeasurement.isAvailable()) continue;
                 if (!imageMeasurement.isExportIndividual()) continue;
                 if (!imageMeasurement.isExportGlobal()) continue;
 
@@ -876,8 +876,8 @@ public class Exporter {
             }
 
             // Running through all the object's children
-            if (showChildCounts && modules.getRelationships().getChildNames(objSetName,false) != null) {
-                for (String child : modules.getRelationships().getChildNames(objSetName,false)) {
+            if (showChildCounts && modules.getRelationshipRefs().getChildNames(objSetName,false) != null) {
+                for (String child : modules.getRelationshipRefs().getChildNames(objSetName,false)) {
                     // Running through all objects in this set, adding children to a CumStat object
                     CumStat cs = new CumStat();
                     for (Obj obj : objCollection.values()) {
@@ -939,7 +939,7 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                if (!objectMeasurement.isCalculated()) continue;
+                if (!objectMeasurement.isAvailable()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 
@@ -1041,15 +1041,18 @@ public class Exporter {
             // Adding metadata headers (if enabled)
             if (addMetadataToObjects) {
                 // Running through all the metadata values, adding them as new columns
-                metadataNames = modules.getMetadataReferences(null).getMetadataNames();
-                for (String name : metadataNames) {
+                MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
+                for (MetadataRef ref : metadataRefs.values()) {
+                    if (!ref.isExportGlobal()) continue;
+                    if (!ref.isExportIndividual()) continue;
+
                     Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                    metaHeaderCell.setCellValue(getMetadataString(name));
+                    metaHeaderCell.setCellValue(getMetadataString(ref.getName()));
                 }
             }
 
             // Adding parent IDs
-            RelationshipRefCollection relationships = modules.getRelationships();
+            RelationshipRefCollection relationships = modules.getRelationshipRefs();
             String[] parents = relationships.getParentNames(objectName,false);
             if (parents != null) {
                 for (String parent : parents) {
@@ -1084,7 +1087,7 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                if (!objectMeasurement.isCalculated()) continue;
+                if (!objectMeasurement.isAvailable()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 

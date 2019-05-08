@@ -26,7 +26,7 @@ public class RelateObjects extends Module {
 
     public final static String RELATE_SEPARATOR = "Relation controls";
     public final static String RELATE_MODE = "Method to relate objects";
-    public final static String REFERENCE_POINT = "Reference point";
+    public final static String REFERENCE_POINT = "Ref point";
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
@@ -614,7 +614,7 @@ public class RelateObjects extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
@@ -676,41 +676,41 @@ public class RelateObjects extends Module {
         distCentSurfFrac.setImageObjName(childObjectsName);
         overlapPercentage.setImageObjName(childObjectsName);
 
-        distCentPx.setCalculated(false);
-        distCentCal.setCalculated(false);
-        distSurfPx.setCalculated(false);
-        distSurfCal.setCalculated(false);
-        distCentSurfPx.setCalculated(false);
-        distCentSurfCal.setCalculated(false);
-        distCentSurfFrac.setCalculated(false);
-        overlapPercentage.setCalculated(false);
+        distCentPx.setAvailable(false);
+        distCentCal.setAvailable(false);
+        distSurfPx.setAvailable(false);
+        distSurfCal.setAvailable(false);
+        distCentSurfPx.setAvailable(false);
+        distCentSurfCal.setAvailable(false);
+        distCentSurfFrac.setAvailable(false);
+        overlapPercentage.setAvailable(false);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
                     case ReferencePoints.CENTROID:
-                        distCentPx.setCalculated(true);
-                        distCentCal.setCalculated(true);
+                        distCentPx.setAvailable(true);
+                        distCentCal.setAvailable(true);
                         break;
 
                     case ReferencePoints.SURFACE:
-                        distSurfPx.setCalculated(true);
-                        distSurfCal.setCalculated(true);
+                        distSurfPx.setAvailable(true);
+                        distSurfCal.setAvailable(true);
                         break;
 
                     case ReferencePoints.CENTROID_TO_SURFACE:
-                        distCentSurfPx.setCalculated(true);
-                        distCentSurfCal.setCalculated(true);
+                        distCentSurfPx.setAvailable(true);
+                        distCentSurfCal.setAvailable(true);
 
                         if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
-                            distCentSurfFrac.setCalculated(true);
+                            distCentSurfFrac.setAvailable(true);
                         }
                         break;
                 }
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                overlapPercentage.setCalculated(true);
+                overlapPercentage.setAvailable(true);
                 break;
         }
 

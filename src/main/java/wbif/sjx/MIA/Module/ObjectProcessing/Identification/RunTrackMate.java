@@ -404,25 +404,25 @@ public class RunTrackMate extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setImageObjName(outputSpotObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
         reference.setImageObjName(outputSpotObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
         reference.setImageObjName(outputSpotObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
         reference.setImageObjName(outputSpotObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         return objectMeasurementRefs;
 

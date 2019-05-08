@@ -254,7 +254,7 @@ public class CalculateMeasurementPeriodogram extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
@@ -266,12 +266,12 @@ public class CalculateMeasurementPeriodogram extends Module {
                     String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
                     MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
-                    reference.setCalculated(true);
+                    reference.setAvailable(true);
 
                     name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
                     reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
-                    reference.setCalculated(true);
+                    reference.setAvailable(true);
 
                 }
                 break;
@@ -283,7 +283,7 @@ public class CalculateMeasurementPeriodogram extends Module {
                     String name = getWholeSpectrumFullName(measurement, freq[i]);
                     MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
-                    reference.setCalculated(true);
+                    reference.setAvailable(true);
                 }
                 break;
         }

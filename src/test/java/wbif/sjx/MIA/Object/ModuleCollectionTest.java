@@ -421,7 +421,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(objectClusterer);
 
         // Getting actual relationships
-        RelationshipRefCollection actualRelationships = modules.getRelationships();
+        RelationshipRefCollection actualRelationships = modules.getRelationshipRefs();
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
@@ -549,7 +549,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(objectClusterer);
 
         // Getting actual relationships
-        RelationshipRefCollection actualRelationships = modules.getRelationships(objectClusterer);
+        RelationshipRefCollection actualRelationships = modules.getRelationshipRefs(objectClusterer);
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);

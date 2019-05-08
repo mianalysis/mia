@@ -16,7 +16,7 @@ public class NumberOfChildren extends CoreFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String CHILD_OBJECTS = "Child objects";
-    public static final String REFERENCE_VALUE = "Reference value";
+    public static final String REFERENCE_VALUE = "Ref value";
     public static final String STORE_RESULTS = "Store filter results";
 
 
@@ -141,7 +141,7 @@ public class NumberOfChildren extends CoreFilter {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -166,8 +166,6 @@ public class NumberOfChildren extends CoreFilter {
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection metadataReferences = new MetadataRefCollection();
-
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -177,11 +175,11 @@ public class NumberOfChildren extends CoreFilter {
 
             String metadataName = getMetadataName(inputObjectsName,filterMethod,childObjectsName,referenceValue);
 
-            metadataReferences.add(new MetadataRef(metadataName));
+            metadataRefs.getOrPut(metadataName).setAvailable(true);
 
         }
 
-        return metadataReferences;
+        return metadataRefs;
     }
 
     @Override

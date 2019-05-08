@@ -1,6 +1,9 @@
 package wbif.sjx.MIA.Object.References;
 
-public class RelationshipRef extends Reference {
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+
+public class RelationshipRef extends ExportableRef {
     private final String parentName;
     private final String childName;
 

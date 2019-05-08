@@ -15,14 +15,13 @@ import ome.xml.meta.IMetadata;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
+import wbif.sjx.common.Object.HCMetadata;
 
 import java.awt.*;
 import java.io.File;
@@ -320,7 +319,13 @@ public class InputControl extends Module {
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        return null;
+        metadataRefs.getOrPut(HCMetadata.FILE).setAvailable(true);
+        metadataRefs.getOrPut(HCMetadata.FILENAME).setAvailable(true);
+        metadataRefs.getOrPut(HCMetadata.SERIES_NUMBER).setAvailable(true);
+        metadataRefs.getOrPut(HCMetadata.SERIES_NAME).setAvailable(true);
+
+        return metadataRefs;
+
     }
 
     @Override

@@ -684,7 +684,7 @@ public class TrackObjects extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
@@ -698,14 +698,14 @@ public class TrackObjects extends Module {
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
 
-        trackPrevID.setCalculated(true);
-        trackNextID.setCalculated(true);
+        trackPrevID.setAvailable(true);
+        trackNextID.setAvailable(true);
 
         if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
-            angleMeasurement.setCalculated(true);
-            leadingXPx.setCalculated(true);
-            leadingYPx.setCalculated(true);
-            leadingZPx.setCalculated(true);
+            angleMeasurement.setAvailable(true);
+            leadingXPx.setAvailable(true);
+            leadingYPx.setAvailable(true);
+            leadingZPx.setAvailable(true);
 
             angleMeasurement.setImageObjName(inputObjectsName);
             leadingXPx.setImageObjName(inputObjectsName);
@@ -713,10 +713,10 @@ public class TrackObjects extends Module {
             leadingZPx.setImageObjName(inputObjectsName);
 
         } else {
-            angleMeasurement.setCalculated(false);
-            leadingXPx.setCalculated(false);
-            leadingYPx.setCalculated(false);
-            leadingZPx.setCalculated(false);
+            angleMeasurement.setAvailable(false);
+            leadingXPx.setAvailable(false);
+            leadingYPx.setAvailable(false);
+            leadingZPx.setAvailable(false);
         }
 
         return objectMeasurementRefs;

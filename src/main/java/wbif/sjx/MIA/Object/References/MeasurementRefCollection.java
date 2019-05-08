@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.Object.References;
 
-import java.util.TreeMap;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-public class MeasurementRefCollection extends TreeMap<String,MeasurementRef> {
+public class MeasurementRefCollection extends RefCollection<MeasurementRef> {
     public void updateImageObjectName(String measurementName, String imageObjectName) {
         get(measurementName).setImageObjName(imageObjectName);
     }
@@ -11,9 +11,9 @@ public class MeasurementRefCollection extends TreeMap<String,MeasurementRef> {
         return keySet().toArray(new String[0]);
     }
 
-    public void setAllCalculated(boolean calculated) {
+    public void setAllAvailable(boolean available) {
         for (MeasurementRef measurementReference:values()) {
-            measurementReference.setCalculated(calculated);
+            measurementReference.setAvailable(available);
         }
     }
 
@@ -28,7 +28,7 @@ public class MeasurementRefCollection extends TreeMap<String,MeasurementRef> {
 
     public boolean hasExportedMeasurements() {
         for (MeasurementRef ref:values()) {
-            if (ref.isCalculated()) return true;
+            if (ref.isAvailable()) return true;
         }
 
         return false;

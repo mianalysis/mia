@@ -191,27 +191,27 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(MEASURE_VOLUME)) {
             MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Number of voxels (3D pixels) in the object, \""+inputObjectsName+"\".  Note: " +
                     "This doesn't take spatial scaling of XY and Z into account, so isn't a good measure of true " +
                     "object volume.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_PX);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units.  Measured in pixel " +
                     "units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units prior to conversion" +
@@ -220,13 +220,13 @@ public class MeasureObjectShape extends Module {
 
         if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
             MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
@@ -234,13 +234,13 @@ public class MeasureObjectShape extends Module {
 
         if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
             MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
@@ -249,20 +249,20 @@ public class MeasureObjectShape extends Module {
 
         if (parameters.getValue(MEASURE_PROJECTED_PERIM)) {
             MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_PERIM_CAL));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_CIRCULARITY));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Circularity of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Uses the calculation \"circularity = 4pi(area/perimeter^2)\".  This measurement has no units.");

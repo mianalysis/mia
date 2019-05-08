@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class ManualUnwarp extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String REFERENCE_IMAGE = "Ref image";
     public static final String POINT_SELECTION_MODE = "Point selection mode";
     public static final String REGISTRATION_MODE = "Registration mode";
     public static final String SUBSAMPLE_FACTOR = "Subsample factor";

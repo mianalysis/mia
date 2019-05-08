@@ -27,7 +27,7 @@ public class CreateDistanceMap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String REFERENCE_MODE = "Reference mode";
+    public static final String REFERENCE_MODE = "Ref mode";
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
     public static final String MASKING_MODE = "Masking mode";
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";

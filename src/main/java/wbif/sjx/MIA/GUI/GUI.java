@@ -228,7 +228,7 @@ public class GUI {
 
     public static void updateTestFile() {
         // Ensuring the input file specified in the InputControl is active in the test workspace
-        InputControl inputControl = analysis.getInputControl();
+        InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
         int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
@@ -266,7 +266,7 @@ public class GUI {
 
         }
 
-        ChoiceP seriesMode = (ChoiceP) analysis.getInputControl().getParameter(InputControl.SERIES_MODE);
+        ChoiceP seriesMode = (ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE);
         switch (seriesMode.getChoice()) {
             case InputControl.SeriesModes.ALL_SERIES:
                 testWorkspace.getMetadata().setSeriesNumber(1);
@@ -274,7 +274,7 @@ public class GUI {
                 break;
 
             case InputControl.SeriesModes.SERIES_LIST:
-                SeriesListSelectorP listParameter = analysis.getInputControl().getParameter(InputControl.SERIES_LIST);
+                SeriesListSelectorP listParameter = inputControl.getParameter(InputControl.SERIES_LIST);
                 int[] seriesList = listParameter.getSeriesList();
                 testWorkspace.getMetadata().setSeriesNumber(seriesList[0]);
                 testWorkspace.getMetadata().setSeriesName("");

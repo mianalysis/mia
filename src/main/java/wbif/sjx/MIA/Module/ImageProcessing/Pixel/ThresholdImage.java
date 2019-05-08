@@ -405,7 +405,7 @@ public class ThresholdImage extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
                 && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
@@ -415,7 +415,7 @@ public class ThresholdImage extends Module {
 
             MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
             reference.setImageObjName(imageName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
 
         }
 

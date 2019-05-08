@@ -4,6 +4,8 @@
 
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.MIA.GUI.InputOutput.InputControl;
+import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -20,32 +22,42 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<Module> implements Serializable {
+    private InputControl inputControl = new InputControl();
+    private OutputControl outputControl = new OutputControl();
+
     public MeasurementRefCollection getImageMeasurementRefs(String imageName) {
         return getImageMeasurementRefs(imageName,null);
     }
 
     public MeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
-        MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
+        MeasurementRefCollection measurementRefs = new MeasurementRefCollection();
+
+        addImageMeasurementRefs(inputControl, measurementRefs, imageName);
+        addImageMeasurementRefs(outputControl, measurementRefs, imageName);
 
         // Iterating over all modules, collecting any measurements for the current image
         for (Module module:this) {
             if (module == cutoffModule) break;
-            if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
-
-            if (currentMeasurementRefs == null) continue;
-
-            for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
-                if (measurementReference.getImageObjName() == null) continue;
-                if (measurementReference.getImageObjName().equals(imageName)
-                        & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference);
-
-            }
+            addImageMeasurementRefs(module, measurementRefs, imageName);
         }
 
-        return measurementReferences;
+        return measurementRefs;
 
+    }
+
+    void addImageMeasurementRefs(Module module, MeasurementRefCollection measurementRefs, String imageName) {
+        if (!module.isEnabled()) return;
+        MeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
+
+        if (currentMeasurementRefs == null) return;
+
+        for (MeasurementRef measurementRef:currentMeasurementRefs.values()) {
+            if (measurementRef.getImageObjName() == null) continue;
+            if (measurementRef.getImageObjName().equals(imageName)
+                    & measurementRef.isAvailable())
+                measurementRefs.add(measurementRef);
+
+        }
     }
 
     public MeasurementRefCollection getObjectMeasurementRefs(String objectName) {
@@ -54,46 +66,90 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     }
 
     public MeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
-        MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
+        MeasurementRefCollection measurementRefs = new MeasurementRefCollection();
 
         // If this is a distant relative there will be "//" in the name that need to be removed
         if (objectName.contains("//")) objectName = objectName.substring(objectName.indexOf("//")+3);
 
+        addObjectMeasurementRefs(inputControl,measurementRefs,objectName);
+        addObjectMeasurementRefs(outputControl,measurementRefs,objectName);
+
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
-            if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs(this);
-            if (currentMeasurementRefs == null) continue;
-
-            for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
-                if (measurementReference.getImageObjName() == null) continue;
-                if (measurementReference.getImageObjName().equals(objectName)
-                        & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference);
-
-            }
+            addObjectMeasurementRefs(module,measurementRefs,objectName);
         }
 
-        return measurementReferences;
+        return measurementRefs;
 
     }
 
-    public MetadataRefCollection getMetadataReferences(Module cutoffModule) {
+    void addObjectMeasurementRefs(Module module, MeasurementRefCollection measurementRefs, String objectName) {
+        if (!module.isEnabled()) return;
+        MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs(this);
+        if (currentMeasurementRefs == null) return;
+
+        for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
+            if (measurementReference.getImageObjName() == null) continue;
+            if (measurementReference.getImageObjName().equals(objectName)
+                    & measurementReference.isAvailable())
+                measurementRefs.add(measurementReference);
+
+        }
+    }
+
+    public MetadataRefCollection getMetadataRefs() {
+        return getMetadataRefs(null);
+
+    }
+
+    public MetadataRefCollection getMetadataRefs(Module cutoffModule) {
         MetadataRefCollection metadataRefs = new MetadataRefCollection();
+
+        addMetadataRefs(inputControl, metadataRefs);
+        addMetadataRefs(outputControl, metadataRefs);
 
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
-            if (!module.isEnabled()) continue;
-            MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
-            if (currentMetadataReferences == null) continue;
-
-            metadataRefs.putAll(currentMetadataReferences);
-
+            addMetadataRefs(module, metadataRefs);
         }
 
         return metadataRefs;
+
+    }
+
+    void addMetadataRefs(Module module, MetadataRefCollection metadataRefs) {
+        if (!module.isEnabled()) return;
+
+        MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
+        if (currentMetadataReferences == null) return;
+
+        metadataRefs.putAll(currentMetadataReferences);
+
+    }
+
+    public RelationshipRefCollection getRelationshipRefs(Module cutoffModule) {
+        RelationshipRefCollection relationships = new RelationshipRefCollection();
+
+        for (Module module:this) {
+            if (module == cutoffModule) {
+                break;
+            }
+
+            if (module.isEnabled()) {
+                RelationshipRefCollection currRelationships = module.updateAndGetRelationships();
+                if (currRelationships == null) continue;
+                relationships.addAll(currRelationships);
+            }
+        }
+
+        return relationships;
+
+    }
+
+    public RelationshipRefCollection getRelationshipRefs() {
+        return getRelationshipRefs(null);
 
     }
 
@@ -175,31 +231,10 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public RelationshipRefCollection getRelationships(Module cutoffModule) {
-        RelationshipRefCollection relationships = new RelationshipRefCollection();
-
-        for (Module module:this) {
-            if (module == cutoffModule) {
-                break;
-            }
-
-            if (module.isEnabled()) {
-                RelationshipRefCollection currRelationships = module.updateAndGetRelationships();
-                if (currRelationships == null) continue;
-                relationships.addAll(currRelationships);
-            }
-        }
-
-        return relationships;
-
-    }
-
-    public RelationshipRefCollection getRelationships() {
-        return getRelationships(null);
-
-    }
-
     public boolean hasVisibleParameters() {
+        if (inputControl.hasVisibleParameters()) return true;
+        if (outputControl.hasVisibleParameters()) return true;
+
         for (Module module:this) {
             if (module.hasVisibleParameters()) return true;
         }
@@ -208,4 +243,19 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
+    public InputControl getInputControl() {
+        return inputControl;
+    }
+
+    public void setInputControl(InputControl inputControl) {
+        this.inputControl = inputControl;
+    }
+
+    public OutputControl getOutputControl() {
+        return outputControl;
+    }
+
+    public void setOutputControl(OutputControl outputControl) {
+        this.outputControl = outputControl;
+    }
 }

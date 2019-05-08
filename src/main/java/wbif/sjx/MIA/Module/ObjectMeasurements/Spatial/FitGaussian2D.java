@@ -384,77 +384,77 @@ public class FitGaussian2D extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Y0_PX);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Z0_SLICE);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_X_PX);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_Y_PX);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_MEAN_PX);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X0_CAL));
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y0_CAL));
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z0_CAL));
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.A_0);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.A_BG);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.THETA);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ELLIPTICITY);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.RESIDUAL);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         return objectMeasurementRefs;
 

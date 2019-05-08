@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.MeasurementRef;
 
 import javax.swing.*;
@@ -8,15 +9,15 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- * Created by sc13967 on 06/09/2017.
+ * Created by Stephen on 06/09/2017.
  */
-public class MeasurementName extends JTextField implements FocusListener {
-    private MeasurementRef measurementReference;
+public class ExportName extends JTextField implements FocusListener {
+    private ExportableRef measurementReference;
 
-    public MeasurementName(MeasurementRef measurementReference) {
-        this.measurementReference = measurementReference;
+    public ExportName(ExportableRef ref) {
+        this.measurementReference = ref;
 
-        setText(measurementReference.getNickname());
+        setText(ref.getNickname());
         addFocusListener(this);
 
     }

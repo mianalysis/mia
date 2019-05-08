@@ -229,7 +229,7 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -242,22 +242,22 @@ public class MeasureObjectTexture extends Module {
         String name = getFullName(inputImageName,Measurements.ASM,offs,calibratedOffset);
         MeasurementRef asm = objectMeasurementRefs.getOrPut(name);
         asm.setImageObjName(inputObjectsName);
-        asm.setCalculated(true);
+        asm.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.CONTRAST,offs,calibratedOffset);
         MeasurementRef contrast = objectMeasurementRefs.getOrPut(name);
         contrast.setImageObjName(inputObjectsName);
-        contrast.setCalculated(true);
+        contrast.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.CORRELATION,offs,calibratedOffset);
         MeasurementRef correlation = objectMeasurementRefs.getOrPut(name);
         correlation.setImageObjName(inputObjectsName);
-        correlation.setCalculated(true);
+        correlation.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.ENTROPY,offs,calibratedOffset);
         MeasurementRef entropy = objectMeasurementRefs.getOrPut(name);
         entropy.setImageObjName(inputObjectsName);
-        entropy.setCalculated(true);
+        entropy.setAvailable(true);
 
         return objectMeasurementRefs;
 

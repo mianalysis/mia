@@ -2,6 +2,8 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.InputOutput.InputControl;
+import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
@@ -45,8 +47,11 @@ public class BasicControlPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        AnalysisTester.testModule(GUI.getAnalysis().getInputControl(),GUI.getModules());
-        AnalysisTester.testModule(GUI.getAnalysis().getOutputControl(),GUI.getModules());
+        InputControl inputControl = GUI.getModules().getInputControl();
+        OutputControl outputControl = GUI.getModules().getOutputControl();
+
+        AnalysisTester.testModule(inputControl,GUI.getModules());
+        AnalysisTester.testModule(outputControl,GUI.getModules());
         AnalysisTester.testModules(GUI.getModules());
 
         int frameWidth = GUI.getMinimumFrameWidth();
@@ -78,7 +83,7 @@ public class BasicControlPanel extends JScrollPane {
         // Adding input control options
         if (expanded.isSelected()) {
             c.gridy++;
-            JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(), frameWidth - 80);
+            JPanel inputPanel = componentFactory.createBasicModuleControl(inputControl, frameWidth - 80);
             if (inputPanel != null) panel.add(inputPanel, c);
         }
 
@@ -114,7 +119,7 @@ public class BasicControlPanel extends JScrollPane {
             }
         }
 
-        JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),frameWidth-80);
+        JPanel outputPanel =componentFactory.createBasicModuleControl(outputControl,frameWidth-80);
         if (outputPanel != null && expanded.isSelected()) {
             c.gridy++;
             panel.add(outputPanel,c);
