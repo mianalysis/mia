@@ -56,6 +56,10 @@ public class MeasureIntensityDistribution extends Module {
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
+    public MeasureIntensityDistribution(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface MeasurementTypes {
         String DISTANCE_PROFILE = "Distance profile";
@@ -224,7 +228,7 @@ public class MeasureIntensityDistribution extends Module {
                 BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1);
                 distIpl = DistanceMap.getDistanceMap(distIpl,true);
 
-                new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
+                ImageCalculator.process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
 
                 break;
 
@@ -685,7 +689,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

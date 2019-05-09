@@ -24,12 +24,12 @@ public class MeasureImageIntensityTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MeasureImageIntensity().getTitle());
+        assertNotNull(new MeasureImageIntensity(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureImageIntensity().getHelp());
+        assertNotNull(new MeasureImageIntensity(null).getHelp());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(null);
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
@@ -73,7 +73,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(null);
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
@@ -102,7 +102,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(null);
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
@@ -131,7 +131,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(null);
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
@@ -160,7 +160,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureImageIntensity
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(null);
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 

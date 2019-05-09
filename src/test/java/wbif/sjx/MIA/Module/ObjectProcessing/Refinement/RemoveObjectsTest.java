@@ -20,12 +20,12 @@ public class RemoveObjectsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new RemoveObjects().getTitle());
+        assertNotNull(new RemoveObjects(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RemoveObjects().getHelp());
+        assertNotNull(new RemoveObjects(null).getHelp());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class RemoveObjectsTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising the module
-        RemoveObjects removeObjects = new RemoveObjects();
+        RemoveObjects removeObjects = new RemoveObjects(null);
         removeObjects.initialiseParameters();
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
 
@@ -73,7 +73,7 @@ public class RemoveObjectsTest extends ModuleTest {
         workspace.addObjects(spotObjects);
 
         // Initialising the module
-        RemoveObjects removeObjects = new RemoveObjects();
+        RemoveObjects removeObjects = new RemoveObjects(null);
         removeObjects.initialiseParameters();
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
 

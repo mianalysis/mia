@@ -34,6 +34,10 @@ public class CreateMeasurementMap extends Module {
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
 
+    public CreateMeasurementMap(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface MeasurementModes {
         String MEASUREMENT = "Measurement";
         String PARENT_MEASUREMENT = "Parent object measurement";
@@ -383,7 +387,7 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

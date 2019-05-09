@@ -21,6 +21,10 @@ public class RunImageJMacro extends Module {
     public static final String MACRO_TITLE = "Macro title";
     public static final String ARGUMENTS = "Parameters";
 
+    public RunImageJMacro(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     @Override
     public String getTitle() {
@@ -102,7 +106,7 @@ public class RunImageJMacro extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

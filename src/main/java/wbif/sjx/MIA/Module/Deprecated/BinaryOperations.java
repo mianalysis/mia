@@ -45,6 +45,10 @@ public class BinaryOperations extends Module {
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
+    public BinaryOperations(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
         String DILATE_3D = "Dilate 3D";
@@ -479,7 +483,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

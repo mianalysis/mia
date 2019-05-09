@@ -28,6 +28,10 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String FLIP_SEPARATOR = "Stack flip controls";
     public static final String AXIS_MODE = "Axis mode";
 
+    public FlipStack(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface AxisModes {
         String X = "X";
@@ -179,7 +183,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

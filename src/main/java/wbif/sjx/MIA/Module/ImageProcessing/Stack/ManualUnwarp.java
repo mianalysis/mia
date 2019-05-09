@@ -59,6 +59,10 @@ public class ManualUnwarp extends Module implements Interactable {
     private Image inputImage;
     private Image reference;
 
+    public ManualUnwarp(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface PointSelectionModes {
         String PRESELECTED = "Pre-selected points";
@@ -324,8 +328,7 @@ public class ManualUnwarp extends Module implements Interactable {
             e.printStackTrace();
         }
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
-        concatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
+        ConcatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
 
     }
 
@@ -476,7 +479,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

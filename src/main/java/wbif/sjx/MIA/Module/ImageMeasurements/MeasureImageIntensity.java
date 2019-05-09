@@ -21,6 +21,10 @@ public class MeasureImageIntensity extends Module {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
 
+    public MeasureImageIntensity(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Measurements {
         String MEAN = "INTENSITY // MEAN";
@@ -116,7 +120,7 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

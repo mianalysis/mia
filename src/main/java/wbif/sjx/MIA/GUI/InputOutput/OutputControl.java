@@ -30,7 +30,10 @@ public class OutputControl extends Module {
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
 
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
-    public static final String SELECT_MEASUREMENTS = "Show measurement selection";
+
+    public OutputControl(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface SaveLocations {
@@ -119,7 +122,6 @@ public class OutputControl extends Module {
         parameters.add(new BooleanP(EXPORT_INDIVIDUAL_OBJECTS,this,true));
 
         parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
-        parameters.add(new BooleanP(SELECT_MEASUREMENTS,this,false));
 
     }
 
@@ -176,7 +178,6 @@ public class OutputControl extends Module {
         returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SELECT_MEASUREMENTS));
 
         return returnedParameters;
 
@@ -188,7 +189,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -45,6 +45,10 @@ public class InputControl extends Module {
     public static final String FILTER_TYPE = "Filter type";
     public static final String NO_LOAD_MESSAGE = "No load message";
 
+    public InputControl(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public static interface InputModes {
         String SINGLE_FILE = "Single file";
@@ -313,7 +317,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

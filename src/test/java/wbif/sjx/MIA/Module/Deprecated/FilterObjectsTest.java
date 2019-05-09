@@ -29,12 +29,12 @@ public class FilterObjectsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new FilterObjects().getTitle());
+        assertNotNull(new FilterObjects(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FilterObjects().getHelp());
+        assertNotNull(new FilterObjects(null).getHelp());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class FilterObjectsTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_N_VOXELS.name());
@@ -82,7 +82,7 @@ public class FilterObjectsTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_SMALLER_THAN);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_N_VOXELS.name());
@@ -112,7 +112,7 @@ public class FilterObjectsTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MISSING_MEASUREMENTS);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_I_STD_8BIT.name());
@@ -148,7 +148,7 @@ public class FilterObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
@@ -183,7 +183,7 @@ public class FilterObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
@@ -219,7 +219,7 @@ public class FilterObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
@@ -268,7 +268,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MIN_NUMBER_OF_CHILDREN);
         filterObjects.updateParameterValue(FilterObjects.CHILD_OBJECTS,"Children");
@@ -318,7 +318,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MAX_NUMBER_OF_CHILDREN);
         filterObjects.updateParameterValue(FilterObjects.CHILD_OBJECTS,"Children");
@@ -364,7 +364,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.NO_PARENT);
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
@@ -409,7 +409,7 @@ public class FilterObjectsTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        FilterObjects filterObjects = new FilterObjects();
+        FilterObjects filterObjects = new FilterObjects(null);
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.WITH_PARENT);
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");

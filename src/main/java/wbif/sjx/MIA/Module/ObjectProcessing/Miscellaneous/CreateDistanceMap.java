@@ -33,6 +33,10 @@ public class CreateDistanceMap extends Module {
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
     public static final String SPATIAL_UNITS = "Spatial units";
 
+    public CreateDistanceMap(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface ReferenceModes {
         String DISTANCE_FROM_CENTROID = "Distance from object centroid";
@@ -104,7 +108,7 @@ public class CreateDistanceMap extends Module {
         if (invertInside) ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
 
         // Compiling the distance map
-        ImagePlus distanceMap = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
+        ImagePlus distanceMap = ImageCalculator.process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
 
         return new Image(outputImageName,distanceMap);
@@ -130,7 +134,7 @@ public class CreateDistanceMap extends Module {
         // Applying the mask
         String calculationMode = ImageCalculator.CalculationMethods.MULTIPLY;
         String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
-        new ImageCalculator().process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
+        ImageCalculator.process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
 
     }
 
@@ -323,7 +327,7 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

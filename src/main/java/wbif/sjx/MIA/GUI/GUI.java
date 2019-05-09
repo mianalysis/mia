@@ -67,7 +67,7 @@ public class GUI {
         initialised = true;
 
         // Adding a new ImageLoader module to the empty analysis
-        analysis.getModules().add(new ImageLoader<>());
+        analysis.getModules().add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
         if (MIA.isDebug()) {
@@ -224,6 +224,10 @@ public class GUI {
         mainPanel.updateModules();
         mainPanel.updateHelpNotes();
 
+    }
+
+    public static void updateParameters() {
+        mainPanel.updateParameters();
     }
 
     public static void updateTestFile() {

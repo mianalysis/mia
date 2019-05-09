@@ -19,6 +19,10 @@ public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
 
+    public ReassignEnclosedObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
     public void testEncloses(ObjCollection objects, Image templateImage) throws IntegerOverflowException {
         int count = 0;
         int total = objects.size();
@@ -121,7 +125,7 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -32,6 +32,10 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
 
+    public CropImage(ModuleCollection modules) {
+        super(modules);
+    }
+
     public static <T extends RealType< T > & NativeType< T >> Image cropImage(Image<T> inputImage, String outputImageName, int top, int left, int width, int height) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         ImgPlus<T> inputImg = inputImage.getImgPlus();
@@ -164,7 +168,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

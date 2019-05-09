@@ -22,7 +22,7 @@ public class RemoveImageFromWorkspaceMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        RemoveImage removeImage = new RemoveImage();
+        RemoveImage removeImage = new RemoveImage(workspace.getAnalysis().getModules());
 
         removeImage.updateParameterValue(RemoveImage.INPUT_IMAGE,objects[0]);
         removeImage.updateParameterValue(RemoveImage.RETAIN_MEASUREMENTS,(double) objects[1] == 1);

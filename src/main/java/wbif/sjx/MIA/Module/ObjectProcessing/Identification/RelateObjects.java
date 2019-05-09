@@ -39,6 +39,10 @@ public class RelateObjects extends Module {
     public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
+    public RelateObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
@@ -613,7 +617,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);

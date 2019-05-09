@@ -26,6 +26,10 @@ public class PlotMeasurementsScatter extends Module {
     public static final String MEASUREMENT3 = "Third measurement (Colour)";
     public static final String COLOURMAP = "Colourmap";
 
+    public PlotMeasurementsScatter(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface ColourMaps {
         String RED_TO_BLUE = "Red to blue";
         String RED_TO_GREEN = "Blue to green";
@@ -210,7 +214,7 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

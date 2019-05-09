@@ -27,6 +27,10 @@ public class ColourDeconvolution extends Module {
     public static final String OUTPUT_IMAGE_3 = "Output image 3 name";
     public static final String STAIN_MODEL = "Stain model";
 
+    public ColourDeconvolution(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface StainModels {
         String ALCIAN_BLUE_H = "Alcian blue & H";
@@ -215,7 +219,7 @@ public class ColourDeconvolution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

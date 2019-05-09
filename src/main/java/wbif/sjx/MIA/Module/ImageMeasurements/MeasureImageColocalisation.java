@@ -25,6 +25,10 @@ public class MeasureImageColocalisation extends Module {
     public static final String MASKING_MODE = "Masking mode";
     public static final String INPUT_OBJECTS = "Input objects";
 
+    public MeasureImageColocalisation(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface MaskingModes {
         String NONE = "None";
@@ -182,7 +186,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -57,6 +57,10 @@ public class TrackObjects extends Module {
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
     public static final String ORIENTATION_MODE = "Orientation mode";
 
+    public TrackObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
@@ -683,7 +687,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

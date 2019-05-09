@@ -33,6 +33,10 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     public static final String POSITION_MODE = "Position mode";
     public static final String INPUT_OBJECTS = "Input objects";
 
+    public CreateOrthogonalView(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     interface PositionModes{
         String IMAGE_CENTRE = "Image centre";
@@ -215,7 +219,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

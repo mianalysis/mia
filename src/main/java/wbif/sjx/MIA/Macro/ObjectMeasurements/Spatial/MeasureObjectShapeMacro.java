@@ -22,7 +22,7 @@ public class MeasureObjectShapeMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape();
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(workspace.getAnalysis().getModules());
 
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,objects[0]);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,(double) objects[1] == 1);

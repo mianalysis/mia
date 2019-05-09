@@ -16,12 +16,12 @@ public class ImageCalculatorTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ImageCalculator().getTitle());
+        assertNotNull(new ImageCalculator(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageCalculator().getHelp());
+        assertNotNull(new ImageCalculator(null).getHelp());
     }
 
     // ADD OPERATION
@@ -51,7 +51,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -125,7 +125,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -197,7 +197,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -269,7 +269,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -343,7 +343,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -415,7 +415,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -490,7 +490,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -564,7 +564,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -641,7 +641,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -715,7 +715,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -792,7 +792,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");
@@ -866,7 +866,7 @@ public class ImageCalculatorTest extends ModuleTest {
         ImagePlus expectedImage = IJ.openImage(pathToImage2);
 
         // Initialising BinaryOperations
-        ImageCalculator calculator = new ImageCalculator();
+        ImageCalculator calculator = new ImageCalculator(null);
         calculator.initialiseParameters();
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE1,"Test_image_1");
         calculator.updateParameterValue(ImageCalculator.INPUT_IMAGE2,"Test_image_2");

@@ -41,6 +41,10 @@ public class FitGaussian2D extends Module {
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
     public static final String APPLY_VOLUME = "Apply volume";
 
+    public FitGaussian2D(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface RadiusModes {
         String FIXED_VALUE = "Fixed value";
         String MEASUREMENT = "Measurement";
@@ -298,7 +302,7 @@ public class FitGaussian2D extends Module {
         startingNumber = inputObjects.size();
         if (applyVolume) {
             try {
-                new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
+                GetLocalObjectRegion.getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
             } catch (IntegerOverflowException e) {
                 return false;
             }
@@ -383,7 +387,7 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

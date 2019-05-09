@@ -25,12 +25,12 @@ public class BinaryOperationsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new BinaryOperations2D().getTitle());
+        assertNotNull(new BinaryOperations2D(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new BinaryOperations2D().getHelp());
+        assertNotNull(new BinaryOperations2D(null).getHelp());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -94,7 +94,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -136,7 +136,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -177,7 +177,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -218,7 +218,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,true);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -258,7 +258,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,0);
@@ -299,7 +299,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,5);
@@ -341,7 +341,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,5);
@@ -383,7 +383,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,5);
@@ -425,7 +425,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,5);
@@ -470,7 +470,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,100);
@@ -516,7 +516,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,100);
@@ -562,7 +562,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,100);
@@ -608,7 +608,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,100);
@@ -649,7 +649,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -690,7 +690,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -731,7 +731,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);
@@ -772,7 +772,7 @@ public class BinaryOperationsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        BinaryOperations2D binaryOperations = new BinaryOperations2D();
+        BinaryOperations2D binaryOperations = new BinaryOperations2D(null);
         binaryOperations.updateParameterValue(BinaryOperations2D.INPUT_IMAGE,"Test_image");
         binaryOperations.updateParameterValue(BinaryOperations2D.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations2D.NUM_ITERATIONS,1);

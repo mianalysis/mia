@@ -28,6 +28,10 @@ public class FillHolesByVolume extends Module {
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
+    public FillHolesByVolume(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits, int labelBitDepth)
             throws LongOverflowException {
@@ -203,7 +207,7 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -45,6 +45,10 @@ public class VideoLoader extends Module {
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
 
+    public VideoLoader(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public Image getFFMPEGVideo(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
         // Initialising the FFMPEG loader
@@ -348,7 +352,7 @@ public class VideoLoader extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

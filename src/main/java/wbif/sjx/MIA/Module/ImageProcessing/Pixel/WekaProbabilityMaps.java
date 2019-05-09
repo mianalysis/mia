@@ -29,6 +29,10 @@ public class WekaProbabilityMaps extends Module {
     public static final String CLASSIFIER_FILE = "Classifier file path";
     public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
 
+    public WekaProbabilityMaps(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface OutputBitDepths {
         String EIGHT = "8";
@@ -220,7 +224,7 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

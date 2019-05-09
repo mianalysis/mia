@@ -44,6 +44,10 @@ public class MeasureObjectCurvature extends Module {
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
+    public MeasureObjectCurvature(ModuleCollection modules) {
+        super(modules);
+    }
+
     interface SplineFittingMethods {
         String LOESS = "LOESS (smooth fitting)";
         String STANDARD = "Standard (fits all points)";
@@ -484,7 +488,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

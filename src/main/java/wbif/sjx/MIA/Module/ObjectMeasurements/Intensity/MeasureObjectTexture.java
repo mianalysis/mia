@@ -33,6 +33,10 @@ public class MeasureObjectTexture extends Module {
     public static final String Z_OFFSET = "Z-offset";
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
+    public MeasureObjectTexture(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Measurements {
         String ASM = "ASM";
         String CONTRAST = "CONTRAST";
@@ -63,7 +67,7 @@ public class MeasureObjectTexture extends Module {
 
     ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) throws IntegerOverflowException {
         // Getting local object region
-        objects = new GetLocalObjectRegion().getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
+        objects = GetLocalObjectRegion.getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
 
         return objects;
 
@@ -228,7 +232,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

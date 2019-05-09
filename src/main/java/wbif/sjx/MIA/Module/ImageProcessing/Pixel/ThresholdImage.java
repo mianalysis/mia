@@ -3,7 +3,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
@@ -41,6 +40,10 @@ public class ThresholdImage extends Module {
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
+
+    public ThresholdImage(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface ThresholdTypes {
@@ -252,7 +255,6 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (!thresholdType.equals(ThresholdTypes.MANUAL) && inputImagePlus.getBitDepth() != 8) {
-            new ImageJ();
             ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
         }
 
@@ -425,7 +427,7 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

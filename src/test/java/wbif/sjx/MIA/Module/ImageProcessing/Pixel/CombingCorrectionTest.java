@@ -8,11 +8,11 @@ public class CombingCorrectionTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new CombingCorrection().getTitle());
+        assertNotNull(new CombingCorrection(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CombingCorrection().getHelp());
+        assertNotNull(new CombingCorrection(null).getHelp());
     }
 }

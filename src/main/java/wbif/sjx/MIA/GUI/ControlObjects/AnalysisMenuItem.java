@@ -4,6 +4,7 @@ import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
@@ -16,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by stephen on 28/07/2017.
@@ -60,7 +62,8 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     }
 
                     Analysis analysis = new Analysis();
-                    analysis.getModules().add(new ImageLoader<>());
+                    ModuleCollection modules = analysis.getModules();
+                    modules.add(new ImageLoader<>(modules));
 
                     GUI.setAnalysis(analysis);
                     GUI.populateModuleList();
@@ -143,7 +146,8 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
             }
 
         } catch (IOException | ClassNotFoundException | ParserConfigurationException | SAXException
-                | IllegalAccessException | InstantiationException | TransformerException e1) {
+                | IllegalAccessException | InstantiationException | TransformerException | NoSuchMethodException
+                | InvocationTargetException e1) {
             e1.printStackTrace();
         }
     }

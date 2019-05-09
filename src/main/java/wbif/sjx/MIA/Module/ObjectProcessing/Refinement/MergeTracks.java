@@ -39,6 +39,10 @@ public class MergeTracks extends Module implements ActionListener {
     private ObjCollection trackObjects;
     private String spotObjectsName;
 
+    public MergeTracks(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     private void showOptionsPanel() {
         active = true;
@@ -229,7 +233,7 @@ public class MergeTracks extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

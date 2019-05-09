@@ -64,6 +64,10 @@ public class RegisterImages extends Module implements Interactable {
     private Image inputImage;
     private Image reference;
 
+    public RegisterImages(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface AlignmentModes {
         final String AUTOMATIC = "Automatic (feature extraction)";
@@ -414,11 +418,10 @@ public class RegisterImages extends Module implements Interactable {
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
-            ConcatenateStacks concatenateStacks = new ConcatenateStacks();
             String axis = ConcatenateStacks.AxisModes.CHANNEL;
 
-            Image displayImage = concatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
-            concatenateStacks.convertToComposite(displayImage);
+            Image displayImage = ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
+            ConcatenateStacks.convertToComposite(displayImage);
 
             return displayImage;
 
@@ -472,8 +475,7 @@ public class RegisterImages extends Module implements Interactable {
 
         }
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
-        concatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
+        ConcatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
 
     }
 
@@ -673,7 +675,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

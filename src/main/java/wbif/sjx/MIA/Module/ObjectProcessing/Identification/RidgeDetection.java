@@ -10,6 +10,7 @@ import ij.measure.Calibration;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.MeasurementRef;
@@ -41,6 +42,10 @@ public class RidgeDetection extends Module {
     public static final String MAX_LENGTH = "Maximum length";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
+
+    public RidgeDetection(ModuleCollection modules) {
+        super(modules);
+    }
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
@@ -271,12 +276,7 @@ public class RidgeDetection extends Module {
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-
-            try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.2,false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            AddObjectOutline.addOverlay(dispIpl,outputObjects,0.2,hues,false,true);
 
             // Displaying the overlay
             dispIpl.setPosition(1,1,1);
@@ -316,7 +316,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);

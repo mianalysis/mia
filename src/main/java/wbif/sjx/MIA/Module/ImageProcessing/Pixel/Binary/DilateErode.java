@@ -23,6 +23,10 @@ public class DilateErode extends Module {
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
 
+    public DilateErode(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface OperationModes {
         String DILATE_3D = "Dilate 3D";
         String ERODE_3D = "Erode 3D";
@@ -163,7 +167,7 @@ public class DilateErode extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

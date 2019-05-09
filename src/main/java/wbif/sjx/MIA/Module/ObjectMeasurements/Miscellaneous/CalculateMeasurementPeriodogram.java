@@ -28,6 +28,10 @@ public class CalculateMeasurementPeriodogram extends Module {
     public static final String NUMBER_OF_BINS = "Number of bins";
     public static final String MISSING_POINT_HANDLING = "Missing point handling";
 
+    public CalculateMeasurementPeriodogram(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Measurements {
         String FREQUENCY = "FREQUENCY (FR^-1)";
         String POWER = "POWER";
@@ -253,7 +257,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);

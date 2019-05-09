@@ -8,11 +8,11 @@ public class CreateDistanceMapTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new CreateDistanceMap().getTitle());
+        assertNotNull(new CreateDistanceMap(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CreateDistanceMap().getHelp());
+        assertNotNull(new CreateDistanceMap(null).getHelp());
     }
 }

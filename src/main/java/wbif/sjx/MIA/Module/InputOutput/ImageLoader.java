@@ -35,10 +35,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
@@ -77,6 +74,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String PREFIX = "Prefix";
     public static final String SUFFIX = "Suffix";
     public static final String EXTENSION = "Extension";
+    public static final String GENERIC_FORMAT = "Generic format";
+    public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
 
@@ -101,6 +100,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
+
+    public ImageLoader(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface ImportModes {
@@ -128,8 +131,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String YOKOGAWA = "Yokogowa";
         String INPUT_FILE_PREFIX = "Input filename with prefix";
         String INPUT_FILE_SUFFIX = "Input filename with suffix";
+        String GENERIC = "Generic (from metadata)";
 
-        String[] ALL = new String[]{HUYGENS,INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
+        String[] ALL = new String[]{HUYGENS,INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX, GENERIC};
 
     }
 
@@ -501,6 +505,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    private ImagePlus getGenericNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, @Nullable double[] intRange, String genericFormat, boolean manualCal)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
+        String comment = metadata.getComment();
+        String filename = compileGenericFilename(genericFormat, metadata);
+        filename = path + filename;
+
+        return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,manualCal,true);
+
+    }
+
     private void addCropMeasurements(Image image, int[] crop) {
         image.addMeasurement(new Measurement(Measurements.ROI_LEFT,crop[0]));
         image.addMeasurement(new Measurement(Measurements.ROI_TOP,crop[1]));
@@ -515,6 +532,45 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             obj.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
             obj.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
         }
+    }
+
+    private String getMetadataValues(MetadataRefCollection metadataRefs) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("<html>");
+        sb.append("The following metadata values are available to use for generation of a filename string.  " +
+                "Each metadata reference should include the \"${\" and \"}\".<br><br>");
+
+        for (MetadataRef ref:metadataRefs.values()) {
+            sb.append("${");
+            sb.append(ref.getName());
+            sb.append("}");
+            sb.append("<br>");
+        }
+
+        sb.append("</html>");
+
+        return sb.toString();
+
+    }
+
+    private String compileGenericFilename(String genericFormat, HCMetadata metadata) {
+        String outputName = genericFormat;
+
+        // Use regex to find instances of "${ }" and replace the contents with the appropriate metadata value
+        Pattern pattern = Pattern.compile("\\$\\{([^${}]+)}");
+        Matcher matcher = pattern.matcher(genericFormat);
+        while (matcher.find()) {
+            String fullName = matcher.group(0);
+            String metadataName = matcher.group(1);
+            String metadataValue = metadata.getAsString(metadataName);
+
+            outputName = outputName.replace(fullName,metadataValue);
+
+        }
+
+        return outputName;
+
     }
 
 
@@ -550,6 +606,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String prefix = parameters.getValue(PREFIX);
         String suffix = parameters.getValue(SUFFIX);
         String ext = parameters.getValue(EXTENSION);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT);
         boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
         String channels = parameters.getValue(CHANNELS);
         String slices = parameters.getValue(SLICES);
@@ -672,6 +729,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                             metadata.setComment(suffix);
                             ipl = getSuffixNameImage(metadata,seriesNumber,dimRanges,crop,intRange,includeSeriesNumber,ext,setCalibration);
                             break;
+
+                        case NameFormats.GENERIC:
+                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            ipl = getGenericNameImage(metadata,seriesNumber,dimRanges,crop,intRange,genericFormat,setCalibration);
+                            break;
                     }
                     break;
 
@@ -758,8 +820,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new StringP(PREFIX,this));
         parameters.add(new StringP(SUFFIX,this));
         parameters.add(new StringP(EXTENSION,this));
+        parameters.add(new StringP(GENERIC_FORMAT,this));
+        parameters.add(new TextDisplayP(AVAILABLE_METADATA_FIELDS,this));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(FILE_PATH, this));
+
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(SLICES,this,"1-end"));
@@ -772,6 +837,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new IntegerP(TOP, this,0));
         parameters.add(new IntegerP(WIDTH, this,512));
         parameters.add(new IntegerP(HEIGHT, this,512));
+
         parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR,this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
@@ -824,6 +890,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         returnedParameters.add(parameters.getParameter(SUFFIX));
                         returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
                         returnedParameters.add(parameters.getParameter(EXTENSION));
+                        break;
+                    case NameFormats.GENERIC:
+                        returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+                        returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                        MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                        parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(getMetadataValues(metadataRefs));
                         break;
                 }
                 break;
@@ -910,7 +982,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
 
     }

@@ -14,6 +14,10 @@ public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1 (to be replaced)";
     public static final String INPUT_IMAGE2 = "Input image 2";
 
+    public ReplaceImage(ModuleCollection modules) {
+        super(modules);
+    }
+
     @Override
     public String getTitle() {
         return "Replace image";
@@ -64,7 +68,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

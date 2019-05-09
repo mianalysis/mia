@@ -22,6 +22,10 @@ public class ImageMath extends Module {
     public static final String MEASUREMENT = "Measurement";
     public static final String MATH_VALUE = "Value";
 
+    public ImageMath(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface CalculationTypes {
         String ADD = "Add";
         String DIVIDE = "Divide";
@@ -185,7 +189,7 @@ public class ImageMath extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

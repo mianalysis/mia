@@ -48,6 +48,10 @@ public class AddFromPositionMeasurement extends Module {
 
     private ColourServer colourServer;
 
+    public AddFromPositionMeasurement(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -265,7 +269,7 @@ public class AddFromPositionMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

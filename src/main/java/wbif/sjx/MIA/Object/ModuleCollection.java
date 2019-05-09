@@ -22,8 +22,8 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<Module> implements Serializable {
-    private InputControl inputControl = new InputControl();
-    private OutputControl outputControl = new OutputControl();
+    private InputControl inputControl = new InputControl(this);
+    private OutputControl outputControl = new OutputControl(this);
 
     public MeasurementRefCollection getImageMeasurementRefs(String imageName) {
         return getImageMeasurementRefs(imageName,null);
@@ -85,7 +85,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     void addObjectMeasurementRefs(Module module, MeasurementRefCollection measurementRefs, String objectName) {
         if (!module.isEnabled()) return;
-        MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs(this);
+        MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
         if (currentMeasurementRefs == null) return;
 
         for (MeasurementRef ref:currentMeasurementRefs.values()) {
@@ -155,8 +155,6 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         relationshipRefs.putAll(currentRelationshipRefs);
 
     }
-
-
 
     /*
      * Returns an LinkedHashSet of all parameters of a specific type

@@ -19,6 +19,10 @@ public class NumberOfChildren extends CoreFilter {
     public static final String REFERENCE_VALUE = "Reference value";
     public static final String STORE_RESULTS = "Store filter results";
 
+    public NumberOfChildren(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public String getMetadataName(String inputObjectsName, String filterMethod, String childObjectsName, String referenceValue) {
         String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
@@ -140,7 +144,7 @@ public class NumberOfChildren extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost

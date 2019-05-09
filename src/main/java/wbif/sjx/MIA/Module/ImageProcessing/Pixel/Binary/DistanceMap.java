@@ -23,6 +23,10 @@ public class DistanceMap extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
+    public DistanceMap(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public static ImagePlus getDistanceMap(ImagePlus ipl, boolean matchZToXY) {
         int nSlices = ipl.getNSlices();
@@ -110,7 +114,7 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

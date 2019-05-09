@@ -31,6 +31,10 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     public static final String Z_SHIFT = "Shift in z";
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
+    public ApplyOffsetCorrection(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     int[] getPixelShifts(Image image) {
         double xShift = parameters.getValue(X_SHIFT);
@@ -190,7 +194,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

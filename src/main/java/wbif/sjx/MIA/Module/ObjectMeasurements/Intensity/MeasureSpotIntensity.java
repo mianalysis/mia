@@ -33,6 +33,10 @@ public class MeasureSpotIntensity extends Module {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
+    public MeasureSpotIntensity(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface RadiusSources {
         String FIXED_VALUE = "Fixed value";
         String MEASUREMENT = "Measurement";
@@ -114,7 +118,7 @@ public class MeasureSpotIntensity extends Module {
         // Getting local object region
         ObjCollection spotObjects = null;
         try {
-            spotObjects = new GetLocalObjectRegion().getLocalRegions(inputObjects,inputObjectsName,ipl,useMeasurement,radiusMeasurement,radius,calibrated);
+            spotObjects = GetLocalObjectRegion.getLocalRegions(inputObjects,inputObjectsName,ipl,useMeasurement,radiusMeasurement,radius,calibrated);
         } catch (IntegerOverflowException e) {
             return false;
         }
@@ -213,7 +217,7 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

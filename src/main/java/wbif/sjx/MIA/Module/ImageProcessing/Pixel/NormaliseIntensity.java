@@ -36,6 +36,10 @@ public class NormaliseIntensity extends Module {
     public static final String MIN_RANGE = "Minimum range value";
     public static final String MAX_RANGE = "Maximum range value";
 
+    public NormaliseIntensity(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface RegionModes {
         String ENTIRE_IMAGE = "Entire image";
@@ -272,7 +276,7 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

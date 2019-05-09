@@ -21,6 +21,10 @@ public class GUISeparator extends Module{
     public static final String EXPANDED_BASIC = "Expanded basic GUI";
     public static final String EXPANDED_EDITING = "Expanded editing GUI";
 
+    public GUISeparator(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     @Override
     public String getTitle() {
@@ -62,7 +66,7 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

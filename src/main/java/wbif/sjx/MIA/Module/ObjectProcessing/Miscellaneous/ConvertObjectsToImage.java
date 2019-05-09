@@ -32,6 +32,10 @@ public class ConvertObjectsToImage extends Module {
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String MEASUREMENT = "Measurement";
 
+    public ConvertObjectsToImage(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
         String OBJECTS_TO_IMAGE = "Objects to image";
@@ -226,7 +230,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

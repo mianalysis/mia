@@ -47,6 +47,10 @@ public class ExtractSubstack extends Module implements ActionListener {
     private int elementHeight = 40;
     private boolean active = false;
 
+    public ExtractSubstack(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface SelectionModes {
         String FIXED = "Fixed";
@@ -300,7 +304,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

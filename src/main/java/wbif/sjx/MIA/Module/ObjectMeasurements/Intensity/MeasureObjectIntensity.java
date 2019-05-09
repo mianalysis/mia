@@ -45,6 +45,10 @@ public class MeasureObjectIntensity extends Module {
     public static final String CALIBRATED_DISTANCES = "Calibrated distances";
     public static final String NUMBER_OF_MEASUREMENTS = "Number of measurements";
 
+    public MeasureObjectIntensity(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Measurements {
         String MEAN = "MEAN";
         String MIN = "MIN";
@@ -192,7 +196,7 @@ public class MeasureObjectIntensity extends Module {
         BinaryOperations2D.process(objIpl,BinaryOperations2D.OperationModes.ERODE,1);
         ImagePlus insideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
         ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
-        ImagePlus distIpl = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
+        ImagePlus distIpl = ImageCalculator.process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
 
         // Iterating over each pixel in the image, adding that intensity value to the corresponding bin
@@ -351,7 +355,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         MeasurementRef.Type type = MeasurementRef.Type.OBJECT;

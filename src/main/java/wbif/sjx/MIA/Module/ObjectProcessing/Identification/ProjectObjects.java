@@ -25,6 +25,10 @@ public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+    public ProjectObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
     public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
@@ -133,7 +137,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -22,6 +22,10 @@ public class CalculateNearestNeighbour extends Module {
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance";
     public static final String CALIBRATED_DISTANCE = "Calibrated distance";
 
+    public CalculateNearestNeighbour(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
         String DIFFERENT_SET = "Different object set";
@@ -219,7 +223,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

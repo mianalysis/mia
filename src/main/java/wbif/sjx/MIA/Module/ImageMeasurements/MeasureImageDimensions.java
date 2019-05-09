@@ -14,6 +14,10 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 public class MeasureImageDimensions extends Module {
     public final static String INPUT_IMAGE = "Input image";
 
+    public MeasureImageDimensions(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Measurements {
         String WIDTH = "WIDTH (PX)";
@@ -136,7 +140,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

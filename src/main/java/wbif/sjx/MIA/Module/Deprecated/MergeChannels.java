@@ -36,6 +36,10 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
+    public MergeChannels(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface OverwriteModes {
         String CREATE_NEW = "Create new image";
@@ -313,7 +317,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

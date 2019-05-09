@@ -28,6 +28,10 @@ public class FitLongestChord extends Module {
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public FitLongestChord(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Measurements {
         String LENGTH_PX = "LONGEST_CHORD // LENGTH (PX)";
@@ -197,7 +201,7 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

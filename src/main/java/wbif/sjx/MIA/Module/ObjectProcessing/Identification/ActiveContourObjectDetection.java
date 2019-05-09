@@ -7,6 +7,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -44,6 +45,10 @@ public class ActiveContourObjectDetection extends Module {
     public static final String SEARCH_RADIUS = "Search radius (px)";
     public static final String NUMBER_OF_ITERATIONS = "Maximum nmber of iterations";
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
+
+    public ActiveContourObjectDetection(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     @Override
@@ -189,17 +194,12 @@ public class ActiveContourObjectDetection extends Module {
         if (showOutput) {
             // Removing old overlay
             dispIpl.setOverlay(null);
-            AddObjectsOverlay addObjectsOverlay = new AddObjectsOverlay();
-            try {
-                if (updateInputObjects) {
-                    HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
-                    addObjectsOverlay.createOutlineOverlay(dispIpl, inputObjects, hues, false, 0.5, false);
-                } else {
-                    HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
-                    addObjectsOverlay.createOutlineOverlay(dispIpl, outputObjects, hues, false, 0.5, false);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (updateInputObjects) {
+                HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
+                AddObjectOutline.addOverlay(dispIpl,inputObjects,0.5,hues,false,true);
+            } else {
+                HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
+                AddObjectOutline.addOverlay(dispIpl,outputObjects,0.5,hues,false,true);
             }
 
             dispIpl.setPosition(1,1,1);
@@ -260,7 +260,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -25,6 +25,10 @@ public class ByMeasurement extends CoreFilter {
     public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
     public static final String STORE_RESULTS = "Store filter results";
 
+    public ByMeasurement(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface ReferenceModes {
         String FIXED_VALUE = "Fixed value";
@@ -229,7 +233,7 @@ public class ByMeasurement extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost

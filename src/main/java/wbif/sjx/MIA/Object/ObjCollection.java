@@ -206,7 +206,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
      */
     public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs(modules);
+        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();

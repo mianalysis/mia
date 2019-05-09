@@ -26,6 +26,10 @@ public class MeasureTrackMotion extends Module {
     public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String SUBTRACT_AVERAGE_MOTION = "Subtract average motion";
 
+    public MeasureTrackMotion(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Measurements {
         String DURATION = "DURATION_(FRAMES)";
@@ -450,7 +454,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);

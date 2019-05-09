@@ -22,6 +22,10 @@ public class MeasureImageTexture extends Module {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
 
+    public MeasureImageTexture(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Measurements {
         String ASM = "TEXTURE // ASM";
         String CONTRAST = "TEXTURE // CONTRAST";
@@ -131,7 +135,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

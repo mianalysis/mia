@@ -27,6 +27,10 @@ public class FocusStack extends Module {
     public static final String OUTPUT_HEIGHT_IMAGE = "Output height image";
     public static final String SHOW_HEIGHT_IMAGE = "Show height image";
 
+    public FocusStack(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public Image[] focusStack(Image inputImage, String outputImageName, int range, boolean smooth, @Nullable String outputHeightImageName, @Nullable Image inputHeightImage) {
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -236,7 +240,7 @@ public class FocusStack extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

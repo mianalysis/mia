@@ -33,12 +33,12 @@ public class IdentifyObjectsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new IdentifyObjects().getTitle());
+        assertNotNull(new IdentifyObjects(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new IdentifyObjects().getHelp());
+        assertNotNull(new IdentifyObjects(null).getHelp());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -100,7 +100,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -147,7 +147,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -204,7 +204,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -251,7 +251,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -298,7 +298,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -346,7 +346,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -394,7 +394,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -441,7 +441,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -490,7 +490,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -537,7 +537,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
@@ -584,7 +584,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising IdentifyObjects
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(null);
         identifyObjects.initialiseParameters();
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");

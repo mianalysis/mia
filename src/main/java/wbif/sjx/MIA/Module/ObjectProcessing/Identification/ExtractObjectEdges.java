@@ -29,6 +29,10 @@ public class ExtractObjectEdges extends Module {
     public static final String EDGE_DISTANCE = "Distance";
     public static final String EDGE_PERCENTAGE = "Percentage";
 
+    public ExtractObjectEdges(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface EdgeModes {
         String DISTANCE_FROM_EDGE = "Distance to edge";
         String PERCENTAGE_FROM_EDGE = "Percentage of maximum distance to edge";
@@ -282,7 +286,7 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

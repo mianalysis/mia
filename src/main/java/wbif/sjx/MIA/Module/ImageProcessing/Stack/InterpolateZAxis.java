@@ -19,6 +19,10 @@ public class InterpolateZAxis extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public InterpolateZAxis(ModuleCollection modules) {
+        super(modules);
+    }
+
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
         // Calculating scaling
         double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
@@ -88,7 +92,7 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

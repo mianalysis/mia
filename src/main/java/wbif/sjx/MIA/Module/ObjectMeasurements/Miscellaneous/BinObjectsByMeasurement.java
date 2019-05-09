@@ -16,6 +16,10 @@ public class BinObjectsByMeasurement extends Module {
     public static final String LARGEST_BIN_CENTRE = "Largest bin centre";
     public static final String NUMBER_OF_BINS = "Number of bins";
 
+    public BinObjectsByMeasurement(ModuleCollection modules) {
+        super(modules);
+    }
+
     interface Measurements {
         String BIN = "Bin";
     }
@@ -95,7 +99,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

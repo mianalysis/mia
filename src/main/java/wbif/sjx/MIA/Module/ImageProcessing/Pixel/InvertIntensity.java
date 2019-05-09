@@ -22,6 +22,10 @@ public class InvertIntensity extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public InvertIntensity(ModuleCollection modules) {
+        super(modules);
+    }
+
     public static void process(Image inputImage) {
         IJ.run(inputImage.getImagePlus(),"Invert","stack");
     }
@@ -107,7 +111,7 @@ public class InvertIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

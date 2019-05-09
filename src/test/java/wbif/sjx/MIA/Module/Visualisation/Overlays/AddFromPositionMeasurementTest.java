@@ -11,11 +11,11 @@ public class AddFromPositionMeasurementTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new AddFromPositionMeasurement().getTitle());
+        assertNotNull(new AddFromPositionMeasurement(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddFromPositionMeasurement().getHelp());
+        assertNotNull(new AddFromPositionMeasurement(null).getHelp());
     }
 }

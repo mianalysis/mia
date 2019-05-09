@@ -8,11 +8,11 @@ public class ActiveContourObjectDetectionTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ActiveContourObjectDetection().getTitle());
+        assertNotNull(new ActiveContourObjectDetection(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ActiveContourObjectDetection().getHelp());
+        assertNotNull(new ActiveContourObjectDetection(null).getHelp());
     }
 }

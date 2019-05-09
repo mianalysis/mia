@@ -32,13 +32,13 @@ public class ImageLoaderTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ImageLoader().getTitle());
+        assertNotNull(new ImageLoader(null).getTitle());
 
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageLoader().getHelp());
+        assertNotNull(new ImageLoader(null).getHelp());
 
     }
 
@@ -48,7 +48,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Initialising ImageFileLoader
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = new ImageLoader(null);
         imageLoader.initialiseParameters();
 
         // Setting parameters
@@ -95,7 +95,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -140,7 +140,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -185,7 +185,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -236,7 +236,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -285,7 +285,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -334,7 +334,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -383,7 +383,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -432,7 +432,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -477,7 +477,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -518,7 +518,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -564,7 +564,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -617,7 +617,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -667,7 +667,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -712,7 +712,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -757,7 +757,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -802,7 +802,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -847,7 +847,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -887,7 +887,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -927,7 +927,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters

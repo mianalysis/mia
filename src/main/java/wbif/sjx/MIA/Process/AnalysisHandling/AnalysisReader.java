@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**
@@ -33,7 +34,7 @@ import java.util.Set;
  */
 public class AnalysisReader {
     public static Analysis loadAnalysis()
-            throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
+            throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
@@ -51,7 +52,7 @@ public class AnalysisReader {
     }
 
     public static Analysis loadAnalysis(File file)
-            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         String xml = FileUtils.readFileToString(file,"UTF-8");
 
         return loadAnalysis(xml);
@@ -59,7 +60,7 @@ public class AnalysisReader {
     }
 
     public static Analysis loadAnalysis(String xml)
-            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         if (xml.startsWith("\uFEFF")) {
             xml = xml.substring(1);
         }
@@ -81,15 +82,15 @@ public class AnalysisReader {
             Node moduleNode = moduleNodes.item(i);
 
             // Creating an empty Module matching the input type.  If none was found the loop skips to the next Module
-            Module module = initialiseModule(moduleNode,availableModules);
+            Module module = initialiseModule(moduleNode,modules,availableModules);
             if (module == null) continue;
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new InputControl())) {
+            if (module.getClass().isInstance(new InputControl(modules))) {
                 addInputSpecificComponents(module,moduleNode);
                 analysis.getModules().setInputControl((InputControl) module);
 
-            } else if (module.getClass().isInstance(new OutputControl())) {
+            } else if (module.getClass().isInstance(new OutputControl(modules))) {
                 addOutputSpecificComponents(module,moduleNode);
                 analysis.getModules().setOutputControl((OutputControl) module);
 
@@ -103,8 +104,8 @@ public class AnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, Set<Class<? extends Module>> availableModules)
-            throws IllegalAccessException, InstantiationException {
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, Set<Class<? extends Module>> availableModules)
+            throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
         String fullModuleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
@@ -112,7 +113,7 @@ public class AnalysisReader {
 
         for (Class<?> clazz:availableModules) {
             if (moduleName.equals(clazz.getSimpleName())) {
-                Module module = (Module) clazz.newInstance();
+                Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
 
                 if (moduleAttributes.getNamedItem("NICKNAME") != null) {
                     String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();

@@ -52,6 +52,10 @@ public class AddArrows extends Module {
 
     private ColourServer colourServer;
 
+    public AddArrows(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface OrientationModes {
         String MEASUREMENT = "Measurement";
@@ -337,7 +341,7 @@ public class AddArrows extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

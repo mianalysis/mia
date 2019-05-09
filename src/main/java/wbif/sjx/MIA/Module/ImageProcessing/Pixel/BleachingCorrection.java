@@ -22,6 +22,10 @@ public class BleachingCorrection extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public BleachingCorrection(ModuleCollection modules) {
+        super(modules);
+    }
+
     @Override
     public String getTitle() {
         return "Bleaching correction";
@@ -99,7 +103,7 @@ public class BleachingCorrection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

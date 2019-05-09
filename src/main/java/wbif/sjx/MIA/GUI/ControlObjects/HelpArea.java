@@ -37,7 +37,7 @@ public class HelpArea extends JTextPane {
 
         sb.append("<br>");
 
-        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs(modules);
+        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");

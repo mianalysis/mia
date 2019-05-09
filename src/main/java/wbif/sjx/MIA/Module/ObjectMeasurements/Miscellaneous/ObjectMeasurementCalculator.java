@@ -19,6 +19,10 @@ public class ObjectMeasurementCalculator extends Module {
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
     public static final String CALCULATION_MODE = "Calculation mode";
 
+    public ObjectMeasurementCalculator(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface CalculationModes {
         String ADD = "Add measurement 1 and measurement 2";
@@ -137,7 +141,7 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // Creating new MeasurementRef

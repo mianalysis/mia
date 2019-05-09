@@ -41,6 +41,10 @@ public class AddAllObjectPoints extends Module {
 
     private ColourServer colourServer;
 
+    public AddAllObjectPoints(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -214,7 +218,7 @@ public class AddAllObjectPoints extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

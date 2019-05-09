@@ -27,6 +27,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static final String PROJECTION_SEPARATOR = "Image projection";
     public static final String PROJECTION_MODE = "Projection mode";
 
+    public ProjectImage(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface ProjectionModes {
         String AVERAGE = "Average";
         String MIN = "Minimum";
@@ -174,7 +178,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

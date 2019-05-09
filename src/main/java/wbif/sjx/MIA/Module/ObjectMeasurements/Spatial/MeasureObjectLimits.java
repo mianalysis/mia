@@ -13,6 +13,10 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 public class MeasureObjectLimits extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
+    public MeasureObjectLimits(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Measurements {
         String MIN_X_PX = "LIMITS // MIN_X_(PX)";
         String MAX_X_PX = "LIMITS // MAX_X_(PX)";
@@ -82,7 +86,7 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

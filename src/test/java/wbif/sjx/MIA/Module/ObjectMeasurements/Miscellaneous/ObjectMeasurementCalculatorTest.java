@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
 public class ObjectMeasurementCalculatorTest extends ModuleTest {
     @Override
     public void testGetTitle() {
-        assertNotNull(new ObjectMeasurementCalculator().getTitle());
+        assertNotNull(new ObjectMeasurementCalculator(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ObjectMeasurementCalculator().getHelp());
+        assertNotNull(new ObjectMeasurementCalculator(null).getHelp());
     }
 }

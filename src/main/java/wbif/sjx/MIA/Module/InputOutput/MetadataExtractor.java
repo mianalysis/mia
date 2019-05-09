@@ -6,7 +6,6 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MetadataExtractors.*;
@@ -45,6 +44,10 @@ public class MetadataExtractor extends Module {
     public static final String EXAMPLE_STRING = "Example string";
     public static final String IDENTIFIED_GROUPS = "Identified groups";
     public static final String METADATA_VALUE_NAME = "Metadata value name";
+
+    public MetadataExtractor(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface ExtractorModes {
@@ -234,15 +237,17 @@ public class MetadataExtractor extends Module {
         NameExtractor extractor = new GenericExtractor(pattern,groups);
         extractor.extract(metadata,exampleString);
 
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder("<html>");
         for (String group:groups) {
             String value = metadata.getAsString(group);
             if (value == null) value = "NA";
             stringBuilder.append(group);
             stringBuilder.append(": ");
             stringBuilder.append(value);
-            stringBuilder.append("\n");
+            stringBuilder.append("<br>");
         }
+
+        stringBuilder.append("</html>");
 
         return stringBuilder.toString();
 
@@ -462,7 +467,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

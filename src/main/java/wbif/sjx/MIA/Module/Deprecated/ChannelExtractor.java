@@ -22,6 +22,10 @@ public class ChannelExtractor extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
 
+    public ChannelExtractor(ModuleCollection modules) {
+        super(modules);
+    }
+
     @Override
     public String getTitle() {
         return "Channel extractor";
@@ -85,7 +89,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

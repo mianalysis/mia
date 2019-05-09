@@ -42,6 +42,10 @@ public class ImageSaver extends Module {
     public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
+    public ImageSaver(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
@@ -311,7 +315,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

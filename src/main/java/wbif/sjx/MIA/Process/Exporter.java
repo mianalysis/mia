@@ -213,14 +213,14 @@ public class Exporter {
 
 
         // Adding a new parameter to each row
-        appendModuleParameters(paramSheet,analysis.getModules().getInputControl());
-        appendModuleParameters(paramSheet,analysis.getModules().getOutputControl());
+        appendModuleParameters(paramSheet,modules.getInputControl(),modules);
+        appendModuleParameters(paramSheet,modules.getOutputControl(),modules);
 
-        for (Module module:modules) appendModuleParameters(paramSheet,module);
+        for (Module module:modules) appendModuleParameters(paramSheet,module,modules);
 
     }
 
-    private void appendModuleParameters(Sheet sheet, Module module) {
+    private void appendModuleParameters(Sheet sheet, Module module, ModuleCollection modules) {
         ParameterCollection parameters = module.updateAndGetParameters();
 
         int paramRow = sheet.getLastRowNum();

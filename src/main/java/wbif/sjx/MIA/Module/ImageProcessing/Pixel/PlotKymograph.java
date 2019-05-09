@@ -20,6 +20,10 @@ public class PlotKymograph extends Module {
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
     public static final String HALF_WIDTH = "Half width (px)";
 
+    public PlotKymograph(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Modes {
         String LINE_AT_OBJECT_CENTROID = "Line at object centroid";
 
@@ -166,7 +170,7 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

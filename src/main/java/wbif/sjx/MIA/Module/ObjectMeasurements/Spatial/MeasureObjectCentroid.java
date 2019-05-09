@@ -22,6 +22,10 @@ public class MeasureObjectCentroid extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CENTROID_METHOD = "Centroid method";
 
+    public MeasureObjectCentroid(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Methods {
         String MEAN = "Mean";
         String MEDIAN = "Median";
@@ -137,7 +141,7 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

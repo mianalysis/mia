@@ -23,6 +23,10 @@ public class BinaryOperations2D extends Module {
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
 
+    public BinaryOperations2D(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface OperationModes {
         String DILATE = "Dilate";
@@ -171,7 +175,7 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

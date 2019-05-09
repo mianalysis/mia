@@ -71,6 +71,10 @@ public class AddObjectsOverlay extends Module {
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public AddObjectsOverlay(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface OrientationModes {
         String MEASUREMENT = "Measurement";
@@ -954,7 +958,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

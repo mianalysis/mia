@@ -25,6 +25,10 @@ public class FitEllipse extends Module {
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
+    public FitEllipse(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface FittingModes {
         String FIT_TO_WHOLE = "Fit to whole";
         String FIT_TO_SURFACE = "Fit to surface";
@@ -262,7 +266,7 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

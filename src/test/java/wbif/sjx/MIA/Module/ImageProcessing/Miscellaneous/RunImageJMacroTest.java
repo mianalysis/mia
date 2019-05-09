@@ -8,12 +8,12 @@ public class RunImageJMacroTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new RunImageJMacro().getTitle());
+        assertNotNull(new RunImageJMacro(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RunImageJMacro().getHelp());
+        assertNotNull(new RunImageJMacro(null).getHelp());
     }
 
 }

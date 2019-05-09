@@ -22,6 +22,10 @@ public class MeasureObjectOverlap extends Module {
     public final static String OBJECT_SET_2 = "Object set 2";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
+    public MeasureObjectOverlap(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Measurements {
         String OVERLAP_VOX_1 = "OVERLAP_VOXELS_1";
@@ -159,7 +163,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String objects1Name = parameters.getValue(OBJECT_SET_1);

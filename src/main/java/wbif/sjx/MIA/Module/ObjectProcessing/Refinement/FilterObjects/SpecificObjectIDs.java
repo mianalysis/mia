@@ -34,6 +34,10 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
+    public SpecificObjectIDs(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface FilterMethods {
         String WITH_MEASUREMENT = "Remove objects with measurement";
         String WITHOUT_MEASUREMENT = "Remove objects without measurement";
@@ -236,7 +240,7 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost

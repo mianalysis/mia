@@ -28,6 +28,10 @@ public class FitEllipsoid extends Module {
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
+    public FitEllipsoid(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface FittingModes {
         String FIT_TO_WHOLE = "Fit to whole";
@@ -278,7 +282,7 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

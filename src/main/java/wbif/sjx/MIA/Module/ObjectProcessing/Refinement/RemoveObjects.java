@@ -17,6 +17,10 @@ public class RemoveObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
+    public RemoveObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
     @Override
     public String getTitle() {
         return "Remove objects";
@@ -61,7 +65,7 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -19,6 +19,10 @@ public class OnImageEdge extends CoreFilter {
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String STORE_RESULTS = "Store filter results";
 
+    public OnImageEdge(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public String getMetadataName(String inputObjectsName, String referenceImagename, boolean includeZ) {
         if (includeZ) {
@@ -147,7 +151,7 @@ public class OnImageEdge extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost

@@ -47,6 +47,10 @@ public class UnwarpImages extends Module {
     public static final String STOP_THRESHOLD = "Stop threshold";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public UnwarpImages(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface RelativeModes {
         final String FIRST_FRAME = "First frame";
@@ -468,7 +472,7 @@ public class UnwarpImages extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

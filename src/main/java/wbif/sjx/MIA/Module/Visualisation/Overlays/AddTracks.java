@@ -47,6 +47,10 @@ public class AddTracks extends Module {
 
     private ColourServer colourServer;
 
+    public AddTracks(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
@@ -239,7 +243,7 @@ public class AddTracks extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

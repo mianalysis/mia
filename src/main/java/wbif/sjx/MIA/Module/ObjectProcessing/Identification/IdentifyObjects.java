@@ -33,6 +33,10 @@ public class IdentifyObjects extends Module {
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
 
+    public IdentifyObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Connectivity {
         String SIX = "6";
         String TWENTYSIX = "26";
@@ -191,7 +195,7 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

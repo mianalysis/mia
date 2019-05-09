@@ -59,6 +59,10 @@ public class FilterObjects extends Module implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
+    public FilterObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface FilterModes {
         String DO_NOTHING = "Do nothing";
@@ -610,7 +614,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost

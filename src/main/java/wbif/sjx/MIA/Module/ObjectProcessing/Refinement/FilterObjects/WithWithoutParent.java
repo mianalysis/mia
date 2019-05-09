@@ -19,6 +19,10 @@ public class WithWithoutParent extends CoreFilter {
     public static final String PARENT_OBJECT = "Parent object";
     public static final String STORE_RESULTS = "Store filter results";
 
+    public WithWithoutParent(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface FilterMethods {
         String WITH_PARENT = "Remove objects with parent";
@@ -155,7 +159,7 @@ public class WithWithoutParent extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost

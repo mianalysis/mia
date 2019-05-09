@@ -26,6 +26,10 @@ public class CreateObjectDensityMap extends Module {
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
 
+    public CreateObjectDensityMap(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public static void process(CumStat[] cumStats, Indexer indexer, ObjCollection objects, @Nullable String message) {
         // Adding objects
@@ -125,7 +129,7 @@ public class CreateObjectDensityMap extends Module {
         Image outputImage = convertToImage(cumStats,indexer,outputImageName,calibration);
 
         // Applying blur
-        new FilterImage().runGaussian2DFilter(outputImage.getImagePlus(),range);
+        FilterImage.runGaussian2DFilter(outputImage.getImagePlus(),range);
 
         workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
@@ -157,7 +161,7 @@ public class CreateObjectDensityMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

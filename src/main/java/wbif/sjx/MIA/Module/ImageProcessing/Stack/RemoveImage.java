@@ -20,6 +20,10 @@ public class RemoveImage extends Module {
     public static final String REMOVAL_CONTROLS = "Image removal controls";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
+    public RemoveImage(ModuleCollection modules) {
+        super(modules);
+    }
+
     @Override
     public String getTitle() {
         return "Remove image";
@@ -70,7 +74,7 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

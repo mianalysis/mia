@@ -21,12 +21,12 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MeasureObjectOverlap().getTitle());
+        assertNotNull(new MeasureObjectOverlap(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectOverlap().getHelp());
+        assertNotNull(new MeasureObjectOverlap(null).getHelp());
     }
 
     @Test
@@ -383,7 +383,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         workspace.addObjects(objects2);
 
         // Initialising MeasureObjectOverlap
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(null);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objectsName1);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
@@ -491,7 +491,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         workspace.addObjects(objects2);
 
         // Initialising MeasureObjectOverlap
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(null);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objectsName1);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
@@ -600,7 +600,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         workspace.addObjects(objects2);
 
         // Initialising MeasureObjectOverlap
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(null);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objectsName1);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
@@ -710,7 +710,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         workspace.addObjects(objects2);
 
         // Initialising MeasureObjectOverlap
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(null);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objectsName1);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
@@ -823,7 +823,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         workspace.addObjects(objects2);
 
         // Initialising MeasureObjectOverlap
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(null);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objectsName1);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
@@ -936,7 +936,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         workspace.addObjects(objects2);
 
         // Initialising MeasureObjectOverlap
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(null);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objectsName1);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 

@@ -20,6 +20,10 @@ public class CalculateStatsForChildren extends Module {
     public static final String CALCULATE_MAX = "Calculate maximum";
     public static final String CALCULATE_SUM = "Calculate sum";
 
+    public CalculateStatsForChildren(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Measurements {
         String MEAN = "MEAN";
         String STD = "STD";
@@ -158,7 +162,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);

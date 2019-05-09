@@ -15,6 +15,8 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.MeasurementRef;
@@ -52,6 +54,10 @@ public class RunTrackMate extends Module {
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
+
+    public RunTrackMate(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface Measurements {
@@ -213,7 +219,7 @@ public class RunTrackMate extends Module {
     }
 
     public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) throws IntegerOverflowException {
-        ObjCollection volumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume",ipl,true,Measurements.RADIUS_PX,0,false);
+        ObjCollection volumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects, "SpotVolume",ipl,true,Measurements.RADIUS_PX,0,false);
 
         // Replacing spot volumes with explicit volume
         for (Obj spotObject:spotObjects.values()) {
@@ -241,11 +247,7 @@ public class RunTrackMate extends Module {
         IntensityMinMax.run(ipl,true);
 
         // Adding the overlay
-        try {
-            new AddObjectsOverlay().createCentroidOverlay(ipl,spotObjects,hues,false,0.2,false);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        AddObjectCentroid.addOverlay(ipl,spotObjects,hues,false,true);
 
         // Displaying the overlay
         ipl.show();
@@ -403,7 +405,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);

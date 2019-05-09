@@ -17,7 +17,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class BasicControlPanel extends JScrollPane {
-    private static final GUISeparator loadSeparator = new GUISeparator();
+    private static GUISeparator loadSeparator;
     private JPanel panel;
 
     public BasicControlPanel() {
@@ -26,6 +26,8 @@ public class BasicControlPanel extends JScrollPane {
 
         int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
+
+        loadSeparator = new GUISeparator(GUI.getModules());
 
         // Initialising the scroll panel
         setPreferredSize(new Dimension(frameWidth-30, -1));
@@ -92,7 +94,7 @@ public class BasicControlPanel extends JScrollPane {
         for (Module module : modules) {
             // If the module is the special-case GUISeparator, create this module, then return
             JPanel modulePanel = null;
-            if (module.getClass().isInstance(new GUISeparator())) {
+            if (module.getClass().isInstance(new GUISeparator(modules))) {
                 // Not all GUI separators are shown on the basic panel
                 BooleanP showBasic = (BooleanP) module.getParameter(GUISeparator.SHOW_BASIC);
                 if (!showBasic.isSelected()) continue;
@@ -113,7 +115,7 @@ public class BasicControlPanel extends JScrollPane {
                 }
             }
 
-            if (modulePanel!=null && (expanded.isSelected() || module.getClass().isInstance(new GUISeparator()))) {
+            if (modulePanel!=null && (expanded.isSelected() || module.getClass().isInstance(new GUISeparator(modules)))) {
                 c.gridy++;
                 panel.add(modulePanel,c);
             }

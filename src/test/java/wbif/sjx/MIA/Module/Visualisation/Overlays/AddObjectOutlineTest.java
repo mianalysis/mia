@@ -8,11 +8,11 @@ public class AddObjectOutlineTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new AddObjectOutline().getTitle());
+        assertNotNull(new AddObjectOutline(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddObjectOutline().getNotes());
+        assertNotNull(new AddObjectOutline(null).getHelp());
     }
 }

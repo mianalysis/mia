@@ -68,6 +68,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
 
+    public ManuallyIdentifyObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface InterpolationModes {
         String NONE = "None";
@@ -366,7 +370,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

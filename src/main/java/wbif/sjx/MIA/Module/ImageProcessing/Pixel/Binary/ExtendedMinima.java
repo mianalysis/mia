@@ -30,6 +30,10 @@ public class ExtendedMinima extends Module {
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public ExtendedMinima(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Connectivity {
         String SIX = "6";
@@ -189,7 +193,7 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

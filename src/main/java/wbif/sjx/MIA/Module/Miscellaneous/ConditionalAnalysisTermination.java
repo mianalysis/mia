@@ -22,6 +22,10 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
+    public ConditionalAnalysisTermination(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface TestModes {
         String IMAGE_MEASUREMENT = "Image measurement";
@@ -190,7 +194,7 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

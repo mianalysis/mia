@@ -28,6 +28,10 @@ public class MeasureRadialIntensityProfile extends Module {
     public static final String RANGE_MODE = "Range mode";
     public static final String MIN_DISTANCE = "Minimum distance";
     public static final String MAX_DISTANCE = "Maximum distance";
+
+    public MeasureRadialIntensityProfile(ModuleCollection modules) {
+        super(modules);
+    }
 //    public static final String NORMALISE_DISTANCES = "Normalise distances to object size";
     //public static final String CALIBRATED_UNITS = "Calibrated units"; // To be added
 
@@ -244,7 +248,7 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

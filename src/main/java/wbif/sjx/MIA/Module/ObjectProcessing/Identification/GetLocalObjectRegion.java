@@ -23,6 +23,10 @@ public class GetLocalObjectRegion extends Module {
     public static final String USE_MEASUREMENT = "Use measurement for radius";
     public static final String MEASUREMENT_NAME = "Measurement name";
 
+    public GetLocalObjectRegion(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated) throws IntegerOverflowException {
         // If no reference image is supplied, it's possible to have negative coordinates
@@ -122,7 +126,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) throws IntegerOverflowException {
+    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) throws IntegerOverflowException {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -132,8 +136,6 @@ public class GetLocalObjectRegion extends Module {
         int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
-            writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
-
             if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
             Obj outputObject = getLocalRegion(inputObject,outputObjectsName,referenceImage,radius,calibrated);
 
@@ -233,7 +235,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

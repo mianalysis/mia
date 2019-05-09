@@ -11,11 +11,11 @@ public class ImageMeasurementCalculatorTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ImageMeasurementCalculator().getTitle());
+        assertNotNull(new ImageMeasurementCalculator(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageMeasurementCalculator().getHelp());
+        assertNotNull(new ImageMeasurementCalculator(null).getHelp());
     }
 }

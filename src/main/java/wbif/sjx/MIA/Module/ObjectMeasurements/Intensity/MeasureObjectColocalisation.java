@@ -22,6 +22,10 @@ public class MeasureObjectColocalisation extends Module {
     public static final String INPUT_IMAGE_1 = "Input image 1";
     public static final String INPUT_IMAGE_2 = "Input image 2";
 
+    public MeasureObjectColocalisation(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface Measurements {
         String PCC = "PCC";
@@ -105,7 +109,7 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);

@@ -35,6 +35,10 @@ public class Watershed extends Module {
     public static final String MATCH_Z_TO_X= "Match Z to XY";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public Watershed(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface IntensityModes {
         String DISTANCE = "Distance";
         String INPUT_IMAGE = "Input image intensity";
@@ -255,7 +259,7 @@ public class Watershed extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

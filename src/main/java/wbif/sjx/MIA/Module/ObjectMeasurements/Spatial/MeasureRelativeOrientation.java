@@ -27,6 +27,10 @@ public class MeasureRelativeOrientation extends Module {
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
 
+    public MeasureRelativeOrientation(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface OrientationModes {
         String X_Y_PLANE = "Orientation in X-Y plane";
@@ -467,7 +471,7 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);

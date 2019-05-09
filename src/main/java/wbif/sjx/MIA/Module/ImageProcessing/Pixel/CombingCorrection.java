@@ -16,6 +16,10 @@ public class CombingCorrection extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OFFSET = "Offset (px)";
 
+    public CombingCorrection(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     @Override
     public String getTitle() {
@@ -95,7 +99,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

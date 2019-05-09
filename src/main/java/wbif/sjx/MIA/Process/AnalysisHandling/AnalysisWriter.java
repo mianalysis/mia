@@ -14,7 +14,6 @@ import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.Exporter;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -123,7 +122,7 @@ public class AnalysisWriter {
             Element measurementsElement = doc.createElement("MEASUREMENTS");
             MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
             measurementsElement = prepareRefsXML(doc, measurementsElement,imageReferences,"MEASUREMENT");
-            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs(modules);
+            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
             measurementsElement = prepareRefsXML(doc, measurementsElement,objectReferences,"MEASUREMENT");
             moduleElement.appendChild(measurementsElement);
 

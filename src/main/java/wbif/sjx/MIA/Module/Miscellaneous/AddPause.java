@@ -24,6 +24,10 @@ public class AddPause extends Module {
     private static final String RESUME = "Resume";
     private static final String TERMINATE = "Terminate";
 
+    public AddPause(ModuleCollection modules) {
+        super(modules);
+    }
+
     @Override
     public String getTitle() {
         return "Add pause";
@@ -106,7 +110,7 @@ public class AddPause extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

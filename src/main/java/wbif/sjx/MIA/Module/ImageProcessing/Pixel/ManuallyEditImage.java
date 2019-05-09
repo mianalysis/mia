@@ -19,6 +19,10 @@ public class ManuallyEditImage extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public ManuallyEditImage(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     @Override
     public String getTitle() {
@@ -101,7 +105,7 @@ public class ManuallyEditImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

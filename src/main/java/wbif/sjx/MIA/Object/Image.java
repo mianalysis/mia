@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -125,13 +126,13 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public void showImage(String title, LUT lut, boolean normalise) {
+    public void showImage(String title, @Nullable LUT lut, boolean normalise) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
         if (normalise) IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
-        dispIpl.setLut(lut);
+        if (lut != null) dispIpl.setLut(lut);
         dispIpl.show();
 
     }

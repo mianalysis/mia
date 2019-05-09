@@ -7,15 +7,15 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.ObjectCountRef;
 
-import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
 public abstract class Module implements Comparable {
+    protected ModuleCollection modules;
+
     protected ParameterCollection parameters = new ParameterCollection();
     protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
     protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
@@ -35,7 +35,8 @@ public abstract class Module implements Comparable {
 
     // CONSTRUCTOR
 
-    public Module() {
+    public Module(ModuleCollection modules) {
+        this.modules = modules;
         moduleName = getTitle();
         nickname = moduleName;
 
@@ -90,7 +91,7 @@ public abstract class Module implements Comparable {
 
     public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules);
+    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 

@@ -25,6 +25,10 @@ public class ImageTypeConverter extends Module {
     public static final String CONVERSION_SEPARATOR = "Image type conversion";
     public static final String SCALING_MODE = "Scaling mode";
 
+    public ImageTypeConverter(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface ScalingModes {
         String CLIP = "Clip (direct conversion)";
@@ -237,7 +241,7 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

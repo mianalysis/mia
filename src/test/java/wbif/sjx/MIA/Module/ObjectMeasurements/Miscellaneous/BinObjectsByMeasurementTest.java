@@ -22,12 +22,12 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new BinObjectsByMeasurement().getTitle());
+        assertNotNull(new BinObjectsByMeasurement(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new BinObjectsByMeasurement().getHelp());
+        assertNotNull(new BinObjectsByMeasurement(null).getHelp());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement();
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(null);
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -86,7 +86,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement();
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(null);
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -124,7 +124,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement();
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(null);
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);

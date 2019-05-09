@@ -29,6 +29,10 @@ public class ExpandShrinkObjects extends Module {
     public static final String METHOD = "Method";
     public static final String RADIUS_CHANGE_PX = "Radius change (px)";
 
+    public ExpandShrinkObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface Methods {
         String EXPAND_2D = "Expand 2D";
         String EXPAND_3D = "Expand 3D";
@@ -216,7 +220,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -8,11 +8,11 @@ public class AddPauseTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new AddPause().getTitle());
+        assertNotNull(new AddPause(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddPause().getHelp());
+        assertNotNull(new AddPause(null).getHelp());
     }
 }
