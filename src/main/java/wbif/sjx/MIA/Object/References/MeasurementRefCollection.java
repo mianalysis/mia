@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object.References;
 
+import wbif.sjx.MIA.Object.References.Abstract.ObjectCountRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 public class MeasurementRefCollection extends RefCollection<MeasurementRef> {
@@ -18,8 +19,14 @@ public class MeasurementRefCollection extends RefCollection<MeasurementRef> {
     }
 
     public MeasurementRef getOrPut(Object key, MeasurementRef.Type type) {
-        putIfAbsent((String) key,new MeasurementRef((String) key,type));
-        return super.get(key);
+        switch (type) {
+            case OBJECT:
+            case IMAGE:
+                putIfAbsent((String) key,new MeasurementRef((String) key,type));
+                return super.get(key);
+            default:
+                return null;
+        }
     }
 
     public boolean hasExportedMeasurements() {

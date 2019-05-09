@@ -12,12 +12,6 @@ import java.util.TreeSet;
  * different types of children these are stored in an ArrayList.
  */
 public class RelationshipRefCollection extends RefCollection<RelationshipRef> {
-    public void addRelationship(String parent, String child) {
-        RelationshipRef relationshipRef = new RelationshipRef(parent,child);
-        put(relationshipRef.getName(),relationshipRef);
-
-    }
-
     public RelationshipRef getOrPut(String parent, String child) {
         String key = parent+" // "+child;
         putIfAbsent((String) key,new RelationshipRef(parent,child));
@@ -51,6 +45,18 @@ public class RelationshipRefCollection extends RefCollection<RelationshipRef> {
         TreeSet<String> childNames = getChildNames(parentName,useHierarchy,"");
 
         return childNames.toArray(new String[0]);
+
+    }
+
+    public LinkedHashSet<RelationshipRef> getChildren(String parentName, boolean useHierarchy) {
+        TreeSet<String> childNames = getChildNames(parentName,useHierarchy,"");
+
+        LinkedHashSet<RelationshipRef> relationshipRefs = new LinkedHashSet<>();
+        for (String childName:childNames) {
+            relationshipRefs.add(getOrPut(parentName,childName));
+        }
+
+        return relationshipRefs;
 
     }
 

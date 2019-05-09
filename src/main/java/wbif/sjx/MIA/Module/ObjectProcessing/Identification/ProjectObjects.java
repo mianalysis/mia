@@ -134,7 +134,7 @@ public class ProjectObjects extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -144,12 +144,9 @@ public class ProjectObjects extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection relationships = new RelationshipRefCollection();
+        relationshipRefs.getOrPut(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 
-        relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
-
-        return relationships;
+        return relationshipRefs;
 
     }
-
 }

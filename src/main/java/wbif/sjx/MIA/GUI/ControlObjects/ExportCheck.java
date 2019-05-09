@@ -1,14 +1,11 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRef;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -80,8 +77,12 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                     for (MeasurementRef ref:refs.values()) setStates(ref);
                 }
 
-                MetadataRefCollection refs = modules.getMetadataRefs();
-                for (MetadataRef ref:refs.values()) setStates(ref);
+                MetadataRefCollection metadataRefs = modules.getMetadataRefs();
+                for (MetadataRef ref:metadataRefs.values()) setStates(ref);
+
+                RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
+                for (RelationshipRef ref:relationshipRefs.values()) setStates(ref);
+
 
                 setStates(reference);
                 

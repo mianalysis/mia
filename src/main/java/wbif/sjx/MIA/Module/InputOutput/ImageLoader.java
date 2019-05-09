@@ -911,7 +911,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+        return objectMeasurementRefs;
 
     }
 

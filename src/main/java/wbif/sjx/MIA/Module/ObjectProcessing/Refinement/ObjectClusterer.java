@@ -292,7 +292,7 @@ public class ObjectClusterer extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -302,14 +302,12 @@ public class ObjectClusterer extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection relationships = new RelationshipRefCollection();
-
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationships.addRelationship(clusterObjectsName,inputObjectsName);
+        relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName);
 
-        return relationships;
+        return relationshipRefs;
 
     }
 

@@ -283,7 +283,7 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -293,21 +293,19 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection relationships = new RelationshipRefCollection();
-
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(CREATE_EDGE_OBJECTS)) {
             String outputEdgeObjects = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            relationships.addRelationship(inputObjects, outputEdgeObjects);
+            relationshipRefs.getOrPut(inputObjects, outputEdgeObjects);
         }
 
         if (parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
             String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            relationships.addRelationship(inputObjects,outputInteriorObjects);
+            relationshipRefs.getOrPut(inputObjects,outputInteriorObjects);
         }
 
-        return relationships;
+        return relationshipRefs;
 
     }
 

@@ -367,7 +367,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+        return objectMeasurementRefs;
     }
 
     @Override

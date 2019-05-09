@@ -731,14 +731,12 @@ public class TrackObjects extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection relationships = new RelationshipRefCollection();
-
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationships.addRelationship(trackObjectsName,inputObjectsName);
+        relationshipRefs.getOrPut(trackObjectsName,inputObjectsName);
 
-        return relationships;
+        return relationshipRefs;
 
     }
 

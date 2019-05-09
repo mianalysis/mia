@@ -7,8 +7,10 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.ObjectCountRef;
 
 import javax.annotation.Nullable;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -18,6 +20,7 @@ public abstract class Module implements Comparable {
     protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
     protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
     protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
+    protected RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
 
     private static boolean verbose = false;
     private String nickname;
@@ -87,9 +90,11 @@ public abstract class Module implements Comparable {
 
     public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs(@Nullable ModuleCollection modules);
+    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules);
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
+
+    public abstract RelationshipRefCollection updateAndGetRelationships();
 
     public MeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name, MeasurementRef.Type.IMAGE);
@@ -103,10 +108,9 @@ public abstract class Module implements Comparable {
         return metadataRefs.getOrPut(name);
     }
 
-    /*
-     * Returns a LinkedHashMap containing the parents (key) and their children (value)
-     */
-    public abstract RelationshipRefCollection updateAndGetRelationships();
+    public RelationshipRef getRelationshipRef(String parentName, String childName) {
+        return relationshipRefs.getOrPut(parentName,childName);
+    }
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);
@@ -139,6 +143,24 @@ public abstract class Module implements Comparable {
 
     }
 
+    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
+        // If the current module is the cutoff the loop terminates.  This prevents the system offering measurements
+        // that are created after this module or are currently unavailable.
+        if (!isEnabled()) return null;
+        if (!isRunnable()) return null;
+
+        // Running through all parameters, adding all images to the list
+        LinkedHashSet<T> parameters = new LinkedHashSet<>();
+        ParameterCollection currParameters = updateAndGetParameters();
+        for (Parameter currParameter : currParameters) {
+            if (type.isInstance(currParameter)) {
+                parameters.add((T) currParameter);
+            }
+        }
+
+        return parameters;
+
+    }
 
     // PRIVATE METHODS
 

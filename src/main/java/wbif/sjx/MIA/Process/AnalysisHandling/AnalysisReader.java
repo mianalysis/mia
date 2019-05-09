@@ -18,6 +18,7 @@ import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -136,6 +137,10 @@ public class AnalysisReader {
 
                         case "METADATA":
                             populateModuleMetadataRefs(moduleChildNodes.item(j), module);
+                            break;
+
+                        case "RELATIONSHIPS":
+                            populateModuleRelationshipRefs(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -347,6 +352,27 @@ public class AnalysisReader {
             MetadataRef metadataRef = module.getMetadataRef(metadataName);
             if (metadataName == null) continue;
             metadataRef.setAttributesFromXML(attributes);
+
+        }
+    }
+
+    public static void populateModuleRelationshipRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            String childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
+
+            attributes = referenceNode.getAttributes();
+            String parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
+
+            // Acquiring the relevant reference
+            RelationshipRef relationshipRef = module.getRelationshipRef(parentName,childName);
+            relationshipRef.setAttributesFromXML(attributes);
 
         }
     }
