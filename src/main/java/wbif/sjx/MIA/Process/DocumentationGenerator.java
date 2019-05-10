@@ -3,12 +3,14 @@ package wbif.sjx.MIA.Process;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -257,8 +259,8 @@ public class DocumentationGenerator {
         LinkedHashSet<Module> modules = new LinkedHashSet<>();
         for (Class<? extends Module> clazz:clazzes) {
             try {
-                modules.add((Module) clazz.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
+                Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(new ModuleCollection());
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
