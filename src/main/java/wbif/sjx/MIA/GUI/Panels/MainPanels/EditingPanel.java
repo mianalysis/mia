@@ -10,6 +10,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.Panels.*;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.ClassHunter;
@@ -17,6 +18,9 @@ import wbif.sjx.MIA.Process.ClassHunter;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
@@ -230,16 +234,19 @@ public class EditingPanel extends MainPanel {
             Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
             // Creating an alphabetically-ordered list of all modules
-            TreeMap<String, Class> modules = new TreeMap<>();
+            ModuleCollection moduleCollection = new ModuleCollection();
+            TreeMap<String, Module> modules = new TreeMap<>();
             for (Class clazz : availableModules) {
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
                     // Skip any abstract Modules
                     if (Modifier.isAbstract(clazz.getModifiers())) continue;
 
-                    Module module = (Module) clazz.newInstance();
+                    Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                    Module module = (Module) constructor.newInstance(moduleCollection);
                     String packageName = module.getPackageName();
                     String moduleName = module.getTitle();
-                    modules.put(packageName+moduleName, clazz);
+                    modules.put(packageName+moduleName, module);
+
                 }
             }
 
@@ -274,14 +281,13 @@ public class EditingPanel extends MainPanel {
 
                 }
 
-                Module module = (Module) modules.get(name).newInstance();
-                if (module != null && activeItem != null) activeItem.addMenuItem(module);
+                if (activeItem != null) activeItem.addMenuItem(modules.get(name));
 
             }
 
             for (ModuleListMenu listMenu : topList) moduleListMenu.add(listMenu);
 
-        } catch (IllegalAccessException | InstantiationException | InterruptedException e){
+        } catch (IllegalAccessException | InstantiationException | InterruptedException | NoSuchMethodException | InvocationTargetException e){
             e.printStackTrace(System.err);
         }
 
@@ -356,16 +362,18 @@ public class EditingPanel extends MainPanel {
     @Override
     public void updateModules() {
         Analysis analysis = GUI.getAnalysis();
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
 
-        boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
-        analysis.getInputControl().setRunnable(runnable);
+        boolean runnable = AnalysisTester.testModule(inputControl,analysis.getModules());
+        inputControl.setRunnable(runnable);
         inputPanel.updateButtonState();
-        inputPanel.updatePanel(analysis.getInputControl());
+        inputPanel.updatePanel(inputControl);
 
-        runnable = AnalysisTester.testModule(analysis.getOutputControl(),analysis.getModules());
-        analysis.getInputControl().setRunnable(runnable);
+        runnable = AnalysisTester.testModule(outputControl,analysis.getModules());
+        outputControl.setRunnable(runnable);
         outputPanel.updateButtonState();
-        outputPanel.updatePanel(analysis.getOutputControl());
+        outputPanel.updatePanel(outputControl);
 
         parametersPanel.updatePanel(GUI.getActiveModule());
         modulesPanel.updateButtonStates();

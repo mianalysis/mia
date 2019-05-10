@@ -10,6 +10,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.LUTs;
@@ -54,6 +58,10 @@ public class FilterObjects extends Module implements ActionListener {
     private JTextField numbersField;
     private int elementHeight = 30;
     private boolean active = false;
+
+    public FilterObjects(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface FilterModes {
@@ -606,8 +614,8 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
@@ -618,9 +626,8 @@ public class FilterObjects extends Module implements ActionListener {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
@@ -637,7 +644,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

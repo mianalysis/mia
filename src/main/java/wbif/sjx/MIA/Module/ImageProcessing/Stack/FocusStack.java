@@ -11,6 +11,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.ThirdParty.Stack_Focuser_;
 
 public class FocusStack extends Module {
@@ -23,6 +26,10 @@ public class FocusStack extends Module {
     public static final String ADD_HEIGHT_MAP_TO_WORKSPACE = "Add height map image to workspace";
     public static final String OUTPUT_HEIGHT_IMAGE = "Output height image";
     public static final String SHOW_HEIGHT_IMAGE = "Show height image";
+
+    public FocusStack(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public Image[] focusStack(Image inputImage, String outputImageName, int range, boolean smooth, @Nullable String outputHeightImageName, @Nullable Image inputHeightImage) {
@@ -233,8 +240,8 @@ public class FocusStack extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -243,7 +250,7 @@ public class FocusStack extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -20,6 +20,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 
 import javax.swing.*;
@@ -64,6 +67,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String CHANNEL = "Channel";
+
+    public BestFocusSubstack(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface BestFocusCalculations {
@@ -573,27 +580,27 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-//        imageMeasurementRefs.setAllCalculated(false);
+//        imageMeasurementRefs.setAllAvailable(false);
 //
 //        String inputImageName = parameters.getValue(INPUT_IMAGE);
 //
 //        MeasurementRef measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE);
-//        measurementRef.setCalculated(true);
+//        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
 //        imageMeasurementRefs.add(measurementRef);
 //
 //        measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE_SLICE);
-//        measurementRef.setCalculated(true);
+//        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
 //        imageMeasurementRefs.add(measurementRef);
 //
 //        measurementRef = new MeasurementRef(Measurements.MAX_VARIANCE);
-//        measurementRef.setCalculated(true);
+//        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
 //        imageMeasurementRefs.add(measurementRef);
 //
 //        measurementRef = new MeasurementRef(Measurements.MAX_VARIANCE_SLICE);
-//        measurementRef.setCalculated(true);
+//        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
 //        imageMeasurementRefs.add(measurementRef);
 //
@@ -604,24 +611,22 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection metadataRefCollection = new MetadataRefCollection();
-
         if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
-            metadataRefCollection.add(new MetadataReference(MetadataNames.SLICES));
+            metadataRefs.getOrPut(MetadataNames.SLICES).setAvailable(true);
         }
 
-        return metadataRefCollection;
+        return metadataRefs;
 
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

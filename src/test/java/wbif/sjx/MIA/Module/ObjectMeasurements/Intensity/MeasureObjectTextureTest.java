@@ -133,11 +133,11 @@ public class MeasureObjectTextureTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MeasureObjectTexture().getTitle());
+        assertNotNull(new MeasureObjectTexture(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectTexture().getHelp());
+        assertNotNull(new MeasureObjectTexture(null).getHelp());
     }
 }

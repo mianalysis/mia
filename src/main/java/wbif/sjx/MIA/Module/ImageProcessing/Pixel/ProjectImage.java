@@ -11,6 +11,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 //import ij.plugin.ZProjector;
 
@@ -23,6 +26,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String PROJECTION_SEPARATOR = "Image projection";
     public static final String PROJECTION_MODE = "Projection mode";
+
+    public ProjectImage(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface ProjectionModes {
         String AVERAGE = "Average";
@@ -171,8 +178,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -181,7 +188,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

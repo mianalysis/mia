@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -22,6 +26,10 @@ public class MeasureRelativeOrientation extends Module {
     public static final String REFERENCE_OBJECTS = "Reference objects";
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
+
+    public MeasureRelativeOrientation(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface OrientationModes {
@@ -463,10 +471,11 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String reference = getMeasurementRef();
 
@@ -496,9 +505,9 @@ public class MeasureRelativeOrientation extends Module {
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
-                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
+                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName,type);
                 measurementReference.setImageObjName(inputObjectsName);
-                measurementReference.setCalculated(true);
+                measurementReference.setAvailable(true);
 
                 String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
                 measurementReference.setDescription("Orientation of the object (specified by the measurements \""+
@@ -516,7 +525,7 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

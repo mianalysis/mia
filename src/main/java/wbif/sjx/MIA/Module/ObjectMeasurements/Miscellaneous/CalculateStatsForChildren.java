@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 
 public class CalculateStatsForChildren extends Module {
@@ -15,6 +19,10 @@ public class CalculateStatsForChildren extends Module {
     public static final String CALCULATE_MIN = "Calculate minimum";
     public static final String CALCULATE_MAX = "Calculate maximum";
     public static final String CALCULATE_SUM = "Calculate sum";
+
+    public CalculateStatsForChildren(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface Measurements {
         String MEAN = "MEAN";
@@ -154,54 +162,55 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        objectMeasurementRefs.setAllCalculated(false);
+        objectMeasurementRefs.setAllAvailable(false);
 
         if (parameters.getValue(CALCULATE_MEAN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MEAN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(parentObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Mean value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
         }
 
         if (parameters.getValue(CALCULATE_STD)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.STD);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(parentObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Standard deviation of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
         }
 
         if (parameters.getValue(CALCULATE_MIN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MIN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(parentObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Minimum value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
         }
 
         if (parameters.getValue(CALCULATE_MAX)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MAX);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(parentObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Maximum value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
         }
 
         if (parameters.getValue(CALCULATE_SUM)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.SUM);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(parentObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Summed value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
         }
@@ -216,7 +225,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

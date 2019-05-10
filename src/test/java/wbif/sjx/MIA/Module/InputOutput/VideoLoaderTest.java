@@ -8,11 +8,11 @@ public class VideoLoaderTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new VideoLoader().getTitle());
+        assertNotNull(new VideoLoader(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new VideoLoader().getHelp());
+        assertNotNull(new VideoLoader(null).getHelp());
     }
 }

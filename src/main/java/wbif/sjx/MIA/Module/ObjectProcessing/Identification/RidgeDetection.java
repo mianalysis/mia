@@ -10,8 +10,13 @@ import ij.measure.Calibration;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -37,6 +42,10 @@ public class RidgeDetection extends Module {
     public static final String MAX_LENGTH = "Maximum length";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
+
+    public RidgeDetection(ModuleCollection modules) {
+        super(modules);
+    }
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
@@ -267,12 +276,7 @@ public class RidgeDetection extends Module {
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-
-            try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.2,false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            AddObjectOutline.addOverlay(dispIpl,outputObjects,0.2,hues,false,true);
 
             // Displaying the overlay
             dispIpl.setPosition(1,1,1);
@@ -312,47 +316,48 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX, type);
         reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        reference.setCalculated(true);
+        reference.setAvailable(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in pixel " +
                 "units.");
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL), type);
         reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        reference.setCalculated(true);
+        reference.setAvailable(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
 
         if (parameters.getValue(ESTIMATE_WIDTH)) {
-            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX, type);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
+            reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX, type);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL), type);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
                     "("+Units.getOMEUnits().getSymbol()+") units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL), type);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setAvailable(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
@@ -368,7 +373,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

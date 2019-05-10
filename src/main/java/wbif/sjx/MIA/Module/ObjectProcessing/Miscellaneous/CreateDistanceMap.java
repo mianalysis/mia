@@ -15,6 +15,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
@@ -29,6 +32,10 @@ public class CreateDistanceMap extends Module {
     public static final String MASKING_MODE = "Masking mode";
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
     public static final String SPATIAL_UNITS = "Spatial units";
+
+    public CreateDistanceMap(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface ReferenceModes {
@@ -101,7 +108,7 @@ public class CreateDistanceMap extends Module {
         if (invertInside) ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
 
         // Compiling the distance map
-        ImagePlus distanceMap = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
+        ImagePlus distanceMap = ImageCalculator.process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
 
         return new Image(outputImageName,distanceMap);
@@ -127,7 +134,7 @@ public class CreateDistanceMap extends Module {
         // Applying the mask
         String calculationMode = ImageCalculator.CalculationMethods.MULTIPLY;
         String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
-        new ImageCalculator().process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
+        ImageCalculator.process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
 
     }
 
@@ -320,8 +327,8 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -330,7 +337,7 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

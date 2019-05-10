@@ -10,6 +10,9 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by Stephen on 08/05/2017.
@@ -18,6 +21,10 @@ public class ChannelExtractor extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
+
+    public ChannelExtractor(ModuleCollection modules) {
+        super(modules);
+    }
 
     @Override
     public String getTitle() {
@@ -82,8 +89,8 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -92,7 +99,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

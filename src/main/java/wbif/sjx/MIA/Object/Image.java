@@ -14,9 +14,12 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -123,13 +126,13 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public void showImage(String title, LUT lut, boolean normalise) {
+    public void showImage(String title, @Nullable LUT lut, boolean normalise) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
         if (normalise) IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
-        dispIpl.setLut(lut);
+        if (lut != null) dispIpl.setLut(lut);
         dispIpl.show();
 
     }
@@ -164,7 +167,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
         for (MeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageObjName().equals(name) && measRef.isCalculated()) measNames.add(measRef.getName());
+            if (measRef.getImageObjName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values

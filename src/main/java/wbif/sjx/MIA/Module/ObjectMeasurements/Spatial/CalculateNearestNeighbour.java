@@ -4,19 +4,27 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 22/06/2017.
  */
 public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String RELATIONSHIP_MODE = "Relationship mode";
+    public static final String RELATIONSHIP_MODE = "RelationshipRef mode";
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
     public static final String LIMIT_LINKING_DISTANCE = "Limit linking distance";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance";
     public static final String CALIBRATED_DISTANCE = "Calibrated distance";
+
+    public CalculateNearestNeighbour(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
@@ -215,11 +223,12 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String neighbourObjectsName = null;
         switch (relationshipMode) {
@@ -233,19 +242,19 @@ public class CalculateNearestNeighbour extends Module {
 
 
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
-        reference = objectMeasurementRefs.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         return objectMeasurementRefs;
 
@@ -257,7 +266,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

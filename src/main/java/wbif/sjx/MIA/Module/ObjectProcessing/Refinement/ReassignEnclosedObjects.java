@@ -9,12 +9,19 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
+
+    public ReassignEnclosedObjects(ModuleCollection modules) {
+        super(modules);
+    }
 
     public void testEncloses(ObjCollection objects, Image templateImage) throws IntegerOverflowException {
         int count = 0;
@@ -118,8 +125,8 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -128,7 +135,7 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

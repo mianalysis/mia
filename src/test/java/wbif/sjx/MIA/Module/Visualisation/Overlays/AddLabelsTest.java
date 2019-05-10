@@ -11,11 +11,11 @@ public class AddLabelsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new AddLabels().getTitle());
+        assertNotNull(new AddLabels(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddLabels().getHelp());
+        assertNotNull(new AddLabels(null).getHelp());
     }
 }

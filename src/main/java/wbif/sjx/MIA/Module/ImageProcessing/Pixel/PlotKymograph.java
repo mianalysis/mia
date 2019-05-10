@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class PlotKymograph extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -16,6 +19,10 @@ public class PlotKymograph extends Module {
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
     public static final String HALF_WIDTH = "Half width (px)";
+
+    public PlotKymograph(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface Modes {
         String LINE_AT_OBJECT_CENTROID = "Line at object centroid";
@@ -163,8 +170,8 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -173,7 +180,7 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

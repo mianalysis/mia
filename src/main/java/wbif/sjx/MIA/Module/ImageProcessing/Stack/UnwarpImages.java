@@ -12,6 +12,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,6 +46,10 @@ public class UnwarpImages extends Module {
     public static final String CONSISTENCY_WEIGHT = "Consistency weight";
     public static final String STOP_THRESHOLD = "Stop threshold";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public UnwarpImages(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface RelativeModes {
@@ -234,7 +241,7 @@ public class UnwarpImages extends Module {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -255,7 +262,7 @@ public class UnwarpImages extends Module {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
 
             }
@@ -465,8 +472,8 @@ public class UnwarpImages extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -475,7 +482,7 @@ public class UnwarpImages extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

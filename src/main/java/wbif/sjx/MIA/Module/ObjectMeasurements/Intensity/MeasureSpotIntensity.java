@@ -6,6 +6,10 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -28,6 +32,10 @@ public class MeasureSpotIntensity extends Module {
     public static final String MEASURE_MIN = "Measure minimum";
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
+
+    public MeasureSpotIntensity(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface RadiusSources {
         String FIXED_VALUE = "Fixed value";
@@ -110,7 +118,7 @@ public class MeasureSpotIntensity extends Module {
         // Getting local object region
         ObjCollection spotObjects = null;
         try {
-            spotObjects = new GetLocalObjectRegion().getLocalRegions(inputObjects,inputObjectsName,ipl,useMeasurement,radiusMeasurement,radius,calibrated);
+            spotObjects = GetLocalObjectRegion.getLocalRegions(inputObjects,inputObjectsName,ipl,useMeasurement,radiusMeasurement,radius,calibrated);
         } catch (IntegerOverflowException e) {
             return false;
         }
@@ -209,45 +217,46 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         if (parameters.getValue(MEASURE_MEAN)) {
             String name = getFullName(inputImageName, Measurements.MEAN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
             String name = getFullName(inputImageName, Measurements.MIN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
             String name = getFullName(inputImageName, Measurements.MAX);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
             String name = getFullName(inputImageName, Measurements.STDEV);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
             String name = getFullName(inputImageName, Measurements.SUM);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
             reference.setImageObjName(inputObjectsName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
         }
 
         return objectMeasurementRefs;
@@ -260,7 +269,7 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

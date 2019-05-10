@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
@@ -12,6 +13,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class CoreFilter extends Module {
+    public CoreFilter(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface FilterModes {
         String DO_NOTHING = "Do nothing";
         String MOVE_FILTERED = "Move filtered objects to new class";

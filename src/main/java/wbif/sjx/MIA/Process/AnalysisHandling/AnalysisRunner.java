@@ -24,8 +24,8 @@ public class AnalysisRunner {
 
     public static void startAnalysis(Analysis analysis) throws IOException, InterruptedException {
         // Getting input/output controls
-        InputControl inputControl = analysis.getInputControl();
-        OutputControl outputControl = analysis.getOutputControl();
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
 
         // Getting input file
         File inputFile = getInputFile(inputControl);
@@ -137,25 +137,13 @@ public class AnalysisRunner {
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         String appendDateTimeMode = outputControl.getParameterValue(OutputControl.APPEND_DATETIME_MODE);
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
-        boolean showChildCounts = outputControl.getParameterValue(OutputControl.SHOW_NUMBER_OF_CHILDREN);
-        boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MEAN);
-        boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MIN);
-        boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MAX);
-        boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_STD);
-        boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_SUM);
 
         // Initialising the exporter (if one was requested)
-        Exporter exporter = exportXLS ? new Exporter(exportName, Exporter.XLS_EXPORT) : null;
+        Exporter exporter = exportXLS ? new Exporter(exportName) : null;
         if (exporter != null) {
             exporter.setMetadataItemForGrouping(metadataItemForGrouping);
             exporter.setExportSummary(exportSummary);
             exporter.setShowObjectCounts(showObjectCounts);
-            exporter.setShowChildCounts(showChildCounts);
-            exporter.setCalculateCountMean(calculateMean);
-            exporter.setCalculateCountMin(calculateMin);
-            exporter.setCalculateCountMax(calculateMax);
-            exporter.setCalculateCountStd(calculateStd);
-            exporter.setCalculateCountSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
             switch (exportMode) {

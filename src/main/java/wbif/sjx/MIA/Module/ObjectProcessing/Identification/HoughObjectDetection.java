@@ -6,8 +6,14 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -41,6 +47,10 @@ public class HoughObjectDetection extends Module {
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
+
+    public HoughObjectDetection(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     private interface Measurements {
@@ -182,18 +192,13 @@ public class HoughObjectDetection extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             HashMap<Integer, String> IDs = null;
-            try {
-                if (showHoughScore) {
-                    DecimalFormat df = LabelFactory.getDecimalFormat(0,true);
-                    IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,df);
-                    new AddObjectsOverlay().createLabelOverlay(dispIpl,outputObjects,hues,IDs,true,labelSize,false);
-                }
-
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.3,false);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (showHoughScore) {
+                DecimalFormat df = LabelFactory.getDecimalFormat(0,true);
+                IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,df);
+                AddLabels.addOverlay(dispIpl,outputObjects,AddLabels.LabelPositions.CENTRE,IDs,labelSize,hues,false,true);
             }
+
+            AddObjectOutline.addOverlay(dispIpl,outputObjects,0.3,hues,false,true);
 
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
@@ -267,12 +272,12 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
-        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
+        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE, MeasurementRef.Type.OBJECT);
         score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        score.setCalculated(true);
+        score.setAvailable(true);
 
         return objectMeasurementRefs;
 
@@ -284,7 +289,7 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

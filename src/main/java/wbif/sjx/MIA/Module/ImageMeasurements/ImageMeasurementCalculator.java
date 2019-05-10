@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
@@ -14,6 +18,10 @@ public class ImageMeasurementCalculator extends Module {
     public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
     public static final String CALCULATION_MODE = "Calculation mode";
+
+    public ImageMeasurementCalculator(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface CalculationModes {
@@ -128,23 +136,22 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         // Creating new MeasurementRef
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        MeasurementRef measurementRef = imageMeasurementRefs.getOrPut(measurementName);
-        measurementRef.setImageObjName(inputImageName);
-        measurementRef.setCalculated(true);
-        imageMeasurementRefs.add(measurementRef);
+        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
+
+        imageMeasurementRefs.getOrPut(measurementName,type).setImageObjName(inputImageName).setAvailable(true);
 
         return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -153,7 +160,7 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

@@ -1,20 +1,20 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.MeasurementRef;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ResetMeasurement extends JButton implements ActionListener {
-    private MeasurementRef measurementReference;
+public class ResetExport extends JButton implements ActionListener {
+    private ExportableRef ref;
 
     private static final ImageIcon refreshIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/refresh_black_12px.png"), "");
 
-    public ResetMeasurement(MeasurementRef measurementReference) {
-        this.measurementReference = measurementReference;
+    public ResetExport(ExportableRef ref) {
+        this.ref = ref;
 
         setMargin(new Insets(0,0,0,0));
         setFocusPainted(false);
@@ -28,13 +28,13 @@ public class ResetMeasurement extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        measurementReference.setNickname(measurementReference.getName());
-        measurementReference.setExportIndividual(true);
-        measurementReference.setExportMean(true);
-        measurementReference.setExportMin(true);
-        measurementReference.setExportMax(true);
-        measurementReference.setExportSum(true);
-        measurementReference.setExportStd(true);
+        ref.setNickname(ref.getName());
+        ref.setExportIndividual(true);
+        ref.setExportMean(true);
+        ref.setExportMin(true);
+        ref.setExportMax(true);
+        ref.setExportSum(true);
+        ref.setExportStd(true);
 
         GUI.populateModuleParameters();
         GUI.populateHelpNotes();

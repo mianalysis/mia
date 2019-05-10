@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -17,6 +18,10 @@ public class WithWithoutParent extends CoreFilter {
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String STORE_RESULTS = "Store filter results";
+
+    public WithWithoutParent(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface FilterMethods {
@@ -154,8 +159,8 @@ public class WithWithoutParent extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -166,9 +171,8 @@ public class WithWithoutParent extends CoreFilter {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
@@ -180,8 +184,6 @@ public class WithWithoutParent extends CoreFilter {
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection metadataReferences = new MetadataRefCollection();
-
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -190,15 +192,15 @@ public class WithWithoutParent extends CoreFilter {
 
             String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectsName);
 
-            metadataReferences.add(new MetadataReference(metadataName));
+            metadataRefs.getOrPut(metadataName).setAvailable(true);
 
         }
 
-        return metadataReferences;
+        return metadataRefs;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

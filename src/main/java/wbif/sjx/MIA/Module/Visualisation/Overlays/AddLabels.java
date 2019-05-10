@@ -1,11 +1,8 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -18,13 +15,15 @@ import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Object.Point;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -56,6 +55,10 @@ public class AddLabels extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private ColourServer colourServer;
+
+    public AddLabels(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface LabelModes extends LabelFactory.LabelModes {}
 
@@ -105,7 +108,53 @@ public class AddLabels extends Module {
 
     }
 
-    public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String labelPosition, HashMap<Integer,String> labels, int labelSize, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
+
+        // Adding the overlay element
+        try {
+            int nThreads = multithread ? Prefs.getThreads() : 1;
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object:inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
+
+                Runnable task = () -> {
+                    float hue = hues.get(object.getID());
+                    Color colour = ColourFactory.getColour(hue);
+                    String label = labels == null ? "" : labels.get(object.getID());
+
+                    double[] location;
+                    switch (labelPosition) {
+                        case LabelPositions.CENTRE:
+                        default:
+                            location = getMeanObjectLocation(object,renderInAllFrames);
+                            break;
+                        case LabelPositions.INSIDE:
+                            location = getInsideObjectLocation(object,renderInAllFrames);
+                            break;
+                    }
+
+                    addOverlay(finalIpl, label, location, colour, labelSize);
+
+                };
+                pool.submit(task);
+            }
+
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
+
+    public static void addOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Adding text label
@@ -186,53 +235,11 @@ public class AddLabels extends Module {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues= colourServer.getHues(inputObjects);
+        HashMap<Integer,Float> hues = colourServer.getHues(inputObjects);
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces,useScientific);
         HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,parentObjectsForLabelName,measurementForLabel);
 
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
-
-        // Adding the overlay element
-        try {
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
-
-            // Running through each object, adding it to the overlay along with an ID label
-            AtomicInteger count = new AtomicInteger();
-            for (Obj object:inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
-
-                Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
-                    String label = labels == null ? "" : labels.get(object.getID());
-
-                    double[] location;
-                    switch (labelPosition) {
-                        case LabelPositions.CENTRE:
-                        default:
-                            location = getMeanObjectLocation(object,renderInAllFrames);
-                            break;
-                        case LabelPositions.INSIDE:
-                            location = getInsideObjectLocation(object,renderInAllFrames);
-                            break;
-                    }
-
-                    addLabelsOverlay(finalIpl, label, location, colour, labelSize);
-                    writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
-                };
-                pool.submit(task);
-            }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-        } catch (InterruptedException e) {
-            return false;
-        }
+        addOverlay(ipl,inputObjects,labelPosition,labels,labelSize,hues,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 
@@ -338,8 +345,8 @@ public class AddLabels extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -348,7 +355,7 @@ public class AddLabels extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

@@ -11,6 +11,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.util.LinkedHashMap;
 
@@ -23,6 +26,10 @@ public class ColourDeconvolution extends Module {
     public static final String ENABLE_IM3_OUTPUT = "Output image 3";
     public static final String OUTPUT_IMAGE_3 = "Output image 3 name";
     public static final String STAIN_MODEL = "Stain model";
+
+    public ColourDeconvolution(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface StainModels {
@@ -212,8 +219,8 @@ public class ColourDeconvolution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -222,7 +229,7 @@ public class ColourDeconvolution extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -10,6 +10,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
@@ -22,6 +25,10 @@ public class CreateObjectDensityMap extends Module {
     public static final String RANGE = "Range";
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
+
+    public CreateObjectDensityMap(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public static void process(CumStat[] cumStats, Indexer indexer, ObjCollection objects, @Nullable String message) {
@@ -122,7 +129,7 @@ public class CreateObjectDensityMap extends Module {
         Image outputImage = convertToImage(cumStats,indexer,outputImageName,calibration);
 
         // Applying blur
-        new FilterImage().runGaussian2DFilter(outputImage.getImagePlus(),range);
+        FilterImage.runGaussian2DFilter(outputImage.getImagePlus(),range);
 
         workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
@@ -154,8 +161,8 @@ public class CreateObjectDensityMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -164,7 +171,7 @@ public class CreateObjectDensityMap extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

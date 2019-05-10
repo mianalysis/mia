@@ -12,6 +12,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class DilateErode extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -19,6 +22,10 @@ public class DilateErode extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
+
+    public DilateErode(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface OperationModes {
         String DILATE_3D = "Dilate 3D";
@@ -160,8 +167,8 @@ public class DilateErode extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -170,7 +177,7 @@ public class DilateErode extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

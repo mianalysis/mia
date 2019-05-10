@@ -1,15 +1,19 @@
 package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
-import wbif.sjx.MIA.GUI.ControlObjects.VisibleCheck;
 import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;
@@ -45,8 +49,12 @@ public class ParametersPanel extends JScrollPane {
 
     public void updatePanel(Module module) {
         Analysis analysis = GUI.getAnalysis();
+        ModuleCollection modules = GUI.getModules();
+
         ComponentFactory componentFactory = GUI.getComponentFactory();
         MeasurementRef globalMeasurementRef = GUI.getGlobalMeasurementRef();
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
 
         panel.removeAll();
 
@@ -64,16 +72,16 @@ public class ParametersPanel extends JScrollPane {
             return;
         }
 
-        boolean isInput = module.getClass().isInstance(new InputControl());
-        boolean isOutput = module.getClass().isInstance(new OutputControl());
+        boolean isInput = module.getClass().isInstance(new InputControl(modules));
+        boolean isOutput = module.getClass().isInstance(new OutputControl(modules));
 
         JPanel topPanel = componentFactory.createParametersTopRow(module);
         c.gridwidth = 2;
         panel.add(topPanel,c);
 
         // If it's an input/output control, get the current version
-        if (module.getClass().isInstance(new InputControl())) module = analysis.getInputControl();
-        if (module.getClass().isInstance(new OutputControl())) module = analysis.getOutputControl();
+        if (module.getClass().isInstance(new InputControl(modules))) module = inputControl;
+        if (module.getClass().isInstance(new OutputControl(modules))) module = outputControl;
 
         // If the active module hasn't got parameters enabled, skip it
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -90,75 +98,27 @@ public class ParametersPanel extends JScrollPane {
         }
 
         // If selected, adding the measurement selector for output control
-        if (module.getClass().isInstance(new OutputControl())
-                && analysis.getOutputControl().isEnabled()
-                && ((BooleanP) analysis.getOutputControl().getParameter(OutputControl.SELECT_MEASUREMENTS)).isSelected()) {
+        if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled()) {
+            MetadataRefCollection metadataRefs = modules.getMetadataRefs();
+            addRefExportControls(metadataRefs,"Metadata",componentFactory,c,false);
 
-            // Creating global controls for the different statistics
-            JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control",null);
-            c.gridx = 0;
-            c.gridy++;
-            c.gridwidth = 2;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.WEST;
-            panel.add(measurementHeader,c);
-
-            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementRef);
-            c.gridy++;
-            c.anchor = GridBagConstraints.EAST;
-            panel.add(currentMeasurementPanel,c);
-
-            LinkedHashSet<OutputImageP> imageNameParameters = analysis.getModules().getParametersMatchingType(OutputImageP.class);
+            LinkedHashSet<OutputImageP> imageNameParameters = modules.getParametersMatchingType(OutputImageP.class);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
-                MeasurementRefCollection measurementReferences = analysis.getModules().getImageMeasurementRefs(imageName);
-
-                if (measurementReferences.size() == 0) continue;
-
-                measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)", measurementReferences);
-                c.gridx = 0;
-                c.gridy++;
-                c.anchor = GridBagConstraints.WEST;
-                panel.add(measurementHeader,c);
-
-                // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementRef measurementReference:measurementReferences.values()) {
-                    if (!measurementReference.isCalculated()) continue;
-
-                    // Adding measurement control
-                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
-                    c.gridy++;
-                    c.anchor = GridBagConstraints.EAST;
-                    panel.add(currentMeasurementPanel,c);
-
-                }
+                MeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName);
+                addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c,false);
             }
 
-            LinkedHashSet<OutputObjectsP> objectNameParameters = analysis.getModules().getParametersMatchingType(OutputObjectsP.class);
+            LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getParametersMatchingType(OutputObjectsP.class);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
-                MeasurementRefCollection measurementReferences = analysis.getModules().getObjectMeasurementRefs(objectName);
-
-                if (measurementReferences.size() == 0) continue;
-
-                measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",measurementReferences);
-                c.gridx = 0;
-                c.gridy++;
-                c.anchor = GridBagConstraints.WEST;
-                panel.add(measurementHeader,c);
-
-                // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementRef measurementReference:measurementReferences.values()) {
-                    if (!measurementReference.isCalculated()) continue;
-
-                    // Adding measurement control
-                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
-                    c.gridy++;
-                    c.anchor = GridBagConstraints.EAST;
-                    panel.add(currentMeasurementPanel,c);
-
-                }
+                MeasurementRefCollection measurementReferences = modules.getObjectMeasurementRefs(objectName);
+                addRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c,true);
             }
+
+            RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
+            addRefExportControls(relationshipRefs,"Number of children",componentFactory,c,true);
+
         }
 
         // Creating the notes/help field at the bottom of the panel
@@ -179,6 +139,28 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
+    void addRefExportControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c, boolean includeSummary) {
+        if (refs.size() == 0) return;
+
+        JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,includeSummary);
+        c.gridx = 0;
+        c.gridy++;
+        c.anchor = GridBagConstraints.WEST;
+        panel.add(measurementHeader,c);
+
+        // Iterating over the measurements for the current object, adding a control for each
+        for (ExportableRef measurementReference:refs.values()) {
+            if (!measurementReference.isAvailable()) continue;
+
+            // Adding measurement control
+            JPanel currentMeasurementPanel = componentFactory.createSingleRefControl(measurementReference,includeSummary);
+            c.gridy++;
+            c.anchor = GridBagConstraints.EAST;
+            panel.add(currentMeasurementPanel,c);
+
+        }
+    }
+
     public void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
         ComponentFactory componentFactory = GUI.getComponentFactory();
         Module activeModule = GUI.getActiveModule();
@@ -190,24 +172,9 @@ public class ParametersPanel extends JScrollPane {
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
 
-//        if (parameter instanceof MessageP || parameter instanceof ParamSeparatorP) {
-            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule, true);
-//            c.gridwidth = 2;
-            panel.add(paramPanel, c);
+        JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule, true);
+        panel.add(paramPanel, c);
 
-//        } else {
-//            JPanel paramPanel = componentFactory.createParameterControl(parameter, GUI.getModules(), activeModule);
-//            c.gridwidth = 1;
-//            panel.add(paramPanel, c);
-//
-//            c.insets = new Insets(2, 5, 0, 5);
-//            c.gridx++;
-//            c.weightx = 0;
-//            c.anchor = GridBagConstraints.EAST;
-//            VisibleCheck visibleCheck = new VisibleCheck(parameter);
-//            visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-//            panel.add(visibleCheck, c);
-//        }
     }
 
     public void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {

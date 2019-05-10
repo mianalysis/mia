@@ -8,11 +8,11 @@ public class MeasureRadialIntensityProfileTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MeasureRadialIntensityProfile().getTitle());
+        assertNotNull(new MeasureRadialIntensityProfile(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureRadialIntensityProfile().getHelp());
+        assertNotNull(new MeasureRadialIntensityProfile(null).getHelp());
     }
 }

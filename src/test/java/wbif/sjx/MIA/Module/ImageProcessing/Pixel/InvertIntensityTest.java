@@ -24,12 +24,12 @@ public class InvertIntensityTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new InvertIntensity().getTitle());
+        assertNotNull(new InvertIntensity(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new InvertIntensity().getHelp());
+        assertNotNull(new InvertIntensity(null).getHelp());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class InvertIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
-        InvertIntensity invertIntensity = new InvertIntensity();
+        InvertIntensity invertIntensity = new InvertIntensity(null);
         invertIntensity.initialiseParameters();
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -90,7 +90,7 @@ public class InvertIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
-        InvertIntensity invertIntensity = new InvertIntensity();
+        InvertIntensity invertIntensity = new InvertIntensity(null);
         invertIntensity.initialiseParameters();
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -128,7 +128,7 @@ public class InvertIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
-        InvertIntensity invertIntensity = new InvertIntensity();
+        InvertIntensity invertIntensity = new InvertIntensity(null);
         invertIntensity.initialiseParameters();
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -167,7 +167,7 @@ public class InvertIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising InvertIntensity
-        InvertIntensity invertIntensity = new InvertIntensity();
+        InvertIntensity invertIntensity = new InvertIntensity(null);
         invertIntensity.initialiseParameters();
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");

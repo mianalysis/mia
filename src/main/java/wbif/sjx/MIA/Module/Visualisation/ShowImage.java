@@ -3,9 +3,13 @@ package wbif.sjx.MIA.Module.Visualisation;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -13,6 +17,8 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 public class ShowImage extends Module {
     public final static String DISPLAY_IMAGE = "Display image";
     public static final String TITLE_MODE = "Title mode";
+    public static final String QUICK_NORMALISATION = "Quick normalisation";
+
 
     public interface TitleModes {
         String FILE_NAME = "Filename";
@@ -23,9 +29,12 @@ public class ShowImage extends Module {
 
     }
 
-    public ShowImage() {
+    public ShowImage(ModuleCollection modules) {
+        super(modules);
+
         // This module likely wants to have this enabled (otherwise it does nothing)
         showOutput = true;
+
     }
 
     @Override
@@ -49,6 +58,7 @@ public class ShowImage extends Module {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
         String titleMode = parameters.getValue(TITLE_MODE);
+        boolean normalisation = parameters.getValue(QUICK_NORMALISATION);
 
         String title = "";
         switch (titleMode) {
@@ -63,7 +73,7 @@ public class ShowImage extends Module {
                 break;
         }
 
-        if (showOutput) image.showImage(title);
+        if (showOutput) image.showImage(title,null,normalisation);
 
         return true;
 
@@ -73,6 +83,7 @@ public class ShowImage extends Module {
     protected void initialiseParameters() {
         parameters.add(new InputImageP(DISPLAY_IMAGE, this));
         parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL));
+        parameters.add(new BooleanP(QUICK_NORMALISATION,this,true));
 
     }
 
@@ -87,8 +98,8 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -97,7 +108,7 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

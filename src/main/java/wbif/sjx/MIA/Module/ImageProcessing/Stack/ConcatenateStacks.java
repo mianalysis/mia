@@ -19,6 +19,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -32,6 +35,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     public static final String CONCAT_SEPARATOR = "Stack concatenation";
     public static final String AXIS_MODE = "Axis mode";
+
+    public ConcatenateStacks(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface AxisModes {
@@ -61,7 +68,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    long getCombinedAxisLength(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
+    static <T extends RealType<T> & NativeType<T>> long getCombinedAxisLength(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
         long lengthIn1 = getAxisLength(img1,axis);
         long lengthIn2 = getAxisLength(img2,axis);
 
@@ -77,13 +84,13 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    long getAxisLength(ImgPlus<T> img, AxisType axis) {
+    static <T extends RealType<T> & NativeType<T>> long getAxisLength(ImgPlus<T> img, AxisType axis) {
         int idxIn = img.dimensionIndex(axis);
         return idxIn == -1 ? 1 : img.dimension(idxIn);
 
     }
 
-    void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg, long[] offset, long[] dims) {
+    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg, long[] offset, long[] dims) {
         int xIdxIn1 = sourceImg.dimensionIndex(Axes.X);
         int yIdxIn1 = sourceImg.dimensionIndex(Axes.Y);
         int cIdxIn1 = sourceImg.dimensionIndex(Axes.CHANNEL);
@@ -121,7 +128,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    public ImgPlus<T> concatenateImages(ImgPlus<T> img1, ImgPlus<T> img2, String axis) {
+    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> concatenateImages(ImgPlus<T> img1, ImgPlus<T> img2, String axis) {
         long[] dimsOutCombined = new long[5];
         long[] offsetOut1 = new long[5];
         long[] offsetOut2 = new long[5];
@@ -194,7 +201,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public Image<T> concatenateImages(Image<T>[] inputImages, String axis, String outputImageName) {
+    public static <T extends RealType<T> & NativeType<T>> Image<T> concatenateImages(Image<T>[] inputImages, String axis, String outputImageName) {
         // Processing first two images
         ImgPlus<T> imgOut = concatenateImages(inputImages[0].getImgPlus(),inputImages[1].getImgPlus(),axis);
 
@@ -216,7 +223,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public void convertToComposite(Image<T> image) {
+    public static void convertToComposite(Image image) {
         ImagePlus ipl = image.getImagePlus();
 
         ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite");
@@ -227,7 +234,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         image.setImagePlus(ipl);
 
         // Setting LUTs to make them more colourblind-friendly
-        LUT magentaLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.MAGNETA);
+        LUT magentaLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.MAGENTA);
         LUT greenLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.GREEN);
 
         SetLookupTable.setLUT(image,magentaLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,1);
@@ -306,8 +313,8 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -316,7 +323,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

@@ -7,6 +7,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.swing.*;
@@ -35,6 +38,10 @@ public class MergeTracks extends Module implements ActionListener {
 
     private ObjCollection trackObjects;
     private String spotObjectsName;
+
+    public MergeTracks(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     private void showOptionsPanel() {
@@ -226,8 +233,8 @@ public class MergeTracks extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -236,7 +243,7 @@ public class MergeTracks extends Module implements ActionListener {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

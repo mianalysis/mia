@@ -8,11 +8,11 @@ public class InputControlTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new InputControl().getTitle());
+        assertNotNull(new InputControl(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new InputControl().getHelp());
+        assertNotNull(new InputControl(null).getHelp());
     }
 }

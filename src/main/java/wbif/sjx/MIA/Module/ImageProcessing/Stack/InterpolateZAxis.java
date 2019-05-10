@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 23/03/2018.
@@ -15,6 +18,10 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 public class InterpolateZAxis extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public InterpolateZAxis(ModuleCollection modules) {
+        super(modules);
+    }
 
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
         // Calculating scaling
@@ -85,8 +92,8 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -95,7 +102,7 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

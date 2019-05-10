@@ -10,6 +10,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,6 +29,10 @@ public class ExtendedMinima extends Module {
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public ExtendedMinima(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface Connectivity {
@@ -186,8 +193,8 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -196,7 +203,7 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

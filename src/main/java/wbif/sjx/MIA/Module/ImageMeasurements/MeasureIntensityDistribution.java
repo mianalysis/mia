@@ -20,6 +20,10 @@ import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityPr
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -51,6 +55,10 @@ public class MeasureIntensityDistribution extends Module {
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
+
+    public MeasureIntensityDistribution(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface MeasurementTypes {
@@ -220,7 +228,7 @@ public class MeasureIntensityDistribution extends Module {
                 BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1);
                 distIpl = DistanceMap.getDistanceMap(distIpl,true);
 
-                new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
+                ImageCalculator.process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
 
                 break;
 
@@ -612,65 +620,66 @@ public class MeasureIntensityDistribution extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
-                MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+                MeasurementRef reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
-                reference = imageMeasurementRefs.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name,type);
                 reference.setImageObjName(inputImageName);
-                reference.setCalculated(true);
+                reference.setAvailable(true);
 
                 break;
         }
@@ -680,8 +689,8 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -690,7 +699,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -22,7 +22,7 @@ public class RemoveObjectsFromWorkspaceMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        RemoveObjects removeObjects = new RemoveObjects();
+        RemoveObjects removeObjects = new RemoveObjects(workspace.getAnalysis().getModules());
 
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,objects[0]);
         removeObjects.updateParameterValue(RemoveObjects.RETAIN_MEASUREMENTS,(double) objects[1] == 1);

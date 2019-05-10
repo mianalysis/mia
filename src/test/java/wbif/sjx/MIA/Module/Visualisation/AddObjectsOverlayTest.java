@@ -77,7 +77,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
         // Tracking objects
         // FOR FINAL TEST DON'T RELY ON ANOTHER MODULE
-        TrackObjects trackObjectsModule = (TrackObjects) new TrackObjects()
+        TrackObjects trackObjectsModule = (TrackObjects) new TrackObjects(null)
                 .updateParameterValue(TrackObjects.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(TrackObjects.TRACK_OBJECTS,trackObjectsName)
                 .updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID)
@@ -95,7 +95,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
 
 
-        AddObjectsOverlay addObjectsOverlay = (AddObjectsOverlay) new AddObjectsOverlay()
+        AddObjectsOverlay addObjectsOverlay = (AddObjectsOverlay) new AddObjectsOverlay(null)
                 .updateParameterValue(AddObjectsOverlay.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(AddObjectsOverlay.SPOT_OBJECTS,trackObjectsName)
                 .updateParameterValue(AddObjectsOverlay.INPUT_IMAGE,imageName)
@@ -120,11 +120,11 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
     @Test
     public void testGetTitle() {
-        assertNotNull(new AddObjectsOverlay().getTitle());
+        assertNotNull(new AddObjectsOverlay(null).getTitle());
     }
 
     @Test
     public void testGetHelp() {
-        assertNotNull(new AddObjectsOverlay().getHelp());
+        assertNotNull(new AddObjectsOverlay(null).getHelp());
     }
 }

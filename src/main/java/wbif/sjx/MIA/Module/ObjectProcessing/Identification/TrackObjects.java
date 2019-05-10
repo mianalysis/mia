@@ -12,6 +12,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
@@ -52,6 +56,10 @@ public class TrackObjects extends Module {
     public static final String ORIENTATION_SEPARATOR = "Orientation calculation";
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
     public static final String ORIENTATION_MODE = "Orientation mode";
+
+    public TrackObjects(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface LinkingMethods {
@@ -679,29 +687,30 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
-        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
-        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
-        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
-        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
-        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
+        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID,type);
+        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID,type);
+        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION,type);
+        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX,type);
+        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX,type);
+        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX,type);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
 
-        trackPrevID.setCalculated(true);
-        trackNextID.setCalculated(true);
+        trackPrevID.setAvailable(true);
+        trackNextID.setAvailable(true);
 
         if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
-            angleMeasurement.setCalculated(true);
-            leadingXPx.setCalculated(true);
-            leadingYPx.setCalculated(true);
-            leadingZPx.setCalculated(true);
+            angleMeasurement.setAvailable(true);
+            leadingXPx.setAvailable(true);
+            leadingYPx.setAvailable(true);
+            leadingZPx.setAvailable(true);
 
             angleMeasurement.setImageObjName(inputObjectsName);
             leadingXPx.setImageObjName(inputObjectsName);
@@ -709,10 +718,10 @@ public class TrackObjects extends Module {
             leadingZPx.setImageObjName(inputObjectsName);
 
         } else {
-            angleMeasurement.setCalculated(false);
-            leadingXPx.setCalculated(false);
-            leadingYPx.setCalculated(false);
-            leadingZPx.setCalculated(false);
+            angleMeasurement.setAvailable(false);
+            leadingXPx.setAvailable(false);
+            leadingYPx.setAvailable(false);
+            leadingZPx.setAvailable(false);
         }
 
         return objectMeasurementRefs;
@@ -725,15 +734,13 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
-
+    public RelationshipRefCollection updateAndGetRelationships() {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationships.addRelationship(trackObjectsName,inputObjectsName);
+        relationshipRefs.getOrPut(trackObjectsName,inputObjectsName);
 
-        return relationships;
+        return relationshipRefs;
 
     }
 

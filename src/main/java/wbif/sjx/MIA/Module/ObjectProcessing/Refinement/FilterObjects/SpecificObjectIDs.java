@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.annotation.Nullable;
@@ -32,6 +33,10 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     private JTextField numbersField;
     private int elementHeight = 30;
     private boolean active = false;
+
+    public SpecificObjectIDs(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface FilterMethods {
         String WITH_MEASUREMENT = "Remove objects with measurement";
@@ -235,8 +240,8 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -247,9 +252,8 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
@@ -261,8 +265,6 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        MetadataRefCollection metadataReferences = new MetadataRefCollection();
-
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -271,15 +273,15 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
 
             String metadataName = getFullName(inputObjectsName,filterMethod,measName);
 
-            metadataReferences.add(new MetadataReference(metadataName));
+            metadataRefs.getOrPut(metadataName).setAvailable(true);
 
         }
 
-        return metadataReferences;
+        return metadataRefs;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

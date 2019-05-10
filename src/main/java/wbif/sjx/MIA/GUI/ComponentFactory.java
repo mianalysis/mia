@@ -6,11 +6,11 @@ import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -405,10 +405,10 @@ public class ComponentFactory {
         }
     }
 
-    private JPanel createMeasurementExportLabels() {
-        ParameterCollection outputParamters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
-        BooleanP exportIndividual = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        BooleanP exportSummary = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_SUMMARY);
+    private JPanel createSummaryExportLabels(boolean includeSummary) {
+        ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
+        BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setPreferredSize(new Dimension(200,25));
@@ -418,6 +418,7 @@ public class ComponentFactory {
         c.gridy = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.WEST;
 
         JLabel exportLabel = new JLabel("Ind");
         exportLabel.setPreferredSize(new Dimension(40,25));
@@ -426,49 +427,51 @@ public class ComponentFactory {
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
-        exportLabel = new JLabel("Mean");
-        exportLabel.setPreferredSize(new Dimension(40,25));
-        exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary.isSelected());
-        c.gridx++;
-        labelPanel.add(exportLabel, c);
+        if (includeSummary) {
+            exportLabel = new JLabel("Mean");
+            exportLabel.setPreferredSize(new Dimension(40, 25));
+            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setEnabled(exportSummary.isSelected());
+            c.gridx++;
+            labelPanel.add(exportLabel, c);
 
-        exportLabel = new JLabel("Min");
-        exportLabel.setPreferredSize(new Dimension(40,25));
-        exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary.isSelected());
-        c.gridx++;
-        labelPanel.add(exportLabel, c);
+            exportLabel = new JLabel("Min");
+            exportLabel.setPreferredSize(new Dimension(40, 25));
+            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setEnabled(exportSummary.isSelected());
+            c.gridx++;
+            labelPanel.add(exportLabel, c);
 
-        exportLabel = new JLabel("Max");
-        exportLabel.setPreferredSize(new Dimension(40,25));
-        exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary.isSelected());
-        c.gridx++;
-        labelPanel.add(exportLabel, c);
+            exportLabel = new JLabel("Max");
+            exportLabel.setPreferredSize(new Dimension(40, 25));
+            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setEnabled(exportSummary.isSelected());
+            c.gridx++;
+            labelPanel.add(exportLabel, c);
 
-        exportLabel = new JLabel("Sum");
-        exportLabel.setPreferredSize(new Dimension(40,25));
-        exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary.isSelected());
-        c.gridx++;
-        labelPanel.add(exportLabel, c);
+            exportLabel = new JLabel("Sum");
+            exportLabel.setPreferredSize(new Dimension(40, 25));
+            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setEnabled(exportSummary.isSelected());
+            c.gridx++;
+            labelPanel.add(exportLabel, c);
 
-        exportLabel = new JLabel("Std");
-        exportLabel.setPreferredSize(new Dimension(40,25));
-        exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary.isSelected());
-        c.gridx++;
-        labelPanel.add(exportLabel, c);
+            exportLabel = new JLabel("Std");
+            exportLabel.setPreferredSize(new Dimension(40, 25));
+            exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            exportLabel.setEnabled(exportSummary.isSelected());
+            c.gridx++;
+            labelPanel.add(exportLabel, c);
+        }
 
         return labelPanel;
 
     }
 
-    private JPanel createMeasurementExportControls(MeasurementRef measurement, MeasurementExportCheck.Type type) {
-        ParameterCollection outputParamters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
-        BooleanP exportIndividual = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        BooleanP exportSummary = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_SUMMARY);
+    private JPanel createExportControls(ExportableRef ref, ExportCheck.Type type, boolean includeSummary) {
+        ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
+        BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200,25));
@@ -479,89 +482,91 @@ public class ComponentFactory {
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        MeasurementExportCheck.Statistic statistic = MeasurementExportCheck.Statistic.INDIVIDUAL;
-        MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-        exportCheck.setSelected(measurement.isExportIndividual());
+        ExportCheck.Statistic statistic = ExportCheck.Statistic.INDIVIDUAL;
+        ExportCheck exportCheck = new ExportCheck(ref,statistic,type);
+        exportCheck.setSelected(ref.isExportIndividual());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportIndividual.isSelected() && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportIndividual.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
-        statistic = MeasurementExportCheck.Statistic.MEAN;
-        exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-        exportCheck.setSelected(measurement.isExportMean());
-        exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
-        c.gridx++;
-        controlPanel.add(exportCheck, c);
+        if (includeSummary) {
+            statistic = ExportCheck.Statistic.MEAN;
+            exportCheck = new ExportCheck(ref, statistic, type);
+            exportCheck.setSelected(ref.isExportMean());
+            exportCheck.setPreferredSize(new Dimension(40, 25));
+            exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
+            c.gridx++;
+            controlPanel.add(exportCheck, c);
 
-        statistic = MeasurementExportCheck.Statistic.MIN;
-        exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-        exportCheck.setSelected(measurement.isExportMin());
-        exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
-        c.gridx++;
-        controlPanel.add(exportCheck, c);
+            statistic = ExportCheck.Statistic.MIN;
+            exportCheck = new ExportCheck(ref, statistic, type);
+            exportCheck.setSelected(ref.isExportMin());
+            exportCheck.setPreferredSize(new Dimension(40, 25));
+            exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
+            c.gridx++;
+            controlPanel.add(exportCheck, c);
 
-        statistic = MeasurementExportCheck.Statistic.MAX;
-        exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-        exportCheck.setSelected(measurement.isExportMax());
-        exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
-        c.gridx++;
-        controlPanel.add(exportCheck, c);
+            statistic = ExportCheck.Statistic.MAX;
+            exportCheck = new ExportCheck(ref, statistic, type);
+            exportCheck.setSelected(ref.isExportMax());
+            exportCheck.setPreferredSize(new Dimension(40, 25));
+            exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
+            c.gridx++;
+            controlPanel.add(exportCheck, c);
 
-        statistic = MeasurementExportCheck.Statistic.SUM;
-        exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-        exportCheck.setSelected(measurement.isExportSum());
-        exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
-        c.gridx++;
-        controlPanel.add(exportCheck, c);
+            statistic = ExportCheck.Statistic.SUM;
+            exportCheck = new ExportCheck(ref, statistic, type);
+            exportCheck.setSelected(ref.isExportSum());
+            exportCheck.setPreferredSize(new Dimension(40, 25));
+            exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
+            c.gridx++;
+            controlPanel.add(exportCheck, c);
 
-        statistic = MeasurementExportCheck.Statistic.STD;
-        exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-        exportCheck.setSelected(measurement.isExportStd());
-        exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
-        c.gridx++;
-        controlPanel.add(exportCheck, c);
+            statistic = ExportCheck.Statistic.STD;
+            exportCheck = new ExportCheck(ref, statistic, type);
+            exportCheck.setSelected(ref.isExportStd());
+            exportCheck.setPreferredSize(new Dimension(40, 25));
+            exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
+            c.gridx++;
+            controlPanel.add(exportCheck, c);
+        }
 
         return controlPanel;
 
     }
 
-    public JPanel createGlobalMeasurementControl(MeasurementRef measurement) {
-        JPanel measurementPanel = new JPanel(new GridBagLayout());
+//    public JPanel createGlobalExportControl(ExportableRef ref) {
+//        JPanel summaryPanel = new JPanel(new GridBagLayout());
+//
+//        GridBagConstraints c = new GridBagConstraints();
+//        c.gridx = 0;
+//        c.gridy = 0;
+//        c.anchor = GridBagConstraints.EAST;
+//        c.fill = GridBagConstraints.HORIZONTAL;
+//        c.insets = new Insets(5,5,0,0);
+//
+//        JSeparator separator= new JSeparator();
+//        separator.setOrientation(JSeparator.HORIZONTAL);
+//        separator.setPreferredSize(new Dimension(elementHeight,-1));
+//        c.weightx = 1;
+//        summaryPanel.add(separator,c);
+//
+//        JPanel controlPanel = createExportControls(ref,ExportCheck.Type.ALL);
+//        c.weightx = 0;
+//        c.gridx++;
+//        summaryPanel.add(controlPanel,c);
+//
+//        separator= new JSeparator();
+//        separator.setOrientation(JSeparator.HORIZONTAL);
+//        separator.setPreferredSize(new Dimension(elementHeight,-1));
+//        c.gridx++;
+//        summaryPanel.add(separator,c);
+//
+//        return summaryPanel;
+//    }
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.anchor = GridBagConstraints.EAST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5,5,0,0);
-
-        JSeparator separator= new JSeparator();
-        separator.setOrientation(JSeparator.HORIZONTAL);
-        separator.setPreferredSize(new Dimension(elementHeight,-1));
-        c.weightx = 1;
-        measurementPanel.add(separator,c);
-
-        JPanel controlPanel = createMeasurementExportControls(measurement,MeasurementExportCheck.Type.ALL_MEASUREMENTS);
-        c.weightx = 0;
-        c.gridx++;
-        measurementPanel.add(controlPanel,c);
-
-        separator= new JSeparator();
-        separator.setOrientation(JSeparator.HORIZONTAL);
-        separator.setPreferredSize(new Dimension(elementHeight,-1));
-        c.gridx++;
-        measurementPanel.add(separator,c);
-
-        return measurementPanel;
-    }
-
-    public JPanel createMeasurementHeader(String name, MeasurementRefCollection measurementReferences) {
+    public JPanel createRefExportHeader(String name, RefCollection<? extends ExportableRef> refs, boolean includeSummary) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -572,12 +577,12 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        if (measurementReferences != null) {
-            EnableMeasurementsButton enableButton = new EnableMeasurementsButton(measurementReferences);
+        if (refs != null) {
+            EnableRefsButton enableButton = new EnableRefsButton(refs);
             enableButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
             headerPanel.add(enableButton, c);
 
-            DisableMeasurementsButton disableButton = new DisableMeasurementsButton(measurementReferences);
+            DisableRefsButton disableButton = new DisableRefsButton(refs);
             disableButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
             c.gridx++;
             headerPanel.add(disableButton, c);
@@ -594,7 +599,7 @@ public class ComponentFactory {
         c.weightx = 1;
         headerPanel.add(headerName, c);
 
-        JPanel labelPanel = createMeasurementExportLabels();
+        JPanel labelPanel = createSummaryExportLabels(includeSummary);
         c.gridx++;
         c.weightx = 0;
         headerPanel.add(labelPanel,c);
@@ -610,7 +615,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createMeasurementControl(MeasurementRef measurement) {
+    public JPanel createSingleRefControl(ExportableRef ref, boolean includeSummary) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -620,32 +625,33 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
-        MeasurementEnabledButton enabledButton = new MeasurementEnabledButton(measurement);
+        ExportEnableButton enabledButton = new ExportEnableButton(ref);
         enabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         measurementPanel.add(enabledButton, c);
 
-        MeasurementName measurementName = new MeasurementName(measurement);
-        measurementName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        measurementName.setPreferredSize(new Dimension(-1, elementHeight));
-        measurementName.setEditable(true);
-        measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");
-        measurementName.setEnabled(measurement.isExportGlobal());
+        ExportName exportName = new ExportName(ref);
+        exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        exportName.setPreferredSize(new Dimension(-1, elementHeight));
+        exportName.setEditable(true);
+        exportName.setToolTipText("<html><p width=\"500\">" +ref.getDescription()+"</p></html>");
+        exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
-        measurementPanel.add(measurementName, c);
+        measurementPanel.add(exportName, c);
 
-        JPanel controlPanel = createMeasurementExportControls(measurement,MeasurementExportCheck.Type.SINGLE_MEASUREMENT);
+        JPanel controlPanel = createExportControls(ref,ExportCheck.Type.SINGLE,includeSummary);
         c.weightx = 0;
         c.gridx++;
         measurementPanel.add(controlPanel,c);
 
-        ResetMeasurement resetMeasurement = new ResetMeasurement(measurement);
-        resetMeasurement.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        resetMeasurement.setEnabled(measurement.isExportGlobal());
+        ResetExport resetExport = new ResetExport(ref);
+        resetExport.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        resetExport.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
-        measurementPanel.add(resetMeasurement,c);
+        c.insets = new Insets(5,5,0,5);
+        measurementPanel.add(resetExport,c);
 
         return measurementPanel;
 

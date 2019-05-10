@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 19/09/2017.
@@ -22,6 +25,10 @@ public class ImageCalculator extends Module {
     public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_METHOD = "Calculation method";
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
+
+    public ImageCalculator(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface OverwriteModes {
         String CREATE_NEW = "Create new image";
@@ -43,7 +50,7 @@ public class ImageCalculator extends Module {
 
     }
 
-    private void removeNaNs(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2) {
+    private static void removeNaNs(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2) {
         int width = inputImagePlus1.getWidth();
         int height = inputImagePlus1.getHeight();
         int nChannels = inputImagePlus1.getNChannels();
@@ -75,7 +82,7 @@ public class ImageCalculator extends Module {
         }
     }
 
-    public ImagePlus process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
+    public static ImagePlus process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
                         String overwriteMode, boolean output32Bit, boolean setNaNToZero) {
         // If applying to a new image, the input image is duplicated
         switch (overwriteMode) {
@@ -116,8 +123,6 @@ public class ImageCalculator extends Module {
         for (int z = 1; z <= nSlices; z++) {
             for (int c = 1; c <= nChannels; c++) {
                 for (int t = 1; t <= nFrames; t++) {
-                    writeMessage("Processing "+(++count)+" of "+nImages+" images");
-
                     inputImagePlus1.setPosition(c,z,t);
                     ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
 
@@ -292,8 +297,8 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -302,7 +307,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

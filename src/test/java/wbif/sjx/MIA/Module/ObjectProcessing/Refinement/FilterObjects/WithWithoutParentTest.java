@@ -12,12 +12,12 @@ import static org.junit.Assert.*;
 public class WithWithoutParentTest extends ModuleTest {
     @Override
     public void testGetTitle() {
-        assertNotNull(new WithWithoutParent().getTitle());
+        assertNotNull(new WithWithoutParent(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new WithWithoutParent().getHelp());
+        assertNotNull(new WithWithoutParent(null).getHelp());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.DO_NOTHING);
@@ -112,7 +112,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.MOVE_FILTERED);
@@ -168,7 +168,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.REMOVE_FILTERED);
@@ -219,7 +219,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITHOUT_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.DO_NOTHING);
@@ -272,7 +272,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITHOUT_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.MOVE_FILTERED);
@@ -327,7 +327,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITHOUT_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.REMOVE_FILTERED);
@@ -374,7 +374,7 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent();
+        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
         withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
         withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
         withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");

@@ -7,6 +7,9 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 30/06/2017.
@@ -16,6 +19,10 @@ public class RemoveImage extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String REMOVAL_CONTROLS = "Image removal controls";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
+
+    public RemoveImage(ModuleCollection modules) {
+        super(modules);
+    }
 
     @Override
     public String getTitle() {
@@ -67,8 +74,8 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -77,7 +84,7 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

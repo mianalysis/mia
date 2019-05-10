@@ -15,11 +15,13 @@ import ome.xml.meta.IMetadata;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
+import wbif.sjx.common.Object.HCMetadata;
 
 import java.awt.*;
 import java.io.File;
@@ -42,6 +44,10 @@ public class InputControl extends Module {
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
     public static final String NO_LOAD_MESSAGE = "No load message";
+
+    public InputControl(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public static interface InputModes {
@@ -269,10 +275,10 @@ public class InputControl extends Module {
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
 
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.FILENAME,FilterSources.ALL,"Type of filter to add."));
+        collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.EXTENSION,FilterSources.ALL,"Type of filter to add."));
         collection.add(new StringP(FILTER_VALUE,this,"","Value to filter filenames against."));
         collection.add(new ChoiceP(FILTER_TYPE,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL,"Control how the present filter operates.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source (e.g. filename or extension).  \"Matches completely (include)\" will process an image if the filter value is exactly the same as the source.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source.  \"Matches completely (exclude)\" will not process an image if the filter value is exactly the same as the source."));
-        parameters.add(new ParameterGroup(ADD_FILTER,this,collection,"Add another filename filter.  All images to be processed will pass all filters."));
+        parameters.add(new ParameterGroup(ADD_FILTER,this,collection,1,"Add another filename filter.  All images to be processed will pass all filters."));
 
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 
@@ -311,17 +317,23 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        return null;
+        metadataRefs.getOrPut(HCMetadata.FILE).setAvailable(true);
+        metadataRefs.getOrPut(HCMetadata.FILENAME).setAvailable(true);
+        metadataRefs.getOrPut(HCMetadata.SERIES_NUMBER).setAvailable(true);
+        metadataRefs.getOrPut(HCMetadata.SERIES_NAME).setAvailable(true);
+
+        return metadataRefs;
+
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

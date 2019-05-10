@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Point;
 
 import java.util.Iterator;
@@ -34,6 +38,10 @@ public class RelateObjects extends Module {
     public final static String OUTPUT_SEPARATOR = "Object output";
     public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
     public static final String RELATED_OBJECTS = "Output overlapping objects";
+
+    public RelateObjects(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface RelateModes {
@@ -609,57 +617,58 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         if (parentObjectName == null || childObjectsName == null) return objectMeasurementRefs;
 
         String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
-        MeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName,type);
         distSurfPx.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName+"\" object.  Negative values indicate this object is inside the relevant \""
                 +parentObjectName+"\" object. Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjectName);
-        MeasurementRef distSurfCal = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distSurfCal = objectMeasurementRefs.getOrPut(measurementName,type);
         distSurfCal.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName+"\" object.  Negative values indicate this object is inside the relevant \""
                 +parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjectName);
-        MeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName,type);
         distCentPx.setDescription("Distance between the centroid of this object and that of the closest \""
                 + parentObjectName+"\"object.  Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjectName);
-        MeasurementRef distCentCal = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distCentCal = objectMeasurementRefs.getOrPut(measurementName,type);
         distCentCal.setDescription("Distance between the centroid of this object and that of the closest \""
                 + parentObjectName+"\"object.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_PX,parentObjectName);
-        MeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName,type);
         distCentSurfPx.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Negative values indicate this object is inside the " +
                 "relevant \""+parentObjectName+"\" object. Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL,parentObjectName);
-        MeasurementRef distCentSurfCal = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distCentSurfCal = objectMeasurementRefs.getOrPut(measurementName,type);
         distCentSurfCal.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Negative values indicate this object is inside the " +
                 "relevant \""+parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                 "units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC,parentObjectName);
-        MeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName,type);
         distCentSurfFrac.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Calculated as a fraction of the furthest possible distance " +
                 "to the \""+parentObjectName+"\" surface.");
 
         measurementName = getFullName(Measurements.OVERLAP_PC,parentObjectName);
-        MeasurementRef overlapPercentage  = objectMeasurementRefs.getOrPut(measurementName);
+        MeasurementRef overlapPercentage  = objectMeasurementRefs.getOrPut(measurementName,type);
         overlapPercentage.setDescription("Percentage of pixels that overlap with the \""+ parentObjectName+"\" object "+
                 "with which it has the largest overlap.");
 
@@ -672,41 +681,41 @@ public class RelateObjects extends Module {
         distCentSurfFrac.setImageObjName(childObjectsName);
         overlapPercentage.setImageObjName(childObjectsName);
 
-        distCentPx.setCalculated(false);
-        distCentCal.setCalculated(false);
-        distSurfPx.setCalculated(false);
-        distSurfCal.setCalculated(false);
-        distCentSurfPx.setCalculated(false);
-        distCentSurfCal.setCalculated(false);
-        distCentSurfFrac.setCalculated(false);
-        overlapPercentage.setCalculated(false);
+        distCentPx.setAvailable(false);
+        distCentCal.setAvailable(false);
+        distSurfPx.setAvailable(false);
+        distSurfCal.setAvailable(false);
+        distCentSurfPx.setAvailable(false);
+        distCentSurfCal.setAvailable(false);
+        distCentSurfFrac.setAvailable(false);
+        overlapPercentage.setAvailable(false);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
                     case ReferencePoints.CENTROID:
-                        distCentPx.setCalculated(true);
-                        distCentCal.setCalculated(true);
+                        distCentPx.setAvailable(true);
+                        distCentCal.setAvailable(true);
                         break;
 
                     case ReferencePoints.SURFACE:
-                        distSurfPx.setCalculated(true);
-                        distSurfCal.setCalculated(true);
+                        distSurfPx.setAvailable(true);
+                        distSurfCal.setAvailable(true);
                         break;
 
                     case ReferencePoints.CENTROID_TO_SURFACE:
-                        distCentSurfPx.setCalculated(true);
-                        distCentSurfCal.setCalculated(true);
+                        distCentSurfPx.setAvailable(true);
+                        distCentSurfCal.setAvailable(true);
 
                         if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
-                            distCentSurfFrac.setCalculated(true);
+                            distCentSurfFrac.setAvailable(true);
                         }
                         break;
                 }
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                overlapPercentage.setCalculated(true);
+                overlapPercentage.setAvailable(true);
                 break;
         }
 
@@ -720,12 +729,10 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        relationshipRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
 
-        relationships.addRelationship(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
-
-        return relationships;
+        return relationshipRefs;
 
     }
 

@@ -11,6 +11,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.io.File;
 
@@ -25,6 +28,10 @@ public class WekaProbabilityMaps extends Module {
     public static final String OUTPUT_CLASS = "Output class";
     public static final String CLASSIFIER_FILE = "Classifier file path";
     public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
+
+    public WekaProbabilityMaps(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface OutputBitDepths {
@@ -217,8 +224,8 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -227,7 +234,7 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

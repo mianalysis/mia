@@ -14,11 +14,18 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class DistanceMap extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
+
+    public DistanceMap(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public static ImagePlus getDistanceMap(ImagePlus ipl, boolean matchZToXY) {
@@ -107,8 +114,8 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -117,7 +124,7 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

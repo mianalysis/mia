@@ -1,18 +1,16 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import javax.annotation.Nullable;import ij.ImagePlus;
+import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import ij.process.ImageProcessor;
-import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.common.Object.Point;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.awt.*;
 
 /**
  * Created by sc13967 on 10/08/2017.
@@ -28,6 +26,10 @@ public class SetDisplayRange extends Module {
     public static final String CLIP_FRACTION = "Clipping fraction";
     public static final String MIN_RANGE = "Minimum range value";
     public static final String MAX_RANGE = "Maximum range value";
+
+    public SetDisplayRange(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface CalculationModes {
@@ -129,10 +131,10 @@ public class SetDisplayRange extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage(outputImageName,LUT.createLutFromColor(Color.WHITE),false);
+            if (showOutput) outputImage.showImage(outputImageName,null,false);
 
         } else {
-            if (showOutput) inputImage.showImage(inputImageName,LUT.createLutFromColor(Color.WHITE),false);
+            if (showOutput) inputImage.showImage(inputImageName,null,false);
 
         }
 
@@ -191,8 +193,8 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -201,7 +203,7 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

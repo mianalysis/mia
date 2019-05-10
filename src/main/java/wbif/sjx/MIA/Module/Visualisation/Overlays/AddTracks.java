@@ -12,6 +12,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.awt.*;
@@ -43,6 +46,10 @@ public class AddTracks extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private ColourServer colourServer;
+
+    public AddTracks(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
@@ -236,8 +243,8 @@ public class AddTracks extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -246,7 +253,7 @@ public class AddTracks extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

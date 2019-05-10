@@ -22,7 +22,7 @@ public class MeasureObjectOverlapMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap();
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(workspace.getAnalysis().getModules());
 
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objects[0]);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objects[1]);
