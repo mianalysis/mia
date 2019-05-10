@@ -327,7 +327,7 @@ public class AnalysisReader {
                     measurementReference = module.getImageMeasurementRef(measurementName);
                     break;
 
-                case "OBJECT":
+                case "OBJECTS":
                     measurementReference = module.getObjectMeasurementRef(measurementName);
                     break;
             }

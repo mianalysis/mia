@@ -99,39 +99,25 @@ public class ParametersPanel extends JScrollPane {
 
         // If selected, adding the measurement selector for output control
         if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled()) {
-            // Creating global controls for the different statistics
-            JPanel measurementHeader = componentFactory.createSummaryHeader("Global control",null);
-            c.gridx = 0;
-            c.gridy++;
-            c.gridwidth = 2;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.WEST;
-            panel.add(measurementHeader,c);
+            MetadataRefCollection metadataRefs = modules.getMetadataRefs();
+            addRefExportControls(metadataRefs,"Metadata",componentFactory,c,false);
 
-            JPanel currentMeasurementPanel = componentFactory.createGlobalExportControl(globalMeasurementRef);
-            c.gridy++;
-            c.anchor = GridBagConstraints.EAST;
-            panel.add(currentMeasurementPanel,c);
-
-            LinkedHashSet<OutputImageP> imageNameParameters = module.getParametersMatchingType(OutputImageP.class);
+            LinkedHashSet<OutputImageP> imageNameParameters = modules.getParametersMatchingType(OutputImageP.class);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
                 MeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName);
-                addSummaryControls(measurementReferences,imageName+" (Image)",componentFactory,c);
+                addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c,false);
             }
 
-            LinkedHashSet<OutputObjectsP> objectNameParameters = module.getParametersMatchingType(OutputObjectsP.class);
+            LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getParametersMatchingType(OutputObjectsP.class);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
                 MeasurementRefCollection measurementReferences = modules.getObjectMeasurementRefs(objectName);
-                addSummaryControls(measurementReferences,objectName+" (Object)",componentFactory,c);
+                addRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c,true);
             }
 
-            MetadataRefCollection metadataRefs = modules.getMetadataRefs();
-            addSummaryControls(metadataRefs,"Metadata",componentFactory,c);
-
             RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
-            addSummaryControls(relationshipRefs,"Number of children",componentFactory,c);
+            addRefExportControls(relationshipRefs,"Number of children",componentFactory,c,true);
 
         }
 
@@ -153,10 +139,10 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
-    void addSummaryControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
+    void addRefExportControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c, boolean includeSummary) {
         if (refs.size() == 0) return;
 
-        JPanel  measurementHeader = componentFactory.createSummaryHeader(header,refs);
+        JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,includeSummary);
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.WEST;
@@ -167,7 +153,7 @@ public class ParametersPanel extends JScrollPane {
             if (!measurementReference.isAvailable()) continue;
 
             // Adding measurement control
-            JPanel currentMeasurementPanel = componentFactory.createSingleSummaryControl(measurementReference);
+            JPanel currentMeasurementPanel = componentFactory.createSingleRefControl(measurementReference,includeSummary);
             c.gridy++;
             c.anchor = GridBagConstraints.EAST;
             panel.add(currentMeasurementPanel,c);

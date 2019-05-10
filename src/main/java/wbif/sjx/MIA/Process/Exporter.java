@@ -51,7 +51,6 @@ public class Exporter {
     private SummaryMode summaryMode = SummaryMode.PER_FILE;
     private String metadataItemForSummary = null;
     private boolean exportIndividualObjects = true;
-    private boolean addMetadataToObjects = true;
     private AppendDateTimeMode appendDateTimeMode = AppendDateTimeMode.NEVER;
 
 
@@ -714,8 +713,7 @@ public class Exporter {
         // measurements in the correct columns
         LinkedHashMap<String, LinkedHashMap<Integer,String>> measurementNames = new LinkedHashMap<>();
 
-        // Metadata names should be the same for all objects
-        String[] metadataNames = null;
+        LinkedHashMap<Integer, String> metadataNames = new LinkedHashMap<>();
 
         // Using the first workspace in the WorkspaceCollection to initialise column headers
         LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null,true);
@@ -739,17 +737,19 @@ public class Exporter {
                     "images";
             addComment(objectIDHeaderCell,text);
 
-            // Adding metadata headers (if enabled)
-            if (addMetadataToObjects) {
-                // Running through all the metadata values, adding them as new columns
-                MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
-                for (MetadataRef ref : metadataRefs.values()) {
-                    if (!ref.isExportGlobal()) continue;
-                    if (!ref.isExportIndividual()) continue;
+            // Adding timepoint header
+            Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
+            timepointHeaderCell.setCellValue("TIMEPOINT");
 
-                    Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                    metaHeaderCell.setCellValue(getMetadataString(ref.getName()));
-                }
+            // Running through all the metadata values, adding them as new columns
+            MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
+            for (MetadataRef ref : metadataRefs.values()) {
+                if (!ref.isExportGlobal()) continue;
+                if (!ref.isExportIndividual()) continue;
+
+                metadataNames.put(col,ref.getName());
+                Cell metaHeaderCell = objectHeaderRow.createCell(col++);
+                metaHeaderCell.setCellValue(getMetadataString(ref.getName()));
             }
 
             // Adding parent IDs
@@ -776,10 +776,6 @@ public class Exporter {
 
                 }
             }
-
-            // Adding timepoint header
-            Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
-            timepointHeaderCell.setCellValue("TIMEPOINT");
 
             MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
 
@@ -817,13 +813,14 @@ public class Exporter {
                         Cell objectIDValueCell = objectValueRow.createCell(col++);
                         objectIDValueCell.setCellValue(object.getID());
 
+                        Cell timepointValueCell = objectValueRow.createCell(col++);
+                        timepointValueCell.setCellValue(object.getT());
+
                         // Adding metadata (if enabled)
-                        if (addMetadataToObjects && metadataNames != null) {
-                            HCMetadata metadata = workspace.getMetadata();
-                            for (String name : metadataNames) {
-                                Cell metaValueCell = objectValueRow.createCell(col++);
-                                metaValueCell.setCellValue(metadata.getAsString(name));
-                            }
+                        HCMetadata metadata = workspace.getMetadata();
+                        for (int column:metadataNames.keySet()) {
+                            Cell metaValueCell = objectValueRow.createCell(column);
+                            metaValueCell.setCellValue(metadata.getAsString(metadataNames.get(column)));
                         }
 
                         // Adding parents to the columns specified in parentNames
@@ -855,9 +852,6 @@ public class Exporter {
                                 col++;
                             }
                         }
-
-                        Cell timepointValueCell = objectValueRow.createCell(col++);
-                        timepointValueCell.setCellValue(object.getT());
 
                         if (measurementNames.get(objectName) == null) continue;
 

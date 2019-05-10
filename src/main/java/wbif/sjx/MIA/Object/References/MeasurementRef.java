@@ -37,7 +37,7 @@ public class MeasurementRef extends ExportableRef {
                 element.setAttribute("TYPE","IMAGE");
                 break;
             case OBJECT:
-                element.setAttribute("TYPE","OBJECT");
+                element.setAttribute("TYPE","OBJECTS");
                 break;
         }
     }

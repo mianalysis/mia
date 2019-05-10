@@ -484,7 +484,7 @@ public class BinaryOperations extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

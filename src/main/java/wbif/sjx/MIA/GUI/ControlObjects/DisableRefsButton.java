@@ -25,8 +25,8 @@ public class DisableRefsButton extends JButton implements ActionListener {
         setMargin(new Insets(0,0,0,0));
         setFocusPainted(false);
         setSelected(false);
-        setName("EnableAllMeasurements");
-        setToolTipText("Enable all measurements");
+        setName("DisableAllMeasurements");
+        setToolTipText("Disable all measurements");
         addActionListener(this);
         setIcon(icon);
 
