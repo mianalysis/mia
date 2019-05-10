@@ -21,12 +21,12 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new WekaProbabilityMaps().getTitle());
+        assertNotNull(new WekaProbabilityMaps(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new WekaProbabilityMaps().getHelp());
+        assertNotNull(new WekaProbabilityMaps(null).getHelp());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -87,7 +87,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -126,7 +126,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -165,7 +165,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -204,7 +204,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -243,7 +243,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -282,7 +282,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -321,7 +321,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -360,7 +360,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -400,7 +400,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -440,7 +440,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
@@ -479,7 +479,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(null);
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,"");

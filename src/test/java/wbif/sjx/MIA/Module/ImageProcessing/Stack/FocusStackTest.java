@@ -8,11 +8,11 @@ public class FocusStackTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new FocusStack().getTitle());
+        assertNotNull(new FocusStack(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FocusStack().getHelp());
+        assertNotNull(new FocusStack(null).getHelp());
     }
 }

@@ -11,6 +11,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.awt.*;
@@ -38,6 +41,43 @@ public class AddObjectCentroid extends Module {
 
     private ColourServer colourServer;
 
+    public AddObjectCentroid(ModuleCollection modules) {
+        super(modules);
+    }
+
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+        // Adding the overlay element
+        try {
+            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+            }
+
+            int nThreads = multithread ? Prefs.getThreads() : 1;
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object:inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
+
+                Runnable task = () -> {
+                    float hue = hues.get(object.getID());
+                    Color colour = ColourFactory.getColour(hue);
+
+                    addCentroidOverlay(object, finalIpl, colour, renderInAllFrames);
+
+                };
+                pool.submit(task);
+            }
+
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
 
     public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -106,38 +146,7 @@ public class AddObjectCentroid extends Module {
         // Generating colours for each object
         HashMap<Integer,Float> hues= colourServer.getHues(inputObjects);
 
-        // Adding the overlay element
-        try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
-
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
-
-            // Running through each object, adding it to the overlay along with an ID label
-            AtomicInteger count = new AtomicInteger();
-            for (Obj object:inputObjects.values()) {
-                ImagePlus finalIpl = ipl;
-
-                Runnable task = () -> {
-                    float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
-
-                    addCentroidOverlay(object, finalIpl, colour, renderInAllFrames);
-
-                    writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
-                };
-                pool.submit(task);
-            }
-
-            pool.shutdown();
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-        } catch (InterruptedException e) {
-            return false;
-        }
+        addOverlay(ipl,inputObjects,hues,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 
@@ -207,8 +216,8 @@ public class AddObjectCentroid extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -217,7 +226,7 @@ public class AddObjectCentroid extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

@@ -10,6 +10,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -38,6 +41,10 @@ public class ImageSaver extends Module {
     public static final String FORMAT_SEPARATOR = "Output image format";
     public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
+
+    public ImageSaver(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface SaveLocations {
@@ -185,7 +192,8 @@ public class ImageSaver extends Module {
                 return false;
             }
 
-            String outputSaveLocation = analysis.outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
+            OutputControl outputControl = analysis.getModules().getOutputControl();
+            String outputSaveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
             switch (outputSaveLocation) {
                 case OutputControl.SaveLocations.SAVE_WITH_INPUT:
                     saveLocation = SaveLocations.SAVE_WITH_INPUT;
@@ -193,7 +201,7 @@ public class ImageSaver extends Module {
 
                 case OutputControl.SaveLocations.SPECIFIC_LOCATION:
                     saveLocation = SaveLocations.SPECIFIC_LOCATION;
-                    filePath = analysis.outputControl.getParameterValue(SAVE_FILE_PATH);
+                    filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
                     break;
             }
         }
@@ -307,8 +315,8 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -317,7 +325,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

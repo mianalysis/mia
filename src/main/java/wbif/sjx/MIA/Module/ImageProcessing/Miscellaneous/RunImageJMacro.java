@@ -7,6 +7,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -17,6 +20,10 @@ public class RunImageJMacro extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MACRO_TITLE = "Macro title";
     public static final String ARGUMENTS = "Parameters";
+
+    public RunImageJMacro(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     @Override
@@ -99,8 +106,8 @@ public class RunImageJMacro extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -109,7 +116,7 @@ public class RunImageJMacro extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

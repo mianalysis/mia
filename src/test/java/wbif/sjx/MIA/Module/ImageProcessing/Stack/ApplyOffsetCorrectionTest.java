@@ -8,11 +8,11 @@ public class ApplyOffsetCorrectionTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ApplyOffsetCorrection<>().getTitle());
+        assertNotNull(new ApplyOffsetCorrection<>(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ApplyOffsetCorrection<>().getHelp());
+        assertNotNull(new ApplyOffsetCorrection<>(null).getHelp());
     }
 }

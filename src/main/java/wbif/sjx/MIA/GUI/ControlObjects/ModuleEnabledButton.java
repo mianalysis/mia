@@ -54,11 +54,11 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         // If this is a GUISeparator module, disable all modules after it, until the next separator
-        if (module.getClass().isInstance(new GUISeparator())) {
-            ModuleCollection modules = GUI.getModules();
+        ModuleCollection modules = GUI.getModules();
+        if (module.getClass().isInstance(new GUISeparator(modules))) {
             for (int i=idx+1;i<modules.size();i++) {
                 Module currentModule = modules.get(i);
-                if (currentModule.getClass().isInstance(new GUISeparator())) {
+                if (currentModule.getClass().isInstance(new GUISeparator(modules))) {
                     break;
                 } else {
                     currentModule.setEnabled(module.isEnabled());

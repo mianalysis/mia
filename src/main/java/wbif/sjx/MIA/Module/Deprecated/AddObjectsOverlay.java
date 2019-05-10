@@ -15,6 +15,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 
@@ -67,6 +70,10 @@ public class AddObjectsOverlay extends Module {
     public static final String LINE_WIDTH = "Line width";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public AddObjectsOverlay(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface OrientationModes {
@@ -350,7 +357,6 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
-                System.out.println(parentObjectsForColourName+"_"+measurementForColour);
                 return ColourFactory.getParentMeasurementValueHues(inputObjects,parentObjectsForColourName,measurementForColour,true);
         }
     }
@@ -952,8 +958,8 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -962,7 +968,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

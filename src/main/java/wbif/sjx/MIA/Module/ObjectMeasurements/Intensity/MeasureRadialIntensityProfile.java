@@ -10,6 +10,9 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
@@ -25,6 +28,10 @@ public class MeasureRadialIntensityProfile extends Module {
     public static final String RANGE_MODE = "Range mode";
     public static final String MIN_DISTANCE = "Minimum distance";
     public static final String MAX_DISTANCE = "Maximum distance";
+
+    public MeasureRadialIntensityProfile(ModuleCollection modules) {
+        super(modules);
+    }
 //    public static final String NORMALISE_DISTANCES = "Normalise distances to object size";
     //public static final String CALIBRATED_UNITS = "Calibrated units"; // To be added
 
@@ -241,8 +248,8 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -251,7 +258,7 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

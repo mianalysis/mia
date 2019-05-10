@@ -8,11 +8,11 @@ public class MeasureImageDimensionsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MeasureImageDimensions().getTitle());
+        assertNotNull(new MeasureImageDimensions(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureImageDimensions().getHelp());
+        assertNotNull(new MeasureImageDimensions(null).getHelp());
     }
 }

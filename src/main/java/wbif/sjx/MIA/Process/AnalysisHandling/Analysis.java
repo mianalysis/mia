@@ -18,8 +18,6 @@ import java.io.Serializable;
  */
 public class Analysis {
     public ModuleCollection modules = new ModuleCollection();
-    public InputControl inputControl = new InputControl();
-    public OutputControl outputControl = new OutputControl();
     private boolean shutdown = false;
     private String analysisFilename = "";
 
@@ -76,22 +74,6 @@ public class Analysis {
 
     }
 
-    public InputControl getInputControl() {
-        return inputControl;
-    }
-
-    public void setInputControl(InputControl inputControl) {
-        this.inputControl = inputControl;
-    }
-
-    public OutputControl getOutputControl() {
-        return outputControl;
-    }
-
-    public void setOutputControl(OutputControl outputControl) {
-        this.outputControl = outputControl;
-    }
-
     public ModuleCollection getModules() {
         return modules;
 
@@ -116,9 +98,6 @@ public class Analysis {
     }
 
     public boolean hasVisibleParameters() {
-        return (inputControl.hasVisibleParameters()
-                | outputControl.hasVisibleParameters()
-                | modules.hasVisibleParameters());
-
+        return (modules.hasVisibleParameters());
     }
 }

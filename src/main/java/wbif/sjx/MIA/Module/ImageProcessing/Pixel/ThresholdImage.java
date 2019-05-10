@@ -3,8 +3,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
@@ -14,8 +12,11 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -39,6 +40,10 @@ public class ThresholdImage extends Module {
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
+
+    public ThresholdImage(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface ThresholdTypes {
@@ -250,7 +255,6 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (!thresholdType.equals(ThresholdTypes.MANUAL) && inputImagePlus.getBitDepth() != 8) {
-            new ImageJ();
             ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
         }
 
@@ -403,17 +407,18 @@ public class ThresholdImage extends Module {
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
                 && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
             String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
+            MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-            MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
+            MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName,type);
             reference.setImageObjName(imageName);
-            reference.setCalculated(true);
+            reference.setAvailable(true);
 
         }
 
@@ -422,8 +427,8 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -432,7 +437,7 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

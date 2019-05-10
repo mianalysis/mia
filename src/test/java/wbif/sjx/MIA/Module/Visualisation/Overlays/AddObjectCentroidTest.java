@@ -11,11 +11,11 @@ public class AddObjectCentroidTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new AddObjectCentroid().getTitle());
+        assertNotNull(new AddObjectCentroid(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddObjectCentroid().getHelp());
+        assertNotNull(new AddObjectCentroid(null).getHelp());
     }
 }

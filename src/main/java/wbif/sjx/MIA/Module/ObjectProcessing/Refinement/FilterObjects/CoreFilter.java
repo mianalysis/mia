@@ -1,17 +1,28 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjectsMethods;
+package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.Object.LUTs;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
-public abstract class CoreFilter {
+public abstract class CoreFilter extends Module {
+    public CoreFilter(ModuleCollection modules) {
+        super(modules);
+    }
+
     public interface FilterModes {
         String DO_NOTHING = "Do nothing";
-        String MOVE_FILTERED_OBJECTS = "Move filtered objects to new class";
-        String REMOVE_FILTERED_OBJECTS = "Remove filtered objects";
+        String MOVE_FILTERED = "Move filtered objects to new class";
+        String REMOVE_FILTERED = "Remove filtered objects";
 
-        String[] ALL = new String[]{DO_NOTHING,MOVE_FILTERED_OBJECTS,REMOVE_FILTERED_OBJECTS};
+        String[] ALL = new String[]{DO_NOTHING, MOVE_FILTERED, REMOVE_FILTERED};
 
     }
 
@@ -69,5 +80,16 @@ public abstract class CoreFilter {
             outputObjects.add(inputObject);
         }
         iterator.remove();
+    }
+
+    static void showRemainingObjects(ObjCollection inputObjects) {
+        HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
+        String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+        ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus();
+        dispIpl.setLut(LUTs.Random(true));
+        dispIpl.setPosition(1,1,1);
+        dispIpl.updateChannelAndDraw();
+        dispIpl.show();
+
     }
 }

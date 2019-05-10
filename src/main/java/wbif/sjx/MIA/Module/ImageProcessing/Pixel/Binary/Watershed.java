@@ -12,6 +12,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,6 +34,10 @@ public class Watershed extends Module {
     public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public Watershed(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface IntensityModes {
         String DISTANCE = "Distance";
@@ -252,8 +259,8 @@ public class Watershed extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -262,7 +269,7 @@ public class Watershed extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

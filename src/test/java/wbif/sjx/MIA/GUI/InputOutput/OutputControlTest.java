@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
 public class OutputControlTest extends ModuleTest {
     @Test
     public void testGetTitle() {
-        assertNotNull(new OutputControl().getTitle());
+        assertNotNull(new OutputControl(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new OutputControl().getHelp());
+        assertNotNull(new OutputControl(null).getHelp());
     }
 }

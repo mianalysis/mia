@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
@@ -37,7 +37,7 @@ public class HelpArea extends JTextPane {
 
         sb.append("<br>");
 
-        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs(modules);
+        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");

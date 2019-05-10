@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
@@ -10,6 +10,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.LUTs;
@@ -55,6 +59,10 @@ public class FilterObjects extends Module implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
+    public FilterObjects(ModuleCollection modules) {
+        super(modules);
+    }
+
 
     public interface FilterModes {
         String DO_NOTHING = "Do nothing";
@@ -66,15 +74,15 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     public interface FilterMethods {
-        String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
-        String NO_PARENT = "Remove objects without parent";
-        String WITH_PARENT = "Remove objects with a parent";
+        String MISSING_MEASUREMENTS = "Remove objects with missing measurements"; // TRANSFERRED
+        String NO_PARENT = "Remove objects without parent"; // TRANSFERRED
+        String WITH_PARENT = "Remove objects with a parent"; // TRANSFERRED
         String MIN_NUMBER_OF_CHILDREN = "Remove objects with fewer children than:"; // TRANSFERRED
         String MAX_NUMBER_OF_CHILDREN = "Remove objects with more children than:"; // TRANSFERRED
-        String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
-        String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
+        String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:"; // TRANSFERRED
+        String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:"; // TRANSFERRED
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)"; // TRANSFERRED
-        String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)";
+        String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)"; // TRANSFERRED
 
         String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
                 MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN,
@@ -368,7 +376,7 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
@@ -606,8 +614,8 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
@@ -618,9 +626,8 @@ public class FilterObjects extends Module implements ActionListener {
             MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef newRef = reference.duplicate();
-                newRef.setImageObjName(filteredObjectsName);
-                objectMeasurementRefs.add(newRef);
+                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
@@ -637,7 +644,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

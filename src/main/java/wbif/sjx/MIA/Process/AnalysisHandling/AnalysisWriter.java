@@ -5,8 +5,15 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
-import wbif.sjx.MIA.Process.Exporter;
+import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,9 +26,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedHashSet;
 
 /**
- * Created by sc13967 on 22/06/2018.
+ * Created by Stephen on 22/06/2018.
  */
 public class AnalysisWriter {
     public static void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
@@ -30,8 +38,8 @@ public class AnalysisWriter {
 
         // Creating a module collection holding the input and output
         ModuleCollection inOutModules = new ModuleCollection();
-        inOutModules.add(analysis.getInputControl());
-        inOutModules.add(analysis.getOutputControl());
+        inOutModules.add(analysis.getModules().getInputControl());
+        inOutModules.add(analysis.getModules().getOutputControl());
 
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -42,8 +50,8 @@ public class AnalysisWriter {
         version.appendChild(doc.createTextNode(MIA.getVersion()));
         root.setAttributeNode(version);
 
-        root.appendChild(Exporter.prepareModulesXML(doc,inOutModules));
-        root.appendChild(Exporter.prepareModulesXML(doc,analysis.getModules()));
+        root.appendChild(prepareModulesXML(doc,inOutModules));
+        root.appendChild(prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -74,6 +82,151 @@ public class AnalysisWriter {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }
         saveAnalysis(analysis,outputFileName);
+
+    }
+
+    public static Element prepareModulesXML(Document doc, ModuleCollection modules) {
+        Element modulesElement =  doc.createElement("MODULES");
+
+        // Running through each parameter set (one for each module
+        for (Module module:modules) {
+            Element moduleElement =  doc.createElement("MODULE");
+            Attr nameAttr = doc.createAttribute("NAME");
+            nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
+            moduleElement.setAttributeNode(nameAttr);
+
+            Attr nicknameAttr = doc.createAttribute("NICKNAME");
+            nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
+            moduleElement.setAttributeNode(nicknameAttr);
+
+            Attr enabledAttr = doc.createAttribute("ENABLED");
+            enabledAttr.appendChild(doc.createTextNode(String.valueOf(module.isEnabled())));
+            moduleElement.setAttributeNode(enabledAttr);
+
+            Attr disableableAttr = doc.createAttribute("DISABLEABLE");
+            disableableAttr.appendChild(doc.createTextNode(String.valueOf(module.canBeDisabled())));
+            moduleElement.setAttributeNode(disableableAttr);
+
+            Attr outputAttr = doc.createAttribute("SHOW_OUTPUT");
+            outputAttr.appendChild(doc.createTextNode(String.valueOf(module.canShowOutput())));
+            moduleElement.setAttributeNode(outputAttr);
+
+            Attr notesAttr = doc.createAttribute("NOTES");
+            notesAttr.appendChild(doc.createTextNode(module.getNotes()));
+            moduleElement.setAttributeNode(notesAttr);
+
+            Element parametersElement = prepareParametersXML(doc,module.getAllParameters());
+            moduleElement.appendChild(parametersElement);
+
+            // Adding measurement references from this module
+            Element measurementsElement = doc.createElement("MEASUREMENTS");
+            MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
+            measurementsElement = prepareRefsXML(doc, measurementsElement,imageReferences,"MEASUREMENT");
+            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
+            measurementsElement = prepareRefsXML(doc, measurementsElement,objectReferences,"MEASUREMENT");
+            moduleElement.appendChild(measurementsElement);
+
+            // Adding metadata references from this module
+            Element metadataElement = doc.createElement("METADATA");
+            MetadataRefCollection metadataRefs = module.updateAndGetMetadataReferences();
+            metadataElement = prepareRefsXML(doc, metadataElement,metadataRefs,"METADATUM");
+            moduleElement.appendChild(metadataElement);
+
+            // Adding relationship references from this module
+            Element relationshipElement = doc.createElement("RELATIONSHIPS");
+            RelationshipRefCollection relationshipRefs = module.updateAndGetRelationships();
+            relationshipElement = prepareRefsXML(doc, relationshipElement,relationshipRefs,"RELATIONSHIP");
+            moduleElement.appendChild(relationshipElement);
+
+            // Adding current module to modules
+            modulesElement.appendChild(moduleElement);
+
+        }
+
+        return modulesElement;
+
+    }
+
+    public static Element prepareParametersXML(Document doc, ParameterCollection parameters) {
+        // Adding parameters from this module
+        Element parametersElement = doc.createElement("PARAMETERS");
+
+        for (Parameter currParam:parameters) {
+            // Check if the parameter is to be exported
+            if (!currParam.isExported()) continue;
+
+            // ParameterGroups are treated differently
+            if (currParam.getClass() == ParameterGroup.class) {
+                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
+                Element collectionsElement = doc.createElement("COLLECTIONS");
+
+                Attr nameAttr = doc.createAttribute("NAME");
+                nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
+                collectionsElement.setAttributeNode(nameAttr);
+
+                for (ParameterCollection collection:collections) {
+                    Element collectionElement = doc.createElement("COLLECTION");
+
+                    collectionElement.appendChild(prepareParametersXML(doc,collection));
+                    collectionsElement.appendChild(collectionElement);
+                }
+                parametersElement.appendChild(collectionsElement);
+                continue;
+            } else if (currParam.getClass() == RemoveParameters.class) continue;
+
+            // Adding the name and value of the current parameter
+            Element parameterElement =  doc.createElement("PARAMETER");
+
+            Attr nameAttr = doc.createAttribute("NAME");
+            nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
+            parameterElement.setAttributeNode(nameAttr);
+
+            Attr valueAttr = doc.createAttribute("VALUE");
+            if (currParam.getValueAsString() == null) {
+                valueAttr.appendChild(doc.createTextNode(""));
+            } else {
+                valueAttr.appendChild(doc.createTextNode(currParam.getValueAsString()));
+            }
+            parameterElement.setAttributeNode(valueAttr);
+
+            Attr visibleAttr = doc.createAttribute("VISIBLE");
+            visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
+            parameterElement.setAttributeNode(visibleAttr);
+
+            if (currParam.getClass().isInstance(ChildObjectsP.class) && ((ChildObjectsP) currParam).getParentObjectsName() != null) {
+                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                valueSourceAttr.appendChild(doc.createTextNode(((ChildObjectsP) currParam).getParentObjectsName()));
+                parameterElement.setAttributeNode(valueSourceAttr);
+            }
+
+            if (currParam.getClass().isInstance(ParentObjectsP.class) && ((ParentObjectsP) currParam).getChildObjectsName() != null) {
+                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                valueSourceAttr.appendChild(doc.createTextNode(((ParentObjectsP) currParam).getChildObjectsName()));
+                parameterElement.setAttributeNode(valueSourceAttr);
+            }
+
+            parametersElement.appendChild(parameterElement);
+
+        }
+
+        return parametersElement;
+
+    }
+
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
+        if (refs == null) return refsElement;
+
+        for (ExportableRef ref:refs.values()) {
+            // Don't export any measurements that aren't calculated
+            if (!ref.isAvailable()) continue;
+
+            Element element = doc.createElement(groupName);
+            ref.appendXMLAttributes(element);
+            refsElement.appendChild(element);
+
+        }
+
+        return refsElement;
 
     }
 }

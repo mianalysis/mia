@@ -22,7 +22,7 @@ public class IdentifyObjectsMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        IdentifyObjects identifyObjects = new IdentifyObjects();
+        IdentifyObjects identifyObjects = new IdentifyObjects(workspace.getAnalysis().getModules());
 
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,objects[0]);
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,objects[1]);

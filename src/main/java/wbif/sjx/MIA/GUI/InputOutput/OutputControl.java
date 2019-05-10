@@ -3,6 +3,9 @@ package wbif.sjx.MIA.GUI.InputOutput;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -24,16 +27,13 @@ public class OutputControl extends Module {
     public static final String SUMMARY_MODE = "Summary mode";
     public static final String METADATA_ITEM_FOR_SUMMARY = "Metadata item for summary";
     public static final String SHOW_OBJECT_COUNTS = "Show object counts";
-    public static final String SHOW_NUMBER_OF_CHILDREN = "Show number of children";
-    public static final String CALCULATE_COUNT_MEAN = "Calculate count means";
-    public static final String CALCULATE_COUNT_MIN = "Calculate count minima";
-    public static final String CALCULATE_COUNT_MAX = "Calculate count maxima";
-    public static final String CALCULATE_COUNT_STD = "Calculate count standard deviations";
-    public static final String CALCULATE_COUNT_SUM = "Calculate count sums";
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
 
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
-    public static final String SELECT_MEASUREMENTS = "Show measurement selection";
+
+    public OutputControl(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface SaveLocations {
@@ -119,16 +119,9 @@ public class OutputControl extends Module {
         parameters.add(new ChoiceP(SUMMARY_MODE,this,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_SUMMARY,this));
         parameters.add(new BooleanP(SHOW_OBJECT_COUNTS,this,true));
-        parameters.add(new BooleanP(SHOW_NUMBER_OF_CHILDREN,this,true));
-        parameters.add(new BooleanP(CALCULATE_COUNT_MEAN,this,true));
-        parameters.add(new BooleanP(CALCULATE_COUNT_MIN,this,true));
-        parameters.add(new BooleanP(CALCULATE_COUNT_MAX,this,true));
-        parameters.add(new BooleanP(CALCULATE_COUNT_STD,this,true));
-        parameters.add(new BooleanP(CALCULATE_COUNT_SUM,this,true));
         parameters.add(new BooleanP(EXPORT_INDIVIDUAL_OBJECTS,this,true));
 
         parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
-        parameters.add(new BooleanP(SELECT_MEASUREMENTS,this,false));
 
     }
 
@@ -179,23 +172,12 @@ public class OutputControl extends Module {
             }
 
             returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
-            returnedParameters.add(parameters.getParameter(SHOW_NUMBER_OF_CHILDREN));
 
-            BooleanP showNumberOfChildren = (BooleanP) parameters.getParameter(SHOW_NUMBER_OF_CHILDREN);
-            returnedParameters.add(showNumberOfChildren);
-            if (showNumberOfChildren.isSelected()) {
-                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MEAN));
-                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MIN));
-                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MAX));
-                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_STD));
-                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_SUM));
-            }
         }
 
         returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SELECT_MEASUREMENTS));
 
         return returnedParameters;
 
@@ -207,8 +189,8 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -217,7 +199,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

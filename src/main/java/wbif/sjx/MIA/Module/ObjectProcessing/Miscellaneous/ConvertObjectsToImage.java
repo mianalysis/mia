@@ -8,6 +8,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -28,6 +31,10 @@ public class ConvertObjectsToImage extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String MEASUREMENT = "Measurement";
+
+    public ConvertObjectsToImage(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
@@ -223,8 +230,8 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -233,7 +240,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

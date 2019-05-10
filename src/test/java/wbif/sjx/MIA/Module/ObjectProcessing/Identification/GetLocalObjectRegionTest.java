@@ -21,12 +21,12 @@ public class GetLocalObjectRegionTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new GetLocalObjectRegion().getTitle());
+        assertNotNull(new GetLocalObjectRegion(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new GetLocalObjectRegion().getHelp());
+        assertNotNull(new GetLocalObjectRegion(null).getHelp());
     }
 
     @Test @Ignore
@@ -45,8 +45,8 @@ public class GetLocalObjectRegionTest extends ModuleTest {
         ObjCollection testObjects = new Spots3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Initialising FilterObjectsMethods module
-        GetLocalObjectRegion getLocalObjectRegion = new GetLocalObjectRegion();
+        // Initialising FilterObjects module
+        GetLocalObjectRegion getLocalObjectRegion = new GetLocalObjectRegion(null);
         getLocalObjectRegion.initialiseParameters();
         getLocalObjectRegion.updateParameterValue(GetLocalObjectRegion.INPUT_OBJECTS,inputObjectsName);
         getLocalObjectRegion.updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,outputObjectsName);

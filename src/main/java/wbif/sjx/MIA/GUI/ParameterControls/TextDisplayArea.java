@@ -8,7 +8,7 @@ import java.awt.*;
 public class TextDisplayArea extends ParameterControl {
     protected TextType parameter;
     protected JPanel control;
-    protected JTextArea textArea;
+    protected JEditorPane textArea;
 
     public TextDisplayArea(TextType parameter) {
         this.parameter = parameter;
@@ -21,10 +21,12 @@ public class TextDisplayArea extends ParameterControl {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        textArea = new JTextArea();
+        textArea = new JEditorPane();
+        textArea.setContentType("text/html");
         textArea.setEditable(false);
-        textArea.setText(parameter.getValueAsString());
+        textArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        textArea.setText(parameter.getValueAsString());
 
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
         control.setPreferredSize(new Dimension(0,150));
@@ -47,5 +49,6 @@ public class TextDisplayArea extends ParameterControl {
     @Override
     public void updateControl() {
         textArea.setText(parameter.getValueAsString());
+        textArea.repaint();
     }
 }

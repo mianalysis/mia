@@ -29,13 +29,13 @@ public class ProjectObjectsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ProjectObjects().getTitle());
+        assertNotNull(new ProjectObjects(null).getTitle());
 
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ProjectObjects().getHelp());
+        assertNotNull(new ProjectObjects(null).getHelp());
 
     }
 
@@ -56,7 +56,7 @@ public class ProjectObjectsTest extends ModuleTest {
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
-        ProjectObjects projectObjects = new ProjectObjects();
+        ProjectObjects projectObjects = new ProjectObjects(null);
         projectObjects.initialiseParameters();
         projectObjects.updateParameterValue(ProjectObjects.INPUT_OBJECTS,inputObjectsName);
         projectObjects.updateParameterValue(ProjectObjects.OUTPUT_OBJECTS,outputObjectsName);

@@ -89,7 +89,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        if (module.getClass().isInstance(new InputControl())) GUI.updateTestFile();
+        if (module.getClass().isInstance(new InputControl(GUI.getModules()))) GUI.updateTestFile();
 
         GUI.updateModules();
         GUI.populateModuleParameters();

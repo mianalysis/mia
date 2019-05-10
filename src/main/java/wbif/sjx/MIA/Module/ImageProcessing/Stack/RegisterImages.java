@@ -18,6 +18,10 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
@@ -59,6 +63,10 @@ public class RegisterImages extends Module implements Interactable {
 
     private Image inputImage;
     private Image reference;
+
+    public RegisterImages(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface AlignmentModes {
@@ -134,7 +142,7 @@ public class RegisterImages extends Module implements Interactable {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -155,7 +163,7 @@ public class RegisterImages extends Module implements Interactable {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
             }
 
@@ -410,11 +418,10 @@ public class RegisterImages extends Module implements Interactable {
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
-            ConcatenateStacks concatenateStacks = new ConcatenateStacks();
             String axis = ConcatenateStacks.AxisModes.CHANNEL;
 
-            Image displayImage = concatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
-            concatenateStacks.convertToComposite(displayImage);
+            Image displayImage = ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
+            ConcatenateStacks.convertToComposite(displayImage);
 
             return displayImage;
 
@@ -468,8 +475,7 @@ public class RegisterImages extends Module implements Interactable {
 
         }
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
-        concatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
+        ConcatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
 
     }
 
@@ -653,13 +659,14 @@ public class RegisterImages extends Module implements Interactable {
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_Y,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_Y,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_Y,outputImageName));
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_X,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y,type).setImageObjName(outputImageName);
 
         }
 
@@ -668,8 +675,8 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -678,7 +685,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

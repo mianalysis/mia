@@ -4,6 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -204,7 +206,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
      */
     public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs(modules);
+        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
@@ -212,7 +214,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
         for (MeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageObjName().equals(name) && measRef.isCalculated()) measNames.add(measRef.getName());
+            if (measRef.getImageObjName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values

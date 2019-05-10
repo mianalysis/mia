@@ -15,6 +15,9 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -64,6 +67,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
+
+    public ManuallyIdentifyObjects(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface InterpolationModes {
@@ -285,6 +292,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle("Draw objects on this image");
+
+        // Checking if we have a 2D or 3D image
+        twoD = displayImagePlus.getNSlices() == 1;
+
         overlay = displayImagePlus.getOverlay();
         if (overlay == null) {
             overlay = new Overlay();
@@ -363,8 +374,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -373,7 +384,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

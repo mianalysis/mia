@@ -7,6 +7,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.swing.*;
@@ -43,6 +46,10 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     private int elementHeight = 40;
     private boolean active = false;
+
+    public ExtractSubstack(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface SelectionModes {
@@ -297,8 +304,8 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -307,7 +314,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

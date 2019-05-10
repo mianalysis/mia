@@ -9,6 +9,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
@@ -25,6 +28,10 @@ public class ExtractObjectEdges extends Module {
     public static final String EDGE_MODE = "Edge determination";
     public static final String EDGE_DISTANCE = "Distance";
     public static final String EDGE_PERCENTAGE = "Percentage";
+
+    public ExtractObjectEdges(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface EdgeModes {
         String DISTANCE_FROM_EDGE = "Distance to edge";
@@ -279,8 +286,8 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -289,22 +296,20 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
-
+    public RelationshipRefCollection updateAndGetRelationships() {
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(CREATE_EDGE_OBJECTS)) {
             String outputEdgeObjects = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            relationships.addRelationship(inputObjects, outputEdgeObjects);
+            relationshipRefs.getOrPut(inputObjects, outputEdgeObjects);
         }
 
         if (parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
             String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            relationships.addRelationship(inputObjects,outputInteriorObjects);
+            relationshipRefs.getOrPut(inputObjects,outputInteriorObjects);
         }
 
-        return relationships;
+        return relationshipRefs;
 
     }
 

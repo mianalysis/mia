@@ -11,11 +11,11 @@ public class AddTracksTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new AddTracks().getTitle());
+        assertNotNull(new AddTracks(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddTracks().getHelp());
+        assertNotNull(new AddTracks(null).getHelp());
     }
 }

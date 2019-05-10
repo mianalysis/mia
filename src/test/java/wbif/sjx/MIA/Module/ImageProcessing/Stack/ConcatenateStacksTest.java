@@ -19,12 +19,12 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ConcatenateStacks<>().getTitle());
+        assertNotNull(new ConcatenateStacks<>(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ConcatenateStacks<>().getHelp());
+        assertNotNull(new ConcatenateStacks<>(null).getHelp());
     }
 
 
@@ -54,7 +54,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -102,7 +102,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks2D_8bit_Y.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
@@ -150,7 +150,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks2D_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -198,7 +198,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks2D_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -246,7 +246,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks2D_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -297,7 +297,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -345,7 +345,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
@@ -393,7 +393,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks3D_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -441,7 +441,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks3D_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -489,7 +489,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks3D_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -540,7 +540,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -588,7 +588,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
@@ -636,7 +636,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DCT_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -684,7 +684,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DCZ_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -732,7 +732,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DZT_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -780,7 +780,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DCT_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -828,7 +828,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DCZ_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -876,7 +876,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DZT_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -924,7 +924,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DCT_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -972,7 +972,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DCZ_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -1020,7 +1020,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks4DZT_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -1071,7 +1071,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -1119,7 +1119,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
@@ -1167,7 +1167,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks5D_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -1215,7 +1215,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -1263,7 +1263,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/ConcatenateStacks5D_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -1314,7 +1314,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -1362,7 +1362,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_Y.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
@@ -1410,7 +1410,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_C.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
@@ -1458,7 +1458,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_Z.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
@@ -1506,7 +1506,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_T.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
@@ -1557,7 +1557,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -1605,7 +1605,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
@@ -1653,7 +1653,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ConcatenateStacks/NoisyGradient2D_8bit_X.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks(null);
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 

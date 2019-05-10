@@ -9,6 +9,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -32,6 +35,10 @@ public class NormaliseIntensity extends Module {
     public static final String CLIP_FRACTION = "Clipping fraction";
     public static final String MIN_RANGE = "Minimum range value";
     public static final String MAX_RANGE = "Maximum range value";
+
+    public NormaliseIntensity(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface RegionModes {
@@ -269,8 +276,8 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -279,7 +286,7 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

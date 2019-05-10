@@ -16,6 +16,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
 
@@ -35,6 +38,10 @@ public class FilterImage extends Module {
     public static final String ROLLING_METHOD = "Rolling filter method";
     public static final String WINDOW_MODE = "Window mode";
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
+
+    public FilterImage(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface FilterModes {
@@ -80,7 +87,7 @@ public class FilterImage extends Module {
     }
 
 
-    public void apply2DFilter(ImagePlus inputImagePlus, String filterMode, double filterRadius) {
+    public static void apply2DFilter(ImagePlus inputImagePlus, String filterMode, double filterRadius) {
         // Determining which rank filter ID to use
         int rankFilter = 0;
         switch (filterMode) {
@@ -111,7 +118,6 @@ public class FilterImage extends Module {
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    writeMessage("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c, z, t);
                     filter.rank(inputImagePlus.getProcessor(),filterRadius,rankFilter);
 
@@ -121,7 +127,7 @@ public class FilterImage extends Module {
         inputImagePlus.setPosition(1,1,1);
     }
 
-    public void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
+    public static void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
         int nChannels = inputImagePlus.getNChannels();
@@ -160,7 +166,6 @@ public class FilterImage extends Module {
                 ImageStack istFilt = Filters3D.filter(iplOrig.getStack(), filter, filterRadius, filterRadius, filterRadius);
 
                 for (int z = 1; z <= istFilt.getSize(); z++) {
-                    writeMessage("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c,z,t);
                     ImageProcessor iprOrig = inputImagePlus.getProcessor();
                     ImageProcessor iprFilt = istFilt.getProcessor(z);
@@ -179,13 +184,12 @@ public class FilterImage extends Module {
 
     }
 
-    public void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
+    public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
         int count = 0;
         int total = imagePlus.getNChannels()*imagePlus.getNSlices()*imagePlus.getNFrames();
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    writeMessage("Processing image " + (++count) + " of " + total);
                     imagePlus.setPosition(c, z, t);
                     imagePlus.getProcessor().blurGaussian(sigma);
                 }
@@ -194,14 +198,13 @@ public class FilterImage extends Module {
         imagePlus.setPosition(1,1,1);
     }
 
-    public void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
+    public static void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
         DiskStrel strel = DiskStrel.fromRadius((int) Math.round(sigma));
         int count = 0;
         int total = imagePlus.getNChannels()*imagePlus.getNSlices()*imagePlus.getNFrames();
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    writeMessage("Processing image " + (++count) + " of " + total);
                     imagePlus.setPosition(c, z, t);
                     imagePlus.setProcessor(Morphology.gradient(imagePlus.getProcessor(),strel));
                 }
@@ -210,7 +213,7 @@ public class FilterImage extends Module {
         imagePlus.setPosition(1,1,1);
     }
 
-    public void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
+    public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
@@ -220,7 +223,6 @@ public class FilterImage extends Module {
         // Running through each frame, calculating the local average
         int count = 0;
         for (int f=1;f<=inputImagePlus.getNFrames();f++) {
-            writeMessage("Processing timepoint " + (++count) + " of " + inputImagePlus.getNFrames());
             int firstFrame = 0;
             int lastFrame = 0;
 
@@ -444,8 +446,8 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -454,7 +456,7 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

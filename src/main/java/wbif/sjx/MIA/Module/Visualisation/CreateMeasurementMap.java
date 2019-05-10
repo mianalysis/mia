@@ -10,6 +10,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
@@ -30,6 +33,10 @@ public class CreateMeasurementMap extends Module {
     public static final String RANGE = "Range";
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
+
+    public CreateMeasurementMap(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface MeasurementModes {
         String MEASUREMENT = "Measurement";
@@ -380,8 +387,8 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -390,7 +397,7 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

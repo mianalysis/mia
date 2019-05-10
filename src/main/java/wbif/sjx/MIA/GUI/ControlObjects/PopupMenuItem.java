@@ -4,11 +4,13 @@ import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.ModuleCollection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -40,13 +42,17 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         // Adding it after the currently-selected module
         Module newModule = null;
         try {
-            newModule = module.getClass().newInstance();
-        } catch (IllegalAccessException | InstantiationException e1) {
+            ModuleCollection modules = GUI.getModules();
+            newModule = module.getClass().getConstructor(ModuleCollection.class).newInstance(modules);
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
             e1.printStackTrace();
         }
 
         Module activeModule = GUI.getActiveModule();
-        if (activeModule == null || activeModule.getClass().isInstance(new InputControl()) || activeModule.getClass().isInstance(new OutputControl())) {
+        ModuleCollection modules = GUI.getModules();
+        if (activeModule == null
+                || activeModule.getClass().isInstance(new InputControl(modules))
+                || activeModule.getClass().isInstance(new OutputControl(modules))) {
             GUI.getModules().add(newModule);
         } else {
             int idx = GUI.getModules().indexOf(GUI.getActiveModule());

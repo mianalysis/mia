@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class BinObjectsByMeasurement extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -11,6 +15,10 @@ public class BinObjectsByMeasurement extends Module {
     public static final String SMALLEST_BIN_CENTRE = "Smallest bin centre";
     public static final String LARGEST_BIN_CENTRE = "Largest bin centre";
     public static final String NUMBER_OF_BINS = "Number of bins";
+
+    public BinObjectsByMeasurement(ModuleCollection modules) {
+        super(modules);
+    }
 
     interface Measurements {
         String BIN = "Bin";
@@ -91,16 +99,17 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String name = getFullName(measurement);
-        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name,type);
         binMeasurement.setImageObjName(inputObjectsName);
-        binMeasurement.setCalculated(true);
+        binMeasurement.setAvailable(true);
 
         return objectMeasurementRefs;
 
@@ -112,7 +121,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

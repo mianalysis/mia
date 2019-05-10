@@ -17,6 +17,9 @@ import wbif.sjx.MIA.Object.*;
 
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
@@ -55,6 +58,10 @@ public class ManualUnwarp extends Module implements Interactable {
     private Param param;
     private Image inputImage;
     private Image reference;
+
+    public ManualUnwarp(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface PointSelectionModes {
@@ -321,8 +328,7 @@ public class ManualUnwarp extends Module implements Interactable {
             e.printStackTrace();
         }
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
-        concatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
+        ConcatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
 
     }
 
@@ -473,8 +479,8 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -483,7 +489,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

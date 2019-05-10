@@ -103,7 +103,7 @@ public class EvalButton extends JButton implements ActionListener {
                     evaluateModule(module);
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
-                    GUI.updateModuleStates(true);
+                    GUI.updateModuleStates(false);
                     e1.printStackTrace();
                 }
             });

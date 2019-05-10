@@ -8,11 +8,11 @@ public class UnwarpImagesTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new UnwarpImages().getTitle());
+        assertNotNull(new UnwarpImages(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new UnwarpImages().getHelp());
+        assertNotNull(new UnwarpImages(null).getHelp());
     }
 }

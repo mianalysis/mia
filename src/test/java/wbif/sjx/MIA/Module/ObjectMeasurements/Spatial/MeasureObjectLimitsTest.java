@@ -8,11 +8,11 @@ public class MeasureObjectLimitsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MeasureObjectLimits().getTitle());
+        assertNotNull(new MeasureObjectLimits(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectLimits().getHelp());
+        assertNotNull(new MeasureObjectLimits(null).getHelp());
     }
 }

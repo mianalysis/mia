@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
@@ -28,6 +32,10 @@ public class MeasureObjectTexture extends Module {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
+
+    public MeasureObjectTexture(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface Measurements {
         String ASM = "ASM";
@@ -59,7 +67,7 @@ public class MeasureObjectTexture extends Module {
 
     ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) throws IntegerOverflowException {
         // Getting local object region
-        objects = new GetLocalObjectRegion().getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
+        objects = GetLocalObjectRegion.getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
 
         return objects;
 
@@ -224,11 +232,13 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
+
         double xOffsIn = parameters.getValue(X_OFFSET);
         double yOffsIn = parameters.getValue(Y_OFFSET);
         double zOffsIn = parameters.getValue(Z_OFFSET);
@@ -236,24 +246,24 @@ public class MeasureObjectTexture extends Module {
         double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
 
         String name = getFullName(inputImageName,Measurements.ASM,offs,calibratedOffset);
-        MeasurementRef asm = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef asm = objectMeasurementRefs.getOrPut(name,type);
         asm.setImageObjName(inputObjectsName);
-        asm.setCalculated(true);
+        asm.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.CONTRAST,offs,calibratedOffset);
-        MeasurementRef contrast = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef contrast = objectMeasurementRefs.getOrPut(name,type);
         contrast.setImageObjName(inputObjectsName);
-        contrast.setCalculated(true);
+        contrast.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.CORRELATION,offs,calibratedOffset);
-        MeasurementRef correlation = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef correlation = objectMeasurementRefs.getOrPut(name,type);
         correlation.setImageObjName(inputObjectsName);
-        correlation.setCalculated(true);
+        correlation.setAvailable(true);
 
         name = getFullName(inputImageName,Measurements.ENTROPY,offs,calibratedOffset);
-        MeasurementRef entropy = objectMeasurementRefs.getOrPut(name);
+        MeasurementRef entropy = objectMeasurementRefs.getOrPut(name,type);
         entropy.setImageObjName(inputObjectsName);
-        entropy.setCalculated(true);
+        entropy.setAvailable(true);
 
         return objectMeasurementRefs;
 
@@ -265,7 +275,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

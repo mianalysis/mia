@@ -35,7 +35,7 @@ public class AnalysisRunnerTest {
         File file = temporaryFolder.newFile("fake file.tif");
         String path = file.getAbsolutePath();
 
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -49,7 +49,7 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetInputFileSingleFileMissing() throws Exception {
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,"");
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -66,7 +66,7 @@ public class AnalysisRunnerTest {
         File folder = temporaryFolder.newFolder("test folder");
         String path = folder.getAbsolutePath();
 
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -150,8 +150,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameSingleFileSingleSeries() throws Exception {
-        InputControl inputControl = new InputControl();
-        OutputControl outputControl = new OutputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
 
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
         inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
@@ -169,8 +169,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameSingleFileAllSeries() throws Exception {
-        InputControl inputControl = new InputControl();
-        OutputControl outputControl = new OutputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 
@@ -187,8 +187,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameBatchSingleSeries() throws Exception {
-        InputControl inputControl = new InputControl();
-        OutputControl outputControl = new OutputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
 
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
         inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
@@ -207,8 +207,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameBatchAllSeries() throws Exception {
-        InputControl inputControl = new InputControl();
-        OutputControl outputControl = new OutputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 

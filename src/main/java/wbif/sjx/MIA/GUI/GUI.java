@@ -18,15 +18,13 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.PrintStream;
 
@@ -41,7 +39,7 @@ public class GUI {
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
-    private static final MeasurementRef globalMeasurementRef = new MeasurementRef("Global");
+    private static final MeasurementRef globalMeasurementRef = new MeasurementRef("Global", MeasurementRef.Type.IMAGE);
 
     private static int minimumFrameHeight = 600;
     private static int minimumFrameWidth = 400;
@@ -69,7 +67,7 @@ public class GUI {
         initialised = true;
 
         // Adding a new ImageLoader module to the empty analysis
-        analysis.getModules().add(new ImageLoader<>());
+        analysis.getModules().add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
         if (MIA.isDebug()) {
@@ -228,9 +226,13 @@ public class GUI {
 
     }
 
+    public static void updateParameters() {
+        mainPanel.updateParameters();
+    }
+
     public static void updateTestFile() {
         // Ensuring the input file specified in the InputControl is active in the test workspace
-        InputControl inputControl = analysis.getInputControl();
+        InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
         int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
@@ -268,7 +270,7 @@ public class GUI {
 
         }
 
-        ChoiceP seriesMode = (ChoiceP) analysis.getInputControl().getParameter(InputControl.SERIES_MODE);
+        ChoiceP seriesMode = (ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE);
         switch (seriesMode.getChoice()) {
             case InputControl.SeriesModes.ALL_SERIES:
                 testWorkspace.getMetadata().setSeriesNumber(1);
@@ -276,7 +278,7 @@ public class GUI {
                 break;
 
             case InputControl.SeriesModes.SERIES_LIST:
-                SeriesListSelectorP listParameter = analysis.getInputControl().getParameter(InputControl.SERIES_LIST);
+                SeriesListSelectorP listParameter = inputControl.getParameter(InputControl.SERIES_LIST);
                 int[] seriesList = listParameter.getSeriesList();
                 testWorkspace.getMetadata().setSeriesNumber(seriesList[0]);
                 testWorkspace.getMetadata().setSeriesName("");

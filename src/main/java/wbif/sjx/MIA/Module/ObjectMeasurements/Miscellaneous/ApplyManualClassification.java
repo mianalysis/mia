@@ -143,11 +143,11 @@
 //
 //    @Override
 //    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-//        objectMeasurementRefs.setAllCalculated(false);
+//        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
 //        classMeas.setImageObjName(parameters.getValue(TRACK_OBJECTS));
-//        classMeas.setCalculated(true);
+//        classMeas.setAvailable(true);
 //
 //        return objectMeasurementRefs;
 //
@@ -159,7 +159,7 @@
 //    }
 //
 //    @Override
-//    public RelationshipCollection updateAndGetRelationships() {
+//    public RelationshipRefCollection updateAndGetRelationships() {
 //        return null;
 //    }
 //

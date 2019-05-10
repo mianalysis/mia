@@ -28,12 +28,12 @@ public class ImageSaverTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new ImageSaver().getTitle());
+        assertNotNull(new ImageSaver(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageSaver().getHelp());
+        assertNotNull(new ImageSaver(null).getHelp());
     }
 
     @Test
@@ -52,8 +52,8 @@ public class ImageSaverTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjectsMethods module
-        ImageSaver imageSaver = new ImageSaver();
+        // Initialising FilterObjects module
+        ImageSaver imageSaver = new ImageSaver(null);
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SAVE_WITH_INPUT);
@@ -94,8 +94,8 @@ public class ImageSaverTest extends ModuleTest {
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
 
-        // Initialising FilterObjectsMethods module
-        ImageSaver imageSaver = new ImageSaver();
+        // Initialising FilterObjects module
+        ImageSaver imageSaver = new ImageSaver(null);
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);

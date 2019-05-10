@@ -23,12 +23,12 @@ public class MergeObjectsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MergeObjects().getTitle());
+        assertNotNull(new MergeObjects(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MergeObjects().getHelp());
+        assertNotNull(new MergeObjects(null).getHelp());
     }
 
     @Test
@@ -47,8 +47,8 @@ public class MergeObjectsTest extends ModuleTest {
         ObjCollection inputObj2 = new Spots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
-        // Initialising FilterObjectsMethods module
-        MergeObjects mergeObjects = new MergeObjects();
+        // Initialising FilterObjects module
+        MergeObjects mergeObjects = new MergeObjects(null);
         mergeObjects.updateParameterValue(MergeObjects.INPUT_OBJECTS_1,"Input_obj_1");
         mergeObjects.updateParameterValue(MergeObjects.INPUT_OBJECTS_2,"Input_obj_2");
         mergeObjects.updateParameterValue(MergeObjects.OUTPUT_OBJECTS,"Output_obj");

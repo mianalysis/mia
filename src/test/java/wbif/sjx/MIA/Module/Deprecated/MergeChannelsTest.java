@@ -21,12 +21,12 @@ public class MergeChannelsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new MergeChannels<>().getTitle());
+        assertNotNull(new MergeChannels<>(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MergeChannels<>().getHelp());
+        assertNotNull(new MergeChannels<>(null).getHelp());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class MergeChannelsTest extends ModuleTest {
         Image expectedImage = new Image("Expected_image",expectedImagePlus);
 
         // Running the channel merge
-        MergeChannels mergeChannels = new MergeChannels();
+        MergeChannels mergeChannels = new MergeChannels(null);
         Image actualImage = mergeChannels.combineImages(image1,image2,"Output_image");
 
         assertNotNull(actualImage);
@@ -69,7 +69,7 @@ public class MergeChannelsTest extends ModuleTest {
         Image expectedImage = new Image("Expected_image",expectedImagePlus);
 
         // Running the channel merge
-        MergeChannels mergeChannels = new MergeChannels();
+        MergeChannels mergeChannels = new MergeChannels(null);
         Image actualImage = mergeChannels.combineImages(image1,image2,"Output_image");
 
         assertNotNull(actualImage);
@@ -93,7 +93,7 @@ public class MergeChannelsTest extends ModuleTest {
         Image expectedImage = new Image("Expected_image",expectedImagePlus);
 
         // Running the channel merge
-        MergeChannels mergeChannels = new MergeChannels();
+        MergeChannels mergeChannels = new MergeChannels(null);
         Image actualImage = mergeChannels.combineImages(image1,image2,"Output_image");
 
         assertNotNull(actualImage);
@@ -117,7 +117,7 @@ public class MergeChannelsTest extends ModuleTest {
         Image expectedImage = new Image("Expected_image",expectedImagePlus);
 
         // Running the channel merge
-        MergeChannels mergeChannels = new MergeChannels();
+        MergeChannels mergeChannels = new MergeChannels(null);
         Image actualImage = mergeChannels.combineImages(image1,image2,"Output_image");
 
         assertNotNull(actualImage);

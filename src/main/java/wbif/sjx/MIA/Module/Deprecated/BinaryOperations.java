@@ -23,6 +23,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
@@ -41,6 +44,10 @@ public class BinaryOperations extends Module {
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
+
+    public BinaryOperations(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
@@ -476,7 +483,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
@@ -486,7 +493,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

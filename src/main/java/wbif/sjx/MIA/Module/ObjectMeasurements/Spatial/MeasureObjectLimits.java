@@ -5,9 +5,17 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class MeasureObjectLimits extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public MeasureObjectLimits(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface Measurements {
         String MIN_X_PX = "LIMITS // MIN_X_(PX)";
@@ -78,55 +86,56 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        objectMeasurementRefs.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MIN_X_PX);
-        reference.setCalculated(true);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MIN_X_PX,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Minimum x-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured in pixel units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_X_PX);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_X_PX,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Maximum x-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured in pixel units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Y_PX);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Y_PX,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Minimum y-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured in pixel units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Y_PX);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Y_PX,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Maximum y-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured in pixel units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Z_PX);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Z_PX,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Minimum z-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured in pixel units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Z_PX);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Z_PX,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Maximum z-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured in pixel units.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Z_SLICE);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MIN_Z_SLICE,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Minimum z-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured as slice index.");
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Z_SLICE);
-        reference.setCalculated(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_Z_SLICE,type);
+        reference.setAvailable(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Maximum z-coordinate for all pixels in the object, \""+inputObjectsName+"\".  " +
                 "Measured as slice index.");
@@ -141,7 +150,7 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

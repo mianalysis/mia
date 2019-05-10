@@ -9,6 +9,10 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -20,6 +24,10 @@ public class MeasureImageColocalisation extends Module {
     public static final String INPUT_IMAGE_2 = "Input image 2";
     public static final String MASKING_MODE = "Masking mode";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public MeasureImageColocalisation(ModuleCollection modules) {
+        super(modules);
+    }
 
 
     public interface MaskingModes {
@@ -164,21 +172,22 @@ public class MeasureImageColocalisation extends Module {
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         String inputImage1Name = parameters.getValue(INPUT_IMAGE_1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE_2);
+        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-        imageMeasurementRefs.setAllCalculated(false);
+        imageMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImage2Name,Measurements.MEAN_PCC);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+        MeasurementRef reference = imageMeasurementRefs.getOrPut(name,type);
         reference.setImageObjName(inputImage1Name);
-        reference.setCalculated(true);
+        reference.setAvailable(true);
 
         return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -187,7 +196,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

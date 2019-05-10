@@ -19,8 +19,12 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -42,6 +46,10 @@ public class ObjectClusterer extends Module {
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
+
+    public ObjectClusterer(ModuleCollection modules) {
+        super(modules);
+    }
 
     public interface ClusteringAlgorithms {
         String KMEANSPLUSPLUS = "KMeans++";
@@ -230,11 +238,8 @@ public class ObjectClusterer extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
 
             // Adding overlay and displaying image
-            try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2,false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            AddObjectOutline.addOverlay(dispIpl,inputObjects,0.2,hues,false,true);
+
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
             dispIpl.show();
@@ -288,8 +293,8 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs(ModuleCollection modules) {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return objectMeasurementRefs;
     }
 
     @Override
@@ -298,15 +303,13 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
-
+    public RelationshipRefCollection updateAndGetRelationships() {
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationships.addRelationship(clusterObjectsName,inputObjectsName);
+        relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName);
 
-        return relationships;
+        return relationshipRefs;
 
     }
 
