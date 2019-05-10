@@ -1,7 +1,13 @@
 package wbif.sjx.MIA.Object.References.Abstract;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import wbif.sjx.MIA.Object.Workspace;
+
+import java.util.LinkedHashMap;
 
 public abstract class ExportableRef extends Ref {
     private boolean exportGlobal = true; // This is mainly for the GUI
@@ -84,6 +90,7 @@ public abstract class ExportableRef extends Ref {
 
     }
 
+    public abstract void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer,Workspace> workspaces);
 
     public void setExportGlobal(boolean exportGlobal) {
         this.exportGlobal = exportGlobal;

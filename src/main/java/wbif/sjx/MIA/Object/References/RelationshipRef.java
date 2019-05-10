@@ -1,9 +1,13 @@
 package wbif.sjx.MIA.Object.References;
 
+import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.Workspace;
+
+import java.util.LinkedHashMap;
 
 public class RelationshipRef extends ExportableRef {
     private final String parentName;
@@ -23,6 +27,11 @@ public class RelationshipRef extends ExportableRef {
 
         element.setAttribute("CHILD_NAME",childName);
         element.setAttribute("PARENT_NAME",parentName);
+
+    }
+
+    @Override
+    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer, Workspace> workspaces) {
 
     }
 
