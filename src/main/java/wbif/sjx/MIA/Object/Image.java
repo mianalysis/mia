@@ -14,8 +14,8 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -159,7 +159,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
      */
     public void showMeasurements(Module module) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetImageMeasurementRefs();
+        ObjMeasurementRefCollection measRefs = module.updateAndGetImageMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();

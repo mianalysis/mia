@@ -16,8 +16,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Analysis.IntensityCalculator;
@@ -350,12 +351,12 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
@@ -489,7 +490,7 @@ public class MeasureObjectIntensity extends Module {
             double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
             String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
-            // Bin names must be in alphabetical order (for the MeasurementRefCollection TreeMap)
+            // Bin names must be in alphabetical order (for the ObjMeasurementRefCollection TreeMap)
             int nDigits = (int) Math.log10(bins.length)+1;
             StringBuilder stringBuilder = new StringBuilder();
             for (int i=0;i<nDigits;i++) stringBuilder.append("0");

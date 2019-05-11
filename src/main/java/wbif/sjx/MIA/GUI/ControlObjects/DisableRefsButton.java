@@ -3,8 +3,6 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
 
 import javax.swing.*;
 import java.awt.*;

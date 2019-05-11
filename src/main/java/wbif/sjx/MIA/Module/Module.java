@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.util.LinkedHashSet;
 
@@ -17,8 +18,8 @@ public abstract class Module implements Comparable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
-    protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
+    protected ImageMeasurementRefCollection imageMeasurementRefs = new ImageMeasurementRefCollection();
+    protected ObjMeasurementRefCollection objectMeasurementRefs = new ObjMeasurementRefCollection();
     protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
     protected RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
 
@@ -89,20 +90,20 @@ public abstract class Module implements Comparable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
+    public abstract ImageMeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
+    public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
     public abstract RelationshipRefCollection updateAndGetRelationships();
 
     public MeasurementRef getImageMeasurementRef(String name) {
-        return imageMeasurementRefs.getOrPut(name, MeasurementRef.Type.IMAGE);
+        return imageMeasurementRefs.getOrPut(name);
     }
 
     public MeasurementRef getObjectMeasurementRef(String name) {
-        return objectMeasurementRefs.getOrPut(name, MeasurementRef.Type.OBJECT);
+        return objectMeasurementRefs.getOrPut(name);
     }
 
     public MetadataRef getMetadataRef(String name) {

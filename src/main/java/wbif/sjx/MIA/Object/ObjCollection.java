@@ -4,8 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -206,7 +206,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
      */
     public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();

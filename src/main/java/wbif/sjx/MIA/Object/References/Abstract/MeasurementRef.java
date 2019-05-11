@@ -1,11 +1,8 @@
-package wbif.sjx.MIA.Object.References;
+package wbif.sjx.MIA.Object.References.Abstract;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.util.LinkedHashMap;
@@ -13,21 +10,16 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 01/12/2017.
  */
-public class MeasurementRef extends ExportableRef {
-    private String imageObjName = "";
-    private Type type;
-
-    public enum Type {IMAGE,OBJECT};
+public abstract class MeasurementRef extends ExportableRef {
+    protected String imageObjName = "";
 
 
-    public MeasurementRef(String name, Type type) {
+    public MeasurementRef(String name) {
         super(name);
-        this.type = type;
     }
 
-    public MeasurementRef(String name, Type type, String imageObjName) {
+    public MeasurementRef(String name, String imageObjName) {
         super(name);
-        this.type = type;
         this.imageObjName = imageObjName;
     }
 
@@ -38,14 +30,6 @@ public class MeasurementRef extends ExportableRef {
 
         element.setAttribute("IMAGE_OBJECT_NAME",imageObjName);
 
-        switch (type) {
-            case IMAGE:
-                element.setAttribute("TYPE","IMAGE");
-                break;
-            case OBJECT:
-                element.setAttribute("TYPE","OBJECTS");
-                break;
-        }
     }
 
     @Override
@@ -106,25 +90,6 @@ public class MeasurementRef extends ExportableRef {
     public MeasurementRef setImageObjName(String imageObjName) {
         this.imageObjName = imageObjName;
         return this;
-
-    }
-
-    public MeasurementRef duplicate() {
-        MeasurementRef newRef = new MeasurementRef(name,type);
-
-        newRef.setAvailable(isAvailable());
-        newRef.setImageObjName(imageObjName);
-        newRef.setDescription(getDescription());
-        newRef.setNickname(getNickname());
-        newRef.setExportGlobal(isExportGlobal());
-        newRef.setExportIndividual(isExportIndividual());
-        newRef.setExportMean(isExportMean());
-        newRef.setExportMin(isExportMin());
-        newRef.setExportMax(isExportMax());
-        newRef.setExportSum(isExportSum());
-        newRef.setExportStd(isExportStd());
-
-        return newRef;
 
     }
 

@@ -1,22 +1,22 @@
 package wbif.sjx.MIA.Object;
 
 import org.junit.Test;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 import static org.junit.Assert.*;
 
-public class MeasurementRefCollectionTest {
+public class ObjMeasurementRefCollectionTest {
     @Test
     public void get() {
         // Creating some measurements
-        MeasurementRef ref1 = new MeasurementRef("Ref 1", MeasurementRef.Type.OBJECT);
-        MeasurementRef ref2 = new MeasurementRef("Second ref", MeasurementRef.Type.OBJECT);
-        MeasurementRef ref3 = new MeasurementRef("Ref 3", MeasurementRef.Type.OBJECT);
-        MeasurementRef ref4 = new MeasurementRef("One more", MeasurementRef.Type.OBJECT);
+        ObjMeasurementRef ref1 = new ObjMeasurementRef("Ref 1");
+        ObjMeasurementRef ref2 = new ObjMeasurementRef("Second ref");
+        ObjMeasurementRef ref3 = new ObjMeasurementRef("Ref 3");
+        ObjMeasurementRef ref4 = new ObjMeasurementRef("One more");
 
         // Populating the collection
-        MeasurementRefCollection collection = new MeasurementRefCollection();
+        ObjMeasurementRefCollection collection = new ObjMeasurementRefCollection();
         collection.put(ref1.getName(),ref1);
         collection.put(ref2.getName(),ref2);
         collection.put(ref3.getName(),ref3);
@@ -35,13 +35,13 @@ public class MeasurementRefCollectionTest {
     @Test
     public void updateImageObjectName() {
         // Creating some measurements
-        MeasurementRef ref1 = new MeasurementRef("Ref 1", MeasurementRef.Type.OBJECT);
-        MeasurementRef ref2 = new MeasurementRef("Second ref", MeasurementRef.Type.OBJECT);
-        MeasurementRef ref3 = new MeasurementRef("Ref 3", MeasurementRef.Type.OBJECT);
-        MeasurementRef ref4 = new MeasurementRef("One more", MeasurementRef.Type.OBJECT);
+        ObjMeasurementRef ref1 = new ObjMeasurementRef("Ref 1");
+        ObjMeasurementRef ref2 = new ObjMeasurementRef("Second ref");
+        ObjMeasurementRef ref3 = new ObjMeasurementRef("Ref 3");
+        ObjMeasurementRef ref4 = new ObjMeasurementRef("One more");
 
         // Populating the collection
-        MeasurementRefCollection collection = new MeasurementRefCollection();
+        ObjMeasurementRefCollection collection = new ObjMeasurementRefCollection();
         collection.put(ref1.getName(),ref1);
         collection.put(ref2.getName(),ref2);
         collection.put(ref3.getName(),ref3);

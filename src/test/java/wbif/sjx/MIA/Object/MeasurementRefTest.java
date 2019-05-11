@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Object;
 
 import org.junit.Test;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import static org.junit.Assert.*;
 

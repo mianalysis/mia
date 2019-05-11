@@ -290,12 +290,12 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        String inputObjectsName1 = parameters.getValue(PARENT_OBJECTS);
 //        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
 //        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);

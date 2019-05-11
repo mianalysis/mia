@@ -16,7 +16,7 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ObjectClusterer;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.util.LinkedHashSet;
@@ -75,7 +75,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(measureImageTexture);
 
         // Checking the values for "Im1"
-        MeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name);
+        ObjMeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name);
         assertEquals(5,references1.size());
 
         String[] expectedNames1 = new String[]{MeasureImageIntensity.Measurements.MEAN,
@@ -89,7 +89,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Checking the values for "New_image"
-        MeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name);
+        ObjMeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name);
         assertEquals(9,references2.size());
 
         String[] expectedNames2 = new String[]{MeasureImageIntensity.Measurements.MEAN,
@@ -129,7 +129,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(measureImageTexture);
 
         // Checking the values for "Im1"
-        MeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name,measureImageIntensity2);
+        ObjMeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name,measureImageIntensity2);
         assertEquals(5,references1.size());
 
         String[] expectedNames1 = new String[]{MeasureImageIntensity.Measurements.MEAN,
@@ -143,7 +143,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Checking the values for "New_image"
-        MeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name,measureImageIntensity2);
+        ObjMeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name,measureImageIntensity2);
         assertEquals(0,references2.size());
 
     }
@@ -181,7 +181,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(measureObjectTexture);
 
         // Checking the values for "Im1"
-        MeasurementRefCollection references1 = modules.getObjectMeasurementRefs(obj1Name);
+        ObjMeasurementRefCollection references1 = modules.getObjectMeasurementRefs(obj1Name);
         assertEquals(10,references1.size());
 
         double[] offs = new double[]{1,0,0};
@@ -201,7 +201,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Checking the values for the second object set
-        MeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name);
+        ObjMeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name);
         assertEquals(5,references2.size());
 
         String[] expectedNames2 = new String[]{
@@ -248,7 +248,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(measureObjectTexture);
 
         // Checking the values for "Im1"
-        MeasurementRefCollection references1 = modules.getObjectMeasurementRefs(obj1Name,measureObjectShape);
+        ObjMeasurementRefCollection references1 = modules.getObjectMeasurementRefs(obj1Name,measureObjectShape);
         assertEquals(6,references1.size());
 
         String[] expectedNames1 = new String[]{MeasureObjectCentroid.Measurements.MEAN_X_PX,
@@ -263,7 +263,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Checking the values for the second object set
-        MeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name,measureObjectShape);
+        ObjMeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name,measureObjectShape);
         assertEquals(0,references2.size());
 
     }

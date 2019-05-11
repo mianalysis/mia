@@ -6,6 +6,7 @@ import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -68,12 +69,12 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                 ModuleCollection modules = GUI.getModules();
 
                 for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
-                    MeasurementRefCollection refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
+                    ObjMeasurementRefCollection refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
                     for (MeasurementRef ref:refs.values()) setStates(ref);
                 }
 
                 for (OutputImageP imageName:modules.getAvailableImages(null)) {
-                    MeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
+                    ObjMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
                     for (MeasurementRef ref:refs.values()) setStates(ref);
                 }
 

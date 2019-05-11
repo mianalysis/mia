@@ -12,8 +12,8 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.MIA.Process.Exporting.XLSXExporter;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -364,7 +364,7 @@ public class Exporter {
             for (OutputImageP availableImage : availableImages) {
                 String availableImageName = availableImage.getImageName();
 
-                MeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
+                ObjMeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
                 for (MeasurementRef imageMeasurement:availableMeasurements.values()) {
@@ -426,7 +426,7 @@ public class Exporter {
                     }
                 }
 
-                MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
+                ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementRefs == null) continue;
@@ -537,7 +537,7 @@ public class Exporter {
         for (Image image:images.values()) {
             String imageName = image.getName();
 
-            MeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
+            ObjMeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (imageMeasurementRefs == null) continue;
@@ -633,7 +633,7 @@ public class Exporter {
                 }
             }
 
-            MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
+            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementRefs == null) continue;
@@ -778,7 +778,7 @@ public class Exporter {
                 }
             }
 
-            MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
+            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementRefs == null) continue;

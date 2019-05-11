@@ -4,6 +4,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.util.Iterator;
 
@@ -228,12 +229,12 @@ public class ByMeasurement extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
@@ -242,7 +243,7 @@ public class ByMeasurement extends CoreFilter {
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
                 MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
