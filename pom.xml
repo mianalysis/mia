@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>wbif.sjx</groupId>
-    <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.9.29</version>
+    <artifactId>MIA_</artifactId>
+    <version>0.9.30</version>
     <packaging>jar</packaging>
-    <name>Modular_Image_Analysis</name>
+    <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
     <inceptionYear>2017</inceptionYear>
     <description>Image/object analysis using modularised components</description>
@@ -283,7 +283,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <finalName>Modular_Image_Analysis-${project.version}</finalName>
+                    <finalName>MIA_-${project.version}</finalName>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
