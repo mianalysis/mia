@@ -5,6 +5,7 @@
 package wbif.sjx.MIA;
 
 import ij.ImageJ;
+import ij.plugin.AVI_Reader;
 import ij.plugin.PlugIn;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;

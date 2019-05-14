@@ -26,8 +26,6 @@ import ome.units.quantity.Length;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
-import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
-import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
@@ -126,14 +124,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     public interface NameFormats {
+        String GENERIC = "Generic (from metadata)";
         String HUYGENS = "Huygens";
         String INCUCYTE_SHORT = "Incucyte short filename";
         String YOKOGAWA = "Yokogowa";
         String INPUT_FILE_PREFIX = "Input filename with prefix";
         String INPUT_FILE_SUFFIX = "Input filename with suffix";
-        String GENERIC = "Generic (from metadata)";
 
-        String[] ALL = new String[]{HUYGENS,INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX, GENERIC};
+        String[] ALL = new String[]{GENERIC, HUYGENS,INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
 
     }
 
@@ -301,31 +299,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         reader.close();
-
-        return ipl;
-
-    }
-
-    public ImagePlus getFFMPEGVideo(String path,@Nullable String[] dimRanges, @Nullable int[] crop, boolean localVerbose) throws Exception {
-        // The following works, but loads the entire video to RAM without an apparent way to prevent this
-        FFMpegLoader loader = new FFMpegLoader(path);
-        loader.start();
-
-        Frame frame = loader.grabFrame();
-        int width = loader.getImageWidth();
-        int height = loader.getImageHeight();
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2],true);
-        List<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toList());
-
-        ImagePlus ipl = IJ.createImage("Image",width, height,framesList.length,8);
-        for (int i=0;i<framesList[framesList.length-1];i++) {
-            if (!frames.contains(i)) continue;
-
-            ipl.setPosition(i+1);
-            ipl.setProcessor(new ByteProcessor(width,height,frame.imageBytes.get(0)));
-            frame = loader.grabFrame();
-
-        }
 
         return ipl;
 
@@ -534,7 +507,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
     }
 
-    private String getMetadataValues(MetadataRefCollection metadataRefs) {
+    public static String getMetadataValues(MetadataRefCollection metadataRefs) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<html>");
@@ -554,7 +527,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String compileGenericFilename(String genericFormat, HCMetadata metadata) {
+    public static String compileGenericFilename(String genericFormat, HCMetadata metadata) {
         String outputName = genericFormat;
 
         // Use regex to find instances of "${ }" and replace the contents with the appropriate metadata value
@@ -815,7 +788,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new IntegerP(FRAME_INTERVAL,this,1,"Frame interval to use for loading."));
         parameters.add(new BooleanP(LIMIT_FRAMES,this,false,"When \"true\" this will load a pre-determined number of frames.  When \"false\" it will load all the available images."));
         parameters.add(new IntegerP(FINAL_INDEX,this,1,"Final number in sequence to load."));
-        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.HUYGENS,NameFormats.ALL));
+        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.GENERIC,NameFormats.ALL));
         parameters.add(new StringP(COMMENT,this));
         parameters.add(new StringP(PREFIX,this));
         parameters.add(new StringP(SUFFIX,this));

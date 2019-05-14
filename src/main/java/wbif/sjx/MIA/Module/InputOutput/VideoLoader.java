@@ -1,14 +1,16 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-import javax.annotation.Nullable;import ij.IJ;
+import javax.annotation.Nullable;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.measure.Calibration;
+import ij.plugin.AVI_Reader;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
+import ij.process.ColorSpaceConverter;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
-import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
-import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -20,6 +22,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.HCMetadata;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -30,6 +33,8 @@ public class VideoLoader extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
+    public static final String GENERIC_FORMAT = "Generic format";
+    public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String PREFIX = "Prefix";
     public static final String SUFFIX = "Suffix";
     public static final String EXTENSION = "Extension";
@@ -49,25 +54,43 @@ public class VideoLoader extends Module {
         super(modules);
     }
 
+    public interface ImportModes {
+        String CURRENT_FILE = "Current file";
+        String MATCHING_FORMAT = "Matching format";
+        String SPECIFIC_FILE = "Specific file";
+
+        String[] ALL = new String[]{CURRENT_FILE, MATCHING_FORMAT, SPECIFIC_FILE};
+
+    }
+
+    public interface NameFormats {
+        String GENERIC = "Generic (from metadata)";
+        String INPUT_FILE_PREFIX = "Input filename with prefix";
+        String INPUT_FILE_SUFFIX = "Input filename with suffix";
+
+        String[] ALL = new String[]{GENERIC,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
+
+    }
+
 
     public Image getFFMPEGVideo(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
-        // Initialising the FFMPEG loader
-        FFMpegLoader loader = new FFMpegLoader(path);
-        loader.start();
+        // Getting the first frame as a virtual stack to act as a size reference
+        AVI_Reader aviReader = new AVI_Reader();
+        ImageStack ist = aviReader.makeStack(path,1,-1,true,false,false);
+
+        // Initialising the output ImagePlus using the first frame
+        int left = 0;
+        int top = 0;
+        int origWidth = ist.getWidth();
+        int origHeight = ist.getHeight();
+        int origFrames = ist.size();
+        int width = origWidth;
+        int height = origHeight;
 
         // Getting an ordered list of frames to be imported
         int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frameRange,true);
-        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,loader.getLengthInFrames());
+        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,origFrames);
         TreeSet<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toCollection(TreeSet::new));
-
-        // Initialising the output ImagePlus using the first frame
-        Frame frame = loader.grabFrame();
-        int left = 0;
-        int top = 0;
-        int origWidth = loader.getImageWidth();
-        int origHeight = loader.getImageHeight();
-        int width = origWidth;
-        int height = origHeight;
 
         if (crop != null) {
             left = crop[0];
@@ -76,40 +99,30 @@ public class VideoLoader extends Module {
             height = crop[3];
         }
 
-        ImagePlus ipl = IJ.createImage("Image",width, height,framesList.length,8);
+        ImagePlus ipl = IJ.createHyperStack("Image",width, height,3,1,framesList.length,8);
 
-        int progressCount = 0;
-        int totalFrames = loader.getLengthInFrames();
         int count = 0;
-        int total = frames.size();
-        for (int i=0;i<loader.getLengthInFrames();i++) {
-            writeMessage("Scanning frame "+(progressCount++)+" of "+totalFrames);
+        for (int frame:frames) {
+            writeMessage("Loading frame "+(count++)+" of "+origFrames);
 
-            // If all the frames have been loaded we can skip anything else
-            if (count == total) break;
+            // Loading frame
+            ImageStack currIst = aviReader.makeStack(path,frame,frame,false,false,false);
 
-            // Checking if the current frame is in the list to be imported
-            if (!frames.contains(i+1)) {
-                // We still need to progress to the next frame
-                frame.release();
-                frame = loader.grabFrame();
-                continue;
+            // Convert to composite
+            ImagePlus currIpl = CompositeConverter.makeComposite(new ImagePlus("Temp",currIst));
+
+            for (int c=1;c<=3;c++) {
+                currIpl.setPosition(c);
+                ipl.setPosition(c,1,count++);
+
+                ImageProcessor ipr = currIpl.getProcessor();
+                if (crop != null) {
+                    ipr.setRoi(left,top,width,height);
+                    ipr = ipr.crop();
+                }
+
+                ipl.setProcessor(ipr);
             }
-
-            count++;
-            ipl.setPosition(count);
-
-            writeMessage("Loading frame "+(count)+" of "+total);
-            ImageProcessor ipr = new ByteProcessor(origWidth,origHeight,frame.imageBytes.get(0));
-            if (crop != null) {
-                ipr.setRoi(left,top,width,height);
-                ipr = ipr.crop();
-            }
-            ipl.setProcessor(ipr);
-
-            frame.release();
-            frame = loader.grabFrame();
-
         }
 
         // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
@@ -119,6 +132,16 @@ public class VideoLoader extends Module {
         }
 
         return new Image(outputImageName,ipl);
+
+    }
+
+    public String getGenericName(HCMetadata metadata, String genericFormat) {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
+        String comment = metadata.getComment();
+        String filename = ImageLoader.compileGenericFilename(genericFormat, metadata);
+        return path + filename;
 
     }
 
@@ -144,23 +167,6 @@ public class VideoLoader extends Module {
 
     }
 
-    public interface ImportModes {
-        String CURRENT_FILE = "Current file";
-        String MATCHING_FORMAT = "Matching format";
-        String SPECIFIC_FILE = "Specific file";
-
-        String[] ALL = new String[]{CURRENT_FILE, MATCHING_FORMAT, SPECIFIC_FILE};
-
-    }
-
-    public interface NameFormats {
-        String INPUT_FILE_PREFIX = "Input filename with prefix";
-        String INPUT_FILE_SUFFIX = "Input filename with suffix";
-
-        String[] ALL = new String[]{INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
-
-    }
-
     @Override
     public String getTitle() {
         return "Load video";
@@ -183,6 +189,8 @@ public class VideoLoader extends Module {
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
         String nameFormat = parameters.getValue(NAME_FORMAT);
+
+        String genericFormat = parameters.getValue(GENERIC_FORMAT);
         String prefix = parameters.getValue(PREFIX);
         String suffix = parameters.getValue(SUFFIX);
         String ext = parameters.getValue(EXTENSION);
@@ -212,8 +220,13 @@ public class VideoLoader extends Module {
 
             case ImportModes.MATCHING_FORMAT:
                 switch (nameFormat) {
-                    case NameFormats.INPUT_FILE_PREFIX:
+                    case NameFormats.GENERIC:
                         HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
+                        metadata.setComment(prefix);
+                        pathName = getGenericName(metadata, genericFormat);
+                        break;
+                    case NameFormats.INPUT_FILE_PREFIX:
+                        metadata = (HCMetadata) workspace.getMetadata().clone();
                         metadata.setComment(prefix);
                         pathName = getPrefixName(metadata, seriesNumber,  includeSeriesNumber,ext);
                         break;
@@ -275,7 +288,9 @@ public class VideoLoader extends Module {
     protected void initialiseParameters() {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.INPUT_FILE_PREFIX,NameFormats.ALL));
+        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.GENERIC,NameFormats.ALL));
+        parameters.add(new StringP(GENERIC_FORMAT,this));
+        parameters.add(new TextDisplayP(AVAILABLE_METADATA_FIELDS,this));
         parameters.add(new StringP(PREFIX,this));
         parameters.add(new StringP(SUFFIX,this));
         parameters.add(new StringP(EXTENSION,this));
@@ -308,12 +323,18 @@ public class VideoLoader extends Module {
             case ImageLoader.ImportModes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(NAME_FORMAT));
                 switch ((String) parameters.getValue(NAME_FORMAT)) {
-                    case ImageLoader.NameFormats.INPUT_FILE_PREFIX:
+                    case NameFormats.GENERIC:
+                        returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+                        returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                        MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                        parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(ImageLoader.getMetadataValues(metadataRefs));
+                        break;
+                    case NameFormats.INPUT_FILE_PREFIX:
                         returnedParameters.add(parameters.getParameter(PREFIX));
                         returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
                         returnedParameters.add(parameters.getParameter(EXTENSION));
                         break;
-                    case ImageLoader.NameFormats.INPUT_FILE_SUFFIX:
+                    case NameFormats.INPUT_FILE_SUFFIX:
                         returnedParameters.add(parameters.getParameter(SUFFIX));
                         returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
                         returnedParameters.add(parameters.getParameter(EXTENSION));
