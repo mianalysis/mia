@@ -210,11 +210,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.scif</groupId>
-            <artifactId>scifio-javacv</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>mpicbg</groupId>
             <artifactId>mpicbg</artifactId>
             <version>1.1.1</version>
@@ -234,6 +229,19 @@
             <version>1.4.0</version>
             <scope>${myscope}</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.janelia</groupId>
+            <artifactId>H5J_Loader_Plugin</artifactId>
+            <version>1.0.7</version>
+            <scope>${myscope}</scope>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.bytedeco</groupId>-->
+            <!--<artifactId>javacv-platform</artifactId>-->
+            <!--<version>1.5</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.reflections</groupId>

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.VirtualStack;
 import ij.measure.Calibration;
 import ij.plugin.AVI_Reader;
 import ij.plugin.CompositeConverter;
@@ -11,6 +12,8 @@ import ij.process.ByteProcessor;
 import ij.process.ColorSpaceConverter;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
+import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
+import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -40,6 +43,7 @@ public class VideoLoader extends Module {
     public static final String EXTENSION = "Extension";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
+    public static final String CHANNELS = "Channels";
     public static final String FRAMES = "Frames";
     public static final String CROP_IMAGE = "Crop image";
     public static final String LEFT = "Left coordinate";
@@ -49,6 +53,7 @@ public class VideoLoader extends Module {
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
+
 
     public VideoLoader(ModuleCollection modules) {
         super(modules);
@@ -72,18 +77,20 @@ public class VideoLoader extends Module {
 
     }
 
-
-    public Image getFFMPEGVideo(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
+    public Image getAviVideo(String path, String outputImageName, String frameRange, String channelRange, @Nullable int[] crop) throws Exception {
         // Getting the first frame as a virtual stack to act as a size reference
         AVI_Reader aviReader = new AVI_Reader();
-        ImageStack ist = aviReader.makeStack(path,1,-1,true,false,false);
+        ImageStack ist = aviReader.makeStack(path,1,0,true,false,false);
+
+        // Testing if AVi_Reader was able to load the video.  If not, return null
+        if (ist == null) return null;
 
         // Initialising the output ImagePlus using the first frame
         int left = 0;
         int top = 0;
         int origWidth = ist.getWidth();
         int origHeight = ist.getHeight();
-        int origFrames = ist.size();
+        int origFrames = ist.getSize();
         int width = origWidth;
         int height = origHeight;
 
@@ -92,6 +99,10 @@ public class VideoLoader extends Module {
         if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,origFrames);
         TreeSet<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toCollection(TreeSet::new));
 
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(channelRange,true);
+        if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,3);
+        TreeSet<Integer> channels = Arrays.stream(channelsList).boxed().collect(Collectors.toCollection(TreeSet::new));
+
         if (crop != null) {
             left = crop[0];
             top = crop[1];
@@ -99,11 +110,11 @@ public class VideoLoader extends Module {
             height = crop[3];
         }
 
-        ImagePlus ipl = IJ.createHyperStack("Image",width, height,3,1,framesList.length,8);
+        ImagePlus ipl = IJ.createHyperStack("Image",width, height,channelsList.length,1,framesList.length,8);
 
-        int count = 0;
+        int count = 1;
         for (int frame:frames) {
-            writeMessage("Loading frame "+(count++)+" of "+origFrames);
+            writeMessage("Loading frame "+(count)+" of "+origFrames);
 
             // Loading frame
             ImageStack currIst = aviReader.makeStack(path,frame,frame,false,false,false);
@@ -111,9 +122,10 @@ public class VideoLoader extends Module {
             // Convert to composite
             ImagePlus currIpl = CompositeConverter.makeComposite(new ImagePlus("Temp",currIst));
 
-            for (int c=1;c<=3;c++) {
-                currIpl.setPosition(c);
-                ipl.setPosition(c,1,count++);
+            for (int channel:channels) {
+                currIpl.setPosition(channel);
+                System.out.println("Setting "+channel+"_"+1+"_"+count);
+                ipl.setPosition(channel,1,count);
 
                 ImageProcessor ipr = currIpl.getProcessor();
                 if (crop != null) {
@@ -122,7 +134,86 @@ public class VideoLoader extends Module {
                 }
 
                 ipl.setProcessor(ipr);
+
             }
+
+            count++;
+
+        }
+
+        ipl.setPosition(1,1,1);
+        ipl.updateChannelAndDraw();
+
+        // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
+        if (((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {
+            ConvertStackToTimeseries.process(ipl);
+            ipl.getCalibration().pixelDepth = 1;
+        }
+
+        return new Image(outputImageName,ipl);
+
+    }
+
+    public Image getFFMPEGVideo(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
+        // Initialising the FFMPEG loader
+        FFMpegLoader loader = new FFMpegLoader(path);
+        loader.start();
+
+        // Getting an ordered list of frames to be imported
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frameRange,true);
+        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,loader.getLengthInFrames());
+        TreeSet<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toCollection(TreeSet::new));
+
+        // Initialising the output ImagePlus using the first frame
+        Frame frame = loader.grabFrame();
+        int left = 0;
+        int top = 0;
+        int origWidth = loader.getImageWidth();
+        int origHeight = loader.getImageHeight();
+        int width = origWidth;
+        int height = origHeight;
+
+        if (crop != null) {
+            left = crop[0];
+            top = crop[1];
+            width = crop[2];
+            height = crop[3];
+        }
+
+        ImagePlus ipl = IJ.createImage("Image",width, height,framesList.length,8);
+
+        int progressCount = 0;
+        int totalFrames = loader.getLengthInFrames();
+        int count = 0;
+        int total = frames.size();
+        for (int i=0;i<loader.getLengthInFrames();i++) {
+            writeMessage("Scanning frame "+(progressCount++)+" of "+totalFrames);
+
+            // If all the frames have been loaded we can skip anything else
+            if (count == total) break;
+
+            // Checking if the current frame is in the list to be imported
+            if (!frames.contains(i+1)) {
+                // We still need to progress to the next frame
+                frame.release();
+                frame = loader.grabFrame();
+                continue;
+            }
+
+            count++;
+            ipl.setPosition(count);
+
+            writeMessage("Loading frame "+(count)+" of "+total);
+            ImageProcessor ipr = new ByteProcessor(origWidth,origHeight,frame.imageBytes.get(0));
+            if (crop != null) {
+                ipr.setRoi(left,top,width,height);
+                ipr = ipr.crop();
+            }
+            ipl.setProcessor(ipr);
+
+            frame.release();
+            frame = loader.grabFrame();
+
         }
 
         // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
@@ -195,6 +286,7 @@ public class VideoLoader extends Module {
         String suffix = parameters.getValue(SUFFIX);
         String ext = parameters.getValue(EXTENSION);
         boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
+        String channelRange = parameters.getValue(CHANNELS);
         String frameRange = parameters.getValue(FRAMES);
         boolean cropImage = parameters.getValue(CROP_IMAGE);
         int left = parameters.getValue(LEFT);
@@ -246,9 +338,18 @@ public class VideoLoader extends Module {
 
         if (pathName == null) return false;
 
+        String extension = FilenameUtils.getExtension(pathName);
         Image outputImage = null;
         try {
-            outputImage = getFFMPEGVideo(pathName,outputImageName,frameRange,crop);
+            // First, trying to load via AVI Reader (since this can split channels)
+            outputImage = getAviVideo(pathName,outputImageName,frameRange,channelRange,crop);
+
+            // If this has failed (outputImage is null) try FFMPEG loading
+            if (outputImage == null) {
+                System.err.println("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).");
+                outputImage = getFFMPEGVideo(pathName,outputImageName,frameRange,crop);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -296,6 +397,7 @@ public class VideoLoader extends Module {
         parameters.add(new StringP(EXTENSION,this));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(FRAMES,this,"1-end"));
         parameters.add(new BooleanP(CROP_IMAGE, this, false));
         parameters.add(new IntegerP(LEFT, this,0));
@@ -347,6 +449,7 @@ public class VideoLoader extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(CHANNELS));
         returnedParameters.add(parameters.getParameter(FRAMES));
 
         returnedParameters.add(parameters.getParameter(CROP_IMAGE));
