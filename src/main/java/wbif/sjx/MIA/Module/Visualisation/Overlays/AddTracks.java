@@ -53,7 +53,7 @@ public class AddTracks extends Module {
     }
 
 
-    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
+    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -160,7 +160,7 @@ public class AddTracks extends Module {
             float hue = hues.get(object.getID());
             Color colour = ColourFactory.getColour(hue);
 
-            addTrackOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
+            addOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
 
             writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 

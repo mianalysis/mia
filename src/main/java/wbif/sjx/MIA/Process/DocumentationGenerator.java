@@ -10,7 +10,9 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -259,7 +261,11 @@ public class DocumentationGenerator {
         LinkedHashSet<Module> modules = new LinkedHashSet<>();
         for (Class<? extends Module> clazz:clazzes) {
             try {
-                Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(new ModuleCollection());
+                // Skip any abstract Modules
+                if (Modifier.isAbstract(clazz.getModifiers())) continue;
+
+                Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                modules.add((Module) constructor.newInstance(new ModuleCollection()));
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
