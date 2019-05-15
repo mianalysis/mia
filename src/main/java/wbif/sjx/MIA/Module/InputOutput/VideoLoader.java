@@ -25,14 +25,17 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.HCMetadata;
 
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.INPUT_SEPARATOR;
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 
 public class VideoLoader extends Module {
+    public static final String LOADER_SEPARATOR = "Core video loading controls";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
@@ -43,6 +46,8 @@ public class VideoLoader extends Module {
     public static final String EXTENSION = "Extension";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
+
+    public static final String RANGE_SEPARATOR = "Dimension ranges and cropping";
     public static final String CHANNELS = "Channels";
     public static final String FRAMES = "Frames";
     public static final String CROP_IMAGE = "Crop image";
@@ -50,6 +55,8 @@ public class VideoLoader extends Module {
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
+
+    public static final String CALIBRATION_SEPARATOR = "Spatial calibration";
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
@@ -116,15 +123,12 @@ public class VideoLoader extends Module {
         for (int frame:frames) {
             writeMessage("Loading frame "+(count)+" of "+origFrames);
 
-            // Loading frame
-            ImageStack currIst = aviReader.makeStack(path,frame,frame,false,false,false);
-
-            // Convert to composite
+            // Loading frame and converting to composite format
+            ImageStack currIst = new AVI_Reader().makeStack(path,frame,frame,false,false,false);
             ImagePlus currIpl = CompositeConverter.makeComposite(new ImagePlus("Temp",currIst));
 
             for (int channel:channels) {
-                currIpl.setPosition(channel);
-                System.out.println("Setting "+channel+"_"+1+"_"+count);
+                currIpl.setPosition(channel,1,1);
                 ipl.setPosition(channel,1,count);
 
                 ImageProcessor ipr = currIpl.getProcessor();
@@ -225,6 +229,46 @@ public class VideoLoader extends Module {
         return new Image(outputImageName,ipl);
 
     }
+
+//    public Image getFFMPEGVideo(String path, String outputImageName, String frameRange, @Nullable int[] crop) {
+//        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(path);
+//        try {
+//            grabber.start();
+//            Frame frame = grabber.grab();
+//            Buffer[] buffers = frame.image;
+//            Indexer indexer = frame.createIndexer();
+//
+//            OpenCVFrameConverter converter = new OpenCVFrameConverter.ToIplImage();
+//            IplImage iplImage = converter.convertToIplImage(frame);
+//
+//
+////            IplImage iplImage = new IplImage(grabber.);
+////            System.out.println(iplImage);
+//
+////            Arrays.stream(indexer.sizes()).forEach(System.out::println);
+////
+////            ImagePlus ipl = IJ.createHyperStack("Demo",frame.imageWidth,frame.imageHeight,3,1,1,8);
+////
+////            for (int c=0;c<indexer.channels();c++) {
+////                for (int x = 0; x < indexer.width(); x++) {
+////                    System.out.println(c+"_"+x);
+////                    for (int y = 0; y < indexer.height(); y++) {
+////                        double val = indexer.getDouble(y, x, c);
+////                        ipl.setPosition(c+1,1,1);
+////                        ipl.getProcessor().setf(x, y, (int) Math.round(val));
+////                    }
+////                }
+////            }
+////
+////            ipl.show();
+////            IJ.runMacro("waitForUser");
+//
+//        } catch (FrameGrabber.Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//
+//    }
 
     public String getGenericName(HCMetadata metadata, String genericFormat) {
         String absolutePath = metadata.getFile().getAbsolutePath();
@@ -384,9 +428,10 @@ public class VideoLoader extends Module {
         return true;
 
     }
-
+    
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.GENERIC,NameFormats.ALL));
@@ -397,6 +442,8 @@ public class VideoLoader extends Module {
         parameters.add(new StringP(EXTENSION,this));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(FILE_PATH, this));
+
+        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(FRAMES,this,"1-end"));
         parameters.add(new BooleanP(CROP_IMAGE, this, false));
@@ -404,6 +451,8 @@ public class VideoLoader extends Module {
         parameters.add(new IntegerP(TOP, this,0));
         parameters.add(new IntegerP(WIDTH, this,512));
         parameters.add(new IntegerP(HEIGHT, this,512));
+
+        parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR,this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1.0));
         parameters.add(new DoubleP(Z_CAL, this, 1.0));
@@ -414,6 +463,7 @@ public class VideoLoader extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(LOADER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
@@ -449,6 +499,7 @@ public class VideoLoader extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHANNELS));
         returnedParameters.add(parameters.getParameter(FRAMES));
 
@@ -460,6 +511,7 @@ public class VideoLoader extends Module {
             returnedParameters.add(parameters.getParameter(HEIGHT));
         }
 
+        returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SET_CAL));
         if (parameters.getValue(SET_CAL)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));

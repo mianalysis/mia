@@ -102,6 +102,11 @@
             <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
             <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
         </repository>
+
+<!--        <repository>-->
+<!--            <id>ossrh</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </repository>-->
     </repositories>
 
     <dependencies>
@@ -237,11 +242,17 @@
             <scope>${myscope}</scope>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.bytedeco</groupId>-->
-            <!--<artifactId>javacv-platform</artifactId>-->
-            <!--<version>1.5</version>-->
-        <!--</dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.bytedeco</groupId>-->
+<!--            <artifactId>javacv-platform</artifactId>-->
+<!--            <version>1.5</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.joheras</groupId>-->
+<!--            <artifactId>IJ-OpenCV</artifactId>-->
+<!--            <version>1.2.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.reflections</groupId>
