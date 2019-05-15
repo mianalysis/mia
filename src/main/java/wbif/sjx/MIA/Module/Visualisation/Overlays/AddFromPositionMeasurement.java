@@ -53,7 +53,7 @@ public class AddFromPositionMeasurement extends Module {
     }
 
 
-    public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
@@ -165,7 +165,7 @@ public class AddFromPositionMeasurement extends Module {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
+                    addOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
                     writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
                 };

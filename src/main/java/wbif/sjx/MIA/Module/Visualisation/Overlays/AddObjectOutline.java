@@ -71,7 +71,7 @@ public class AddObjectOutline extends Module {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
+                    addOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
                 };
                 pool.submit(task);
@@ -84,15 +84,10 @@ public class AddObjectOutline extends Module {
         }
     }
 
-    public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
-        // Still need to get mean coords for label
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true, false);
         int t = object.getT() + 1;
-
         if (renderInAllFrames) t = 0;
 
         // Running through each slice of this object

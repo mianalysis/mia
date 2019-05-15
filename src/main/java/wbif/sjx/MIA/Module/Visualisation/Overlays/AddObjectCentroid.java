@@ -65,7 +65,7 @@ public class AddObjectCentroid extends Module {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addCentroidOverlay(object, finalIpl, colour, renderInAllFrames);
+                    addOverlay(object, finalIpl, colour, renderInAllFrames);
 
                 };
                 pool.submit(task);
@@ -79,7 +79,7 @@ public class AddObjectCentroid extends Module {
         }
     }
 
-    public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double xMean = object.getXMean(true);

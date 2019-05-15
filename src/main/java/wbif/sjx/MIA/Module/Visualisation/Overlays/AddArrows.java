@@ -75,7 +75,7 @@ public class AddArrows extends Module {
     }
 
 
-    public static void addArrowsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double oriRads = Math.toRadians(orientation);
@@ -202,7 +202,7 @@ public class AddArrows extends Module {
 
                     length = length*lengthScale;
 
-                    addArrowsOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
+                    addOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
                     writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
