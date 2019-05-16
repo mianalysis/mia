@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
@@ -59,41 +60,36 @@ public class ExportCheck extends JCheckBox implements ActionListener {
         }
     }
 
-    private void setStates(Ref ref) {
-        switch (statistic) {
-            case INDIVIDUAL:
-                reference.setExportIndividual(isSelected());
-                break;
-        }
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (type) {
             case SINGLE:
-                setStates(reference);
+                if (reference instanceof SummaryRef) {
+                    setStates((SummaryRef) reference);
+                } else {
+                    reference.setExportIndividual(isSelected());
+                }
                 break;
             case ALL:
                 ModuleCollection modules = GUI.getModules();
 
                 for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
                     ObjMeasurementRefCollection refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
-                    for (Ref ref:refs.values()) setStates(ref);
+                    for (SummaryRef ref:refs.values()) setStates(ref);
                 }
 
                 for (OutputImageP imageName:modules.getAvailableImages(null)) {
                     ImageMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
-                    for (Ref ref:refs.values()) setStates(ref);
+                    for (Ref ref:refs.values()) ref.setExportIndividual(isSelected());
                 }
 
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs();
-                for (Ref ref:metadataRefs.values()) setStates(ref);
+                for (Ref ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
 
                 RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
                 for (SummaryRef ref:relationshipRefs.values()) setStates(ref);
 
-                setStates(reference);
-                
                 break;
         }
 
