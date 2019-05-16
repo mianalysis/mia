@@ -105,10 +105,9 @@ public class BinObjectsByMeasurement extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String name = getFullName(measurement);
-        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name,type);
+        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
         binMeasurement.setImageObjName(inputObjectsName);
         binMeasurement.setAvailable(true);
 

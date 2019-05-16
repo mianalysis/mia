@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 public abstract class MeasurementRef extends ExportableRef {
     protected String imageObjName = "";
 
-
     public MeasurementRef(String name) {
         super(name);
     }

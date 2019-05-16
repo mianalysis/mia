@@ -147,10 +147,9 @@ public class ObjectMeasurementCalculator extends Module {
 
         // Creating new MeasurementRef
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        objectMeasurementRefs.getOrPut(measurementName,type).setImageObjName(inputObjectsName).setAvailable(true);
+        objectMeasurementRefs.getOrPut(measurementName).setImageObjName(inputObjectsName).setAvailable(true);
 
         return objectMeasurementRefs;
 

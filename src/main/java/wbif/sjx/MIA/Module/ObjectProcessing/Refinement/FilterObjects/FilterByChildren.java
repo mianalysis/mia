@@ -7,9 +7,8 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 
-public class WithWithoutParent extends CoreFilter {
+public class FilterByChildren extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -17,40 +16,26 @@ public class WithWithoutParent extends CoreFilter {
 
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
-    public static final String PARENT_OBJECT = "Parent object";
+    public static final String CHILD_OBJECTS = "Child objects";
+    public static final String REFERENCE_VALUE = "Reference value";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public WithWithoutParent(ModuleCollection modules) {
+    public FilterByChildren(ModuleCollection modules) {
         super(modules);
     }
 
 
-    public interface FilterMethods {
-        String WITH_PARENT = "Remove objects with parent";
-        String WITHOUT_PARENT = "Remove objects without parent";
-
-        String[] ALL = new String[]{WITH_PARENT,WITHOUT_PARENT};
-
-    }
-
-
-    public static String getMetadataName(String inputObjectsName, String filterMethod, String parentObjectsName) {
+    public String getMetadataName(String inputObjectsName, String filterMethod, String childObjectsName, String referenceValue) {
         String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
 
-        switch (filterMethod) {
-            case FilterMethods.WITH_PARENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITH " + parentObjectsName + " PARENT";
-            case FilterMethods.WITHOUT_PARENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + parentObjectsName + " PARENT";
-            default:
-                return "";
-        }
+        return "FILTER // NUM_" + inputObjectsName + " " + filterMethodSymbol + " " + referenceValue + "_" + childObjectsName;
+
     }
 
 
     @Override
     public String getTitle() {
-        return "With / without parent";
+        return "Number of children";
     }
 
     @Override
@@ -73,7 +58,8 @@ public class WithWithoutParent extends CoreFilter {
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String filterMethod = parameters.getValue(FILTER_METHOD);
-        String parentObjectName = parameters.getValue(PARENT_OBJECT);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        double referenceValue = parameters.getValue(REFERENCE_VALUE);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
@@ -85,22 +71,19 @@ public class WithWithoutParent extends CoreFilter {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
+            ObjCollection childObjects = inputObject.getChildren(childObjectsName);
 
-            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
-            boolean toRemove = false;
-            switch (filterMethod) {
-                case FilterMethods.WITH_PARENT:
-                    if (parents.get(parentObjectName) != null) {
-                        count++;
-                        if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    }
-                    break;
-                case FilterMethods.WITHOUT_PARENT:
-                    if (parents.get(parentObjectName) == null) {
-                        count++;
-                        if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    }
-                    break;
+            // Removing the object if it has no children
+            if (childObjects == null) {
+                count++;
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                continue;
+            }
+
+            // Removing the object if it has too few children
+            if (testFilter(childObjects.size(),referenceValue,filterMethod)) {
+                count++;
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
 
@@ -108,7 +91,7 @@ public class WithWithoutParent extends CoreFilter {
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectName);
+        String metadataName = getMetadataName(inputObjectsName,filterMethod,childObjectsName,String.valueOf(referenceValue));
         workspace.getMetadata().put(metadataName,count);
 
         // Showing objects
@@ -126,8 +109,9 @@ public class WithWithoutParent extends CoreFilter {
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
-        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITH_PARENT, FilterMethods.ALL));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
+        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.EQUAL_TO, FilterMethods.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
+        parameters.add(new DoubleP(REFERENCE_VALUE, this,1d));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
     }
@@ -146,9 +130,10 @@ public class WithWithoutParent extends CoreFilter {
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
-        returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
+        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+        returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
         returnedParameters.add(parameters.getParameter(STORE_RESULTS));
-        ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
+        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         return returnedParameters;
 
@@ -172,8 +157,7 @@ public class WithWithoutParent extends CoreFilter {
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
@@ -189,9 +173,10 @@ public class WithWithoutParent extends CoreFilter {
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filterMethod = parameters.getValue(FILTER_METHOD);
-            String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+            String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+            String referenceValue = parameters.getValue(REFERENCE_VALUE).toString();
 
-            String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectsName);
+            String metadataName = getMetadataName(inputObjectsName,filterMethod,childObjectsName,referenceValue);
 
             metadataRefs.getOrPut(metadataName).setAvailable(true);
 

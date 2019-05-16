@@ -364,7 +364,7 @@ public class Exporter {
             for (OutputImageP availableImage : availableImages) {
                 String availableImageName = availableImage.getImageName();
 
-                ObjMeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
+                ImageMeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
                 for (MeasurementRef imageMeasurement:availableMeasurements.values()) {
@@ -537,7 +537,7 @@ public class Exporter {
         for (Image image:images.values()) {
             String imageName = image.getName();
 
-            ObjMeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
+            ImageMeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (imageMeasurementRefs == null) continue;

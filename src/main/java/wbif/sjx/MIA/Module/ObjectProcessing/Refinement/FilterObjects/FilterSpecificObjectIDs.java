@@ -1,14 +1,21 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
+import ij.ImagePlus;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
-import java.util.Iterator;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class WithWithoutMeasurement extends CoreFilter {
+public class FilterSpecificObjectIDs extends CoreFilter implements ActionListener {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -17,12 +24,20 @@ public class WithWithoutMeasurement extends CoreFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String MEASUREMENT = "Measurement to filter on";
+    public static final String SHOW_IMAGE = "Show image";
+    public static final String DISPLAY_IMAGE_NAME = "Image to display";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public WithWithoutMeasurement(ModuleCollection modules) {
+    private static final String OK = "OK";
+
+    private JFrame frame;
+    private JTextField numbersField;
+    private int elementHeight = 30;
+    private boolean active = false;
+
+    public FilterSpecificObjectIDs(ModuleCollection modules) {
         super(modules);
     }
-
 
     public interface FilterMethods {
         String WITH_MEASUREMENT = "Remove objects with measurement";
@@ -45,9 +60,89 @@ public class WithWithoutMeasurement extends CoreFilter {
     }
 
 
+    private void showOptionsPanel() {
+        active = true;
+        frame = new JFrame();
+        frame.setAlwaysOnTop(true);
+
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5,5,5,5);
+
+        // Header panel
+        JLabel headerLabel = new JLabel("<html>Specify object IDs to remove (comma separated)</html>");
+        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        headerLabel.setPreferredSize(new Dimension(300,elementHeight));
+        frame.add(headerLabel,c);
+
+        numbersField = new JTextField();
+        numbersField.setPreferredSize(new Dimension(200, elementHeight));
+        c.gridy++;
+        c.insets = new Insets(0, 5, 5, 5);
+        frame.add(numbersField,c);
+
+        JButton okButton = new JButton(OK);
+        okButton.addActionListener(this);
+        okButton.setActionCommand(OK);
+        okButton.setPreferredSize(new Dimension(300,elementHeight));
+        c.gridy++;
+        frame.add(okButton,c);
+
+        frame.pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
+        frame.setVisible(true);
+
+    }
+
+    public int filter(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, @Nullable Image image) {
+        ImagePlus ipl = null;
+        if (image != null) {
+            ipl = image.getImagePlus().duplicate();
+            ipl.show();
+        }
+
+        showOptionsPanel();
+
+        // All the while the control is open, do nothing
+        while (active) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(),true);
+
+        frame.dispose();
+        frame = null;
+        if (ipl != null) ipl.close();
+
+        int count = 0;
+        for (int id:ids) {
+            Obj obj = inputObjects.get(id);
+            count++;
+            if (remove) {
+                obj.removeRelationships();
+                if (outputObjects != null) {
+                    obj.setName(outputObjects.getName());
+                    outputObjects.add(obj);
+                }
+                inputObjects.remove(id);
+            }
+        }
+
+        return count;
+
+    }
+
     @Override
     public String getTitle() {
-        return "With / without measurement";
+        return "Objects with specific IDs";
     }
 
     @Override
@@ -71,25 +166,17 @@ public class WithWithoutMeasurement extends CoreFilter {
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String filterMethod = parameters.getValue(FILTER_METHOD);
         String measName = parameters.getValue(MEASUREMENT);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
+        String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
+        Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
-        int count = 0;
-        Iterator<Obj> iterator = inputObjects.values().iterator();
-        while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
-
-            // Removing the object if it has no children
-            Measurement measurement = inputObject.getMeasurement(measName);
-            if (measurement == null || Double.isNaN(measurement.getValue())) {
-                count++;
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
-            }
-        }
+        int count = filter(inputObjects,outputObjects,remove,displayImage);
 
         // If moving objects, add them to the workspace
         if (moveObjects) workspace.addObjects(outputObjects);
@@ -115,6 +202,8 @@ public class WithWithoutMeasurement extends CoreFilter {
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITHOUT_MEASUREMENT, FilterMethods.ALL));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new BooleanP(SHOW_IMAGE, this, true));
+        parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
     }
@@ -135,6 +224,10 @@ public class WithWithoutMeasurement extends CoreFilter {
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
         returnedParameters.add(parameters.getParameter(MEASUREMENT));
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+        if (parameters.getValue(SHOW_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE_NAME));
+        }
 
         returnedParameters.add(parameters.getParameter(STORE_RESULTS));
 
@@ -160,8 +253,7 @@ public class WithWithoutMeasurement extends CoreFilter {
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
@@ -191,5 +283,14 @@ public class WithWithoutMeasurement extends CoreFilter {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case (OK):
+                active = false;
+                break;
+        }
     }
 }

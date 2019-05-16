@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -53,7 +54,7 @@ public class HelpArea extends JTextPane {
 
         }
 
-        ObjMeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
         if (imageMeasRefs != null && imageMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>IMAGE MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");

@@ -939,14 +939,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         imageMeasurementRefs.setAllAvailable(false);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FROM_REFERENCE:
-                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT,type).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP,type).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH,type).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT,type).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageObjName(outputImageName);
 
                 break;
         }

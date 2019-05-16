@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class OnImageEdge extends CoreFilter {
+public class FilterOnImageEdge extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -20,7 +20,7 @@ public class OnImageEdge extends CoreFilter {
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public OnImageEdge(ModuleCollection modules) {
+    public FilterOnImageEdge(ModuleCollection modules) {
         super(modules);
     }
 
@@ -164,8 +164,7 @@ public class OnImageEdge extends CoreFilter {
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

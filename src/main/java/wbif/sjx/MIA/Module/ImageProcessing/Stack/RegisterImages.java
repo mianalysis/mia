@@ -660,14 +660,13 @@ public class RegisterImages extends Module implements Interactable {
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_X,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageObjName(outputImageName);
 
         }
 

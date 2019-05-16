@@ -392,73 +392,72 @@ public class FitGaussian2D extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX,type);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.Y0_PX,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y0_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.Z0_SLICE,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z0_SLICE);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_X_PX,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_X_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_Y_PX,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_Y_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_MEAN_PX,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_MEAN_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X0_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y0_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z0_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_X_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.A_0,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.A_0);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.A_BG,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.A_BG);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.THETA,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.THETA);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ELLIPTICITY,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ELLIPTICITY);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.RESIDUAL,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.RESIDUAL);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 

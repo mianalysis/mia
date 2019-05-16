@@ -627,8 +627,7 @@ public class FilterObjects extends Module implements ActionListener {
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

@@ -263,19 +263,18 @@ public class CalculateMeasurementPeriodogram extends Module {
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         switch ((String) parameters.getValue(REPORTING_MODE)) {
             case ReportingModes.KEY_FREQUENCIES:
                 int numberOfPeaks = parameters.getValue(NUMBER_OF_PEAKS_TO_REPORT);
                 for (int i = 0; i < numberOfPeaks; i++) {
                     String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
-                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setAvailable(true);
 
                     name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
-                    reference = objectMeasurementRefs.getOrPut(name,type);
+                    reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setAvailable(true);
 
@@ -287,7 +286,7 @@ public class CalculateMeasurementPeriodogram extends Module {
                 double[] freq = PeriodogramCalculator.calculateFrequency(1,numberOfBins);
                 for (int i=0;i<numberOfBins;i++) {
                     String name = getWholeSpectrumFullName(measurement, freq[i]);
-                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setAvailable(true);
                 }

@@ -74,7 +74,7 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                 }
 
                 for (OutputImageP imageName:modules.getAvailableImages(null)) {
-                    ObjMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
+                    ImageMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
                     for (MeasurementRef ref:refs.values()) setStates(ref);
                 }
 

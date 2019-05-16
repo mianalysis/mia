@@ -167,13 +167,12 @@ public class CalculateStatsForChildren extends Module {
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         objectMeasurementRefs.setAllAvailable(false);
 
         if (parameters.getValue(CALCULATE_MEAN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MEAN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean value of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -182,7 +181,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_STD)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.STD);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Standard deviation of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -191,7 +190,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MIN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MIN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Minimum value of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -200,7 +199,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MAX)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MAX);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Maximum value of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -209,7 +208,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_SUM)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.SUM);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Summed value of measurement, \"" +measurementName+"\", for child objects, \""+

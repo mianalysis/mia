@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.util.Iterator;
 
-public class ByMeasurement extends CoreFilter {
+public class FilterByMeasurement extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -26,7 +26,7 @@ public class ByMeasurement extends CoreFilter {
     public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public ByMeasurement(ModuleCollection modules) {
+    public FilterByMeasurement(ModuleCollection modules) {
         super(modules);
     }
 
@@ -246,8 +246,7 @@ public class ByMeasurement extends CoreFilter {
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

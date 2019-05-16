@@ -275,7 +275,7 @@ public class HoughObjectDetection extends Module {
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
-        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE, MeasurementRef.Type.OBJECT);
+        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
         score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         score.setAvailable(true);
 

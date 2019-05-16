@@ -229,7 +229,6 @@ public class CalculateNearestNeighbour extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String neighbourObjectsName = null;
         switch (relationshipMode) {
@@ -243,17 +242,17 @@ public class CalculateNearestNeighbour extends Module {
 
 
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
-        reference = objectMeasurementRefs.getOrPut(name,type);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
-        reference = objectMeasurementRefs.getOrPut(name,type);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setAvailable(true);
 

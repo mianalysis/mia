@@ -476,7 +476,6 @@ public class MeasureRelativeOrientation extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String reference = getMeasurementRef();
 
@@ -506,7 +505,7 @@ public class MeasureRelativeOrientation extends Module {
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
-                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName,type);
+                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
                 measurementReference.setImageObjName(inputObjectsName);
                 measurementReference.setAvailable(true);
 

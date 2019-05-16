@@ -408,21 +408,20 @@ public class RunTrackMate extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX,type);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setImageObjName(outputSpotObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
         reference.setImageObjName(outputSpotObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX,type);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
         reference.setImageObjName(outputSpotObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),type);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
         reference.setImageObjName(outputSpotObjectsName);
         reference.setAvailable(true);
 

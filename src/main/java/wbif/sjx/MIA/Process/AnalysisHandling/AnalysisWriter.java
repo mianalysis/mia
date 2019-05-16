@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
@@ -120,7 +121,7 @@ public class AnalysisWriter {
 
             // Adding measurement references from this module
             Element measurementsElement = doc.createElement("MEASUREMENTS");
-            ObjMeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
+            ImageMeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
             measurementsElement = prepareRefsXML(doc, measurementsElement,imageReferences,"MEASUREMENT");
             ObjMeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
             measurementsElement = prepareRefsXML(doc, measurementsElement,objectReferences,"MEASUREMENT");

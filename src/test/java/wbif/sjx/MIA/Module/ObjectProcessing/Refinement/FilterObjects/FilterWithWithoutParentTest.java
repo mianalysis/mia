@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
@@ -9,15 +8,15 @@ import wbif.sjx.MIA.Object.*;
 
 import static org.junit.Assert.*;
 
-public class WithWithoutParentTest extends ModuleTest {
+public class FilterWithWithoutParentTest extends ModuleTest {
     @Override
     public void testGetTitle() {
-        assertNotNull(new WithWithoutParent(null).getTitle());
+        assertNotNull(new FilterWithWithoutParent(null).getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new WithWithoutParent(null).getHelp());
+        assertNotNull(new FilterWithWithoutParent(null).getHelp());
     }
 
     @Test
@@ -55,21 +54,21 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.DO_NOTHING);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITH_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.DO_NOTHING);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
         assertEquals(8,workspace.getObjectSet("TestObj").values().size());
         assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
 
-        String metadataName = WithWithoutParent.getMetadataName("TestObj",WithWithoutParent.FilterMethods.WITH_PARENT,"Parents");
+        String metadataName = FilterWithWithoutParent.getMetadataName("TestObj",FilterWithWithoutParent.FilterMethods.WITH_PARENT,"Parents");
         String metadata = workspace.getMetadata().getAsString(metadataName);
         assertEquals("3",metadata);
 
@@ -112,15 +111,15 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.MOVE_FILTERED);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
-        withWithoutParent.updateParameterValue(WithWithoutParent.OUTPUT_FILTERED_OBJECTS,"Output");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITH_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.MOVE_FILTERED);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.OUTPUT_FILTERED_OBJECTS,"Output");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -168,14 +167,14 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.REMOVE_FILTERED);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITH_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.REMOVE_FILTERED);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -219,14 +218,14 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITHOUT_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.DO_NOTHING);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITHOUT_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.DO_NOTHING);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -272,15 +271,15 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITHOUT_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.MOVE_FILTERED);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
-        withWithoutParent.updateParameterValue(WithWithoutParent.OUTPUT_FILTERED_OBJECTS,"Output");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITHOUT_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.MOVE_FILTERED);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.OUTPUT_FILTERED_OBJECTS,"Output");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -327,14 +326,14 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITHOUT_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_MODE,WithWithoutParent.FilterModes.REMOVE_FILTERED);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITHOUT_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.REMOVE_FILTERED);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -374,13 +373,13 @@ public class WithWithoutParentTest extends ModuleTest {
         }
 
         // Initialising FilterObjects module
-        WithWithoutParent withWithoutParent = new WithWithoutParent(null);
-        withWithoutParent.updateParameterValue(WithWithoutParent.INPUT_OBJECTS,"TestObj");
-        withWithoutParent.updateParameterValue(WithWithoutParent.FILTER_METHOD,WithWithoutParent.FilterMethods.WITH_PARENT);
-        withWithoutParent.updateParameterValue(WithWithoutParent.PARENT_OBJECT,"Parents");
+        FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITH_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
 
         // Running the module
-        withWithoutParent.execute(workspace);
+        filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));

@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -52,7 +53,6 @@ public class ParametersPanel extends JScrollPane {
         ModuleCollection modules = GUI.getModules();
 
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        MeasurementRef globalMeasurementRef = GUI.getGlobalMeasurementRef();
         InputControl inputControl = analysis.getModules().getInputControl();
         OutputControl outputControl = analysis.getModules().getOutputControl();
 
@@ -105,7 +105,7 @@ public class ParametersPanel extends JScrollPane {
             LinkedHashSet<OutputImageP> imageNameParameters = modules.getParametersMatchingType(OutputImageP.class);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
-                ObjMeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName);
+                ImageMeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName);
                 addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c,false);
             }
 

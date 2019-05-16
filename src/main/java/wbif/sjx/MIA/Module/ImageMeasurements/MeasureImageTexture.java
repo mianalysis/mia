@@ -113,21 +113,20 @@ public class MeasureImageTexture extends Module {
         imageMeasurementRefs.setAllAvailable(false);
 
         String imageName = parameters.getValue(INPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-        MeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM,type);
+        MeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM);
         asm.setImageObjName(imageName);
         asm.setAvailable(true);
 
-        MeasurementRef contrast = imageMeasurementRefs.getOrPut(Measurements.CONTRAST,type);
+        MeasurementRef contrast = imageMeasurementRefs.getOrPut(Measurements.CONTRAST);
         contrast.setImageObjName(imageName);
         contrast.setAvailable(true);
 
-        MeasurementRef correlation = imageMeasurementRefs.getOrPut(Measurements.CORRELATION,type);
+        MeasurementRef correlation = imageMeasurementRefs.getOrPut(Measurements.CORRELATION);
         correlation.setImageObjName(imageName);
         correlation.setAvailable(true);
 
-        MeasurementRef entropy = imageMeasurementRefs.getOrPut(Measurements.ENTROPY,type);
+        MeasurementRef entropy = imageMeasurementRefs.getOrPut(Measurements.ENTROPY);
         entropy.setImageObjName(imageName);
         entropy.setAvailable(true);
 

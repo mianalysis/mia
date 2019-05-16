@@ -99,40 +99,39 @@ public class MeasureImageDimensions extends Module {
         imageMeasurementRefs.setAllAvailable(false);
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         String name = getFullName(Measurements.WIDTH);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name,type);
+        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.HEIGHT);
-        reference = imageMeasurementRefs.getOrPut(name,type);
+        reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.N_CHANNELS);
-        reference = imageMeasurementRefs.getOrPut(name,type);
+        reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.N_SLICES);
-        reference = imageMeasurementRefs.getOrPut(name,type);
+        reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.N_FRAMES);
-        reference = imageMeasurementRefs.getOrPut(name,type);
+        reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.DIST_PER_PX_XY);
-        reference = imageMeasurementRefs.getOrPut(name,type);
+        reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.DIST_PER_SLICE_Z);
-        reference = imageMeasurementRefs.getOrPut(name,type);
+        reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImageName);
         reference.setAvailable(true);
 
