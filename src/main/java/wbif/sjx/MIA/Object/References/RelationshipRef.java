@@ -3,15 +3,21 @@ package wbif.sjx.MIA.Object.References;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.util.LinkedHashMap;
 
-public class RelationshipRef extends ExportableRef {
+public class RelationshipRef extends Ref {
     private final String parentName;
     private final String childName;
+
+
+    public RelationshipRef(NamedNodeMap attributes) {
+        super(attributes);
+        this.childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
+        this.parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
+    }
 
     public RelationshipRef(String parentName, String childName) {
         super(createName(parentName,childName));
@@ -22,7 +28,6 @@ public class RelationshipRef extends ExportableRef {
 
     @Override
     public void appendXMLAttributes(Element element)  {
-        // Adding the values from ExportableRef
         super.appendXMLAttributes(element);
 
         element.setAttribute("CHILD_NAME",childName);
@@ -31,7 +36,8 @@ public class RelationshipRef extends ExportableRef {
     }
 
     @Override
-    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer, Workspace> workspaces) {
+    public void setAttributesFromXML(NamedNodeMap attributes) {
+        super.setAttributesFromXML(attributes);
 
     }
 

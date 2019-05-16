@@ -10,8 +10,13 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 01/12/2017.
  */
-public abstract class MeasurementRef extends ExportableRef {
+public abstract class MeasurementRef extends SummaryRef {
     protected String imageObjName = "";
+
+    public MeasurementRef(NamedNodeMap attributes, String imageObjName) {
+        super(attributes);
+
+    }
 
     public MeasurementRef(String name) {
         super(name);
@@ -39,36 +44,36 @@ public abstract class MeasurementRef extends ExportableRef {
 
     }
 
-    @Override
-    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer,Workspace> workspaces) {
-        if (!isAvailable()) return;
-        if (!isExportGlobal()) return;
-
-
-//        // Getting the column number for this reference
-//        Row titleRow = sheet.getRow(0);
-//        int col = titleRow.getLastCellNum();
-//        if (col == -1) col++;
+//    @Override
+//    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer,Workspace> workspaces) {
+//        if (!isAvailable()) return;
+//        if (!isExportGlobal()) return;
 //
-//        // Adding the heading to the title row
-//        Cell cell = titleRow.createCell(col);
-//        switch (type) {
-//            case IMAGE:
-//                cell.setCellValue(imageObjName+"_(IM) // "+getNickname());
-//                break;
-//            case OBJECT:
-//                cell.setCellValue(imageObjName+"_(OBJ) // "+getNickname());
-//                break;
-//        }
 //
-//        // Adding to each row
-//        for (int rowN:workspaces.keySet()) {
-//            Row row = sheet.getRow(rowN);
-//            cell = row.createCell(col);
-//            Workspace workspace = workspaces.get(rowN);
-//            cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
-//        }
-    }
+////        // Getting the column number for this reference
+////        Row titleRow = sheet.getRow(0);
+////        int col = titleRow.getLastCellNum();
+////        if (col == -1) col++;
+////
+////        // Adding the heading to the title row
+////        Cell cell = titleRow.createCell(col);
+////        switch (type) {
+////            case IMAGE:
+////                cell.setCellValue(imageObjName+"_(IM) // "+getNickname());
+////                break;
+////            case OBJECT:
+////                cell.setCellValue(imageObjName+"_(OBJ) // "+getNickname());
+////                break;
+////        }
+////
+////        // Adding to each row
+////        for (int rowN:workspaces.keySet()) {
+////            Row row = sheet.getRow(rowN);
+////            cell = row.createCell(col);
+////            Workspace workspace = workspaces.get(rowN);
+////            cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
+////        }
+//    }
 
     @Override
     public String getName() {

@@ -366,8 +366,6 @@ public class AnalysisReader {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
-
-            attributes = referenceNode.getAttributes();
             String parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
 
             // Acquiring the relevant reference
