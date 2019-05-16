@@ -1,8 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -43,7 +44,7 @@ public class HelpArea extends JTextPane {
             sb.append("<b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
-            for (MeasurementRef measurementRef : objectMeasRefs.values()) {
+            for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
                 sb.append("<i>")
                         .append(measurementRef.getFinalName())
                         .append("</i>:<br>")
@@ -59,7 +60,7 @@ public class HelpArea extends JTextPane {
             sb.append("<b>IMAGE MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
-            for (MeasurementRef measurementRef : imageMeasRefs.values()) {
+            for (ImageMeasurementRef measurementRef : imageMeasRefs.values()) {
                 sb.append("<i>")
                         .append(measurementRef.getName())
                         .append("</i>:<br>")

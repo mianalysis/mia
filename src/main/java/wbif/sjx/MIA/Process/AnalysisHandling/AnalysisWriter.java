@@ -9,7 +9,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -216,10 +218,10 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
         if (refs == null) return refsElement;
 
-        for (ExportableRef ref:refs.values()) {
+        for (Ref ref:refs.values()) {
             // Don't export any measurements that aren't calculated
             if (!ref.isAvailable()) continue;
 

@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
@@ -41,7 +42,7 @@ public class XLSXExporter {
         Row titleRow = sheet.getRow(0);
 
         // Iterating over each metadata value, adding values
-        for (ExportableRef ref:metadataRefs.values()) ref.addSummaryXLSX(sheet,workspaces);
+        for (SpreadsheetWriter ref:metadataRefs.values()) ref.addSummaryXLSX(sheet,workspaces);
 
     }
 

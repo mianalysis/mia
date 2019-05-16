@@ -6,7 +6,6 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.annotation.Nullable;
@@ -252,8 +251,8 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
             // Getting object measurement references associated with this object set
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
-            for (MeasurementRef reference:references.values()) {
-                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
+            for (ObjMeasurementRef reference:references.values()) {
+                objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

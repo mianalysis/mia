@@ -12,11 +12,12 @@ import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
@@ -133,6 +134,14 @@ public class AnalysisReader {
 
                         case "MEASUREMENTS":
                             populateModuleMeasurementRefs(moduleChildNodes.item(j), module);
+                            break;
+
+                        case "IMAGE_MEASUREMENTS":
+                            populateImageMeasurementRefs(moduleChildNodes.item(j), module);
+                            break;
+
+                        case "OBJECT_MEASUREMENTS":
+                            populateObjMeasurementRefs(moduleChildNodes.item(j), module);
                             break;
 
                         case "METADATA":
@@ -307,6 +316,7 @@ public class AnalysisReader {
         }
     }
 
+    @Deprecated
     public static void populateModuleMeasurementRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
@@ -316,24 +326,20 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String measurementName = attributes.getNamedItem("NAME").getNodeValue();
             String type = attributes.getNamedItem("TYPE").getNodeValue();
 
             // Acquiring the relevant reference
-            MeasurementRef measurementReference = null;
             switch (type) {
                 case "IMAGE":
-                    measurementReference = module.getImageMeasurementRef(measurementName);
+                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(attributes);
+                    module.addImageMeasurementRef(imageMeasurementRef);
                     break;
 
                 case "OBJECTS":
-                    measurementReference = module.getObjectMeasurementRef(measurementName);
+                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(attributes);
+                    module.addObjectMeasurementRef(objMeasurementRef);
                     break;
             }
-
-            if (measurementReference == null) continue;
-            measurementReference.setAttributesFromXML(attributes);
-
         }
     }
 
@@ -346,12 +352,38 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String metadataName = attributes.getNamedItem("NAME").getNodeValue();
+            MetadataRef ref = new MetadataRef(attributes);
+            module.addMetadataRef(ref);
 
-            // Acquiring the relevant reference
-            MetadataRef metadataRef = module.getMetadataRef(metadataName);
-            if (metadataName == null) continue;
-            metadataRef.setAttributesFromXML(attributes);
+        }
+    }
+
+    public static void populateImageMeasurementRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            ImageMeasurementRef ref = new ImageMeasurementRef(attributes);
+            module.addImageMeasurementRef(ref);
+
+        }
+    }
+
+    public static void populateObjMeasurementRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            ObjMeasurementRef ref = new ObjMeasurementRef(attributes);
+            module.addObjectMeasurementRef(ref);
 
         }
     }
@@ -365,12 +397,8 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
-            String parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
-
-            // Acquiring the relevant reference
-            RelationshipRef relationshipRef = module.getRelationshipRef(parentName,childName);
-            relationshipRef.setAttributesFromXML(attributes);
+            RelationshipRef ref = new RelationshipRef(attributes);
+            module.addRelationshipRef(ref);
 
         }
     }

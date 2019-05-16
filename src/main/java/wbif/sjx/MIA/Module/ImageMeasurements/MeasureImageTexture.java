@@ -7,11 +7,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.TextureCalculator;
 
 /**
@@ -114,20 +110,20 @@ public class MeasureImageTexture extends Module {
 
         String imageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM);
-        asm.setImageObjName(imageName);
+        ImageMeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM);
+        asm.setImageName(imageName);
         asm.setAvailable(true);
 
-        MeasurementRef contrast = imageMeasurementRefs.getOrPut(Measurements.CONTRAST);
-        contrast.setImageObjName(imageName);
+        ImageMeasurementRef contrast = imageMeasurementRefs.getOrPut(Measurements.CONTRAST);
+        contrast.setImageName(imageName);
         contrast.setAvailable(true);
 
-        MeasurementRef correlation = imageMeasurementRefs.getOrPut(Measurements.CORRELATION);
-        correlation.setImageObjName(imageName);
+        ImageMeasurementRef correlation = imageMeasurementRefs.getOrPut(Measurements.CORRELATION);
+        correlation.setImageName(imageName);
         correlation.setAvailable(true);
 
-        MeasurementRef entropy = imageMeasurementRefs.getOrPut(Measurements.ENTROPY);
-        entropy.setImageObjName(imageName);
+        ImageMeasurementRef entropy = imageMeasurementRefs.getOrPut(Measurements.ENTROPY);
+        entropy.setImageName(imageName);
         entropy.setAvailable(true);
 
         return imageMeasurementRefs;

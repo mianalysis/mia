@@ -18,7 +18,6 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -661,12 +660,12 @@ public class RegisterImages extends Module implements Interactable {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageName(outputImageName);
 
         }
 

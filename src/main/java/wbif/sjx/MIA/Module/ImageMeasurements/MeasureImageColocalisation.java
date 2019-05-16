@@ -9,11 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -177,8 +173,8 @@ public class MeasureImageColocalisation extends Module {
         imageMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImage2Name,Measurements.MEAN_PCC);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImage1Name);
+        ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImage1Name);
         reference.setAvailable(true);
 
         return imageMeasurementRefs;

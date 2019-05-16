@@ -12,11 +12,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -321,41 +317,41 @@ public class RidgeDetection extends Module {
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
-        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setAvailable(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in pixel " +
                 "units.");
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
-        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setAvailable(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
 
         if (parameters.getValue(ESTIMATE_WIDTH)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setAvailable(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setAvailable(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setAvailable(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
                     "("+Units.getOMEUnits().getSymbol()+") units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setAvailable(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +

@@ -4,11 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 public class CalculateStatsForChildren extends Module {
@@ -172,8 +168,8 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MEAN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MEAN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setImageObjName(parentObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            reference.setObjectsName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
@@ -181,8 +177,8 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_STD)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.STD);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setImageObjName(parentObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            reference.setObjectsName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Standard deviation of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
@@ -190,8 +186,8 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MIN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MIN);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setImageObjName(parentObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            reference.setObjectsName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Minimum value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
@@ -199,8 +195,8 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MAX)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MAX);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setImageObjName(parentObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            reference.setObjectsName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Maximum value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
@@ -208,8 +204,8 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_SUM)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.SUM);
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-            reference.setImageObjName(parentObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+            reference.setObjectsName(parentObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Summed value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");

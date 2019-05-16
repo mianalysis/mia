@@ -4,7 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 import javax.annotation.Nullable;
@@ -213,8 +213,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
-        for (MeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageObjName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
+        for (ObjMeasurementRef measRef:measRefs.values()) {
+            if (measRef.getObjectsName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values

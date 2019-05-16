@@ -48,16 +48,16 @@ public class ObjMeasurementRefCollectionTest {
         collection.put(ref4.getName(),ref4);
 
         // Checking the imageObjectName before changing
-        assertEquals("",collection.get("Second ref").getImageObjName());
+        assertEquals("",collection.get("Second ref").getObjectsName());
 
         // Changing the name
         collection.updateImageObjectName("Second ref","im name");
 
         // Checking the imageObjectName values for all references
-        assertEquals("",collection.get("Ref 1").getImageObjName());
-        assertEquals("im name",collection.get("Second ref").getImageObjName());
-        assertEquals("",collection.get("Ref 3").getImageObjName());
-        assertEquals("",collection.get("One more").getImageObjName());
+        assertEquals("",collection.get("Ref 1").getObjectsName());
+        assertEquals("im name",collection.get("Second ref").getObjectsName());
+        assertEquals("",collection.get("Ref 3").getObjectsName());
+        assertEquals("",collection.get("One more").getObjectsName());
 
     }
 }

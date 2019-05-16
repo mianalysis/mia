@@ -304,25 +304,25 @@
 //
 //        String name = getFullName(inputObjectsName1,Measurements.FRACTION_1);
 //        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-//        reference.setImageObjName(outputObjectsName);
+//        reference.setObjectsName(outputObjectsName);
 //        reference.setAvailable(true);
 //        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName1+"\" objects");
 //
 //        name = getFullName(inputObjectsName1,Measurements.N_VOXELS1);
 //        reference = objectMeasurementRefs.getOrPut(name);
-//        reference.setImageObjName(outputObjectsName);
+//        reference.setObjectsName(outputObjectsName);
 //        reference.setAvailable(true);
 //        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName1+"\" objects");
 //
 //        name = getFullName(inputObjectsName2,Measurements.FRACTION_2);
 //        reference = objectMeasurementRefs.getOrPut(name);
-//        reference.setImageObjName(outputObjectsName);
+//        reference.setObjectsName(outputObjectsName);
 //        reference.setAvailable(true);
 //        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName2+"\" objects");
 //
 //        name = getFullName(inputObjectsName2,Measurements.N_VOXELS2);
 //        reference = objectMeasurementRefs.getOrPut(name);
-//        reference.setImageObjName(outputObjectsName);
+//        reference.setObjectsName(outputObjectsName);
 //        reference.setAvailable(true);
 //        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName2+"\" objects");
 //

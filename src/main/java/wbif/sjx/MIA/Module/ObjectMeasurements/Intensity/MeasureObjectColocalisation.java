@@ -8,11 +8,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 
 public class MeasureObjectColocalisation extends Module {
@@ -118,8 +114,8 @@ public class MeasureObjectColocalisation extends Module {
         objectMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
         reference.setAvailable(true);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +
                 "within each \""+inputObjectsName+"\" object between images \""+inputImageName1+"\" and \""+

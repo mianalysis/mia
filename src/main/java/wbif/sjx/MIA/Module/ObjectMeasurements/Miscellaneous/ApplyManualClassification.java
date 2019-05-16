@@ -146,7 +146,7 @@
 //        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
-//        classMeas.setImageObjName(parameters.getValue(TRACK_OBJECTS));
+//        classMeas.setObjectsName(parameters.getValue(TRACK_OBJECTS));
 //        classMeas.setAvailable(true);
 //
 //        return objectMeasurementRefs;

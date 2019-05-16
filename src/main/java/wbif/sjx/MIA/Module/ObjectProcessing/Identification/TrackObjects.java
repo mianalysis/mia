@@ -12,11 +12,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
@@ -693,15 +689,15 @@ public class TrackObjects extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
-        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
-        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
-        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
-        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
-        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
+        ObjMeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
+        ObjMeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
+        ObjMeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
+        ObjMeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
+        ObjMeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
+        ObjMeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
 
-        trackPrevID.setImageObjName(inputObjectsName);
-        trackNextID.setImageObjName(inputObjectsName);
+        trackPrevID.setObjectsName(inputObjectsName);
+        trackNextID.setObjectsName(inputObjectsName);
 
         trackPrevID.setAvailable(true);
         trackNextID.setAvailable(true);
@@ -712,10 +708,10 @@ public class TrackObjects extends Module {
             leadingYPx.setAvailable(true);
             leadingZPx.setAvailable(true);
 
-            angleMeasurement.setImageObjName(inputObjectsName);
-            leadingXPx.setImageObjName(inputObjectsName);
-            leadingYPx.setImageObjName(inputObjectsName);
-            leadingZPx.setImageObjName(inputObjectsName);
+            angleMeasurement.setObjectsName(inputObjectsName);
+            leadingXPx.setObjectsName(inputObjectsName);
+            leadingYPx.setObjectsName(inputObjectsName);
+            leadingZPx.setObjectsName(inputObjectsName);
 
         } else {
             angleMeasurement.setAvailable(false);

@@ -9,11 +9,7 @@ import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -275,8 +271,8 @@ public class HoughObjectDetection extends Module {
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
-        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
-        score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        ObjMeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
+        score.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
         score.setAvailable(true);
 
         return objectMeasurementRefs;

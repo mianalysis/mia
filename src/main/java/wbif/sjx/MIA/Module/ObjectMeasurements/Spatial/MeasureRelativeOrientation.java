@@ -4,11 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -505,8 +501,8 @@ public class MeasureRelativeOrientation extends Module {
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
-                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
-                measurementReference.setImageObjName(inputObjectsName);
+                ObjMeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
+                measurementReference.setObjectsName(inputObjectsName);
                 measurementReference.setAvailable(true);
 
                 String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);

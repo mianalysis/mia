@@ -17,11 +17,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -409,20 +405,20 @@ public class RunTrackMate extends Module {
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
-        reference.setImageObjName(outputSpotObjectsName);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
-        reference.setImageObjName(outputSpotObjectsName);
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
-        reference.setImageObjName(outputSpotObjectsName);
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
-        reference.setImageObjName(outputSpotObjectsName);
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
         return objectMeasurementRefs;

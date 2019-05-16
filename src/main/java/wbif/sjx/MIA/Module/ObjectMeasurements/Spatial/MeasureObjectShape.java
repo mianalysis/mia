@@ -8,11 +8,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
@@ -201,74 +197,74 @@ public class MeasureObjectShape extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(MEASURE_VOLUME)) {
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Number of voxels (3D pixels) in the object, \""+inputObjectsName+"\".  Note: " +
                     "This doesn't take spatial scaling of XY and Z into account, so isn't a good measure of true " +
                     "object volume.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_PX);
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units.  Measured in pixel " +
                     "units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units prior to conversion" +
                     " to calibrated units.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_PERIM)) {
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in pixel units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_PERIM_CAL));
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_CIRCULARITY));
             reference.setAvailable(true);
-            reference.setImageObjName(inputObjectsName);
+            reference.setObjectsName(inputObjectsName);
             reference.setDescription("Circularity of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Uses the calculation \"circularity = 4pi(area/perimeter^2)\".  This measurement has no units.");
 

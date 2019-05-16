@@ -7,7 +7,6 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.util.LinkedHashSet;
 
@@ -94,15 +93,23 @@ public abstract class Module implements Comparable {
 
     public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
+    public void addObjectMeasurementRef(ObjMeasurementRef ref) {
+        objectMeasurementRefs.add(ref);
+    }
+
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
     public abstract RelationshipRefCollection updateAndGetRelationships();
 
-    public MeasurementRef getImageMeasurementRef(String name) {
+    public ImageMeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);
     }
 
-    public MeasurementRef getObjectMeasurementRef(String name) {
+    public void addImageMeasurementRef(ImageMeasurementRef ref) {
+        imageMeasurementRefs.add(ref);
+    }
+
+    public ObjMeasurementRef getObjectMeasurementRef(String name) {
         return objectMeasurementRefs.getOrPut(name);
     }
 
@@ -110,8 +117,16 @@ public abstract class Module implements Comparable {
         return metadataRefs.getOrPut(name);
     }
 
+    public void addMetadataRef(MetadataRef ref) {
+        metadataRefs.add(ref);
+    }
+
     public RelationshipRef getRelationshipRef(String parentName, String childName) {
         return relationshipRefs.getOrPut(parentName,childName);
+    }
+
+    public void addRelationshipRef(RelationshipRef ref) {
+        relationshipRefs.add(ref);
     }
 
     public <T extends Parameter> T getParameter(String name) {

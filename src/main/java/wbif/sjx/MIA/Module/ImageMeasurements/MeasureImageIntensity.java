@@ -7,11 +7,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -95,24 +91,24 @@ public class MeasureImageIntensity extends Module {
 
         imageMeasurementRefs.setAllAvailable(false);
 
-        MeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
-        mean.setImageObjName(inputImageName);
+        ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
+        mean.setImageName(inputImageName);
         mean.setAvailable(true);
 
-        MeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
-        min.setImageObjName(inputImageName);
+        ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
+        min.setImageName(inputImageName);
         min.setAvailable(true);
 
-        MeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
-        max.setImageObjName(inputImageName);
+        ImageMeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
+        max.setImageName(inputImageName);
         max.setAvailable(true);
 
-        MeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
-        stdev.setImageObjName(inputImageName);
+        ImageMeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
+        stdev.setImageName(inputImageName);
         stdev.setAvailable(true);
 
-        MeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
-        sum.setImageObjName(inputImageName);
+        ImageMeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
+        sum.setImageName(inputImageName);
         sum.setAvailable(true);
 
         return imageMeasurementRefs;

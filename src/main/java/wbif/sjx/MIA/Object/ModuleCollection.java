@@ -10,7 +10,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,8 +49,8 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         if (currentMeasurementRefs == null) return;
 
         for (ImageMeasurementRef measurementRef:currentMeasurementRefs.values()) {
-            if (measurementRef.getImageObjName() == null) continue;
-            if (measurementRef.getImageObjName().equals(imageName) & measurementRef.isAvailable())
+            if (measurementRef.getImageName() == null) continue;
+            if (measurementRef.getImageName().equals(imageName) & measurementRef.isAvailable())
                 measurementRefs.put(measurementRef.getName(),measurementRef);
 
         }
@@ -87,8 +86,8 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         if (currentMeasurementRefs == null) return;
 
         for (ObjMeasurementRef ref:currentMeasurementRefs.values()) {
-            if (ref.getImageObjName() == null) continue;
-            if (ref.getImageObjName().equals(objectName) & ref.isAvailable()) measurementRefs.put(ref.getName(),ref);
+            if (ref.getObjectsName() == null) continue;
+            if (ref.getObjectsName().equals(objectName) & ref.isAvailable()) measurementRefs.put(ref.getName(),ref);
 
         }
     }

@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +13,11 @@ import java.awt.event.ActionListener;
 public class EnableRefsButton extends JButton implements ActionListener {
     private static final ImageIcon icon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/check-mark_black_12px.png"), "");
 
-    private RefCollection<? extends ExportableRef> refs;
+    private RefCollection<SummaryRef> refs;
 
     // CONSTRUCTOR
 
-    public EnableRefsButton(RefCollection<? extends ExportableRef> refs) {
+    public EnableRefsButton(RefCollection<SummaryRef> refs) {
         this.refs = refs;
 
         JButton enableButton = new JButton();
@@ -32,9 +34,7 @@ public class EnableRefsButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (ExportableRef measurementReference: refs.values()) {
-            measurementReference.setExportGlobal(true);
-        }
+        for (Ref ref: refs.values()) ref.setExportGlobal(true);
 
         GUI.populateModuleParameters();
 

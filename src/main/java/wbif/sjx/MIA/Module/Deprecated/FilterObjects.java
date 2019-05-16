@@ -10,11 +10,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.LUTs;
@@ -626,8 +622,8 @@ public class FilterObjects extends Module implements ActionListener {
             // Getting object measurement references associated with this object set
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
-            for (MeasurementRef reference:references.values()) {
-                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
+            for (ObjMeasurementRef reference:references.values()) {
+                objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +13,11 @@ import java.awt.event.ActionListener;
 public class DisableRefsButton extends JButton implements ActionListener {
     private static final ImageIcon icon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/delete-2_black_12px.png"), "");
 
-    private RefCollection<? extends ExportableRef> refs;
+    private RefCollection<SummaryRef> refs;
 
     // CONSTRUCTOR
 
-    public DisableRefsButton(RefCollection<? extends ExportableRef> refs) {
+    public DisableRefsButton(RefCollection<SummaryRef> refs) {
         this.refs = refs;
 
         JButton enableButton = new JButton();
@@ -32,9 +34,7 @@ public class DisableRefsButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (ExportableRef measurementReference: refs.values()) {
-            measurementReference.setExportGlobal(false);
-        }
+        for (Ref ref: refs.values()) ref.setExportGlobal(false);
 
         GUI.populateModuleParameters();
 

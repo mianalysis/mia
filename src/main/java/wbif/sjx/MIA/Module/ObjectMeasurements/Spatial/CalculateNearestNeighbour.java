@@ -4,11 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 /**
  * Created by sc13967 on 22/06/2017.
@@ -242,18 +238,18 @@ public class CalculateNearestNeighbour extends Module {
 
 
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
+        reference.setObjectsName(inputObjectsName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
+        reference.setObjectsName(inputObjectsName);
         reference.setAvailable(true);
 
         return objectMeasurementRefs;

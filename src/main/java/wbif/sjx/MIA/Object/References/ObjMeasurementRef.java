@@ -1,15 +1,23 @@
 package wbif.sjx.MIA.Object.References;
 
 import org.w3c.dom.Element;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import org.w3c.dom.NamedNodeMap;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
-public class ObjMeasurementRef extends MeasurementRef {
+public class ObjMeasurementRef extends SummaryRef {
+    private String objectsName = "";
+
+    public ObjMeasurementRef(NamedNodeMap attributes) {
+        super(attributes);
+    }
+
     public ObjMeasurementRef(String name) {
         super(name);
     }
 
-    public ObjMeasurementRef(String name, String imageObjName) {
-        super(name, imageObjName);
+    public ObjMeasurementRef(String name, String objectsName) {
+        super(name);
+        this.objectsName = objectsName;
     }
 
     @Override
@@ -17,27 +25,53 @@ public class ObjMeasurementRef extends MeasurementRef {
         // Adding the values from ExportableRef
         super.appendXMLAttributes(element);
 
-        element.setAttribute("IMAGE_OBJECT_NAME",imageObjName);
-        element.setAttribute("TYPE","OBJECTS");
+        element.setAttribute("OBJECT_NAME", objectsName);
 
     }
 
-    public MeasurementRef duplicate() {
-        ImageMeasurementRef newRef = new ImageMeasurementRef(name);
+    @Override
+    public void setAttributesFromXML(NamedNodeMap attributes) {
+        super.setAttributesFromXML(attributes);
 
-        newRef.setAvailable(isAvailable());
-        newRef.setImageObjName(imageObjName);
-        newRef.setDescription(getDescription());
-        newRef.setNickname(getNickname());
-        newRef.setExportGlobal(isExportGlobal());
-        newRef.setExportIndividual(isExportIndividual());
-        newRef.setExportMean(isExportMean());
-        newRef.setExportMin(isExportMin());
-        newRef.setExportMax(isExportMax());
-        newRef.setExportSum(isExportSum());
-        newRef.setExportStd(isExportStd());
+        if (attributes.getNamedItem("OBJECT_NAME") == null) {
+            this.objectsName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
+        } else {
+            this.objectsName = attributes.getNamedItem("OBJECT_NAME").getNodeValue();
+        }
+    }
 
-        return newRef;
+    //    public MeasurementRef duplicate() {
+//        ImageMeasurementRef newRef = new ImageMeasurementRef(name);
+//
+//        newRef.setAvailable(isAvailable());
+//        newRef.setImageObjName(imageObjName);
+//        newRef.setDescription(getDescription());
+//        newRef.setNickname(getNickname());
+//        newRef.setExportGlobal(isExportGlobal());
+//        newRef.setExportIndividual(isExportIndividual());
+//        newRef.setExportMean(isExportMean());
+//        newRef.setExportMin(isExportMin());
+//        newRef.setExportMax(isExportMax());
+//        newRef.setExportSum(isExportSum());
+//        newRef.setExportStd(isExportStd());
+//
+//        return newRef;
+//
+//    }
 
+    public String getFinalName() {
+        int idx = name.lastIndexOf("//");
+
+        return name.substring(idx+2);
+
+    }
+
+    public String getObjectsName() {
+        return objectsName;
+    }
+
+    public ObjMeasurementRef setObjectsName(String objectsName) {
+        this.objectsName = objectsName;
+        return this;
     }
 }

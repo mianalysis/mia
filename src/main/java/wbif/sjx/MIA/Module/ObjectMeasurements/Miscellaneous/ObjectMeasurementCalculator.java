@@ -4,7 +4,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -149,7 +148,7 @@ public class ObjectMeasurementCalculator extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        objectMeasurementRefs.getOrPut(measurementName).setImageObjName(inputObjectsName).setAvailable(true);
+        objectMeasurementRefs.getOrPut(measurementName).setObjectsName(inputObjectsName).setAvailable(true);
 
         return objectMeasurementRefs;
 

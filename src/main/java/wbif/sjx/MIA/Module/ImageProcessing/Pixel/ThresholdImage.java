@@ -12,11 +12,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 
 /**
@@ -416,8 +412,8 @@ public class ThresholdImage extends Module {
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 
-            MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
-            reference.setImageObjName(imageName);
+            ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
+            reference.setImageName(imageName);
             reference.setAvailable(true);
 
         }

@@ -14,9 +14,8 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -167,8 +166,8 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
-        for (MeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageObjName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
+        for (ImageMeasurementRef measRef:measRefs.values()) {
+            if (measRef.getImageName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values

@@ -8,7 +8,6 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
-import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -34,7 +33,6 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
@@ -46,11 +44,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 
@@ -942,10 +937,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FROM_REFERENCE:
-                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName);
 
                 break;
         }

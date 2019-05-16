@@ -1,11 +1,10 @@
 package wbif.sjx.MIA.Object.References;
 
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 public class ObjMeasurementRefCollection extends RefCollection<ObjMeasurementRef> {
-    public void updateImageObjectName(String measurementName, String imageObjectName) {
-        get(measurementName).setImageObjName(imageObjectName);
+    public void updateImageObjectName(String measurementName, String objectsName) {
+        get(measurementName).setObjectsName(objectsName);
     }
 
     public String[] getMeasurementNames() {
@@ -13,22 +12,26 @@ public class ObjMeasurementRefCollection extends RefCollection<ObjMeasurementRef
     }
 
     public void setAllAvailable(boolean available) {
-        for (MeasurementRef measurementReference:values()) {
-            measurementReference.setAvailable(available);
+        for (ObjMeasurementRef ref:values()) {
+            ref.setAvailable(available);
         }
     }
 
-    public MeasurementRef getOrPut(Object key) {
+    public ObjMeasurementRef getOrPut(Object key) {
         putIfAbsent((String) key,new ObjMeasurementRef((String) key));
         return get(key);
     }
 
     public boolean hasExportedMeasurements() {
-        for (MeasurementRef ref:values()) {
+        for (ObjMeasurementRef ref:values()) {
             if (ref.isAvailable()) return true;
         }
 
         return false;
 
+    }
+
+    public void add(ObjMeasurementRef ref) {
+        put(ref.getName(),ref);
     }
 }

@@ -64,6 +64,18 @@ public abstract class SummaryRef extends Ref {
     }
 
     @Override
+    public void setAllExport(boolean export) {
+        super.setAllExport(export);
+
+        exportMax = export;
+        exportMean = export;
+        exportMin = export;
+        exportStd = export;
+        exportSum = export;
+
+    }
+
+    @Override
     public void appendXMLAttributes(Element element) {
         element.setAttribute("EXPORT_MEAN",String.valueOf(isExportMean()));
         element.setAttribute("EXPORT_MIN",String.valueOf(isExportMin()));

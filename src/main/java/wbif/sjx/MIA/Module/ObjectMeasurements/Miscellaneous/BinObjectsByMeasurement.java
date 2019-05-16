@@ -4,11 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 public class BinObjectsByMeasurement extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -107,8 +103,8 @@ public class BinObjectsByMeasurement extends Module {
         String measurement = parameters.getValue(MEASUREMENT);
 
         String name = getFullName(measurement);
-        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
-        binMeasurement.setImageObjName(inputObjectsName);
+        ObjMeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
+        binMeasurement.setObjectsName(inputObjectsName);
         binMeasurement.setAvailable(true);
 
         return objectMeasurementRefs;

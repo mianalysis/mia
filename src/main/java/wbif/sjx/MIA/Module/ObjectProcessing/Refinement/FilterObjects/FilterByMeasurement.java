@@ -4,7 +4,6 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.MeasurementRef;
 
 import java.util.Iterator;
 
@@ -245,8 +244,8 @@ public class FilterByMeasurement extends CoreFilter {
             // Getting object measurement references associated with this object set
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
-            for (MeasurementRef reference:references.values()) {
-                objectMeasurementRefs.getOrPut(reference.getName()).setImageObjName(filteredObjectsName);
+            for (ObjMeasurementRef reference:references.values()) {
+                objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;
