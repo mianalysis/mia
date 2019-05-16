@@ -18,7 +18,6 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
@@ -39,7 +38,6 @@ public class GUI {
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
-    private static final MeasurementRef globalMeasurementRef = new MeasurementRef("Global", MeasurementRef.Type.IMAGE);
 
     private static int minimumFrameHeight = 600;
     private static int minimumFrameWidth = 400;
@@ -321,10 +319,6 @@ public class GUI {
 
     public static Analysis getAnalysis() {
         return analysis;
-    }
-
-    public static MeasurementRef getGlobalMeasurementRef() {
-        return globalMeasurementRef;
     }
 
     public static void setShowEditingHelpNotes(boolean showEditingHelpNotes) {

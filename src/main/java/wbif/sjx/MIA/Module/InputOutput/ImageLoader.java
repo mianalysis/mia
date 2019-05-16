@@ -8,7 +8,6 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
-import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -45,11 +44,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 
@@ -934,18 +930,17 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         imageMeasurementRefs.setAllAvailable(false);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FROM_REFERENCE:
-                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT,type).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP,type).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH,type).setImageObjName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT,type).setImageObjName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName);
+                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName);
 
                 break;
         }
@@ -955,7 +950,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
 
     }

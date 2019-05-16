@@ -14,6 +14,7 @@ import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.MIA.Process.Exporting.XLSXExporter;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public void run(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
+    public void run(Analysis analysis, Exporter exporter, String exportName) throws IOException, InterruptedException {
         shutdownEarly = false;
 
         OutputControl outputControl = analysis.getModules().getOutputControl();
@@ -66,6 +67,7 @@ public class BatchProcessor extends FileCrawler {
             if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
                 System.out.println("Exporting results to spreadsheet");
                 exporter.exportResults(workspaces, analysis);
+//                new XLSXExporter().exportSummary(exportName,workspaces,analysis);
             }
 
         } else {

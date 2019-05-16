@@ -312,12 +312,12 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -7,7 +7,7 @@ import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 
-public class ByMeasurement extends CoreFilter {
+public class FilterByMeasurement extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -25,7 +25,7 @@ public class ByMeasurement extends CoreFilter {
     public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public ByMeasurement(ModuleCollection modules) {
+    public FilterByMeasurement(ModuleCollection modules) {
         super(modules);
     }
 
@@ -228,12 +228,12 @@ public class ByMeasurement extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
@@ -242,11 +242,10 @@ public class ByMeasurement extends CoreFilter {
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
-            for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+            for (ObjMeasurementRef reference:references.values()) {
+                objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName);
             }
 
             return objectMeasurementRefs;

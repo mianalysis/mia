@@ -46,7 +46,7 @@ public class AnalysisRunner {
         GUI.setProgress(0);
 
         // Running the analysis
-        batchProcessor.run(analysis,exporter);
+        batchProcessor.run(analysis,exporter,exportName);
 
         // Cleaning up
         System.out.println("Complete!");

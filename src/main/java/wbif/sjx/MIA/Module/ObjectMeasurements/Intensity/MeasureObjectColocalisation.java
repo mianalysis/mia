@@ -8,10 +8,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 
 public class MeasureObjectColocalisation extends Module {
@@ -104,22 +101,21 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         objectMeasurementRefs.setAllAvailable(false);
 
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputObjectsName);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
         reference.setAvailable(true);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +
                 "within each \""+inputObjectsName+"\" object between images \""+inputImageName1+"\" and \""+

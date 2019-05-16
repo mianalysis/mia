@@ -137,16 +137,16 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
-//        classMeas.setImageObjName(parameters.getValue(TRACK_OBJECTS));
+//        classMeas.setObjectsName(parameters.getValue(TRACK_OBJECTS));
 //        classMeas.setAvailable(true);
 //
 //        return objectMeasurementRefs;

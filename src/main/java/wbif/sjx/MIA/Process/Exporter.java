@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
@@ -363,10 +364,10 @@ public class Exporter {
             for (OutputImageP availableImage : availableImages) {
                 String availableImageName = availableImage.getImageName();
 
-                MeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
+                ImageMeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
-                for (MeasurementRef imageMeasurement:availableMeasurements.values()) {
+                for (ImageMeasurementRef imageMeasurement:availableMeasurements.values()) {
                     if (!imageMeasurement.isAvailable()) continue;
                     if (!imageMeasurement.isExportIndividual()) continue;
                     if (!imageMeasurement.isExportGlobal()) continue;
@@ -425,13 +426,13 @@ public class Exporter {
                     }
                 }
 
-                MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
+                ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementRefs == null) continue;
 
                 // Running through all the object measurement values, adding them as new columns
-                for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
+                for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                     if (!objectMeasurement.isAvailable()) continue;
                     if (!objectMeasurement.isExportIndividual()) continue;
                     if (!objectMeasurement.isExportGlobal()) continue;
@@ -468,9 +469,9 @@ public class Exporter {
         colNumbers.put(summaryDataName, headerCol.getAndIncrement());
     }
 
-    private void addSummaryObjectStatisticHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, MeasurementRef objectMeasurement, String shortName, String longName) {
+    private void addSummaryObjectStatisticHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, ObjMeasurementRef objectMeasurement, String shortName, String longName) {
         Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
-        String availableObjectName = objectMeasurement.getImageObjName();
+        String availableObjectName = objectMeasurement.getObjectsName();
         String summaryDataName = getObjectString(availableObjectName, shortName, objectMeasurement.getNickname());
         summaryHeaderCell.setCellValue(summaryDataName);
         addSummaryComment(summaryHeaderCell,objectMeasurement,longName);
@@ -494,17 +495,17 @@ public class Exporter {
 
     }
 
-    private void addSummaryComment(Cell cell, MeasurementRef measurement, String calculation) {
+    private void addSummaryComment(Cell cell, ObjMeasurementRef measurement, String calculation) {
         String text = "";
         switch (summaryMode) {
             case PER_FILE:
                 text = calculation+" value of the measurement (described below) for all \""
-                        +measurement.getImageObjName()+"\" objects in the input file." +
+                        +measurement.getObjectsName()+"\" objects in the input file." +
                         "\n\nMeasurement: "+measurement.getDescription();
                 break;
             case PER_TIMEPOINT_PER_FILE:
                 text = calculation+" value of the measurement (described below) for all \""
-                        +measurement.getImageObjName()+"\" objects at the stated timepoint of the input file." +
+                        +measurement.getObjectsName()+"\" objects at the stated timepoint of the input file." +
                         "\n\nMeasurement: "+measurement.getDescription();
                 break;
         }
@@ -536,13 +537,13 @@ public class Exporter {
         for (Image image:images.values()) {
             String imageName = image.getName();
 
-            MeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
+            ImageMeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (imageMeasurementRefs == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
+            for (ImageMeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
                 if (!imageMeasurement.isAvailable()) continue;
                 if (!imageMeasurement.isExportIndividual()) continue;
                 if (!imageMeasurement.isExportGlobal()) continue;
@@ -632,13 +633,13 @@ public class Exporter {
                 }
             }
 
-            MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
+            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementRefs == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
+            for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isAvailable()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
@@ -777,13 +778,13 @@ public class Exporter {
                 }
             }
 
-            MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
+            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementRefs == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
+            for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isAvailable()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;

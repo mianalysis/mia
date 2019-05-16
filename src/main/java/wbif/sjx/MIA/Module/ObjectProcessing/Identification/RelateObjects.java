@@ -8,10 +8,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
 
 import java.util.Iterator;
@@ -612,74 +609,73 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         if (parentObjectName == null || childObjectsName == null) return objectMeasurementRefs;
 
         String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
-        MeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName);
         distSurfPx.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName+"\" object.  Negative values indicate this object is inside the relevant \""
                 +parentObjectName+"\" object. Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjectName);
-        MeasurementRef distSurfCal = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distSurfCal = objectMeasurementRefs.getOrPut(measurementName);
         distSurfCal.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName+"\" object.  Negative values indicate this object is inside the relevant \""
                 +parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjectName);
-        MeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName);
         distCentPx.setDescription("Distance between the centroid of this object and that of the closest \""
                 + parentObjectName+"\"object.  Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjectName);
-        MeasurementRef distCentCal = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distCentCal = objectMeasurementRefs.getOrPut(measurementName);
         distCentCal.setDescription("Distance between the centroid of this object and that of the closest \""
                 + parentObjectName+"\"object.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_PX,parentObjectName);
-        MeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName);
         distCentSurfPx.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Negative values indicate this object is inside the " +
                 "relevant \""+parentObjectName+"\" object. Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL,parentObjectName);
-        MeasurementRef distCentSurfCal = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distCentSurfCal = objectMeasurementRefs.getOrPut(measurementName);
         distCentSurfCal.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Negative values indicate this object is inside the " +
                 "relevant \""+parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                 "units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC,parentObjectName);
-        MeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
         distCentSurfFrac.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Calculated as a fraction of the furthest possible distance " +
                 "to the \""+parentObjectName+"\" surface.");
 
         measurementName = getFullName(Measurements.OVERLAP_PC,parentObjectName);
-        MeasurementRef overlapPercentage  = objectMeasurementRefs.getOrPut(measurementName,type);
+        ObjMeasurementRef overlapPercentage  = objectMeasurementRefs.getOrPut(measurementName);
         overlapPercentage.setDescription("Percentage of pixels that overlap with the \""+ parentObjectName+"\" object "+
                 "with which it has the largest overlap.");
 
-        distSurfPx.setImageObjName(childObjectsName);
-        distCentPx.setImageObjName(childObjectsName);
-        distSurfCal.setImageObjName(childObjectsName);
-        distCentCal.setImageObjName(childObjectsName);
-        distCentSurfPx.setImageObjName(childObjectsName);
-        distCentSurfCal.setImageObjName(childObjectsName);
-        distCentSurfFrac.setImageObjName(childObjectsName);
-        overlapPercentage.setImageObjName(childObjectsName);
+        distSurfPx.setObjectsName(childObjectsName);
+        distCentPx.setObjectsName(childObjectsName);
+        distSurfCal.setObjectsName(childObjectsName);
+        distCentCal.setObjectsName(childObjectsName);
+        distCentSurfPx.setObjectsName(childObjectsName);
+        distCentSurfCal.setObjectsName(childObjectsName);
+        distCentSurfFrac.setObjectsName(childObjectsName);
+        overlapPercentage.setObjectsName(childObjectsName);
 
         distCentPx.setAvailable(false);
         distCentCal.setAvailable(false);

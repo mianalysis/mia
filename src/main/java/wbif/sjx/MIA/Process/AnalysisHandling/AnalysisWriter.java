@@ -9,9 +9,11 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
@@ -119,12 +121,15 @@ public class AnalysisWriter {
             moduleElement.appendChild(parametersElement);
 
             // Adding measurement references from this module
-            Element measurementsElement = doc.createElement("MEASUREMENTS");
-            MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
-            measurementsElement = prepareRefsXML(doc, measurementsElement,imageReferences,"MEASUREMENT");
-            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
-            measurementsElement = prepareRefsXML(doc, measurementsElement,objectReferences,"MEASUREMENT");
-            moduleElement.appendChild(measurementsElement);
+            Element imageMeasurementsElement = doc.createElement("IMAGE_MEASUREMENTS");
+            ImageMeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
+            imageMeasurementsElement = prepareRefsXML(doc, imageMeasurementsElement,imageReferences,"MEASUREMENT");
+            moduleElement.appendChild(imageMeasurementsElement);
+
+            Element objectMeasurementsElement = doc.createElement("OBJECT_MEASUREMENTS");
+            ObjMeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
+            objectMeasurementsElement = prepareRefsXML(doc, objectMeasurementsElement,objectReferences,"MEASUREMENT");
+            moduleElement.appendChild(objectMeasurementsElement);
 
             // Adding metadata references from this module
             Element metadataElement = doc.createElement("METADATA");
@@ -213,10 +218,10 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
         if (refs == null) return refsElement;
 
-        for (ExportableRef ref:refs.values()) {
+        for (Ref ref:refs.values()) {
             // Don't export any measurements that aren't calculated
             if (!ref.isAvailable()) continue;
 

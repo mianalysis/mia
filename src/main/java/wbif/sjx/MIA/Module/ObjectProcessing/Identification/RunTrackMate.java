@@ -14,15 +14,10 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -400,31 +395,30 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX,type);
-        reference.setImageObjName(outputSpotObjectsName);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL),type);
-        reference.setImageObjName(outputSpotObjectsName);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX,type);
-        reference.setImageObjName(outputSpotObjectsName);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),type);
-        reference.setImageObjName(outputSpotObjectsName);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
+        reference.setObjectsName(outputSpotObjectsName);
         reference.setAvailable(true);
 
         return objectMeasurementRefs;

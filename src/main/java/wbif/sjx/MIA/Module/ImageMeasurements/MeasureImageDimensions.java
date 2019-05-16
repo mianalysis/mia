@@ -6,10 +6,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 public class MeasureImageDimensions extends Module {
     public final static String INPUT_IMAGE = "Input image";
@@ -94,45 +91,44 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         imageMeasurementRefs.setAllAvailable(false);
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         String name = getFullName(Measurements.WIDTH);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.HEIGHT);
-        reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.N_CHANNELS);
-        reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.N_SLICES);
-        reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.N_FRAMES);
-        reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.DIST_PER_PX_XY);
-        reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         name = getFullName(Measurements.DIST_PER_SLICE_Z);
-        reference = imageMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputImageName);
+        reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
         reference.setAvailable(true);
 
         return imageMeasurementRefs;
@@ -140,7 +136,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

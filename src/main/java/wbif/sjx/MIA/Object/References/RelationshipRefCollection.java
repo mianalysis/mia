@@ -15,7 +15,13 @@ public class RelationshipRefCollection extends RefCollection<RelationshipRef> {
     public RelationshipRef getOrPut(String parent, String child) {
         String key = parent+" // "+child;
         putIfAbsent((String) key,new RelationshipRef(parent,child));
-        return super.get(key);
+        return (RelationshipRef) super.get(key);
+
+    }
+
+    public void add(RelationshipRef ref) {
+        String key = ref.getParentName()+" // "+ref.getChildName();
+        put(key,ref);
     }
 
     private TreeSet<String> getChildNames(String parentName, boolean useHierarchy, @Nullable String rootName) {

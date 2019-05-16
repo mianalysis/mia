@@ -20,10 +20,7 @@ import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityPr
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -619,66 +616,65 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         imageMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
-                MeasurementRef reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
-                reference = imageMeasurementRefs.getOrPut(name,type);
-                reference.setImageObjName(inputImageName);
+                reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageName(inputImageName);
                 reference.setAvailable(true);
 
                 break;
@@ -689,7 +685,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

@@ -18,8 +18,8 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
@@ -656,17 +656,16 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_X,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X,type).setImageObjName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y,type).setImageObjName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageName(outputImageName);
+            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageName(outputImageName);
 
         }
 
@@ -675,7 +674,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

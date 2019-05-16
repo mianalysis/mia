@@ -4,8 +4,8 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
@@ -135,22 +135,21 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         imageMeasurementRefs.setAllAvailable(false);
 
         // Creating new MeasurementRef
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-        imageMeasurementRefs.getOrPut(measurementName,type).setImageObjName(inputImageName).setAvailable(true);
+        imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName).setAvailable(true);
 
         return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return objectMeasurementRefs;
     }
 

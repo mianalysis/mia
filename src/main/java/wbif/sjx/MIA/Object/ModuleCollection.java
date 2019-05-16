@@ -9,10 +9,7 @@ import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,12 +22,12 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
 
-    public MeasurementRefCollection getImageMeasurementRefs(String imageName) {
+    public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName) {
         return getImageMeasurementRefs(imageName,null);
     }
 
-    public MeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
-        MeasurementRefCollection measurementRefs = new MeasurementRefCollection();
+    public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
+        ImageMeasurementRefCollection measurementRefs = new ImageMeasurementRefCollection();
 
         addImageMeasurementRefs(inputControl, measurementRefs, imageName);
         addImageMeasurementRefs(outputControl, measurementRefs, imageName);
@@ -45,27 +42,27 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    void addImageMeasurementRefs(Module module, MeasurementRefCollection measurementRefs, String imageName) {
+    void addImageMeasurementRefs(Module module, ImageMeasurementRefCollection measurementRefs, String imageName) {
         if (!module.isEnabled()) return;
-        MeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
 
         if (currentMeasurementRefs == null) return;
 
-        for (MeasurementRef measurementRef:currentMeasurementRefs.values()) {
-            if (measurementRef.getImageObjName() == null) continue;
-            if (measurementRef.getImageObjName().equals(imageName) & measurementRef.isAvailable())
+        for (ImageMeasurementRef measurementRef:currentMeasurementRefs.values()) {
+            if (measurementRef.getImageName() == null) continue;
+            if (measurementRef.getImageName().equals(imageName) & measurementRef.isAvailable())
                 measurementRefs.put(measurementRef.getName(),measurementRef);
 
         }
     }
 
-    public MeasurementRefCollection getObjectMeasurementRefs(String objectName) {
+    public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName) {
         return getObjectMeasurementRefs(objectName,null);
 
     }
 
-    public MeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
-        MeasurementRefCollection measurementRefs = new MeasurementRefCollection();
+    public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
+        ObjMeasurementRefCollection measurementRefs = new ObjMeasurementRefCollection();
 
         // If this is a distant relative there will be "//" in the name that need to be removed
         if (objectName.contains("//")) objectName = objectName.substring(objectName.indexOf("//")+3);
@@ -83,14 +80,14 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    void addObjectMeasurementRefs(Module module, MeasurementRefCollection measurementRefs, String objectName) {
+    void addObjectMeasurementRefs(Module module, ObjMeasurementRefCollection measurementRefs, String objectName) {
         if (!module.isEnabled()) return;
-        MeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
         if (currentMeasurementRefs == null) return;
 
-        for (MeasurementRef ref:currentMeasurementRefs.values()) {
-            if (ref.getImageObjName() == null) continue;
-            if (ref.getImageObjName().equals(objectName) & ref.isAvailable()) measurementRefs.put(ref.getName(),ref);
+        for (ObjMeasurementRef ref:currentMeasurementRefs.values()) {
+            if (ref.getObjectsName() == null) continue;
+            if (ref.getObjectsName().equals(objectName) & ref.isAvailable()) measurementRefs.put(ref.getName(),ref);
 
         }
     }

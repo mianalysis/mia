@@ -6,10 +6,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.PeriodogramCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -252,30 +249,29 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         switch ((String) parameters.getValue(REPORTING_MODE)) {
             case ReportingModes.KEY_FREQUENCIES:
                 int numberOfPeaks = parameters.getValue(NUMBER_OF_PEAKS_TO_REPORT);
                 for (int i = 0; i < numberOfPeaks; i++) {
                     String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
-                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
-                    reference.setImageObjName(inputObjectsName);
+                    ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                    reference.setObjectsName(inputObjectsName);
                     reference.setAvailable(true);
 
                     name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
-                    reference = objectMeasurementRefs.getOrPut(name,type);
-                    reference.setImageObjName(inputObjectsName);
+                    reference = objectMeasurementRefs.getOrPut(name);
+                    reference.setObjectsName(inputObjectsName);
                     reference.setAvailable(true);
 
                 }
@@ -286,8 +282,8 @@ public class CalculateMeasurementPeriodogram extends Module {
                 double[] freq = PeriodogramCalculator.calculateFrequency(1,numberOfBins);
                 for (int i=0;i<numberOfBins;i++) {
                     String name = getWholeSpectrumFullName(measurement, freq[i]);
-                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
-                    reference.setImageObjName(inputObjectsName);
+                    ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+                    reference.setObjectsName(inputObjectsName);
                     reference.setAvailable(true);
                 }
                 break;

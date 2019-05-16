@@ -4,10 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 public class BinObjectsByMeasurement extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -94,21 +91,20 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String name = getFullName(measurement);
-        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name,type);
-        binMeasurement.setImageObjName(inputObjectsName);
+        ObjMeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
+        binMeasurement.setObjectsName(inputObjectsName);
         binMeasurement.setAvailable(true);
 
         return objectMeasurementRefs;

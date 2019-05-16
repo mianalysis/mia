@@ -8,10 +8,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 import java.util.ArrayList;
 
@@ -136,54 +133,53 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         objectMeasurementRefs.setAllAvailable(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
         if (useMean) {
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_X_PX,type);
-            reference.setImageObjName(inputObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_X_PX);
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean x-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Y_PX,type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Y_PX);
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean y-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Z_SLICE,type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Z_SLICE);
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean z-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in slice units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_X_CAL),type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_X_CAL));
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean x-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_Y_CAL),type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_Y_CAL));
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean y-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_Z_CAL),type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_Z_CAL));
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Mean z-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
@@ -191,38 +187,38 @@ public class MeasureObjectCentroid extends Module {
         }
 
         if (useMedian) {
-            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MEDIAN_X_PX,type);
-            reference.setImageObjName(inputObjectsName);
+            ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.MEDIAN_X_PX);
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Median x-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Measurements.MEDIAN_Y_PX,type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEDIAN_Y_PX);
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Median y-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Measurements.MEDIAN_Z_SLICE,type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEDIAN_Z_SLICE);
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Median z-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in slice units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEDIAN_X_CAL),type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEDIAN_X_CAL));
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Median x-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEDIAN_Y_CAL),type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEDIAN_Y_CAL));
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Median y-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEDIAN_Z_CAL),type);
-            reference.setImageObjName(inputObjectsName);
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEDIAN_Z_CAL));
+            reference.setObjectsName(inputObjectsName);
             reference.setAvailable(true);
             reference.setDescription("Median z-position of all pixels in the object, \""+inputObjectsName+"\"." +
                     "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
