@@ -23,6 +23,7 @@ public class XLSXExporter {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Summary");
+        Row titleRow = sheet.createRow(0);
 
         LinkedHashMap<Integer,Workspace> workspacesMap = createRowList(sheet,workspaces);
 

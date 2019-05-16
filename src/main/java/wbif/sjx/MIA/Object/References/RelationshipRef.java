@@ -18,6 +18,9 @@ public class RelationshipRef extends SummaryRef {
         super(attributes);
         this.childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
         this.parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
+
+        setAttributesFromXML(attributes);
+
     }
 
     public RelationshipRef(String parentName, String childName) {

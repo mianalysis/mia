@@ -77,11 +77,13 @@ public abstract class SummaryRef extends Ref {
 
     @Override
     public void appendXMLAttributes(Element element) {
-        element.setAttribute("EXPORT_MEAN",String.valueOf(isExportMean()));
-        element.setAttribute("EXPORT_MIN",String.valueOf(isExportMin()));
-        element.setAttribute("EXPORT_MAX",String.valueOf(isExportMax()));
-        element.setAttribute("EXPORT_SUM",String.valueOf(isExportSum()));
-        element.setAttribute("EXPORT_STD",String.valueOf(isExportStd()));
+        super.appendXMLAttributes(element);
+
+        element.setAttribute("EXPORT_MEAN",String.valueOf(exportMean));
+        element.setAttribute("EXPORT_MIN",String.valueOf(exportMin));
+        element.setAttribute("EXPORT_MAX",String.valueOf(exportMax));
+        element.setAttribute("EXPORT_SUM",String.valueOf(exportSum));
+        element.setAttribute("EXPORT_STD",String.valueOf(exportStd));
 
     }
 
@@ -90,23 +92,23 @@ public abstract class SummaryRef extends Ref {
         super.setAttributesFromXML(attributes);
 
         if (attributes.getNamedItem("EXPORT_MEAN") != null) {
-            exportMean = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue());
+            this.exportMean = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue());
         }
 
         if (attributes.getNamedItem("EXPORT_MIN") != null) {
-            exportMin = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue());
+            this.exportMin = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue());
         }
 
         if (attributes.getNamedItem("EXPORT_MAX") != null) {
-            exportMax = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue());
+            this.exportMax = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue());
         }
 
         if (attributes.getNamedItem("EXPORT_SUM") != null) {
-            exportSum = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue());
+            this.exportSum = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue());
         }
 
         if (attributes.getNamedItem("EXPORT_STD") != null) {
-            exportStd = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue());
+            this.exportStd = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue());
         }
-        }
+    }
 }

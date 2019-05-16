@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 public class MetadataRef extends Ref implements SpreadsheetWriter {
     public MetadataRef(NamedNodeMap attributes) {
         super(attributes);
+        setAttributesFromXML(attributes);
     }
 
     public MetadataRef(String name) {

@@ -66,8 +66,8 @@ public class BatchProcessor extends FileCrawler {
 
             if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
                 System.out.println("Exporting results to spreadsheet");
-//                exporter.exportResults(workspaces, analysis);
-                new XLSXExporter().exportSummary(exportName,workspaces,analysis);
+                exporter.exportResults(workspaces, analysis);
+//                new XLSXExporter().exportSummary(exportName,workspaces,analysis);
             }
 
         } else {

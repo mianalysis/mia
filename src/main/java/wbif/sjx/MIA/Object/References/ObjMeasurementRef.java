@@ -9,6 +9,7 @@ public class ObjMeasurementRef extends SummaryRef {
 
     public ObjMeasurementRef(NamedNodeMap attributes) {
         super(attributes);
+        setAttributesFromXML(attributes);
     }
 
     public ObjMeasurementRef(String name) {

@@ -13,7 +13,6 @@ public abstract class Ref {
 
     public Ref(NamedNodeMap attributes) {
         this.name = attributes.getNamedItem("NAME").getNodeValue();
-        setAttributesFromXML(attributes);
     }
 
     public Ref(String name) {
@@ -81,8 +80,12 @@ public abstract class Ref {
     }
 
     public void setAttributesFromXML(NamedNodeMap attributes) {
-        nickname = attributes.getNamedItem("NAME").getNodeValue();
-        if (attributes.getNamedItem("NICKNAME") != null) nickname = attributes.getNamedItem("NICKNAME").getNodeValue();
+        if (attributes.getNamedItem("NICKNAME") != null) {
+            nickname = attributes.getNamedItem("NAME").getNodeValue();
+        } else {
+            nickname = attributes.getNamedItem("NICKNAME").getNodeValue();
+        }
+
         if (attributes.getNamedItem("EXPORT_GLOBAL") != null) {
             exportGlobal = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
         }
@@ -90,7 +93,5 @@ public abstract class Ref {
         if (attributes.getNamedItem("EXPORT_INDIVIDUAL") != null) {
             exportIndividual = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue());
         }
-        setExportIndividual(exportIndividual);
-
     }
 }

@@ -9,6 +9,7 @@ public class ImageMeasurementRef extends SummaryRef {
 
     public ImageMeasurementRef(NamedNodeMap attributes) {
         super(attributes);
+        setAttributesFromXML(attributes);
     }
 
     public ImageMeasurementRef(String name) {
