@@ -15,14 +15,4 @@ public class MeasurementRefTest {
         assertTrue(measurementReference.isAvailable());
         assertTrue(measurementReference.isExportIndividual());
     }
-
-    @Test
-    public void testToString() {
-        ImageMeasurementRef measurementReference = new ImageMeasurementRef("Test name");
-
-        String expected = "Measurement reference (Test name)";
-        String actual = measurementReference.toString();
-
-        assertEquals(expected,actual);
-    }
 }

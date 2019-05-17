@@ -132,10 +132,10 @@ public class SetDisplayRange extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage(outputImageName,null,false);
+            if (showOutput) outputImage.showImage(outputImageName,null,false,true);
 
         } else {
-            if (showOutput) inputImage.showImage(inputImageName,null,false);
+            if (showOutput) inputImage.showImage(inputImageName,null,false,true);
 
         }
 

@@ -37,6 +37,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public static final String CONCAT_SEPARATOR = "Stack concatenation";
     public static final String AXIS_MODE = "Axis mode";
 
+
     public ConcatenateStacks(ModuleCollection modules) {
         super(modules);
     }
@@ -216,7 +217,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut,outputImageName);
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut,outputImageName).duplicate();
         outputImagePlus.setCalibration(inputImages[0].getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(imgOut,outputImagePlus);
 
@@ -227,7 +228,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public static void convertToComposite(Image image) {
         ImagePlus ipl = image.getImagePlus();
 
-        ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite");
+        ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","color");
 
         // Updating the display range to help show all the colours
         IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);

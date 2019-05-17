@@ -162,7 +162,7 @@ public class SetLookupTable extends Module {
 
         setLUT(inputImage,lut,channelMode,channel);
 
-        if (showOutput) inputImage.showImage(inputImageName,null,false);
+        if (showOutput) inputImage.showImage(inputImageName,null,false,true);
 
         return true;
 

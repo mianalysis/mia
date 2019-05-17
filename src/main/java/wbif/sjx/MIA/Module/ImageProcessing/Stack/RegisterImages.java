@@ -196,6 +196,7 @@ public class RegisterImages extends Module implements Interactable {
                         return;
                     }
                     replaceStack(inputImage, warped, c, tt);
+
                 }
             }
 
@@ -500,7 +501,7 @@ public class RegisterImages extends Module implements Interactable {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        inputImage = workspace.getImages().get(inputImageName);
+        inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -522,6 +523,8 @@ public class RegisterImages extends Module implements Interactable {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
+
+        System.out.println(inputImage.getImagePlus().isHyperStack()+"_"+inputImage.getImagePlus().isComposite()+"_"+inputImage.getImagePlus().isStack());
 
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
@@ -546,7 +549,13 @@ public class RegisterImages extends Module implements Interactable {
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
                 processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference, externalSource);
 
-                if (showOutput) createOverlay(inputImage,reference).showImage();
+                if (showOutput) {
+                    if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
+                        createOverlay(inputImage, reference).showImage();
+                    } else {
+                        inputImage.showImage();
+                    }
+                }
 
                 break;
 

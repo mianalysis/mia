@@ -19,6 +19,7 @@ public class ShowImage extends Module {
     public final static String DISPLAY_IMAGE = "Display image";
     public static final String TITLE_MODE = "Title mode";
     public static final String QUICK_NORMALISATION = "Quick normalisation";
+    public static final String CHANNEL_MODE = "Channel mode";
 
 
     public interface TitleModes {
@@ -29,6 +30,15 @@ public class ShowImage extends Module {
         String[] ALL = new String[]{FILE_NAME,IMAGE_NAME,IMAGE_AND_FILE_NAME};
 
     }
+
+    public interface ChannelModes {
+        String COLOUR = "Colour (separate channels)";
+        String COMPOSITE = "Composite";
+
+        String[] ALL = new String[]{COLOUR,COMPOSITE};
+
+    }
+
 
     public ShowImage(ModuleCollection modules) {
         super(modules);
@@ -60,6 +70,9 @@ public class ShowImage extends Module {
         Image image = workspace.getImage(imageName);
         String titleMode = parameters.getValue(TITLE_MODE);
         boolean normalisation = parameters.getValue(QUICK_NORMALISATION);
+        String channelMode = parameters.getValue(CHANNEL_MODE);
+
+        boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
 
         String title = "";
         switch (titleMode) {
@@ -74,7 +87,7 @@ public class ShowImage extends Module {
                 break;
         }
 
-        if (showOutput) image.showImage(title,null,normalisation);
+        if (showOutput) image.showImage(title,null,normalisation,composite);
 
         return true;
 
@@ -85,6 +98,7 @@ public class ShowImage extends Module {
         parameters.add(new InputImageP(DISPLAY_IMAGE, this));
         parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL));
         parameters.add(new BooleanP(QUICK_NORMALISATION,this,true));
+        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL));
 
     }
 

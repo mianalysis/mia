@@ -203,10 +203,10 @@ public class NormaliseIntensity extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage(outputImageName,LUT.createLutFromColor(Color.WHITE),false);
+            if (showOutput) outputImage.showImage(outputImageName,LUT.createLutFromColor(Color.WHITE),false,true);
 
         } else {
-            if (showOutput) inputImage.showImage(inputImageName,LUT.createLutFromColor(Color.WHITE),false);
+            if (showOutput) inputImage.showImage(inputImageName,LUT.createLutFromColor(Color.WHITE),false,true);
 
         }
 

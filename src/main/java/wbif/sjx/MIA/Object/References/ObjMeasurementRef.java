@@ -41,25 +41,6 @@ public class ObjMeasurementRef extends SummaryRef {
         }
     }
 
-    //    public MeasurementRef duplicate() {
-//        ImageMeasurementRef newRef = new ImageMeasurementRef(name);
-//
-//        newRef.setAvailable(isAvailable());
-//        newRef.setImageObjName(imageObjName);
-//        newRef.setDescription(getDescription());
-//        newRef.setNickname(getNickname());
-//        newRef.setExportGlobal(isExportGlobal());
-//        newRef.setExportIndividual(isExportIndividual());
-//        newRef.setExportMean(isExportMean());
-//        newRef.setExportMin(isExportMin());
-//        newRef.setExportMax(isExportMax());
-//        newRef.setExportSum(isExportSum());
-//        newRef.setExportStd(isExportStd());
-//
-//        return newRef;
-//
-//    }
-
     public String getFinalName() {
         int idx = name.lastIndexOf("//");
 

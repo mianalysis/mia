@@ -1,10 +1,17 @@
 package wbif.sjx.MIA.Object.References;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
+import wbif.sjx.MIA.Object.Workspace;
 
-public class ImageMeasurementRef extends SummaryRef {
+import java.util.LinkedHashMap;
+
+public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter {
     private String imageName = "";
 
     public ImageMeasurementRef(NamedNodeMap attributes) {
@@ -41,27 +48,6 @@ public class ImageMeasurementRef extends SummaryRef {
         }
     }
 
-
-
-//    public MeasurementRef duplicate() {
-//        ImageMeasurementRef newRef = new ImageMeasurementRef(name);
-//
-//        newRef.setAvailable(isAvailable());
-//        newRef.setImageObjName(imageObjName);
-//        newRef.setDescription(getDescription());
-//        newRef.setNickname(getNickname());
-//        newRef.setExportGlobal(isExportGlobal());
-//        newRef.setExportIndividual(isExportIndividual());
-//        newRef.setExportMean(isExportMean());
-//        newRef.setExportMin(isExportMin());
-//        newRef.setExportMax(isExportMax());
-//        newRef.setExportSum(isExportSum());
-//        newRef.setExportStd(isExportStd());
-//
-//        return newRef;
-//
-//    }
-
     public String getFinalName() {
         int idx = name.lastIndexOf("//");
 
@@ -76,5 +62,29 @@ public class ImageMeasurementRef extends SummaryRef {
     public ImageMeasurementRef setImageName(String imageName) {
         this.imageName = imageName;
         return this;
+    }
+
+    @Override
+    public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer, Workspace> workspaces) {
+        if (!isAvailable()) return;
+        if (!isExportGlobal()) return;
+
+
+        // Getting the column number for this reference
+        Row titleRow = sheet.getRow(0);
+        int col = titleRow.getLastCellNum();
+        if (col == -1) col++;
+
+        // Adding the heading to the title row
+        Cell cell = titleRow.createCell(col);
+        cell.setCellValue(imageName+"_(IM) // "+getNickname());
+
+        // Adding to each row
+        for (int rowN:workspaces.keySet()) {
+            Row row = sheet.getRow(rowN);
+            cell = row.createCell(col);
+            Workspace workspace = workspaces.get(rowN);
+            cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
+        }
     }
 }

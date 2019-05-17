@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.Object;
 
+import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
@@ -126,19 +128,20 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public void showImage(String title, @Nullable LUT lut, boolean normalise) {
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
         if (normalise) IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
         if (lut != null) dispIpl.setLut(lut);
+        if (composite) dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
         dispIpl.show();
 
     }
 
     public void showImage(String title, LUT lut) {
-        showImage(title,lut,true);
+        showImage(title,lut,true,true);
     }
 
     public void showImage(String title) {

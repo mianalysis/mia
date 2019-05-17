@@ -89,7 +89,7 @@ public class EvalButton extends JButton implements ActionListener {
         if (idx == GUI.getModuleBeingEval()) {
             System.out.println("Stopping");
             GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates(true);
+            GUI.updateModuleStates(false);
             t.stop();
             return;
         }

@@ -7,6 +7,7 @@ public abstract class Ref {
     protected final String name;
     private String nickname = "";
     private String description = "";
+
     private boolean available = true;
     private boolean exportIndividual = true;
     private boolean exportGlobal = true; // This is mainly for the GUI
