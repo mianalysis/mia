@@ -11,23 +11,13 @@ public class ImageMeasurementRefCollection extends RefCollection<ImageMeasuremen
         return keySet().toArray(new String[0]);
     }
 
-    public void setAllAvailable(boolean available) {
-        for (ImageMeasurementRef measurementReference:values()) {
-            measurementReference.setAvailable(available);
-        }
-    }
-
     public ImageMeasurementRef getOrPut(Object key) {
         putIfAbsent((String) key,new ImageMeasurementRef((String) key));
         return get(key);
     }
 
     public boolean hasExportedMeasurements() {
-        for (ImageMeasurementRef ref:values()) {
-            if (ref.isAvailable()) return true;
-        }
-
-        return false;
+        return size() >= 1;
 
     }
 

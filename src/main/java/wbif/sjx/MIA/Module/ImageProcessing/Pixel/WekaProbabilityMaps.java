@@ -226,7 +226,7 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

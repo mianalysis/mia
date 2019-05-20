@@ -221,7 +221,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

@@ -214,7 +214,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
         for (ObjMeasurementRef measRef:measRefs.values()) {
-            if (measRef.getObjectsName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
+            if (measRef.getObjectsName().equals(name)) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values

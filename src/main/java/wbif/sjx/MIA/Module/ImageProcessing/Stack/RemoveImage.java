@@ -76,7 +76,7 @@ public class RemoveImage extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

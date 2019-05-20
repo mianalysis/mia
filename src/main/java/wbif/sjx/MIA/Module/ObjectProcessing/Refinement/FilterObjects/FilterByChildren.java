@@ -145,7 +145,7 @@ public class FilterByChildren extends CoreFilter {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -156,10 +156,10 @@ public class FilterByChildren extends CoreFilter {
             ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
             for (ObjMeasurementRef reference:references.values()) {
-                objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName);
+                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
             }
 
-            return objectMeasurementRefs;
+            return returnedRefs;
 
         }
 

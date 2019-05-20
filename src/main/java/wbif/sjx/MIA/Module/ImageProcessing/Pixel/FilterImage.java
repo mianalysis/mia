@@ -448,7 +448,7 @@ public class FilterImage extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

@@ -92,52 +92,52 @@ public class MeasureImageDimensions extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllAvailable(false);
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         String name = getFullName(Measurements.WIDTH);
         ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.HEIGHT);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_CHANNELS);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_SLICES);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_FRAMES);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.DIST_PER_PX_XY);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.DIST_PER_SLICE_Z);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

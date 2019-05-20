@@ -385,79 +385,78 @@ public class FitGaussian2D extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
-
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Y0_PX);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Z0_SLICE);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_X_PX);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_Y_PX);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_MEAN_PX);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X0_CAL));
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y0_CAL));
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z0_CAL));
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.A_0);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.A_BG);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.THETA);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ELLIPTICITY);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.RESIDUAL);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

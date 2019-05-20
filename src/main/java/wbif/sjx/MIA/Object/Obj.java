@@ -160,6 +160,8 @@ public class Obj extends Volume {
             if (i != elements.length-1) stringBuilder.append(" // ");
         }
 
+        if (parent == null) return null;
+
         return parent.getParent(stringBuilder.toString());
 
     }

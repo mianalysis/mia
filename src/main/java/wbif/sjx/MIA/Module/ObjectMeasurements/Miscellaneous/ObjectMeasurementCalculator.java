@@ -142,15 +142,15 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         // Creating new MeasurementRef
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        objectMeasurementRefs.getOrPut(measurementName).setObjectsName(inputObjectsName).setAvailable(true);
+        returnedRefs.add(objectMeasurementRefs.getOrPut(measurementName).setObjectsName(inputObjectsName));
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

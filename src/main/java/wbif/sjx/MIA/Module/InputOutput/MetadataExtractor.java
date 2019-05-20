@@ -400,6 +400,8 @@ public class MetadataExtractor extends Module {
                             TextDisplayP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
                             identifiedGroups.setValue(groupsString);
 
+                            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
+
                         }
                         break;
                 }
@@ -473,7 +475,7 @@ public class MetadataExtractor extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

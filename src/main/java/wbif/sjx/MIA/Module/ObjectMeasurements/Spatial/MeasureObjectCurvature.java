@@ -486,8 +486,7 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
-
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef meanCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MEAN_ABSOLUTE_CURVATURE_PX);
@@ -555,31 +554,31 @@ public class MeasureObjectCurvature extends Module {
             }
         }
 
-        splineLengthPx.setAvailable(true);
-        splineLengthCal.setAvailable(true);
-        meanCurvatureAbsolutePx.setAvailable(absoluteCurvature);
-        minCurvatureAbsolutePx.setAvailable(absoluteCurvature);
-        maxCurvatureAbsolutePx.setAvailable(absoluteCurvature);
-        stdCurvatureAbsolutePx.setAvailable(absoluteCurvature);
-        meanCurvatureAbsoluteCal.setAvailable(absoluteCurvature);
-        minCurvatureAbsoluteCal.setAvailable(absoluteCurvature);
-        maxCurvatureAbsoluteCal.setAvailable(absoluteCurvature);
-        stdCurvatureAbsoluteCal.setAvailable(absoluteCurvature);
-        meanCurvatureSignedPx.setAvailable(signedCurvature);
-        minCurvatureSignedPx.setAvailable(signedCurvature);
-        maxCurvatureSignedPx.setAvailable(signedCurvature);
-        stdCurvatureSignedPx.setAvailable(signedCurvature);
-        meanCurvatureSignedCal.setAvailable(signedCurvature);
-        minCurvatureSignedCal.setAvailable(signedCurvature);
-        maxCurvatureSignedCal.setAvailable(signedCurvature);
-        stdCurvatureSignedCal.setAvailable(signedCurvature);
-        firstPointX.setAvailable(relateToReference);
-        firstPointY.setAvailable(relateToReference);
-        relLocMinCurvature.setAvailable(relateToReference);
-        relLocMaxCurvature.setAvailable(relateToReference);
-        headTailAngle.setAvailable(calculateHeadTailAngle);
+        returnedRefs.add(splineLengthPx);
+        returnedRefs.add(splineLengthCal);
+        if (absoluteCurvature) returnedRefs.add(meanCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(minCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(maxCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(stdCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(meanCurvatureAbsoluteCal);
+        if (absoluteCurvature) returnedRefs.add(minCurvatureAbsoluteCal);
+        if (absoluteCurvature) returnedRefs.add(maxCurvatureAbsoluteCal);
+        if (absoluteCurvature) returnedRefs.add(stdCurvatureAbsoluteCal);
+        if (signedCurvature) returnedRefs.add(meanCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(minCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(maxCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(stdCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(meanCurvatureSignedCal);
+        if (signedCurvature) returnedRefs.add(minCurvatureSignedCal);
+        if (signedCurvature) returnedRefs.add(maxCurvatureSignedCal);
+        if (signedCurvature) returnedRefs.add(stdCurvatureSignedCal);
+        if (relateToReference) returnedRefs.add(firstPointX);
+        if (relateToReference) returnedRefs.add(firstPointY);
+        if (relateToReference) returnedRefs.add(relLocMinCurvature);
+        if (relateToReference) returnedRefs.add(relLocMaxCurvature);
+        if (calculateHeadTailAngle) returnedRefs.add(headTailAngle);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

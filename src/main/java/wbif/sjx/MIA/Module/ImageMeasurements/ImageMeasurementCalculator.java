@@ -136,21 +136,21 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllAvailable(false);
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         // Creating new MeasurementRef
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
 
-        imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName).setAvailable(true);
+        returnedRefs.add(imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName));
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

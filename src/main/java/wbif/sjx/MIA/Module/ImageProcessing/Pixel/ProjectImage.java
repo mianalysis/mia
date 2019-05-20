@@ -180,7 +180,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

@@ -469,13 +469,13 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
         String reference = getMeasurementRef();
 
-        if (reference == null) return objectMeasurementRefs;
+        if (reference == null) return returnedRefs;
 
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
@@ -503,15 +503,16 @@ public class MeasureRelativeOrientation extends Module {
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
                 ObjMeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
                 measurementReference.setObjectsName(inputObjectsName);
-                measurementReference.setAvailable(true);
+                returnedRefs.add(measurementReference);
 
                 String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
                 measurementReference.setDescription("Orientation of the object (specified by the measurements \""+
                         xyOriMeasName+"\") relative to "+referenceDescription+". Measured in degrees between 0 and 90.");
+                returnedRefs.add(measurementReference);
                 break;
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

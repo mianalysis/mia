@@ -8,7 +8,6 @@ public abstract class Ref {
     private String nickname = "";
     private String description = "";
 
-    private boolean available = true;
     private boolean exportIndividual = true;
     private boolean exportGlobal = true; // This is mainly for the GUI
 
@@ -23,14 +22,6 @@ public abstract class Ref {
 
     public String getName() {
         return name;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
     }
 
     public String getDescription() {

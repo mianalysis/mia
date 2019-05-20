@@ -101,15 +101,18 @@ public class AddRelationshipConnection extends Module {
 
         // Running through each slice of this object
         for (Obj childObj:object.getChildren(childObjectsName).values()) {
+            System.out.println(t);
             double xMeanChild = childObj.getXMean(true);
             double yMeanChild = childObj.getYMean(true);
 
-            for (int z = 1; z <= nSlices; z++) {
+            for (int z = 0; z < nSlices; z++) {
                 Line line = new Line(xMeanChild,yMeanChild,xMeanParent,yMeanParent);
                 if (ipl.isHyperStack()) {
+                    ipl.setPosition(1, z+1, t);
                     line.setPosition(1, z + 1, t);
                 } else {
                     int pos = Math.max(Math.max(1, z + 1), t);
+                    ipl.setPosition(pos);
                     line.setPosition(pos);
                 }
 
@@ -240,7 +243,7 @@ public class AddRelationshipConnection extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

@@ -7,7 +7,6 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Process.BatchProcessor;

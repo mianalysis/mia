@@ -221,7 +221,7 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
@@ -236,23 +236,22 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
-
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

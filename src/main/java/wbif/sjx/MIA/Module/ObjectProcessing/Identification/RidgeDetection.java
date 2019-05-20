@@ -313,52 +313,53 @@ public class RidgeDetection extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
         reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
-        reference.setAvailable(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in pixel " +
                 "units.");
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
         reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
-        reference.setAvailable(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
+        returnedRefs.add(reference);
 
         if (parameters.getValue(ESTIMATE_WIDTH)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setAvailable(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
+            returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setAvailable(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "pixel units.");
+            returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setAvailable(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
                     "("+Units.getOMEUnits().getSymbol()+") units.");
+            returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setAvailable(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+            returnedRefs.add(reference);
+
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

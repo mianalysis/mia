@@ -151,8 +151,6 @@ public class ParametersPanel extends JScrollPane {
 
         // Iterating over the measurements for the current object, adding a control for each
         for (Ref reference:refs.values()) {
-            if (!reference.isAvailable()) continue;
-
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleRefControl(reference);
             c.gridy++;
@@ -173,8 +171,6 @@ public class ParametersPanel extends JScrollPane {
 
         // Iterating over the measurements for the current object, adding a control for each
         for (SummaryRef reference:refs.values()) {
-            if (!reference.isAvailable()) continue;
-
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleSummaryRefControl(reference);
             c.gridy++;

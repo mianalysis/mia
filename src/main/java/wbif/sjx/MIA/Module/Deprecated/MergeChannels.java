@@ -319,7 +319,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

@@ -107,22 +107,22 @@ public class MeasureObjectColocalisation extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);
 
-        objectMeasurementRefs.setAllAvailable(false);
-
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
-        reference.setAvailable(true);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +
                 "within each \""+inputObjectsName+"\" object between images \""+inputImageName1+"\" and \""+
                 inputImageName2+"\".  PCC values range from -1 to +1, where -1 corresponds to perfect anti-correlation " +
                 "of signal and +1 to perfect correlation.");
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

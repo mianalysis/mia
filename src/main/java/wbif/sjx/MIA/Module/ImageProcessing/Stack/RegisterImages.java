@@ -524,8 +524,6 @@ public class RegisterImages extends Module implements Interactable {
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
-        System.out.println(inputImage.getImagePlus().isHyperStack()+"_"+inputImage.getImagePlus().isComposite()+"_"+inputImage.getImagePlus().isStack());
-
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
                 reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
@@ -666,25 +664,27 @@ public class RegisterImages extends Module implements Interactable {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageName(outputImageName);
-            imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageName(outputImageName);
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageName(outputImageName));
 
         }
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

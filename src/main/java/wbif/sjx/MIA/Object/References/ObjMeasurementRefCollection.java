@@ -11,23 +11,13 @@ public class ObjMeasurementRefCollection extends RefCollection<ObjMeasurementRef
         return keySet().toArray(new String[0]);
     }
 
-    public void setAllAvailable(boolean available) {
-        for (ObjMeasurementRef ref:values()) {
-            ref.setAvailable(available);
-        }
-    }
-
     public ObjMeasurementRef getOrPut(Object key) {
         putIfAbsent((String) key,new ObjMeasurementRef((String) key));
         return get(key);
     }
 
     public boolean hasExportedMeasurements() {
-        for (ObjMeasurementRef ref:values()) {
-            if (ref.isAvailable()) return true;
-        }
-
-        return false;
+        return size() >= 1;
 
     }
 

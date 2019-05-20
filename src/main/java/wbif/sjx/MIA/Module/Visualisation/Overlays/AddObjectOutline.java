@@ -1,9 +1,11 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Overlay;
 import ij.gui.Roi;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;
@@ -80,6 +82,7 @@ public class AddObjectOutline extends Module {
 
             pool.shutdown();
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
         } catch (InterruptedException e) {
             return;
         }
@@ -101,14 +104,17 @@ public class AddObjectOutline extends Module {
 
             if (ipl.isHyperStack()) {
                 polyRoi.setPosition(1, z+1, t);
+                ipl.setPosition(1,z+1,t);
             } else {
                 int pos = Math.max(Math.max(1, z+1), t);
                 polyRoi.setPosition(pos);
+                ipl.setPosition(pos);
             }
 
             polyRoi.setStrokeColor(colour);
             polyRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(polyRoi);
+
         }
     }
 
@@ -226,7 +232,7 @@ public class AddObjectOutline extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

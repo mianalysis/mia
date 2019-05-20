@@ -235,7 +235,7 @@ public class MergeTracks extends Module implements ActionListener {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

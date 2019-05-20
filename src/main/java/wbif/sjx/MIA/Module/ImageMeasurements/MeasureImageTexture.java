@@ -106,33 +106,33 @@ public class MeasureImageTexture extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllAvailable(false);
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         String imageName = parameters.getValue(INPUT_IMAGE);
 
         ImageMeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM);
         asm.setImageName(imageName);
-        asm.setAvailable(true);
+        returnedRefs.add(asm);
 
         ImageMeasurementRef contrast = imageMeasurementRefs.getOrPut(Measurements.CONTRAST);
         contrast.setImageName(imageName);
-        contrast.setAvailable(true);
+        returnedRefs.add(contrast);
 
         ImageMeasurementRef correlation = imageMeasurementRefs.getOrPut(Measurements.CORRELATION);
         correlation.setImageName(imageName);
-        correlation.setAvailable(true);
+        returnedRefs.add(correlation);
 
         ImageMeasurementRef entropy = imageMeasurementRefs.getOrPut(Measurements.ENTROPY);
         entropy.setImageName(imageName);
-        entropy.setAvailable(true);
+        returnedRefs.add(entropy);
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

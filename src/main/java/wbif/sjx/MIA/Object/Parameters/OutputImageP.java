@@ -5,6 +5,8 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OutputImageP extends TextType {
     private String imageName = "";
@@ -29,6 +31,7 @@ public class OutputImageP extends TextType {
     @Override
     public <T> T getValue() {
         return (T) imageName;
+
     }
 
     @Override

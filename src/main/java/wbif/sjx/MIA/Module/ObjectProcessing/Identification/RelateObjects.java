@@ -615,12 +615,12 @@ public class RelateObjects extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
 
-        if (parentObjectName == null || childObjectsName == null) return objectMeasurementRefs;
+        if (parentObjectName == null || childObjectsName == null) return returnedRefs;
 
         String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
         ObjMeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName);
@@ -677,45 +677,36 @@ public class RelateObjects extends Module {
         distCentSurfFrac.setObjectsName(childObjectsName);
         overlapPercentage.setObjectsName(childObjectsName);
 
-        distCentPx.setAvailable(false);
-        distCentCal.setAvailable(false);
-        distSurfPx.setAvailable(false);
-        distSurfCal.setAvailable(false);
-        distCentSurfPx.setAvailable(false);
-        distCentSurfCal.setAvailable(false);
-        distCentSurfFrac.setAvailable(false);
-        overlapPercentage.setAvailable(false);
-
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
                     case ReferencePoints.CENTROID:
-                        distCentPx.setAvailable(true);
-                        distCentCal.setAvailable(true);
+                        returnedRefs.add(distCentPx);
+                        returnedRefs.add(distCentCal);
                         break;
 
                     case ReferencePoints.SURFACE:
-                        distSurfPx.setAvailable(true);
-                        distSurfCal.setAvailable(true);
+                        returnedRefs.add(distSurfPx);
+                        returnedRefs.add(distSurfCal);
                         break;
 
                     case ReferencePoints.CENTROID_TO_SURFACE:
-                        distCentSurfPx.setAvailable(true);
-                        distCentSurfCal.setAvailable(true);
+                        returnedRefs.add(distCentSurfPx);
+                        returnedRefs.add(distCentSurfCal);
 
                         if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
-                            distCentSurfFrac.setAvailable(true);
+                            returnedRefs.add(distCentSurfFrac);
                         }
                         break;
                 }
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                overlapPercentage.setAvailable(true);
+                returnedRefs.add(overlapPercentage);
                 break;
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
@@ -726,9 +717,11 @@ public class RelateObjects extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
-        relationshipRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
 
-        return relationshipRefs;
+        returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS)));
+
+        return returnedRelationships;
 
     }
 

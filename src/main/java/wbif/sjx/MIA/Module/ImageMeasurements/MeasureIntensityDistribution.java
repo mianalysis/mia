@@ -617,7 +617,7 @@ public class MeasureIntensityDistribution extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllAvailable(false);
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -627,32 +627,32 @@ public class MeasureIntensityDistribution extends Module {
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
                 ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 break;
 
@@ -660,33 +660,33 @@ public class MeasureIntensityDistribution extends Module {
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
-                reference.setAvailable(true);
+                returnedRefs.add(reference);
 
                 break;
         }
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

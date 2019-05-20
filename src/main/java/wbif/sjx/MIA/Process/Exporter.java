@@ -368,7 +368,6 @@ public class Exporter {
 
                 // Running through all the image measurement values, adding them as new columns
                 for (ImageMeasurementRef imageMeasurement:availableMeasurements.values()) {
-                    if (!imageMeasurement.isAvailable()) continue;
                     if (!imageMeasurement.isExportIndividual()) continue;
                     if (!imageMeasurement.isExportGlobal()) continue;
 
@@ -433,7 +432,6 @@ public class Exporter {
 
                 // Running through all the object measurement values, adding them as new columns
                 for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                    if (!objectMeasurement.isAvailable()) continue;
                     if (!objectMeasurement.isExportIndividual()) continue;
                     if (!objectMeasurement.isExportGlobal()) continue;
 
@@ -544,7 +542,6 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (ImageMeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
-                if (!imageMeasurement.isAvailable()) continue;
                 if (!imageMeasurement.isExportIndividual()) continue;
                 if (!imageMeasurement.isExportGlobal()) continue;
 
@@ -640,7 +637,6 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                if (!objectMeasurement.isAvailable()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 
@@ -785,7 +781,6 @@ public class Exporter {
 
             // Running through all the object measurement values, adding them as new columns
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
-                if (!objectMeasurement.isAvailable()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
 
@@ -882,11 +877,6 @@ public class Exporter {
                 }
             }
         }
-    }
-
-    private void exportJSON(WorkspaceCollection workspaces, Analysis analysis) {
-        System.out.println("[WARN] No JSON export currently implemented.  File not saved.");
-
     }
 
     private String getMetadataString(String metadataName) {

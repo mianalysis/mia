@@ -126,6 +126,7 @@ public class RunTrackMate extends Module {
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
             Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits,is2D);
+            System.out.println(spot.getDoublePosition(2));
             spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
@@ -405,27 +406,26 @@ public class RunTrackMate extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
-
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setObjectsName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
         reference.setObjectsName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
         reference.setObjectsName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
         reference.setObjectsName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
@@ -436,14 +436,15 @@ public class RunTrackMate extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+
         if (parameters.getValue(DO_TRACKING)) {
-            relationshipRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS));
+            returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS)));
 
         }
 
-        return relationshipRefs;
+        return returnedRelationships;
 
     }
-
 }
 

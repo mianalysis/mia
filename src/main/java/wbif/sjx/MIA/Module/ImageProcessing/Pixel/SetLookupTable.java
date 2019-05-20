@@ -115,7 +115,9 @@ public class SetLookupTable extends Module {
     public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
-                inputImage.getImagePlus().setLut(lut);
+                for (int c=1;c<=inputImage.getImagePlus().getNChannels();c++) {
+                    ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut,c);
+                }
                 break;
 
             case ChannelModes.SPECIFIC_CHANNELS:
@@ -211,7 +213,7 @@ public class SetLookupTable extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

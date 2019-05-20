@@ -185,7 +185,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

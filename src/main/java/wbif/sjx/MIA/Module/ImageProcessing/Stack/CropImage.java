@@ -170,7 +170,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

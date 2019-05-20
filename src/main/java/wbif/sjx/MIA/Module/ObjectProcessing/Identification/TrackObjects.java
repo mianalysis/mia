@@ -685,8 +685,7 @@ public class TrackObjects extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
-
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
@@ -699,28 +698,23 @@ public class TrackObjects extends Module {
         trackPrevID.setObjectsName(inputObjectsName);
         trackNextID.setObjectsName(inputObjectsName);
 
-        trackPrevID.setAvailable(true);
-        trackNextID.setAvailable(true);
+        returnedRefs.add(trackPrevID);
+        returnedRefs.add(trackNextID);
 
         if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
-            angleMeasurement.setAvailable(true);
-            leadingXPx.setAvailable(true);
-            leadingYPx.setAvailable(true);
-            leadingZPx.setAvailable(true);
+            returnedRefs.add(angleMeasurement);
+            returnedRefs.add(leadingXPx);
+            returnedRefs.add(leadingYPx);
+            returnedRefs.add(leadingZPx);
 
             angleMeasurement.setObjectsName(inputObjectsName);
             leadingXPx.setObjectsName(inputObjectsName);
             leadingYPx.setObjectsName(inputObjectsName);
             leadingZPx.setObjectsName(inputObjectsName);
 
-        } else {
-            angleMeasurement.setAvailable(false);
-            leadingXPx.setAvailable(false);
-            leadingYPx.setAvailable(false);
-            leadingZPx.setAvailable(false);
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
@@ -731,13 +725,14 @@ public class TrackObjects extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationshipRefs.getOrPut(trackObjectsName,inputObjectsName);
+        returnedRelationships.add(relationshipRefs.getOrPut(trackObjectsName,inputObjectsName));
 
-        return relationshipRefs;
+        return returnedRelationships;
 
     }
-
 }

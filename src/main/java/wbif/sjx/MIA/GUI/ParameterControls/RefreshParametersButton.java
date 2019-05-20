@@ -17,6 +17,8 @@ public class RefreshParametersButton extends ParameterControl implements ActionL
 
 
     public RefreshParametersButton(RefreshButtonP parameter) {
+        this.parameter = parameter;
+
         control = new JButton(parameter.getValueAsString());
         control.addActionListener(this);
 

@@ -97,7 +97,7 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
@@ -105,9 +105,9 @@ public class BinObjectsByMeasurement extends Module {
         String name = getFullName(measurement);
         ObjMeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
         binMeasurement.setObjectsName(inputObjectsName);
-        binMeasurement.setAvailable(true);
+        returnedRefs.add(binMeasurement);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

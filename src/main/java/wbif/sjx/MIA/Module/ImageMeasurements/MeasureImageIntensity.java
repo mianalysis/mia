@@ -87,37 +87,37 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
-        imageMeasurementRefs.setAllAvailable(false);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageName(inputImageName);
-        mean.setAvailable(true);
+        returnedRefs.add(mean);
 
         ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageName(inputImageName);
-        min.setAvailable(true);
+        returnedRefs.add(min);
 
         ImageMeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
         max.setImageName(inputImageName);
-        max.setAvailable(true);
+        returnedRefs.add(max);
 
         ImageMeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
         stdev.setImageName(inputImageName);
-        stdev.setAvailable(true);
+        returnedRefs.add(stdev);
 
         ImageMeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
         sum.setImageName(inputImageName);
-        sum.setAvailable(true);
+        returnedRefs.add(sum);
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

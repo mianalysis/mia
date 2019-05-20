@@ -160,58 +160,58 @@ public class CalculateStatsForChildren extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);
-
-        objectMeasurementRefs.setAllAvailable(false);
 
         if (parameters.getValue(CALCULATE_MEAN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
-            reference.setAvailable(true);
             reference.setDescription("Mean value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
+            returnedRefs.add(reference);
         }
 
         if (parameters.getValue(CALCULATE_STD)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.STD);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
-            reference.setAvailable(true);
             reference.setDescription("Standard deviation of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
+            returnedRefs.add(reference);
         }
 
         if (parameters.getValue(CALCULATE_MIN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MIN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
-            reference.setAvailable(true);
             reference.setDescription("Minimum value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
+            returnedRefs.add(reference);
         }
 
         if (parameters.getValue(CALCULATE_MAX)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MAX);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
-            reference.setAvailable(true);
             reference.setDescription("Maximum value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
+            returnedRefs.add(reference);
         }
 
         if (parameters.getValue(CALCULATE_SUM)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.SUM);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
-            reference.setAvailable(true);
             reference.setDescription("Summed value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
+            returnedRefs.add(reference);
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

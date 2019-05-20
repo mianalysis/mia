@@ -50,7 +50,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
         for (ImageMeasurementRef measurementRef:currentMeasurementRefs.values()) {
             if (measurementRef.getImageName() == null) continue;
-            if (measurementRef.getImageName().equals(imageName) & measurementRef.isAvailable())
+            if (measurementRef.getImageName().equals(imageName))
                 measurementRefs.put(measurementRef.getName(),measurementRef);
 
         }
@@ -87,7 +87,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
         for (ObjMeasurementRef ref:currentMeasurementRefs.values()) {
             if (ref.getObjectsName() == null) continue;
-            if (ref.getObjectsName().equals(objectName) & ref.isAvailable()) measurementRefs.put(ref.getName(),ref);
+            if (ref.getObjectsName().equals(objectName)) measurementRefs.put(ref.getName(),ref);
 
         }
     }

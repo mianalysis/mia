@@ -14,7 +14,6 @@ import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.MIA.Process.Exporting.XLSXExporter;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;

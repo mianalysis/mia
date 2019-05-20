@@ -481,7 +481,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override

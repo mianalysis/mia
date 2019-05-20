@@ -613,16 +613,18 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+
         if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
-            metadataRefs.getOrPut(MetadataNames.SLICES).setAvailable(true);
+            returnedRefs.add(metadataRefs.getOrPut(MetadataNames.SLICES));
         }
 
-        return metadataRefs;
+        return returnedRefs;
 
     }
 

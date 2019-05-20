@@ -294,7 +294,7 @@ public class ObjectClusterer extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
     }
 
     @Override
@@ -304,13 +304,14 @@ public class ObjectClusterer extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName);
+        returnedRelationships.add(relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName));
 
-        return relationshipRefs;
+        return returnedRelationships;
 
     }
-
 }

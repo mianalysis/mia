@@ -280,87 +280,86 @@ public class FitEllipsoid extends Module {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
-
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X_CENT_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENT_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENT_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENT_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.Z_CENT_SLICE);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z_CENT_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_1_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_1_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_2_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_2_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_3_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_3_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SURFACE_AREA_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SURFACE_AREA_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_PX);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_1);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_2);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY);
-        reference.setAvailable(true);
         reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
@@ -371,17 +370,18 @@ public class FitEllipsoid extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-                relationshipRefs.getOrPut(inputObjectsName,outputObjectsName);
+                returnedRelationships.add(relationshipRefs.getOrPut(inputObjectsName,outputObjectsName));
 
                 break;
         }
 
-        return relationshipRefs;
+        return returnedRelationships;
 
     }
-
 }

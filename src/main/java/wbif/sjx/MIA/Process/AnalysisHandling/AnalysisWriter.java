@@ -222,9 +222,6 @@ public class AnalysisWriter {
         if (refs == null) return refsElement;
 
         for (Ref ref:refs.values()) {
-            // Don't export any measurements that aren't calculated
-            if (!ref.isAvailable()) continue;
-
             Element element = doc.createElement(groupName);
             ref.appendXMLAttributes(element);
             refsElement.appendChild(element);

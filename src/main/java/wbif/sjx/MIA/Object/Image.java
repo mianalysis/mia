@@ -141,7 +141,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public void showImage(String title, LUT lut) {
-        showImage(title,lut,true,true);
+        showImage(title,lut,true,false);
     }
 
     public void showImage(String title) {
@@ -170,7 +170,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
         for (ImageMeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageName().equals(name) && measRef.isAvailable()) measNames.add(measRef.getName());
+            if (measRef.getImageName().equals(name)) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values

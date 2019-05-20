@@ -931,27 +931,26 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllAvailable(false);
-
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         switch ((String) parameters.getValue(CROP_MODE)) {
             case CropModes.FROM_REFERENCE:
-                imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName);
-                imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName);
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName));
 
                 break;
         }
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+        return null;
 
     }
 
