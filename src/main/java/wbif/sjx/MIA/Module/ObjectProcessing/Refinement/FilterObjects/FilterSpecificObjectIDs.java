@@ -264,6 +264,8 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -272,11 +274,11 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
 
             String metadataName = getFullName(inputObjectsName,filterMethod,measName);
 
-            metadataRefs.getOrPut(metadataName).setAvailable(true);
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 
-        return metadataRefs;
+        return returnedRefs;
     }
 
     @Override
