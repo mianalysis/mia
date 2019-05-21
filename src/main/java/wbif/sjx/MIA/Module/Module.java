@@ -140,7 +140,7 @@ public abstract class Module implements Comparable {
     }
 
     public <T> T getParameterValue(String name) {
-        return parameters.getParameter(name).getValue();
+        return parameters.getParameter(name).getFinalValue();
     }
 
     public void setParameterVisibility(String name, boolean visible) {
@@ -248,11 +248,8 @@ public abstract class Module implements Comparable {
     }
 
     public boolean hasVisibleParameters() {
-        for (Parameter parameter:updateAndGetParameters()) {
-            if (parameter.isVisible()) return true;
-        }
-
-        return false;
+        System.out.println(moduleName);
+        return updateAndGetParameters().hasVisibleParameters();
 
     }
 

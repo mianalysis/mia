@@ -1,9 +1,8 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import org.apache.poi.ss.formula.functions.T;
 import wbif.sjx.MIA.GUI.ComponentFactory;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;

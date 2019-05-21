@@ -44,6 +44,6 @@ public class MessageP extends TextDisplayP {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new MessageP(name,module,getValue(),color,getDescription());
+        return (T) new MessageP(name,module, getFinalValue(),color,getDescription());
     }
 }

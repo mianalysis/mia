@@ -4,8 +4,8 @@
 
 package wbif.sjx.MIA.Object;
 
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -195,7 +195,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         // Removing any objects which have since been removed from the workspace
         LinkedHashSet<RemovedObjectsP> removedObjectParams = getParametersMatchingType(RemovedObjectsP.class,cutoffModule);
         for (Parameter removedObject: removedObjectParams) {
-            String removeObjectName = removedObject.getValueAsString();
+            String removeObjectName = removedObject.getRawStringValue();
             objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeObjectName));
         }
 
@@ -223,7 +223,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         // Removing any objects which have since been removed from the workspace
         LinkedHashSet<RemovedImageP> removedImagePS = getParametersMatchingType(RemovedImageP.class,cutoffModule);
         for (Parameter removedImage: removedImagePS) {
-            String removeImageName = removedImage.getValueAsString();
+            String removeImageName = removedImage.getRawStringValue();
             images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
         }
 

@@ -19,7 +19,7 @@ public class ParameterCollection extends LinkedHashSet<Parameter> {
     }
 
     public <T> T getValue(String name) {
-        return getParameter(name).getValue();
+        return getParameter(name).getFinalValue();
     }
 
     public boolean isVisible(String name) {
@@ -38,5 +38,21 @@ public class ParameterCollection extends LinkedHashSet<Parameter> {
                 return;
             }
         }
+    }
+
+    public boolean hasVisibleParameters() {
+        for (Parameter parameter:this) {
+            if (parameter.isVisible()) return true;
+
+            if (parameter instanceof ParameterGroup) {
+                for (ParameterCollection collection:((ParameterGroup) parameter).getCollections()) {
+                    System.out.println(collection.size());
+                    if (collection.hasVisibleParameters()) return true;
+                }
+            }
+        }
+
+        return false;
+
     }
 }

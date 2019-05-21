@@ -11,7 +11,6 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -38,10 +37,11 @@ public class AnalysisWriter {
         // Updating the analysis filename
         analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 
-        // Creating a module collection holding the input and output
-        ModuleCollection inOutModules = new ModuleCollection();
-        inOutModules.add(analysis.getModules().getInputControl());
-        inOutModules.add(analysis.getModules().getOutputControl());
+        // Creating a module collection holding the single-instance modules (input, output and global variables)
+        ModuleCollection singleModules = new ModuleCollection();
+        singleModules.add(MIA.getGlobalVariables());
+        singleModules.add(analysis.getModules().getInputControl());
+        singleModules.add(analysis.getModules().getOutputControl());
 
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -52,7 +52,7 @@ public class AnalysisWriter {
         version.appendChild(doc.createTextNode(MIA.getVersion()));
         root.setAttributeNode(version);
 
-        root.appendChild(prepareModulesXML(doc,inOutModules));
+        root.appendChild(prepareModulesXML(doc,singleModules));
         root.appendChild(prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -187,10 +187,10 @@ public class AnalysisWriter {
             parameterElement.setAttributeNode(nameAttr);
 
             Attr valueAttr = doc.createAttribute("VALUE");
-            if (currParam.getValueAsString() == null) {
+            if (currParam.getRawStringValue() == null) {
                 valueAttr.appendChild(doc.createTextNode(""));
             } else {
-                valueAttr.appendChild(doc.createTextNode(currParam.getValueAsString()));
+                valueAttr.appendChild(doc.createTextNode(currParam.getRawStringValue()));
             }
             parameterElement.setAttributeNode(valueAttr);
 

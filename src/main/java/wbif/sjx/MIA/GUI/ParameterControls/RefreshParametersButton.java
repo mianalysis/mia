@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.RefreshButtonP;
 
 import javax.swing.*;
@@ -19,7 +18,7 @@ public class RefreshParametersButton extends ParameterControl implements ActionL
     public RefreshParametersButton(RefreshButtonP parameter) {
         this.parameter = parameter;
 
-        control = new JButton(parameter.getValueAsString());
+        control = new JButton(parameter.getRawStringValue());
         control.addActionListener(this);
 
     }

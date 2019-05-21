@@ -583,7 +583,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        imageMeasurementRefs.setAllAvailable(false);
 //
-//        String inputImageName = parameters.getValue(INPUT_IMAGE);
+//        String inputImageName = parameters.getFinalValue(INPUT_IMAGE);
 //
 //        MeasurementRef measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE);
 //        measurementRef.setAvailable(true);

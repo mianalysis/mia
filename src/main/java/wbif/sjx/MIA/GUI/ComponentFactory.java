@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.GUI;
 
 import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
@@ -48,7 +48,7 @@ public class ComponentFactory {
         JComponent parameterComponent = parameterControl.getComponent();
 
         if (parameter instanceof MessageP) {
-            String value = parameter.getValueAsString();
+            String value = parameter.getRawStringValue();
             parameterComponent.setToolTipText(value == null ? "" : value);
             c.insets = new Insets(10,3,0,5);
             paramPanel.add(parameterComponent,c);
@@ -80,7 +80,7 @@ public class ComponentFactory {
             c.weightx=1;
             c.anchor = GridBagConstraints.EAST;
             if (parameterComponent != null) {
-                String value = parameter.getValueAsString();
+                String value = parameter.getRawStringValue();
                 parameterComponent.setToolTipText(value == null ? "" : value);
                 if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
                 paramPanel.add(parameterComponent, c);
@@ -361,11 +361,7 @@ public class ComponentFactory {
 
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
         // Only displaying the module title if it has at least one visible parameter
-        boolean hasVisibleParameters = false;
-        for (Parameter parameter : module.updateAndGetParameters()) {
-            if (parameter.isVisible()) hasVisibleParameters = true;
-        }
-        if (!hasVisibleParameters &! module.canBeDisabled()) return null;
+        if (!module.hasVisibleParameters() &! module.canBeDisabled()) return null;
 
         JPanel modulePanel = new JPanel(new GridBagLayout());
         JPanel titlePanel = createBasicModuleHeading(module);

@@ -6,7 +6,7 @@ package wbif.sjx.MIA.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
@@ -133,6 +133,7 @@ public class GUI {
             menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
         }
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.TOGGLE_HELP_NOTES));
+        menu.add(new AnalysisMenuItem(AnalysisMenuItem.SHOW_GLOBAL_VARIABLES));
 
     }
 
@@ -232,7 +233,7 @@ public class GUI {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
+        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getFinalValue();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
         if (inputPath == null) return;

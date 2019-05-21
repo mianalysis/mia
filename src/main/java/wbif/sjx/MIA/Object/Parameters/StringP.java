@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
@@ -28,7 +29,7 @@ public class StringP extends TextType {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return String.valueOf(value);
     }
 
@@ -38,8 +39,8 @@ public class StringP extends TextType {
     }
 
     @Override
-    public <T> T getValue() {
-        return (T) value;
+    public <T> T getFinalValue() {
+        return (T) MIA.getGlobalVariables().convertString(value);
     }
 
     @Override

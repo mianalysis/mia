@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.GUI.InputOutput;
+package wbif.sjx.MIA.Module.Hidden;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
@@ -89,7 +89,7 @@ public class OutputControl extends Module {
 
     @Override
     public String getPackageName() {
-        return "General";
+        return "Hidden";
     }
 
     @Override

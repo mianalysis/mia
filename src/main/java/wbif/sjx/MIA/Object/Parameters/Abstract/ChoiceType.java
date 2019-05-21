@@ -26,7 +26,7 @@ public abstract class ChoiceType extends Parameter {
     public abstract String[] getChoices();
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return choice;
     }
 
@@ -36,7 +36,7 @@ public abstract class ChoiceType extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getFinalValue() {
         return (T) choice;
     }
 

@@ -214,19 +214,19 @@
 //    @Override
 //    protected void generateModuleList(Workspace workspace) throws GenericMIAException {
 //        // Getting input objects
-//        String inputObjects1Name = parameters.getValue(PARENT_OBJECTS);
+//        String inputObjects1Name = parameters.getFinalValue(PARENT_OBJECTS);
 //        ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);
 //
-//        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+//        String inputObjects2Name = parameters.getFinalValue(INPUT_OBJECTS_2);
 //        ObjCollection inputObjects2 = workspace.getObjects().get(inputObjects2Name);
 //
 //        // Getting parameters
-//        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
-//        String overlapMode = parameters.getValue(OVERLAP_MODE);
-//        double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION);
-//        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
-//        double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1);
-//        double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2);
+//        String outputObjectsName = parameters.getFinalValue(OUTPUT_OBJECTS_NAME);
+//        String overlapMode = parameters.getFinalValue(OVERLAP_MODE);
+//        double maximumSeparation = parameters.getFinalValue(MAXIMUM_SEPARATION);
+//        boolean calibratedUnits = parameters.getFinalValue(CALIBRATED_UNITS);
+//        double minOverlap1 = parameters.getFinalValue(MINIMUM_OVERLAP_PC_1);
+//        double minOverlap2 = parameters.getFinalValue(MINIMUM_OVERLAP_PC_2);
 //
 //        // Skipping the module if no objects are present in one collection
 //        if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
@@ -274,7 +274,7 @@
 //        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
 //        returnedParameters.add(parameters.getParameter(OVERLAP_MODE));
 //
-//        switch ((String) parameters.getValue(OVERLAP_MODE)){
+//        switch ((String) parameters.getFinalValue(OVERLAP_MODE)){
 //            case OverlapModes.CENTROID_SEPARATION:
 //                returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
 //                returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
@@ -296,9 +296,9 @@
 //
 //    @Override
 //    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-//        String inputObjectsName1 = parameters.getValue(PARENT_OBJECTS);
-//        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
-//        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
+//        String inputObjectsName1 = parameters.getFinalValue(PARENT_OBJECTS);
+//        String inputObjectsName2 = parameters.getFinalValue(INPUT_OBJECTS_2);
+//        String outputObjectsName = parameters.getFinalValue(OUTPUT_OBJECTS_NAME);
 //
 //        objectMeasurementRefs.setAllAvailable(false);
 //

@@ -21,7 +21,7 @@ public class TextParameter extends ParameterControl implements FocusListener {
         control = new JTextField();
 
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        control.setText(parameter.getValueAsString());
+        control.setText(parameter.getRawStringValue());
         control.addFocusListener(this);
 
     }
@@ -52,6 +52,6 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     @Override
     public void updateControl() {
-        control.setText(parameter.getValueAsString());
+        control.setText(parameter.getRawStringValue());
     }
 }

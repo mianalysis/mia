@@ -31,7 +31,7 @@ public class ChoiceP extends ChoiceType {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return getChoice();
     }
 

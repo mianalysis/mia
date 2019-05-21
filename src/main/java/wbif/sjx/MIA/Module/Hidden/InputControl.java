@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.GUI.InputOutput;
+package wbif.sjx.MIA.Module.Hidden;
 
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -250,7 +250,7 @@ public class InputControl extends Module {
 
     @Override
     public String getPackageName() {
-        return "General";
+        return "Hidden";
     }
 
     @Override

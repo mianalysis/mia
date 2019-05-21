@@ -1,14 +1,11 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.io.Serializable;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -98,6 +95,7 @@ public class Analysis {
     }
 
     public boolean hasVisibleParameters() {
+        if (MIA.getGlobalVariables().hasVisibleParameters()) return true;
         return (modules.hasVisibleParameters());
     }
 }

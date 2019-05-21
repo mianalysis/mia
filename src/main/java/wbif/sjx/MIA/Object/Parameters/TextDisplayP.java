@@ -39,7 +39,7 @@ public class TextDisplayP extends TextType {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getFinalValue() {
         return (T) value;
     }
 
@@ -49,7 +49,7 @@ public class TextDisplayP extends TextType {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return value;
     }
 

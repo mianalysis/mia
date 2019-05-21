@@ -26,7 +26,7 @@ public class TextDisplayArea extends ParameterControl {
         textArea.setEditable(false);
         textArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        textArea.setText(parameter.getValueAsString());
+        textArea.setText(parameter.getRawStringValue());
 
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
         control.setPreferredSize(new Dimension(0,150));
@@ -48,7 +48,7 @@ public class TextDisplayArea extends ParameterControl {
 
     @Override
     public void updateControl() {
-        textArea.setText(parameter.getValueAsString());
+        textArea.setText(parameter.getRawStringValue());
         textArea.repaint();
     }
 }

@@ -8,14 +8,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -87,12 +87,15 @@ public class AnalysisReader {
             if (module == null) continue;
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new InputControl(modules))) {
-                addInputSpecificComponents(module,moduleNode);
+            if (module.getClass().isInstance(new GlobalVariables(modules))) {
+                addSingleInstanceSpecificComponents(module,moduleNode);
+                MIA.setGlobalVariables((GlobalVariables) module);
+            } else if (module.getClass().isInstance(new InputControl(modules))) {
+                addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setInputControl((InputControl) module);
 
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
-                addOutputSpecificComponents(module,moduleNode);
+                addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setOutputControl((OutputControl) module);
 
             } else {
@@ -170,25 +173,7 @@ public class AnalysisReader {
 
     }
 
-    public static void addInputSpecificComponents(Module module, Node moduleNode) {
-        NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-
-        if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
-            String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
-            module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
-        } else {
-            module.setCanBeDisabled(false);
-        }
-
-        if (moduleAttributes.getNamedItem("NOTES") != null) {
-            String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
-            module.setNotes(notes);
-        } else {
-            module.setNotes("");
-        }
-    }
-
-    public static void addOutputSpecificComponents(Module module, Node moduleNode) {
+    public static void addSingleInstanceSpecificComponents(Module module, Node moduleNode) {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
 
         if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {

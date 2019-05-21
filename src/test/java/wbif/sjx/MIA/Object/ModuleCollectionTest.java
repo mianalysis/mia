@@ -328,7 +328,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
             boolean found = false;
             for (Parameter expectedParam:expectedParams){
                 if (expectedParam.getName().equals(actualParam.getName())
-                        && expectedParam.getValue().equals(actualParam.getValue())) {
+                        && expectedParam.getFinalValue().equals(actualParam.getFinalValue())) {
                     found = true;
                     break;
                 }
@@ -387,7 +387,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
             boolean found = false;
             for (Parameter expectedParam:expectedParams){
                 if (expectedParam.getName().equals(actualParam.getName())
-                        && expectedParam.getValue().equals(actualParam.getValue())) {
+                        && expectedParam.getFinalValue().equals(actualParam.getFinalValue())) {
                     found = true;
                     break;
                 }

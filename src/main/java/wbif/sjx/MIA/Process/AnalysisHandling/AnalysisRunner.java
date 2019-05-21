@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -79,7 +79,7 @@ public class AnalysisRunner {
 
     public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
         String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
-        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
+        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getFinalValue();
         String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
         String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
         String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);

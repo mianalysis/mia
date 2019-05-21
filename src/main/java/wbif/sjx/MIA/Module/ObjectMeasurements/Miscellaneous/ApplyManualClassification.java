@@ -46,11 +46,11 @@
 //    @Override
 //    public boolean process(Workspace workspace) {
 //        // Getting input objects
-//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
+//        String inputObjectsName = parameters.getFinalValue(TRACK_OBJECTS);
 //        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 //
 //        // Getting classification file and storing classifications as HashMap that can be easily read later on
-//        String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE);
+//        String classificationFilePath = parameters.getFinalValue(CLASSIFICATION_FILE);
 //        try {
 //            BufferedReader bufferedReader = new BufferedReader(new FileReader(classificationFilePath));
 //            String line;
@@ -82,13 +82,13 @@
 //
 //            // Removing objects that don't have an assigned class (first removing the parent-child relationships).
 //            // Otherwise, the class measurement is set to Double.NaN
-//            if (parameters.getValue(REMOVE_MISSING)) {
+//            if (parameters.getFinalValue(REMOVE_MISSING)) {
 //                for (Obj object : inputObjects.values()) {
 //                    if (object.getMeasurement(Measurements.CLASS) == null) {
 //                        object.removeRelationships();
 //                    }
 //                }
-//                inputObjects.entrySet().removeIf(entry -> entry.getValue().getMeasurement(Measurements.CLASS) == null);
+//                inputObjects.entrySet().removeIf(entry -> entry.getFinalValue().getMeasurement(Measurements.CLASS) == null);
 //
 //            } else {
 //                for (Obj object : inputObjects.values()) {
@@ -124,7 +124,7 @@
 //
 //    @Override
 //    public ParameterCollection updateAndGetParameters() {
-//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
+//        String inputObjectsName = parameters.getFinalValue(TRACK_OBJECTS);
 //
 //        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
 //        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
@@ -146,7 +146,7 @@
 //        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
-//        classMeas.setObjectsName(parameters.getValue(TRACK_OBJECTS));
+//        classMeas.setObjectsName(parameters.getFinalValue(TRACK_OBJECTS));
 //        classMeas.setAvailable(true);
 //
 //        return objectMeasurementRefs;

@@ -10,7 +10,15 @@ public class SeriesSingleSelectorP extends IntegerP {
         super(name, module, value);
     }
 
+    public SeriesSingleSelectorP(String name, Module module, String value) {
+        super(name, module, value);
+    }
+
     public SeriesSingleSelectorP(String name, Module module, int value, String description) {
+        super(name, module, value, description);
+    }
+
+    public SeriesSingleSelectorP(String name, Module module, String value, String description) {
         super(name, module, value, description);
     }
 

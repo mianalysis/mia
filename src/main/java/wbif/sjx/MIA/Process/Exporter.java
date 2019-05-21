@@ -12,7 +12,6 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
@@ -238,7 +237,7 @@ public class Exporter {
             nameValueCell.setCellValue(currParam.getNameAsString());
 
             Cell valueValueCell = row.createCell(paramCol++);
-            valueValueCell.setCellValue(currParam.getValueAsString());
+            valueValueCell.setCellValue(currParam.getRawStringValue());
 
             Cell moduleValueCell = row.createCell(paramCol);
             moduleValueCell.setCellValue(module.getClass().getSimpleName());
