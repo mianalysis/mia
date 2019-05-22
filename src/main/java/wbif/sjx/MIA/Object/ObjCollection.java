@@ -112,6 +112,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         ImagePlus ipl;
 
         if (templateIpl == null) {
+            if (size() == 0) return null;
+
             // Getting range of object pixels
             int[][] spatialLimits = getSpatialLimits();
             int[] temporalLimits = getTemporalLimits();

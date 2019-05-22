@@ -32,8 +32,9 @@ public abstract class CoreFilter extends Module {
         String EQUAL_TO = "Equal to";
         String GREATER_THAN_OR_EQUAL_TO = "Greater than or equal to";
         String GREATER_THAN = "Greater than";
+        String NOT_EQUAL_TO = "Not equal to";
 
-        String[] ALL = new String[]{LESS_THAN,LESS_THAN_OR_EQUAL_TO,EQUAL_TO,GREATER_THAN_OR_EQUAL_TO,GREATER_THAN};
+        String[] ALL = new String[]{LESS_THAN,LESS_THAN_OR_EQUAL_TO,EQUAL_TO,GREATER_THAN_OR_EQUAL_TO,GREATER_THAN,NOT_EQUAL_TO};
 
     }
 
@@ -49,6 +50,8 @@ public abstract class CoreFilter extends Module {
                 return testValue >= referenceValue;
             case FilterMethods.GREATER_THAN:
                 return testValue > referenceValue;
+            case FilterMethods.NOT_EQUAL_TO:
+                return testValue != referenceValue;
         }
 
         return false;
@@ -67,6 +70,8 @@ public abstract class CoreFilter extends Module {
                 return ">=";
             case FilterMethods.GREATER_THAN:
                 return ">";
+            case FilterMethods.NOT_EQUAL_TO:
+                return "!=";
         }
 
         return "";
