@@ -82,7 +82,7 @@ public class ComponentFactory {
             if (parameterComponent != null) {
                 String value = parameter.getRawStringValue();
                 parameterComponent.setToolTipText(value == null ? "" : value);
-                if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
+                if (!(parameter instanceof TextAreaP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
                 paramPanel.add(parameterComponent, c);
             }
 

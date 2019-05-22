@@ -248,7 +248,6 @@ public abstract class Module implements Comparable {
     }
 
     public boolean hasVisibleParameters() {
-        System.out.println(moduleName);
         return updateAndGetParameters().hasVisibleParameters();
 
     }

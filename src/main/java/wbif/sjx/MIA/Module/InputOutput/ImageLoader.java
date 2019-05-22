@@ -790,7 +790,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new StringP(SUFFIX,this));
         parameters.add(new StringP(EXTENSION,this));
         parameters.add(new StringP(GENERIC_FORMAT,this));
-        parameters.add(new TextDisplayP(AVAILABLE_METADATA_FIELDS,this));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS,this,false));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(FILE_PATH, this));
 

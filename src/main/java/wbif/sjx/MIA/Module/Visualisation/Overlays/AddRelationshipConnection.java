@@ -101,7 +101,6 @@ public class AddRelationshipConnection extends Module {
 
         // Running through each slice of this object
         for (Obj childObj:object.getChildren(childObjectsName).values()) {
-            System.out.println(t);
             double xMeanChild = childObj.getXMean(true);
             double yMeanChild = childObj.getYMean(true);
 

@@ -4,12 +4,11 @@ import javax.annotation.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.VirtualStack;
 import ij.measure.Calibration;
 import ij.plugin.AVI_Reader;
+import ij.plugin.ChannelSplitter;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
-import ij.process.ColorSpaceConverter;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
@@ -26,13 +25,10 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.HCMetadata;
 
-import java.nio.Buffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.INPUT_SEPARATOR;
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 
 public class VideoLoader extends Module {
@@ -122,17 +118,16 @@ public class VideoLoader extends Module {
 
         int count = 1;
         for (int frame:frames) {
-            writeMessage("Loading frame "+(count)+" of "+origFrames);
+            writeMessage("Loading frame "+(count)+" of "+frames.size());
 
             // Loading frame and converting to composite format
             ImageStack currIst = new AVI_Reader().makeStack(path,frame,frame,false,false,false);
-            ImagePlus currIpl = CompositeConverter.makeComposite(new ImagePlus("Temp",currIst));
+            ImageStack[] splitIsts = ChannelSplitter.splitRGB(currIst,false);
 
             for (int channel:channels) {
-                currIpl.setPosition(channel,1,1);
                 ipl.setPosition(channel,1,count);
 
-                ImageProcessor ipr = currIpl.getProcessor();
+                ImageProcessor ipr = splitIsts[channel-1].getProcessor(1);
                 if (crop != null) {
                     ipr.setRoi(left,top,width,height);
                     ipr = ipr.crop();
@@ -145,9 +140,6 @@ public class VideoLoader extends Module {
             count++;
 
         }
-
-        ipl.setPosition(1,1,1);
-        ipl.updateChannelAndDraw();
 
         // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
         if (((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {
@@ -437,7 +429,7 @@ public class VideoLoader extends Module {
         parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.GENERIC,NameFormats.ALL));
         parameters.add(new StringP(GENERIC_FORMAT,this));
-        parameters.add(new TextDisplayP(AVAILABLE_METADATA_FIELDS,this));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS,this,false));
         parameters.add(new StringP(PREFIX,this));
         parameters.add(new StringP(SUFFIX,this));
         parameters.add(new StringP(EXTENSION,this));

@@ -286,8 +286,8 @@ public class AnalysisReader {
                     ((FileFolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof MetadataItemP) {
                     ((MetadataItemP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof TextDisplayP) {
-                    ((TextDisplayP) parameters.getParameter(parameterName)).setValue(parameterValue);
+                } else if (parameter instanceof TextAreaP) {
+                    ((TextAreaP) parameters.getParameter(parameterName)).setValue(parameterValue);
                 }
 
                 if (parameterAttributes.getNamedItem("VISIBLE") != null) {

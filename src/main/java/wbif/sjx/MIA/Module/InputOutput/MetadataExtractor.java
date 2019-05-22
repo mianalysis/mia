@@ -366,7 +366,7 @@ public class MetadataExtractor extends Module {
         parameters.add(new StringP(GROUPS,this));
         parameters.add(new BooleanP(SHOW_TEST,this,false));
         parameters.add(new StringP(EXAMPLE_STRING,this));
-        parameters.add(new TextDisplayP(IDENTIFIED_GROUPS,this));
+        parameters.add(new TextAreaP(IDENTIFIED_GROUPS,this,false));
         parameters.add(new BooleanP(REGEX_SPLITTING,this,false));
         parameters.add(new StringP(METADATA_VALUE_NAME,this));
         parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
@@ -397,7 +397,7 @@ public class MetadataExtractor extends Module {
                             String groups = parameters.getValue(GROUPS);
                             String exampleString = parameters.getValue(EXAMPLE_STRING);
                             String groupsString = getTestString(pattern,groups,exampleString);
-                            TextDisplayP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
+                            TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
                             identifiedGroups.setValue(groupsString);
 
                             returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
@@ -449,7 +449,7 @@ public class MetadataExtractor extends Module {
                                 String groups = parameters.getValue(GROUPS);
                                 String exampleString = parameters.getValue(EXAMPLE_STRING);
                                 String groupsString = getTestString(pattern, groups, exampleString);
-                                TextDisplayP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
+                                TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
                                 identifiedGroups.setValue(groupsString);
 
                                 returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));

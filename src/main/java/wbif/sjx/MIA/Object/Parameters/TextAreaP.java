@@ -1,28 +1,32 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
-import wbif.sjx.MIA.GUI.ParameterControls.TextDisplayArea;
+import wbif.sjx.MIA.GUI.ParameterControls.TextAreaParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.annotation.Nonnull;
 
-public class TextDisplayP extends TextType {
+public class TextAreaP extends TextType {
     private String value = "";
+    private boolean editable = false;
 
-    public TextDisplayP(String name, Module module) {
+    public TextAreaP(String name, Module module, boolean editable) {
         super(name, module);
+        this.editable = editable;
     }
 
-    public TextDisplayP(String name, Module module, @Nonnull String value) {
+    public TextAreaP(String name, Module module, @Nonnull String value, boolean editable) {
         super(name, module);
         this.value = value;
+        this.editable = editable;
     }
 
-    public TextDisplayP(String name, Module module, @Nonnull String value, String description) {
+    public TextAreaP(String name, Module module, @Nonnull String value, boolean editable, String description) {
         super(name, module, description);
         this.value = value;
+        this.editable = editable;
     }
 
     public String getStringValue() {
@@ -55,7 +59,15 @@ public class TextDisplayP extends TextType {
 
     @Override
     public ParameterControl getControl() {
-        return new TextDisplayArea(this);
+        return new TextAreaParameter(this);
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     @Override
@@ -65,6 +77,6 @@ public class TextDisplayP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new TextDisplayP(name,module,value,getDescription());
+        return (T) new TextAreaP(name,module,value,editable,getDescription());
     }
 }

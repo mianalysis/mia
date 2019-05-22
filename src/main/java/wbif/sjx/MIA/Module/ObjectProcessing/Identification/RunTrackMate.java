@@ -126,7 +126,6 @@ public class RunTrackMate extends Module {
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
             Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits,is2D);
-            System.out.println(spot.getDoublePosition(2));
             spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 

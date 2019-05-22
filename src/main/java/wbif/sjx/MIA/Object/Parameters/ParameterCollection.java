@@ -46,7 +46,6 @@ public class ParameterCollection extends LinkedHashSet<Parameter> {
 
             if (parameter instanceof ParameterGroup) {
                 for (ParameterCollection collection:((ParameterGroup) parameter).getCollections()) {
-                    System.out.println(collection.size());
                     if (collection.hasVisibleParameters()) return true;
                 }
             }

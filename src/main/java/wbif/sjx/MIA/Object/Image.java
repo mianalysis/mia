@@ -134,7 +134,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         if (normalise) IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
-        if (lut != null) dispIpl.setLut(lut);
+        if (lut != null && dispIpl.getBitDepth() != 24) dispIpl.setLut(lut);
         if (composite) dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
         dispIpl.show();
 
