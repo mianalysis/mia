@@ -92,8 +92,8 @@ public class FileParameter extends ParameterControl implements ActionListener {
         if (module.getClass().isInstance(new InputControl(GUI.getModules()))) GUI.updateTestFile();
 
         GUI.updateModules();
-        GUI.populateModuleParameters();
         GUI.updateModuleStates(true);
+        GUI.populateModuleParameters();
 
         updateControl();
 

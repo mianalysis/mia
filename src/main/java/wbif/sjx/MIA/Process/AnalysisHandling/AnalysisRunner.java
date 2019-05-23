@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.MIA.Process.Exporter;
+import wbif.sjx.common.FileConditions.NameContainsString;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,9 @@ public class AnalysisRunner {
         batchProcessor = new BatchProcessor(inputFile);
         batchProcessor.setnThreads(nThreads);
         inputControl.addFilenameFilters(batchProcessor);
+
+        // Adding a filter to specifically remove OSX temp files
+        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.EXC_PARTIAL));
 
         // Resetting progress monitor
         ProgressMonitor.resetProgress();

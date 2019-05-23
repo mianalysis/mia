@@ -184,19 +184,25 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     }
 
     public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
-        // Getting a list of available images
-        LinkedHashSet<OutputObjectsP> objects = getParametersMatchingType(OutputObjectsP.class,cutoffModule);
+        LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
 
-        // Remove any images without a name
-        objects.removeIf(outputObjectsP -> outputObjectsP.getObjectsName().equals(""));
+        for (Module module:this) {
+            if (module == cutoffModule) break;
 
-        if (!ignoreRemoved) return objects;
+            // Get the added and removed images
+            LinkedHashSet<OutputObjectsP> addedObjects = module.getParametersMatchingType(OutputObjectsP.class);
+            LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
 
-        // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<RemovedObjectsP> removedObjectParams = getParametersMatchingType(RemovedObjectsP.class,cutoffModule);
-        for (Parameter removedObject: removedObjectParams) {
-            String removeObjectName = removedObject.getRawStringValue();
-            objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeObjectName));
+            // Adding new images
+            if (addedObjects != null) objects.addAll(addedObjects);
+
+            // Removing images
+            if (!ignoreRemoved || removedObjects == null) continue;
+
+            for (Parameter removedImage: removedObjects) {
+                String removeImageName = removedImage.getRawStringValue();
+                objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeImageName));
+            }
         }
 
         return objects;
@@ -212,19 +218,25 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     }
 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
-        // Getting a list of available images
-        LinkedHashSet<OutputImageP> images = getParametersMatchingType(OutputImageP.class,cutoffModule);
+        LinkedHashSet<OutputImageP> images = new LinkedHashSet<>();
 
-        // Remove any images without a name
-        images.removeIf(outputImageP -> outputImageP.getImageName().equals(""));
+        for (Module module:this) {
+            if (module == cutoffModule) break;
 
-        if (!ignoreRemoved) return images;
+            // Get the added and removed images
+            LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
+            LinkedHashSet<RemovedImageP> removedImages = module.getParametersMatchingType(RemovedImageP.class);
 
-        // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<RemovedImageP> removedImagePS = getParametersMatchingType(RemovedImageP.class,cutoffModule);
-        for (Parameter removedImage: removedImagePS) {
-            String removeImageName = removedImage.getRawStringValue();
-            images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+            // Adding new images
+            if (addedImages != null) images.addAll(addedImages);
+
+            // Removing images
+            if (!ignoreRemoved || removedImages == null) continue;
+
+            for (Parameter removedImage:removedImages) {
+                String removeImageName = removedImage.getRawStringValue();
+                images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+            }
         }
 
         return images;
