@@ -20,7 +20,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
@@ -579,10 +580,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        imageMeasurementRefs.setAllAvailable(false);
 //
-//        String inputImageName = parameters.getValue(INPUT_IMAGE);
+//        String inputImageName = parameters.getFinalValue(INPUT_IMAGE);
 //
 //        MeasurementRef measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE);
 //        measurementRef.setAvailable(true);
@@ -611,17 +612,19 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+
         if (parameters.getValue(BEST_FOCUS_CALCULATION).equals(BestFocusCalculations.MANUAL)) {
-            metadataRefs.getOrPut(MetadataNames.SLICES).setAvailable(true);
+            returnedRefs.add(metadataRefs.getOrPut(MetadataNames.SLICES));
         }
 
-        return metadataRefs;
+        return returnedRefs;
 
     }
 

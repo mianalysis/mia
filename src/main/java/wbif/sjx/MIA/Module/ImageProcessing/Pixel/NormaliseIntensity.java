@@ -9,7 +9,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Point;
@@ -202,10 +203,10 @@ public class NormaliseIntensity extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage(outputImageName,LUT.createLutFromColor(Color.WHITE),false);
+            if (showOutput) outputImage.showImage(outputImageName,LUT.createLutFromColor(Color.WHITE),false,true);
 
         } else {
-            if (showOutput) inputImage.showImage(inputImageName,LUT.createLutFromColor(Color.WHITE),false);
+            if (showOutput) inputImage.showImage(inputImageName,LUT.createLutFromColor(Color.WHITE),false,true);
 
         }
 
@@ -271,13 +272,13 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

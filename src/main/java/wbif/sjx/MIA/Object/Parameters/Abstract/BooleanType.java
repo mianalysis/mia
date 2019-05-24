@@ -30,7 +30,7 @@ public abstract class BooleanType extends Parameter {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return Boolean.toString(isSelected());
     }
 
@@ -44,7 +44,7 @@ public abstract class BooleanType extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getFinalValue() {
         return (T) (Boolean) selected;
     }
 

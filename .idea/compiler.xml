@@ -6,8 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="MIA_" />
         <module name="ModularImageAnalysis" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="MIA_" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

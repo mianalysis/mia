@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
@@ -37,12 +39,12 @@ public class HelpArea extends JTextPane {
 
         sb.append("<br>");
 
-        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
-            for (MeasurementRef measurementRef : objectMeasRefs.values()) {
+            for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
                 sb.append("<i>")
                         .append(measurementRef.getFinalName())
                         .append("</i>:<br>")
@@ -53,12 +55,12 @@ public class HelpArea extends JTextPane {
 
         }
 
-        MeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
         if (imageMeasRefs != null && imageMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>IMAGE MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
-            for (MeasurementRef measurementRef : imageMeasRefs.values()) {
+            for (ImageMeasurementRef measurementRef : imageMeasRefs.values()) {
                 sb.append("<i>")
                         .append(measurementRef.getName())
                         .append("</i>:<br>")

@@ -4,10 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 /**
  * Created by sc13967 on 22/06/2017.
@@ -218,17 +215,16 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         String neighbourObjectsName = null;
         switch (relationshipMode) {
@@ -240,23 +236,22 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
-
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputObjectsName);
-        reference.setAvailable(true);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
-        reference = objectMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputObjectsName);
-        reference.setAvailable(true);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
-        reference = objectMeasurementRefs.getOrPut(name,type);
-        reference.setImageObjName(inputObjectsName);
-        reference.setAvailable(true);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

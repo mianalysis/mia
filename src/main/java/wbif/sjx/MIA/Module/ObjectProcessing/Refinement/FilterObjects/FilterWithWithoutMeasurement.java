@@ -5,37 +5,48 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
-public class OnImageEdge extends CoreFilter {
+public class FilterWithWithoutMeasurement extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
 
     public static final String FILTER_SEPARATOR = "Object filtering";
-    public static final String REFERENCE_IMAGE = "Reference image";
-    public static final String INCLUDE_Z_POSITION = "Include Z-position";
+    public static final String FILTER_METHOD = "Method for filtering";
+    public static final String MEASUREMENT = "Measurement to filter on";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public OnImageEdge(ModuleCollection modules) {
+    public FilterWithWithoutMeasurement(ModuleCollection modules) {
         super(modules);
     }
 
 
-    public String getMetadataName(String inputObjectsName, String referenceImagename, boolean includeZ) {
-        if (includeZ) {
-            return "FILTER // NUM_" + inputObjectsName + " TOUCHING " + referenceImagename + " EDGE (3D)";
-        } else {
-            return "FILTER // NUM_" + inputObjectsName + " TOUCHING " + referenceImagename + " EDGE (2D)";
+    public interface FilterMethods {
+        String WITH_MEASUREMENT = "Remove objects with measurement";
+        String WITHOUT_MEASUREMENT = "Remove objects without measurement";
+
+        String[] ALL = new String[]{WITH_MEASUREMENT, WITHOUT_MEASUREMENT};
+
+    }
+
+
+    public String getFullName(String inputObjectsName, String filterMethod, String measName) {
+        switch (filterMethod) {
+            case FilterMethods.WITH_MEASUREMENT:
+                return "FILTER // NUM_" + inputObjectsName + " WITH " + measName + " MEASUREMENT";
+            case FilterMethods.WITHOUT_MEASUREMENT:
+                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + measName + " MEASUREMENT";
+            default:
+                return "";
         }
     }
 
 
     @Override
     public String getTitle() {
-        return "Remove on image edge";
+        return "With / without measurement";
     }
 
     @Override
@@ -57,9 +68,8 @@ public class OnImageEdge extends CoreFilter {
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String inputImageName = parameters.getValue(REFERENCE_IMAGE);
-        Image inputImage = workspace.getImage(inputImageName);
-        boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
+        String filterMethod = parameters.getValue(FILTER_METHOD);
+        String measName = parameters.getValue(MEASUREMENT);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
@@ -67,32 +77,16 @@ public class OnImageEdge extends CoreFilter {
 
         ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
 
-        int maxX = inputImage.getImagePlus().getWidth()-1;
-        int maxY = inputImage.getImagePlus().getHeight()-1;
-        int maxZ = inputImage.getImagePlus().getNSlices()-1;
-
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            ArrayList<Integer> x = inputObject.getXCoords();
-            ArrayList<Integer> y = inputObject.getYCoords();
-            ArrayList<Integer> z = inputObject.getZCoords();
-
-            for (int i=0;i<x.size();i++) {
-                if (x.get(i) == 0 | x.get(i) == maxX | y.get(i) == 0 | y.get(i) == maxY) {
-                    count++;
-                    if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    break;
-                }
-
-                // Only consider Z if the user requested this
-                if (includeZ && (z.get(i) == 0 | z.get(i) == maxZ)) {
-                    count++;
-                    if (remove) processRemoval(inputObject,outputObjects,iterator);
-                    break;
-                }
+            // Removing the object if it has no children
+            Measurement measurement = inputObject.getMeasurement(measName);
+            if (measurement == null || Double.isNaN(measurement.getValue())) {
+                count++;
+                if (remove) processRemoval(inputObject,outputObjects,iterator);
             }
         }
 
@@ -100,7 +94,7 @@ public class OnImageEdge extends CoreFilter {
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,inputImageName,includeZ);
+        String metadataName = getFullName(inputObjectsName,filterMethod,measName);
         workspace.getMetadata().put(metadataName,count);
 
         // Showing objects
@@ -118,8 +112,8 @@ public class OnImageEdge extends CoreFilter {
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
-        parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
+        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITHOUT_MEASUREMENT, FilterMethods.ALL));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
     }
@@ -137,8 +131,10 @@ public class OnImageEdge extends CoreFilter {
         }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-        returnedParameters.add(parameters.getParameter(INCLUDE_Z_POSITION));
+        returnedParameters.add(parameters.getParameter(FILTER_METHOD));
+        returnedParameters.add(parameters.getParameter(MEASUREMENT));
+        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
+
         returnedParameters.add(parameters.getParameter(STORE_RESULTS));
 
         return returnedParameters;
@@ -146,13 +142,13 @@ public class OnImageEdge extends CoreFilter {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -160,36 +156,36 @@ public class OnImageEdge extends CoreFilter {
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
-            for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+            for (ObjMeasurementRef reference:references.values()) {
+                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
             }
 
-            return objectMeasurementRefs;
+            return returnedRefs;
 
         }
 
         return null;
-
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-            boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
+            String filterMethod = parameters.getValue(FILTER_METHOD);
+            String measName = parameters.getValue(MEASUREMENT);
 
-            String metadataName = getMetadataName(inputObjectsName,referenceImageName,includeZ);
+            String metadataName = getFullName(inputObjectsName,filterMethod,measName);
 
-            metadataRefs.getOrPut(metadataName).setAvailable(true);
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 
-        return metadataRefs;
+        return returnedRefs;
     }
 
     @Override

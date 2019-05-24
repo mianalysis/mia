@@ -1,17 +1,17 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.MIA.Process.Exporter;
+import wbif.sjx.common.FileConditions.NameContainsString;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,12 +41,15 @@ public class AnalysisRunner {
         batchProcessor.setnThreads(nThreads);
         inputControl.addFilenameFilters(batchProcessor);
 
+        // Adding a filter to specifically remove OSX temp files
+        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.EXC_PARTIAL));
+
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
         GUI.setProgress(0);
 
         // Running the analysis
-        batchProcessor.run(analysis,exporter);
+        batchProcessor.run(analysis,exporter,exportName);
 
         // Cleaning up
         System.out.println("Complete!");
@@ -80,7 +83,7 @@ public class AnalysisRunner {
 
     public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
         String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
-        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
+        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getFinalValue();
         String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
         String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
         String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);

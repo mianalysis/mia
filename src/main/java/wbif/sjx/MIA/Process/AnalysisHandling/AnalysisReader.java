@@ -8,16 +8,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
@@ -86,12 +87,15 @@ public class AnalysisReader {
             if (module == null) continue;
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new InputControl(modules))) {
-                addInputSpecificComponents(module,moduleNode);
+            if (module.getClass().isInstance(new GlobalVariables(modules))) {
+                addSingleInstanceSpecificComponents(module,moduleNode);
+                MIA.setGlobalVariables((GlobalVariables) module);
+            } else if (module.getClass().isInstance(new InputControl(modules))) {
+                addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setInputControl((InputControl) module);
 
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
-                addOutputSpecificComponents(module,moduleNode);
+                addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setOutputControl((OutputControl) module);
 
             } else {
@@ -136,6 +140,14 @@ public class AnalysisReader {
                             populateModuleMeasurementRefs(moduleChildNodes.item(j), module);
                             break;
 
+                        case "IMAGE_MEASUREMENTS":
+                            populateImageMeasurementRefs(moduleChildNodes.item(j), module);
+                            break;
+
+                        case "OBJECT_MEASUREMENTS":
+                            populateObjMeasurementRefs(moduleChildNodes.item(j), module);
+                            break;
+
                         case "METADATA":
                             populateModuleMetadataRefs(moduleChildNodes.item(j), module);
                             break;
@@ -161,25 +173,7 @@ public class AnalysisReader {
 
     }
 
-    public static void addInputSpecificComponents(Module module, Node moduleNode) {
-        NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-
-        if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
-            String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
-            module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
-        } else {
-            module.setCanBeDisabled(false);
-        }
-
-        if (moduleAttributes.getNamedItem("NOTES") != null) {
-            String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
-            module.setNotes(notes);
-        } else {
-            module.setNotes("");
-        }
-    }
-
-    public static void addOutputSpecificComponents(Module module, Node moduleNode) {
+    public static void addSingleInstanceSpecificComponents(Module module, Node moduleNode) {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
 
         if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
@@ -292,8 +286,8 @@ public class AnalysisReader {
                     ((FileFolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof MetadataItemP) {
                     ((MetadataItemP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof TextDisplayP) {
-                    ((TextDisplayP) parameters.getParameter(parameterName)).setValue(parameterValue);
+                } else if (parameter instanceof TextAreaP) {
+                    ((TextAreaP) parameters.getParameter(parameterName)).setValue(parameterValue);
                 }
 
                 if (parameterAttributes.getNamedItem("VISIBLE") != null) {
@@ -308,6 +302,7 @@ public class AnalysisReader {
         }
     }
 
+    @Deprecated
     public static void populateModuleMeasurementRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
@@ -317,24 +312,20 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String measurementName = attributes.getNamedItem("NAME").getNodeValue();
             String type = attributes.getNamedItem("TYPE").getNodeValue();
 
             // Acquiring the relevant reference
-            MeasurementRef measurementReference = null;
             switch (type) {
                 case "IMAGE":
-                    measurementReference = module.getImageMeasurementRef(measurementName);
+                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(attributes);
+                    module.addImageMeasurementRef(imageMeasurementRef);
                     break;
 
                 case "OBJECTS":
-                    measurementReference = module.getObjectMeasurementRef(measurementName);
+                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(attributes);
+                    module.addObjectMeasurementRef(objMeasurementRef);
                     break;
             }
-
-            if (measurementReference == null) continue;
-            measurementReference.setAttributesFromXML(attributes);
-
         }
     }
 
@@ -347,12 +338,38 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String metadataName = attributes.getNamedItem("NAME").getNodeValue();
+            MetadataRef ref = new MetadataRef(attributes);
+            module.addMetadataRef(ref);
 
-            // Acquiring the relevant reference
-            MetadataRef metadataRef = module.getMetadataRef(metadataName);
-            if (metadataName == null) continue;
-            metadataRef.setAttributesFromXML(attributes);
+        }
+    }
+
+    public static void populateImageMeasurementRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            ImageMeasurementRef ref = new ImageMeasurementRef(attributes);
+            module.addImageMeasurementRef(ref);
+
+        }
+    }
+
+    public static void populateObjMeasurementRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            ObjMeasurementRef ref = new ObjMeasurementRef(attributes);
+            module.addObjectMeasurementRef(ref);
 
         }
     }
@@ -366,14 +383,8 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
-
-            attributes = referenceNode.getAttributes();
-            String parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
-
-            // Acquiring the relevant reference
-            RelationshipRef relationshipRef = module.getRelationshipRef(parentName,childName);
-            relationshipRef.setAttributesFromXML(attributes);
+            RelationshipRef ref = new RelationshipRef(attributes);
+            module.addRelationshipRef(ref);
 
         }
     }

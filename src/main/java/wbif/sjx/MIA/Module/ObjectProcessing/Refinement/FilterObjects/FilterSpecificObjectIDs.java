@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SpecificObjectIDs extends CoreFilter implements ActionListener {
+public class FilterSpecificObjectIDs extends CoreFilter implements ActionListener {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -34,7 +34,7 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     private int elementHeight = 30;
     private boolean active = false;
 
-    public SpecificObjectIDs(ModuleCollection modules) {
+    public FilterSpecificObjectIDs(ModuleCollection modules) {
         super(modules);
     }
 
@@ -235,13 +235,13 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
@@ -249,14 +249,13 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            MeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
 
-            for (MeasurementRef reference:references.values()) {
-                MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
-                objectMeasurementRefs.getOrPut(reference.getName(), type).setImageObjName(filteredObjectsName);
+            for (ObjMeasurementRef reference:references.values()) {
+                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
             }
 
-            return objectMeasurementRefs;
+            return returnedRefs;
 
         }
 
@@ -265,6 +264,8 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+
         // Filter results are stored as a metadata item since they apply to the whole set
         if (parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -273,11 +274,11 @@ public class SpecificObjectIDs extends CoreFilter implements ActionListener {
 
             String metadataName = getFullName(inputObjectsName,filterMethod,measName);
 
-            metadataRefs.getOrPut(metadataName).setAvailable(true);
+            returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
         }
 
-        return metadataRefs;
+        return returnedRefs;
     }
 
     @Override

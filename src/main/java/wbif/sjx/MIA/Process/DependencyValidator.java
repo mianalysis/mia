@@ -22,12 +22,21 @@ public class DependencyValidator {
         boolean[] toInstall = new boolean[2];
         Arrays.fill(toInstall,false);
 
+        // Checking for Biomedgroup (ridge detection)
         try {
             Class.forName("de.biomedical_imaging.ij.steger.Line");
         } catch (ClassNotFoundException e) {
             toInstall[0] = true;
         }
 
+        // Checking for MorphoLibJ (2D and 3D morphological tools)
+        try {
+            Class.forName("inra.ijpb.binary.BinaryImages");
+        } catch (ClassNotFoundException e) {
+            toInstall[1] = true;
+        }
+
+        // Checking for StackReg (image registration)
         try {
             Class.forName("inra.ijpb.binary.BinaryImages");
         } catch (ClassNotFoundException e) {

@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.9.30</version>
+    <version>0.9.31</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -102,6 +102,11 @@
             <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
             <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
         </repository>
+
+        <!--        <repository>-->
+        <!--            <id>ossrh</id>-->
+        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--        </repository>-->
     </repositories>
 
     <dependencies>
@@ -217,13 +222,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.janelia</groupId>
-            <artifactId>H5J_Loader_Plugin</artifactId>
-            <version>1.0.7</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
             <version>1.3.2</version>
@@ -238,6 +236,32 @@
         </dependency>
 
         <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>TurboReg_</artifactId>
+            <version>2.0.0</version>
+            <scope>${myscope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.janelia</groupId>
+            <artifactId>H5J_Loader_Plugin</artifactId>
+            <version>1.0.7</version>
+            <scope>${myscope}</scope>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.bytedeco</groupId>-->
+        <!--            <artifactId>javacv-platform</artifactId>-->
+        <!--            <version>1.5</version>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>io.github.joheras</groupId>-->
+        <!--            <artifactId>IJ-OpenCV</artifactId>-->
+        <!--            <version>1.2.1-SNAPSHOT</version>-->
+        <!--        </dependency>-->
+
+        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.11</version>
@@ -250,9 +274,9 @@
         </dependency>
 
         <dependency>
-<!--            <groupId>wbif.sjx</groupId>-->
-<!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.4.32</version>-->
+            <!--            <groupId>wbif.sjx</groupId>-->
+            <!--            <artifactId>Common</artifactId>-->
+            <!--            <version>1.4.32</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
             <version>1.4.32</version>
@@ -261,22 +285,22 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <classpathScope>compile</classpathScope>
-                    <mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>exec-maven-plugin</artifactId>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<phase>compile</phase>-->
+            <!--<goals>-->
+            <!--<goal>java</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--<configuration>-->
+            <!--<classpathScope>compile</classpathScope>-->
+            <!--<mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

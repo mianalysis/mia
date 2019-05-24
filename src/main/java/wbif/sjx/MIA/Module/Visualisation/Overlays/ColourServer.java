@@ -62,7 +62,7 @@ public class ColourServer {
     }
 
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = inputObjects.getValue();
+        String inputObjectsName = inputObjects.getFinalValue();
         String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
         ParameterCollection returnedParameters = new ParameterCollection();

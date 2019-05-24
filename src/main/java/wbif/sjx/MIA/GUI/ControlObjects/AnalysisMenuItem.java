@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -35,9 +36,8 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String SILENCE_ALL = "Hide output for all modules";
     public static final String BASIC_VIEW = "Switch to basic view";
     public static final String EDITING_VIEW = "Switch to editing view";
-    public static final String SHOW_HELP_NOTES = "Show help and notes panel";
-    public static final String HIDE_HELP_NOTES = "Hide help and notes panel";
     public static final String TOGGLE_HELP_NOTES = "Toggle help and notes panel";
+    public static final String SHOW_GLOBAL_VARIABLES = "Show global variables";
 
     public AnalysisMenuItem(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -143,6 +143,10 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     GUI.populateHelpNotes();
                     break;
 
+                case SHOW_GLOBAL_VARIABLES:
+                    GUI.setActiveModule(MIA.getGlobalVariables());
+                    GUI.updateParameters();
+                    break;
             }
 
         } catch (IOException | ClassNotFoundException | ParserConfigurationException | SAXException

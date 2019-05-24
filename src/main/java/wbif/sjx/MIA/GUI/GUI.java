@@ -6,7 +6,7 @@ package wbif.sjx.MIA.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
@@ -18,7 +18,6 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
@@ -39,7 +38,6 @@ public class GUI {
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
-    private static final MeasurementRef globalMeasurementRef = new MeasurementRef("Global", MeasurementRef.Type.IMAGE);
 
     private static int minimumFrameHeight = 600;
     private static int minimumFrameWidth = 400;
@@ -135,6 +133,7 @@ public class GUI {
             menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
         }
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.TOGGLE_HELP_NOTES));
+        menu.add(new AnalysisMenuItem(AnalysisMenuItem.SHOW_GLOBAL_VARIABLES));
 
     }
 
@@ -234,7 +233,7 @@ public class GUI {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
+        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getFinalValue();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
         if (inputPath == null) return;
@@ -321,10 +320,6 @@ public class GUI {
 
     public static Analysis getAnalysis() {
         return analysis;
-    }
-
-    public static MeasurementRef getGlobalMeasurementRef() {
-        return globalMeasurementRef;
     }
 
     public static void setShowEditingHelpNotes(boolean showEditingHelpNotes) {

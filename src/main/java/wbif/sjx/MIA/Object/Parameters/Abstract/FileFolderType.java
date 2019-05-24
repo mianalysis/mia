@@ -32,7 +32,7 @@ public abstract class FileFolderType extends Parameter {
     public abstract boolean isDirectory();
 
     @Override
-    public <T> T getValue() {
+    public <T> T getFinalValue() {
         return (T) path;
     }
 
@@ -42,7 +42,7 @@ public abstract class FileFolderType extends Parameter {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return path;
     }
 

@@ -19,7 +19,7 @@ public class ParamSeparatorP extends Parameter {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getFinalValue() {
         return null;
     }
 
@@ -29,7 +29,7 @@ public class ParamSeparatorP extends Parameter {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return "";
     }
 

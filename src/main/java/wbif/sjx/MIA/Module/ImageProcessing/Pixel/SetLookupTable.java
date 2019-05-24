@@ -7,7 +7,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.LUTs;
@@ -114,7 +115,9 @@ public class SetLookupTable extends Module {
     public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
-                inputImage.getImagePlus().setLut(lut);
+                for (int c=1;c<=inputImage.getImagePlus().getNChannels();c++) {
+                    ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut,c);
+                }
                 break;
 
             case ChannelModes.SPECIFIC_CHANNELS:
@@ -161,7 +164,7 @@ public class SetLookupTable extends Module {
 
         setLUT(inputImage,lut,channelMode,channel);
 
-        if (showOutput) inputImage.showImage(inputImageName,null,false);
+        if (showOutput) inputImage.showImage(inputImageName,null,false,true);
 
         return true;
 
@@ -204,13 +207,13 @@ public class SetLookupTable extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

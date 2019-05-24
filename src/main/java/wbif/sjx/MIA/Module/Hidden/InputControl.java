@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.GUI.InputOutput;
+package wbif.sjx.MIA.Module.Hidden;
 
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -162,6 +162,9 @@ public class InputControl extends Module {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
+        // Creating the output collection
+        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+
         // Initialising file reader
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
@@ -169,7 +172,12 @@ public class InputControl extends Module {
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
-        reader.setId(inputFile.getAbsolutePath());
+        try {
+            reader.setId(inputFile.getAbsolutePath());
+        } catch (IllegalArgumentException e) {
+            namesAndNumbers.put(0,inputFile.getAbsolutePath());
+            return namesAndNumbers;
+        }
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
@@ -187,7 +195,6 @@ public class InputControl extends Module {
             }
         }
 
-        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
         for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
             String name = meta.getImageName(seriesNumber);
 
@@ -243,7 +250,7 @@ public class InputControl extends Module {
 
     @Override
     public String getPackageName() {
-        return "General";
+        return "Hidden";
     }
 
     @Override
@@ -312,23 +319,25 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        metadataRefs.getOrPut(HCMetadata.FILE).setAvailable(true);
-        metadataRefs.getOrPut(HCMetadata.FILENAME).setAvailable(true);
-        metadataRefs.getOrPut(HCMetadata.SERIES_NUMBER).setAvailable(true);
-        metadataRefs.getOrPut(HCMetadata.SERIES_NAME).setAvailable(true);
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        return metadataRefs;
+        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.FILE));
+        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.FILENAME));
+        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.SERIES_NUMBER));
+        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.SERIES_NAME));
+
+        return returnedRefs;
 
     }
 

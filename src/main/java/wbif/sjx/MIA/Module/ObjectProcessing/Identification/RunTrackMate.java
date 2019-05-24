@@ -9,20 +9,19 @@ import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
+import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
+import ij.process.ColorSpaceConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -400,34 +399,32 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
-
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX,type);
-        reference.setImageObjName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
+        reference.setObjectsName(outputSpotObjectsName);
+        returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL),type);
-        reference.setImageObjName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
+        reference.setObjectsName(outputSpotObjectsName);
+        returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX,type);
-        reference.setImageObjName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
+        reference.setObjectsName(outputSpotObjectsName);
+        returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),type);
-        reference.setImageObjName(outputSpotObjectsName);
-        reference.setAvailable(true);
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
+        reference.setObjectsName(outputSpotObjectsName);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
@@ -438,14 +435,15 @@ public class RunTrackMate extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+
         if (parameters.getValue(DO_TRACKING)) {
-            relationshipRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS));
+            returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS)));
 
         }
 
-        return relationshipRefs;
+        return returnedRelationships;
 
     }
-
 }
 

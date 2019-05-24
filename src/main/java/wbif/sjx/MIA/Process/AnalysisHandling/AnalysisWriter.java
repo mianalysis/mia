@@ -9,9 +9,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
@@ -36,10 +37,11 @@ public class AnalysisWriter {
         // Updating the analysis filename
         analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 
-        // Creating a module collection holding the input and output
-        ModuleCollection inOutModules = new ModuleCollection();
-        inOutModules.add(analysis.getModules().getInputControl());
-        inOutModules.add(analysis.getModules().getOutputControl());
+        // Creating a module collection holding the single-instance modules (input, output and global variables)
+        ModuleCollection singleModules = new ModuleCollection();
+        singleModules.add(MIA.getGlobalVariables());
+        singleModules.add(analysis.getModules().getInputControl());
+        singleModules.add(analysis.getModules().getOutputControl());
 
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -50,7 +52,7 @@ public class AnalysisWriter {
         version.appendChild(doc.createTextNode(MIA.getVersion()));
         root.setAttributeNode(version);
 
-        root.appendChild(prepareModulesXML(doc,inOutModules));
+        root.appendChild(prepareModulesXML(doc,singleModules));
         root.appendChild(prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -119,12 +121,15 @@ public class AnalysisWriter {
             moduleElement.appendChild(parametersElement);
 
             // Adding measurement references from this module
-            Element measurementsElement = doc.createElement("MEASUREMENTS");
-            MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
-            measurementsElement = prepareRefsXML(doc, measurementsElement,imageReferences,"MEASUREMENT");
-            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
-            measurementsElement = prepareRefsXML(doc, measurementsElement,objectReferences,"MEASUREMENT");
-            moduleElement.appendChild(measurementsElement);
+            Element imageMeasurementsElement = doc.createElement("IMAGE_MEASUREMENTS");
+            ImageMeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
+            imageMeasurementsElement = prepareRefsXML(doc, imageMeasurementsElement,imageReferences,"MEASUREMENT");
+            moduleElement.appendChild(imageMeasurementsElement);
+
+            Element objectMeasurementsElement = doc.createElement("OBJECT_MEASUREMENTS");
+            ObjMeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
+            objectMeasurementsElement = prepareRefsXML(doc, objectMeasurementsElement,objectReferences,"MEASUREMENT");
+            moduleElement.appendChild(objectMeasurementsElement);
 
             // Adding metadata references from this module
             Element metadataElement = doc.createElement("METADATA");
@@ -182,10 +187,10 @@ public class AnalysisWriter {
             parameterElement.setAttributeNode(nameAttr);
 
             Attr valueAttr = doc.createAttribute("VALUE");
-            if (currParam.getValueAsString() == null) {
+            if (currParam.getRawStringValue() == null) {
                 valueAttr.appendChild(doc.createTextNode(""));
             } else {
-                valueAttr.appendChild(doc.createTextNode(currParam.getValueAsString()));
+                valueAttr.appendChild(doc.createTextNode(currParam.getRawStringValue()));
             }
             parameterElement.setAttributeNode(valueAttr);
 
@@ -213,13 +218,10 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
         if (refs == null) return refsElement;
 
-        for (ExportableRef ref:refs.values()) {
-            // Don't export any measurements that aren't calculated
-            if (!ref.isAvailable()) continue;
-
+        for (Ref ref:refs.values()) {
             Element element = doc.createElement(groupName);
             ref.appendXMLAttributes(element);
             refsElement.appendChild(element);

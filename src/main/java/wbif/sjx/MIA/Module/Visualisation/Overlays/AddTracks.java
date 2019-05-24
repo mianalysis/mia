@@ -12,7 +12,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
@@ -52,7 +53,7 @@ public class AddTracks extends Module {
     }
 
 
-    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
+    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -159,7 +160,7 @@ public class AddTracks extends Module {
             float hue = hues.get(object.getID());
             Color colour = ColourFactory.getColour(hue);
 
-            addTrackOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
+            addOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
 
             writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
@@ -238,13 +239,13 @@ public class AddTracks extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

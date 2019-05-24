@@ -7,10 +7,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -89,39 +86,38 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.IMAGE;
 
-        imageMeasurementRefs.setAllAvailable(false);
+        ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
+        mean.setImageName(inputImageName);
+        returnedRefs.add(mean);
 
-        MeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN,type);
-        mean.setImageObjName(inputImageName);
-        mean.setAvailable(true);
+        ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
+        min.setImageName(inputImageName);
+        returnedRefs.add(min);
 
-        MeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN,type);
-        min.setImageObjName(inputImageName);
-        min.setAvailable(true);
+        ImageMeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
+        max.setImageName(inputImageName);
+        returnedRefs.add(max);
 
-        MeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX,type);
-        max.setImageObjName(inputImageName);
-        max.setAvailable(true);
+        ImageMeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
+        stdev.setImageName(inputImageName);
+        returnedRefs.add(stdev);
 
-        MeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV,type);
-        stdev.setImageObjName(inputImageName);
-        stdev.setAvailable(true);
+        ImageMeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
+        sum.setImageName(inputImageName);
+        returnedRefs.add(sum);
 
-        MeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM,type);
-        sum.setImageObjName(inputImageName);
-        sum.setAvailable(true);
-
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

@@ -125,9 +125,9 @@ public class DocumentationGenerator {
                     .append(parameter.getClass().getSimpleName())
                     .append("</li>");
 
-            if (!parameter.getValueAsString().equals("")) {
+            if (!parameter.getRawStringValue().equals("")) {
                 sb.append("<li>Default value: ")
-                        .append(parameter.getValueAsString())
+                        .append(parameter.getRawStringValue())
                         .append("</li>");
             }
 

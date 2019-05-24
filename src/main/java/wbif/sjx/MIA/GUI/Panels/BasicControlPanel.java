@@ -2,9 +2,10 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
-import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -49,9 +50,11 @@ public class BasicControlPanel extends JScrollPane {
     }
 
     public void updatePanel() {
+        GlobalVariables globalVariables = MIA.getGlobalVariables();
         InputControl inputControl = GUI.getModules().getInputControl();
         OutputControl outputControl = GUI.getModules().getOutputControl();
 
+        AnalysisTester.testModule(globalVariables,GUI.getModules());
         AnalysisTester.testModule(inputControl,GUI.getModules());
         AnalysisTester.testModule(outputControl,GUI.getModules());
         AnalysisTester.testModules(GUI.getModules());
@@ -81,6 +84,13 @@ public class BasicControlPanel extends JScrollPane {
 
         // Adding a separator between the input and main modules
         panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
+
+        // Adding global variable options
+        if (expanded.isSelected()) {
+            c.gridy++;
+            JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
+            if (globalVariablesPanel != null) panel.add(globalVariablesPanel, c);
+        }
 
         // Adding input control options
         if (expanded.isSelected()) {

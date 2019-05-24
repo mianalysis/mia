@@ -17,8 +17,8 @@ public abstract class Module implements Comparable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
-    protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
+    protected ImageMeasurementRefCollection imageMeasurementRefs = new ImageMeasurementRefCollection();
+    protected ObjMeasurementRefCollection objectMeasurementRefs = new ObjMeasurementRefCollection();
     protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
     protected RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
 
@@ -89,28 +89,44 @@ public abstract class Module implements Comparable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
+    public abstract ImageMeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
+    public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
+
+    public void addObjectMeasurementRef(ObjMeasurementRef ref) {
+        objectMeasurementRefs.add(ref);
+    }
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
     public abstract RelationshipRefCollection updateAndGetRelationships();
 
-    public MeasurementRef getImageMeasurementRef(String name) {
-        return imageMeasurementRefs.getOrPut(name, MeasurementRef.Type.IMAGE);
+    public ImageMeasurementRef getImageMeasurementRef(String name) {
+        return imageMeasurementRefs.getOrPut(name);
     }
 
-    public MeasurementRef getObjectMeasurementRef(String name) {
-        return objectMeasurementRefs.getOrPut(name, MeasurementRef.Type.OBJECT);
+    public void addImageMeasurementRef(ImageMeasurementRef ref) {
+        imageMeasurementRefs.add(ref);
+    }
+
+    public ObjMeasurementRef getObjectMeasurementRef(String name) {
+        return objectMeasurementRefs.getOrPut(name);
     }
 
     public MetadataRef getMetadataRef(String name) {
         return metadataRefs.getOrPut(name);
     }
 
+    public void addMetadataRef(MetadataRef ref) {
+        metadataRefs.add(ref);
+    }
+
     public RelationshipRef getRelationshipRef(String parentName, String childName) {
         return relationshipRefs.getOrPut(parentName,childName);
+    }
+
+    public void addRelationshipRef(RelationshipRef ref) {
+        relationshipRefs.add(ref);
     }
 
     public <T extends Parameter> T getParameter(String name) {
@@ -124,7 +140,7 @@ public abstract class Module implements Comparable {
     }
 
     public <T> T getParameterValue(String name) {
-        return parameters.getParameter(name).getValue();
+        return parameters.getParameter(name).getFinalValue();
     }
 
     public void setParameterVisibility(String name, boolean visible) {
@@ -232,11 +248,7 @@ public abstract class Module implements Comparable {
     }
 
     public boolean hasVisibleParameters() {
-        for (Parameter parameter:updateAndGetParameters()) {
-            if (parameter.isVisible()) return true;
-        }
-
-        return false;
+        return updateAndGetParameters().hasVisibleParameters();
 
     }
 

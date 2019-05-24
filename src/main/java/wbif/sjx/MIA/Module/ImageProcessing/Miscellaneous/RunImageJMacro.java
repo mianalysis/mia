@@ -2,12 +2,16 @@ package wbif.sjx.MIA.Module.ImageProcessing.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
@@ -18,8 +22,18 @@ public class RunImageJMacro extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String MACRO_TITLE = "Macro title";
-    public static final String ARGUMENTS = "Parameters";
+    public static final String MACRO_MODE = "Macro mode";
+    public static final String MACRO_TEXT = "Macro text";
+    public static final String MACRO_FILE = "Macro file";
+    public static final String REFRESH_BUTTON = "Refresh parameters";
+
+    public interface MacroModes {
+        String MACRO_FILE = "Macro file";
+        String MACRO_TEXT = "Macro text";
+
+        String[] ALL = new String[]{MACRO_FILE,MACRO_TEXT};
+
+    }
 
     public RunImageJMacro(ModuleCollection modules) {
         super(modules);
@@ -51,14 +65,51 @@ public class RunImageJMacro extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String macroTitle = parameters.getValue(MACRO_TITLE);
-        String arguments = parameters.getValue(ARGUMENTS);
+        String macroMode = parameters.getValue(MACRO_MODE);
+        String macroText = parameters.getValue(MACRO_TEXT);
+        String macroFile = parameters.getValue(MACRO_FILE);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        // Applying the macro
-        IJ.run(inputImagePlus,macroTitle,arguments);
+        ImagePlus previousWindow = WindowManager.getCurrentImage();
+
+        // Applying the macro. Only one macro can be run at a time, so this checks if a macro is already running
+        while (MIA.isMacroLocked()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        MIA.setMacroLock(true);
+
+        // Show current image
+        inputImagePlus.show();
+
+        // Now run the macro
+        switch (macroMode) {
+            case MacroModes.MACRO_FILE:
+                IJ.runMacroFile(macroFile);
+                break;
+            case MacroModes.MACRO_TEXT:
+                IJ.runMacro(macroText);
+                break;
+        }
+
+        // If the current ImageJ window is different to the previous one
+        ImagePlus currentWindow = WindowManager.getCurrentImage();
+        if (currentWindow != previousWindow) {
+            inputImagePlus= IJ.getImage();
+            currentWindow.hide();
+            if (applyToInput) inputImage.setImagePlus(inputImagePlus);
+        }
+
+        // If it hasn't already been hidden or removed, hide it now
+        inputImagePlus.hide();
+
+        // Releasing the macro lock
+        MIA.setMacroLock(false);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -78,8 +129,10 @@ public class RunImageJMacro extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new StringP(MACRO_TITLE,this));
-        parameters.add(new StringP(ARGUMENTS,this));
+        parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
+        parameters.add(new TextAreaP(MACRO_TEXT,this,true));
+        parameters.add(new FilePathP(MACRO_FILE,this));
+        parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
 
     }
 
@@ -93,21 +146,29 @@ public class RunImageJMacro extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.add(parameters.getParameter(MACRO_TITLE));
-        returnedParameters.add(parameters.getParameter(ARGUMENTS));
+        returnedParameters.add(parameters.getParameter(MACRO_MODE));
+        switch ((String) parameters.getValue(MACRO_MODE)) {
+            case MacroModes.MACRO_FILE:
+                returnedParameters.add(parameters.getParameter(MACRO_FILE));
+                break;
+            case MacroModes.MACRO_TEXT:
+                returnedParameters.add(parameters.getParameter(MACRO_TEXT));
+                returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
+                break;
+        }
 
         return returnedParameters;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

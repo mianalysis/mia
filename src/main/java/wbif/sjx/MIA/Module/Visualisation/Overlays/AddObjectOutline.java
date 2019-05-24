@@ -1,9 +1,11 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Overlay;
 import ij.gui.Roi;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;
@@ -11,7 +13,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
@@ -71,7 +74,7 @@ public class AddObjectOutline extends Module {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
+                    addOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
                 };
                 pool.submit(task);
@@ -79,20 +82,16 @@ public class AddObjectOutline extends Module {
 
             pool.shutdown();
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
         } catch (InterruptedException e) {
             return;
         }
     }
 
-    public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
-        // Still need to get mean coords for label
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true, false);
         int t = object.getT() + 1;
-
         if (renderInAllFrames) t = 0;
 
         // Running through each slice of this object
@@ -105,14 +104,17 @@ public class AddObjectOutline extends Module {
 
             if (ipl.isHyperStack()) {
                 polyRoi.setPosition(1, z+1, t);
+                ipl.setPosition(1,z+1,t);
             } else {
                 int pos = Math.max(Math.max(1, z+1), t);
                 polyRoi.setPosition(pos);
+                ipl.setPosition(pos);
             }
 
             polyRoi.setStrokeColor(colour);
             polyRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(polyRoi);
+
         }
     }
 
@@ -224,13 +226,13 @@ public class AddObjectOutline extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

@@ -101,8 +101,8 @@
 //        this.workspace = workspace;
 //
 //        // Getting parameters
-//        String inputImageName = parameters.getValue(INPUT_IMAGE);
-//        outputImageName = parameters.getValue(OUTPUT_IMAGE);
+//        String inputImageName = parameters.getFinalValue(INPUT_IMAGE);
+//        outputImageName = parameters.getFinalValue(OUTPUT_IMAGE);
 //
 //        // Getting input image
 //        Image inputImage = workspace.getImage(inputImageName);
@@ -177,12 +177,12 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //

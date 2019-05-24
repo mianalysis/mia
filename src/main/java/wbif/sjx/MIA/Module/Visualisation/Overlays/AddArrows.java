@@ -12,7 +12,8 @@ import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
@@ -75,7 +76,7 @@ public class AddArrows extends Module {
     }
 
 
-    public static void addArrowsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double oriRads = Math.toRadians(orientation);
@@ -202,7 +203,7 @@ public class AddArrows extends Module {
 
                     length = length*lengthScale;
 
-                    addArrowsOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
+                    addOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
                     writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
@@ -336,13 +337,13 @@ public class AddArrows extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override

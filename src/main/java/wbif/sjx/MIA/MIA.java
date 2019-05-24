@@ -5,6 +5,7 @@
 package wbif.sjx.MIA;
 
 import ij.ImageJ;
+import ij.plugin.AVI_Reader;
 import ij.plugin.PlugIn;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;
@@ -14,7 +15,10 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Object.ErrorLog;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
@@ -24,8 +28,13 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.ADD_NEW_VARIABLE;
+import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.VARIABLE_NAME;
+import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.VARIABLE_VALUE;
 
 
 /**
@@ -36,6 +45,8 @@ public class MIA implements PlugIn {
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
+    private static GlobalVariables globalVariables = new GlobalVariables(null);
+    private static boolean macroLock = false;
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
@@ -147,5 +158,21 @@ public class MIA implements PlugIn {
 
         return "\\";
 
+    }
+
+    public static void setGlobalVariables(GlobalVariables globalVariables) {
+        MIA.globalVariables = globalVariables;
+    }
+
+    public static GlobalVariables getGlobalVariables() {
+        return globalVariables;
+    }
+
+    public static boolean isMacroLocked() {
+        return macroLock;
+    }
+
+    public static void setMacroLock(boolean macroLock) {
+        MIA.macroLock = macroLock;
     }
 }

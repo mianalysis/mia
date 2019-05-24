@@ -32,11 +32,11 @@ public abstract class Parameter {
 
     protected abstract ParameterControl initialiseControl();
 
-    public abstract <T> T getValue();
+    public abstract <T> T getFinalValue();
 
     public abstract <T> void setValue(T value);
 
-    public abstract String getValueAsString();
+    public abstract String getRawStringValue();
 
     public abstract boolean verify();
 

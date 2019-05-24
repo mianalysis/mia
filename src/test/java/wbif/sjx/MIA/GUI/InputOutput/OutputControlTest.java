@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.InputOutput;
 
 import org.junit.Test;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.ModuleTest;
 
 import static org.junit.Assert.*;

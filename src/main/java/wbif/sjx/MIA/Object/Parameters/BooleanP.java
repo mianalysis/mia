@@ -15,6 +15,6 @@ public class BooleanP extends BooleanType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new BooleanP(name,module,getValue(),getDescription());
+        return (T) new BooleanP(name,module, getFinalValue(),getDescription());
     }
 }

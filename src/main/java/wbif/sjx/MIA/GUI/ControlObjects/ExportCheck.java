@@ -1,11 +1,13 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,12 +21,12 @@ public class ExportCheck extends JCheckBox implements ActionListener {
     public enum Type {SINGLE, ALL};
 
 
-    private ExportableRef reference;
+    private Ref reference;
     private Statistic statistic;
     private Type type;
 
 
-    public ExportCheck(ExportableRef reference, Statistic statistic, Type type) {
+    public ExportCheck(Ref reference, Statistic statistic, Type type) {
         this.reference = reference;
         this.statistic = statistic;
         this.type = type;
@@ -35,7 +37,7 @@ public class ExportCheck extends JCheckBox implements ActionListener {
 
     }
 
-    private void setStates(ExportableRef reference) {
+    private void setStates(SummaryRef reference) {
         switch (statistic) {
             case INDIVIDUAL:
                 reference.setExportIndividual(isSelected());
@@ -58,34 +60,36 @@ public class ExportCheck extends JCheckBox implements ActionListener {
         }
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (type) {
             case SINGLE:
-                setStates(reference);
+                if (reference instanceof SummaryRef) {
+                    setStates((SummaryRef) reference);
+                } else {
+                    reference.setExportIndividual(isSelected());
+                }
                 break;
             case ALL:
                 ModuleCollection modules = GUI.getModules();
 
                 for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
-                    MeasurementRefCollection refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
-                    for (MeasurementRef ref:refs.values()) setStates(ref);
+                    ObjMeasurementRefCollection refs = modules.getObjectMeasurementRefs(objectName.getObjectsName());
+                    for (SummaryRef ref:refs.values()) setStates(ref);
                 }
 
                 for (OutputImageP imageName:modules.getAvailableImages(null)) {
-                    MeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
-                    for (MeasurementRef ref:refs.values()) setStates(ref);
+                    ImageMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
+                    for (Ref ref:refs.values()) ref.setExportIndividual(isSelected());
                 }
 
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs();
-                for (MetadataRef ref:metadataRefs.values()) setStates(ref);
+                for (Ref ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
 
                 RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
-                for (RelationshipRef ref:relationshipRefs.values()) setStates(ref);
+                for (SummaryRef ref:relationshipRefs.values()) setStates(ref);
 
-
-                setStates(reference);
-                
                 break;
         }
 

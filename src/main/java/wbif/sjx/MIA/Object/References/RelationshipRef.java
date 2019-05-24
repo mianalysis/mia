@@ -1,13 +1,27 @@
 package wbif.sjx.MIA.Object.References;
 
+import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
+import wbif.sjx.MIA.Object.Workspace;
 
-public class RelationshipRef extends ExportableRef {
+import java.util.LinkedHashMap;
+
+public class RelationshipRef extends SummaryRef {
     private final String parentName;
     private final String childName;
+
+
+    public RelationshipRef(NamedNodeMap attributes) {
+        super(attributes);
+        this.childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
+        this.parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
+
+        setAttributesFromXML(attributes);
+
+    }
 
     public RelationshipRef(String parentName, String childName) {
         super(createName(parentName,childName));
@@ -18,11 +32,16 @@ public class RelationshipRef extends ExportableRef {
 
     @Override
     public void appendXMLAttributes(Element element)  {
-        // Adding the values from ExportableRef
         super.appendXMLAttributes(element);
 
         element.setAttribute("CHILD_NAME",childName);
         element.setAttribute("PARENT_NAME",parentName);
+
+    }
+
+    @Override
+    public void setAttributesFromXML(NamedNodeMap attributes) {
+        super.setAttributesFromXML(attributes);
 
     }
 

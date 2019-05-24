@@ -8,10 +8,7 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRef;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
@@ -227,17 +224,16 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllAvailable(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        MeasurementRef.Type type = MeasurementRef.Type.OBJECT;
 
         double xOffsIn = parameters.getValue(X_OFFSET);
         double yOffsIn = parameters.getValue(Y_OFFSET);
@@ -246,26 +242,26 @@ public class MeasureObjectTexture extends Module {
         double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
 
         String name = getFullName(inputImageName,Measurements.ASM,offs,calibratedOffset);
-        MeasurementRef asm = objectMeasurementRefs.getOrPut(name,type);
-        asm.setImageObjName(inputObjectsName);
-        asm.setAvailable(true);
+        ObjMeasurementRef asm = objectMeasurementRefs.getOrPut(name);
+        asm.setObjectsName(inputObjectsName);
+        returnedRefs.add(asm);
 
         name = getFullName(inputImageName,Measurements.CONTRAST,offs,calibratedOffset);
-        MeasurementRef contrast = objectMeasurementRefs.getOrPut(name,type);
-        contrast.setImageObjName(inputObjectsName);
-        contrast.setAvailable(true);
+        ObjMeasurementRef contrast = objectMeasurementRefs.getOrPut(name);
+        contrast.setObjectsName(inputObjectsName);
+        returnedRefs.add(contrast);
 
         name = getFullName(inputImageName,Measurements.CORRELATION,offs,calibratedOffset);
-        MeasurementRef correlation = objectMeasurementRefs.getOrPut(name,type);
-        correlation.setImageObjName(inputObjectsName);
-        correlation.setAvailable(true);
+        ObjMeasurementRef correlation = objectMeasurementRefs.getOrPut(name);
+        correlation.setObjectsName(inputObjectsName);
+        returnedRefs.add(correlation);
 
         name = getFullName(inputImageName,Measurements.ENTROPY,offs,calibratedOffset);
-        MeasurementRef entropy = objectMeasurementRefs.getOrPut(name,type);
-        entropy.setImageObjName(inputObjectsName);
-        entropy.setAvailable(true);
+        ObjMeasurementRef entropy = objectMeasurementRefs.getOrPut(name);
+        entropy.setObjectsName(inputObjectsName);
+        returnedRefs.add(entropy);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 

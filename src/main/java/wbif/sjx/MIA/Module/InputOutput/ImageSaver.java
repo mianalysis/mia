@@ -1,16 +1,18 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
@@ -39,6 +41,7 @@ public class ImageSaver extends Module {
     public static final String SAVE_SUFFIX = "Add filename suffix";
 
     public static final String FORMAT_SEPARATOR = "Output image format";
+    public static final String CHANNEL_MODE = "Channel mode";
     public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
@@ -80,6 +83,14 @@ public class ImageSaver extends Module {
         String NEVER = "Never";
 
         String[] ALL = new String[]{ALWAYS,IF_FILE_EXISTS, NEVER};
+
+    }
+
+    public interface ChannelModes {
+        String COLOUR = "Colour (separate channels)";
+        String COMPOSITE = "Composite";
+
+        String[] ALL = new String[]{COLOUR,COMPOSITE};
 
     }
 
@@ -165,12 +176,16 @@ public class ImageSaver extends Module {
         String suffix = parameters.getValue(SAVE_SUFFIX);
         boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
+        String channelMode = parameters.getValue(CHANNEL_MODE);
+
+        boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // If the image is being altered make a copy
+        if (composite) inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
         if (saveAsRGB || flattenOverlay) inputImagePlus = inputImagePlus.duplicate();
         if (saveAsRGB) new ImageConverter(inputImagePlus).convertToRGB();
 
@@ -263,6 +278,7 @@ public class ImageSaver extends Module {
         parameters.add(new StringP(SAVE_SUFFIX, this));
 
         parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR,this));
+        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL));
         parameters.add(new BooleanP(SAVE_AS_RGB, this,false));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
 
@@ -300,6 +316,7 @@ public class ImageSaver extends Module {
         returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
 
         returnedParameters.add(parameters.getParameter(FORMAT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
         returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
         if (parameters.getValue(SAVE_AS_RGB)) {
             returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
@@ -310,13 +327,13 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        return objectMeasurementRefs;
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
     }
 
     @Override
