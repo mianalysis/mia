@@ -1,10 +1,11 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Miscellaneous;
+package wbif.sjx.MIA.Module.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -19,13 +20,25 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
  * Created by sc13967 on 31/01/2018.
  */
 public class RunImageJMacro extends Module {
+    public static final String EXECUTION_MODE = "Execution mode";
+    public static final String INPUT_OBJECTS = "Input objects";
+    public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
-    public static final String APPLY_TO_INPUT = "Apply to input image";
-    public static final String OUTPUT_IMAGE = "Output image";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
     public static final String MACRO_FILE = "Macro file";
     public static final String REFRESH_BUTTON = "Refresh parameters";
+    public static final String INTERCEPT_OUTPUT_IMAGE = "Intercept output image";
+    public static final String APPLY_TO_INPUT = "Apply to input image";
+    public static final String OUTPUT_IMAGE = "Output image";
+
+    public interface ExecutionModes {
+        String PER_IMAGE = "Once per image";
+        String PER_OBJECT = "Once per object";
+
+        String[] ALL = new String[]{PER_IMAGE,PER_OBJECT};
+
+    }
 
     public interface MacroModes {
         String MACRO_FILE = "Macro file";
@@ -47,7 +60,7 @@ public class RunImageJMacro extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_MISCELLANEOUS;
+        return PackageNames.MISCELLANEOUS;
     }
 
     @Override
@@ -58,21 +71,17 @@ public class RunImageJMacro extends Module {
     @Override
     public boolean process(Workspace workspace) {
         // Getting input image
+        boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
-        // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String macroMode = parameters.getValue(MACRO_MODE);
         String macroText = parameters.getValue(MACRO_TEXT);
         String macroFile = parameters.getValue(MACRO_FILE);
+        boolean interceptOutputImage = parameters.getValue(INTERCEPT_OUTPUT_IMAGE);
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
-
-        ImagePlus previousWindow = WindowManager.getCurrentImage();
+        // Setting the MacroHandler to the current workspace
+        MacroHandler.setWorkspace(workspace);
 
         // Applying the macro. Only one macro can be run at a time, so this checks if a macro is already running
         while (MIA.isMacroLocked()) {
@@ -85,7 +94,12 @@ public class RunImageJMacro extends Module {
         MIA.setMacroLock(true);
 
         // Show current image
-        inputImagePlus.show();
+        Image inputImage = null; ImagePlus inputImagePlus = null;
+        if (provideInputImage) {
+            inputImage = workspace.getImages().get(inputImageName);
+            inputImagePlus = inputImage.getImagePlus().duplicate();
+            inputImagePlus.show();
+        }
 
         // Now run the macro
         switch (macroMode) {
@@ -97,28 +111,25 @@ public class RunImageJMacro extends Module {
                 break;
         }
 
-        // If the current ImageJ window is different to the previous one
-        ImagePlus currentWindow = WindowManager.getCurrentImage();
-        if (currentWindow != previousWindow) {
-            inputImagePlus= IJ.getImage();
-            currentWindow.hide();
-            if (applyToInput) inputImage.setImagePlus(inputImagePlus);
-        }
+        if (interceptOutputImage) {
+            inputImagePlus = IJ.getImage();
+            if (inputImagePlus != null) {
+                if (provideInputImage && applyToInput) {
+                    inputImage.setImagePlus(inputImagePlus);
+                    if (showOutput) inputImage.showImage();
+                } else {
+                    Image outputImage = new Image(outputImageName, inputImagePlus);
+                    workspace.addImage(outputImage);
+                    if (showOutput) outputImage.showImage();
+                }
 
-        // If it hasn't already been hidden or removed, hide it now
-        inputImagePlus.hide();
+                // If it hasn't already been hidden or removed, hide it now
+                inputImagePlus.hide();
+            }
+        }
 
         // Releasing the macro lock
         MIA.setMacroLock(false);
-
-        // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
-            Image outputImage = new Image(outputImageName,inputImagePlus);
-            workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
-        } else {
-            if (showOutput) inputImage.showImage();
-        }
 
         return true;
 
@@ -126,24 +137,36 @@ public class RunImageJMacro extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ChoiceP(EXECUTION_MODE,this,ExecutionModes.PER_IMAGE,ExecutionModes.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT,this,true));
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
+        parameters.add(new BooleanP(INTERCEPT_OUTPUT_IMAGE,this,true));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(EXECUTION_MODE));
+        switch ((String) parameters.getValue(EXECUTION_MODE)) {
+            case ExecutionModes.PER_IMAGE:
+                break;
+            case ExecutionModes.PER_OBJECT:
+                returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
+        if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
@@ -155,6 +178,18 @@ public class RunImageJMacro extends Module {
                 returnedParameters.add(parameters.getParameter(MACRO_TEXT));
                 returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
                 break;
+        }
+
+        returnedParameters.add(parameters.getParameter(INTERCEPT_OUTPUT_IMAGE));
+        if (parameters.getValue(INTERCEPT_OUTPUT_IMAGE)) {
+            if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+                returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
+                if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+                    returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+                }
+            } else {
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+            }
         }
 
         return returnedParameters;

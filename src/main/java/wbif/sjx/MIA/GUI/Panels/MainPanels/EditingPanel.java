@@ -382,7 +382,9 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void updateModuleStates() {
+        inputPanel.updateButtonState();
         modulesPanel.updateButtonStates();
+        outputPanel.updateButtonState();
     }
 
     @Override

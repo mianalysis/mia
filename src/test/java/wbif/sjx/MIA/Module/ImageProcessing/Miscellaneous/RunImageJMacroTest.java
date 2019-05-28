@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Miscellaneous;
 
+import wbif.sjx.MIA.Module.Miscellaneous.RunImageJMacro;
 import wbif.sjx.MIA.Module.ModuleTest;
 
 import static org.junit.Assert.*;

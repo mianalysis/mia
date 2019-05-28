@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.Macro;
 
 import ij.IJ;
+import ij.Macro;
 import ij.macro.Functions;
+import ij.macro.Interpreter;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 import wbif.sjx.MIA.Process.DependencyValidator;
