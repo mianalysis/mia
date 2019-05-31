@@ -277,9 +277,9 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         Image outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         if (outputImage == null) return false;
 
-        if (axisMode.equals(AxisModes.CHANNEL)) {
-            convertToComposite(outputImage);
-        }
+//        if (axisMode.equals(AxisModes.CHANNEL)) {
+//            convertToComposite(outputImage);
+//        }
 
         if (showOutput) outputImage.showImage();
         workspace.addImage(outputImage);

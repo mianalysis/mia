@@ -35,6 +35,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         // Iterating over all modules, collecting any measurements for the current image
         for (Module module:this) {
             if (module == cutoffModule) break;
+            if (!module.isEnabled() |! module.isRunnable()) continue;
             addImageMeasurementRefs(module, measurementRefs, imageName);
         }
 
@@ -73,6 +74,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
+            if (!module.isEnabled() |! module.isRunnable()) continue;
             addObjectMeasurementRefs(module,measurementRefs,objectName);
         }
 
@@ -136,6 +138,8 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
         for (Module module:this) {
             if (module == cutoffModule) break;
+            if (!module.isEnabled() |! module.isRunnable()) continue;
+
             addRelationshipRefs(module,relationshipRefs);
         }
 
