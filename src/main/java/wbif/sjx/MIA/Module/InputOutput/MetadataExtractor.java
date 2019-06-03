@@ -239,17 +239,15 @@ public class MetadataExtractor extends Module {
         NameExtractor extractor = new GenericExtractor(pattern,groups);
         extractor.extract(metadata,exampleString);
 
-        StringBuilder stringBuilder = new StringBuilder("<html>");
+        StringBuilder stringBuilder = new StringBuilder();
         for (String group:groups) {
             String value = metadata.getAsString(group);
             if (value == null) value = "NA";
             stringBuilder.append(group);
             stringBuilder.append(": ");
             stringBuilder.append(value);
-            stringBuilder.append("<br>");
+            stringBuilder.append("\r\n");
         }
-
-        stringBuilder.append("</html>");
 
         return stringBuilder.toString();
 
