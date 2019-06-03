@@ -168,7 +168,7 @@ public class RunMacroOnObjects extends Module {
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
-        parameters.add(new TextAreaP(MACRO_TEXT,this,"\\\\ This block of code will provide the input object name, " +
+        parameters.add(new TextAreaP(MACRO_TEXT,this,"// This block of code will provide the input object name, " +
                 "along with its ID number.\n\nrun(\"Enable MIA Extensions\");\nargs = split(getArgument(),\",\");\n" +
                 "inputObjectsName = args[0];\nobjectID = args[1];\n\n",true));
         parameters.add(new FilePathP(MACRO_FILE,this));
