@@ -113,6 +113,12 @@ public class SetLookupTable extends Module {
     }
 
     public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
+        // Single channel images shouldn't be set to composite
+        if (inputImage.getImagePlus().getNChannels() == 1) {
+            inputImage.getImagePlus().setLut(lut);
+            return;
+        }
+
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
                 for (int c=1;c<=inputImage.getImagePlus().getNChannels();c++) {

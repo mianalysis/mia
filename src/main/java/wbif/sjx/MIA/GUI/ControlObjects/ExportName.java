@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 import javax.swing.*;
@@ -22,27 +23,13 @@ public class ExportName extends JLabel implements MouseListener {
 
     }
 
-//    @Override
-//    public void focusGained(FocusEvent e) {
-//
-//    }
-//
-//    @Override
-//    public void focusLost(FocusEvent e) {
-//        reference.setNickname(getText());
-//
-//        GUI.updateModules();
-//        GUI.populateModuleList();
-//        GUI.updateModuleStates(true);
-//
-//    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         // Only display menu if the right mouse button is clicked
         if (e.getButton() != MouseEvent.BUTTON3) return;
 
         // Populating the list containing all available modules
+        renameListMenu.show(GUI.getFrame(), 0, 0);
         renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         renameListMenu.setVisible(true);
 

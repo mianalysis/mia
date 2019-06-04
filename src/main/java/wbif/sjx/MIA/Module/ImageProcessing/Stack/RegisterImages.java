@@ -420,12 +420,7 @@ public class RegisterImages extends Module implements Interactable {
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
             String axis = ConcatenateStacks.AxisModes.CHANNEL;
-
-            Image displayImage = ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
-            ConcatenateStacks.convertToComposite(displayImage);
-
-            return displayImage;
-
+            return ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
         }
 
         return inputImage;

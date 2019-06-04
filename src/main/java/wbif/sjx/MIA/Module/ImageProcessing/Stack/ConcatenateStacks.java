@@ -225,7 +225,27 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public static void convertToComposite(Image image) {
+    static LUT[] getLUTs(Image[] images){
+        int count = 0;
+        for (int i=0;i<images.length;i++) {
+            count = count + images[i].getImagePlus().getNChannels();
+        }
+
+        LUT[] luts = new LUT[count];
+        count = 0;
+        for (int i=0;i<images.length;i++) {
+            ImagePlus currIpl = images[i].getImagePlus();
+            for (int c=0;c<currIpl.getNChannels();c++) {
+                currIpl.setPosition(c+1,1,1);
+                luts[count++] = currIpl.getProcessor().getLut();
+            }
+        }
+
+        return luts;
+
+    }
+
+    public static void convertToColour(Image image, Image[] inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
         ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","color");
@@ -236,12 +256,22 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         image.setImagePlus(ipl);
 
         // Setting LUTs to make them more colourblind-friendly
-        LUT magentaLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.MAGENTA);
-        LUT greenLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.GREEN);
+//        LUT magentaLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.MAGENTA);
+//        LUT greenLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.GREEN);
+//
+//        SetLookupTable.setLUT(image,magentaLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,1);
+//        SetLookupTable.setLUT(image,greenLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,2);
 
-        SetLookupTable.setLUT(image,magentaLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,1);
-        SetLookupTable.setLUT(image,greenLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,2);
-
+        // Set LUTs
+        int count = 1;
+        for (int i=0;i<inputImages.length;i++) {
+            ImagePlus currIpl = inputImages[i].getImagePlus();
+            for (int c=0;c<currIpl.getNChannels();c++) {
+                currIpl.setPosition(c+1,1,1);
+                LUT lut = currIpl.getProcessor().getLut();
+                SetLookupTable.setLUT(image,lut,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,count++);
+            }
+        }
     }
 
 
@@ -273,9 +303,9 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         Image outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         if (outputImage == null) return false;
 
-//        if (axisMode.equals(AxisModes.CHANNEL)) {
-//            convertToComposite(outputImage);
-//        }
+        if (axisMode.equals(AxisModes.CHANNEL)) {
+            convertToColour(outputImage, inputImages);
+        }
 
         if (showOutput) outputImage.showImage();
         workspace.addImage(outputImage);

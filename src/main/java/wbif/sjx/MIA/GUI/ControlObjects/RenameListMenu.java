@@ -36,6 +36,8 @@ public class RenameListMenu extends JPopupMenu implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        setVisible(false);
+
         switch (e.getActionCommand()) {
             case "Rename":
                 String nickname = (String) JOptionPane.showInputDialog(new JFrame(),"Enter new name","",JOptionPane.PLAIN_MESSAGE,null,null,reference.getNickname());
@@ -46,9 +48,9 @@ public class RenameListMenu extends JPopupMenu implements ActionListener {
                 break;
         }
 
+        GUI.updateModuleStates(false);
+        GUI.getModules();
         GUI.updateParameters();
-
-        setVisible(false);
 
     }
 }

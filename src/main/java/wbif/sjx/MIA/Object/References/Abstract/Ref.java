@@ -46,7 +46,7 @@ public abstract class Ref {
     }
 
     public void setAttributesFromXML(NamedNodeMap attributes) {
-        if (attributes.getNamedItem("NICKNAME") != null) {
+        if (attributes.getNamedItem("NICKNAME") == null) {
             nickname = attributes.getNamedItem("NAME").getNodeValue();
         } else {
             nickname = attributes.getNamedItem("NICKNAME").getNodeValue();

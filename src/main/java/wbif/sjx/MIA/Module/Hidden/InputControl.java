@@ -12,7 +12,9 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
-import wbif.sjx.MIA.Module.Deprecated.RunImageJMacro;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleMacroCommand;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -311,7 +313,7 @@ public class InputControl extends Module {
         // If a the RunMacro module is present, this analysis must be run as a single job
         if ((int) parameters.getValue(SIMULTANEOUS_JOBS) > 1) {
             for (Module module : modules) {
-                if (module instanceof RunImageJMacro) {
+                if (module instanceof RunMacroOnImage || module instanceof RunMacroOnObjects) {
                     returnedParameters.add(parameters.getParameter(MACRO_WARNING));
                     parameters.getParameter(SIMULTANEOUS_JOBS).setValid(false);
                 }

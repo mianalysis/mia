@@ -26,7 +26,6 @@ public abstract class Module extends Ref implements Comparable {
     private static boolean verbose = false;
     private String notes = "";
     private boolean enabled = true;
-    private String name;
     private String packageName;
     private boolean canBeDisabled = false;
     protected boolean showOutput = false;
@@ -198,8 +197,8 @@ public abstract class Module extends Ref implements Comparable {
         if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
     }
 
-    protected static void writeMessage(String message, String moduleName) {
-        if (verbose) new Thread(() -> System.out.println("[" + moduleName + "] "+message)).start();
+    protected static void writeMessage(String message, String name) {
+        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
     }
 
     public boolean canBeDisabled() {

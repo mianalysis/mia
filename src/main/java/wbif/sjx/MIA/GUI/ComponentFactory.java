@@ -62,20 +62,13 @@ public class ComponentFactory {
             paramPanel.add(parameterComponent,c);
 
         } else {
-            JComponent parameterName;
-            if (editable) {
-                parameterName = new ExportName(parameter);
-                paramPanel.add(parameterName,c);
-            } else {
-                parameterName = new JLabel(parameter.getNickname());
-                parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-                parameterName.setBorder(null);
-                parameterName.setOpaque(false);
-                parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
-                paramPanel.add(parameterName, c);
-            }
-
+            JComponent parameterName = editable ? new ExportName(parameter) : new JLabel(parameter.getNickname());
+            parameterName.setBorder(null);
+            parameterName.setOpaque(false);
             parameterName.setPreferredSize(new Dimension(0, elementHeight));
+            parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
+            paramPanel.add(parameterName, c);
 
             if (parameter.isValid()) {
                 parameterName.setForeground(Color.BLACK);
