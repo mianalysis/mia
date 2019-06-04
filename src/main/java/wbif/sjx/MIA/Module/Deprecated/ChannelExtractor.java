@@ -24,12 +24,7 @@ public class ChannelExtractor extends Module {
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
 
     public ChannelExtractor(ModuleCollection modules) {
-        super(modules);
-    }
-
-    @Override
-    public String getTitle() {
-        return "Channel extractor";
+        super("Channel extractor",modules);
     }
 
     @Override

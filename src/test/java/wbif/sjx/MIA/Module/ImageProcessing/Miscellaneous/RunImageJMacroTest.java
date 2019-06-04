@@ -8,11 +8,6 @@ import static org.junit.Assert.*;
 public class RunImageJMacroTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new RunImageJMacro(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new RunImageJMacro(null).getHelp());
     }

@@ -162,11 +162,6 @@ public class FitLongestChordTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new FitLongestChord(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new FitLongestChord(null).getHelp());
     }

@@ -22,11 +22,6 @@ public class NormaliseIntensityTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new NormaliseIntensity(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new NormaliseIntensity(null).getHelp());
     }

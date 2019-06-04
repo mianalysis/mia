@@ -31,12 +31,6 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageLoader(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new ImageLoader(null).getHelp());
 

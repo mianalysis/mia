@@ -28,11 +28,6 @@ public class FilterImageTest extends ModuleTest {
     // GENERAL TESTS
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new FilterImage(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new FilterImage(null).getHelp());
     }

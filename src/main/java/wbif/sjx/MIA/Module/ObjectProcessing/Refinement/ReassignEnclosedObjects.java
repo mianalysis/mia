@@ -21,7 +21,7 @@ public class ReassignEnclosedObjects extends Module {
     public static final String TEMPLATE_IMAGE = "Template image";
 
     public ReassignEnclosedObjects(ModuleCollection modules) {
-        super(modules);
+        super("Reassign enclosed objects",modules);
     }
 
     public void testEncloses(ObjCollection objects, Image templateImage) throws IntegerOverflowException {
@@ -76,10 +76,6 @@ public class ReassignEnclosedObjects extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Reassign enclosed objects";
-    }
 
     @Override
     public String getPackageName() {

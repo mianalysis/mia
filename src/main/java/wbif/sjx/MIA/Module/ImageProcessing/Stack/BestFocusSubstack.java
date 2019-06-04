@@ -70,7 +70,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public static final String CHANNEL = "Channel";
 
     public BestFocusSubstack(ModuleCollection modules) {
-        super(modules);
+        super("Best focus stack",modules);
     }
 
 
@@ -422,11 +422,6 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Best focus stack";
-    }
 
     @Override
     public String getPackageName() {

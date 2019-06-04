@@ -38,8 +38,8 @@ public class RenameListMenu extends JPopupMenu implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Rename":
-                String nickname = (String) JOptionPane.showInputDialog(new JFrame(),"Enter new name","",JOptionPane.PLAIN_MESSAGE,null,null,null);
-                reference.setNickname(nickname);
+                String nickname = (String) JOptionPane.showInputDialog(new JFrame(),"Enter new name","",JOptionPane.PLAIN_MESSAGE,null,null,reference.getNickname());
+                if (nickname != null) reference.setNickname(nickname);
                 break;
             case "Reset name":
                 reference.setNickname(reference.getName());

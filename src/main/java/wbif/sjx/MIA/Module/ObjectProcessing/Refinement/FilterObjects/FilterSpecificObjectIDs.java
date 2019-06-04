@@ -35,7 +35,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
     private boolean active = false;
 
     public FilterSpecificObjectIDs(ModuleCollection modules) {
-        super(modules);
+        super("Objects with specific IDs",modules);
     }
 
     public interface FilterMethods {
@@ -137,11 +137,6 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
 
         return count;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Objects with specific IDs";
     }
 
     @Override

@@ -541,12 +541,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
 
     @Override
-    public String getTitle() {
-        return "Load image";
-
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.INPUT_OUTPUT;
     }

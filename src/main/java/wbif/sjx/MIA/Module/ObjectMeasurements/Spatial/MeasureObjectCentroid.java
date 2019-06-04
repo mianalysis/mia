@@ -20,7 +20,7 @@ public class MeasureObjectCentroid extends Module {
     public static final String CENTROID_METHOD = "Centroid method";
 
     public MeasureObjectCentroid(ModuleCollection modules) {
-        super(modules);
+        super("Measure object centroid",modules);
     }
 
     public interface Methods {
@@ -48,12 +48,6 @@ public class MeasureObjectCentroid extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Measure object centroid";
-
-    }
 
     @Override
     public String getPackageName() {

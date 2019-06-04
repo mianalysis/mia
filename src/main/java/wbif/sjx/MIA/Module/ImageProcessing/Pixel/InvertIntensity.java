@@ -24,7 +24,7 @@ public class InvertIntensity extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public InvertIntensity(ModuleCollection modules) {
-        super(modules);
+        super("Invert image intensity",modules);
     }
 
     public static void process(Image inputImage) {
@@ -36,10 +36,6 @@ public class InvertIntensity extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Invert image intensity";
-    }
 
     @Override
     public String getPackageName() {

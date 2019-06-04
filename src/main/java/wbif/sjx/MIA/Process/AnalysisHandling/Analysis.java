@@ -48,7 +48,7 @@ public class Analysis {
                 if (!status) {
                     // The module failed or requested analysis termination.  Add this message to the log
                     System.err.println("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
-                            "\" by module \""+module.getTitle()+"\" (\""+module.getNickname()+"\").");
+                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").");
 
                     // End the analysis generateModuleList
                     break;

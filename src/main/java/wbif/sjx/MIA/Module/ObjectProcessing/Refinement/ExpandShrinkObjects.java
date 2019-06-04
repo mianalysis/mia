@@ -31,7 +31,7 @@ public class ExpandShrinkObjects extends Module {
     public static final String RADIUS_CHANGE_PX = "Radius change (px)";
 
     public ExpandShrinkObjects(ModuleCollection modules) {
-        super(modules);
+        super("Expand and shrink objects",modules);
     }
 
     public interface Methods {
@@ -91,10 +91,6 @@ public class ExpandShrinkObjects extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Expand and shrink objects";
-    }
 
     @Override
     public String getPackageName() {

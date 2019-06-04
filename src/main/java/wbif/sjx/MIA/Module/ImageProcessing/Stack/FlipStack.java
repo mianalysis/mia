@@ -30,7 +30,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String AXIS_MODE = "Axis mode";
 
     public FlipStack(ModuleCollection modules) {
-        super(modules);
+        super("Flip stack",modules);
     }
 
 
@@ -100,11 +100,6 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         return new Image(outputImageName,outputImagePlus);
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Flip stack";
     }
 
     @Override

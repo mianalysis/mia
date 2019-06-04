@@ -30,12 +30,6 @@ public class ShowObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ConvertObjectsToImage(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new ConvertObjectsToImage(null).getHelp());
 

@@ -26,7 +26,7 @@ public class FilterByMeasurement extends CoreFilter {
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterByMeasurement(ModuleCollection modules) {
-        super(modules);
+        super("Based on measurement",modules);
     }
 
 
@@ -55,11 +55,6 @@ public class FilterByMeasurement extends CoreFilter {
         return "FILTER // NUM_" + inputObjectsName + " WITH " + parentName + " " + measName + filterMethodSymbol + " " + refName;
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Based on measurement";
-    }
 
     @Override
     public String getPackageName() {

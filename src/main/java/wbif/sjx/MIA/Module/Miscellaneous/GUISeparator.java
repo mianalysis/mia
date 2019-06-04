@@ -23,14 +23,9 @@ public class GUISeparator extends Module{
     public static final String EXPANDED_EDITING = "Expanded editing GUI";
 
     public GUISeparator(ModuleCollection modules) {
-        super(modules);
+        super("GUI separator",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "GUI separator";
-    }
 
     @Override
     public String getPackageName() {

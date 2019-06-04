@@ -49,7 +49,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     private boolean active = false;
 
     public ExtractSubstack(ModuleCollection modules) {
-        super(modules);
+        super("Extract substack",modules);
     }
 
 
@@ -182,10 +182,6 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Extract substack";
-    }
 
     @Override
     public String getPackageName() {

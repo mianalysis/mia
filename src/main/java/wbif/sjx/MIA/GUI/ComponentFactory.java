@@ -33,7 +33,7 @@ public class ComponentFactory {
         this.elementHeight = elementHeight;
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module, boolean showVisibleControl) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module, boolean editable) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -62,13 +62,20 @@ public class ComponentFactory {
             paramPanel.add(parameterComponent,c);
 
         } else {
-            JLabel parameterName = new JLabel(parameter.getName());
-            parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            JComponent parameterName;
+            if (editable) {
+                parameterName = new ExportName(parameter);
+                paramPanel.add(parameterName,c);
+            } else {
+                parameterName = new JLabel(parameter.getNickname());
+                parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+                parameterName.setBorder(null);
+                parameterName.setOpaque(false);
+                parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
+                paramPanel.add(parameterName, c);
+            }
+
             parameterName.setPreferredSize(new Dimension(0, elementHeight));
-            parameterName.setBorder(null);
-            parameterName.setOpaque(false);
-            parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
-            paramPanel.add(parameterName, c);
 
             if (parameter.isValid()) {
                 parameterName.setForeground(Color.BLACK);
@@ -86,7 +93,7 @@ public class ComponentFactory {
                 paramPanel.add(parameterComponent, c);
             }
 
-            if (showVisibleControl) {
+            if (editable) {
                 c.insets = new Insets(2, 5, 0, 5);
                 c.gridx++;
                 c.weightx = 0;
@@ -199,39 +206,32 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 0;
+        c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
         // Adding the nickname control to the top of the panel
+        ExportName moduleName = new ExportName(activeModule);
+        moduleName.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        paramPanel.add(moduleName, c);
+
+        JSeparator separator = new JSeparator();
+        separator.setOrientation(JSeparator.VERTICAL);
+        separator.setPreferredSize(new Dimension(5, 25));
+        c.gridx++;
+        c.weightx = 0;
+        paramPanel.add(separator,c);
+
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
         disableableCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
             disableableCheck.setEnabled(false);
             disableableCheck.setOpaque(false);
         }
-        paramPanel.add(disableableCheck,c);
-
-        JSeparator separator = new JSeparator();
-        separator.setOrientation(JSeparator.VERTICAL);
-        separator.setPreferredSize(new Dimension(5, 25));
         c.gridx++;
-        paramPanel.add(separator);
-
-//        ExportName moduleName = new ExportName()
-        ModuleName moduleName = new ModuleName(activeModule);
-        moduleName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        c.gridx++;
-        c.weightx = 1;
-        paramPanel.add(moduleName, c);
-
-        ResetModuleName resetModuleName = new ResetModuleName(activeModule);
-        resetModuleName.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        c.gridx++;
-        c.weightx = 0;
-        c.insets = new Insets(5,5,0,5);
         c.anchor = GridBagConstraints.EAST;
-        paramPanel.add(resetModuleName, c);
+
+        paramPanel.add(disableableCheck,c);
 
         return paramPanel;
 
@@ -387,16 +387,16 @@ public class ComponentFactory {
 
     }
 
-    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c, boolean showVisibleControl) {
+    private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c, boolean editable) {
         for (Parameter parameter : parameters) {
             if (parameter.getClass() == ParameterGroup.class) {
                 LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) parameter).getCollections();
-                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c,showVisibleControl);
+                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c,editable);
 
             }
 
             if (parameter.isVisible()) {
-                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module,showVisibleControl);
+                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module,editable);
                 c.gridy++;
                 modulePanel.add(paramPanel, c);
             }

@@ -21,14 +21,9 @@ public class ManuallyEditImage extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public ManuallyEditImage(ModuleCollection modules) {
-        super(modules);
+        super("Manually edit image",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Manually edit image";
-    }
 
     @Override
     public String getPackageName() {

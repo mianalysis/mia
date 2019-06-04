@@ -54,7 +54,7 @@ public class AddArrows extends Module {
     private ColourServer colourServer;
 
     public AddArrows(ModuleCollection modules) {
-        super(modules);
+        super("Add arrows",modules);
     }
 
 
@@ -108,11 +108,6 @@ public class AddArrows extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Add arrows";
-    }
 
     @Override
     public String getPackageName() {

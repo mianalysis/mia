@@ -24,11 +24,6 @@ public class BinaryOperationsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new BinaryOperations2D(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new BinaryOperations2D(null).getHelp());
     }

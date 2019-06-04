@@ -32,11 +32,6 @@ public class IdentifyObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new IdentifyObjects(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new IdentifyObjects(null).getHelp());
     }

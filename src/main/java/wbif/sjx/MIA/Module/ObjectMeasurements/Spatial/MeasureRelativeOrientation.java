@@ -25,7 +25,7 @@ public class MeasureRelativeOrientation extends Module {
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
 
     public MeasureRelativeOrientation(ModuleCollection modules) {
-        super(modules);
+        super("Measure relative orientation",modules);
     }
 
 
@@ -312,11 +312,6 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Measure relative orientation";
-    }
 
     @Override
     public String getPackageName() {

@@ -19,12 +19,7 @@ public class AddCustomMetadataItem extends Module {
 
 
     public AddCustomMetadataItem(ModuleCollection modules) {
-        super(modules);
-    }
-
-    @Override
-    public String getTitle() {
-        return "Add custom metadata item";
+        super("Add custom metadata item",modules);
     }
 
     @Override

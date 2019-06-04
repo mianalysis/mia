@@ -48,7 +48,7 @@ public class MetadataExtractor extends Module {
     public static final String REFRESH_BUTTON = "Refresh parameters";
 
     public MetadataExtractor(ModuleCollection modules) {
-        super(modules);
+        super("Extract metadata",modules);
     }
 
 
@@ -253,11 +253,6 @@ public class MetadataExtractor extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Extract metadata";
-
-    }
 
     @Override
     public String getPackageName() {

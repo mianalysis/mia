@@ -48,7 +48,7 @@ public class InputControl extends Module {
     public static final String NO_LOAD_MESSAGE = "No load message";
 
     public InputControl(ModuleCollection modules) {
-        super(modules);
+        super("Input control",modules);
     }
 
 
@@ -243,11 +243,6 @@ public class InputControl extends Module {
 
         return namesAndNumbers;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Input control";
     }
 
     @Override

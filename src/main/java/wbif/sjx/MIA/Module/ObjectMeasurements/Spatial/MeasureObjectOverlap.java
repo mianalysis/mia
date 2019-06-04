@@ -20,7 +20,7 @@ public class MeasureObjectOverlap extends Module {
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     public MeasureObjectOverlap(ModuleCollection modules) {
-        super(modules);
+        super("Measure object overlap",modules);
     }
 
 
@@ -59,11 +59,6 @@ public class MeasureObjectOverlap extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Measure object overlap";
-    }
 
     @Override
     public String getPackageName() {

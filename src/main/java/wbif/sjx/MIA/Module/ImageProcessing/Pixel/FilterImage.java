@@ -41,7 +41,7 @@ public class FilterImage extends Module {
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
 
     public FilterImage(ModuleCollection modules) {
-        super(modules);
+        super("Filter image",modules);
     }
 
 
@@ -291,10 +291,6 @@ public class FilterImage extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Filter image";
-    }
 
     @Override
     public String getPackageName() {

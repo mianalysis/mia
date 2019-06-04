@@ -187,7 +187,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         }
 
         // Displaying the results table
-        rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
+        rt.show("\""+module.getName()+" \"measurements for \""+name+"\"");
 
     }
 

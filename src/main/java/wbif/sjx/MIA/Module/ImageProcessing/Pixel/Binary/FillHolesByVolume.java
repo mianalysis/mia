@@ -30,7 +30,7 @@ public class FillHolesByVolume extends Module {
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
     public FillHolesByVolume(ModuleCollection modules) {
-        super(modules);
+        super("Fill holes by volume",modules);
     }
 
 
@@ -101,10 +101,6 @@ public class FillHolesByVolume extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Fill holes by volume";
-    }
 
     @Override
     public String getPackageName() {

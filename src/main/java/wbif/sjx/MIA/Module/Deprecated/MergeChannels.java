@@ -38,7 +38,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
     public MergeChannels(ModuleCollection modules) {
-        super(modules);
+        super("Merge channels",modules);
     }
 
 
@@ -222,11 +222,6 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
         return rgbImg;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Merge channels";
     }
 
     @Override

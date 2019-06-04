@@ -37,7 +37,7 @@ public class RelateObjects extends Module {
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
     public RelateObjects(ModuleCollection modules) {
-        super(modules);
+        super("Relate objects",modules);
     }
 
 
@@ -452,12 +452,6 @@ public class RelateObjects extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Relate objects";
-
-    }
 
     @Override
     public String getPackageName() {

@@ -13,11 +13,6 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CalculateNearestNeighbour(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new CalculateNearestNeighbour(null).getHelp());
     }

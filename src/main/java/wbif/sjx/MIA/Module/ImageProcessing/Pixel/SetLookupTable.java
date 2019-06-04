@@ -26,7 +26,7 @@ public class SetLookupTable extends Module {
     public static final String DISPLAY_MODE = "Display mode";
 
     public SetLookupTable(ModuleCollection modules) {
-        super(modules);
+        super("Set lookup table",modules);
     }
 
 
@@ -126,11 +126,6 @@ public class SetLookupTable extends Module {
         }
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Set lookup table";
-    }
 
     @Override
     public String getPackageName() {

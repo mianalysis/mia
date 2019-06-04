@@ -20,7 +20,7 @@ public class ImageMeasurementCalculator extends Module {
     public static final String CALCULATION_MODE = "Calculation mode";
 
     public ImageMeasurementCalculator(ModuleCollection modules) {
-        super(modules);
+        super("Image measurement calculator",modules);
     }
 
 
@@ -76,10 +76,6 @@ public class ImageMeasurementCalculator extends Module {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
-    @Override
-    public String getTitle() {
-        return "Image measurement calculator";
-    }
 
     @Override
     public String getPackageName() {

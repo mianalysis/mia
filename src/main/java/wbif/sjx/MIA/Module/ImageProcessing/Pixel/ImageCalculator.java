@@ -28,7 +28,7 @@ public class ImageCalculator extends Module {
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
 
     public ImageCalculator(ModuleCollection modules) {
-        super(modules);
+        super("Image calculator",modules);
     }
 
     public interface OverwriteModes {
@@ -197,11 +197,6 @@ public class ImageCalculator extends Module {
 
         return null;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Image calculator";
     }
 
     @Override

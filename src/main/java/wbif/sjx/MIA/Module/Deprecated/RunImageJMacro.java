@@ -36,14 +36,9 @@ public class RunImageJMacro extends Module {
     }
 
     public RunImageJMacro(ModuleCollection modules) {
-        super(modules);
+        super("Run ImageJ macro",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Run ImageJ macro";
-    }
 
     @Override
     public String getPackageName() {

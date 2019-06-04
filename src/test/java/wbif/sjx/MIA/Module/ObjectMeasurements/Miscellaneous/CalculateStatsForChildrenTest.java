@@ -7,11 +7,6 @@ import static org.junit.Assert.*;
 public class CalculateStatsForChildrenTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CalculateStatsForChildren(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new CalculateStatsForChildren(null).getHelp());
     }

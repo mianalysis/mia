@@ -15,11 +15,6 @@ public class ImageCalculatorTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageCalculator(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new ImageCalculator(null).getHelp());
     }

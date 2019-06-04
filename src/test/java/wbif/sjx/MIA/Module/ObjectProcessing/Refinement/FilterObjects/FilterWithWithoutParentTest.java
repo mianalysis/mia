@@ -9,10 +9,6 @@ import wbif.sjx.MIA.Object.*;
 import static org.junit.Assert.*;
 
 public class FilterWithWithoutParentTest extends ModuleTest {
-    @Override
-    public void testGetTitle() {
-        assertNotNull(new FilterWithWithoutParent(null).getTitle());
-    }
 
     @Override
     public void testGetHelp() {

@@ -23,12 +23,6 @@ public class ChannelExtractorTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ChannelExtractor(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new ChannelExtractor(null).getHelp());
 

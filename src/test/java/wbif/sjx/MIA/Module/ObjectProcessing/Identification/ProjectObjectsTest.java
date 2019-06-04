@@ -28,12 +28,6 @@ public class ProjectObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ProjectObjects(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new ProjectObjects(null).getHelp());
 

@@ -20,7 +20,7 @@ public class ObjectMeasurementCalculator extends Module {
     public static final String CALCULATION_MODE = "Calculation mode";
 
     public ObjectMeasurementCalculator(ModuleCollection modules) {
-        super(modules);
+        super("Object measurement calculator",modules);
     }
 
 
@@ -76,10 +76,6 @@ public class ObjectMeasurementCalculator extends Module {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
-    @Override
-    public String getTitle() {
-        return "Object measurement calculator";
-    }
 
     @Override
     public String getPackageName() {

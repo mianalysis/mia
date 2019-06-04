@@ -60,7 +60,7 @@ public class VideoLoader extends Module {
 
 
     public VideoLoader(ModuleCollection modules) {
-        super(modules);
+        super("Load video",modules);
     }
 
     public interface ImportModes {
@@ -295,10 +295,6 @@ public class VideoLoader extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Load video";
-    }
 
     @Override
     public String getPackageName() {

@@ -32,7 +32,7 @@ public class ExtendedMinima extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public ExtendedMinima(ModuleCollection modules) {
-        super(modules);
+        super("Extended minima",modules);
     }
 
 
@@ -107,11 +107,6 @@ public class ExtendedMinima extends Module {
         }
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Extended minima";
-    }
 
     @Override
     public String getPackageName() {

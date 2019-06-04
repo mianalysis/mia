@@ -25,13 +25,9 @@ public class ConvertStackToTimeseries extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public ConvertStackToTimeseries(ModuleCollection modules) {
-        super(modules);
+        super("Convert stack to timeseries",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Convert stack to timeseries";
-    }
 
     @Override
     public String getPackageName() {

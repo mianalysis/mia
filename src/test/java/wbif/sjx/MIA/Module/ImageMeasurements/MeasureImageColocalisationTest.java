@@ -155,11 +155,6 @@ public class MeasureImageColocalisationTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureImageColocalisation(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new MeasureImageColocalisation(null).getHelp());
     }

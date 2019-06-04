@@ -7,11 +7,6 @@ import static org.junit.Assert.*;
 public class MeasureSpotIntensityTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureSpotIntensity(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new MeasureSpotIntensity(null).getHelp());
     }

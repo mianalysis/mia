@@ -24,12 +24,6 @@ public class MeasureObjectCentroidTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectCentroid(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new MeasureObjectCentroid(null).getHelp());
 

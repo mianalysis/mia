@@ -45,18 +45,13 @@ public class HoughObjectDetection extends Module {
     public static final String LABEL_SIZE = "Label size";
 
     public HoughObjectDetection(ModuleCollection modules) {
-        super(modules);
+        super("Hough-based detection",modules);
     }
 
 
     private interface Measurements {
         String SCORE = "HOUGH_DETECTION//SCORE";
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Hough-based detection";
     }
 
     @Override

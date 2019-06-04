@@ -39,7 +39,7 @@ public class FitGaussian2D extends Module {
     public static final String APPLY_VOLUME = "Apply volume";
 
     public FitGaussian2D(ModuleCollection modules) {
-        super(modules);
+        super("Fit Gaussian 2D",modules);
     }
 
     public interface RadiusModes {
@@ -71,11 +71,6 @@ public class FitGaussian2D extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Fit Gaussian 2D";
-    }
 
     @Override
     public String getPackageName() {

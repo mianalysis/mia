@@ -26,7 +26,7 @@ public class FitEllipsoid extends Module {
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
     public FitEllipsoid(ModuleCollection modules) {
-        super(modules);
+        super("Fit ellipsoid",modules);
     }
 
 
@@ -178,11 +178,6 @@ public class FitEllipsoid extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Fit ellipsoid";
-    }
 
     @Override
     public String getPackageName() {

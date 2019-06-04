@@ -39,7 +39,7 @@ public class AnalysisTester {
     public static void reportStatus(ModuleCollection modules) {
         for (Module module:modules) {
             if (module.isEnabled() & !module.isRunnable()) {
-                System.err.println("Module \"" + module.getTitle() +
+                System.err.println("Module \"" + module.getName() +
                         "\" not runnable (likely a missing input).  This module has been skipped.");
             }
         }

@@ -18,14 +18,9 @@ public class CombingCorrection extends Module {
     public static final String OFFSET = "Offset (px)";
 
     public CombingCorrection(ModuleCollection modules) {
-        super(modules);
+        super("Combing correction",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Combing correction";
-    }
 
     @Override
     public String getPackageName() {

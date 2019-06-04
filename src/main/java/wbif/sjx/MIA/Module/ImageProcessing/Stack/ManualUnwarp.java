@@ -61,7 +61,7 @@ public class ManualUnwarp extends Module implements Interactable {
     private Image reference;
 
     public ManualUnwarp(ModuleCollection modules) {
-        super(modules);
+        super("Unwarp images (manual)",modules);
     }
 
 
@@ -331,11 +331,6 @@ public class ManualUnwarp extends Module implements Interactable {
 
         ConcatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Unwarp images (manual)";
     }
 
     @Override

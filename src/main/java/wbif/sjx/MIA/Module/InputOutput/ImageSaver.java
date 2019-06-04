@@ -46,7 +46,7 @@ public class ImageSaver extends Module {
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public ImageSaver(ModuleCollection modules) {
-        super(modules);
+        super("Save image",modules);
     }
 
 
@@ -147,10 +147,6 @@ public class ImageSaver extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Save image";
-    }
 
     @Override
     public String getPackageName() {

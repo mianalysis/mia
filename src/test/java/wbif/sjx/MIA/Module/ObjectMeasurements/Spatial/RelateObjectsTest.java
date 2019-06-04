@@ -31,12 +31,6 @@ public class RelateObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new RelateObjects(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new RelateObjects(null).getHelp());
 

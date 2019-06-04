@@ -186,6 +186,10 @@ public class AnalysisWriter {
             nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
             parameterElement.setAttributeNode(nameAttr);
 
+            Attr nickNameAttr = doc.createAttribute("NICKNAME");
+            nickNameAttr.appendChild(doc.createTextNode(currParam.getNickname()));
+            parameterElement.setAttributeNode(nickNameAttr);
+
             Attr valueAttr = doc.createAttribute("VALUE");
             if (currParam.getRawStringValue() == null) {
                 valueAttr.appendChild(doc.createTextNode(""));

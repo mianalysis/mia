@@ -29,7 +29,7 @@ public class FocusStack extends Module {
     public static final String SHOW_HEIGHT_IMAGE = "Show height image";
 
     public FocusStack(ModuleCollection modules) {
-        super(modules);
+        super("Focus stack",modules);
     }
 
 
@@ -130,11 +130,6 @@ public class FocusStack extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Focus stack";
-    }
 
     @Override
     public String getPackageName() {

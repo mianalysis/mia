@@ -41,7 +41,7 @@ public class MergeTracks extends Module implements ActionListener {
     private String spotObjectsName;
 
     public MergeTracks(ModuleCollection modules) {
-        super(modules);
+        super("Merge tracks",modules);
     }
 
 
@@ -140,11 +140,6 @@ public class MergeTracks extends Module implements ActionListener {
         }
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Merge tracks";
-    }
 
     @Override
     public String getPackageName() {

@@ -35,7 +35,7 @@ public class IdentifyObjects extends Module {
     public static final String CONNECTIVITY = "Connectivity";
 
     public IdentifyObjects(ModuleCollection modules) {
-        super(modules);
+        super("Identify objects",modules);
     }
 
     public interface Connectivity {
@@ -107,11 +107,6 @@ public class IdentifyObjects extends Module {
         }
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Identify objects";
-    }
 
     @Override
     public String getPackageName() {

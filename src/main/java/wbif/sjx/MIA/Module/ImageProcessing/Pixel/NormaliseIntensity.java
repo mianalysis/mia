@@ -38,7 +38,7 @@ public class NormaliseIntensity extends Module {
     public static final String MAX_RANGE = "Maximum range value";
 
     public NormaliseIntensity(ModuleCollection modules) {
-        super(modules);
+        super("Normalise intensity",modules);
     }
 
 
@@ -140,11 +140,6 @@ public class NormaliseIntensity extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Normalise intensity";
-    }
 
     @Override
     public String getPackageName() {

@@ -25,7 +25,7 @@ public class BinaryOperations2D extends Module {
     public static final String NUM_ITERATIONS = "Number of iterations";
 
     public BinaryOperations2D(ModuleCollection modules) {
-        super(modules);
+        super("Binary operations 2D",modules);
     }
 
 
@@ -78,11 +78,6 @@ public class BinaryOperations2D extends Module {
         }
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Binary operations 2D";
-    }
 
     @Override
     public String getPackageName() {

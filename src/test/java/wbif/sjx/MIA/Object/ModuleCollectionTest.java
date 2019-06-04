@@ -317,9 +317,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         expectedParams.add(new BooleanP(MeasureObjectTexture.CALIBRATED_OFFSET,measureObjectShape,false));
 
         for (BooleanP param:actualParams) {
-            System.err.println(param.getName()+"_"+param.getModule().getTitle());
+            System.err.println(param.getName()+"_"+param.getModule().getName());
         }
-
 
         // Checking the parameters are what are expected
         assertEquals(7,actualParams.size());

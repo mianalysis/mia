@@ -13,6 +13,12 @@ public abstract class Ref {
         this.nickname = name;
     }
 
+    public Ref(String name, String description) {
+        this.name = name;
+        this.nickname = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }

@@ -40,7 +40,7 @@ public class RidgeDetection extends Module {
     public static final String LINK_CONTOURS = "Link contours";
 
     public RidgeDetection(ModuleCollection modules) {
-        super(modules);
+        super("Ridge detection",modules);
     }
 
     private interface Measurements {
@@ -200,11 +200,6 @@ public class RidgeDetection extends Module {
 
         return outputObjects;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Ridge detection";
     }
 
     @Override

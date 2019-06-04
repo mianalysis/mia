@@ -31,7 +31,7 @@ public class WekaProbabilityMaps extends Module {
     public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
 
     public WekaProbabilityMaps(ModuleCollection modules) {
-        super(modules);
+        super("Weka probability maps",modules);
     }
 
 
@@ -133,11 +133,6 @@ public class WekaProbabilityMaps extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Weka probability maps";
-    }
 
     @Override
     public String getPackageName() {

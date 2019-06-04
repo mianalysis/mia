@@ -7,11 +7,6 @@ import static org.junit.Assert.*;
 public class FitEllipseTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new FitEllipse(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new FitEllipse(null).getHelp());
     }

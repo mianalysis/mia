@@ -19,11 +19,6 @@ public class MeasureIntensityDistributionTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureIntensityDistribution(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new MeasureIntensityDistribution(null).getHelp());
     }

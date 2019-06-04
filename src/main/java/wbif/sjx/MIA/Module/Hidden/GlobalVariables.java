@@ -22,7 +22,7 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_VALUE = "Variable value";
 
     public GlobalVariables(ModuleCollection modules) {
-        super(modules);
+        super("Global variables",modules);
     }
 
     public String convertString(String string) {
@@ -58,10 +58,6 @@ public class GlobalVariables extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Global variables";
-    }
 
     @Override
     public String getPackageName() {

@@ -27,7 +27,7 @@ public class ProjectObjects extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public ProjectObjects(ModuleCollection modules) {
-        super(modules);
+        super("Project objects",modules);
     }
 
     public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
@@ -69,11 +69,6 @@ public class ProjectObjects extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Project objects";
-
-    }
 
     @Override
     public String getPackageName() {

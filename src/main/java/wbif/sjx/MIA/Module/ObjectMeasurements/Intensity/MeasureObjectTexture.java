@@ -31,7 +31,7 @@ public class MeasureObjectTexture extends Module {
     public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
     public MeasureObjectTexture(ModuleCollection modules) {
-        super(modules);
+        super("Measure object texture",modules);
     }
 
     public interface Measurements {
@@ -112,11 +112,6 @@ public class MeasureObjectTexture extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure object texture";
-
-    }
 
     @Override
     public String getPackageName() {

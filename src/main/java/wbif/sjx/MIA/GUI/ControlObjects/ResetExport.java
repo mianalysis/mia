@@ -19,8 +19,6 @@ public class ResetExport extends JButton implements ActionListener {
         setMargin(new Insets(0,0,0,0));
         setFocusPainted(false);
         setSelected(false);
-        setName("Refresh name");
-        setToolTipText("Refresh name");
         addActionListener(this);
         setIcon(refreshIcon);
 
@@ -28,7 +26,6 @@ public class ResetExport extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ref.setNickname(ref.getName());
         ref.setAllExport(true);
 
         GUI.populateModuleParameters();

@@ -43,7 +43,7 @@ public class AddAllObjectPoints extends Module {
     private ColourServer colourServer;
 
     public AddAllObjectPoints(ModuleCollection modules) {
-        super(modules);
+        super("Add all object points",modules);
     }
 
 
@@ -78,10 +78,6 @@ public class AddAllObjectPoints extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Add all object points";
-    }
 
     @Override
     public String getPackageName() {

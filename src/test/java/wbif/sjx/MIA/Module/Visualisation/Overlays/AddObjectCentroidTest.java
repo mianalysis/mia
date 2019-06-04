@@ -10,11 +10,6 @@ import static org.junit.Assert.*;
 public class AddObjectCentroidTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new AddObjectCentroid(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new AddObjectCentroid(null).getHelp());
     }

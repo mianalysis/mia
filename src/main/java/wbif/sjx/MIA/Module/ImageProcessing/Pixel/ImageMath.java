@@ -24,7 +24,7 @@ public class ImageMath extends Module {
     public static final String MATH_VALUE = "Value";
 
     public ImageMath(ModuleCollection modules) {
-        super(modules);
+        super("Image math",modules);
     }
 
     public interface CalculationTypes {
@@ -81,10 +81,6 @@ public class ImageMath extends Module {
         inputImagePlus.setPosition(1, 1, 1);
     }
 
-    @Override
-    public String getTitle() {
-        return "Image math";
-    }
 
     @Override
     public String getPackageName() {

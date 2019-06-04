@@ -26,12 +26,6 @@ public class MeasureObjectShapeTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectShape(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new MeasureObjectShape(null).getHelp());
 

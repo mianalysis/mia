@@ -6,7 +6,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
-import wbif.sjx.MIA.Module.Deprecated.FilterObjects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
@@ -25,11 +24,6 @@ public class FilterObjectsTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
-    }
-
-    @Override
-    public void testGetTitle() {
-        assertNotNull(new FilterObjects(null).getTitle());
     }
 
     @Override

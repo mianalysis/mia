@@ -43,14 +43,9 @@ public class RunMacroOnImage extends Module {
     }
 
     public RunMacroOnImage(ModuleCollection modules) {
-        super(modules);
+        super("Run macro on image",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Run macro on image";
-    }
 
     @Override
     public String getPackageName() {

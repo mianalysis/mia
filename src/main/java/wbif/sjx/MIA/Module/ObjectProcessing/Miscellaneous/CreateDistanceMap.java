@@ -35,7 +35,7 @@ public class CreateDistanceMap extends Module {
     public static final String SPATIAL_UNITS = "Spatial units";
 
     public CreateDistanceMap(ModuleCollection modules) {
-        super(modules);
+        super("Create distance map",modules);
     }
 
 
@@ -210,10 +210,6 @@ public class CreateDistanceMap extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Create distance map";
-    }
 
     @Override
     public String getPackageName() {

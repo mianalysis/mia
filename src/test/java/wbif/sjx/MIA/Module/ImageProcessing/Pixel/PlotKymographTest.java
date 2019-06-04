@@ -7,11 +7,6 @@ import static org.junit.Assert.*;
 public class PlotKymographTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new PlotKymograph(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new PlotKymograph(null).getHelp());
     }

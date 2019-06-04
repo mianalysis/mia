@@ -39,7 +39,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
 
     public ConcatenateStacks(ModuleCollection modules) {
-        super(modules);
+        super("Concatenate stacks",modules);
     }
 
 
@@ -244,10 +244,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Concatenate stacks";
-    }
 
     @Override
     public String getPackageName() {

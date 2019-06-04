@@ -3,9 +3,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.process.ImageConverter;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,11 +22,6 @@ public class ThresholdImageTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
-    }
-
-    @Override
-    public void testGetTitle() {
-        assertNotNull(new ThresholdImage(null).getTitle());
     }
 
     @Override

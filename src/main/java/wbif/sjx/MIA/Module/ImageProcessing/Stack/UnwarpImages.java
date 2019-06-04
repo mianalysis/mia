@@ -49,7 +49,7 @@ public class UnwarpImages extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public UnwarpImages(ModuleCollection modules) {
-        super(modules);
+        super("Unwarp images",modules);
     }
 
 
@@ -310,11 +310,6 @@ public class UnwarpImages extends Module {
         }
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Unwarp images";
-    }
 
     @Override
     public String getPackageName() {

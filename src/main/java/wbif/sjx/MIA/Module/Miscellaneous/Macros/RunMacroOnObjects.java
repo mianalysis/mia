@@ -49,7 +49,7 @@ public class RunMacroOnObjects extends Module {
     }
 
     public RunMacroOnObjects(ModuleCollection modules) {
-        super(modules);
+        super("Run macro on objects",modules);
     }
 
     public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group) {
@@ -73,11 +73,6 @@ public class RunMacroOnObjects extends Module {
 
         return new Measurement(getFullName(heading),value);
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Run macro on objects";
     }
 
     @Override

@@ -8,10 +8,6 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 19/03/2019.
  */
 public class ObjectMeasurementCalculatorTest extends ModuleTest {
-    @Override
-    public void testGetTitle() {
-        assertNotNull(new ObjectMeasurementCalculator(null).getTitle());
-    }
 
     @Override
     public void testGetHelp() {

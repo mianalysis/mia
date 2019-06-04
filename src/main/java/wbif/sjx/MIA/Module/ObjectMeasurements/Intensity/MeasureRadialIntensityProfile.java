@@ -31,7 +31,7 @@ public class MeasureRadialIntensityProfile extends Module {
     public static final String MAX_DISTANCE = "Maximum distance";
 
     public MeasureRadialIntensityProfile(ModuleCollection modules) {
-        super(modules);
+        super("Measure radial intensity profile",modules);
     }
 //    public static final String NORMALISE_DISTANCES = "Normalise distances to object size";
     //public static final String CALIBRATED_UNITS = "Calibrated units"; // To be added
@@ -107,11 +107,6 @@ public class MeasureRadialIntensityProfile extends Module {
 
         return cumStats;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Measure radial intensity profile";
     }
 
     @Override

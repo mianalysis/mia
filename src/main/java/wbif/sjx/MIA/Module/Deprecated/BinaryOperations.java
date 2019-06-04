@@ -47,7 +47,7 @@ public class BinaryOperations extends Module {
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public BinaryOperations(ModuleCollection modules) {
-        super(modules);
+        super("Binary operations (legacy)",modules);
     }
 
     public interface OperationModes {
@@ -305,10 +305,6 @@ public class BinaryOperations extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Binary operations (legacy)";
-    }
 
     @Override
     public String getPackageName() {

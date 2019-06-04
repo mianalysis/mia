@@ -55,7 +55,7 @@ public class TrackObjects extends Module {
     public static final String ORIENTATION_MODE = "Orientation mode";
 
     public TrackObjects(ModuleCollection modules) {
-        super(modules);
+        super("Track objects",modules);
     }
 
 
@@ -473,11 +473,6 @@ public class TrackObjects extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Track objects";
-    }
 
     @Override
     public String getPackageName() {

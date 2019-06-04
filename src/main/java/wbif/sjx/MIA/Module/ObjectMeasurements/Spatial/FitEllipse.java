@@ -23,7 +23,7 @@ public class FitEllipse extends Module {
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
     public FitEllipse(ModuleCollection modules) {
-        super(modules);
+        super("Fit ellipse",modules);
     }
 
     public interface FittingModes {
@@ -165,11 +165,6 @@ public class FitEllipse extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Fit ellipse";
-    }
 
     @Override
     public String getPackageName() {

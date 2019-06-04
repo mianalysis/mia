@@ -46,7 +46,7 @@ public class AddObjectOutline extends Module {
     private ColourServer colourServer;
 
     public AddObjectOutline(ModuleCollection modules) {
-        super(modules);
+        super("Add object outline",modules);
     }
 
 
@@ -116,11 +116,6 @@ public class AddObjectOutline extends Module {
             ipl.getOverlay().addElement(polyRoi);
 
         }
-    }
-
-    @Override
-    public String getTitle() {
-        return "Add object outline";
     }
 
     @Override

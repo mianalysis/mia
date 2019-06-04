@@ -65,7 +65,7 @@ public class RegisterImages extends Module implements Interactable {
     private Image reference;
 
     public RegisterImages(ModuleCollection modules) {
-        super(modules);
+        super("Register images",modules);
     }
 
 
@@ -480,10 +480,6 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Register images";
-    }
 
     @Override
     public String getPackageName() {

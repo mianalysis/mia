@@ -33,7 +33,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
     public ApplyOffsetCorrection(ModuleCollection modules) {
-        super(modules);
+        super("Apply offset correction",modules);
     }
 
 
@@ -105,11 +105,6 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
             // Putting the Img back into the input Image
             inputImage.setImgPlus(shiftedImg);
         }
-    }
-
-    @Override
-    public String getTitle() {
-        return "Apply offset correction";
     }
 
     @Override

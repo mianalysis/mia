@@ -24,7 +24,7 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
     public ConditionalAnalysisTermination(ModuleCollection modules) {
-        super(modules);
+        super("Conditional analysis termination",modules);
     }
 
 
@@ -88,11 +88,6 @@ public class ConditionalAnalysisTermination extends Module {
 
         return false;
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Conditional analysis termination";
     }
 
     @Override

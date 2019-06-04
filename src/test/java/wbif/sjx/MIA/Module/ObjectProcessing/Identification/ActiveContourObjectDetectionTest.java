@@ -7,11 +7,6 @@ import static org.junit.Assert.*;
 public class ActiveContourObjectDetectionTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ActiveContourObjectDetection(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
         assertNotNull(new ActiveContourObjectDetection(null).getHelp());
     }

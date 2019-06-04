@@ -99,7 +99,7 @@ public class DocumentationGenerator {
 
         // Adding the Module title
         sb.append("<h1>")
-                .append(module.getTitle())
+                .append(module.getName())
                 .append("</h1>\r\n");
 
         // Adding the Module summary
@@ -218,7 +218,7 @@ public class DocumentationGenerator {
                 sb.append("<li><a href=\".")
                         .append(getSimpleModulePath(module))
                         .append("\">")
-                        .append(module.getTitle())
+                        .append(module.getName())
                         .append("</a></li>\r\n");
 
             }

@@ -19,13 +19,9 @@ public class RemoveObjects extends Module {
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
     public RemoveObjects(ModuleCollection modules) {
-        super(modules);
+        super("Remove objects",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Remove objects";
-    }
 
     @Override
     public String getPackageName() {

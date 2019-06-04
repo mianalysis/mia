@@ -16,13 +16,9 @@ public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE2 = "Input image 2";
 
     public ReplaceImage(ModuleCollection modules) {
-        super(modules);
+        super("Replace image",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Replace image";
-    }
 
     @Override
     public String getPackageName() {
