@@ -7,13 +7,14 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module implements Comparable {
+public abstract class Module extends Ref implements Comparable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
@@ -23,10 +24,9 @@ public abstract class Module implements Comparable {
     protected RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
 
     private static boolean verbose = false;
-    private String nickname;
     private String notes = "";
     private boolean enabled = true;
-    private String moduleName;
+    private String name;
     private String packageName;
     private boolean canBeDisabled = false;
     protected boolean showOutput = false;
@@ -35,19 +35,14 @@ public abstract class Module implements Comparable {
 
     // CONSTRUCTOR
 
-    public Module(ModuleCollection modules) {
+    protected Module(String name, ModuleCollection modules) {
+        super(name);
         this.modules = modules;
-        moduleName = getTitle();
-        nickname = moduleName;
-
         initialiseParameters();
-
     }
 
 
     // PUBLIC METHODS
-
-    public abstract String getTitle();
 
     public abstract String getPackageName();
 
@@ -181,14 +176,6 @@ public abstract class Module implements Comparable {
 
     // PRIVATE METHODS
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     public String getNotes() {
         return notes;
 
@@ -208,7 +195,7 @@ public abstract class Module implements Comparable {
     }
 
     protected void writeMessage(String message) {
-        if (verbose) new Thread(() -> System.out.println("[" + moduleName + "] "+message)).start();
+        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
     }
 
     protected static void writeMessage(String message, String moduleName) {
@@ -254,7 +241,7 @@ public abstract class Module implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return getTitle().compareTo(((Module) o).getTitle());
+        return getName().compareTo(((Module) o).getNotes());
 
     }
 }

@@ -73,7 +73,7 @@ public class AddObjectsOverlay extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddObjectsOverlay(ModuleCollection modules) {
-        super(modules);
+        super("Add overlay",modules);
     }
 
 
@@ -625,11 +625,6 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Add overlay";
-    }
 
     @Override
     public String getPackageName() {
