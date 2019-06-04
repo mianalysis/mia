@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
@@ -139,7 +139,7 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
-    void addRefExportControls(RefCollection<? extends Ref> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
+    void addRefExportControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
         if (refs.size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,false);
@@ -149,7 +149,7 @@ public class ParametersPanel extends JScrollPane {
         panel.add(measurementHeader,c);
 
         // Iterating over the measurements for the current object, adding a control for each
-        for (Ref reference:refs.values()) {
+        for (ExportableRef reference:refs.values()) {
             // Adding measurement control
             JPanel currentMeasurementPanel = componentFactory.createSingleRefControl(reference);
             c.gridy++;

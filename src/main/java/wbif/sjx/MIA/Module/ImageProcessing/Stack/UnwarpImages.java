@@ -242,7 +242,7 @@ public class UnwarpImages extends Module {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -263,7 +263,7 @@ public class UnwarpImages extends Module {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
 
             }

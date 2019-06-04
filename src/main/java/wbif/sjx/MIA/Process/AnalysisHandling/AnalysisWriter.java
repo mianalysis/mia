@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -218,10 +218,10 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
         if (refs == null) return refsElement;
 
-        for (Ref ref:refs.values()) {
+        for (ExportableRef ref:refs.values()) {
             Element element = doc.createElement(groupName);
             ref.appendXMLAttributes(element);
             refsElement.appendChild(element);

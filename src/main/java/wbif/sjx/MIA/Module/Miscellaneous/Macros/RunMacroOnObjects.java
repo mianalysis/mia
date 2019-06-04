@@ -66,6 +66,8 @@ public class RunMacroOnObjects extends Module {
     }
 
     public static Measurement interceptMeasurement(ResultsTable table, String heading) {
+        if (table == null || table.getColumn(0) == null) return new Measurement(getFullName(heading),Double.NaN);
+
         int nRows = table.getColumn(0).length;
         double value = table.getValue(heading,nRows-1);
 
@@ -148,6 +150,7 @@ public class RunMacroOnObjects extends Module {
             }
 
             // Closing the results table
+            table.reset();
             Frame resultsFrame = WindowManager.getFrame("Results");
             if (resultsFrame != null) resultsFrame.dispose();
 

@@ -3,7 +3,7 @@ package wbif.sjx.MIA.Object.References.Abstract;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
-public abstract class SummaryRef extends Ref {
+public abstract class SummaryRef extends ExportableRef {
     private boolean exportMean = true;
     private boolean exportMin = true;
     private boolean exportMax = true;

@@ -142,7 +142,7 @@ public class RegisterImages extends Module implements Interactable {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -163,7 +163,7 @@ public class RegisterImages extends Module implements Interactable {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
             }
 

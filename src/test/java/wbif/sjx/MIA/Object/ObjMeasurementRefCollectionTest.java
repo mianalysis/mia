@@ -10,9 +10,9 @@ public class ObjMeasurementRefCollectionTest {
     @Test
     public void get() {
         // Creating some measurements
-        ObjMeasurementRef ref1 = new ObjMeasurementRef("Ref 1");
+        ObjMeasurementRef ref1 = new ObjMeasurementRef("ExportableRef 1");
         ObjMeasurementRef ref2 = new ObjMeasurementRef("Second ref");
-        ObjMeasurementRef ref3 = new ObjMeasurementRef("Ref 3");
+        ObjMeasurementRef ref3 = new ObjMeasurementRef("ExportableRef 3");
         ObjMeasurementRef ref4 = new ObjMeasurementRef("One more");
 
         // Populating the collection
@@ -22,22 +22,22 @@ public class ObjMeasurementRefCollectionTest {
         collection.put(ref3.getName(),ref3);
         collection.put(ref4.getName(),ref4);
 
-        assertEquals(ref1,collection.get("Ref 1"));
-        assertEquals(ref3,collection.get("Ref 3"));
+        assertEquals(ref1,collection.get("ExportableRef 1"));
+        assertEquals(ref3,collection.get("ExportableRef 3"));
         assertEquals(ref2,collection.get("Second ref"));
         assertEquals(ref4,collection.get("One more"));
 
         assertNull(collection.get("Not there"));
-        assertNull(collection.get("Ref 11"));
+        assertNull(collection.get("ExportableRef 11"));
 
     }
 
     @Test
     public void updateImageObjectName() {
         // Creating some measurements
-        ObjMeasurementRef ref1 = new ObjMeasurementRef("Ref 1");
+        ObjMeasurementRef ref1 = new ObjMeasurementRef("ExportableRef 1");
         ObjMeasurementRef ref2 = new ObjMeasurementRef("Second ref");
-        ObjMeasurementRef ref3 = new ObjMeasurementRef("Ref 3");
+        ObjMeasurementRef ref3 = new ObjMeasurementRef("ExportableRef 3");
         ObjMeasurementRef ref4 = new ObjMeasurementRef("One more");
 
         // Populating the collection
@@ -54,9 +54,9 @@ public class ObjMeasurementRefCollectionTest {
         collection.updateImageObjectName("Second ref","im name");
 
         // Checking the imageObjectName values for all references
-        assertEquals("",collection.get("Ref 1").getObjectsName());
+        assertEquals("",collection.get("ExportableRef 1").getObjectsName());
         assertEquals("im name",collection.get("Second ref").getObjectsName());
-        assertEquals("",collection.get("Ref 3").getObjectsName());
+        assertEquals("",collection.get("ExportableRef 3").getObjectsName());
         assertEquals("",collection.get("One more").getObjectsName());
 
     }

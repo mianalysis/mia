@@ -12,7 +12,7 @@ import java.util.TreeSet;
 /**
  * Created by Stephen on 28/07/2017.
  */
-public class ModuleListMenu extends JMenu implements Comparable, MouseListener {
+public class ModuleListMenu extends JMenu implements Comparable {
     private final JPopupMenu topLevelMenu;
     private TreeSet<ModuleListMenu> children = new TreeSet<>();
 
@@ -24,7 +24,6 @@ public class ModuleListMenu extends JMenu implements Comparable, MouseListener {
             add(new PopupMenuItem(module,topLevelMenu));
         }
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        addMouseListener(this);
 
     }
 
@@ -34,32 +33,6 @@ public class ModuleListMenu extends JMenu implements Comparable, MouseListener {
 
     public TreeSet<ModuleListMenu> getChildren() {
         return children;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // Adding the mouse listener to show the relevant sub-menu
-//        GUI.getModuleListMenu().show(GUI.getFrame(), e.getX(), e.getY());
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 
     @Override

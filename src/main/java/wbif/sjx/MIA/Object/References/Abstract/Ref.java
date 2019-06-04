@@ -8,13 +8,6 @@ public abstract class Ref {
     private String nickname = "";
     private String description = "";
 
-    private boolean exportIndividual = true;
-    private boolean exportGlobal = true; // This is mainly for the GUI
-
-    public Ref(NamedNodeMap attributes) {
-        this.name = attributes.getNamedItem("NAME").getNodeValue();
-    }
-
     public Ref(String name) {
         this.name = name;
         this.nickname = name;
@@ -40,34 +33,9 @@ public abstract class Ref {
         this.nickname = nickname;
     }
 
-    public void setExportGlobal(boolean exportGlobal) {
-        this.exportGlobal = exportGlobal;
-    }
-
-    public boolean isExportGlobal() {
-        return exportGlobal;
-    }
-
-    public boolean isExportIndividual() {
-        return exportIndividual;
-    }
-
-    public void setExportIndividual(boolean exportIndividual) {
-        this.exportIndividual = exportIndividual;
-
-    }
-
-    public void setAllExport(boolean export) {
-        exportGlobal = export;
-        exportIndividual = export;
-
-    }
-
     public void appendXMLAttributes(Element element) {
         element.setAttribute("NAME",name);
         element.setAttribute("NICKNAME",nickname);
-        element.setAttribute("EXPORT_GLOBAL",String.valueOf(exportGlobal));
-        element.setAttribute("EXPORT_INDIVIDUAL",String.valueOf(exportIndividual));
 
     }
 
@@ -76,14 +44,6 @@ public abstract class Ref {
             nickname = attributes.getNamedItem("NAME").getNodeValue();
         } else {
             nickname = attributes.getNamedItem("NICKNAME").getNodeValue();
-        }
-
-        if (attributes.getNamedItem("EXPORT_GLOBAL") != null) {
-            exportGlobal = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
-        }
-
-        if (attributes.getNamedItem("EXPORT_INDIVIDUAL") != null) {
-            exportIndividual = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue());
         }
     }
 }

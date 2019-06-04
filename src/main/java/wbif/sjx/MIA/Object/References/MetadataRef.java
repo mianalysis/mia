@@ -4,13 +4,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.util.LinkedHashMap;
 
-public class MetadataRef extends Ref implements SpreadsheetWriter {
+public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
     public MetadataRef(NamedNodeMap attributes) {
         super(attributes);
         setAttributesFromXML(attributes);

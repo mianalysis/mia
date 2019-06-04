@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
@@ -218,6 +218,7 @@ public class ComponentFactory {
         c.gridx++;
         paramPanel.add(separator);
 
+//        ExportName moduleName = new ExportName()
         ModuleName moduleName = new ModuleName(activeModule);
         moduleName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         c.gridx++;
@@ -465,7 +466,7 @@ public class ComponentFactory {
 
     }
 
-    private JPanel createExportControls(Ref ref, ExportCheck.Type type) {
+    private JPanel createExportControls(ExportableRef ref, ExportCheck.Type type) {
         ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
@@ -636,7 +637,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createSingleRefControl(Ref ref) {
+    public JPanel createSingleRefControl(ExportableRef ref) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -653,7 +654,7 @@ public class ComponentFactory {
         ExportName exportName = new ExportName(ref);
         exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
-        exportName.setEditable(true);
+//        exportName.setEditable(true);
         exportName.setToolTipText("<html><p width=\"500\">" +ref.getDescription()+"</p></html>");
         exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
@@ -695,7 +696,6 @@ public class ComponentFactory {
         ExportName exportName = new ExportName(ref);
         exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
-        exportName.setEditable(true);
         exportName.setToolTipText("<html><p width=\"500\">" +ref.getDescription()+"</p></html>");
         exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
