@@ -23,7 +23,7 @@ public class MergeObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MergeObjects(null).getHelp());
+        assertNotNull(new MergeObjects(null).getDescription());
     }
 
     @Test

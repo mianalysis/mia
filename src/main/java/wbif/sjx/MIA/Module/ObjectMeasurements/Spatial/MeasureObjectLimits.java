@@ -33,7 +33,7 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Measures the spatial limits of each object in terms of pixels.";
     }
 

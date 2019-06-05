@@ -108,7 +108,7 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Larger label bit depths will require more memory, but will enable more objects " +
                 "\nto be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.";
     }

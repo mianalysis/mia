@@ -22,7 +22,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new BinObjectsByMeasurement(null).getHelp());
+        assertNotNull(new BinObjectsByMeasurement(null).getDescription());
     }
 
     @Test

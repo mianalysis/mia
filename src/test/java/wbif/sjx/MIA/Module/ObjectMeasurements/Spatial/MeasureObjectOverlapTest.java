@@ -21,7 +21,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectOverlap(null).getHelp());
+        assertNotNull(new MeasureObjectOverlap(null).getDescription());
     }
 
     @Test

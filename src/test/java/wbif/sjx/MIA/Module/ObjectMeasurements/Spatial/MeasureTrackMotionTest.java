@@ -23,7 +23,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureTrackMotion(null).getHelp());
+        assertNotNull(new MeasureTrackMotion(null).getDescription());
     }
 
     @Test

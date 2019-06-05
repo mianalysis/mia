@@ -256,7 +256,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

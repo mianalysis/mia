@@ -89,7 +89,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

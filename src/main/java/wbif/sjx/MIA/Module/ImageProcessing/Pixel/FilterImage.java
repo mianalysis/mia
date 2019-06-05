@@ -298,7 +298,7 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "3D median filter currently incompatible with 5D hyperstacks";
     }
 

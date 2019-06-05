@@ -21,7 +21,7 @@ public class MergeChannelsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MergeChannels<>(null).getHelp());
+        assertNotNull(new MergeChannels<>(null).getDescription());
     }
 
     @Test

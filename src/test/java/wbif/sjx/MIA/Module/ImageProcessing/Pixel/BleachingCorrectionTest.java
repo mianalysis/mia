@@ -8,6 +8,6 @@ public class BleachingCorrectionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new BleachingCorrection(null).getHelp());
+        assertNotNull(new BleachingCorrection(null).getDescription());
     }
 }

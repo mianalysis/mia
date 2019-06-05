@@ -19,7 +19,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ConcatenateStacks<>(null).getHelp());
+        assertNotNull(new ConcatenateStacks<>(null).getDescription());
     }
 
 

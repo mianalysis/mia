@@ -8,6 +8,6 @@ public class FillHolesTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FillHoles(null).getHelp());
+        assertNotNull(new FillHoles(null).getDescription());
     }
 }

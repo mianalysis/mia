@@ -206,6 +206,7 @@ public class ComponentFactory {
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
         moduleName.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        moduleName.setForeground(Color.BLUE);
         paramPanel.add(moduleName, c);
 
         JSeparator separator = new JSeparator();
@@ -247,7 +248,7 @@ public class ComponentFactory {
         modulePanel.add(moduleEnabledButton,c);
 
         ModuleTitle title = new ModuleTitle(module);
-        title.setToolTipText("<html><p width=\"500\">" +module.getHelp()+"</p></html>");
+        title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);

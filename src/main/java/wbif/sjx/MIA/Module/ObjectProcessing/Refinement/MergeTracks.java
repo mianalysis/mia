@@ -147,7 +147,7 @@ public class MergeTracks extends Module implements ActionListener {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

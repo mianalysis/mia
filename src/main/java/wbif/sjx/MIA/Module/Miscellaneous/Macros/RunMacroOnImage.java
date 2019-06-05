@@ -1,38 +1,39 @@
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.plugin.Duplicator;
+import ij.measure.ResultsTable;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 
-import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 31/01/2018.
  */
-public class RunMacroOnImage extends Module {
+public class RunMacroOnImage extends CoreMacroRunner {
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String MACRO_SEPARATOR = "Macro definition";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
     public static final String MACRO_FILE = "Macro file";
     public static final String REFRESH_BUTTON = "Refresh parameters";
+    public static final String IMAGE_OUTPUT_SEPARATOR = "Image output";
     public static final String INTERCEPT_OUTPUT_IMAGE = "Intercept output image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
-
+    public static final String OUTPUT_SEPARATOR = "Measurement output";
+    public static final String ADD_INTERCEPTED_MEASUREMENT = "Add intercepted measurement";
+    public static final String MEASUREMENT_HEADING = "Measurement heading";
 
     public interface MacroModes {
         String MACRO_FILE = "Macro file";
@@ -53,7 +54,7 @@ public class RunMacroOnImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -68,6 +69,10 @@ public class RunMacroOnImage extends Module {
         boolean interceptOutputImage = parameters.getValue(INTERCEPT_OUTPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+
+        // Getting a list of measurement headings
+        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
@@ -117,6 +122,18 @@ public class RunMacroOnImage extends Module {
             }
         }
 
+        // Intercepting measurements
+        ResultsTable table = ResultsTable.getResultsTable();
+        for (String expectedMeasurement:expectedMeasurements) {
+            Measurement measurement = interceptMeasurement(table,expectedMeasurement);
+            inputImage.addMeasurement(measurement);
+        }
+
+        // Closing the results table
+        table.reset();
+        Frame resultsFrame = WindowManager.getFrame("Results");
+        if (resultsFrame != null) resultsFrame.dispose();
+
         // Releasing the macro lock
         MIA.setMacroLock(false);
 
@@ -126,15 +143,25 @@ public class RunMacroOnImage extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT,this,true));
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
+
+        parameters.add(new ParamSeparatorP(IMAGE_OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(INTERCEPT_OUTPUT_IMAGE,this,true));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new StringP(MEASUREMENT_HEADING,this));
+        parameters.add(new ParameterGroup(ADD_INTERCEPTED_MEASUREMENT,this,collection));
 
     }
 
@@ -142,11 +169,13 @@ public class RunMacroOnImage extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
         if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
         switch ((String) parameters.getValue(MACRO_MODE)) {
             case MacroModes.MACRO_FILE:
@@ -158,6 +187,7 @@ public class RunMacroOnImage extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(IMAGE_OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INTERCEPT_OUTPUT_IMAGE));
         if (parameters.getValue(INTERCEPT_OUTPUT_IMAGE)) {
             if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
@@ -170,13 +200,31 @@ public class RunMacroOnImage extends Module {
             }
         }
 
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT));
+
         return returnedParameters;
 
     }
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        return null;
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
+        String inputImage = parameters.getValue(INPUT_IMAGE);
+
+        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
+
+        for (String expectedMeasurement:expectedMeasurements) {
+            String fullName = getFullName(expectedMeasurement);
+            ImageMeasurementRef ref = imageMeasurementRefs.getOrPut(fullName);
+            ref.setImageName(inputImage);
+            returnedRefs.add(ref);
+        }
+
+        return returnedRefs;
+
     }
 
     @Override

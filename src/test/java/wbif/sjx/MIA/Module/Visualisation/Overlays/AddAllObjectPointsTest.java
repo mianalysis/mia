@@ -8,6 +8,6 @@ public class AddAllObjectPointsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddAllObjectPoints(null).getHelp());
+        assertNotNull(new AddAllObjectPoints(null).getDescription());
     }
 }

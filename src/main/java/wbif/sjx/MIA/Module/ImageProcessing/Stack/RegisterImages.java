@@ -482,7 +482,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses SIFT image registration toolbox";
     }
 

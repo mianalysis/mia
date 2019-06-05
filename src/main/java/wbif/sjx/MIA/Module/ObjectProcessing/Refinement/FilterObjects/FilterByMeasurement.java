@@ -62,7 +62,7 @@ public class FilterByMeasurement extends CoreFilter {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

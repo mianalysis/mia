@@ -8,6 +8,6 @@ public class WatershedTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new Watershed(null).getHelp());
+        assertNotNull(new Watershed(null).getDescription());
     }
 }

@@ -76,7 +76,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

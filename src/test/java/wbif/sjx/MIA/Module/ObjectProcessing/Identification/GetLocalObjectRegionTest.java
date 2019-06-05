@@ -21,7 +21,7 @@ public class GetLocalObjectRegionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new GetLocalObjectRegion(null).getHelp());
+        assertNotNull(new GetLocalObjectRegion(null).getDescription());
     }
 
     @Test @Ignore

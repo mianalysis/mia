@@ -104,7 +104,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

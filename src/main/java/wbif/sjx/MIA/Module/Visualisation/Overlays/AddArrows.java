@@ -115,7 +115,7 @@ public class AddArrows extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

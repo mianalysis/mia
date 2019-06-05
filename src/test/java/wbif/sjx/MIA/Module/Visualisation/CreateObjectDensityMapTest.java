@@ -8,6 +8,6 @@ public class CreateObjectDensityMapTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CreateObjectDensityMap(null).getHelp());
+        assertNotNull(new CreateObjectDensityMap(null).getDescription());
     }
 }

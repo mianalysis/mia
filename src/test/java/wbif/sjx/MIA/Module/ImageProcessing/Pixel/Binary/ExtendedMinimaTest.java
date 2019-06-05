@@ -8,6 +8,6 @@ public class ExtendedMinimaTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ExtendedMinima(null).getHelp());
+        assertNotNull(new ExtendedMinima(null).getDescription());
     }
 }

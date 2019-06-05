@@ -19,7 +19,7 @@ public class FlipStackTest extends ModuleTest{
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FlipStack<>(null).getHelp());
+        assertNotNull(new FlipStack<>(null).getDescription());
     }
 
 

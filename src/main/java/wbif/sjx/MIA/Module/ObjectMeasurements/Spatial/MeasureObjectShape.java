@@ -85,7 +85,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Ellipsoid fitting using BoneJ.  " +
                 "\nOrientation 1 relative to X-axis, Orientation 2 relative to XY-plane";
     }

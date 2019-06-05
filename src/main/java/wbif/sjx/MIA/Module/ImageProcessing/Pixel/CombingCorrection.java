@@ -28,7 +28,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Applies an integer pixel row shift to every other row (starting with top-most row).";
     }
 

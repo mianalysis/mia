@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 
 public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter {
     private String imageName = "";
+    private String description = "";
 
     public ImageMeasurementRef(NamedNodeMap attributes) {
         super(attributes);
@@ -85,5 +86,14 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
             Workspace workspace = workspaces.get(rowN);
             cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
         }
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -9,6 +9,6 @@ public class InputControlTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new InputControl(null).getHelp());
+        assertNotNull(new InputControl(null).getDescription());
     }
 }

@@ -22,7 +22,7 @@ public class BestFocusSubstackTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new BestFocusSubstack<>(null).getHelp());
+        assertNotNull(new BestFocusSubstack<>(null).getDescription());
     }
 
 

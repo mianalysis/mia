@@ -29,7 +29,7 @@ public class FilterImageTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FilterImage(null).getHelp());
+        assertNotNull(new FilterImage(null).getDescription());
     }
 
 

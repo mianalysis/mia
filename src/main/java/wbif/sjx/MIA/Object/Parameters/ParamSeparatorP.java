@@ -19,7 +19,7 @@ public class ParamSeparatorP extends Parameter {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return null;
     }
 

@@ -14,7 +14,6 @@ import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
-import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunSingleMacroCommand;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -253,7 +252,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone " +
                 "will be processed; however, selecting a folder will cause the system to iterate over all files and " +
                 "sub-folders within that folder.  Each file identified here will initialise its own workspace.  " +

@@ -14,7 +14,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CalculateNearestNeighbour(null).getHelp());
+        assertNotNull(new CalculateNearestNeighbour(null).getDescription());
     }
 
     @Test

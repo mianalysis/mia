@@ -39,7 +39,7 @@ public class StringP extends TextType {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) MIA.getGlobalVariables().convertString(value);
     }
 

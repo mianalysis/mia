@@ -140,7 +140,7 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Loads a saved WEKA classifier model and applies it to the input image.  Returns the " +
                 "\nmulti-channel probability map";
     }

@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 public class RelationshipRef extends SummaryRef {
     private final String parentName;
     private final String childName;
+    private String description = "";
 
 
     public RelationshipRef(NamedNodeMap attributes) {
@@ -50,6 +51,15 @@ public class RelationshipRef extends SummaryRef {
 
     public static String createName(String parent, String child) {
         return parent+" // "+child;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

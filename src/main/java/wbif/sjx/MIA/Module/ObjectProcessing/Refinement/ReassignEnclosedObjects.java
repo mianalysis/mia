@@ -83,7 +83,7 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Objects entirely enclosed by another are reassigned as being the enclosing objects";
     }
 

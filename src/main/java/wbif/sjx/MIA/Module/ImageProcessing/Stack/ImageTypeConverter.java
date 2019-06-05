@@ -158,7 +158,7 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 

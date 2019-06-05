@@ -6,6 +6,7 @@ import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 public class ObjMeasurementRef extends SummaryRef {
     private String objectsName = "";
+    private String description = "";
 
     public ObjMeasurementRef(NamedNodeMap attributes) {
         super(attributes);
@@ -55,5 +56,14 @@ public class ObjMeasurementRef extends SummaryRef {
     public ObjMeasurementRef setObjectsName(String objectsName) {
         this.objectsName = objectsName;
         return this;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

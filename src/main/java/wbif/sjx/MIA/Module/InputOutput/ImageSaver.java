@@ -154,7 +154,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

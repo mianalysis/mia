@@ -39,7 +39,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

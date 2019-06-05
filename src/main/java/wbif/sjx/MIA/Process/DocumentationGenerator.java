@@ -103,7 +103,7 @@ public class DocumentationGenerator {
                 .append("</h1>\r\n");
 
         // Adding the Module summary
-        String helpText = module.getHelp();
+        String helpText = module.getDescription();
         helpText = helpText == null ? "" : helpText;
         sb.append("<h2>Description</h2>\r\n")
                 .append(helpText)

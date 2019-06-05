@@ -33,7 +33,7 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -76,4 +76,12 @@ public class GUISeparator extends Module{
         return null;
     }
 
+    /**
+     * This module is always runnable
+     * @return
+     */
+    @Override
+    public boolean isRunnable() {
+        return true;
+    }
 }

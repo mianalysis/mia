@@ -208,7 +208,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses the RidgeDetection Fiji plugin by Thorsten Wagner, which implements Carsten " +
                 "\nSteger's paper \"An Unbiased Detector of Curvilinear Structures\"" +
                 "\nINCOMPLETE";

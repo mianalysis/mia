@@ -8,6 +8,6 @@ public class PlotMeasurementsScatterTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new PlotMeasurementsScatter(null).getHelp());
+        assertNotNull(new PlotMeasurementsScatter(null).getDescription());
     }
 }

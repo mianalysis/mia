@@ -8,6 +8,6 @@ public class ReassignEnclosedObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ReassignEnclosedObjects(null).getHelp());
+        assertNotNull(new ReassignEnclosedObjects(null).getDescription());
     }
 }

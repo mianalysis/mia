@@ -8,6 +8,6 @@ public class RegisterImagesTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RegisterImages(null).getHelp());
+        assertNotNull(new RegisterImages(null).getDescription());
     }
 }

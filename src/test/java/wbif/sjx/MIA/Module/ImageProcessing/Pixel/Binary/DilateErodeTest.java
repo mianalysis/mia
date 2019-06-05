@@ -8,6 +8,6 @@ public class DilateErodeTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new DilateErode(null).getHelp());
+        assertNotNull(new DilateErode(null).getDescription());
     }
 }

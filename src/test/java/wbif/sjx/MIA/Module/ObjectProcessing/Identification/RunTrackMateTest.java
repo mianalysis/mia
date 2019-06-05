@@ -8,6 +8,6 @@ public class RunTrackMateTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RunTrackMate(null).getHelp());
+        assertNotNull(new RunTrackMate(null).getDescription());
     }
 }

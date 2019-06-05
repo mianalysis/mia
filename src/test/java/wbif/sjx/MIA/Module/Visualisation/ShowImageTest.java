@@ -8,6 +8,6 @@ public class ShowImageTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ShowImage(null).getHelp());
+        assertNotNull(new ShowImage(null).getDescription());
     }
 }

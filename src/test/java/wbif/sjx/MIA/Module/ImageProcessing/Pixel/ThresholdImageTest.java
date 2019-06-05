@@ -26,7 +26,7 @@ public class ThresholdImageTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ThresholdImage(null).getHelp());
+        assertNotNull(new ThresholdImage(null).getDescription());
     }
 
     @Test

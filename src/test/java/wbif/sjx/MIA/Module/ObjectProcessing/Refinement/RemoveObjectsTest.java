@@ -20,7 +20,7 @@ public class RemoveObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RemoveObjects(null).getHelp());
+        assertNotNull(new RemoveObjects(null).getDescription());
     }
 
     @Test

@@ -44,7 +44,7 @@ public abstract class BooleanType extends Parameter {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) (Boolean) selected;
     }
 

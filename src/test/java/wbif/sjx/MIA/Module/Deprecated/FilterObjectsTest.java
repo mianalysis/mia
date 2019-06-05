@@ -28,7 +28,7 @@ public class FilterObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FilterObjects(null).getHelp());
+        assertNotNull(new FilterObjects(null).getDescription());
     }
 
     @Test

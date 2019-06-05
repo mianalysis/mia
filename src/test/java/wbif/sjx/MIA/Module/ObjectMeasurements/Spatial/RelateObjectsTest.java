@@ -32,7 +32,7 @@ public class RelateObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RelateObjects(null).getHelp());
+        assertNotNull(new RelateObjects(null).getDescription());
 
     }
 

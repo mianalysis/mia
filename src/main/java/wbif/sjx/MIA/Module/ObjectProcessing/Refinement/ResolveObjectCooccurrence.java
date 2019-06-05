@@ -211,7 +211,7 @@ public class ResolveObjectCooccurrence extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Identifies overlapping objects and moves them to a new object collection\n"+
                 "Objects are linked on a one-to-one basis.";
     }

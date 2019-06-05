@@ -21,7 +21,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new WekaProbabilityMaps(null).getHelp());
+        assertNotNull(new WekaProbabilityMaps(null).getDescription());
     }
 
     @Test

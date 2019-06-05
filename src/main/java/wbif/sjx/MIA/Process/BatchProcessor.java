@@ -95,13 +95,13 @@ public class BatchProcessor extends FileCrawler {
         OutputControl outputControl = analysis.getModules().getOutputControl();
 
         boolean continuousExport = ((BooleanP) outputControl.getParameter(OutputControl.CONTINUOUS_DATA_EXPORT)).isSelected();
-        int saveNFiles = ((IntegerP) outputControl.getParameter(OutputControl.SAVE_EVERY_N)).getFinalValue();
+        int saveNFiles = ((IntegerP) outputControl.getParameter(OutputControl.SAVE_EVERY_N)).getValue();
         String exportMode = ((ChoiceP) outputControl.getParameter(OutputControl.EXPORT_MODE)).getChoice();
 
         Module.setVerbose(false);
 
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
-        int nSimultaneousJobs = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getFinalValue();
+        int nSimultaneousJobs = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         if (nSimultaneousJobs != 1) {
             int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
             Prefs.setThreads(nThreads);

@@ -8,6 +8,6 @@ public class ExtractObjectEdgesTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ExtractObjectEdges(null).getHelp());
+        assertNotNull(new ExtractObjectEdges(null).getDescription());
     }
 }

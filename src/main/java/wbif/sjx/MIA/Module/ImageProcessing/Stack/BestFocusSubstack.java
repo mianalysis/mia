@@ -429,7 +429,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Extract a Z-substack from an input stack based on either manually-selected slices, " +
                 "or an automatically-calculated best-focus slice.  " +
                 "For automated methods, best focus is determined using the local 2D variance of pixels in each slice.  " +
@@ -578,7 +578,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        imageMeasurementRefs.setAllAvailable(false);
 //
-//        String inputImageName = parameters.getFinalValue(INPUT_IMAGE);
+//        String inputImageName = parameters.getValue(INPUT_IMAGE);
 //
 //        MeasurementRef measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE);
 //        measurementRef.setAvailable(true);

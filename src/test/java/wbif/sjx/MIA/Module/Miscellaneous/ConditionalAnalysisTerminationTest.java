@@ -8,6 +8,6 @@ public class ConditionalAnalysisTerminationTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ConditionalAnalysisTermination(null).getHelp());
+        assertNotNull(new ConditionalAnalysisTermination(null).getDescription());
     }
 }

@@ -83,7 +83,7 @@ public class AnalysisRunner {
 
     public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
         String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
-        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getFinalValue();
+        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
         String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
         String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
         String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);

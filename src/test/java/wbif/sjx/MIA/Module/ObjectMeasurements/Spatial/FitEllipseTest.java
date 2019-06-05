@@ -8,6 +8,6 @@ public class FitEllipseTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FitEllipse(null).getHelp());
+        assertNotNull(new FitEllipse(null).getDescription());
     }
 }

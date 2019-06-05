@@ -65,7 +65,7 @@ public class GlobalVariables extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

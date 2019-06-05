@@ -25,7 +25,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectCentroid(null).getHelp());
+        assertNotNull(new MeasureObjectCentroid(null).getDescription());
 
     }
 

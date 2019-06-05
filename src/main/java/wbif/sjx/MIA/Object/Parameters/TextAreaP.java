@@ -43,7 +43,7 @@ public class TextAreaP extends TextType {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) value;
     }
 

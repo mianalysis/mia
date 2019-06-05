@@ -32,7 +32,7 @@ public class ImageLoaderTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageLoader(null).getHelp());
+        assertNotNull(new ImageLoader(null).getDescription());
 
     }
 

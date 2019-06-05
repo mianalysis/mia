@@ -32,7 +32,7 @@ public abstract class FileFolderType extends Parameter {
     public abstract boolean isDirectory();
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) path;
     }
 
@@ -48,6 +48,9 @@ public abstract class FileFolderType extends Parameter {
 
     @Override
     public boolean verify() {
+        // Checking a file has been specified
+        if (path == null || path.equals("")) return false;
+
         // Checking the file exists
         return new File(path).exists();
     }

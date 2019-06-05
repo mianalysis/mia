@@ -35,7 +35,7 @@ public class ConvertStackToTimeseries extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Checks if there is only 1 frame, but multiple Z-sections.  " +
                 "In this case, the Z and T ordering will be switched";
     }

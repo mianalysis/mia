@@ -26,7 +26,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "This module duplicates an image into another, existing, image.  " +
                 "\nThis is useful when dealing with optional modules, where a specific input is required later on.";
     }

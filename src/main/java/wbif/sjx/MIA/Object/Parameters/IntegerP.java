@@ -58,7 +58,7 @@ public class IntegerP extends TextType {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) (Integer) Integer.parseInt(MIA.getGlobalVariables().convertString(value));
     }
 

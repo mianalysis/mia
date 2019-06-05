@@ -45,8 +45,6 @@ public abstract class Module extends Ref implements Comparable {
 
     public abstract String getPackageName();
 
-    public abstract String getHelp();
-
     protected abstract boolean process(Workspace workspace);
 
     public boolean execute(Workspace workspace) {
@@ -134,7 +132,7 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public <T> T getParameterValue(String name) {
-        return parameters.getParameter(name).getFinalValue();
+        return parameters.getParameter(name).getValue();
     }
 
     public void setParameterVisibility(String name, boolean visible) {
@@ -171,6 +169,14 @@ public abstract class Module extends Ref implements Comparable {
 
         return parameters;
 
+    }
+
+    public ModuleCollection getModules() {
+        return modules;
+    }
+
+    public void setModules(ModuleCollection modules) {
+        this.modules = modules;
     }
 
     // PRIVATE METHODS

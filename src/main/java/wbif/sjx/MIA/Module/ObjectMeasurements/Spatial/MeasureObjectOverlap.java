@@ -66,7 +66,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

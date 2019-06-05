@@ -28,7 +28,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectCurvature(null).getHelp());
+        assertNotNull(new MeasureObjectCurvature(null).getDescription());
     }
 
     @Test

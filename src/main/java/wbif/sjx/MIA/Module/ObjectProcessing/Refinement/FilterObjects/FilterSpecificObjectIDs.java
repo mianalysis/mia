@@ -145,7 +145,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

@@ -34,7 +34,7 @@ public class BleachingCorrection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses the Fiji bleaching correction plugin (by Kota Miura)";
     }
 

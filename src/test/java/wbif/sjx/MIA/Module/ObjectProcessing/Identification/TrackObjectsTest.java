@@ -8,6 +8,6 @@ public class TrackObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new TrackObjects(null).getHelp());
+        assertNotNull(new TrackObjects(null).getDescription());
     }
 }

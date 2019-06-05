@@ -152,7 +152,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Clusters objects using K-Means and/or DB-SCAN algorithms." +
                 "\nUses Apache Commons Math library for clustering.";
 

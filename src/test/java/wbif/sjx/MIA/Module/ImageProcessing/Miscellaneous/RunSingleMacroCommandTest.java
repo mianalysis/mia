@@ -9,7 +9,7 @@ public class RunSingleMacroCommandTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RunSingleMacroCommand(null).getHelp());
+        assertNotNull(new RunSingleMacroCommand(null).getDescription());
     }
 
 }

@@ -38,7 +38,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

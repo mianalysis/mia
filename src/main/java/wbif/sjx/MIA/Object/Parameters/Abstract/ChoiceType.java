@@ -36,7 +36,7 @@ public abstract class ChoiceType extends Parameter {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) choice;
     }
 

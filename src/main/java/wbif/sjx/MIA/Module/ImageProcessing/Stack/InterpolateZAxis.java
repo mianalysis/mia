@@ -46,7 +46,7 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Interpolates Z-axis of image to match XY spatial calibration";
     }
 

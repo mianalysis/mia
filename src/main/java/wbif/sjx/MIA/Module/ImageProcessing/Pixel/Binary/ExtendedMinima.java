@@ -114,7 +114,7 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

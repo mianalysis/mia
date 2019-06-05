@@ -32,7 +32,7 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Removes the specified image from the workspace.  This helps keep memory usage down";
     }
 

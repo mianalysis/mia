@@ -8,6 +8,6 @@ public class PlotKymographTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new PlotKymograph(null).getHelp());
+        assertNotNull(new PlotKymograph(null).getDescription());
     }
 }

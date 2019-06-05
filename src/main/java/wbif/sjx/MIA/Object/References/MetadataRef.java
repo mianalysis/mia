@@ -11,6 +11,8 @@ import wbif.sjx.MIA.Object.Workspace;
 import java.util.LinkedHashMap;
 
 public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
+    private String description = "";
+
     public MetadataRef(NamedNodeMap attributes) {
         super(attributes);
         setAttributesFromXML(attributes);
@@ -40,5 +42,14 @@ public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
             Workspace workspace = workspaces.get(rowN);
             cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
         }
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

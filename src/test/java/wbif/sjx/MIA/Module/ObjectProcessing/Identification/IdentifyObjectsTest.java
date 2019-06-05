@@ -33,7 +33,7 @@ public class IdentifyObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new IdentifyObjects(null).getHelp());
+        assertNotNull(new IdentifyObjects(null).getDescription());
     }
 
     @Test

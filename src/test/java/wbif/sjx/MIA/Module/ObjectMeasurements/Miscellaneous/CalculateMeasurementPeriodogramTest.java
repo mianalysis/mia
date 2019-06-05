@@ -8,6 +8,6 @@ public class CalculateMeasurementPeriodogramTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CalculateMeasurementPeriodogram(null).getHelp());
+        assertNotNull(new CalculateMeasurementPeriodogram(null).getDescription());
     }
 }

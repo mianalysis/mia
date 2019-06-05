@@ -12,6 +12,6 @@ public class OutputControlTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new OutputControl(null).getHelp());
+        assertNotNull(new OutputControl(null).getDescription());
     }
 }

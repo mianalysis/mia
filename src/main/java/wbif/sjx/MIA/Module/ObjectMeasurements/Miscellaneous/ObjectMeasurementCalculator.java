@@ -83,7 +83,7 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

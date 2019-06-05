@@ -55,7 +55,7 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Z-coordinates are specified in terms of slices (not pixels)";
     }
 

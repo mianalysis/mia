@@ -85,7 +85,7 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Expects black objects on a white background." +
                 "\nPerforms 2D fill holes, dilate and erode using ImageJ functions.";
 

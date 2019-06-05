@@ -8,6 +8,6 @@ public class MeasureSpotIntensityTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureSpotIntensity(null).getHelp());
+        assertNotNull(new MeasureSpotIntensity(null).getDescription());
     }
 }

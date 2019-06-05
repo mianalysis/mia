@@ -8,6 +8,6 @@ public class CreateOrthogonalViewTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CreateOrthogonalView<>(null).getHelp());
+        assertNotNull(new CreateOrthogonalView<>(null).getDescription());
     }
 }

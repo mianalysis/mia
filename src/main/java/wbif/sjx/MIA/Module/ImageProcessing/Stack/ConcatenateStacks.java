@@ -281,7 +281,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

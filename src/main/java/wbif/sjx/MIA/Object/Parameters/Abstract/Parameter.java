@@ -10,6 +10,7 @@ public abstract class Parameter extends Ref {
     private boolean visible = false;
     private boolean valid = true;
     private boolean exported = true;
+    private String description = "";
 
 
     // CONSTRUCTORS
@@ -20,8 +21,9 @@ public abstract class Parameter extends Ref {
     }
 
     public Parameter(String name, Module module, String description) {
-        super(name,description);
+        super(name);
         this.module = module;
+        this.description = description;
     }
 
 
@@ -29,7 +31,7 @@ public abstract class Parameter extends Ref {
 
     protected abstract ParameterControl initialiseControl();
 
-    public abstract <T> T getFinalValue();
+    public abstract <T> T getValue();
 
     public abstract <T> void setValue(T value);
 
@@ -81,5 +83,14 @@ public abstract class Parameter extends Ref {
 
     public void setExported(boolean exported) {
         this.exported = exported;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

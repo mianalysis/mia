@@ -101,7 +101,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Calculates PCC, averaged across all timepoints and channels.";
     }
 

@@ -32,7 +32,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

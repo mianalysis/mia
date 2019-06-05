@@ -21,7 +21,7 @@ public class CropImageTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CropImage<>(null).getHelp());
+        assertNotNull(new CropImage<>(null).getDescription());
     }
 
     @Test

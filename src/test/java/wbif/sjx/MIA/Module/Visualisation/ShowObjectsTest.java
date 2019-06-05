@@ -31,7 +31,7 @@ public class ShowObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ConvertObjectsToImage(null).getHelp());
+        assertNotNull(new ConvertObjectsToImage(null).getDescription());
 
     }
 

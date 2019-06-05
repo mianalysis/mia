@@ -38,7 +38,7 @@ public class FilterByChildren extends CoreFilter {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

@@ -8,6 +8,6 @@ public class VideoLoaderTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new VideoLoader(null).getHelp());
+        assertNotNull(new VideoLoader(null).getDescription());
     }
 }

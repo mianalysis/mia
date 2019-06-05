@@ -11,6 +11,6 @@ public class AddFromPositionMeasurementTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddFromPositionMeasurement(null).getHelp());
+        assertNotNull(new AddFromPositionMeasurement(null).getDescription());
     }
 }

@@ -33,7 +33,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by the ExtractSubstack Module.  It will " +
                 "be removed in a future release.\r\n" +
                 "Extracts a single channel from a stack.";

@@ -8,6 +8,6 @@ public class ColourDeconvolutionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ColourDeconvolution(null).getHelp());
+        assertNotNull(new ColourDeconvolution(null).getDescription());
     }
 }

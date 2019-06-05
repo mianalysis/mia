@@ -8,6 +8,6 @@ public class CalculateStatsForChildrenTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new CalculateStatsForChildren(null).getHelp());
+        assertNotNull(new CalculateStatsForChildren(null).getDescription());
     }
 }

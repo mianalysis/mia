@@ -8,6 +8,6 @@ public class SetLookupTableTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new SetLookupTable(null).getHelp());
+        assertNotNull(new SetLookupTable(null).getDescription());
     }
 }

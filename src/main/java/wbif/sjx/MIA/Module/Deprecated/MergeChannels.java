@@ -230,7 +230,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will " +
                 "be removed in a future release.\r\n" +
                 "Combines image stacks as different channels.  Output is automatically converted to a composite image.";

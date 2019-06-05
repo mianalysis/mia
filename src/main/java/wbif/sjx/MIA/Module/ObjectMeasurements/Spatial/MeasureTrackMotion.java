@@ -369,7 +369,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

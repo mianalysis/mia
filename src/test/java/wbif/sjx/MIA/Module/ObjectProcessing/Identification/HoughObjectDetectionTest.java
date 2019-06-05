@@ -8,6 +8,6 @@ public class HoughObjectDetectionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new HoughObjectDetection(null).getHelp());
+        assertNotNull(new HoughObjectDetection(null).getDescription());
     }
 }

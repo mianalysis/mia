@@ -114,7 +114,7 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return  "Takes a binary image and uses connected components labelling to create objects" +
                 "\nUses MorphoLibJ to perform connected components labelling in 3D. " +
                 "\n\nLarger label bit depths will require more memory, but will enable more objects " +

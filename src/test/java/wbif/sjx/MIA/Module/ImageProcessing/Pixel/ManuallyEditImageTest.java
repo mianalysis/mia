@@ -8,6 +8,6 @@ public class ManuallyEditImageTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ManuallyEditImage(null).getHelp());
+        assertNotNull(new ManuallyEditImage(null).getDescription());
     }
 }

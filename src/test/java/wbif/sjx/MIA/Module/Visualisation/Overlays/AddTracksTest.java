@@ -11,6 +11,6 @@ public class AddTracksTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddTracks(null).getHelp());
+        assertNotNull(new AddTracks(null).getDescription());
     }
 }

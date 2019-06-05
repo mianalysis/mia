@@ -155,7 +155,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

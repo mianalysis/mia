@@ -63,7 +63,7 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 

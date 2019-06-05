@@ -50,7 +50,7 @@ public class FilterWithWithoutMeasurement extends CoreFilter {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

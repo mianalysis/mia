@@ -12,7 +12,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FilterWithWithoutParent(null).getHelp());
+        assertNotNull(new FilterWithWithoutParent(null).getDescription());
     }
 
     @Test

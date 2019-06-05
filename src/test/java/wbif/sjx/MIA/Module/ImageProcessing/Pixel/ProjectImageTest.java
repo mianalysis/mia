@@ -21,7 +21,7 @@ public class ProjectImageTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ProjectImage(null).getHelp());
+        assertNotNull(new ProjectImage(null).getDescription());
     }
 
     @Test

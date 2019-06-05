@@ -217,7 +217,7 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

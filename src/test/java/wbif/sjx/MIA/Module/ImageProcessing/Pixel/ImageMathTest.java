@@ -22,7 +22,7 @@ public class ImageMathTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageMath(null).getHelp());
+        assertNotNull(new ImageMath(null).getDescription());
     }
 
     @Test

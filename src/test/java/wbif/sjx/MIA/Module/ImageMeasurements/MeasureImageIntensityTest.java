@@ -24,7 +24,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureImageIntensity(null).getHelp());
+        assertNotNull(new MeasureImageIntensity(null).getDescription());
     }
 
     @Test

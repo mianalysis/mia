@@ -44,7 +44,7 @@ public class ParentObjectsP extends ChoiceType {
     public String[] getChoices() {
         if (childObjectsName == null) return null;
 
-        ModuleCollection modules = GUI.getModules();
+        ModuleCollection modules = module.getModules();
         RelationshipRefCollection relationships = modules.getRelationshipRefs(module);
         return relationships.getParentNames(childObjectsName,true);
 

@@ -20,7 +20,7 @@ public class MeasureIntensityDistributionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureIntensityDistribution(null).getHelp());
+        assertNotNull(new MeasureIntensityDistribution(null).getDescription());
     }
 
     @Test @Ignore

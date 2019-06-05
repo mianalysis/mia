@@ -96,7 +96,7 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

@@ -8,6 +8,6 @@ public class RidgeDetectionTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new RidgeDetection(null).getHelp());
+        assertNotNull(new RidgeDetection(null).getDescription());
     }
 }

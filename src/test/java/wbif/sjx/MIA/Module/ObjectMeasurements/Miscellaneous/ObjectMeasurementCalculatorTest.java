@@ -11,6 +11,6 @@ public class ObjectMeasurementCalculatorTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ObjectMeasurementCalculator(null).getHelp());
+        assertNotNull(new ObjectMeasurementCalculator(null).getDescription());
     }
 }

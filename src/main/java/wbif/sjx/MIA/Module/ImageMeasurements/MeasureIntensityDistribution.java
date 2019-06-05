@@ -399,7 +399,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "CURRENTLY ONLY WORKS IN 3D";
     }
 

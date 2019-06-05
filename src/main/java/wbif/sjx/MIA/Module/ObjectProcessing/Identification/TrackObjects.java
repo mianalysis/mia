@@ -480,7 +480,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses Munkres Assignment Algorithm implementation from Apache HBase library" +
                 "\nLeading point currently only works in 2D";
     }

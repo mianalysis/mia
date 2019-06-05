@@ -27,7 +27,7 @@ public class ImageSaverTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new ImageSaver(null).getHelp());
+        assertNotNull(new ImageSaver(null).getDescription());
     }
 
     @Test

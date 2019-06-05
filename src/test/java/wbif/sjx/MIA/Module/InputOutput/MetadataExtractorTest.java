@@ -20,7 +20,7 @@ public class MetadataExtractorTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MetadataExtractor(null).getHelp());
+        assertNotNull(new MetadataExtractor(null).getDescription());
     }
 
     @Test

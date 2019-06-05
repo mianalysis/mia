@@ -8,6 +8,6 @@ public class MeasureImageTextureTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureImageTexture(null).getHelp());
+        assertNotNull(new MeasureImageTexture(null).getDescription());
     }
 }

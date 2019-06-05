@@ -60,6 +60,6 @@ public class MeasureObjectColocalisationTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectColocalisation(null).getHelp());
+        assertNotNull(new MeasureObjectColocalisation(null).getDescription());
     }
 }

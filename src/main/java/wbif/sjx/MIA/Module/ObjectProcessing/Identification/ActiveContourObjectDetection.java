@@ -57,7 +57,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

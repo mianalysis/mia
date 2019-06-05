@@ -11,6 +11,6 @@ public class AddLabelsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new AddLabels(null).getHelp());
+        assertNotNull(new AddLabels(null).getDescription());
     }
 }

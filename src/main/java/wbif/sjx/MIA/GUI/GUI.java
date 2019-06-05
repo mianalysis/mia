@@ -95,6 +95,10 @@ public class GUI {
 
         updatePanel();
 
+        AnalysisTester.testModules(analysis.modules);
+        updateModules();
+        updateParameters();
+
     }
 
     private static void initialiseMenuBar() {
@@ -233,7 +237,7 @@ public class GUI {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getFinalValue();
+        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
         if (inputPath == null) return;
