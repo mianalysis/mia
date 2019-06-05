@@ -55,7 +55,7 @@ public class TrackObjects extends Module {
     public static final String ORIENTATION_MODE = "Orientation mode";
 
     public TrackObjects(ModuleCollection modules) {
-        super(modules);
+        super("Track objects",modules);
     }
 
 
@@ -475,17 +475,12 @@ public class TrackObjects extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Track objects";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses Munkres Assignment Algorithm implementation from Apache HBase library" +
                 "\nLeading point currently only works in 2D";
     }

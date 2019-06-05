@@ -29,7 +29,7 @@ public class ColourDeconvolution extends Module {
     public static final String STAIN_MODEL = "Stain model";
 
     public ColourDeconvolution(ModuleCollection modules) {
-        super(modules);
+        super("Colour deconvolution",modules);
     }
 
 
@@ -122,17 +122,12 @@ public class ColourDeconvolution extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Colour deconvolution";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

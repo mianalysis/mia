@@ -25,13 +25,9 @@ public class ConvertStackToTimeseries extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public ConvertStackToTimeseries(ModuleCollection modules) {
-        super(modules);
+        super("Convert stack to timeseries",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Convert stack to timeseries";
-    }
 
     @Override
     public String getPackageName() {
@@ -39,7 +35,7 @@ public class ConvertStackToTimeseries extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Checks if there is only 1 frame, but multiple Z-sections.  " +
                 "In this case, the Z and T ordering will be switched";
     }

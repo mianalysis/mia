@@ -27,7 +27,7 @@ public class ImageTypeConverter extends Module {
     public static final String SCALING_MODE = "Scaling mode";
 
     public ImageTypeConverter(ModuleCollection modules) {
-        super(modules);
+        super("Image type converter",modules);
     }
 
 
@@ -151,10 +151,6 @@ public class ImageTypeConverter extends Module {
         imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
     }
 
-    @Override
-    public String getTitle() {
-        return "Image type converter";
-    }
 
     @Override
     public String getPackageName() {
@@ -162,7 +158,7 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 

@@ -29,7 +29,7 @@ public class FocusStack extends Module {
     public static final String SHOW_HEIGHT_IMAGE = "Show height image";
 
     public FocusStack(ModuleCollection modules) {
-        super(modules);
+        super("Focus stack",modules);
     }
 
 
@@ -132,17 +132,12 @@ public class FocusStack extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Focus stack";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Channels will be focused individually.\n" +
                 "Uses the StackFocuser plugin created by Mikhail Umorin.\n" +
                 "Source downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2018";

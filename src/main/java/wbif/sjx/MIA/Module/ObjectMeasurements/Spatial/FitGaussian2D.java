@@ -39,7 +39,7 @@ public class FitGaussian2D extends Module {
     public static final String APPLY_VOLUME = "Apply volume";
 
     public FitGaussian2D(ModuleCollection modules) {
-        super(modules);
+        super("Fit Gaussian 2D",modules);
     }
 
     public interface RadiusModes {
@@ -73,17 +73,12 @@ public class FitGaussian2D extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Fit Gaussian 2D";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Gaussian spot fitting.  Can take objects as estimated locations." +
                 "\n***Only works in 2D***" +
                 "\n***Only works for refinement of existing spots***";

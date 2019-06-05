@@ -43,7 +43,7 @@ public class MeasureObjectIntensity extends Module {
     public static final String NUMBER_OF_MEASUREMENTS = "Number of measurements";
 
     public MeasureObjectIntensity(ModuleCollection modules) {
-        super(modules);
+        super("Measure object intensity",modules);
     }
 
     public interface Measurements {
@@ -249,11 +249,6 @@ public class MeasureObjectIntensity extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure object intensity";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -261,7 +256,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

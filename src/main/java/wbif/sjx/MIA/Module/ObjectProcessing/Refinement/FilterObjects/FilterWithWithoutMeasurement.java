@@ -19,7 +19,7 @@ public class FilterWithWithoutMeasurement extends CoreFilter {
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterWithWithoutMeasurement(ModuleCollection modules) {
-        super(modules);
+        super("With / without measurement",modules);
     }
 
 
@@ -45,17 +45,12 @@ public class FilterWithWithoutMeasurement extends CoreFilter {
 
 
     @Override
-    public String getTitle() {
-        return "With / without measurement";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

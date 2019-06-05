@@ -30,7 +30,7 @@ public class RemoveParameters extends Parameter {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return null;
     }
 

@@ -11,7 +11,8 @@ import java.awt.event.FocusListener;
 public class TextAreaParameter extends ParameterControl implements FocusListener {
     protected TextAreaP parameter;
     protected JPanel control;
-    protected JEditorPane textArea;
+    private  JEditorPane textArea;
+    private JScrollPane objectsScrollPane;
 
     public TextAreaParameter(TextAreaP parameter) {
         this.parameter = parameter;
@@ -31,11 +32,12 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         textArea.setText(parameter.getRawStringValue());
         textArea.addFocusListener(this);
 
-        JScrollPane objectsScrollPane = new JScrollPane(textArea);
-        control.setPreferredSize(new Dimension(0,150));
+        objectsScrollPane = new JScrollPane(textArea);
+        control.setPreferredSize(new Dimension(0,250));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        objectsScrollPane.getVerticalScrollBar().setValue(0);
         control.add(objectsScrollPane,c);
 
     }
@@ -53,6 +55,8 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
     public void updateControl() {
         textArea.setText(parameter.getRawStringValue());
         textArea.repaint();
+        objectsScrollPane.getVerticalScrollBar().setValue(0);
+
     }
 
     @Override

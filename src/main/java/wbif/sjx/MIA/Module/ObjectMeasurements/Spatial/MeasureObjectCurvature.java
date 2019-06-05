@@ -42,7 +42,7 @@ public class MeasureObjectCurvature extends Module {
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
     public MeasureObjectCurvature(ModuleCollection modules) {
-        super(modules);
+        super("Measure object curvature",modules);
     }
 
     interface SplineFittingMethods {
@@ -297,10 +297,6 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure object curvature";
-    }
 
     @Override
     public String getPackageName() {
@@ -308,7 +304,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

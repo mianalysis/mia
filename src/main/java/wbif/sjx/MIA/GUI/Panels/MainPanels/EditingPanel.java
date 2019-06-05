@@ -243,7 +243,7 @@ public class EditingPanel extends MainPanel {
                     Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                     Module module = (Module) constructor.newInstance(moduleCollection);
                     String packageName = module.getPackageName();
-                    String moduleName = module.getTitle();
+                    String moduleName = module.getName();
                     modules.put(packageName+moduleName, module);
 
                 }
@@ -382,7 +382,9 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void updateModuleStates() {
+        inputPanel.updateButtonState();
         modulesPanel.updateButtonStates();
+        outputPanel.updateButtonState();
     }
 
     @Override

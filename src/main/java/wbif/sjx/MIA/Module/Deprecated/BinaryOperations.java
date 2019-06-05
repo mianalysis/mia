@@ -47,7 +47,7 @@ public class BinaryOperations extends Module {
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public BinaryOperations(ModuleCollection modules) {
-        super(modules);
+        super("Binary operations (legacy)",modules);
     }
 
     public interface OperationModes {
@@ -305,10 +305,6 @@ public class BinaryOperations extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Binary operations (legacy)";
-    }
 
     @Override
     public String getPackageName() {
@@ -316,7 +312,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
                 "be removed in a future release.\r\n";
 

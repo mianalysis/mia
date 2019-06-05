@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class BleachingCorrectionTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new BleachingCorrection(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new BleachingCorrection(null).getHelp());
+        assertNotNull(new BleachingCorrection(null).getDescription());
     }
 }

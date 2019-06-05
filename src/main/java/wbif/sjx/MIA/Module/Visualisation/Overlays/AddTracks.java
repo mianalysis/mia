@@ -49,7 +49,7 @@ public class AddTracks extends Module {
     private ColourServer colourServer;
 
     public AddTracks(ModuleCollection modules) {
-        super(modules);
+        super("Add tracks",modules);
     }
 
 
@@ -102,17 +102,12 @@ public class AddTracks extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Add tracks";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

@@ -22,13 +22,9 @@ public class RemoveImage extends Module {
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
     public RemoveImage(ModuleCollection modules) {
-        super(modules);
+        super("Remove image",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Remove image";
-    }
 
     @Override
     public String getPackageName() {
@@ -36,7 +32,7 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Removes the specified image from the workspace.  This helps keep memory usage down";
     }
 

@@ -22,13 +22,8 @@ public class MergeObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MergeObjects(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MergeObjects(null).getHelp());
+        assertNotNull(new MergeObjects(null).getDescription());
     }
 
     @Test

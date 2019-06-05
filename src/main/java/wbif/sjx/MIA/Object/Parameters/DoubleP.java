@@ -64,7 +64,7 @@ public class DoubleP extends TextType {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) (Double) Double.parseDouble(MIA.getGlobalVariables().convertString(value));
     }
 

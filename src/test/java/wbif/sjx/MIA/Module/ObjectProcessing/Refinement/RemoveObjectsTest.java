@@ -19,13 +19,8 @@ public class RemoveObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new RemoveObjects(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new RemoveObjects(null).getHelp());
+        assertNotNull(new RemoveObjects(null).getDescription());
     }
 
     @Test

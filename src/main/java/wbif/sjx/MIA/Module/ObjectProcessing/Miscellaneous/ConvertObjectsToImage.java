@@ -34,7 +34,7 @@ public class ConvertObjectsToImage extends Module {
     public static final String MEASUREMENT = "Measurement";
 
     public ConvertObjectsToImage(ModuleCollection modules) {
-        super(modules);
+        super("Convert objects to image",modules);
     }
 
     public interface ConversionModes {
@@ -47,10 +47,6 @@ public class ConvertObjectsToImage extends Module {
 
     public interface ColourModes extends ObjCollection.ColourModes  {}
 
-    @Override
-    public String getTitle() {
-        return "Convert objects to image";
-    }
 
     @Override
     public String getPackageName() {
@@ -58,7 +54,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

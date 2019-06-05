@@ -26,7 +26,7 @@ public class SetLookupTable extends Module {
     public static final String DISPLAY_MODE = "Display mode";
 
     public SetLookupTable(ModuleCollection modules) {
-        super(modules);
+        super("Set lookup table",modules);
     }
 
 
@@ -113,6 +113,12 @@ public class SetLookupTable extends Module {
     }
 
     public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
+        // Single channel images shouldn't be set to composite
+        if (inputImage.getImagePlus().getNChannels() == 1) {
+            inputImage.getImagePlus().setLut(lut);
+            return;
+        }
+
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
                 for (int c=1;c<=inputImage.getImagePlus().getNChannels();c++) {
@@ -128,17 +134,12 @@ public class SetLookupTable extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Set lookup table";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

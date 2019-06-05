@@ -12,7 +12,7 @@ public class MeasureImageDimensions extends Module {
     public final static String INPUT_IMAGE = "Input image";
 
     public MeasureImageDimensions(ModuleCollection modules) {
-        super(modules);
+        super("Measure image dimensions",modules);
     }
 
 
@@ -32,10 +32,6 @@ public class MeasureImageDimensions extends Module {
         return Units.replace("DIMENSIONS // "+measurement);
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure image dimensions";
-    }
 
     @Override
     public String getPackageName() {
@@ -43,7 +39,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

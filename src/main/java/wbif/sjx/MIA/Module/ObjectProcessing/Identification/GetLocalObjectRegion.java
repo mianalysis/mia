@@ -25,7 +25,7 @@ public class GetLocalObjectRegion extends Module {
     public static final String MEASUREMENT_NAME = "Measurement name";
 
     public GetLocalObjectRegion(ModuleCollection modules) {
-        super(modules);
+        super("Get local object region",modules);
     }
 
 
@@ -149,11 +149,6 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Get local object region";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -161,7 +156,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

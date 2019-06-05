@@ -39,7 +39,7 @@ public class ThresholdImage extends Module {
     public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
 
     public ThresholdImage(ModuleCollection modules) {
-        super(modules);
+        super("Threshold image",modules);
     }
 
 
@@ -204,17 +204,12 @@ public class ThresholdImage extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Threshold image";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

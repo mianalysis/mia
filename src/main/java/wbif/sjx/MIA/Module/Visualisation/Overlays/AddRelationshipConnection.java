@@ -47,7 +47,7 @@ public class AddRelationshipConnection extends Module {
     private ColourServer colourServer;
 
     public AddRelationshipConnection(ModuleCollection modules) {
-        super(modules);
+        super("Add relationship connection",modules);
     }
 
 
@@ -123,10 +123,6 @@ public class AddRelationshipConnection extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Add relationship connection";
-    }
 
     @Override
     public String getPackageName() {
@@ -134,7 +130,7 @@ public class AddRelationshipConnection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

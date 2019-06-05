@@ -33,7 +33,7 @@ public class OutputControl extends Module {
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
 
     public OutputControl(ModuleCollection modules) {
-        super(modules);
+        super("Output control",modules);
     }
 
 
@@ -83,17 +83,12 @@ public class OutputControl extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Output control";
-    }
-
-    @Override
     public String getPackageName() {
         return "Hidden";
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

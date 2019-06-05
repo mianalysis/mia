@@ -47,14 +47,9 @@ public class ActiveContourObjectDetection extends Module {
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
     public ActiveContourObjectDetection(ModuleCollection modules) {
-        super(modules);
+        super("Active contour-based detection",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Active contour-based detection";
-    }
 
     @Override
     public String getPackageName() {
@@ -62,7 +57,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

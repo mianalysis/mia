@@ -33,7 +33,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
     public ApplyOffsetCorrection(ModuleCollection modules) {
-        super(modules);
+        super("Apply offset correction",modules);
     }
 
 
@@ -108,17 +108,12 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public String getTitle() {
-        return "Apply offset correction";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

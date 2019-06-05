@@ -48,7 +48,7 @@ public class ObjectClusterer extends Module {
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
     public ObjectClusterer(ModuleCollection modules) {
-        super(modules);
+        super("Object clustering",modules);
     }
 
     public interface ClusteringAlgorithms {
@@ -145,11 +145,6 @@ public class ObjectClusterer extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Object clustering";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -157,7 +152,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Clusters objects using K-Means and/or DB-SCAN algorithms." +
                 "\nUses Apache Commons Math library for clustering.";
 

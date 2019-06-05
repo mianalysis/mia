@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class CreateOrthogonalViewTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CreateOrthogonalView<>(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new CreateOrthogonalView<>(null).getHelp());
+        assertNotNull(new CreateOrthogonalView<>(null).getDescription());
     }
 }

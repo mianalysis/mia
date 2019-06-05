@@ -38,7 +38,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
     public MergeChannels(ModuleCollection modules) {
-        super(modules);
+        super("Merge channels",modules);
     }
 
 
@@ -225,17 +225,12 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public String getTitle() {
-        return "Merge channels";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will " +
                 "be removed in a future release.\r\n" +
                 "Combines image stacks as different channels.  Output is automatically converted to a composite image.";

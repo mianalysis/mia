@@ -35,7 +35,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     public static final String INPUT_OBJECTS = "Input objects";
 
     public CreateOrthogonalView(ModuleCollection modules) {
-        super(modules);
+        super("Create orthogonal view",modules);
     }
 
 
@@ -99,17 +99,12 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
 
     @Override
-    public String getTitle() {
-        return "Create orthogonal view";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

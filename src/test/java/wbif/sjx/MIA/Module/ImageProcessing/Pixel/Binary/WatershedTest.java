@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class WatershedTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new Watershed(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new Watershed(null).getHelp());
+        assertNotNull(new Watershed(null).getDescription());
     }
 }

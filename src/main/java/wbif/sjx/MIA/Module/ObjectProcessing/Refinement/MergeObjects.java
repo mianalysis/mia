@@ -26,14 +26,9 @@ public class MergeObjects extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
     public MergeObjects(ModuleCollection modules) {
-        super(modules);
+        super("Merge objects",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Merge objects";
-    }
 
     @Override
     public String getPackageName() {
@@ -41,7 +36,7 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

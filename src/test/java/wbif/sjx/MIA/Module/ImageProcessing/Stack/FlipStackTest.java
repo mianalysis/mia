@@ -16,14 +16,10 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 07/03/2019.
  */
 public class FlipStackTest extends ModuleTest{
-    @Override
-    public void testGetTitle() {
-        assertNotNull(new FlipStack<>(null).getTitle());
-    }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FlipStack<>(null).getHelp());
+        assertNotNull(new FlipStack<>(null).getDescription());
     }
 
 

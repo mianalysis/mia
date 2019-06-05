@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class CombingCorrectionTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CombingCorrection(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new CombingCorrection(null).getHelp());
+        assertNotNull(new CombingCorrection(null).getDescription());
     }
 }

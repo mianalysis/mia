@@ -17,7 +17,7 @@ public abstract class ObjectNamesType extends ChoiceType {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> objects = GUI.getModules().getAvailableObjects(module);
+        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module);
         return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
     }
 }

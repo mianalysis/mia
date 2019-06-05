@@ -48,7 +48,7 @@ public class MetadataExtractor extends Module {
     public static final String REFRESH_BUTTON = "Refresh parameters";
 
     public MetadataExtractor(ModuleCollection modules) {
-        super(modules);
+        super("Extract metadata",modules);
     }
 
 
@@ -239,27 +239,20 @@ public class MetadataExtractor extends Module {
         NameExtractor extractor = new GenericExtractor(pattern,groups);
         extractor.extract(metadata,exampleString);
 
-        StringBuilder stringBuilder = new StringBuilder("<html>");
+        StringBuilder stringBuilder = new StringBuilder();
         for (String group:groups) {
             String value = metadata.getAsString(group);
             if (value == null) value = "NA";
             stringBuilder.append(group);
             stringBuilder.append(": ");
             stringBuilder.append(value);
-            stringBuilder.append("<br>");
+            stringBuilder.append("\r\n");
         }
-
-        stringBuilder.append("</html>");
 
         return stringBuilder.toString();
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Extract metadata";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -267,7 +260,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

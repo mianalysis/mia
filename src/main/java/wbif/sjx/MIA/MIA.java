@@ -4,8 +4,11 @@
 
 package wbif.sjx.MIA;
 
+import ij.IJ;
 import ij.ImageJ;
+import ij.Menus;
 import ij.plugin.AVI_Reader;
+import ij.plugin.MacroInstaller;
 import ij.plugin.PlugIn;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;
@@ -15,6 +18,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Macro.EnableExtensions;
 import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Object.ErrorLog;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -75,7 +79,6 @@ public class MIA implements PlugIn {
         try {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
                 new ImageJ();
                 new GUI();
 

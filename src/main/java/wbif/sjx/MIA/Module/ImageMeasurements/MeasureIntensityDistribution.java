@@ -54,7 +54,7 @@ public class MeasureIntensityDistribution extends Module {
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
     public MeasureIntensityDistribution(ModuleCollection modules) {
-        super(modules);
+        super("Measure intensity distribution",modules);
     }
 
 
@@ -392,10 +392,6 @@ public class MeasureIntensityDistribution extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure intensity distribution";
-    }
 
     @Override
     public String getPackageName() {
@@ -403,7 +399,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "CURRENTLY ONLY WORKS IN 3D";
     }
 

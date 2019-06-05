@@ -6,7 +6,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
@@ -27,13 +26,8 @@ public class ImageSaverTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageSaver(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ImageSaver(null).getHelp());
+        assertNotNull(new ImageSaver(null).getDescription());
     }
 
     @Test

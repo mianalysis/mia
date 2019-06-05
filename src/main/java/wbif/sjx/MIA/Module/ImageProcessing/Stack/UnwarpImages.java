@@ -49,7 +49,7 @@ public class UnwarpImages extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public UnwarpImages(ModuleCollection modules) {
-        super(modules);
+        super("Unwarp images",modules);
     }
 
 
@@ -242,7 +242,7 @@ public class UnwarpImages extends Module {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -263,7 +263,7 @@ public class UnwarpImages extends Module {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
 
             }
@@ -312,17 +312,12 @@ public class UnwarpImages extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Unwarp images";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class ReassignEnclosedObjectsTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ReassignEnclosedObjects(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ReassignEnclosedObjects(null).getHelp());
+        assertNotNull(new ReassignEnclosedObjects(null).getDescription());
     }
 }

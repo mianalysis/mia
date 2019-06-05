@@ -25,7 +25,7 @@ public class FillHoles extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public FillHoles(ModuleCollection modules) {
-        super(modules);
+        super("Fill holes",modules);
     }
 
 
@@ -64,17 +64,12 @@ public class FillHoles extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Fill holes";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

@@ -10,8 +10,5 @@
         <module name="ModularImageAnalysis" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MIA_" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

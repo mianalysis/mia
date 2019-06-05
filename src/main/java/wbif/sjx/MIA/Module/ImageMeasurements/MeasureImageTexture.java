@@ -20,7 +20,7 @@ public class MeasureImageTexture extends Module {
     public static final String Z_OFFSET = "Z-offset";
 
     public MeasureImageTexture(ModuleCollection modules) {
-        super(modules);
+        super("Measure image texture",modules);
     }
 
     public interface Measurements {
@@ -33,17 +33,12 @@ public class MeasureImageTexture extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure image texture";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_MEASUREMENTS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

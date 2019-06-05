@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class RidgeDetectionTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new RidgeDetection(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new RidgeDetection(null).getHelp());
+        assertNotNull(new RidgeDetection(null).getDescription());
     }
 }

@@ -36,7 +36,7 @@ public class CreateMeasurementMap extends Module {
     public static final String AVERAGE_TIME = "Average time";
 
     public CreateMeasurementMap(ModuleCollection modules) {
-        super(modules);
+        super("Create measurement map",modules);
     }
 
     public interface MeasurementModes {
@@ -266,10 +266,6 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Create measurement map";
-    }
 
     @Override
     public String getPackageName() {
@@ -277,7 +273,7 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -308,10 +304,10 @@ public class CreateMeasurementMap extends Module {
         // Compressing relevant measures
         switch (measurementMode) {
             case MeasurementModes.MEASUREMENT:
-                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName,getTitle());
+                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName,getName());
                 break;
             case MeasurementModes.PARENT_MEASUREMENT:
-                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName,getTitle());
+                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName,getName());
                 break;
         }
 

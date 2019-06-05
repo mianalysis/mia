@@ -16,13 +16,9 @@ public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE2 = "Input image 2";
 
     public ReplaceImage(ModuleCollection modules) {
-        super(modules);
+        super("Replace image",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Replace image";
-    }
 
     @Override
     public String getPackageName() {
@@ -30,7 +26,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "This module duplicates an image into another, existing, image.  " +
                 "\nThis is useful when dealing with optional modules, where a specific input is required later on.";
     }

@@ -29,7 +29,7 @@ public class SetDisplayRange extends Module {
     public static final String MAX_RANGE = "Maximum range value";
 
     public SetDisplayRange(ModuleCollection modules) {
-        super(modules);
+        super("Set intensity display range",modules);
     }
 
 
@@ -84,17 +84,12 @@ public class SetDisplayRange extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Set intensity display range";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

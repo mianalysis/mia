@@ -18,14 +18,9 @@ public class CombingCorrection extends Module {
     public static final String OFFSET = "Offset (px)";
 
     public CombingCorrection(ModuleCollection modules) {
-        super(modules);
+        super("Combing correction",modules);
     }
 
-
-    @Override
-    public String getTitle() {
-        return "Combing correction";
-    }
 
     @Override
     public String getPackageName() {
@@ -33,7 +28,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Applies an integer pixel row shift to every other row (starting with top-most row).";
     }
 

@@ -4,13 +4,15 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.util.LinkedHashMap;
 
-public class MetadataRef extends Ref implements SpreadsheetWriter {
+public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
+    private String description = "";
+
     public MetadataRef(NamedNodeMap attributes) {
         super(attributes);
         setAttributesFromXML(attributes);
@@ -40,5 +42,14 @@ public class MetadataRef extends Ref implements SpreadsheetWriter {
             Workspace workspace = workspaces.get(rowN);
             cell.setCellValue(workspace.getMetadata().getAsString(getNickname()));
         }
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

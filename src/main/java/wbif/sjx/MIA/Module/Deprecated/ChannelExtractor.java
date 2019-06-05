@@ -24,12 +24,7 @@ public class ChannelExtractor extends Module {
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
 
     public ChannelExtractor(ModuleCollection modules) {
-        super(modules);
-    }
-
-    @Override
-    public String getTitle() {
-        return "Channel extractor";
+        super("Channel extractor",modules);
     }
 
     @Override
@@ -38,7 +33,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by the ExtractSubstack Module.  It will " +
                 "be removed in a future release.\r\n" +
                 "Extracts a single channel from a stack.";

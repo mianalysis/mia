@@ -18,7 +18,7 @@ public class CalculateStatsForChildren extends Module {
     public static final String CALCULATE_SUM = "Calculate sum";
 
     public CalculateStatsForChildren(ModuleCollection modules) {
-        super(modules);
+        super("Calculate statistics for children",modules);
     }
 
     public interface Measurements {
@@ -76,10 +76,6 @@ public class CalculateStatsForChildren extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Calculate statistics for children";
-    }
 
     @Override
     public String getPackageName() {
@@ -87,7 +83,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

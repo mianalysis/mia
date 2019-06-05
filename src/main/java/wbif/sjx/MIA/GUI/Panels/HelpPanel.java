@@ -41,7 +41,7 @@ public class HelpPanel extends JPanel {
         // Adding title to help window
         JLabel helpLabel = new JLabel();
         helpLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule != null) helpLabel.setText("About \""+activeModule.getTitle()+"\"");
+        if (activeModule != null) helpLabel.setText("About \""+activeModule.getName()+"\"");
         add(helpLabel,c);
 
         // Adding separator

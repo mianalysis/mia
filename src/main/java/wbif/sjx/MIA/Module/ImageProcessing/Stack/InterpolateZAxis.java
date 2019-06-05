@@ -21,7 +21,7 @@ public class InterpolateZAxis extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public InterpolateZAxis(ModuleCollection modules) {
-        super(modules);
+        super("Interpolate Z axis",modules);
     }
 
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
@@ -39,10 +39,6 @@ public class InterpolateZAxis extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Interpolate Z axis";
-    }
 
     @Override
     public String getPackageName() {
@@ -50,7 +46,7 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Interpolates Z-axis of image to match XY spatial calibration";
     }
 

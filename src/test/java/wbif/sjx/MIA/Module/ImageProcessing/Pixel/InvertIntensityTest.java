@@ -23,13 +23,8 @@ public class InvertIntensityTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new InvertIntensity(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new InvertIntensity(null).getHelp());
+        assertNotNull(new InvertIntensity(null).getDescription());
     }
 
     @Test

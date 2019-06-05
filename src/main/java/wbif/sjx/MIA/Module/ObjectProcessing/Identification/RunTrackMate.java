@@ -55,7 +55,7 @@ public class RunTrackMate extends Module {
     public static final String MAX_FRAME_GAP = "Max frame gap";
 
     public RunTrackMate(ModuleCollection modules) {
-        super(modules);
+        super("Run TrackMate",modules);
     }
 
 
@@ -255,17 +255,12 @@ public class RunTrackMate extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Run TrackMate";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

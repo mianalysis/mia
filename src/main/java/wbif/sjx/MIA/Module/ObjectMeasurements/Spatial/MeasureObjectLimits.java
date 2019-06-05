@@ -11,7 +11,7 @@ public class MeasureObjectLimits extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectLimits(ModuleCollection modules) {
-        super(modules);
+        super("Measure object limits",modules);
     }
 
     public interface Measurements {
@@ -26,10 +26,6 @@ public class MeasureObjectLimits extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure object limits";
-    }
 
     @Override
     public String getPackageName() {
@@ -37,7 +33,7 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Measures the spatial limits of each object in terms of pixels.";
     }
 

@@ -37,7 +37,7 @@ public class Watershed extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public Watershed(ModuleCollection modules) {
-        super(modules);
+        super("Watershed transform",modules);
     }
 
     public interface IntensityModes {
@@ -129,17 +129,12 @@ public class Watershed extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Watershed transform";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses MorphoLibJ implementation of watershed transform.";
     }
 

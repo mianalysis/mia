@@ -26,7 +26,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     public static final String MISSING_POINT_HANDLING = "Missing point handling";
 
     public CalculateMeasurementPeriodogram(ModuleCollection modules) {
-        super(modules);
+        super("Calculate measurement periodogram",modules);
     }
 
     public interface Measurements {
@@ -150,17 +150,12 @@ public class CalculateMeasurementPeriodogram extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Calculate measurement periodogram";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_MISCELLANEOUS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

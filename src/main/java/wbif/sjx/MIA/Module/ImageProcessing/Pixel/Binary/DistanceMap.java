@@ -25,7 +25,7 @@ public class DistanceMap extends Module {
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public DistanceMap(ModuleCollection modules) {
-        super(modules);
+        super("Calculate distance map",modules);
     }
 
 
@@ -56,10 +56,6 @@ public class DistanceMap extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Calculate distance map";
-    }
 
     @Override
     public String getPackageName() {
@@ -67,7 +63,7 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 

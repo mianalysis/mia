@@ -57,7 +57,7 @@ public class FilterObjects extends Module implements ActionListener {
     private boolean active = false;
 
     public FilterObjects(ModuleCollection modules) {
-        super(modules);
+        super("Filter objects",modules);
     }
 
 
@@ -367,17 +367,12 @@ public class FilterObjects extends Module implements ActionListener {
 
 
     @Override
-    public String getTitle() {
-        return "Filter objects";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

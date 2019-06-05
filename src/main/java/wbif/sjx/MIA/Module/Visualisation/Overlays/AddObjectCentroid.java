@@ -43,7 +43,7 @@ public class AddObjectCentroid extends Module {
     private ColourServer colourServer;
 
     public AddObjectCentroid(ModuleCollection modules) {
-        super(modules);
+        super("Add object centroid",modules);
     }
 
     public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
@@ -107,10 +107,6 @@ public class AddObjectCentroid extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Add object centroid";
-    }
 
     @Override
     public String getPackageName() {
@@ -118,7 +114,7 @@ public class AddObjectCentroid extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

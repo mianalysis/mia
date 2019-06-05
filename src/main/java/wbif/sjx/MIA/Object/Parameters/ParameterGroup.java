@@ -98,7 +98,7 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) collections;
     }
 

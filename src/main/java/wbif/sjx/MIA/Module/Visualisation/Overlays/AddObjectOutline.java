@@ -46,7 +46,7 @@ public class AddObjectOutline extends Module {
     private ColourServer colourServer;
 
     public AddObjectOutline(ModuleCollection modules) {
-        super(modules);
+        super("Add object outline",modules);
     }
 
 
@@ -119,17 +119,12 @@ public class AddObjectOutline extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Add object outline";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

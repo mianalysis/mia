@@ -20,7 +20,7 @@ public class FilterOnImageEdge extends CoreFilter {
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterOnImageEdge(ModuleCollection modules) {
-        super(modules);
+        super("Remove on image edge",modules);
     }
 
 
@@ -34,17 +34,12 @@ public class FilterOnImageEdge extends CoreFilter {
 
 
     @Override
-    public String getTitle() {
-        return "Remove on image edge";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

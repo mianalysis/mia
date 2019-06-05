@@ -31,7 +31,7 @@ public class ExtractObjectEdges extends Module {
     public static final String EDGE_PERCENTAGE = "Percentage";
 
     public ExtractObjectEdges(ModuleCollection modules) {
-        super(modules);
+        super("Extract object edges",modules);
     }
 
     public interface EdgeModes {
@@ -164,10 +164,6 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Extract object edges";
-    }
 
     @Override
     public String getPackageName() {
@@ -175,7 +171,7 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

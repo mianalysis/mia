@@ -20,13 +20,8 @@ public class ProjectImageTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ProjectImage(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ProjectImage(null).getHelp());
+        assertNotNull(new ProjectImage(null).getDescription());
     }
 
     @Test

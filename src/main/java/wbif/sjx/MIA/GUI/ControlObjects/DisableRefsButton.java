@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
@@ -34,7 +34,7 @@ public class DisableRefsButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (Ref ref: refs.values()) ref.setExportGlobal(false);
+        for (ExportableRef ref: refs.values()) ref.setExportGlobal(false);
 
         GUI.populateModuleParameters();
 

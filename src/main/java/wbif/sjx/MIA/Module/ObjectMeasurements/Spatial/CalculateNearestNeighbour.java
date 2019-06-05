@@ -20,7 +20,7 @@ public class CalculateNearestNeighbour extends Module {
     public static final String CALIBRATED_DISTANCE = "Calibrated distance";
 
     public CalculateNearestNeighbour(ModuleCollection modules) {
-        super(modules);
+        super("Calculate nearest neighbour",modules);
     }
 
     public interface RelationshipModes {
@@ -92,17 +92,12 @@ public class CalculateNearestNeighbour extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Calculate nearest neighbour";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

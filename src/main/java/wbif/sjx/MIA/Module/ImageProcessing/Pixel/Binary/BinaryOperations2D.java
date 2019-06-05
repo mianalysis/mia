@@ -25,7 +25,7 @@ public class BinaryOperations2D extends Module {
     public static final String NUM_ITERATIONS = "Number of iterations";
 
     public BinaryOperations2D(ModuleCollection modules) {
-        super(modules);
+        super("Binary operations 2D",modules);
     }
 
 
@@ -80,17 +80,12 @@ public class BinaryOperations2D extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Binary operations 2D";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Expects black objects on a white background." +
                 "\nPerforms 2D fill holes, dilate and erode using ImageJ functions.";
 

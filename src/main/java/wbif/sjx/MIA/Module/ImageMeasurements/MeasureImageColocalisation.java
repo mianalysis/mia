@@ -23,7 +23,7 @@ public class MeasureImageColocalisation extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureImageColocalisation(ModuleCollection modules) {
-        super(modules);
+        super("Measure image colocalisation",modules);
     }
 
 
@@ -94,10 +94,6 @@ public class MeasureImageColocalisation extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure image colocalisation";
-    }
 
     @Override
     public String getPackageName() {
@@ -105,7 +101,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Calculates PCC, averaged across all timepoints and channels.";
     }
 

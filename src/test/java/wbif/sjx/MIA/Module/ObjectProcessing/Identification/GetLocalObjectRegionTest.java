@@ -20,13 +20,8 @@ public class GetLocalObjectRegionTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new GetLocalObjectRegion(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new GetLocalObjectRegion(null).getHelp());
+        assertNotNull(new GetLocalObjectRegion(null).getDescription());
     }
 
     @Test @Ignore

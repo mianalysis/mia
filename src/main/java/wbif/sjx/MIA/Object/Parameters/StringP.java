@@ -39,7 +39,7 @@ public class StringP extends TextType {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) MIA.getGlobalVariables().convertString(value);
     }
 
@@ -51,5 +51,12 @@ public class StringP extends TextType {
     @Override
     public <T extends Parameter> T duplicate() {
         return (T) new StringP(name,module,value,getDescription());
+    }
+
+    @Override
+    public boolean verify() {
+        // The only thing to check is that any global variables have been defined
+        return MIA.getGlobalVariables().variablesPresent(value);
+
     }
 }

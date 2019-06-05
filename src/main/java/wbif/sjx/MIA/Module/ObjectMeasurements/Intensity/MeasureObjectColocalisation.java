@@ -20,7 +20,7 @@ public class MeasureObjectColocalisation extends Module {
     public static final String INPUT_IMAGE_2 = "Input image 2";
 
     public MeasureObjectColocalisation(ModuleCollection modules) {
-        super(modules);
+        super("Measure object colocalisation",modules);
     }
 
 
@@ -46,17 +46,12 @@ public class MeasureObjectColocalisation extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure object colocalisation";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

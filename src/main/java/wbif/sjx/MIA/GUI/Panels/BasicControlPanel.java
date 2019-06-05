@@ -104,7 +104,7 @@ public class BasicControlPanel extends JScrollPane {
         for (Module module : modules) {
             // If the module is the special-case GUISeparator, create this module, then return
             JPanel modulePanel = null;
-            if (module.getClass().isInstance(new GUISeparator(modules))) {
+            if (module instanceof GUISeparator) {
                 // Not all GUI separators are shown on the basic panel
                 BooleanP showBasic = (BooleanP) module.getParameter(GUISeparator.SHOW_BASIC);
                 if (!showBasic.isSelected()) continue;
@@ -119,13 +119,14 @@ public class BasicControlPanel extends JScrollPane {
 
                 expanded = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                 modulePanel = componentFactory.createBasicSeparator(module, frameWidth-80);
+
             } else {
                 if (module.isRunnable() || module.invalidParameterIsVisible()) {
                     modulePanel = componentFactory.createBasicModuleControl(module, frameWidth - 80);
                 }
             }
 
-            if (modulePanel!=null && (expanded.isSelected() || module.getClass().isInstance(new GUISeparator(modules)))) {
+            if (modulePanel!=null && (expanded.isSelected() || module instanceof GUISeparator)) {
                 c.gridy++;
                 panel.add(modulePanel,c);
             }

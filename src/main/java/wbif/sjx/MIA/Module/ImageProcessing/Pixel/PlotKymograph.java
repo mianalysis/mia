@@ -22,7 +22,7 @@ public class PlotKymograph extends Module {
     public static final String HALF_WIDTH = "Half width (px)";
 
     public PlotKymograph(ModuleCollection modules) {
-        super(modules);
+        super("Plot kymograph",modules);
     }
 
     public interface Modes {
@@ -87,17 +87,12 @@ public class PlotKymograph extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Plot kymograph";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

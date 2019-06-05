@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class CoreFilter extends Module {
-    public CoreFilter(ModuleCollection modules) {
-        super(modules);
+    protected CoreFilter(String name, ModuleCollection modules) {
+        super(name, modules);
     }
 
     public interface FilterModes {

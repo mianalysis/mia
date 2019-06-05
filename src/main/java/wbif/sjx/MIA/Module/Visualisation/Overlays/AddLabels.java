@@ -58,7 +58,7 @@ public class AddLabels extends Module {
     private ColourServer colourServer;
 
     public AddLabels(ModuleCollection modules) {
-        super(modules);
+        super("Add labels",modules);
     }
 
     public interface LabelModes extends LabelFactory.LabelModes {}
@@ -191,17 +191,12 @@ public class AddLabels extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Add labels";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

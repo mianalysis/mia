@@ -16,13 +16,8 @@ public class ExtractSubstackTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ExtractSubstack(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ExtractSubstack(null).getHelp());
+        assertNotNull(new ExtractSubstack(null).getDescription());
     }
 
     @Test

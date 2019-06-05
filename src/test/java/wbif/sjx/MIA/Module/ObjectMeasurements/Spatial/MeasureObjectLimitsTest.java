@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class MeasureObjectLimitsTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectLimits(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectLimits(null).getHelp());
+        assertNotNull(new MeasureObjectLimits(null).getDescription());
     }
 }

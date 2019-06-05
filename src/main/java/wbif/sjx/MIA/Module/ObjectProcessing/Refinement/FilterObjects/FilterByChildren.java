@@ -20,7 +20,7 @@ public class FilterByChildren extends CoreFilter {
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterByChildren(ModuleCollection modules) {
-        super(modules);
+        super("Number of children",modules);
     }
 
 
@@ -33,17 +33,12 @@ public class FilterByChildren extends CoreFilter {
 
 
     @Override
-    public String getTitle() {
-        return "Number of children";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

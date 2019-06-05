@@ -20,13 +20,8 @@ public class MergeChannelsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MergeChannels<>(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MergeChannels<>(null).getHelp());
+        assertNotNull(new MergeChannels<>(null).getDescription());
     }
 
     @Test

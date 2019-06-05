@@ -20,7 +20,7 @@ public class FilterWithWithoutParent extends CoreFilter {
     public static final String STORE_RESULTS = "Store filter results";
 
     public FilterWithWithoutParent(ModuleCollection modules) {
-        super(modules);
+        super("With / without parent",modules);
     }
 
 
@@ -48,17 +48,12 @@ public class FilterWithWithoutParent extends CoreFilter {
 
 
     @Override
-    public String getTitle() {
-        return "With / without parent";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

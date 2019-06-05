@@ -123,7 +123,7 @@ public class AnalysisReader {
                     String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
                     module.setNickname(moduleNickname);
                 } else {
-                    module.setNickname(module.getTitle());
+                    module.setNickname(module.getName());
                 }
 
                 // Populating parameters
@@ -293,6 +293,11 @@ public class AnalysisReader {
                 if (parameterAttributes.getNamedItem("VISIBLE") != null) {
                     boolean visible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
                     parameter.setVisible(visible);
+                }
+
+                if (parameterAttributes.getNamedItem("NICKNAME") != null) {
+                    String nickname = parameterAttributes.getNamedItem("NICKNAME").getNodeValue();
+                    parameter.setNickname(nickname);
                 }
 
             } catch (NullPointerException e) {

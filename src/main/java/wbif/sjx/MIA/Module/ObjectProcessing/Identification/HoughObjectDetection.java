@@ -45,7 +45,7 @@ public class HoughObjectDetection extends Module {
     public static final String LABEL_SIZE = "Label size";
 
     public HoughObjectDetection(ModuleCollection modules) {
-        super(modules);
+        super("Hough-based detection",modules);
     }
 
 
@@ -55,17 +55,12 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Hough-based detection";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

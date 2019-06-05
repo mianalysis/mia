@@ -19,12 +19,7 @@ public class AddCustomMetadataItem extends Module {
 
 
     public AddCustomMetadataItem(ModuleCollection modules) {
-        super(modules);
-    }
-
-    @Override
-    public String getTitle() {
-        return "Add custom metadata item";
+        super("Add custom metadata item",modules);
     }
 
     @Override
@@ -33,7 +28,7 @@ public class AddCustomMetadataItem extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "This module allows for a specific metadata item to be used.  An example of this would be to add a label " +
                 "for generic (metadata-based) filename generation in the image loader.";
     }

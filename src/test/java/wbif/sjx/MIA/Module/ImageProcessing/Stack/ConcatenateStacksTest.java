@@ -18,13 +18,8 @@ import static org.junit.Assert.*;
 public class ConcatenateStacksTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ConcatenateStacks<>(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ConcatenateStacks<>(null).getHelp());
+        assertNotNull(new ConcatenateStacks<>(null).getDescription());
     }
 
 

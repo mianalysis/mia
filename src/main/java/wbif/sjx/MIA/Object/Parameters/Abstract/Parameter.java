@@ -2,27 +2,26 @@ package wbif.sjx.MIA.Object.Parameters.Abstract;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
-public abstract class Parameter {
-    protected final String name;
+public abstract class Parameter extends Ref {
     protected final Module module;
-    private final String description;
     private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
     private boolean exported = true;
+    private String description = "";
 
 
     // CONSTRUCTORS
 
     public Parameter(String name, Module module) {
-        this.name = name;
+        super(name);
         this.module = module;
-        this.description = "";
     }
 
     public Parameter(String name, Module module, String description) {
-        this.name = name;
+        super(name);
         this.module = module;
         this.description = description;
     }
@@ -32,7 +31,7 @@ public abstract class Parameter {
 
     protected abstract ParameterControl initialiseControl();
 
-    public abstract <T> T getFinalValue();
+    public abstract <T> T getValue();
 
     public abstract <T> void setValue(T value);
 
@@ -52,14 +51,6 @@ public abstract class Parameter {
 
     // GETTERS AND SETTERS
 
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getName() {
-        return name;
-    }
 
     public Module getModule() {
         return module;
@@ -92,5 +83,14 @@ public abstract class Parameter {
 
     public void setExported(boolean exported) {
         this.exported = exported;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

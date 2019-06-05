@@ -19,7 +19,7 @@ public class MeasureImageIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
 
     public MeasureImageIntensity(ModuleCollection modules) {
-        super(modules);
+        super("Measure image intensity",modules);
     }
 
 
@@ -34,18 +34,12 @@ public class MeasureImageIntensity extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure image intensity";
-
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_MEASUREMENTS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

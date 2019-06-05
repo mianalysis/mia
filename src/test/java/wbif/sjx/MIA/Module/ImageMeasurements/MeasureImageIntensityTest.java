@@ -23,13 +23,8 @@ public class MeasureImageIntensityTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureImageIntensity(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureImageIntensity(null).getHelp());
+        assertNotNull(new MeasureImageIntensity(null).getDescription());
     }
 
     @Test

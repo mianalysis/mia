@@ -28,7 +28,7 @@ public class PlotMeasurementsScatter extends Module {
     public static final String COLOURMAP = "Colourmap";
 
     public PlotMeasurementsScatter(ModuleCollection modules) {
-        super(modules);
+        super("Plot measurements as scatter",modules);
     }
 
     public interface ColourMaps {
@@ -58,17 +58,12 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Plot measurements as scatter";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

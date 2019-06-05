@@ -31,7 +31,7 @@ public class MeasureSpotIntensity extends Module {
     public static final String MEASURE_SUM = "Measure sum";
 
     public MeasureSpotIntensity(ModuleCollection modules) {
-        super(modules);
+        super("Measure spot intensity",modules);
     }
 
     public interface RadiusSources {
@@ -56,11 +56,6 @@ public class MeasureSpotIntensity extends Module {
         return "SPOT_INTENSITY // "+imageName+"_"+measurement;
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure spot intensity";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -68,7 +63,7 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

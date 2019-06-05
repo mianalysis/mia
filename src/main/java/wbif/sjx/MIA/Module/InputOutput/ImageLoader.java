@@ -96,7 +96,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
 
     public ImageLoader(ModuleCollection modules) {
-        super(modules);
+        super("Load image",modules);
     }
 
 
@@ -506,18 +506,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static String getMetadataValues(MetadataRefCollection metadataRefs) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<html>");
         sb.append("The following metadata values are available to use for generation of a filename string.  " +
-                "Each metadata reference should include the \"${\" and \"}\".<br><br>");
+                "Each metadata reference should include the \"${\" and \"}\".\r\n\r\n");
 
         for (MetadataRef ref:metadataRefs.values()) {
             sb.append("${");
             sb.append(ref.getName());
             sb.append("}");
-            sb.append("<br>");
+            sb.append("\r\n");
         }
-
-        sb.append("</html>");
 
         return sb.toString();
 
@@ -544,18 +541,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
 
     @Override
-    public String getTitle() {
-        return "Load image";
-
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.INPUT_OUTPUT;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Load image into MIA workspace.  This module can be configured to import images from a variety of locations (selected using the \"Import mode\" control).";
     }
 

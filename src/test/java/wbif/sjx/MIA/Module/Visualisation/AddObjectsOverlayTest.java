@@ -119,12 +119,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
     }
 
     @Test
-    public void testGetTitle() {
-        assertNotNull(new AddObjectsOverlay(null).getTitle());
-    }
-
-    @Test
     public void testGetHelp() {
-        assertNotNull(new AddObjectsOverlay(null).getHelp());
+        assertNotNull(new AddObjectsOverlay(null).getDescription());
     }
 }

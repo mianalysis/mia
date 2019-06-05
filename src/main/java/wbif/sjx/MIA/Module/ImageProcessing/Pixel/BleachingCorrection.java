@@ -24,13 +24,9 @@ public class BleachingCorrection extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public BleachingCorrection(ModuleCollection modules) {
-        super(modules);
+        super("Bleaching correction",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Bleaching correction";
-    }
 
     @Override
     public String getPackageName() {
@@ -38,7 +34,7 @@ public class BleachingCorrection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses the Fiji bleaching correction plugin (by Kota Miura)";
     }
 

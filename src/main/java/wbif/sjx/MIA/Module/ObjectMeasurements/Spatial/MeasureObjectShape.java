@@ -27,7 +27,7 @@ public class MeasureObjectShape extends Module {
     public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
 
     public MeasureObjectShape(ModuleCollection modules) {
-        super(modules);
+        super("Measure object shape",modules);
     }
 
 
@@ -78,10 +78,6 @@ public class MeasureObjectShape extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure object shape";
-    }
 
     @Override
     public String getPackageName() {
@@ -89,7 +85,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Ellipsoid fitting using BoneJ.  " +
                 "\nOrientation 1 relative to X-axis, Orientation 2 relative to XY-plane";
     }

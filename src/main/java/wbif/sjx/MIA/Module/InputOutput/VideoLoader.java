@@ -60,7 +60,7 @@ public class VideoLoader extends Module {
 
 
     public VideoLoader(ModuleCollection modules) {
-        super(modules);
+        super("Load video",modules);
     }
 
     public interface ImportModes {
@@ -295,10 +295,6 @@ public class VideoLoader extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Load video";
-    }
 
     @Override
     public String getPackageName() {
@@ -306,7 +302,7 @@ public class VideoLoader extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -428,6 +424,7 @@ public class VideoLoader extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.GENERIC,NameFormats.ALL));
+
         parameters.add(new StringP(GENERIC_FORMAT,this));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS,this,false));
         parameters.add(new StringP(PREFIX,this));

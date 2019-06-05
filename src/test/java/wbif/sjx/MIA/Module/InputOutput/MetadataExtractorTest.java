@@ -19,13 +19,8 @@ public class MetadataExtractorTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MetadataExtractor(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MetadataExtractor(null).getHelp());
+        assertNotNull(new MetadataExtractor(null).getDescription());
     }
 
     @Test

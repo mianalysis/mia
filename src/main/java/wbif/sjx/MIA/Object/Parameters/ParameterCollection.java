@@ -19,7 +19,7 @@ public class ParameterCollection extends LinkedHashSet<Parameter> {
     }
 
     public <T> T getValue(String name) {
-        return getParameter(name).getFinalValue();
+        return getParameter(name).getValue();
     }
 
     public boolean isVisible(String name) {

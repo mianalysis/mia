@@ -31,14 +31,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectIntensity(null).getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectIntensity(null).getHelp());
+        assertNotNull(new MeasureObjectIntensity(null).getDescription());
 
     }
 

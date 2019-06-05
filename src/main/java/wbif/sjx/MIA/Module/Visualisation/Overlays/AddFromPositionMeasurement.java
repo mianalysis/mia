@@ -50,7 +50,7 @@ public class AddFromPositionMeasurement extends Module {
     private ColourServer colourServer;
 
     public AddFromPositionMeasurement(ModuleCollection modules) {
-        super(modules);
+        super("Add from position measurement",modules);
     }
 
 
@@ -97,17 +97,12 @@ public class AddFromPositionMeasurement extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Add from position measurement";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

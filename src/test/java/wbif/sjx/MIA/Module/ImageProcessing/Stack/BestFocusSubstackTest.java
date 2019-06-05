@@ -21,13 +21,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     private double tolerance = 1E-10;
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new BestFocusSubstack<>(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new BestFocusSubstack<>(null).getHelp());
+        assertNotNull(new BestFocusSubstack<>(null).getDescription());
     }
 
 

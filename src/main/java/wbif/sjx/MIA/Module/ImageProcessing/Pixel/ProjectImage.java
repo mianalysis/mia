@@ -29,7 +29,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static final String PROJECTION_MODE = "Projection mode";
 
     public ProjectImage(ModuleCollection modules) {
-        super(modules);
+        super("Project image",modules);
     }
 
     public interface ProjectionModes {
@@ -120,11 +120,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Project image";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -132,7 +127,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

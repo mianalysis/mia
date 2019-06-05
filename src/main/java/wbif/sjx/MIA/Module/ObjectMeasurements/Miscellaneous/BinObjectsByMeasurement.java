@@ -14,7 +14,7 @@ public class BinObjectsByMeasurement extends Module {
     public static final String NUMBER_OF_BINS = "Number of bins";
 
     public BinObjectsByMeasurement(ModuleCollection modules) {
-        super(modules);
+        super("Bin objects by measurement",modules);
     }
 
     interface Measurements {
@@ -25,10 +25,6 @@ public class BinObjectsByMeasurement extends Module {
         return "BIN // "+measurement;
     }
 
-    @Override
-    public String getTitle() {
-        return "Bin objects by measurement";
-    }
 
     @Override
     public String getPackageName() {
@@ -36,7 +32,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

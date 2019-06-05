@@ -41,18 +41,13 @@ public class ShowImage extends Module {
 
 
     public ShowImage(ModuleCollection modules) {
-        super(modules);
+        super("Show image",modules);
 
         // This module likely wants to have this enabled (otherwise it does nothing)
         showOutput = true;
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Show image";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -60,7 +55,7 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

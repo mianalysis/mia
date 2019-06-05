@@ -1,12 +1,11 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 import javax.swing.*;
@@ -21,12 +20,12 @@ public class ExportCheck extends JCheckBox implements ActionListener {
     public enum Type {SINGLE, ALL};
 
 
-    private Ref reference;
+    private ExportableRef reference;
     private Statistic statistic;
     private Type type;
 
 
-    public ExportCheck(Ref reference, Statistic statistic, Type type) {
+    public ExportCheck(ExportableRef reference, Statistic statistic, Type type) {
         this.reference = reference;
         this.statistic = statistic;
         this.type = type;
@@ -81,11 +80,11 @@ public class ExportCheck extends JCheckBox implements ActionListener {
 
                 for (OutputImageP imageName:modules.getAvailableImages(null)) {
                     ImageMeasurementRefCollection refs = modules.getImageMeasurementRefs(imageName.getImageName());
-                    for (Ref ref:refs.values()) ref.setExportIndividual(isSelected());
+                    for (ExportableRef ref:refs.values()) ref.setExportIndividual(isSelected());
                 }
 
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs();
-                for (Ref ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
+                for (ExportableRef ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
 
                 RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
                 for (SummaryRef ref:relationshipRefs.values()) setStates(ref);

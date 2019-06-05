@@ -38,7 +38,7 @@ public class NormaliseIntensity extends Module {
     public static final String MAX_RANGE = "Maximum range value";
 
     public NormaliseIntensity(ModuleCollection modules) {
-        super(modules);
+        super("Normalise intensity",modules);
     }
 
 
@@ -142,17 +142,12 @@ public class NormaliseIntensity extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Normalise intensity";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Sets the intensity to maximise the dynamic range of the image.\n" +
                 "\"Clipping fraction\" is the fraction of pixels at either end of the range that gets clipped." +
                 "The \"Per object\" region mode will normalise all pixels within each object.";

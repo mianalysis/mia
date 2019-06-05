@@ -26,13 +26,9 @@ public class AddPause extends Module {
     private static final String TERMINATE = "Terminate";
 
     public AddPause(ModuleCollection modules) {
-        super(modules);
+        super("Add pause",modules);
     }
 
-    @Override
-    public String getTitle() {
-        return "Add pause";
-    }
 
     @Override
     public String getPackageName() {
@@ -40,7 +36,7 @@ public class AddPause extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

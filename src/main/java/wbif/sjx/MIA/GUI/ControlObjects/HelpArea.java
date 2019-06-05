@@ -31,7 +31,7 @@ public class HelpArea extends JTextPane {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<b>DESCRIPTION</b><br>")
-                .append(module.getHelp())
+                .append(module.getDescription())
                 .append("<br><br><br>")
                 .append("<b>PARAMETERS</b><br>");
 

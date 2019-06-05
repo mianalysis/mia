@@ -59,6 +59,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
         moduleListMenu.show(GUI.getFrame(), 0, 0);
         moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         moduleListMenu.setVisible(true);
+
         GUI.updateModules();
         GUI.updateModuleStates(true);
 

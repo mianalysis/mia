@@ -70,7 +70,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String INTERPOLATION_MODE = "Interpolation mode";
 
     public ManuallyIdentifyObjects(ModuleCollection modules) {
-        super(modules);
+        super("Manually identify objects",modules);
     }
 
 
@@ -260,17 +260,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
 
     @Override
-    public String getTitle() {
-        return "Manually identify objects";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 

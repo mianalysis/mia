@@ -27,7 +27,7 @@ public class RefreshButtonP extends Parameter {
     }
 
     @Override
-    public <T> T getFinalValue() {
+    public <T> T getValue() {
         return (T) buttonLabel;
     }
 

@@ -28,7 +28,7 @@ public class CreateObjectDensityMap extends Module {
     public static final String AVERAGE_TIME = "Average time";
 
     public CreateObjectDensityMap(ModuleCollection modules) {
-        super(modules);
+        super("Create object density map",modules);
     }
 
 
@@ -87,17 +87,12 @@ public class CreateObjectDensityMap extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Create object density map";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -122,7 +117,7 @@ public class CreateObjectDensityMap extends Module {
         Indexer indexer = CreateMeasurementMap.initialiseIndexer(templateImage,averageZ,averageT);
 
         // Compressing relevant measures
-        process(cumStats,indexer,inputObjects,getTitle());
+        process(cumStats,indexer,inputObjects,getName());
 
         // Converting statistic array to Image
         writeMessage("Creating output image");

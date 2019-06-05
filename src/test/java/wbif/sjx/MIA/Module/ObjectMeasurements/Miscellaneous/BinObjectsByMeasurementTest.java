@@ -21,13 +21,8 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new BinObjectsByMeasurement(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new BinObjectsByMeasurement(null).getHelp());
+        assertNotNull(new BinObjectsByMeasurement(null).getDescription());
     }
 
     @Test

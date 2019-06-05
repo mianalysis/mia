@@ -25,7 +25,7 @@ public class DilateErode extends Module {
     public static final String NUM_ITERATIONS = "Number of iterations";
 
     public DilateErode(ModuleCollection modules) {
-        super(modules);
+        super("Dilate and erode",modules);
     }
 
     public interface OperationModes {
@@ -87,17 +87,12 @@ public class DilateErode extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Dilate and erode";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

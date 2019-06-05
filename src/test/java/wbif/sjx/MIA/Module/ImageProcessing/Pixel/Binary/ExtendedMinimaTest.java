@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class ExtendedMinimaTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ExtendedMinima(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ExtendedMinima(null).getHelp());
+        assertNotNull(new ExtendedMinima(null).getDescription());
     }
 }

@@ -65,7 +65,7 @@ public class RegisterImages extends Module implements Interactable {
     private Image reference;
 
     public RegisterImages(ModuleCollection modules) {
-        super(modules);
+        super("Register images",modules);
     }
 
 
@@ -142,7 +142,7 @@ public class RegisterImages extends Module implements Interactable {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -163,7 +163,7 @@ public class RegisterImages extends Module implements Interactable {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Ref", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
             }
 
@@ -420,12 +420,7 @@ public class RegisterImages extends Module implements Interactable {
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
             String axis = ConcatenateStacks.AxisModes.CHANNEL;
-
-            Image displayImage = ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
-            ConcatenateStacks.convertToComposite(displayImage);
-
-            return displayImage;
-
+            return ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
         }
 
         return inputImage;
@@ -480,10 +475,6 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Register images";
-    }
 
     @Override
     public String getPackageName() {
@@ -491,7 +482,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses SIFT image registration toolbox";
     }
 

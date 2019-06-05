@@ -26,7 +26,7 @@ public class FitLongestChord extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public FitLongestChord(ModuleCollection modules) {
-        super(modules);
+        super("Fit longest chord",modules);
     }
 
 
@@ -91,12 +91,7 @@ public class FitLongestChord extends Module {
         AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.CYAN,1,pos2,false);
 
     }
-
-
-    @Override
-    public String getTitle() {
-        return "Fit longest chord";
-    }
+    
 
     @Override
     public String getPackageName() {
@@ -104,7 +99,7 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

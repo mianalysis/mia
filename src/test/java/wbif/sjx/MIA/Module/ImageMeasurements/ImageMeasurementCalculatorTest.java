@@ -10,12 +10,7 @@ import static org.junit.Assert.*;
 public class ImageMeasurementCalculatorTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageMeasurementCalculator(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ImageMeasurementCalculator(null).getHelp());
+        assertNotNull(new ImageMeasurementCalculator(null).getDescription());
     }
 }

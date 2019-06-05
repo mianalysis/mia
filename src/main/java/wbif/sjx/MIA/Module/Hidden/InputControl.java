@@ -6,12 +6,15 @@ import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
+import loci.formats.MissingLibraryException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.ome.OMEXMLMetadata;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -36,6 +39,7 @@ public class InputControl extends Module {
     public static final String INPUT_PATH = "Input path";
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
+    public static final String MACRO_WARNING = "Macro warning";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
     public static final String FILTER_SEPARATOR = "File/folder filters";
@@ -46,7 +50,7 @@ public class InputControl extends Module {
     public static final String NO_LOAD_MESSAGE = "No load message";
 
     public InputControl(ModuleCollection modules) {
-        super(modules);
+        super("Input control",modules);
     }
 
 
@@ -174,7 +178,7 @@ public class InputControl extends Module {
         reader.setGroupFiles(false);
         try {
             reader.setId(inputFile.getAbsolutePath());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | MissingLibraryException e) {
             namesAndNumbers.put(0,inputFile.getAbsolutePath());
             return namesAndNumbers;
         }
@@ -244,17 +248,12 @@ public class InputControl extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Input control";
-    }
-
-    @Override
     public String getPackageName() {
         return "Hidden";
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone " +
                 "will be processed; however, selecting a folder will cause the system to iterate over all files and " +
                 "sub-folders within that folder.  Each file identified here will initialise its own workspace.  " +
@@ -276,6 +275,7 @@ public class InputControl extends Module {
         parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR,this));
         parameters.add(new FileFolderPathP(INPUT_PATH,this,"","The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1,"The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
+        parameters.add(new MessageP(MACRO_WARNING,this,"Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",Color.RED));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
         parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1","Comma-separated list of series numbers to be processed."));
 
@@ -309,6 +309,16 @@ public class InputControl extends Module {
         }
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
+
+        // If a the RunMacro module is present, this analysis must be run as a single job
+        if ((int) parameters.getValue(SIMULTANEOUS_JOBS) > 1) {
+            for (Module module : modules) {
+                if (module instanceof RunMacroOnImage || module instanceof RunMacroOnObjects) {
+                    returnedParameters.add(parameters.getParameter(MACRO_WARNING));
+                    parameters.getParameter(SIMULTANEOUS_JOBS).setValid(false);
+                }
+            }
+        }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_FILTER));

@@ -13,6 +13,6 @@
 //
 //    @Override
 //    public void testGetHelp() {
-//        assertNotNull(new ApplyManualClassification(null).getHelp());
+//        assertNotNull(new ApplyManualClassification(null).getDescription());
 //    }
 //}

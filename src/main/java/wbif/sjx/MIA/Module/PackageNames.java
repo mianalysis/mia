@@ -8,6 +8,7 @@ public class PackageNames {
     public final static String IMAGE_PROCESSING_PIXEL_BINARY = "Image processing\\Pixel\\Binary\\";
     public final static String IMAGE_PROCESSING_STACK = "Image processing\\Stack\\";
     public final static String INPUT_OUTPUT = "Input output\\";
+    public static final String MISCELLANEOUS_MACROS = "Miscellaneous\\Macros\\";
     public final static String MISCELLANEOUS = "Miscellaneous\\";
     public static final String PLUGINS = "Plugins\\";
     public final static String OBJECT_MEASUREMENTS_INTENSITY = "Object measurements\\Intensity\\";

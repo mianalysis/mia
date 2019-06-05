@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class AddObjectOutlineTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new AddObjectOutline(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new AddObjectOutline(null).getHelp());
+        assertNotNull(new AddObjectOutline(null).getDescription());
     }
 }

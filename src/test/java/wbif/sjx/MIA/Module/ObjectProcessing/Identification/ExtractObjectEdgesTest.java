@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class ExtractObjectEdgesTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ExtractObjectEdges(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ExtractObjectEdges(null).getHelp());
+        assertNotNull(new ExtractObjectEdges(null).getDescription());
     }
 }

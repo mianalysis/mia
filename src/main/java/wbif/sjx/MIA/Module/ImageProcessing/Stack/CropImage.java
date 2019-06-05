@@ -34,7 +34,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     public static final String HEIGHT = "Height";
 
     public CropImage(ModuleCollection modules) {
-        super(modules);
+        super("Crop image",modules);
     }
 
     public static <T extends RealType< T > & NativeType< T >> Image cropImage(Image<T> inputImage, String outputImageName, int top, int left, int width, int height) {
@@ -82,10 +82,6 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Crop image";
-    }
 
     @Override
     public String getPackageName() {
@@ -93,7 +89,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

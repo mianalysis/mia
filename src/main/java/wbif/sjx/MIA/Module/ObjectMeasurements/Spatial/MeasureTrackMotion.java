@@ -24,7 +24,7 @@ public class MeasureTrackMotion extends Module {
     public static final String SUBTRACT_AVERAGE_MOTION = "Subtract average motion";
 
     public MeasureTrackMotion(ModuleCollection modules) {
-        super(modules);
+        super("Measure track motion",modules);
     }
 
 
@@ -364,17 +364,12 @@ public class MeasureTrackMotion extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure track motion";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 

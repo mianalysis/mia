@@ -20,13 +20,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectOverlap(null).getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectOverlap(null).getHelp());
+        assertNotNull(new MeasureObjectOverlap(null).getDescription());
     }
 
     @Test

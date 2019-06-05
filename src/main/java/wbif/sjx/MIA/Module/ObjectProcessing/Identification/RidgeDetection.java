@@ -40,7 +40,7 @@ public class RidgeDetection extends Module {
     public static final String LINK_CONTOURS = "Link contours";
 
     public RidgeDetection(ModuleCollection modules) {
-        super(modules);
+        super("Ridge detection",modules);
     }
 
     private interface Measurements {
@@ -203,17 +203,12 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Ridge detection";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses the RidgeDetection Fiji plugin by Thorsten Wagner, which implements Carsten " +
                 "\nSteger's paper \"An Unbiased Detector of Curvilinear Structures\"" +
                 "\nINCOMPLETE";
