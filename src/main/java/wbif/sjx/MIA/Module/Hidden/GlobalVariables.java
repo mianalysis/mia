@@ -26,7 +26,7 @@ public class GlobalVariables extends Module {
     }
 
     public String convertString(String string) {
-        Pattern pattern = Pattern.compile("\\$\\{([^${}]+)}");
+        Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
@@ -42,6 +42,7 @@ public class GlobalVariables extends Module {
                 if (name.equals(metadataName)) {
                     String value = collection.getValue(VARIABLE_VALUE);
                     string = string.replace(fullName,value);
+                    break;
                 }
             }
         }
@@ -50,8 +51,38 @@ public class GlobalVariables extends Module {
 
     }
 
+    public boolean variablesPresent(String string) {
+        Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
+        Matcher matcher = pattern.matcher(string);
+
+        while (matcher.find()) {
+            String fullName = matcher.group(0);
+            String metadataName = matcher.group(1);
+
+            // Iterating over all parameters, finding the one with the matching name
+            ParameterGroup group = getParameter(ADD_NEW_VARIABLE);
+            LinkedHashSet<ParameterCollection> collections = group.getCollections();
+
+            boolean found = false;
+            for (ParameterCollection collection:collections) {
+                String name = collection.getValue(VARIABLE_NAME);
+                if (name.equals(metadataName)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            // If the present parameter wasn't found, return false
+            if (!found) return false;
+
+        }
+
+        return true;
+
+    }
+
     public static boolean containsMetadata(String string) {
-        Pattern pattern = Pattern.compile("\\$\\{([^${}]+)}");
+        Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
         Matcher matcher = pattern.matcher(string);
 
         return matcher.find();

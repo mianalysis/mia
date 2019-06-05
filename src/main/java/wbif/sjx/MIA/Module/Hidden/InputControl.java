@@ -6,6 +6,7 @@ import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
+import loci.formats.MissingLibraryException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.ome.OMEXMLMetadata;
 import loci.formats.services.OMEXMLService;
@@ -177,7 +178,7 @@ public class InputControl extends Module {
         reader.setGroupFiles(false);
         try {
             reader.setId(inputFile.getAbsolutePath());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | MissingLibraryException e) {
             namesAndNumbers.put(0,inputFile.getAbsolutePath());
             return namesAndNumbers;
         }

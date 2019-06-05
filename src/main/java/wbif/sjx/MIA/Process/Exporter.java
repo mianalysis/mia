@@ -402,6 +402,9 @@ public class Exporter {
                 // Running through all the object's children
                 RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
                 for (RelationshipRef ref:relationshipRefs.getChildren(availableObjectName,false)) {
+                    if (!ref.isExportGlobal()) continue;
+                    if (!ref.isExportIndividual()) continue;
+
                     String child = ref.getChildName();
                     if (ref.isExportMean()) {
                         addSummaryChildHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,child,"MEAN","Mean");
@@ -574,6 +577,9 @@ public class Exporter {
             // Running through all the object's children
             RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
             for (RelationshipRef ref:relationshipRefs.getChildren(objSetName,false)) {
+                if (!ref.isExportGlobal()) continue;
+                if (!ref.isExportIndividual()) continue;
+
                 String child = ref.getChildName();
 
                 // Running through all objects in this set, adding children to a CumStat object

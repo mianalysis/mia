@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.References.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class ResolveObjectCooccurrence extends Module {
+public class ResolveObjectCoOccurrence extends Module {
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS_NAME = "Output objects name";
@@ -21,7 +21,7 @@ public class ResolveObjectCooccurrence extends Module {
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
 
-    public ResolveObjectCooccurrence(ModuleCollection modules) {
+    public ResolveObjectCoOccurrence(ModuleCollection modules) {
         super("Resolve object co-occurrence", modules);
     }
 
