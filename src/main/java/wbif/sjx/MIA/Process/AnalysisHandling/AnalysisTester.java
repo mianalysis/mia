@@ -9,27 +9,8 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 public class AnalysisTester {
     public static int testModules(ModuleCollection modules) {
         int nRunnable = 0;
-
-        // Testing input (this doesn't count towards nRunnable)
-        InputControl inputControl = modules.getInputControl();
-        boolean runnable = testModule(inputControl,modules);
-        if (!runnable) {
-            inputControl.setRunnable(false);
-
-            // Exit the method here as no other modules will be able to run
-            for (Module module:modules) module.setRunnable(false);
-            modules.getOutputControl().setRunnable(false);
-            return nRunnable;
-
-        }
-
-        // Testing output (tis doesn't count towards nRunnable)
-        OutputControl outputControl = modules.getOutputControl();
-        runnable = testModule(outputControl,modules);
-        if (!runnable) outputControl.setRunnable(false);
-
         for (Module module:modules) {
-            runnable = testModule(module,modules);
+            boolean runnable = testModule(module,modules);
 
             module.setRunnable(runnable);
 

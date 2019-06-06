@@ -330,8 +330,8 @@ public class RelateObjects extends Module {
     public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
                                boolean centroidOverlap, boolean linkInSameFrame) {
 
-        int nCombined = parentObjects.size()*childObjects.size();
-        int count = 0;
+        long nCombined = parentObjects.size()*childObjects.size();
+        long count = 0;
         String overlapMeasurementName = getFullName(Measurements.OVERLAP_PC,parentObjects.getName());
 
         // Runs through each child object against each parent object
@@ -383,7 +383,7 @@ public class RelateObjects extends Module {
 
             }
 
-            writeMessage("Compared "+(childObjects.size()*++count)+" of "+nCombined+" pairs");
+            writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
     }
