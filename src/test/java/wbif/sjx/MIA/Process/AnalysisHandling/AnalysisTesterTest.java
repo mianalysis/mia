@@ -217,12 +217,14 @@ public class AnalysisTesterTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Obs");
         modules.add(identifyObjects);
 
-        assertEquals(0,AnalysisTester.testModules(modules));
-        assertFalse(modules.getInputControl().isRunnable());
-        assertFalse(imageLoader.isRunnable());
-        assertFalse(filterImage.isRunnable());
-        assertFalse(identifyObjects.isRunnable());
-        assertFalse(modules.getOutputControl().isRunnable());
+        // Errors in the input module shouldn't lead to the module being non-runnable.  This is so the user interface
+        // doesn't lose all its elements from other modules.
+        assertEquals(3,AnalysisTester.testModules(modules));
+        assertTrue(modules.getInputControl().isRunnable());
+        assertTrue(imageLoader.isRunnable());
+        assertTrue(filterImage.isRunnable());
+        assertTrue(identifyObjects.isRunnable());
+        assertTrue(modules.getOutputControl().isRunnable());
 
     }
 
@@ -262,7 +264,7 @@ public class AnalysisTesterTest {
         assertTrue(imageLoader.isRunnable());
         assertTrue(filterImage.isRunnable());
         assertTrue(identifyObjects.isRunnable());
-        assertFalse(modules.getOutputControl().isRunnable());
+        assertTrue(modules.getOutputControl().isRunnable());
 
     }
 

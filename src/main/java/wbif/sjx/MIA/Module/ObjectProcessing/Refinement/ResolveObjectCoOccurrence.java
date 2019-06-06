@@ -8,6 +8,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -102,8 +103,8 @@ public class ResolveObjectCoOccurrence extends Module {
         HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,Double.MAX_VALUE);
 
         // Calculating the separations
-        int totalPairs = inputObjects1.size()*inputObjects2.size();
-        int count = 0;
+        long totalPairs = inputObjects1.size()*inputObjects2.size();
+        long count = 0;
         for (Obj object1:inputObjects1.values()) {
             Double[] overlap1 = overlaps1.get(object1.getID());
             for (Obj object2:inputObjects2.values()) {
@@ -125,7 +126,7 @@ public class ResolveObjectCoOccurrence extends Module {
                 }
                 count++;
             }
-            writeMessage("Compared "+(count)+" pairs of "+totalPairs);
+            writeMessage("Compared "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
         }
 
         reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2);

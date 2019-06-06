@@ -248,19 +248,15 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public static void convertToColour(Image image, Image[] inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
-        ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","color");
+        int nChannels = ipl.getNChannels();
+        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
+        if (nChannels > 1) ipl = HyperStackConverter.toHyperStack(ipl, nChannels, nSlices, nFrames, "xyczt", "color");
 
         // Updating the display range to help show all the colours
         IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
 
         image.setImagePlus(ipl);
-
-        // Setting LUTs to make them more colourblind-friendly
-//        LUT magentaLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.MAGENTA);
-//        LUT greenLUT = SetLookupTable.getLUT(SetLookupTable.LookupTables.GREEN);
-//
-//        SetLookupTable.setLUT(image,magentaLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,1);
-//        SetLookupTable.setLUT(image,greenLUT,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,2);
 
         // Set LUTs
         int count = 1;
@@ -299,14 +295,16 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
         }
 
-        // Applying concatenation
-        Image outputImage = concatenateImages(inputImages, axisMode, outputImageName);
-        if (outputImage == null) return false;
-
-        if (axisMode.equals(AxisModes.CHANNEL)) {
-            convertToColour(outputImage, inputImages);
+        // If only one image was specified, simply create a duplicate of the input, otherwise do concatenation.
+        Image outputImage;
+        if (inputImages.length == 1) {
+            outputImage = new Image(outputImageName,inputImages[0].getImagePlus());
+        } else {
+            outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         }
 
+        if (outputImage == null) return false;
+        if (axisMode.equals(AxisModes.CHANNEL)) convertToColour(outputImage, inputImages);
         if (showOutput) outputImage.showImage();
         workspace.addImage(outputImage);
 
