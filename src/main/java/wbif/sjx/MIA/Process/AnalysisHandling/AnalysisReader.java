@@ -131,13 +131,17 @@ public class AnalysisReader {
                 boolean foundParameters = false;
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
+//                        case "PARAMS":
+//                            populateParameters(moduleChildNodes.item(j), module);
+//                            break;
+
                         case "PARAMETERS":
                             populateModuleParameters(moduleChildNodes.item(j), module.getAllParameters(), moduleName);
                             foundParameters = true;
                             break;
 
                         case "MEASUREMENTS":
-                            populateModuleMeasurementRefs(moduleChildNodes.item(j), module);
+                            populateLegacyMeasurementRefs(moduleChildNodes.item(j), module);
                             break;
 
                         case "IMAGE_MEASUREMENTS":
@@ -307,8 +311,23 @@ public class AnalysisReader {
         }
     }
 
-    @Deprecated
-    public static void populateModuleMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateParameters(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            String parameterName = attributes.getNamedItem("NAME").getNodeValue();
+            Parameter parameter = module.getParameter(parameterName);
+            parameter.setAttributesFromXML(attributes);
+
+        }
+    }
+
+    public static void populateLegacyMeasurementRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type

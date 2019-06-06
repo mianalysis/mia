@@ -58,7 +58,7 @@ public class ParameterGroup extends Parameter {
     public ParameterCollection addParameters() {
         // Create new copy of template collections
         ParameterCollection newParameters = new ParameterCollection();
-        for (Parameter templateParameter:templateParameters) {
+        for (Parameter templateParameter:templateParameters.values()) {
             Parameter newParameter = templateParameter.duplicate();
 
             // New parameters should inherit the visibility of the add button
@@ -113,10 +113,15 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
+    public void setValueFromString(String string) {
+
+    }
+
+    @Override
     public boolean verify() {
         boolean runnable = true;
         for (ParameterCollection collection: collections) {
-            for (Parameter parameter:collection) {
+            for (Parameter parameter:collection.values()) {
                 boolean currentRunnable = parameter.verify();
                 parameter.setValid(currentRunnable);
                 if (!currentRunnable && runnable) runnable = false;

@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -120,6 +121,12 @@ public class AnalysisWriter {
             Element parametersElement = prepareParametersXML(doc,module.getAllParameters());
             moduleElement.appendChild(parametersElement);
 
+            // Adding parameters from this module
+//            Element paramElement = doc.createElement("PARAMS");
+//            ParameterCollection paraRefs = module.getAllParameters();
+//            paramElement = prepareRefsXML(doc, paramElement,paraRefs,"PARAM");
+//            moduleElement.appendChild(paramElement);
+
             // Adding measurement references from this module
             Element imageMeasurementsElement = doc.createElement("IMAGE_MEASUREMENTS");
             ImageMeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
@@ -156,7 +163,7 @@ public class AnalysisWriter {
         // Adding parameters from this module
         Element parametersElement = doc.createElement("PARAMETERS");
 
-        for (Parameter currParam:parameters) {
+        for (Parameter currParam:parameters.values()) {
             // Check if the parameter is to be exported
             if (!currParam.isExported()) continue;
 
@@ -222,10 +229,14 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends ExportableRef> refs, String groupName) {
+    public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
         if (refs == null) return refsElement;
 
-        for (ExportableRef ref:refs.values()) {
+        for (Ref ref:refs.values()) {
+            if (ref instanceof Parameter) {
+                if (!((Parameter) ref).isExported()) continue;
+            }
+
             Element element = doc.createElement(groupName);
             ref.appendXMLAttributes(element);
             refsElement.appendChild(element);

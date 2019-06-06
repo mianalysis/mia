@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.BooleanParameter;
 import wbif.sjx.MIA.Module.Module;
@@ -34,6 +36,7 @@ public abstract class BooleanType extends Parameter {
         return Boolean.toString(isSelected());
     }
 
+    @Override
     public void setValueFromString(String value) {
         selected = Boolean.parseBoolean(value);
     }

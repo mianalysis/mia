@@ -144,7 +144,7 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public boolean invalidParameterIsVisible() {
-        for (Parameter parameter:updateAndGetParameters()) {
+        for (Parameter parameter:updateAndGetParameters().values()) {
             if (!parameter.isValid() && parameter.isVisible()) return true;
         }
 
@@ -161,7 +161,7 @@ public abstract class Module extends Ref implements Comparable {
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
         ParameterCollection currParameters = updateAndGetParameters();
-        for (Parameter currParameter : currParameters) {
+        for (Parameter currParameter : currParameters.values()) {
             if (type.isInstance(currParameter)) {
                 parameters.add((T) currParameter);
             }

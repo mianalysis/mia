@@ -88,7 +88,7 @@ public class ParametersPanel extends JScrollPane {
         c.gridwidth = 1;
         c.insets = new Insets(2, 5, 0, 0);
         if (module.updateAndGetParameters() != null) {
-            for (Parameter parameter : module.updateAndGetParameters()) {
+            for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
                     addAdvancedParameterGroup((ParameterGroup) parameter,c);
                 } else {
@@ -201,7 +201,7 @@ public class ParametersPanel extends JScrollPane {
 
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters
-            for (Parameter parameter:collection) addAdvancedParameterControl(parameter,c);
+            for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
 
             c.gridy++;
             panel.add(getInvisibleSeparator(), c);

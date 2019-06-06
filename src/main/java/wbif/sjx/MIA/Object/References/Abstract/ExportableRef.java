@@ -5,22 +5,23 @@ import org.w3c.dom.NamedNodeMap;
 
 public abstract class ExportableRef extends Ref {
     private boolean exportIndividual = true;
-    private boolean exportGlobal = true; // This is mainly for the GUI
+    private boolean exportable = true; // This is mainly for the GUI
 
-    public ExportableRef(NamedNodeMap attributes) {
-        super(attributes.getNamedItem("NAME").getNodeValue());
-    }
 
     public ExportableRef(String name) {
         super(name);
     }
 
-    public void setExportGlobal(boolean exportGlobal) {
-        this.exportGlobal = exportGlobal;
+    public ExportableRef(NamedNodeMap attributes) {
+        super(attributes.getNamedItem("NAME").getNodeValue());
     }
 
-    public boolean isExportGlobal() {
-        return exportGlobal;
+    public void setExportable(boolean exportable) {
+        this.exportable = exportable;
+    }
+
+    public boolean isExportable() {
+        return exportable;
     }
 
     public boolean isExportIndividual() {
@@ -33,14 +34,14 @@ public abstract class ExportableRef extends Ref {
     }
 
     public void setAllExport(boolean export) {
-        exportGlobal = export;
+        exportable = export;
         exportIndividual = export;
 
     }
 
     public void appendXMLAttributes(Element element) {
         super.appendXMLAttributes(element);
-        element.setAttribute("EXPORT_GLOBAL",String.valueOf(exportGlobal));
+        element.setAttribute("EXPORT_GLOBAL",String.valueOf(exportable));
         element.setAttribute("EXPORT_INDIVIDUAL",String.valueOf(exportIndividual));
 
     }
@@ -49,7 +50,7 @@ public abstract class ExportableRef extends Ref {
         super.setAttributesFromXML(attributes);
 
         if (attributes.getNamedItem("EXPORT_GLOBAL") != null) {
-            exportGlobal = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
+            exportable = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
         }
 
         if (attributes.getNamedItem("EXPORT_INDIVIDUAL") != null) {

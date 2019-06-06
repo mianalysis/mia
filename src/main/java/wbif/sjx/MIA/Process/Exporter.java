@@ -226,7 +226,7 @@ public class Exporter {
         paramRow++;
         paramRow++;
 
-        for (Parameter currParam : parameters) {
+        for (Parameter currParam : parameters.values()) {
             // Check if the parameter is to be exported
             if (!currParam.isExported()) continue;
 
@@ -327,7 +327,7 @@ public class Exporter {
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
                 // Running through all the metadata values, adding them as new columns
                 for (MetadataRef ref:metadataRefs.values()) {
-                    if (!ref.isExportGlobal()) continue;
+                    if (!ref.isExportable()) continue;
                     if (!ref.isExportIndividual()) continue;
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
@@ -368,7 +368,7 @@ public class Exporter {
                 // Running through all the image measurement values, adding them as new columns
                 for (ImageMeasurementRef imageMeasurement:availableMeasurements.values()) {
                     if (!imageMeasurement.isExportIndividual()) continue;
-                    if (!imageMeasurement.isExportGlobal()) continue;
+                    if (!imageMeasurement.isExportable()) continue;
 
                     String measurementName = imageMeasurement.getNickname();
                     Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol.get());
@@ -435,7 +435,7 @@ public class Exporter {
                 // Running through all the object measurement values, adding them as new columns
                 for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                     if (!objectMeasurement.isExportIndividual()) continue;
-                    if (!objectMeasurement.isExportGlobal()) continue;
+                    if (!objectMeasurement.isExportable()) continue;
 
                     if (objectMeasurement.isExportMean()) {
                         addSummaryObjectStatisticHeader(summaryHeaderRow,colNumbers,headerCol,objectMeasurement,"MEAN","Mean");
@@ -545,7 +545,7 @@ public class Exporter {
             // Running through all the object measurement values, adding them as new columns
             for (ImageMeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
                 if (!imageMeasurement.isExportIndividual()) continue;
-                if (!imageMeasurement.isExportGlobal()) continue;
+                if (!imageMeasurement.isExportable()) continue;
 
                 Measurement measurement = image.getMeasurement(imageMeasurement.getName());
 
@@ -643,7 +643,7 @@ public class Exporter {
             // Running through all the object measurement values, adding them as new columns
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isExportIndividual()) continue;
-                if (!objectMeasurement.isExportGlobal()) continue;
+                if (!objectMeasurement.isExportable()) continue;
 
                 // Running through all objects in this set, adding measurements to a CumStat object
                 CumStat cs = new CumStat();
@@ -746,7 +746,7 @@ public class Exporter {
             // Running through all the metadata values, adding them as new columns
             MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
             for (MetadataRef ref : metadataRefs.values()) {
-                if (!ref.isExportGlobal()) continue;
+                if (!ref.isExportable()) continue;
                 if (!ref.isExportIndividual()) continue;
 
                 metadataNames.put(col,ref.getName());
@@ -787,7 +787,7 @@ public class Exporter {
             // Running through all the object measurement values, adding them as new columns
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isExportIndividual()) continue;
-                if (!objectMeasurement.isExportGlobal()) continue;
+                if (!objectMeasurement.isExportable()) continue;
 
                 measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
                 measurementNames.get(objectName).put(col, objectMeasurement.getName());

@@ -172,7 +172,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
             // Running through all parameters, adding all images to the list
             ParameterCollection currParameters = module.updateAndGetParameters();
-            for (Parameter currParameter : currParameters) {
+            for (Parameter currParameter : currParameters.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
                 }

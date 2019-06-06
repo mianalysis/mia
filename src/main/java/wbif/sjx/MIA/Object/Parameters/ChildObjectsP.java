@@ -52,6 +52,7 @@ public class ChildObjectsP extends ChoiceType {
 
         ModuleCollection modules = module.getModules();
         RelationshipRefCollection relationships = modules.getRelationshipRefs(module);
+
         return relationships.getChildNames(parentObjectsName, true);
 
     }

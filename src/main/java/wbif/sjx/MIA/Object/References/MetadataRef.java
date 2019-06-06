@@ -24,7 +24,7 @@ public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
 
     @Override
     public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer,Workspace> workspaces) {
-        if (!isExportIndividual() && !isExportGlobal()) return;
+        if (!isExportIndividual() && !isExportable()) return;
 
         // Getting the column number for this reference
         Row titleRow = sheet.getRow(0);

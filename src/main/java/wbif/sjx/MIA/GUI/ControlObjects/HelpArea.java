@@ -35,7 +35,7 @@ public class HelpArea extends JTextPane {
                 .append("<br><br><br>")
                 .append("<b>PARAMETERS</b><br>");
 
-        for (Parameter parameter:module.getAllParameters()) sb.append(getParameterHelpText(parameter));
+        for (Parameter parameter:module.getAllParameters().values()) sb.append(getParameterHelpText(parameter));
 
         sb.append("<br>");
 
@@ -83,7 +83,7 @@ public class HelpArea extends JTextPane {
                 .append("<br><br>");
 
         if  (parameter instanceof ParameterGroup) {
-            for (Parameter currParameter:((ParameterGroup) parameter).getTemplateParameters()) {
+            for (Parameter currParameter:((ParameterGroup) parameter).getTemplateParameters().values()) {
                 sb.append(getParameterHelpText(currParameter));
             }
         }

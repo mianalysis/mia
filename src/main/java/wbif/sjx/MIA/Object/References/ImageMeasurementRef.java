@@ -67,7 +67,7 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
 
     @Override
     public void addSummaryXLSX(Sheet sheet, LinkedHashMap<Integer, Workspace> workspaces) {
-        if (!isExportGlobal()) return;
+        if (!isExportable()) return;
 
 
         // Getting the column number for this reference

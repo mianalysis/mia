@@ -42,6 +42,11 @@ public class RefreshButtonP extends Parameter {
     }
 
     @Override
+    public void setValueFromString(String string) {
+        this.buttonLabel = string;
+    }
+
+    @Override
     public boolean verify() {
         return true;
     }

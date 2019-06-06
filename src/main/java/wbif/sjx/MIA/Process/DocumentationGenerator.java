@@ -110,7 +110,7 @@ public class DocumentationGenerator {
                 .append("\r\n");
 
         sb.append("<h2>Parameters</h2>\r\n<ul>");
-        for (Parameter parameter:module.getAllParameters()) {
+        for (Parameter parameter:module.getAllParameters().values()) {
             sb.append("<li>")
                     .append(parameter.getName())
                     .append("<ul>");

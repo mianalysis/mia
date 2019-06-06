@@ -47,6 +47,11 @@ public abstract class FileFolderType extends Parameter {
     }
 
     @Override
+    public void setValueFromString(String string) {
+        this.path = string;
+    }
+
+    @Override
     public boolean verify() {
         // Checking a file has been specified
         if (path == null || path.equals("")) return false;

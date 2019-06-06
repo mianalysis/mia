@@ -45,6 +45,11 @@ public class RemoveParameters extends Parameter {
     }
 
     @Override
+    public void setValueFromString(String string) {
+
+    }
+
+    @Override
     public boolean verify() {
         return true;
     }
