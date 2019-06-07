@@ -33,7 +33,7 @@ public class ExportEnableButton extends JButton implements ActionListener {
     }
 
     public void setIcon() {
-        if (ref.isExportable()) setIcon(greenIcon);
+        if (ref.isExportGlobal()) setIcon(greenIcon);
         else setIcon(blackIcon);
     }
 
@@ -43,7 +43,7 @@ public class ExportEnableButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ref.setExportable(!ref.isExportable());
+        ref.setExportGlobal(!ref.isExportGlobal());
 
         setIcon();
         GUI.populateModuleParameters();

@@ -180,6 +180,11 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>AnalyzeSkeleton_</artifactId>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>Auto_Local_Threshold</artifactId>
             <scope>${myscope}</scope>
         </dependency>

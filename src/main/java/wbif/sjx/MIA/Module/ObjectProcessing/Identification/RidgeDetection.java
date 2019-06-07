@@ -60,6 +60,26 @@ public class RidgeDetection extends Module {
 
     }
 
+    public static void linkJunctions(HashMap<Line, HashSet<Line>> groups, Junctions junctions) {
+        for (Junction junction : junctions) {
+            // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
+            Line line1 = junction.getLine1();
+            HashSet<Line> group1 = groups.get(line1);
+
+            // Getting the LineGroup associated with Line2.  If there isn't one, creating a new one
+            Line line2 = junction.getLine2();
+            HashSet<Line> group2 = groups.get(line2);
+
+            // Adding all entries from the second LineGroup into the first
+            group1.addAll(group2);
+
+            // Removing the second Line from the HashMap, then re-adding it with the first LineGroup
+            groups.remove(line2);
+            groups.put(line2, group1);
+
+        }
+    }
+
     public ObjCollection process(Image inputImage, String outputObjectsName, String contourContrast, double sigma,
                                  double upperThreshold, double lowerThreshold, double minLength, double maxLength,
                                  boolean linkContours, boolean estimateWidth) throws IntegerOverflowException {
@@ -111,27 +131,7 @@ public class RidgeDetection extends Module {
                     }
 
                     // Iterating over each object, adding it to the nascent ObjCollection
-                    if (linkContours) {
-                        writeMessage("Linking contours");
-
-                        for (Junction junction : junctions) {
-                            // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
-                            Line line1 = junction.getLine1();
-                            HashSet<Line> group1 = groups.get(line1);
-
-                            // Getting the LineGroup associated with Line2.  If there isn't one, creating a new one
-                            Line line2 = junction.getLine2();
-                            HashSet<Line> group2 = groups.get(line2);
-
-                            // Adding all entries from the second LineGroup into the first
-                            group1.addAll(group2);
-
-                            // Removing the second Line from the HashMap, then re-adding it with the first LineGroup
-                            groups.remove(line2);
-                            groups.put(line2, group1);
-
-                        }
-                    }
+                    if (linkContours) linkJunctions(groups,junctions);
 
                     // Getting the unique LineGroups
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());

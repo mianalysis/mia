@@ -42,6 +42,7 @@ Acknowledgements
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the updater.
 
 Required plugins pre-packaged with Fiji:
+- [AnalyzeSkeleton](https://github.com/fiji/AnalyzeSkeleton)
 - [Auto Threshold](https://github.com/fiji/Auto_Threshold)
 - [bUnwarpJ](https://github.com/fiji/bUnwarpJ)
 - [BioFormats](https://github.com/openmicroscopy/bioformats)

@@ -478,7 +478,7 @@ public class ComponentFactory {
         ExportCheck exportCheck = new ExportCheck(ref,statistic,type);
         exportCheck.setSelected(ref.isExportIndividual());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportIndividual.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportIndividual.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -504,7 +504,7 @@ public class ComponentFactory {
         ExportCheck exportCheck = new ExportCheck(ref,statistic,type);
         exportCheck.setSelected(ref.isExportIndividual());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportIndividual.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportIndividual.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -512,7 +512,7 @@ public class ComponentFactory {
         exportCheck = new ExportCheck(ref, statistic, type);
         exportCheck.setSelected(ref.isExportMean());
         exportCheck.setPreferredSize(new Dimension(40, 25));
-        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -520,7 +520,7 @@ public class ComponentFactory {
         exportCheck = new ExportCheck(ref, statistic, type);
         exportCheck.setSelected(ref.isExportMin());
         exportCheck.setPreferredSize(new Dimension(40, 25));
-        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -528,7 +528,7 @@ public class ComponentFactory {
         exportCheck = new ExportCheck(ref, statistic, type);
         exportCheck.setSelected(ref.isExportMax());
         exportCheck.setPreferredSize(new Dimension(40, 25));
-        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -536,7 +536,7 @@ public class ComponentFactory {
         exportCheck = new ExportCheck(ref, statistic, type);
         exportCheck.setSelected(ref.isExportSum());
         exportCheck.setPreferredSize(new Dimension(40, 25));
-        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -544,7 +544,7 @@ public class ComponentFactory {
         exportCheck = new ExportCheck(ref, statistic, type);
         exportCheck.setSelected(ref.isExportStd());
         exportCheck.setPreferredSize(new Dimension(40, 25));
-        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportable());
+        exportCheck.setEnabled(exportSummary.isSelected() && ref.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -650,7 +650,7 @@ public class ComponentFactory {
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
 //        exportName.setEditable(true);
         exportName.setToolTipText("<html><p width=\"500\">" +ref.getDescription()+"</p></html>");
-        exportName.setEnabled(ref.isExportable());
+        exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
@@ -663,7 +663,7 @@ public class ComponentFactory {
 
         ResetExport resetExport = new ResetExport(ref);
         resetExport.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        resetExport.setEnabled(ref.isExportable());
+        resetExport.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
         c.insets = new Insets(5,5,0,5);
@@ -691,7 +691,7 @@ public class ComponentFactory {
         exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
         exportName.setToolTipText("<html><p width=\"500\">" +ref.getDescription()+"</p></html>");
-        exportName.setEnabled(ref.isExportable());
+        exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
@@ -704,7 +704,7 @@ public class ComponentFactory {
 
         ResetExport resetExport = new ResetExport(ref);
         resetExport.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        resetExport.setEnabled(ref.isExportable());
+        resetExport.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
         c.insets = new Insets(5,5,0,5);

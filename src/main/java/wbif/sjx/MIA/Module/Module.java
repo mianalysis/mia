@@ -34,7 +34,7 @@ public abstract class Module extends Ref implements Comparable {
 
     // CONSTRUCTOR
 
-    protected Module(String name, ModuleCollection modules) {
+    public Module(String name, ModuleCollection modules) {
         super(name);
         this.modules = modules;
         initialiseParameters();
