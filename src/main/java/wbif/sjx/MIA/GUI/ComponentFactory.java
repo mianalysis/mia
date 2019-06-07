@@ -566,18 +566,18 @@ public class ComponentFactory {
 //        separator.setOrientation(JSeparator.HORIZONTAL);
 //        separator.setPreferredSize(new Dimension(elementHeight,-1));
 //        c.weightx = 1;
-//        summaryPanel.add(separator,c);
+//        summaryPanel.addRef(separator,c);
 //
 //        JPanel controlPanel = createExportControls(ref,ExportCheck.Type.ALL);
 //        c.weightx = 0;
 //        c.gridx++;
-//        summaryPanel.add(controlPanel,c);
+//        summaryPanel.addRef(controlPanel,c);
 //
 //        separator= new JSeparator();
 //        separator.setOrientation(JSeparator.HORIZONTAL);
 //        separator.setPreferredSize(new Dimension(elementHeight,-1));
 //        c.gridx++;
-//        summaryPanel.add(separator,c);
+//        summaryPanel.addRef(separator,c);
 //
 //        return summaryPanel;
 //    }

@@ -154,9 +154,8 @@ public class BooleanPTest {
         element.setAttribute("NICKNAME","New nick");
         element.setAttribute("VALUE","false");
         element.setAttribute("VISIBLE","false");
-        NamedNodeMap namedNodeMap = element.getAttributes();
 
-        booleanP.setAttributesFromXML(namedNodeMap);
+        booleanP.setAttributesFromXML(element);
 
         assertEquals("TestBoo",booleanP.getName());
         assertEquals("New nick",booleanP.getNickname());

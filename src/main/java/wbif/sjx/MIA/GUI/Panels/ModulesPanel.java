@@ -82,7 +82,7 @@ public class ModulesPanel extends JScrollPane {
                 modulePanel = componentFactory.createAdvancedModuleControl(module, buttonGroup, activeModule, moduleButtonWidth - 25);
             }
 
-            // If this is the final module, add a gap at the bottom
+            // If this is the final module, addRef a gap at the bottom
             if (i==modules.size()-1) modulePanel.setBorder(new EmptyBorder(0,0,5,0));
 
             panel.add(modulePanel, c);

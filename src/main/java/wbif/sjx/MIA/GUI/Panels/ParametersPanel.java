@@ -140,7 +140,7 @@ public class ParametersPanel extends JScrollPane {
     }
 
     void addRefExportControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
-        if (refs.size() == 0) return;
+        if (refs.values().size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,false);
         c.gridx = 0;
@@ -160,7 +160,7 @@ public class ParametersPanel extends JScrollPane {
     }
 
     void addSummaryRefExportControls(RefCollection<? extends SummaryRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
-        if (refs.size() == 0) return;
+        if (refs.values().size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,true);
         c.gridx = 0;
@@ -208,7 +208,7 @@ public class ParametersPanel extends JScrollPane {
 
         }
 
-        // Adding an add button
+        // Adding an addRef button
         addAdvancedParameterControl(group,c);
 
         c.gridy++;

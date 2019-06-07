@@ -378,7 +378,7 @@ public class Stack_Focuser_ implements PlugInFilter
         for (int i=1; i<=height_stack.getSize(); i++)
         {
             byte[] pixels = (byte[]) height_stack.getPixels(i);
-            // add the value of each pixel an the corresponding position of the sum array
+            // addRef the value of each pixel an the corresponding position of the sum array
             for (int j=0; j<n_dim; j++)
             {
                 sum[j]+=0xff & pixels[j];
@@ -512,7 +512,7 @@ public class Stack_Focuser_ implements PlugInFilter
             maxFilter(dfloat_ip, m_ip, k_size);
             dfloat_ip = null;
 
-            // and add to the new stack
+            // and addRef to the new stack
             m_stack.addSlice(null, m_ip);
 //            IJ.showProgress(1.0*i/n_slices);
         }

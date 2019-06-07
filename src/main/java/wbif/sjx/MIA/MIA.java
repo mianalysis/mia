@@ -53,7 +53,7 @@ public class MIA implements PlugIn {
     private static boolean macroLock = false;
 
     /*
-    Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
+    Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
      */
     private static final boolean imagePlusMode = true;
 

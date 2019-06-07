@@ -1,11 +1,9 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Overlay;
 import ij.gui.Roi;
-import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;

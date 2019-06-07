@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Object.References;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 public class RelationshipRef extends SummaryRef {
@@ -10,12 +11,14 @@ public class RelationshipRef extends SummaryRef {
     private String description = "";
 
 
-    public RelationshipRef(NamedNodeMap attributes) {
-        super(attributes);
-        this.childName = attributes.getNamedItem("CHILD_NAME").getNodeValue();
-        this.parentName = attributes.getNamedItem("PARENT_NAME").getNodeValue();
+    public RelationshipRef(Node node) {
+        super(node);
 
-        setAttributesFromXML(attributes);
+        NamedNodeMap map = node.getAttributes();
+        this.childName = map.getNamedItem("CHILD_NAME").getNodeValue();
+        this.parentName = map.getNamedItem("PARENT_NAME").getNodeValue();
+
+        setAttributesFromXML(node);
 
     }
 
@@ -36,8 +39,8 @@ public class RelationshipRef extends SummaryRef {
     }
 
     @Override
-    public void setAttributesFromXML(NamedNodeMap attributes) {
-        super.setAttributesFromXML(attributes);
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
 
     }
 

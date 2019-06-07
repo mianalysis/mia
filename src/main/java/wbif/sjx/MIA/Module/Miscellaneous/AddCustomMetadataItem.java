@@ -29,7 +29,7 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public String getDescription() {
-        return "This module allows for a specific metadata item to be used.  An example of this would be to add a label " +
+        return "This module allows for a specific metadata item to be used.  An example of this would be to addRef a label " +
                 "for generic (metadata-based) filename generation in the image loader.";
     }
 

@@ -1,4 +1,4 @@
-// TODO: Could add optional argument to getParametersMatchingType for the removal type (i.e. if it matches type 1 add
+// TODO: Could addRef optional argument to getParametersMatchingType for the removal type (i.e. if it matches type 1 addRef
 // to the list, but if it matches type 2 remove the same parameter from the list.  Would need to compare Parameters for
 // value.
 
@@ -10,15 +10,16 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ModuleCollection extends ArrayList<Module> implements Serializable {
+public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module> {
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
 
@@ -273,5 +274,10 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     public void setOutputControl(OutputControl outputControl) {
         this.outputControl = outputControl;
+    }
+
+    @Override
+    public Collection<Module> values() {
+        return this;
     }
 }

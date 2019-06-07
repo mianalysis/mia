@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
@@ -28,7 +27,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedHashSet;
 
 /**
  * Created by Stephen on 22/06/2018.
@@ -61,8 +59,10 @@ public class AnalysisWriter {
 
         // Preparing the target file for
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new FileOutputStream(outputFileName));
+        FileOutputStream outputStream = new FileOutputStream(outputFileName);
+        StreamResult result = new StreamResult(outputStream);
         transformer.transform(source, result);
+        outputStream.close();
 
         System.out.println("File saved ("+ FilenameUtils.getName(outputFileName)+")");
 
@@ -94,38 +94,42 @@ public class AnalysisWriter {
         // Running through each parameter set (one for each module
         for (Module module:modules) {
             Element moduleElement =  doc.createElement("MODULE");
-            Attr nameAttr = doc.createAttribute("NAME");
-            nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
-            moduleElement.setAttributeNode(nameAttr);
 
-            Attr nicknameAttr = doc.createAttribute("NICKNAME");
-            nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
-            moduleElement.setAttributeNode(nicknameAttr);
+//            Attr nameAttr = doc.createAttribute("NAME");
+//            nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
+//            moduleElement.setAttributeNode(nameAttr);
+//
+//            Attr nicknameAttr = doc.createAttribute("NICKNAME");
+//            nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
+//            moduleElement.setAttributeNode(nicknameAttr);
+//
+//            Attr enabledAttr = doc.createAttribute("ENABLED");
+//            enabledAttr.appendChild(doc.createTextNode(String.valueOf(module.isEnabled())));
+//            moduleElement.setAttributeNode(enabledAttr);
+//
+//            Attr disableableAttr = doc.createAttribute("DISABLEABLE");
+//            disableableAttr.appendChild(doc.createTextNode(String.valueOf(module.canBeDisabled())));
+//            moduleElement.setAttributeNode(disableableAttr);
+//
+//            Attr outputAttr = doc.createAttribute("SHOW_OUTPUT");
+//            outputAttr.appendChild(doc.createTextNode(String.valueOf(module.canShowOutput())));
+//            moduleElement.setAttributeNode(outputAttr);
+//
+//            Attr notesAttr = doc.createAttribute("NOTES");
+//            notesAttr.appendChild(doc.createTextNode(module.getNotes()));
+//            moduleElement.setAttributeNode(notesAttr);
 
-            Attr enabledAttr = doc.createAttribute("ENABLED");
-            enabledAttr.appendChild(doc.createTextNode(String.valueOf(module.isEnabled())));
-            moduleElement.setAttributeNode(enabledAttr);
+//            Element parametersElement = prepareParametersXML(doc,module.getAllParameters());
+//            moduleElement.appendChild(parametersElement);
 
-            Attr disableableAttr = doc.createAttribute("DISABLEABLE");
-            disableableAttr.appendChild(doc.createTextNode(String.valueOf(module.canBeDisabled())));
-            moduleElement.setAttributeNode(disableableAttr);
-
-            Attr outputAttr = doc.createAttribute("SHOW_OUTPUT");
-            outputAttr.appendChild(doc.createTextNode(String.valueOf(module.canShowOutput())));
-            moduleElement.setAttributeNode(outputAttr);
-
-            Attr notesAttr = doc.createAttribute("NOTES");
-            notesAttr.appendChild(doc.createTextNode(module.getNotes()));
-            moduleElement.setAttributeNode(notesAttr);
-
-            Element parametersElement = prepareParametersXML(doc,module.getAllParameters());
-            moduleElement.appendChild(parametersElement);
+            // Adding module details
+            module.appendXMLAttributes(moduleElement);
 
             // Adding parameters from this module
-//            Element paramElement = doc.createElement("PARAMS");
-//            ParameterCollection paraRefs = module.getAllParameters();
-//            paramElement = prepareRefsXML(doc, paramElement,paraRefs,"PARAM");
-//            moduleElement.appendChild(paramElement);
+            Element paramElement = doc.createElement("PARAMS");
+            ParameterCollection paraRefs = module.getAllParameters();
+            paramElement = prepareRefsXML(doc, paramElement,paraRefs,"PARAM");
+            moduleElement.appendChild(paramElement);
 
             // Adding measurement references from this module
             Element imageMeasurementsElement = doc.createElement("IMAGE_MEASUREMENTS");
@@ -159,75 +163,75 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareParametersXML(Document doc, ParameterCollection parameters) {
-        // Adding parameters from this module
-        Element parametersElement = doc.createElement("PARAMETERS");
-
-        for (Parameter currParam:parameters.values()) {
-            // Check if the parameter is to be exported
-            if (!currParam.isExported()) continue;
-
-            // ParameterGroups are treated differently
-            if (currParam.getClass() == ParameterGroup.class) {
-                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
-                Element collectionsElement = doc.createElement("COLLECTIONS");
-
-                Attr nameAttr = doc.createAttribute("NAME");
-                nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
-                collectionsElement.setAttributeNode(nameAttr);
-
-                for (ParameterCollection collection:collections) {
-                    Element collectionElement = doc.createElement("COLLECTION");
-
-                    collectionElement.appendChild(prepareParametersXML(doc,collection));
-                    collectionsElement.appendChild(collectionElement);
-                }
-                parametersElement.appendChild(collectionsElement);
-                continue;
-            } else if (currParam.getClass() == RemoveParameters.class) continue;
-
-            // Adding the name and value of the current parameter
-            Element parameterElement =  doc.createElement("PARAMETER");
-
-            Attr nameAttr = doc.createAttribute("NAME");
-            nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
-            parameterElement.setAttributeNode(nameAttr);
-
-            Attr nickNameAttr = doc.createAttribute("NICKNAME");
-            nickNameAttr.appendChild(doc.createTextNode(currParam.getNickname()));
-            parameterElement.setAttributeNode(nickNameAttr);
-
-            Attr valueAttr = doc.createAttribute("VALUE");
-            if (currParam.getRawStringValue() == null) {
-                valueAttr.appendChild(doc.createTextNode(""));
-            } else {
-                valueAttr.appendChild(doc.createTextNode(currParam.getRawStringValue()));
-            }
-            parameterElement.setAttributeNode(valueAttr);
-
-            Attr visibleAttr = doc.createAttribute("VISIBLE");
-            visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
-            parameterElement.setAttributeNode(visibleAttr);
-
-            if (currParam.getClass().isInstance(ChildObjectsP.class) && ((ChildObjectsP) currParam).getParentObjectsName() != null) {
-                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
-                valueSourceAttr.appendChild(doc.createTextNode(((ChildObjectsP) currParam).getParentObjectsName()));
-                parameterElement.setAttributeNode(valueSourceAttr);
-            }
-
-            if (currParam.getClass().isInstance(ParentObjectsP.class) && ((ParentObjectsP) currParam).getChildObjectsName() != null) {
-                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
-                valueSourceAttr.appendChild(doc.createTextNode(((ParentObjectsP) currParam).getChildObjectsName()));
-                parameterElement.setAttributeNode(valueSourceAttr);
-            }
-
-            parametersElement.appendChild(parameterElement);
-
-        }
-
-        return parametersElement;
-
-    }
+//    public static Element prepareParametersXML(Document doc, ParameterCollection parameters) {
+//        // Adding parameters from this module
+//        Element parametersElement = doc.createElement("PARAMETERS");
+//
+//        for (Parameter currParam:parameters.values()) {
+//            // Check if the parameter is to be exported
+//            if (!currParam.isExported()) continue;
+//
+//            // ParameterGroups are treated differently
+//            if (currParam.getClass() == ParameterGroup.class) {
+//                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
+//                Element collectionsElement = doc.createElement("COLLECTIONS");
+//
+//                Attr nameAttr = doc.createAttribute("NAME");
+//                nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
+//                collectionsElement.setAttributeNode(nameAttr);
+//
+//                for (ParameterCollection collection:collections) {
+//                    Element collectionElement = doc.createElement("COLLECTION");
+//
+//                    collectionElement.appendChild(prepareParametersXML(doc,collection));
+//                    collectionsElement.appendChild(collectionElement);
+//                }
+//                parametersElement.appendChild(collectionsElement);
+//                continue;
+//            } else if (currParam.getClass() == RemoveParameters.class) continue;
+//
+//            // Adding the name and value of the current parameter
+//            Element parameterElement =  doc.createElement("PARAMETER");
+//
+//            Attr nameAttr = doc.createAttribute("NAME");
+//            nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
+//            parameterElement.setAttributeNode(nameAttr);
+//
+//            Attr nickNameAttr = doc.createAttribute("NICKNAME");
+//            nickNameAttr.appendChild(doc.createTextNode(currParam.getNickname()));
+//            parameterElement.setAttributeNode(nickNameAttr);
+//
+//            Attr valueAttr = doc.createAttribute("VALUE");
+//            if (currParam.getRawStringValue() == null) {
+//                valueAttr.appendChild(doc.createTextNode(""));
+//            } else {
+//                valueAttr.appendChild(doc.createTextNode(currParam.getRawStringValue()));
+//            }
+//            parameterElement.setAttributeNode(valueAttr);
+//
+//            Attr visibleAttr = doc.createAttribute("VISIBLE");
+//            visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
+//            parameterElement.setAttributeNode(visibleAttr);
+//
+////            if (currParam.getClass().isInstance(ChildObjectsP.class) && ((ChildObjectsP) currParam).getParentObjectsName() != null) {
+////                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+////                valueSourceAttr.appendChild(doc.createTextNode(((ChildObjectsP) currParam).getParentObjectsName()));
+////                parameterElement.setAttributeNode(valueSourceAttr);
+////            }
+////
+////            if (currParam.getClass().isInstance(ParentObjectsP.class) && ((ParentObjectsP) currParam).getChildObjectsName() != null) {
+////                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+////                valueSourceAttr.appendChild(doc.createTextNode(((ParentObjectsP) currParam).getChildObjectsName()));
+////                parameterElement.setAttributeNode(valueSourceAttr);
+////            }
+//
+//            parametersElement.appendChild(parameterElement);
+//
+//        }
+//
+//        return parametersElement;
+//
+//    }
 
     public static Element prepareRefsXML(Document doc, Element refsElement, RefCollection<? extends Ref> refs, String groupName) {
         if (refs == null) return refsElement;

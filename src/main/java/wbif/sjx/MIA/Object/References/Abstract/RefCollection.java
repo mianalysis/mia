@@ -1,7 +1,8 @@
 package wbif.sjx.MIA.Object.References.Abstract;
 
-import java.util.LinkedHashMap;
-import java.util.TreeMap;
+import java.util.Collection;
 
-public abstract class RefCollection<R extends Ref> extends LinkedHashMap<String,R> {
+public interface RefCollection<R extends Ref> {
+    public Collection<R> values();
+    public boolean add(R ref);
 }

@@ -272,15 +272,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //
 //        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.addCoord(12,25,40);
-//        objects2.add(obj5);
+//        objects2.addRef(obj5);
 //
 //        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.addCoord(20,35,10);
-//        objects2.add(obj6);
+//        objects2.addRef(obj6);
 //
 //        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.addCoord(35,20,20);
-//        objects2.add(obj7);
+//        objects2.addRef(obj7);
 
 
         // Testing against first object in set
@@ -357,15 +357,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //
 //        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.addCoord(12,25,40);
-//        objects2.add(obj5);
+//        objects2.addRef(obj5);
 //
 //        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.addCoord(20,35,10);
-//        objects2.add(obj6);
+//        objects2.addRef(obj6);
 //
 //        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.addCoord(35,20,20);
-//        objects2.add(obj7);
+//        objects2.addRef(obj7);
 
 
         // Testing against first object in set
@@ -442,15 +442,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //
 //        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.addCoord(12,25,40);
-//        objects2.add(obj5);
+//        objects2.addRef(obj5);
 //
 //        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.addCoord(20,35,10);
-//        objects2.add(obj6);
+//        objects2.addRef(obj6);
 //
 //        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.addCoord(35,20,20);
-//        objects2.add(obj7);
+//        objects2.addRef(obj7);
 
 
         // Testing against first object in set

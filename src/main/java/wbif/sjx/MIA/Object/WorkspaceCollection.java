@@ -61,7 +61,7 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
                     metadataWorkspace.addObjects(new ObjCollection(objName));
                 }
 
-                // If a collection of these objects already exists, add to this
+                // If a collection of these objects already exists, addRef to this
                 ObjCollection coreSet = metadataWorkspace.getObjectSet(objName);
                 for (Obj currObject:currObjects.get(objName).values()) {
                     // Adding the object and incrementing the count (a new ID has to be assigned for this to prevent

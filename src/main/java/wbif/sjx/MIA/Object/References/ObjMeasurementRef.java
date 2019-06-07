@@ -2,15 +2,16 @@ package wbif.sjx.MIA.Object.References;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 public class ObjMeasurementRef extends SummaryRef {
     private String objectsName = "";
     private String description = "";
 
-    public ObjMeasurementRef(NamedNodeMap attributes) {
-        super(attributes);
-        setAttributesFromXML(attributes);
+    public ObjMeasurementRef(Node node) {
+        super(node);
+        setAttributesFromXML(node);
     }
 
     public ObjMeasurementRef(String name) {
@@ -32,13 +33,14 @@ public class ObjMeasurementRef extends SummaryRef {
     }
 
     @Override
-    public void setAttributesFromXML(NamedNodeMap attributes) {
-        super.setAttributesFromXML(attributes);
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
 
-        if (attributes.getNamedItem("OBJECT_NAME") == null) {
-            this.objectsName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
+        NamedNodeMap map = node.getAttributes();
+        if (map.getNamedItem("OBJECT_NAME") == null) {
+            this.objectsName = map.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
         } else {
-            this.objectsName = attributes.getNamedItem("OBJECT_NAME").getNodeValue();
+            this.objectsName = map.getNamedItem("OBJECT_NAME").getNodeValue();
         }
     }
 

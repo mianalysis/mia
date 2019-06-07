@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Object.References.Abstract;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public abstract class SummaryRef extends ExportableRef {
     private boolean exportMean = true;
@@ -14,8 +15,8 @@ public abstract class SummaryRef extends ExportableRef {
         super(name);
     }
 
-    public SummaryRef(NamedNodeMap attributes) {
-        super(attributes);
+    public SummaryRef(Node node) {
+        super(node);
     }
 
     public boolean isExportMean() {
@@ -88,27 +89,29 @@ public abstract class SummaryRef extends ExportableRef {
     }
 
     @Override
-    public void setAttributesFromXML(NamedNodeMap attributes) {
-        super.setAttributesFromXML(attributes);
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
 
-        if (attributes.getNamedItem("EXPORT_MEAN") != null) {
-            this.exportMean = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue());
+        NamedNodeMap map = node.getAttributes();
+
+        if (map.getNamedItem("EXPORT_MEAN") != null) {
+            this.exportMean = Boolean.parseBoolean(map.getNamedItem("EXPORT_MEAN").getNodeValue());
         }
 
-        if (attributes.getNamedItem("EXPORT_MIN") != null) {
-            this.exportMin = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue());
+        if (map.getNamedItem("EXPORT_MIN") != null) {
+            this.exportMin = Boolean.parseBoolean(map.getNamedItem("EXPORT_MIN").getNodeValue());
         }
 
-        if (attributes.getNamedItem("EXPORT_MAX") != null) {
-            this.exportMax = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue());
+        if (map.getNamedItem("EXPORT_MAX") != null) {
+            this.exportMax = Boolean.parseBoolean(map.getNamedItem("EXPORT_MAX").getNodeValue());
         }
 
-        if (attributes.getNamedItem("EXPORT_SUM") != null) {
-            this.exportSum = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue());
+        if (map.getNamedItem("EXPORT_SUM") != null) {
+            this.exportSum = Boolean.parseBoolean(map.getNamedItem("EXPORT_SUM").getNodeValue());
         }
 
-        if (attributes.getNamedItem("EXPORT_STD") != null) {
-            this.exportStd = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue());
+        if (map.getNamedItem("EXPORT_STD") != null) {
+            this.exportStd = Boolean.parseBoolean(map.getNamedItem("EXPORT_STD").getNodeValue());
         }
     }
 }

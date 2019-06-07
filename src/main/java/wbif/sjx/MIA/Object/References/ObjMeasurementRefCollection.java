@@ -2,7 +2,9 @@ package wbif.sjx.MIA.Object.References;
 
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-public class ObjMeasurementRefCollection extends RefCollection<ObjMeasurementRef> {
+import java.util.TreeMap;
+
+public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRef> implements RefCollection<ObjMeasurementRef> {
     public void updateImageObjectName(String measurementName, String objectsName) {
         get(measurementName).setObjectsName(objectsName);
     }
@@ -21,7 +23,8 @@ public class ObjMeasurementRefCollection extends RefCollection<ObjMeasurementRef
 
     }
 
-    public void add(ObjMeasurementRef ref) {
+    public boolean add(ObjMeasurementRef ref) {
         put(ref.getName(),ref);
+        return true;
     }
 }

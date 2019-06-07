@@ -3,17 +3,18 @@ package wbif.sjx.MIA.Object.Parameters;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class ParameterCollection extends RefCollection<Parameter> {
+public class ParameterCollection extends LinkedHashMap<String,Parameter> implements RefCollection<Parameter> {
 
     // PUBLIC METHODS
 
-    public void add(Parameter parameter) {
+    public boolean add(Parameter parameter) {
         put(parameter.getName(),parameter);
+        return true;
     }
 
     public void addAll(ParameterCollection parameterCollection) {
