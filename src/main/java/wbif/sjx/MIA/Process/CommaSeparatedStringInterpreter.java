@@ -37,15 +37,13 @@ public class CommaSeparatedStringInterpreter {
             if (singleRangeMatcher.matches()) {
                 int start = Integer.parseInt(singleRangeMatcher.group(1));
                 int end = Integer.parseInt(singleRangeMatcher.group(2));
-//                int interval = (end > start) ? 1 : -1;
-//                int nValues = (end-start)/interval + 1;
-//
-//                for (int i=0;i<nValues;i++) {
-//                    values.add(start);
-//                    start = start + interval;
-//                }
+                int interval = (end >= start) ? 1 : -1;
+                int nValues = (end-start)/interval + 1;
 
-                for (int value=start;value<=end;value++) values.add(value);
+                for (int i=0;i<nValues;i++) {
+                    values.add(start);
+                    start = start + interval;
+                }
 
             } else if (singleRangeEndMatcher.matches()) {
                 // If the numbers should proceed to the end, the last three added are the starting number, the starting

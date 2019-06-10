@@ -6,6 +6,8 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class ExtractSubstackTest extends ModuleTest {
@@ -80,7 +82,7 @@ public class ExtractSubstackTest extends ModuleTest {
         String inputRange = "8-4";
 
         int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{};
+        int[] expected = new int[]{4,5,6,7,8};
 
         assertArrayEquals(expected,actual);
 
@@ -102,7 +104,7 @@ public class ExtractSubstackTest extends ModuleTest {
         String inputRange = "4-8,15-12";
 
         int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(inputRange,true);
-        int[] expected = new int[]{4,5,6,7,8};
+        int[] expected = new int[]{4,5,6,7,8,12,13,14,15};
 
         assertArrayEquals(expected,actual);
 

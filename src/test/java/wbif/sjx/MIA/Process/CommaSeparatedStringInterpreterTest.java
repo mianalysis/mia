@@ -45,7 +45,18 @@ public class CommaSeparatedStringInterpreterTest {
         String string = "5--2";
 
         int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(string,true);
-        int[] expected = new int[]{};
+        int[] expected = new int[]{-2,-1,0,1,2,3,4,5};
+
+        assertArrayEquals(expected,actual);
+
+    }
+
+    @Test
+    public void testInterpretIntegersUnorderedPositiveStartNegativeEnd() {
+        String string = "5--2";
+
+        int[] actual = CommaSeparatedStringInterpreter.interpretIntegers(string,false);
+        int[] expected = new int[]{5,4,3,2,1,0,-1,-2};
 
         assertArrayEquals(expected,actual);
 

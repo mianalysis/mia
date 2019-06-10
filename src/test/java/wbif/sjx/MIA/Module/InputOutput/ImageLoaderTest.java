@@ -520,7 +520,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
-        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"6");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"7-8");
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
