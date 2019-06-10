@@ -76,7 +76,7 @@ public class AnalysisReader {
         Version loadedVersion = new Version(doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION").getNodeValue());
 
         // If the loaded version is older than version 0.10.0 use the legacy analysis reader
-        if(thisVersion.compareTo(loadedVersion) == 1) {
+        if(thisVersion.compareTo(loadedVersion) > 0) {
             return LegacyAnalysisReader.loadAnalysis(xml);
         }
 
@@ -131,7 +131,7 @@ public class AnalysisReader {
                 boolean foundParameters = false;
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
-                        case "PARAMS":
+                        case "PARAMETERS":
                             populateParameters(moduleChildNodes.item(j), module);
                             break;
 

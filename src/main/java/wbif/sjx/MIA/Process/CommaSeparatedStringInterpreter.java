@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class CommaSeparatedStringInterpreter {
     public static int[] interpretIntegers(String range, boolean ascendingOrder) {
@@ -15,11 +16,11 @@ public class CommaSeparatedStringInterpreter {
         range = range.replaceAll("\\s","");
 
         // Setting patterns for ranges and values
-        Pattern singleRangePattern = Pattern.compile("^(\\d+)-(\\d+)$");
-        Pattern singleRangeEndPattern = Pattern.compile("^(\\d+)-end$");
-        Pattern intervalRangePattern = Pattern.compile("^(\\d+)-(\\d+)-(\\d+)$");
-        Pattern intervalRangeEndPattern = Pattern.compile("^(\\d+)-end-(\\d+)$");
-        Pattern singleValuePattern = Pattern.compile("^\\d+$");
+        Pattern singleRangePattern = Pattern.compile("^([-]?[\\d]+)-([-]?[\\d]+)$");
+        Pattern singleRangeEndPattern = Pattern.compile("^([-]?[\\d]+)-end$");
+        Pattern intervalRangePattern = Pattern.compile("^([-]?[\\d]+)-([-]?[\\d]+)-([-]?[\\d]+)$");
+        Pattern intervalRangeEndPattern = Pattern.compile("^([-]?[\\d]+)-end-([-]?[\\d]+)$");
+        Pattern singleValuePattern = Pattern.compile("^[-]?[\\d]+$");
 
         // First, splitting comma-delimited sections
         StringTokenizer stringTokenizer = new StringTokenizer(range,",");
@@ -36,6 +37,13 @@ public class CommaSeparatedStringInterpreter {
             if (singleRangeMatcher.matches()) {
                 int start = Integer.parseInt(singleRangeMatcher.group(1));
                 int end = Integer.parseInt(singleRangeMatcher.group(2));
+//                int interval = (end > start) ? 1 : -1;
+//                int nValues = (end-start)/interval + 1;
+//
+//                for (int i=0;i<nValues;i++) {
+//                    values.add(start);
+//                    start = start + interval;
+//                }
 
                 for (int value=start;value<=end;value++) values.add(value);
 
@@ -52,8 +60,12 @@ public class CommaSeparatedStringInterpreter {
                 int start = Integer.parseInt(intervalRangeMatcher.group(1));
                 int end = Integer.parseInt(intervalRangeMatcher.group(2));
                 int interval = Integer.parseInt(intervalRangeMatcher.group(3));
+                int nValues = (end-start)/interval + 1;
 
-                for (int value=start;value<=end;value = value + interval) values.add(value);
+                for (int i=0;i<nValues;i++) {
+                    values.add(start);
+                    start = start + interval;
+                }
 
             } else if (intervalRangeEndMatcher.matches()) {
                 // If the numbers should proceed to the end, the last three added are the starting number, the starting

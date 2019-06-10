@@ -137,7 +137,7 @@ public class BooleanPTest {
         assertEquals("TestBoo",namedNodeMap.getNamedItem("NAME").getNodeValue());
         assertEquals("TestBoo",namedNodeMap.getNamedItem("NICKNAME").getNodeValue());
         assertEquals("true",namedNodeMap.getNamedItem("VALUE").getNodeValue());
-        assertEquals("true",namedNodeMap.getNamedItem("VISIBLE").getNodeValue());
+        assertEquals("false",namedNodeMap.getNamedItem("VISIBLE").getNodeValue());
 
     }
 

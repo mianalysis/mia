@@ -221,7 +221,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             for (int c:channelsList) {
                 int countT = 1;
                 for (int t:framesList) {
-                    int idx = reader.getIndex(z-1, c-1, t-1);
+                    int idx;
+                    try {
+                        idx = reader.getIndex(z - 1, c - 1, t - 1);
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Indices out of range for image \""+path+"\" at c="+(c-1)+", z="+(z-1)+", t="+(t-1));
+                        return null;
+                    }
+
                     ImageProcessor ip = reader.openProcessors(idx,left,top,width,height)[0];
 
                     // If forcing bit depth
