@@ -33,7 +33,7 @@ public class DoubleP extends TextType {
         this.value = String.valueOf(value);
     }
 
-    public void setValue(String value) {
+    public void setValue(String value) throws NumberFormatException {
         // Checking this is valid
         if (GlobalVariables.containsMetadata(value)) {
             this.value = value;
@@ -42,7 +42,7 @@ public class DoubleP extends TextType {
                 Double.parseDouble(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                System.err.println("Must be a double-precision number or metadata handle (e.g. ${name})");
+                System.err.println("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or metadata handle (e.g. ${name})");
             }
         }
     }
@@ -64,7 +64,7 @@ public class DoubleP extends TextType {
     }
 
     @Override
-    public <T> T getValue() {
+    public <T> T getValue() throws NumberFormatException {
         return (T) (Double) Double.parseDouble(MIA.getGlobalVariables().convertString(value));
     }
 
