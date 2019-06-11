@@ -25,7 +25,7 @@ import wbif.sjx.common.Filters.RidgeEnhancement;
 
 
 /**
- * Created by sc13967 on 30/05/2017.
+ * Created by Stephen on 30/05/2017.
  */
 public class FilterImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -114,8 +114,6 @@ public class FilterImage extends Module {
         }
 
         RankFilters filter = new RankFilters();
-        int count = 0;
-        int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
@@ -319,9 +317,7 @@ public class FilterImage extends Module {
         int windowHalfWidth = parameters.getValue(WINDOW_HALF_WIDTH);
         String windowMode = parameters.getValue(WINDOW_MODE);
 
-        if (calibratedUnits) {
-            filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
-        }
+        if (calibratedUnits) filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = inputImagePlus.duplicate();}
@@ -383,10 +379,8 @@ public class FilterImage extends Module {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
-
         } else {
             if (showOutput) inputImage.showImage();
-
         }
 
         return true;
