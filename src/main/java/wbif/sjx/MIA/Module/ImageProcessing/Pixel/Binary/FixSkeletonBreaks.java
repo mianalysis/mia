@@ -11,8 +11,7 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.ThirdParty.BreakFixer;
-//import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
+import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
 
 public class FixSkeletonBreaks extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
