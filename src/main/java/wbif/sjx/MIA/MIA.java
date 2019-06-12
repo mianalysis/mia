@@ -50,7 +50,6 @@ public class MIA implements PlugIn {
     private static String version = "";
     private static boolean debug = false;
     private static GlobalVariables globalVariables = new GlobalVariables(null);
-    private static boolean macroLock = false;
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
@@ -171,11 +170,4 @@ public class MIA implements PlugIn {
         return globalVariables;
     }
 
-    public static boolean isMacroLocked() {
-        return macroLock;
-    }
-
-    public static void setMacroLock(boolean macroLock) {
-        MIA.macroLock = macroLock;
-    }
 }

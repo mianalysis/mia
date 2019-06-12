@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
@@ -112,15 +113,16 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
 
-        // Applying the macro. Only one macro can be run at a time, so this checks if a macro is already running
-        while (MIA.isMacroLocked()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        // If providing the input image direct from the workspace, hide all open windows while the macro runs
+        ArrayList<ImagePlus> openImages = new ArrayList<>();
+        if (provideInputImage) {
+            String[] imageTitles = WindowManager.getImageTitles();
+            for (String imageTitle:imageTitles) {
+                ImagePlus openImage = WindowManager.getImage(imageTitle);
+                openImages.add(openImage);
+                openImage.hide();
             }
         }
-        MIA.setMacroLock(true);
 
         // Show current image
         int count = 1;
@@ -148,14 +150,16 @@ public class RunMacroOnObjects extends CoreMacroRunner {
                 inputObject.addMeasurement(measurement);
             }
 
-//            // Closing the results table
-//            TextWindow window = ResultsTable.getResultsWindow();
-//            if (window != null) window.close(false);
+            // Closing the results table
+            TextWindow window = ResultsTable.getResultsWindow();
+            if (window != null) window.close(false);
 
         }
 
-        // Releasing the macro lock
-        MIA.setMacroLock(false);
+        // If providing the input image direct from the workspace, re-opening all open windows
+        if (provideInputImage) {
+            for (ImagePlus openImage:openImages) openImage.show();
+        }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 

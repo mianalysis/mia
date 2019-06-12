@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.ImageWindow;
 import ij.macro.Interpreter;
 import ij.macro.MacroRunner;
 import ij.measure.ResultsTable;
@@ -17,6 +18,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -91,16 +93,6 @@ public class RunMacroOnImage extends CoreMacroRunner {
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
 
-        // Applying the macro. Only one macro can be run at a time, so this checks if a macro is already running
-        while (MIA.isMacroLocked()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        MIA.setMacroLock(true);
-
         // Get current image
         Image inputImage = provideInputImage ? workspace.getImage(inputImageName) : null;
         ImagePlus inputImagePlus = (inputImage != null) ? inputImage.getImagePlus().duplicate() : null;
@@ -111,8 +103,24 @@ public class RunMacroOnImage extends CoreMacroRunner {
         // Appending variables to the front of the macro
         String finalMacroText = addVariables(macroText,inputVariables);
 
+        // If providing the input image direct from the workspace, hide all open windows while the macro runs
+        ArrayList<ImagePlus> openImages = new ArrayList<>();
+        if (provideInputImage) {
+            String[] imageTitles = WindowManager.getImageTitles();
+            for (String imageTitle:imageTitles) {
+                ImagePlus openImage = WindowManager.getImage(imageTitle);
+                openImages.add(openImage);
+                openImage.hide();
+            }
+        }
+
         // Running the macro
         inputImagePlus = new Interpreter().runBatchMacro(finalMacroText,inputImagePlus);
+
+        // If providing the input image direct from the workspace, re-opening all open windows
+        if (provideInputImage) {
+            for (ImagePlus openImage:openImages) openImage.show();
+        }
 
         if (interceptOutputImage && inputImagePlus != null) {
             if (applyToInput && inputImage != null) {
@@ -137,9 +145,6 @@ public class RunMacroOnImage extends CoreMacroRunner {
         // Closing the results table
         TextWindow window = ResultsTable.getResultsWindow();
         if (window != null) window.close(false);
-
-        // Releasing the macro lock
-        MIA.setMacroLock(false);
 
         return true;
 
