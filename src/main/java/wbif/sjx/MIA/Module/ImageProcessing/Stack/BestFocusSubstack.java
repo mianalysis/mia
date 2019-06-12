@@ -583,22 +583,22 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 //        MeasurementRef measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE);
 //        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
-//        imageMeasurementRefs.add(measurementRef);
+//        imageMeasurementRefs.addRef(measurementRef);
 //
 //        measurementRef = new MeasurementRef(Measurements.MAX_MEAN_VARIANCE_SLICE);
 //        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
-//        imageMeasurementRefs.add(measurementRef);
+//        imageMeasurementRefs.addRef(measurementRef);
 //
 //        measurementRef = new MeasurementRef(Measurements.MAX_VARIANCE);
 //        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
-//        imageMeasurementRefs.add(measurementRef);
+//        imageMeasurementRefs.addRef(measurementRef);
 //
 //        measurementRef = new MeasurementRef(Measurements.MAX_VARIANCE_SLICE);
 //        measurementRef.setAvailable(true);
 //        measurementRef.setImageObjName(inputImageName);
-//        imageMeasurementRefs.add(measurementRef);
+//        imageMeasurementRefs.addRef(measurementRef);
 //
 //        return imageMeasurementRefs;
 

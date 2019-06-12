@@ -112,13 +112,13 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new InputObjectsP(TRACK_OBJECTS,this));
-//        parameters.add(new FilePathP(CLASSIFICATION_FILE, this));
+//        parameters.addRef(new InputObjectsP(TRACK_OBJECTS,this));
+//        parameters.addRef(new FilePathP(CLASSIFICATION_FILE, this));
 //
 //        ParameterCollection collection = new ParameterCollection();
-//        collection.add(new ObjectMeasurementP(MEASUREMENT,this));
-//        parameters.add(new ParameterGroup(ADD_MEASUREMENT,this,collection));
-//        parameters.add(new BooleanP(REMOVE_MISSING, this,false));
+//        collection.addRef(new ObjectMeasurementP(MEASUREMENT,this));
+//        parameters.addRef(new ParameterGroup(ADD_MEASUREMENT,this,collection));
+//        parameters.addRef(new BooleanP(REMOVE_MISSING, this,false));
 //
 //    }
 //

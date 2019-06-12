@@ -65,7 +65,7 @@ public class EditingPanel extends MainPanel {
         c.gridx = 0;
         c.gridy = 0;
 
-        // Creating buttons to add and remove modules
+        // Creating buttons to addRef and remove modules
         JPanel controlPanel = initialiseControlPanel();
         c.weightx = 0;
         c.weighty = 1;
@@ -224,7 +224,7 @@ public class EditingPanel extends MainPanel {
 
     private void listAvailableModules() {
         try {
-            // Waiting until the add module button has been created
+            // Waiting until the addRef module button has been created
             while (addModuleButton == null) Thread.sleep(100);
 
             addModuleButton.setEnabled(false);

@@ -99,7 +99,7 @@ public class InputControl extends Module {
 
         // Iterating over each filter
         for (ParameterCollection collection:collections) {
-            // If this filter is a filename filter type, add it to the BatchProcessor
+            // If this filter is a filename filter type, addRef it to the BatchProcessor
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
             String filterType = collection.getValue(FILTER_TYPE);
@@ -187,7 +187,7 @@ public class InputControl extends Module {
         HashSet<FileCondition> filters = new HashSet<>();
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
         for (ParameterCollection collection:collections) {
-            // If this filter is a filename filter type, add it to the BatchProcessor
+            // If this filter is a filename filter type, addRef it to the BatchProcessor
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
             String filterType = collection.getValue(FILTER_TYPE);
@@ -258,7 +258,7 @@ public class InputControl extends Module {
                 "will be processed; however, selecting a folder will cause the system to iterate over all files and " +
                 "sub-folders within that folder.  Each file identified here will initialise its own workspace.  " +
                 "<br><br>" +
-                "It is possible to add filters to limit which files are used.  Multiple filters can be applied." +
+                "It is possible to addRef filters to limit which files are used.  Multiple filters can be applied." +
                 "<br><br>" +
                 "n.b. This module simply creates the workspace for subsequent analysis; no images are automatically " +
                 "loaded at this point.  To load image data to the workspace use the \"Load image\" module.";
@@ -282,14 +282,14 @@ public class InputControl extends Module {
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
 
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.EXTENSION,FilterSources.ALL,"Type of filter to add."));
+        collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.EXTENSION,FilterSources.ALL,"Type of filter to addRef."));
         collection.add(new StringP(FILTER_VALUE,this,"","Value to filter filenames against."));
         collection.add(new ChoiceP(FILTER_TYPE,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL,"Control how the present filter operates.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source (e.g. filename or extension).  \"Matches completely (include)\" will process an image if the filter value is exactly the same as the source.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source.  \"Matches completely (exclude)\" will not process an image if the filter value is exactly the same as the source."));
         parameters.add(new ParameterGroup(ADD_FILTER,this,collection,1,"Add another filename filter.  All images to be processed will pass all filters."));
 
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 
-        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Color.RED));
+        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, addRef a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Color.RED));
 
     }
 

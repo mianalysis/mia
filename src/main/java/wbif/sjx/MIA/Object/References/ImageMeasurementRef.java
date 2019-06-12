@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.Workspace;
@@ -15,9 +16,9 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
     private String imageName = "";
     private String description = "";
 
-    public ImageMeasurementRef(NamedNodeMap attributes) {
-        super(attributes);
-        setAttributesFromXML(attributes);
+    public ImageMeasurementRef(Node node) {
+        super(node);
+        setAttributesFromXML(node);
     }
 
     public ImageMeasurementRef(String name) {
@@ -39,13 +40,14 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
     }
 
     @Override
-    public void setAttributesFromXML(NamedNodeMap attributes) {
-        super.setAttributesFromXML(attributes);
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
 
-        if (attributes.getNamedItem("IMAGE_NAME") == null) {
-            this.imageName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
+        NamedNodeMap map = node.getAttributes();
+        if (map.getNamedItem("IMAGE_NAME") == null) {
+            this.imageName = map.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
         } else {
-            this.imageName = attributes.getNamedItem("IMAGE_NAME").getNodeValue();
+            this.imageName = map.getNamedItem("IMAGE_NAME").getNodeValue();
         }
     }
 

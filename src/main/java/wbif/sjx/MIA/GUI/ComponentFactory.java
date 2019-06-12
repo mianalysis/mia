@@ -54,7 +54,7 @@ public class ComponentFactory {
             paramPanel.add(parameterComponent,c);
 
         } else if (parameter instanceof ParamSeparatorP) {
-            if (module.updateAndGetParameters().iterator().next() == parameter) {
+            if (module.updateAndGetParameters().values().iterator().next() == parameter) {
                 c.insets = new Insets(0, 5, 5, 8);
             } else {
                 c.insets = new Insets(30, 5, 5, 8);
@@ -286,6 +286,7 @@ public class ComponentFactory {
 
         JLabel label = new JLabel();
         label.setText(module.getNickname());
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setForeground(Color.BLUE);
         c.weightx = 0;
         c.gridx++;
@@ -382,7 +383,7 @@ public class ComponentFactory {
     }
 
     private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c, boolean editable) {
-        for (Parameter parameter : parameters) {
+        for (Parameter parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {
                 LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) parameter).getCollections();
                 for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c,editable);
@@ -566,18 +567,18 @@ public class ComponentFactory {
 //        separator.setOrientation(JSeparator.HORIZONTAL);
 //        separator.setPreferredSize(new Dimension(elementHeight,-1));
 //        c.weightx = 1;
-//        summaryPanel.add(separator,c);
+//        summaryPanel.addRef(separator,c);
 //
 //        JPanel controlPanel = createExportControls(ref,ExportCheck.Type.ALL);
 //        c.weightx = 0;
 //        c.gridx++;
-//        summaryPanel.add(controlPanel,c);
+//        summaryPanel.addRef(controlPanel,c);
 //
 //        separator= new JSeparator();
 //        separator.setOrientation(JSeparator.HORIZONTAL);
 //        separator.setPreferredSize(new Dimension(elementHeight,-1));
 //        c.gridx++;
-//        summaryPanel.add(separator,c);
+//        summaryPanel.addRef(separator,c);
 //
 //        return summaryPanel;
 //    }

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Object.References.Abstract;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public abstract class Ref {
     protected final String name;
@@ -11,6 +12,12 @@ public abstract class Ref {
     public Ref(String name) {
         this.name = name;
         this.nickname = name;
+    }
+
+    public Ref(Node node) {
+        NamedNodeMap map = node.getAttributes();
+        this.name = map.getNamedItem("NAME").getNodeValue();
+        this.nickname = map.getNamedItem("NAME").getNodeValue();
     }
 
     public String getName() {
@@ -33,11 +40,13 @@ public abstract class Ref {
 
     }
 
-    public void setAttributesFromXML(NamedNodeMap attributes) {
-        if (attributes.getNamedItem("NICKNAME") == null) {
-            nickname = attributes.getNamedItem("NAME").getNodeValue();
+    public void setAttributesFromXML(Node node) {
+        NamedNodeMap map = node.getAttributes();
+
+        if (map.getNamedItem("NICKNAME") == null) {
+            nickname = map.getNamedItem("NAME").getNodeValue();
         } else {
-            nickname = attributes.getNamedItem("NICKNAME").getNodeValue();
+            nickname = map.getNamedItem("NICKNAME").getNodeValue();
         }
     }
 }

@@ -81,7 +81,7 @@ public class FilterByChildren extends CoreFilter {
             }
         }
 
-        // If moving objects, add them to the workspace
+        // If moving objects, addRef them to the workspace
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it

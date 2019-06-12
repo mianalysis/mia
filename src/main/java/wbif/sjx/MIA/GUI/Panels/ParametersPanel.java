@@ -88,7 +88,7 @@ public class ParametersPanel extends JScrollPane {
         c.gridwidth = 1;
         c.insets = new Insets(2, 5, 0, 0);
         if (module.updateAndGetParameters() != null) {
-            for (Parameter parameter : module.updateAndGetParameters()) {
+            for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
                     addAdvancedParameterGroup((ParameterGroup) parameter,c);
                 } else {
@@ -102,14 +102,14 @@ public class ParametersPanel extends JScrollPane {
             MetadataRefCollection metadataRefs = modules.getMetadataRefs();
             addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
 
-            LinkedHashSet<OutputImageP> imageNameParameters = modules.getParametersMatchingType(OutputImageP.class);
+            LinkedHashSet<OutputImageP> imageNameParameters = modules.getAvailableImages(null);
             for (OutputImageP imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getImageName();
                 ImageMeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName);
                 addRefExportControls(measurementReferences,imageName+" (Image)",componentFactory,c);
             }
 
-            LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getParametersMatchingType(OutputObjectsP.class);
+            LinkedHashSet<OutputObjectsP> objectNameParameters = modules.getAvailableObjects(null);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
                 ObjMeasurementRefCollection measurementReferences = modules.getObjectMeasurementRefs(objectName);
@@ -140,7 +140,7 @@ public class ParametersPanel extends JScrollPane {
     }
 
     void addRefExportControls(RefCollection<? extends ExportableRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
-        if (refs.size() == 0) return;
+        if (refs.values().size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,false);
         c.gridx = 0;
@@ -160,7 +160,7 @@ public class ParametersPanel extends JScrollPane {
     }
 
     void addSummaryRefExportControls(RefCollection<? extends SummaryRef> refs, String header, ComponentFactory componentFactory, GridBagConstraints c) {
-        if (refs.size() == 0) return;
+        if (refs.values().size() == 0) return;
 
         JPanel  measurementHeader = componentFactory.createRefExportHeader(header,refs,true);
         c.gridx = 0;
@@ -201,14 +201,14 @@ public class ParametersPanel extends JScrollPane {
 
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters
-            for (Parameter parameter:collection) addAdvancedParameterControl(parameter,c);
+            for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
 
             c.gridy++;
             panel.add(getInvisibleSeparator(), c);
 
         }
 
-        // Adding an add button
+        // Adding an addRef button
         addAdvancedParameterControl(group,c);
 
         c.gridy++;

@@ -5,13 +5,14 @@ import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class RelationshipRefCollection extends RefCollection<RelationshipRef> {
+public class RelationshipRefCollection extends TreeMap<String, RelationshipRef> implements RefCollection<RelationshipRef> {
     public RelationshipRef getOrPut(String parent, String child) {
         String key = parent+" // "+child;
         putIfAbsent((String) key,new RelationshipRef(parent,child));
@@ -19,9 +20,9 @@ public class RelationshipRefCollection extends RefCollection<RelationshipRef> {
 
     }
 
-    public void add(RelationshipRef ref) {
-        String key = ref.getParentName()+" // "+ref.getChildName();
-        put(key,ref);
+    public boolean add(RelationshipRef ref) {
+        put(ref.getParentName()+" // "+ref.getChildName(),ref);
+        return true;
     }
 
     private TreeSet<String> getChildNames(String parentName, boolean useHierarchy, @Nullable String rootName) {

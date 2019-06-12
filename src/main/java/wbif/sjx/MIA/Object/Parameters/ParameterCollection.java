@@ -1,21 +1,30 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class ParameterCollection extends LinkedHashSet<Parameter> {
+public class ParameterCollection extends LinkedHashMap<String,Parameter> implements RefCollection<Parameter> {
 
     // PUBLIC METHODS
 
+    public boolean add(Parameter parameter) {
+        put(parameter.getName(),parameter);
+        return true;
+    }
+
+    public void addAll(ParameterCollection parameterCollection) {
+        for (Parameter parameter:parameterCollection.values()) add(parameter);
+
+    }
+
     public <T extends Parameter> T getParameter(String name) {
-        for (Parameter parameter:this) {
-            if (parameter.getName().equals(name)) return (T) parameter;
-        }
-        return null;
+        return (T) get(name);
+
     }
 
     public <T> T getValue(String name) {
@@ -32,16 +41,11 @@ public class ParameterCollection extends LinkedHashSet<Parameter> {
     }
 
     public void updateVisible(String name, boolean visible) {
-        for (Parameter parameter:this) {
-            if (parameter.getName().equals(name)) {
-                parameter.setVisible(visible);
-                return;
-            }
-        }
+        get(name).setVisible(visible);
     }
 
     public boolean hasVisibleParameters() {
-        for (Parameter parameter:this) {
+        for (Parameter parameter:values()) {
             if (parameter.isVisible()) return true;
 
             if (parameter instanceof ParameterGroup) {

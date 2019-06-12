@@ -8,7 +8,6 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 

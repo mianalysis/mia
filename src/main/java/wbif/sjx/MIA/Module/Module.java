@@ -3,6 +3,10 @@
 package wbif.sjx.MIA.Module;
 
 import ij.Prefs;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -34,7 +38,7 @@ public abstract class Module extends Ref implements Comparable {
 
     // CONSTRUCTOR
 
-    protected Module(String name, ModuleCollection modules) {
+    public Module(String name, ModuleCollection modules) {
         super(name);
         this.modules = modules;
         initialiseParameters();
@@ -144,7 +148,7 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public boolean invalidParameterIsVisible() {
-        for (Parameter parameter:updateAndGetParameters()) {
+        for (Parameter parameter:updateAndGetParameters().values()) {
             if (!parameter.isValid() && parameter.isVisible()) return true;
         }
 
@@ -161,7 +165,7 @@ public abstract class Module extends Ref implements Comparable {
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
         ParameterCollection currParameters = updateAndGetParameters();
-        for (Parameter currParameter : currParameters) {
+        for (Parameter currParameter : currParameters.values()) {
             if (type.isInstance(currParameter)) {
                 parameters.add((T) currParameter);
             }
@@ -247,6 +251,31 @@ public abstract class Module extends Ref implements Comparable {
     @Override
     public int compareTo(Object o) {
         return getName().compareTo(((Module) o).getNotes());
+
+    }
+
+    @Override
+    public void appendXMLAttributes(Element element) {
+        super.appendXMLAttributes(element);
+
+        element.setAttribute("CLASSNAME",getClass().getName());
+        element.setAttribute("ENABLED",String.valueOf(enabled));
+        element.setAttribute("DISABLEABLE",String.valueOf(canBeDisabled));
+        element.setAttribute("SHOW_OUTPUT",String.valueOf(showOutput));
+        element.setAttribute("NOTES",notes);
+
+    }
+
+    @Override
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
+
+        NamedNodeMap map = node.getAttributes();
+
+        this.enabled = Boolean.parseBoolean(map.getNamedItem("ENABLED").getNodeValue());
+        this.canBeDisabled = Boolean.parseBoolean(map.getNamedItem("DISABLEABLE").getNodeValue());
+        this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
+        this.notes = map.getNamedItem("NOTES").getNodeValue();
 
     }
 }

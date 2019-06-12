@@ -31,6 +31,11 @@ public abstract class ChoiceType extends Parameter {
     }
 
     @Override
+    public void setValueFromString(String string) {
+        this.choice = string;
+    }
+
+    @Override
     protected ParameterControl initialiseControl() {
         return new ChoiceArrayParameter(this);
     }

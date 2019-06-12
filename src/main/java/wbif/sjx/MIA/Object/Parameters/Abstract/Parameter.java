@@ -1,5 +1,8 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
@@ -36,6 +39,8 @@ public abstract class Parameter extends Ref {
     public abstract <T> void setValue(T value);
 
     public abstract String getRawStringValue();
+
+    public abstract void setValueFromString(String string);
 
     public abstract boolean verify();
 
@@ -92,5 +97,26 @@ public abstract class Parameter extends Ref {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public void appendXMLAttributes(Element element) {
+        super.appendXMLAttributes(element);
+
+        String stringValue = getRawStringValue();
+        if (stringValue == null) stringValue = "";
+        element.setAttribute("VALUE",getRawStringValue());
+        element.setAttribute("VISIBLE",Boolean.toString(isVisible()));
+
+    }
+
+    @Override
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
+
+        NamedNodeMap map = node.getAttributes();
+        setValueFromString(map.getNamedItem("VALUE").getNodeValue());
+        setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));
+
     }
 }

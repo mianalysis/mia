@@ -1,6 +1,8 @@
 package wbif.sjx.MIA.Object.References.Abstract;
 
-import java.util.TreeMap;
+import java.util.Collection;
 
-public abstract class RefCollection<R extends ExportableRef> extends TreeMap<String,R> {
+public interface RefCollection<R extends Ref> {
+    public Collection<R> values();
+    public boolean add(R ref);
 }

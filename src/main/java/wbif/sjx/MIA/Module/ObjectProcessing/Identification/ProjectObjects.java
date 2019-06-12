@@ -30,7 +30,7 @@ public class ProjectObjects extends Module {
         super("Project objects",modules);
     }
 
-    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
+    public static Obj process(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
 
@@ -91,7 +91,7 @@ public class ProjectObjects extends Module {
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;
             try {
-                outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
+                outputObject = process(inputObject,outputObjectsName, inputObject.is2D());
             } catch (IntegerOverflowException e) {
                 return false;
             }

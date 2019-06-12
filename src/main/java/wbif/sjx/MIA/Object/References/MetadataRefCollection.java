@@ -2,14 +2,9 @@ package wbif.sjx.MIA.Object.References;
 
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.TreeMap;
 
-public class MetadataRefCollection extends RefCollection<MetadataRef> {
-    public MetadataRefCollection() {
-
-    }
-
+public class MetadataRefCollection extends TreeMap<String,MetadataRef> implements RefCollection<MetadataRef> {
     public String[] getMetadataNames() {
         return keySet().toArray(new String[0]);
     }
@@ -19,8 +14,8 @@ public class MetadataRefCollection extends RefCollection<MetadataRef> {
         return super.get(key);
     }
 
-    public void add(MetadataRef metadataRef) {
+    public boolean add(MetadataRef metadataRef) {
         put(metadataRef.getName(), metadataRef);
-
+        return true;
     }
 }

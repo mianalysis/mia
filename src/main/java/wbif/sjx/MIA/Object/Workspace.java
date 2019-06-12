@@ -134,7 +134,7 @@ public class Workspace {
             for (Obj obj:collection.values()) {
                 int t = obj.getT();
 
-                // If there isn't already a Workspace for this time point, add one
+                // If there isn't already a Workspace for this time point, addRef one
                 if (!workspaces.containsKey(t)) {
                     Workspace workspace = new Workspace(ID,null,-1);
                     workspace.setMetadata(metadata);

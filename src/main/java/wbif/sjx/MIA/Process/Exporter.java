@@ -226,7 +226,7 @@ public class Exporter {
         paramRow++;
         paramRow++;
 
-        for (Parameter currParam : parameters) {
+        for (Parameter currParam : parameters.values()) {
             // Check if the parameter is to be exported
             if (!currParam.isExported()) continue;
 

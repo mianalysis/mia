@@ -2,17 +2,19 @@ package wbif.sjx.MIA.Object.References.Abstract;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public abstract class ExportableRef extends Ref {
     private boolean exportIndividual = true;
     private boolean exportGlobal = true; // This is mainly for the GUI
 
-    public ExportableRef(NamedNodeMap attributes) {
-        super(attributes.getNamedItem("NAME").getNodeValue());
-    }
 
     public ExportableRef(String name) {
         super(name);
+    }
+
+    public ExportableRef(Node node) {
+        super(node);
     }
 
     public void setExportGlobal(boolean exportGlobal) {
@@ -45,15 +47,16 @@ public abstract class ExportableRef extends Ref {
 
     }
 
-    public void setAttributesFromXML(NamedNodeMap attributes) {
-        super.setAttributesFromXML(attributes);
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
 
-        if (attributes.getNamedItem("EXPORT_GLOBAL") != null) {
-            exportGlobal = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
+        NamedNodeMap map = node.getAttributes();
+        if (map.getNamedItem("EXPORT_GLOBAL") != null) {
+            exportGlobal = Boolean.parseBoolean(map.getNamedItem("EXPORT_GLOBAL").getNodeValue());
         }
 
-        if (attributes.getNamedItem("EXPORT_INDIVIDUAL") != null) {
-            exportIndividual = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue());
+        if (map.getNamedItem("EXPORT_INDIVIDUAL") != null) {
+            exportIndividual = Boolean.parseBoolean(map.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue());
         }
     }
 }

@@ -360,7 +360,7 @@ public class RelateObjects extends Module {
                 // Testing the minimum overlap requirement
                 if (overlap == 0 || overlap < minOverlap) continue;
 
-                // If the tests are successful, add the link.  If the child has already been linked, but with a smaller
+                // If the tests are successful, addRef the link.  If the child has already been linked, but with a smaller
                 // overlap, remove that link.
                 Obj oldParent = childObject.getParent(parentObject.getName());
                 if (oldParent != null) {

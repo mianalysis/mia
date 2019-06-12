@@ -172,7 +172,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
 
         int count = filter(inputObjects,outputObjects,remove,displayImage);
 
-        // If moving objects, add them to the workspace
+        // If moving objects, addRef them to the workspace
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it

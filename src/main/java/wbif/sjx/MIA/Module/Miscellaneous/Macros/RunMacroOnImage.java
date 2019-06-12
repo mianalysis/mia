@@ -3,7 +3,12 @@ package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.ImageWindow;
+import ij.macro.Interpreter;
+import ij.macro.MacroRunner;
 import ij.measure.ResultsTable;
+import ij.plugin.filter.Analyzer;
+import ij.text.TextWindow;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -13,15 +18,22 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
- * Created by sc13967 on 31/01/2018.
+ * Created by Stephen on 31/01/2018.
  */
 public class RunMacroOnImage extends CoreMacroRunner {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String VARIABLE_SEPARATOR = "Variables input";
+    public static final String VARIABLE_NAME = "Variable name";
+    public static final String VARIABLE_VALUE = "Variable value";
+    public static final String ADD_VARIABLE = "Add variable";
     public static final String MACRO_SEPARATOR = "Macro definition";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
@@ -70,72 +82,69 @@ public class RunMacroOnImage extends CoreMacroRunner {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
+        // Getting a Map of input variable names and their values
+        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
+        LinkedHashMap<String,String> inputVariables = inputVariables(variableGroup,VARIABLE_NAME,VARIABLE_VALUE);
+
         // Getting a list of measurement headings
-        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
+        ParameterGroup measurementGroup = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(measurementGroup,MEASUREMENT_HEADING);
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
 
-        // Applying the macro. Only one macro can be run at a time, so this checks if a macro is already running
-        while (MIA.isMacroLocked()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        // Get current image
+        Image inputImage = provideInputImage ? workspace.getImage(inputImageName) : null;
+        ImagePlus inputImagePlus = (inputImage != null) ? inputImage.getImagePlus().duplicate() : null;
+
+        // If the macro is stored as a file, load this to the macroText string
+        if (macroMode.equals(MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
+
+        // Appending variables to the front of the macro
+        String finalMacroText = addVariables(macroText,inputVariables);
+
+        // If providing the input image direct from the workspace, hide all open windows while the macro runs
+        ArrayList<ImagePlus> openImages = new ArrayList<>();
+        if (provideInputImage) {
+            String[] imageTitles = WindowManager.getImageTitles();
+            for (String imageTitle:imageTitles) {
+                ImagePlus openImage = WindowManager.getImage(imageTitle);
+                openImages.add(openImage);
+                openImage.hide();
             }
         }
-        MIA.setMacroLock(true);
 
-        // Show current image
-        Image inputImage = provideInputImage ? workspace.getImage(inputImageName) : null;
-        ImagePlus inputImagePlus;
-        if (inputImage != null) {
-            inputImagePlus = inputImage.getImagePlus().duplicate();
-            inputImagePlus.show();
+        // Running the macro
+        inputImagePlus = new Interpreter().runBatchMacro(finalMacroText,inputImagePlus);
+
+        // If providing the input image direct from the workspace, re-opening all open windows
+        if (provideInputImage) {
+            for (ImagePlus openImage:openImages) openImage.show();
         }
 
-        // Now run the macro
-        switch (macroMode) {
-            case MacroModes.MACRO_FILE:
-                IJ.runMacroFile(macroFile);
-                break;
-            case MacroModes.MACRO_TEXT:
-                IJ.runMacro(macroText);
-                break;
-        }
-
-        if (interceptOutputImage) {
-            inputImagePlus = IJ.getImage();
-            if (inputImage != null && inputImagePlus != null) {
-                if (applyToInput) {
-                    inputImage.setImagePlus(inputImagePlus);
-                    if (showOutput) inputImage.showImage();
-                } else {
-                    Image outputImage = new Image(outputImageName, inputImagePlus);
-                    workspace.addImage(outputImage);
-                    if (showOutput) outputImage.showImage();
-                }
-
-                // If it hasn't already been hidden or removed, hide it now
-                inputImagePlus.hide();
+        if (interceptOutputImage && inputImagePlus != null) {
+            if (applyToInput && inputImage != null) {
+                inputImage.setImagePlus(inputImagePlus);
+                if (showOutput) inputImage.showImage();
+            } else {
+                Image outputImage = new Image(outputImageName, inputImagePlus);
+                workspace.addImage(outputImage);
+                if (showOutput) outputImage.showImage();
             }
         }
 
         // Intercepting measurements
-        ResultsTable table = ResultsTable.getResultsTable();
-        for (String expectedMeasurement:expectedMeasurements) {
-            Measurement measurement = interceptMeasurement(table,expectedMeasurement);
-            inputImage.addMeasurement(measurement);
+        if (provideInputImage) {
+            ResultsTable table = ResultsTable.getResultsTable();
+            for (String expectedMeasurement : expectedMeasurements) {
+                Measurement measurement = interceptMeasurement(table, expectedMeasurement);
+                inputImage.addMeasurement(measurement);
+            }
         }
 
         // Closing the results table
-        table.reset();
-        Frame resultsFrame = WindowManager.getFrame("Results");
-        if (resultsFrame != null) resultsFrame.dispose();
-
-        // Releasing the macro lock
-        MIA.setMacroLock(false);
+        TextWindow window = ResultsTable.getResultsWindow();
+        if (window != null) window.close(false);
 
         return true;
 
@@ -146,6 +155,12 @@ public class RunMacroOnImage extends CoreMacroRunner {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(VARIABLE_SEPARATOR,this));
+        ParameterCollection variableCollection = new ParameterCollection();
+        variableCollection.add(new StringP(VARIABLE_NAME,this));
+        variableCollection.add(new StringP(VARIABLE_VALUE,this));
+        parameters.add(new ParameterGroup(ADD_VARIABLE,this,variableCollection));
 
         parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
@@ -159,9 +174,9 @@ public class RunMacroOnImage extends CoreMacroRunner {
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        ParameterCollection collection = new ParameterCollection();
-        collection.add(new StringP(MEASUREMENT_HEADING,this));
-        parameters.add(new ParameterGroup(ADD_INTERCEPTED_MEASUREMENT,this,collection));
+        ParameterCollection measurementCollection = new ParameterCollection();
+        measurementCollection.add(new StringP(MEASUREMENT_HEADING,this));
+        parameters.add(new ParameterGroup(ADD_INTERCEPTED_MEASUREMENT,this,measurementCollection));
 
     }
 
@@ -174,6 +189,9 @@ public class RunMacroOnImage extends CoreMacroRunner {
         if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
+
+        returnedParameters.add(parameters.getParameter(VARIABLE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
@@ -200,8 +218,10 @@ public class RunMacroOnImage extends CoreMacroRunner {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT));
+        if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+            returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT));
+        }
 
         return returnedParameters;
 

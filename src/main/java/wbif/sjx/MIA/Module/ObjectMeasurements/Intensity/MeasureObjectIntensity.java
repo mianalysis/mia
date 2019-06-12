@@ -1,4 +1,4 @@
-// TODO: Could add an optional parameter to select the channel of the input image to use for measurement
+// TODO: Could addRef an optional parameter to select the channel of the input image to use for measurement
 
 package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 

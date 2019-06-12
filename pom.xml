@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.9.33</version>
+    <version>0.10.0</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -180,6 +180,11 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>AnalyzeSkeleton_</artifactId>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>Auto_Local_Threshold</artifactId>
             <scope>${myscope}</scope>
         </dependency>
@@ -274,12 +279,12 @@
         </dependency>
 
         <dependency>
-            <!--            <groupId>wbif.sjx</groupId>-->
-            <!--            <artifactId>Common</artifactId>-->
-            <!--            <version>1.4.32</version>-->
+<!--            <groupId>wbif.sjx</groupId>-->
+<!--            <artifactId>Common</artifactId>-->
+<!--            <version>1.4.33</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.32</version>
+            <version>1.4.33</version>
         </dependency>
     </dependencies>
 

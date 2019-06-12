@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
+import fiji.plugin.trackmate.util.Version;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
@@ -71,6 +72,14 @@ public class AnalysisReader {
         Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
         doc.getDocumentElement().normalize();
 
+        Version thisVersion = new Version("0.10.0");
+        Version loadedVersion = new Version(doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION").getNodeValue());
+
+        // If the loaded version is older than version 0.10.0 use the legacy analysis reader
+        if(thisVersion.compareTo(loadedVersion) > 0) {
+            return LegacyAnalysisReader.loadAnalysis(xml);
+        }
+
         Analysis analysis = new Analysis();
         ModuleCollection modules = analysis.getModules();
 
@@ -86,20 +95,18 @@ public class AnalysisReader {
             Module module = initialiseModule(moduleNode,modules,availableModules);
             if (module == null) continue;
 
+            module.setAttributesFromXML(moduleNode);
+
             // If the module is an input, treat it differently
             if (module.getClass().isInstance(new GlobalVariables(modules))) {
-                addSingleInstanceSpecificComponents(module,moduleNode);
                 MIA.setGlobalVariables((GlobalVariables) module);
             } else if (module.getClass().isInstance(new InputControl(modules))) {
-                addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setInputControl((InputControl) module);
 
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
-                addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setOutputControl((OutputControl) module);
 
             } else {
-                addStandardModuleSpecificComponents(module, moduleNode);
                 modules.add(module);
             }
         }
@@ -112,19 +119,12 @@ public class AnalysisReader {
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-        String fullModuleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
-        String moduleName = FilenameUtils.getExtension(fullModuleName);
+        String className = moduleAttributes.getNamedItem("CLASSNAME").getNodeValue();
+        String moduleName = FilenameUtils.getExtension(className);
 
         for (Class<?> clazz:availableModules) {
             if (moduleName.equals(clazz.getSimpleName())) {
                 Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
-
-                if (moduleAttributes.getNamedItem("NICKNAME") != null) {
-                    String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
-                    module.setNickname(moduleNickname);
-                } else {
-                    module.setNickname(module.getName());
-                }
 
                 // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
@@ -132,12 +132,11 @@ public class AnalysisReader {
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
                         case "PARAMETERS":
-                            populateModuleParameters(moduleChildNodes.item(j), module.getAllParameters(), moduleName);
-                            foundParameters = true;
+                            populateParameters(moduleChildNodes.item(j), module);
                             break;
 
                         case "MEASUREMENTS":
-                            populateModuleMeasurementRefs(moduleChildNodes.item(j), module);
+                            populateLegacyMeasurementRefs(moduleChildNodes.item(j), module);
                             break;
 
                         case "IMAGE_MEASUREMENTS":
@@ -158,9 +157,6 @@ public class AnalysisReader {
                     }
                 }
 
-                // Old file formats had parameters loose within MODULE
-                if (!foundParameters) populateModuleParameters(moduleNode, module.getAllParameters(),moduleName);
-
                 return module;
 
             }
@@ -173,142 +169,7 @@ public class AnalysisReader {
 
     }
 
-    public static void addSingleInstanceSpecificComponents(Module module, Node moduleNode) {
-        NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-
-        if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
-            String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
-            module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
-        } else {
-            module.setCanBeDisabled(false);
-        }
-
-        if (moduleAttributes.getNamedItem("NOTES") != null) {
-            String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
-            module.setNotes(notes);
-        } else {
-            module.setNotes("");
-        }
-    }
-
-    public static void addStandardModuleSpecificComponents(Module module, Node moduleNode) {
-        NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-
-        if (moduleAttributes.getNamedItem("ENABLED") != null) {
-            String isEnabled = moduleAttributes.getNamedItem("ENABLED").getNodeValue();
-            module.setEnabled(Boolean.parseBoolean(isEnabled));
-        } else {
-            module.setEnabled(true);
-        }
-
-        if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
-            String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
-            module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
-        } else {
-            module.setCanBeDisabled(false);
-        }
-
-        if (moduleAttributes.getNamedItem("SHOW_OUTPUT") != null) {
-            String canShowOutput = moduleAttributes.getNamedItem("SHOW_OUTPUT").getNodeValue();
-            module.setShowOutput(Boolean.parseBoolean(canShowOutput));
-        } else {
-            module.setShowOutput(false);
-        }
-
-        if (moduleAttributes.getNamedItem("NOTES") != null) {
-            String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
-            module.setNotes(notes);
-        } else {
-            module.setNotes("");
-        }
-    }
-
-    public static void populateModuleParameters(Node moduleNode, ParameterCollection parameters, String moduleName) {
-        NodeList parameterNodes = moduleNode.getChildNodes();
-        for (int j = 0; j < parameterNodes.getLength(); j++) {
-            Node parameterNode = parameterNodes.item(j);
-
-            if (parameterNode.getNodeName().equals("COLLECTIONS")) {
-                populateModuleParameterGroups(parameterNode,parameters,moduleName);
-                continue;
-            }
-
-            NamedNodeMap parameterAttributes = parameterNode.getAttributes();
-
-            String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
-            String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
-            String parameterValueSource = "";
-            if (parameterAttributes.getNamedItem("VALUESOURCE") != null) {
-                parameterValueSource = parameterAttributes.getNamedItem("VALUESOURCE").getNodeValue();
-            }
-
-            try {
-                Parameter parameter = parameters.getParameter(parameterName);
-                if (parameter instanceof InputImageP) {
-                    ((InputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
-                } else if (parameter instanceof OutputImageP) {
-                    ((OutputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
-                } else if (parameter instanceof InputObjectsP) {
-                    ((InputObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof OutputObjectsP) {
-                    ((OutputObjectsP) parameters.getParameter(parameterName)).setObjectsName(parameterValue);
-                } else if (parameter instanceof RemovedImageP) {
-                    ((RemovedImageP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof RemovedObjectsP) {
-                    ((RemovedObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof StringP) {
-                    ((StringP) parameters.getParameter(parameterName)).setValue(parameterValue);
-                } else if (parameter instanceof IntegerP) {
-                    ((IntegerP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
-                } else if (parameter instanceof DoubleP) {
-                    ((DoubleP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
-                } else if (parameter instanceof BooleanP) {
-                    ((BooleanP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
-                } else if (parameter instanceof ChoiceP) {
-                    ((ChoiceP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof ChildObjectsP) {
-                    ((ChildObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ChildObjectsP) parameters.getParameter(parameterName)).setParentObjectsName(parameterValueSource);
-                } else if (parameter instanceof ParentObjectsP) {
-                    ((ParentObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ParentObjectsP) parameters.getParameter(parameterName)).setChildObjectsName(parameterValueSource);
-                } else if (parameter instanceof ImageMeasurementP) {
-                    ((ImageMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ImageMeasurementP) parameters.getParameter(parameterName)).setImageName(parameterValueSource);
-                } else if (parameter instanceof ObjectMeasurementP) {
-                    ((ObjectMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ObjectMeasurementP) parameters.getParameter(parameterName)).setObjectName(parameterValueSource);
-                } else if (parameter instanceof FilePathP) {
-                    ((FilePathP) parameters.getParameter(parameterName)).setPath(parameterValue);
-                } else if (parameter instanceof FolderPathP) {
-                    ((FolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
-                } else if (parameter instanceof FileFolderPathP) {
-                    ((FileFolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
-                } else if (parameter instanceof MetadataItemP) {
-                    ((MetadataItemP) parameters.getParameter(parameterName)).setChoice(parameterValue);
-                } else if (parameter instanceof TextAreaP) {
-                    ((TextAreaP) parameters.getParameter(parameterName)).setValue(parameterValue);
-                }
-
-                if (parameterAttributes.getNamedItem("VISIBLE") != null) {
-                    boolean visible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
-                    parameter.setVisible(visible);
-                }
-
-                if (parameterAttributes.getNamedItem("NICKNAME") != null) {
-                    String nickname = parameterAttributes.getNamedItem("NICKNAME").getNodeValue();
-                    parameter.setNickname(nickname);
-                }
-
-            } catch (NullPointerException e) {
-                System.err.println("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
-
-            }
-        }
-    }
-
-    @Deprecated
-    public static void populateModuleMeasurementRefs(Node moduleNode, Module module) {
+    public static void populateParameters(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -317,17 +178,32 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String type = attributes.getNamedItem("TYPE").getNodeValue();
+            String parameterName = attributes.getNamedItem("NAME").getNodeValue();
+            Parameter parameter = module.getParameter(parameterName);
+            parameter.setAttributesFromXML(referenceNode);
+
+        }
+    }
+
+    public static void populateLegacyMeasurementRefs(Node moduleNode, Module module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            String type = referenceNode.getAttributes().getNamedItem("TYPE").getNodeValue();
 
             // Acquiring the relevant reference
             switch (type) {
                 case "IMAGE":
-                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(attributes);
+                    ImageMeasurementRef imageMeasurementRef = new ImageMeasurementRef(referenceNode);
                     module.addImageMeasurementRef(imageMeasurementRef);
                     break;
 
                 case "OBJECTS":
-                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(attributes);
+                    ObjMeasurementRef objMeasurementRef = new ObjMeasurementRef(referenceNode);
                     module.addObjectMeasurementRef(objMeasurementRef);
                     break;
             }
@@ -339,13 +215,9 @@ public class AnalysisReader {
 
         // Iterating over all references of this type
         for (int j=0;j<referenceNodes.getLength();j++) {
-            Node referenceNode = referenceNodes.item(j);
-
             // Getting measurement properties
-            NamedNodeMap attributes = referenceNode.getAttributes();
-            MetadataRef ref = new MetadataRef(attributes);
+            MetadataRef ref = new MetadataRef(referenceNodes.item(j));
             module.addMetadataRef(ref);
-
         }
     }
 
@@ -354,13 +226,9 @@ public class AnalysisReader {
 
         // Iterating over all references of this type
         for (int j=0;j<referenceNodes.getLength();j++) {
-            Node referenceNode = referenceNodes.item(j);
-
             // Getting measurement properties
-            NamedNodeMap attributes = referenceNode.getAttributes();
-            ImageMeasurementRef ref = new ImageMeasurementRef(attributes);
+            ImageMeasurementRef ref = new ImageMeasurementRef(referenceNodes.item(j));
             module.addImageMeasurementRef(ref);
-
         }
     }
 
@@ -369,13 +237,9 @@ public class AnalysisReader {
 
         // Iterating over all references of this type
         for (int j=0;j<referenceNodes.getLength();j++) {
-            Node referenceNode = referenceNodes.item(j);
-
             // Getting measurement properties
-            NamedNodeMap attributes = referenceNode.getAttributes();
-            ObjMeasurementRef ref = new ObjMeasurementRef(attributes);
+            ObjMeasurementRef ref = new ObjMeasurementRef(referenceNodes.item(j));
             module.addObjectMeasurementRef(ref);
-
         }
     }
 
@@ -384,31 +248,10 @@ public class AnalysisReader {
 
         // Iterating over all references of this type
         for (int j=0;j<referenceNodes.getLength();j++) {
-            Node referenceNode = referenceNodes.item(j);
-
             // Getting measurement properties
-            NamedNodeMap attributes = referenceNode.getAttributes();
-            RelationshipRef ref = new RelationshipRef(attributes);
+            RelationshipRef ref = new RelationshipRef(referenceNodes.item(j));
             module.addRelationshipRef(ref);
-
         }
     }
 
-    public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters, String moduleName) {
-        NodeList collectionNodes = parameterNode.getChildNodes();
-        String groupName = parameterNode.getAttributes().getNamedItem("NAME").getNodeValue();
-
-        // Loading the ParameterGroup and clearing all previously-initialised parameters
-        ParameterGroup group = parameters.getParameter(groupName);
-        group.removeAllParameters();
-
-        for (int j = 0; j < collectionNodes.getLength(); j++) {
-            ParameterCollection newParameters = group.addParameters();
-
-            Node collectionNode = collectionNodes.item(j);
-            Node newParametersNode = collectionNode.getChildNodes().item(0);
-            populateModuleParameters(newParametersNode,newParameters,moduleName);
-
-        }
-    }
 }
