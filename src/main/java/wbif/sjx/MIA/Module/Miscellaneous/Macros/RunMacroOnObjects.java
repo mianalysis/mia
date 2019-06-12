@@ -3,7 +3,9 @@ package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.macro.Interpreter;
 import ij.measure.ResultsTable;
+import ij.text.TextWindow;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -13,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
 import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
@@ -23,6 +26,10 @@ public class RunMacroOnObjects extends CoreMacroRunner {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String VARIABLE_SEPARATOR = "Variables input";
+    public static final String VARIABLE_NAME = "Variable name";
+    public static final String VARIABLE_VALUE = "Variable value";
+    public static final String ADD_VARIABLE = "Add variable";
     public static final String MACRO_SEPARATOR = "Macro definition";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
@@ -44,6 +51,25 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
     public RunMacroOnObjects(ModuleCollection modules) {
         super("Run macro on objects",modules);
+    }
+
+    static String addObjectToMacroText(String macroString, String objectsName, int objectID) {
+        StringBuilder sb = new StringBuilder();
+
+        // Adding the object name
+        sb.append("objectName=\"");
+        sb.append(objectsName);
+        sb.append("\";\n");
+
+        // Adding the object ID
+        sb.append("ID=");
+        sb.append(objectID);
+        sb.append(";\n");
+
+        sb.append(macroString);
+
+        return sb.toString();
+
     }
 
     @Override
@@ -69,9 +95,19 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         // Getting the input objects
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
+        // Getting a Map of input variable names and their values
+        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
+        LinkedHashMap<String,String> inputVariables = inputVariables(variableGroup,VARIABLE_NAME,VARIABLE_VALUE);
+
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
+
+        // If the macro is stored as a file, load this to the macroText string
+        if (macroMode.equals(RunMacroOnImage.MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
+
+        // Appending variables to the front of the macro
+        macroText = addVariables(macroText,inputVariables);
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
@@ -87,26 +123,23 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         MIA.setMacroLock(true);
 
         // Show current image
+        int count = 1;
+        int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
+            writeMessage("Running macro on object "+(count++)+" of "+nTotal);
+
+            // Appending object name and ID number onto macro
+            String finalMacroText = addObjectToMacroText(macroText,inputObjectsName,inputObject.getID());
+
+            // Get current image
             Image inputImage = provideInputImage ? workspace.getImage(inputImageName) : null;
-            ImagePlus inputImagePlus;
-            if (inputImage != null) {
-                inputImagePlus = inputImage.getImagePlus().duplicate();
-                inputImagePlus.show();
-            }
+            ImagePlus inputImagePlus = (inputImage != null) ? inputImage.getImagePlus().duplicate() : null;
 
             // Creating argument string (objectsName, ID)
             String arg = inputObjectsName + "," +inputObject.getID();
 
-            // Now run the macro
-            switch (macroMode) {
-                case MacroModes.MACRO_FILE:
-                    IJ.runMacroFile(macroFile,arg);
-                    break;
-                case MacroModes.MACRO_TEXT:
-                    IJ.runMacro(macroText,arg);
-                    break;
-            }
+            // Running the macro
+            inputImagePlus = new Interpreter().runBatchMacro(finalMacroText,inputImagePlus);
 
             // Intercepting measurements
             ResultsTable table = ResultsTable.getResultsTable();
@@ -115,10 +148,9 @@ public class RunMacroOnObjects extends CoreMacroRunner {
                 inputObject.addMeasurement(measurement);
             }
 
-            // Closing the results table
-            table.reset();
-            Frame resultsFrame = WindowManager.getFrame("Results");
-            if (resultsFrame != null) resultsFrame.dispose();
+//            // Closing the results table
+//            TextWindow window = ResultsTable.getResultsWindow();
+//            if (window != null) window.close(false);
 
         }
 
@@ -138,11 +170,16 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
 
+        parameters.add(new ParamSeparatorP(VARIABLE_SEPARATOR,this));
+        ParameterCollection variableCollection = new ParameterCollection();
+        variableCollection.add(new StringP(VARIABLE_NAME,this));
+        variableCollection.add(new StringP(VARIABLE_VALUE,this));
+        parameters.add(new ParameterGroup(ADD_VARIABLE,this,variableCollection));
+
         parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
-        parameters.add(new TextAreaP(MACRO_TEXT,this,"// This block of code will provide the input object name, " +
-                "along with its ID number.\n\nrun(\"Enable MIA Extensions\");\nargs = split(getArgument(),\",\");\n" +
-                "inputObjectsName = args[0];\nobjectID = args[1];\n\n",true));
+        parameters.add(new TextAreaP(MACRO_TEXT,this,"// Variables have been pre-defined for the input object name " +
+                "(\"objectName\") and its ID number (\"ID\").\n\nrun(\"Enable MIA Extensions\");\n\n",true));
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
 
@@ -164,6 +201,9 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
+
+        returnedParameters.add(parameters.getParameter(VARIABLE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));

@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
- * Created by sc13967 on 31/01/2018.
+ * Created by Stephen on 31/01/2018.
  */
 public class RunMacroOnImage extends CoreMacroRunner {
     public static final String INPUT_SEPARATOR = "Image input";
@@ -109,10 +109,10 @@ public class RunMacroOnImage extends CoreMacroRunner {
         if (macroMode.equals(MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
-        macroText = addVariables(macroText,inputVariables);
+        String finalMacroText = addVariables(macroText,inputVariables);
 
         // Running the macro
-        inputImagePlus = new Interpreter().runBatchMacro(macroText,inputImagePlus);
+        inputImagePlus = new Interpreter().runBatchMacro(finalMacroText,inputImagePlus);
 
         if (interceptOutputImage && inputImagePlus != null) {
             if (applyToInput && inputImage != null) {

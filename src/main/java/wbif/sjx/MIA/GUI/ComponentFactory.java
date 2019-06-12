@@ -286,6 +286,7 @@ public class ComponentFactory {
 
         JLabel label = new JLabel();
         label.setText(module.getNickname());
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setForeground(Color.BLUE);
         c.weightx = 0;
         c.gridx++;

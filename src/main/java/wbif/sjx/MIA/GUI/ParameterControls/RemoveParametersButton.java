@@ -4,6 +4,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
 
         control = new JButton("Remove");
         control.addActionListener(this);
+        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
     }
 

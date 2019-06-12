@@ -8,10 +8,12 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
 
 public class TextAreaP extends TextType {
     private String value = "";
     private boolean editable = false;
+    private ParameterControl control = null;
 
     public TextAreaP(String name, Module module, boolean editable) {
         super(name, module);
@@ -60,7 +62,8 @@ public class TextAreaP extends TextType {
 
     @Override
     public ParameterControl getControl() {
-        return new TextAreaParameter(this);
+        if (control == null) control = new TextAreaParameter(this);
+        return control;
     }
 
     public boolean isEditable() {

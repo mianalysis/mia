@@ -4,6 +4,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.Parameters.TextAreaP;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -13,9 +14,11 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
     protected JPanel control;
     private  JEditorPane textArea;
     private JScrollPane objectsScrollPane;
+    private String prevString = "";
 
     public TextAreaParameter(TextAreaP parameter) {
         this.parameter = parameter;
+        this.prevString = parameter.getRawStringValue();
 
         control = new JPanel();
 
@@ -31,6 +34,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         textArea.setText(parameter.getRawStringValue());
         textArea.addFocusListener(this);
+        textArea.setCaretPosition(0);
 
         objectsScrollPane = new JScrollPane(textArea);
         control.setPreferredSize(new Dimension(0,250));
@@ -53,10 +57,13 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
 
     @Override
     public void updateControl() {
-        textArea.setText(parameter.getRawStringValue());
-        textArea.repaint();
-        objectsScrollPane.getVerticalScrollBar().setValue(0);
+        if (!parameter.getRawStringValue().equals(prevString)) {
+            this.prevString = parameter.getRawStringValue();
 
+            textArea.setText(parameter.getRawStringValue());
+            textArea.setCaretPosition(0);
+            textArea.repaint();
+        }
     }
 
     @Override
