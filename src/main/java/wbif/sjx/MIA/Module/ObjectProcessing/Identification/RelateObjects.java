@@ -334,6 +334,8 @@ public class RelateObjects extends Module {
         long count = 0;
         String overlapMeasurementName = getFullName(Measurements.OVERLAP_PC,parentObjects.getName());
 
+        if (nCombined == 0) return;
+
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             for (Obj childObject:childObjects.values()) {
