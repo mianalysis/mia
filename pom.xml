@@ -290,23 +290,6 @@
 
     <build>
         <plugins>
-            <!--<plugin>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>exec-maven-plugin</artifactId>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>compile</phase>-->
-            <!--<goals>-->
-            <!--<goal>java</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--<configuration>-->
-            <!--<classpathScope>compile</classpathScope>-->
-            <!--<mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -326,7 +309,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -358,15 +341,6 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>wbif.sjx.MIA.MIA</Main-Class>
-                                        <Specification-Title>${project.artifactId}</Specification-Title>
-                                        <Specification-Version>${project.version}</Specification-Version>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

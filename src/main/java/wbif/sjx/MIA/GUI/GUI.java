@@ -101,8 +101,6 @@ public class GUI {
         updateModules();
         updateParameters();
 
-        System.err.println("nononon");
-
     }
 
     private static void initialiseMenuBar() {
