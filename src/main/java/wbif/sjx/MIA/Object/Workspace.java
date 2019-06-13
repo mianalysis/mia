@@ -58,9 +58,6 @@ public class Workspace {
             objects.remove(name);
         }
 
-        // Running garbage collector
-//        Runtime.getRuntime().gc();
-
     }
 
     public void addImage(Image<?> image) {
@@ -69,14 +66,10 @@ public class Workspace {
 
     public void removeImage(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
-            images.get(name).setImagePlus(null);
+            images.get(name).getImagePlus().close();
         } else {
             images.remove(name);
         }
-
-        // Running garbage collector
-//        Runtime.getRuntime().gc();
-
     }
 
     /**

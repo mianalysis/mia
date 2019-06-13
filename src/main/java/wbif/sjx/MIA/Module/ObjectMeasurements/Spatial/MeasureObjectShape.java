@@ -104,11 +104,10 @@ public class MeasureObjectShape extends Module {
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
-            ArrayList<Integer> x = inputObject.getXCoords();
-
             // Adding the volume measurements
             if (measureVolume) {
-                inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,x.size(),this));
+                int nVoxels = inputObject.getNVoxels();
+                inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,nVoxels,this));
 
                 double containedVolumePx = inputObject.getContainedVolume(true);
                 inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx, this));
@@ -121,7 +120,7 @@ public class MeasureObjectShape extends Module {
             Obj projectedObject = null;
             if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                 try {
-                    projectedObject = ProjectObjects.process(inputObject, "Projected",inputObject.is2D());
+                    projectedObject = ProjectObjects.process(inputObject, "Projected",inputObject.is2D(),false);
                 } catch (IntegerOverflowException e) {
                     return false;
                 }

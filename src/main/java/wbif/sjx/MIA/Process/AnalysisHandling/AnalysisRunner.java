@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Process.BatchProcessor;
-import wbif.sjx.MIA.Process.Exporter;
+import wbif.sjx.MIA.Process.Exporting.Exporter;
 import wbif.sjx.common.FileConditions.NameContainsString;
 
 import java.io.File;

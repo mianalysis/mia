@@ -297,7 +297,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 ipl.getCalibration().pixelDepth = 1.0;
                 ipl.getCalibration().setZUnit("px");
             }
-        } else {
+        } else if (!manualCal) {
             System.err.println("Can't interpret units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
         }
 

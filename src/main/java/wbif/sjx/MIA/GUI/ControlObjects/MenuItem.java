@@ -19,12 +19,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedHashMap;
 
 /**
  * Created by stephen on 28/07/2017.
  */
-public class AnalysisMenuItem extends JMenuItem implements ActionListener {
+public class MenuItem extends JMenuItem implements ActionListener {
     public static final String NEW_PIPELINE = "New pipeline";
     public static final String LOAD_PIPELINE = "Load pipeline";
     public static final String SAVE_PIPELINE = "Save pipeline";
@@ -37,10 +36,9 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String SILENCE_ALL = "Hide output for all modules";
     public static final String BASIC_VIEW = "Switch to basic view";
     public static final String EDITING_VIEW = "Switch to editing view";
-    public static final String TOGGLE_HELP_NOTES = "Toggle help and notes panel";
     public static final String SHOW_GLOBAL_VARIABLES = "Show global variables";
 
-    public AnalysisMenuItem(String command) {
+    public MenuItem(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(command);
         addActionListener(this);
@@ -129,25 +127,20 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                 case BASIC_VIEW:
                     GUI.enableBasicMode();
                     GUI.setActiveModule(null);
-                    setText(AnalysisMenuItem.EDITING_VIEW);
+                    setText(MenuItem.EDITING_VIEW);
                     break;
 
                 case EDITING_VIEW:
                     GUI.enableEditingMode();
                     GUI.setActiveModule(null);
-                    setText(AnalysisMenuItem.BASIC_VIEW);
-                    break;
-
-                case TOGGLE_HELP_NOTES:
-                    GUI.setShowHelpNotes(!GUI.showHelpNotes());
-                    GUI.updatePanel();
-                    GUI.populateHelpNotes();
+                    setText(MenuItem.BASIC_VIEW);
                     break;
 
                 case SHOW_GLOBAL_VARIABLES:
                     GUI.setActiveModule(MIA.getGlobalVariables());
                     GUI.updateParameters();
                     break;
+
             }
 
         } catch (IOException | ClassNotFoundException | ParserConfigurationException | SAXException

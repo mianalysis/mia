@@ -6,6 +6,7 @@ package wbif.sjx.MIA.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
+import wbif.sjx.MIA.GUI.ControlObjects.MenuItem;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
@@ -54,6 +55,7 @@ public class GUI {
     private static final BasicPanel basicPan = new BasicPanel();
     private static final EditingPanel editingPan = new EditingPanel();
     private static MainPanel mainPanel;
+    private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
 
 
     public GUI() throws InstantiationException, IllegalAccessException {
@@ -106,38 +108,47 @@ public class GUI {
         JMenu menu = new JMenu("File");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.NEW_PIPELINE));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.LOAD_PIPELINE));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.SAVE_PIPELINE));
+        menu.add(new MenuItem(MenuItem.NEW_PIPELINE));
+        menu.add(new MenuItem(MenuItem.LOAD_PIPELINE));
+        menu.add(new MenuItem(MenuItem.SAVE_PIPELINE));
 
         // Creating the edit menu
         menu = new JMenu("Edit");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.RESET_ANALYSIS));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.ENABLE_ALL));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.DISABLE_ALL));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.OUTPUT_ALL));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.SILENCE_ALL));
+        menu.add(new MenuItem(MenuItem.RESET_ANALYSIS));
+        menu.add(new MenuItem(MenuItem.ENABLE_ALL));
+        menu.add(new MenuItem(MenuItem.DISABLE_ALL));
+        menu.add(new MenuItem(MenuItem.OUTPUT_ALL));
+        menu.add(new MenuItem(MenuItem.SILENCE_ALL));
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.RUN_ANALYSIS));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.STOP_ANALYSIS));
+        menu.add(new MenuItem(MenuItem.RUN_ANALYSIS));
+        menu.add(new MenuItem(MenuItem.STOP_ANALYSIS));
 
         // Creating the new menu
         menu = new JMenu("View");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
         if (MIA.isDebug()) {
-            menu.add(new AnalysisMenuItem(AnalysisMenuItem.BASIC_VIEW));
+            menu.add(new MenuItem(MenuItem.BASIC_VIEW));
         } else {
-            menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
+            menu.add(new MenuItem(MenuItem.EDITING_VIEW));
         }
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.TOGGLE_HELP_NOTES));
-        menu.add(new AnalysisMenuItem(AnalysisMenuItem.SHOW_GLOBAL_VARIABLES));
+        menu.add(new MenuItem(MenuItem.SHOW_GLOBAL_VARIABLES));
+        helpNotesCheckbox.setSelected(showHelpNotes());
+        menu.add(helpNotesCheckbox);
+
+        // Creating the help menu
+        menu = new JMenu("Help");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        menuBar.add(menu);
+        MenuCheckbox checkbox = new MenuCheckbox(MenuCheckbox.TOGGLE_MEMORY_LOGGING);
+        checkbox.setSelected(MIA.isLogMemory());
+        menu.add(checkbox);
 
     }
 
@@ -149,6 +160,8 @@ public class GUI {
         int minimumWidth = mainPanel.getMinimumWidth();
         int minimumHeight = mainPanel.getMinimumHeight();
         frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
+
+        helpNotesCheckbox.setSelected(showHelpNotes());
 
         frame.pack();
         frame.revalidate();

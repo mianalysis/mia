@@ -30,7 +30,7 @@ public class ProjectObjects extends Module {
         super("Project objects",modules);
     }
 
-    public static Obj process(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
+    public static Obj process(Obj inputObject, String outputObjectsName, boolean is2D, boolean addRelationship) throws IntegerOverflowException {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
 
@@ -55,8 +55,6 @@ public class ProjectObjects extends Module {
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
         Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,is2D);
-        outputObject.addParent(inputObject);
-        inputObject.addChild(outputObject);
 
         // Adding coordinates to the projected object
         for (Double key : projCoords.keySet()) {
@@ -64,6 +62,12 @@ public class ProjectObjects extends Module {
             outputObject.addCoord(x.get(i),y.get(i),0);
         }
         outputObject.setT(inputObject.getT());
+
+        // If adding relationship
+        if (addRelationship) {
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
+        }
 
         return outputObject;
 
@@ -91,7 +95,7 @@ public class ProjectObjects extends Module {
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;
             try {
-                outputObject = process(inputObject,outputObjectsName, inputObject.is2D());
+                outputObject = process(inputObject,outputObjectsName, inputObject.is2D(),true);
             } catch (IntegerOverflowException e) {
                 return false;
             }
