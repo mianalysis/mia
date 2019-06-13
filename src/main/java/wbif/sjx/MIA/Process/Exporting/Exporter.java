@@ -1,7 +1,7 @@
 // TODO: Get measurements to export from analysis.getMacros().getMeasurements().get(String) for each object
 // TODO: Export calibration and units to each object
 
-package wbif.sjx.MIA.Process;
+package wbif.sjx.MIA.Process.Exporting;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;

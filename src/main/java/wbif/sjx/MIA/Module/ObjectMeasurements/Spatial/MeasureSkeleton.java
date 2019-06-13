@@ -86,7 +86,7 @@ public class MeasureSkeleton extends Module {
             // Generate projected object
             Obj projectedObj;
             try {
-                projectedObj = ProjectObjects.process(inputObject,"Projected",true);
+                projectedObj = ProjectObjects.process(inputObject,"Projected",true,false);
             } catch (IntegerOverflowException e) {
                 e.printStackTrace();
                 continue;

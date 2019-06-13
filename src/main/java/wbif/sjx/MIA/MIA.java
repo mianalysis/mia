@@ -50,6 +50,7 @@ public class MIA implements PlugIn {
     private static String version = "";
     private static boolean debug = false;
     private static GlobalVariables globalVariables = new GlobalVariables(null);
+    private static boolean logMemory = false;
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
@@ -170,4 +171,11 @@ public class MIA implements PlugIn {
         return globalVariables;
     }
 
+    public static boolean isLogMemory() {
+        return logMemory;
+    }
+
+    public static void setLogMemory(boolean logMemory) {
+        MIA.logMemory = logMemory;
+    }
 }

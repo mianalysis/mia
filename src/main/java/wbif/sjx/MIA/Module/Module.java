@@ -7,12 +7,17 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.LinkedHashSet;
 
 /**
@@ -64,6 +69,21 @@ public abstract class Module extends Ref implements Comparable {
             writeMessage("Completed");
         } else {
             writeMessage("Did not complete");
+        }
+
+        // If enabled, write the current memory usage to the console
+        if (MIA.isLogMemory()) {
+            double totalMemory = Runtime.getRuntime().totalMemory();
+            double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+            DecimalFormat df = new DecimalFormat("#.0");
+
+            System.err.println("[MEMORY] " + df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
+                    ", module \""+getName()+"\"" +
+                    ", file \""+workspace.getMetadata().getFile() +
+                    ", time "+dateTime);
         }
 
         return status;
