@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
+import wbif.sjx.MIA.Process.Logger;
 
 import javax.swing.*;
 import java.awt.*;

@@ -4,7 +4,6 @@
 
 package wbif.sjx.MIA;
 
-//import ij.ImageJ;
 import ij.Menus;
 import ij.plugin.AVI_Reader;
 import ij.plugin.MacroInstaller;
@@ -21,6 +20,8 @@ import org.scijava.command.CommandModule;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
+import org.scijava.ui.console.ConsolePane;
+import org.scijava.ui.swing.console.ConsolePanel;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Macro.EnableExtensions;
@@ -31,11 +32,15 @@ import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
-import wbif.sjx.MIA.Process.ConsoleFetcher;
 import wbif.sjx.MIA.Process.DependencyValidator;
+import wbif.sjx.MIA.Process.Logger;
 
 import javax.swing.*;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -59,47 +64,28 @@ public class MIA implements Command {
     private static boolean debug = false;
     private static GlobalVariables globalVariables = new GlobalVariables(null);
     private static boolean logMemory = false;
+    private static Logger logger = null;
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
      */
     private static final boolean imagePlusMode = true;
 
+    @Parameter
+    private UIService uiService;
+
     public static void main(String[] args) throws Exception {
         debug = true;
-
-        // Determining the version number from the pom file
-        try {
-            FileReader reader = new FileReader("pom.xml");
-            Model model = new MavenXpp3Reader().read(reader);
-            reader.close();
-            version = new MavenProject(model).getVersion();
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
-        }
-
-        // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
-        ErrorLog errorLog = new ErrorLog();
-        TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
-        PrintStream printStream = new PrintStream(teeOutputStream);
-        System.setErr(printStream);
 
         try {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 ImageJ ij = new ImageJ();
                 ij.ui().showUI();
-                Future<CommandModule> moduleFuture = ij.command().run("wbif.sjx.MIA.Process.ConsoleFetcher",false);
-
-                UIService uiService = ConsoleFetcher.getService();
-
-                System.out.println("Direct "+uiService);
-                new GUI();
 
             } else {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
                 AnalysisRunner.startAnalysis(analysis);
-
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
@@ -111,12 +97,14 @@ public class MIA implements Command {
 
     @Override
     public void run() {
+        logger = new Logger(uiService);
         debug = false;
 
         // Determining the version number from the pom file
         try {
             FileReader reader = new FileReader("pom.xml");
             Model model = new MavenXpp3Reader().read(reader);
+            reader.close();
             version = new MavenProject(model).getVersion();
         } catch (XmlPullParserException | IOException e) {
             version = getClass().getPackage().getImplementationVersion();
@@ -130,11 +118,6 @@ public class MIA implements Command {
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
         PrintStream printStream = new PrintStream(teeOutputStream);
         System.setErr(printStream);
-
-//        Future<CommandModule> moduleFuture = ij.command().run("wbif.sjx.MIA.Process.ConsoleFetcher",false);
-        UIService uiService = ConsoleFetcher.getService();
-
-        System.out.println("From here "+uiService);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -196,5 +179,13 @@ public class MIA implements Command {
 
     public static void setLogMemory(boolean logMemory) {
         MIA.logMemory = logMemory;
+    }
+
+    public static void log(String message, Logger.LoggingLevel level) {
+        logger.log(message,level);
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }
