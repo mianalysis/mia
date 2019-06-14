@@ -4,18 +4,23 @@
 
 package wbif.sjx.MIA;
 
-import ij.IJ;
-import ij.ImageJ;
+//import ij.ImageJ;
 import ij.Menus;
 import ij.plugin.AVI_Reader;
 import ij.plugin.MacroInstaller;
 import ij.plugin.PlugIn;
+import net.imagej.ImageJ;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.scijava.command.Command;
+import org.scijava.command.CommandModule;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
+import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Macro.EnableExtensions;
@@ -26,6 +31,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
+import wbif.sjx.MIA.Process.ConsoleFetcher;
 import wbif.sjx.MIA.Process.DependencyValidator;
 
 import javax.swing.*;
@@ -33,6 +39,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,9 +49,10 @@ import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.VARIABLE_VALUE;
 
 
 /**
- * Created by sc13967 on 14/07/2017.
+ * Created by Stephen Cross on 14/07/2017.
  */
-public class MIA implements PlugIn {
+@Plugin(type = Command.class, menuPath = "Plugins>Bristol WBIF>MIA (Modular Image Analysis)")
+public class MIA implements Command {
     private static final ErrorLog errorLog = new ErrorLog();
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
@@ -79,7 +87,13 @@ public class MIA implements PlugIn {
         try {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                new ImageJ();
+                ImageJ ij = new ImageJ();
+                ij.ui().showUI();
+                Future<CommandModule> moduleFuture = ij.command().run("wbif.sjx.MIA.Process.ConsoleFetcher",false);
+
+                UIService uiService = ConsoleFetcher.getService();
+
+                System.out.println("Direct "+uiService);
                 new GUI();
 
             } else {
@@ -96,7 +110,7 @@ public class MIA implements PlugIn {
     }
 
     @Override
-    public void run(String s) {
+    public void run() {
         debug = false;
 
         // Determining the version number from the pom file
@@ -116,6 +130,11 @@ public class MIA implements PlugIn {
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
         PrintStream printStream = new PrintStream(teeOutputStream);
         System.setErr(printStream);
+
+//        Future<CommandModule> moduleFuture = ij.command().run("wbif.sjx.MIA.Process.ConsoleFetcher",false);
+        UIService uiService = ConsoleFetcher.getService();
+
+        System.out.println("From here "+uiService);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
