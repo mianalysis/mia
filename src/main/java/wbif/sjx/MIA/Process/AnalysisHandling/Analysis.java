@@ -6,6 +6,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -46,9 +47,9 @@ public class Analysis {
             if (module.isEnabled() && module.isRunnable()) {
                 boolean status = module.execute(workspace);
                 if (!status) {
-                    // The module failed or requested analysis termination.  Add this message to the log
-                    System.err.println("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
-                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").");
+                    // The module failed or requested analysis termination.  Add this message to the write
+                    MIA.log.write("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
+                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").",Log.Level.WARNING);
 
                     // End the analysis generateModuleList
                     break;

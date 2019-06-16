@@ -7,6 +7,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
@@ -20,6 +21,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
@@ -596,7 +598,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 case Roi.POLYLINE:
                     polyRoi = (PolygonRoi) roi;
 
-                    if (polyRoi.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
+                    if (polyRoi.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.",Log.Level.WARNING);
 
                     x = polyRoi.getXCoordinates();
                     xx = new int[x.length];
@@ -612,7 +614,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 case Roi.LINE:
                     Line line = (Line) roi;
 
-                    if (line.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
+                    if (line.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.",Log.Level.WARNING);
 
                     newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
                     break;
@@ -632,7 +634,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     break;
 
                 default:
-                    System.err.println("ROI type unsupported.  Using bounding box for selection.");
+                    MIA.log.write("ROI type unsupported.  Using bounding box for selection.",Log.Level.WARNING);
                     newRoi = new Roi(roi.getBounds());
                     break;
             }

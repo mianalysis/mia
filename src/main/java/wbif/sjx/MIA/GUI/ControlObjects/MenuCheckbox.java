@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 
 public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
     public static final String TOGGLE_HELP_NOTES = "Show help and notes panel";
-    public static final String TOGGLE_MEMORY_LOGGING = "Log memory usage";
 
     public MenuCheckbox(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -28,9 +27,6 @@ public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
                     GUI.populateHelpNotes();
                     break;
 
-                case TOGGLE_MEMORY_LOGGING:
-                    MIA.setLogMemory(isSelected());
-                    break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

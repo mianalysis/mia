@@ -34,6 +34,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
@@ -268,14 +269,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             if (meta.getPixelsPhysicalSizeX(seriesNumber-1) != null) {
                 Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber-1);
                 if (!unit.isConvertible(physicalSizeX.unit())) {
-                    System.err.println("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong");
+                    MIA.log.write("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong",Log.Level.WARNING);
                     reader.close();
                     return ipl;
                 }
                 ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit);
                 ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
-                System.err.println("Can't interpret units for file \""+new File(path).getName()+"\".  Spatial calibration set to pixel units.");
+                MIA.log.write("Can't interpret units for file \""+new File(path).getName()+"\".  Spatial calibration set to pixel units.",Log.Level.WARNING);
                 ipl.getCalibration().pixelWidth = 1.0;
                 ipl.getCalibration().setXUnit("px");
             }
@@ -298,7 +299,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 ipl.getCalibration().setZUnit("px");
             }
         } else if (!manualCal) {
-            System.err.println("Can't interpret units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
+            MIA.log.write("Can't interpret units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong",Log.Level.WARNING);
         }
 
         reader.close();
@@ -378,7 +379,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             String filename = path+matcher.group(1)+"_ch"+comment+"."+extension;
 
             if (!new File(filename).exists()) {
-                System.err.println("File \""+filename+"\" not found.  Skipping file.");
+                MIA.log.write("File \""+filename+"\" not found.  Skipping file.",Log.Level.WARNING);
                 return null;
             }
 
@@ -402,7 +403,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
 
         if (!new File(filename).exists()) {
-            System.err.println("File \""+filename+"\" not found.  Skipping file.");
+            MIA.log.write("File \""+filename+"\" not found.  Skipping file.",Log.Level.WARNING);
             return null;
         }
 
@@ -437,7 +438,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String[] dimRanges = new String[]{"1","1","1"};
 
         if (!new File(listOfFiles[0].getAbsolutePath()).exists()) {
-            System.err.println("File \""+listOfFiles[0].getAbsolutePath()+"\" not found.  Skipping file.");
+            MIA.log.write("File \""+listOfFiles[0].getAbsolutePath()+"\" not found.  Skipping file.",Log.Level.WARNING);
             return null;
         }
 
@@ -455,7 +456,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String filename = path+comment+name+series+"."+ext;
 
         if (!new File(filename).exists()) {
-            System.err.println("File \""+filename+"\" not found.  Skipping file.");
+            MIA.log.write("File \""+filename+"\" not found.  Skipping file.",Log.Level.WARNING);
             return null;
         }
 
@@ -473,7 +474,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String filename = path+name+series+comment+"."+ext;
 
         if (!new File(filename).exists()) {
-            System.err.println("File \""+filename+"\" not found.  Skipping file.");
+            MIA.log.write("File \""+filename+"\" not found.  Skipping file.",Log.Level.WARNING);
             return null;
         }
 
@@ -635,8 +636,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             switch (importMode) {
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
+                    if (file == null) {
+                        MIA.log.write("No input file/folder selected.",Log.Level.WARNING);
+                        return false;
+                    }
+
                     if (!file.exists()) {
-                        System.err.println("File \""+file.getAbsolutePath()+"\" not found.  Skipping file.");
+                        MIA.log.write("File \""+file.getAbsolutePath()+"\" not found.  Skipping file.",Log.Level.WARNING);
                         return false;
                     }
 
@@ -650,7 +656,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 case ImportModes.IMAGEJ:
                     ipl = IJ.getImage().duplicate();
                     if (ipl == null) {
-                        System.err.println("No image open in ImageJ.  Skipping.");
+                        MIA.log.write("No image open in ImageJ.  Skipping.",Log.Level.WARNING);
                         return false;
                     }
                     break;
@@ -659,7 +665,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     if (!limitFrames) finalIndex = Integer.MAX_VALUE;
                     file = workspace.getMetadata().getFile();
                     if (!file.exists()) {
-                        System.err.println("File \""+file.getAbsolutePath()+"\" not found.  Skipping file.");
+                        MIA.log.write("File \""+file.getAbsolutePath()+"\" not found.  Skipping file.",Log.Level.WARNING);
                         return false;
                     }
 
@@ -706,7 +712,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.SPECIFIC_FILE:
                     if (!(new File(filePath)).exists()) {
-                        System.err.println("File \""+filePath+"\" not found.  Skipping file.");
+                        MIA.log.write("File \""+filePath+"\" not found.  Skipping file.",Log.Level.WARNING);
                         return false;
                     }
 
