@@ -4,7 +4,7 @@
 
 package wbif.sjx.MIA;
 
-//import net.imagej.ImageJ;
+import net.imagej.ImageJ;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -57,9 +57,9 @@ public class MIA implements Command {
         try {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//                ImageJ ij = new ImageJ();
-//                ij.ui().showUI();
-//                ij.command().run("wbif.sjx.MIA.MIA",false);
+                ImageJ ij = new ImageJ();
+                ij.ui().showUI();
+                ij.command().run("wbif.sjx.MIA.MIA",false);
 
             } else {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
