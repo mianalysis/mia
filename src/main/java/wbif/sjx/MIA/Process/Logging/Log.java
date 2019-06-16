@@ -24,4 +24,5 @@ public interface Log {
     public boolean isWriteEnabled(Level level);
     public void setWriteEnabled(Level level, boolean writeEnabled);
     public String getLogText();
+    public void clearLog();
 }

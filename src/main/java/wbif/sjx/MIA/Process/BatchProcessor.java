@@ -3,6 +3,7 @@
 package wbif.sjx.MIA.Process;
 
 import ij.Prefs;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
@@ -54,6 +55,8 @@ public class BatchProcessor extends FileCrawler {
     // PUBLIC METHODS
 
     public void run(Analysis analysis, Exporter exporter, String exportName) throws IOException, InterruptedException {
+        MIA.log.clearLog();
+
         shutdownEarly = false;
 
         OutputControl outputControl = analysis.getModules().getOutputControl();

@@ -24,4 +24,9 @@ public class BasicLog implements Log {
     public String getLogText() {
         return null;
     }
+
+    @Override
+    public void clearLog() {
+
+    }
 }

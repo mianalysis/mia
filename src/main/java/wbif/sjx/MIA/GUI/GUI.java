@@ -156,11 +156,11 @@ public class GUI {
         MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        // Enabling/disabling warnings and errors is disabled, because these should always be present
-//        level = Log.Level.WARNING;
-//        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
-//        logMenu.add(menuLogCheckbox);
-//
+        level = Log.Level.WARNING;
+        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        logMenu.add(menuLogCheckbox);
+
+//        Enabling/disabling errors is disabled, because these should always be present
 //        level = Log.Level.ERROR;
 //        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
 //        logMenu.add(menuLogCheckbox);

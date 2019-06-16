@@ -105,4 +105,8 @@ public class ConsoleLog implements Log {
     public void setWriteEnabled(Level level, boolean writeEnabled) {
         writeToConsole.put(level,writeEnabled);
     }
+
+    public void clearLog() {
+        consoleTextPane.setText("");
+    }
 }
