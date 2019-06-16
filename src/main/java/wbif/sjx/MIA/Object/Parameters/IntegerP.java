@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 public class IntegerP extends TextType {
     protected String value;
@@ -42,7 +43,7 @@ public class IntegerP extends TextType {
                 Integer.parseInt(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                System.err.println("Must be an integer-precision number or metadata handle (e.g. ${name})");
+                MIA.log.write("Must be an integer-precision number or metadata handle (e.g. ${name})",Log.Level.WARNING);
             }
         }
     }

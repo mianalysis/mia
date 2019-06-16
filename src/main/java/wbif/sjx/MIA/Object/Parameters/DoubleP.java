@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 public class DoubleP extends TextType {
     protected String value;
@@ -42,7 +43,7 @@ public class DoubleP extends TextType {
                 Double.parseDouble(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                System.err.println("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or metadata handle (e.g. ${name})");
+                MIA.log.write("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or metadata handle (e.g. ${name})",Log.Level.WARNING);
             }
         }
     }

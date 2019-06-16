@@ -22,7 +22,7 @@ import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
-import wbif.sjx.MIA.Process.Logger;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -145,11 +145,33 @@ public class GUI {
 
         // Creating the help menu
         menu = new JMenu("Help");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-        MenuCheckbox checkbox = new MenuCheckbox(MenuCheckbox.TOGGLE_MEMORY_LOGGING);
-        checkbox.setSelected(MIA.isLogMemory());
-        menu.add(checkbox);
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+
+        JMenu logMenu = new JMenu("Logging");
+        menu.add(logMenu);
+        logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+
+        Log.Level level = Log.Level.MESSAGE;
+        MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        logMenu.add(menuLogCheckbox);
+
+        // Enabling/disabling warnings and errors is disabled, because these should always be present
+//        level = Log.Level.WARNING;
+//        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+//        logMenu.add(menuLogCheckbox);
+//
+//        level = Log.Level.ERROR;
+//        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+//        logMenu.add(menuLogCheckbox);
+
+        level = Log.Level.DEBUG;
+        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        logMenu.add(menuLogCheckbox);
+
+        level = Log.Level.MEMORY;
+        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        logMenu.add(menuLogCheckbox);
 
     }
 
@@ -181,13 +203,9 @@ public class GUI {
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
-        if (MIA.isDebug()) {
-            TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
-            PrintStream printStream = new PrintStream(teeOutputStream);
-            System.setOut(printStream);
-        } else {
-            System.setOut(guiPrintStream);
-        }
+        TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
+        System.setOut(new PrintStream(teeOutputStream));
+
     }
 
     public static void populateModuleList() {

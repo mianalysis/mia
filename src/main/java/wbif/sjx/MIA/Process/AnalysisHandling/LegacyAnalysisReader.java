@@ -21,6 +21,7 @@ import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -167,7 +168,7 @@ public class LegacyAnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        System.err.println("Module \""+moduleName+"\" not found (skipping)");
+        MIA.log.write("Module \""+moduleName+"\" not found (skipping)",Log.Level.WARNING);
 
         return null;
 
@@ -301,7 +302,7 @@ public class LegacyAnalysisReader {
                 }
 
             } catch (NullPointerException e) {
-                System.err.println("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
+                MIA.log.write("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set",Log.Level.WARNING);
 
             }
         }

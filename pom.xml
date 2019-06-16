@@ -163,11 +163,11 @@
             <version>3.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.imagej</groupId>-->
+            <!--<artifactId>imagej</artifactId>-->
+            <!--<scope>${myscope}</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>

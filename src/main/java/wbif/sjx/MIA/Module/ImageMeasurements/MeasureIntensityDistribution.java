@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.io.File;
@@ -380,8 +381,8 @@ public class MeasureIntensityDistribution extends Module {
                 workbook.close();
                 outputStream.close();
 
-                System.err.println("Target file ("+new File(path).getName()+") inaccessible");
-                System.err.println("Saved to alternative file ("+new File(newOutPath).getName()+")");
+                MIA.log.write("Target file ("+new File(path).getName()+") inaccessible",Log.Level.WARNING);
+                MIA.log.write("Saved to alternative file ("+new File(newOutPath).getName()+")",Log.Level.WARNING);
 
             } catch (IOException e1) {
                 e1.printStackTrace();

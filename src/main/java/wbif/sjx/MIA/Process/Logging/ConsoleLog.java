@@ -1,7 +1,5 @@
-package wbif.sjx.MIA.Process;
+package wbif.sjx.MIA.Process.Logging;
 
-import org.scijava.command.Command;
-import org.scijava.plugin.Parameter;
 import org.scijava.ui.UIService;
 import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.swing.console.ConsolePanel;
@@ -17,21 +15,18 @@ import java.util.HashMap;
 /**
  * Created by Stephen Cross on 14/06/2019.
  */
-public class Logger {
+public class ConsoleLog implements Log {
     private UIService uiService = null;
     private JTextPane consoleTextPane = null;
-    private LoggingLevel activeLoggingLevel = LoggingLevel.MESSAGE;
+    private Level activeLevel = Level.MESSAGE;
 
-    public enum LoggingLevel {
-        MESSAGE, WARNING, ERROR, DEBUG;
-    }
-
-    private HashMap<LoggingLevel,Style> logStyles = new HashMap<>();
+    private HashMap<Level,Style> logStyles = new HashMap<>();
+    private HashMap<Level,Boolean> writeToConsole = new HashMap<>();
 
 
     // CONSTRUCTOR
 
-    public Logger(UIService uiService) {
+    public ConsoleLog(UIService uiService) {
         this.uiService = uiService;
 
         ConsolePane<?> consolePane = uiService.getDefaultUI().getConsolePane();
@@ -42,49 +37,45 @@ public class Logger {
 
         Style messageStyle = consoleTextPane.addStyle("Message style", null);
         StyleConstants.setForeground(messageStyle, Color.BLACK);
-        logStyles.put(LoggingLevel.MESSAGE,messageStyle);
+        logStyles.put(Level.MESSAGE,messageStyle);
+        writeToConsole.put(Level.MESSAGE,false);
 
         Style warningStyle = consoleTextPane.addStyle("Warning style", null);
         StyleConstants.setForeground(warningStyle, new Color(251,120,0));
-        logStyles.put(LoggingLevel.WARNING,warningStyle);
+        logStyles.put(Level.WARNING,warningStyle);
+        writeToConsole.put(Level.WARNING,true);
 
         Style errorStyle = consoleTextPane.addStyle("Error style", null);
         StyleConstants.setForeground(errorStyle, Color.RED);
-        logStyles.put(LoggingLevel.ERROR,errorStyle);
+        logStyles.put(Level.ERROR,errorStyle);
+        writeToConsole.put(Level.ERROR,true);
 
         Style debugStyle = consoleTextPane.addStyle("Debug style", null);
         StyleConstants.setForeground(debugStyle, new Color(57,172,229));
-        logStyles.put(LoggingLevel.DEBUG,debugStyle);
+        logStyles.put(Level.DEBUG,debugStyle);
+        writeToConsole.put(Level.DEBUG,false);
+
+        Style memoryStyle = consoleTextPane.addStyle("Memory style", null);
+        StyleConstants.setForeground(memoryStyle, new Color(57,142,27));
+        logStyles.put(Level.MEMORY,memoryStyle);
+        writeToConsole.put(Level.MEMORY,false);
 
     }
 
 
     // PUBLIC METHODS
 
-    public void log(String message, LoggingLevel level) {
+    public void write(String message, Level level) {
+        // If this level isn't currently being written, skip it
+        if (!writeToConsole.get(level)) return;
+
         // Ensuring the console is visible
         uiService.getDefaultUI().getConsolePane().show();
 
         StyledDocument document = consoleTextPane.getStyledDocument();
 
-        String prefix = "";
-        switch (level) {
-            case MESSAGE:
-                prefix = "[MESSAGE] ";
-                break;
-            case WARNING:
-                prefix = "[WARNING] ";
-                break;
-            case ERROR:
-                prefix = "[ERROR] ";
-                break;
-            case DEBUG:
-                prefix = "[DEBUG] ";
-                break;
-        }
-
         try {
-            document.insertString(document.getLength(), prefix+message+"\n", logStyles.get(level));
+            document.insertString(document.getLength(), "["+level.toString()+"] "+message+"\n", logStyles.get(level));
 
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -101,5 +92,17 @@ public class Logger {
     public JTextPane getConsoleTextPane() {
         return consoleTextPane;
 
+    }
+
+    public String getLogText() {
+        return consoleTextPane.getText();
+    }
+
+    public boolean isWriteEnabled(Level level) {
+        return writeToConsole.get(level);
+    }
+
+    public void setWriteEnabled(Level level, boolean writeEnabled) {
+        writeToConsole.put(level,writeEnabled);
     }
 }

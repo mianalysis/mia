@@ -13,6 +13,7 @@ import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -23,6 +24,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.util.Arrays;
@@ -379,7 +381,7 @@ public class VideoLoader extends Module {
 
             // If this has failed (outputImage is null) try FFMPEG loading
             if (outputImage == null) {
-                System.err.println("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).");
+                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).",Log.Level.MESSAGE);
                 outputImage = getFFMPEGVideo(pathName,outputImageName,frameRange,crop);
             }
 

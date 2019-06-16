@@ -4,53 +4,30 @@
 
 package wbif.sjx.MIA;
 
-import ij.Menus;
-import ij.plugin.AVI_Reader;
-import ij.plugin.MacroInstaller;
-import ij.plugin.PlugIn;
-import net.imagej.ImageJ;
-import org.apache.commons.io.output.TeeOutputStream;
+//import net.imagej.ImageJ;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.command.Command;
-import org.scijava.command.CommandModule;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.ui.DefaultUIService;
 import org.scijava.ui.UIService;
-import org.scijava.ui.console.ConsolePane;
-import org.scijava.ui.swing.console.ConsolePanel;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Macro.EnableExtensions;
 import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
-import wbif.sjx.MIA.Object.ErrorLog;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.DependencyValidator;
-import wbif.sjx.MIA.Process.Logger;
 
 import javax.swing.*;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.ADD_NEW_VARIABLE;
-import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.VARIABLE_NAME;
-import static wbif.sjx.MIA.Module.Hidden.GlobalVariables.VARIABLE_VALUE;
 
 
 /**
@@ -63,8 +40,7 @@ public class MIA implements Command {
     private static String version = "";
     private static boolean debug = false;
     private static GlobalVariables globalVariables = new GlobalVariables(null);
-    private static boolean logMemory = false;
-    private static Logger logger = null;
+    public static Log log = new BasicLog(); // This is effectively just for test methods
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
@@ -74,14 +50,16 @@ public class MIA implements Command {
     @Parameter
     private UIService uiService;
 
+
     public static void main(String[] args) throws Exception {
         debug = true;
 
         try {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                ImageJ ij = new ImageJ();
-                ij.ui().showUI();
+//                ImageJ ij = new ImageJ();
+//                ij.ui().showUI();
+//                ij.command().run("wbif.sjx.MIA.MIA",false);
 
             } else {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
@@ -97,8 +75,8 @@ public class MIA implements Command {
 
     @Override
     public void run() {
-        logger = new Logger(uiService);
-        debug = false;
+        log = new ConsoleLog(uiService);
+        log.setWriteEnabled(Log.Level.DEBUG,debug);
 
         // Determining the version number from the pom file
         try {
@@ -113,11 +91,9 @@ public class MIA implements Command {
         // Run the dependency validator.  If updates were required, return.
         if (DependencyValidator.run()) return;
 
-        // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
-        ErrorLog errorLog = new ErrorLog();
-        TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
-        PrintStream printStream = new PrintStream(teeOutputStream);
-        System.setErr(printStream);
+        // Redirecting the standard output and error streams, so they are formatted by for the console
+        System.setOut(new PrintStream(new MessageLog()));
+        System.setErr(new PrintStream(new ErrorLog()));
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -173,19 +149,7 @@ public class MIA implements Command {
         return globalVariables;
     }
 
-    public static boolean isLogMemory() {
-        return logMemory;
-    }
-
-    public static void setLogMemory(boolean logMemory) {
-        MIA.logMemory = logMemory;
-    }
-
-    public static void log(String message, Logger.LoggingLevel level) {
-        logger.log(message,level);
-    }
-
-    public static Logger getLogger() {
-        return logger;
+    public static Log getLog() {
+        return log;
     }
 }
