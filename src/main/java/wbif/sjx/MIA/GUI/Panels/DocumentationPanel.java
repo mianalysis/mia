@@ -10,26 +10,31 @@ public class DocumentationPanel {
     public static void showAbout() {
         try {
             String aboutText = DocumentationGenerator.generateAboutGUI();
+            aboutText = "<html><body>"+aboutText+"</body></html>";
 
             JFrame frame = new JFrame();
 
-            JEditorPane textArea = new JEditorPane();
-            textArea.setEditable(false);
-            textArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-            textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-            textArea.setText(aboutText);
-            textArea.setCaretPosition(0);
+            JEditorPane editorPane = new JEditorPane();
+            editorPane.setEditable(false);
+            editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+            editorPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            editorPane.setContentType("text/html");
+            editorPane.setText(aboutText);
+            editorPane.setCaretPosition(0);
 
-            JScrollPane objectsScrollPane = new JScrollPane(textArea);
-            objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-            objectsScrollPane.getVerticalScrollBar().setValue(0);
+            JScrollPane scrollPane = new JScrollPane(editorPane);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+            scrollPane.getVerticalScrollBar().setValue(0);
 
-            frame.add(objectsScrollPane);
+            frame.add(scrollPane);
+            frame.setPreferredSize(new Dimension(500,500));
 
             frame.pack();
             frame.setVisible(true);
+
+            System.err.println(aboutText);
 
         } catch (IOException e) {
             e.printStackTrace();

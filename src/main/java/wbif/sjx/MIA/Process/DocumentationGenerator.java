@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Process;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.Module;
@@ -10,6 +11,7 @@ import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 
+import javax.print.Doc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -343,11 +345,9 @@ public class DocumentationGenerator {
     public static String generateAboutGUI() throws IOException {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
-        sb.append("\n\n");
-
         String introduction = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
-        introduction = introduction.replace("${root}","./../../docs");
+        System.err.println("PATHHHH "+MIA.class.getClassLoader().getResource("/Images/Logo_text_UoB_128.png").getPath());
+        introduction = introduction.replace("${imagePath}","./../../docs");
         sb.append(introduction);
         sb.append("\n\n");
         sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));

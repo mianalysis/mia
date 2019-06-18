@@ -16,11 +16,15 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Exporting.Exporter;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -226,6 +230,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     analysis.execute(workspace);
+
                 } catch (Throwable t) {
                     t.printStackTrace(System.err);
                 }

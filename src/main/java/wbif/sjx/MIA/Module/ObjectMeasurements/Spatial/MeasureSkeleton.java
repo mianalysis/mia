@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
+import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
@@ -15,12 +16,18 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class MeasureSkeleton extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String ADD_SKELETONS_TO_WORKSPACE = "Add skeletons to workspace";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
     public interface Measurements {
@@ -60,6 +67,25 @@ public class MeasureSkeleton extends Module {
 
     }
 
+    static Image getProjectedImage(Obj inputObject) {
+        // Generate projected object
+        Obj projectedObj;
+        try {
+            projectedObj = ProjectObjects.process(inputObject,"Projected",true,false);
+        } catch (IntegerOverflowException e) {
+            e.printStackTrace();
+            return null;
+        }
+        Image projectedImage = projectedObj.convertObjToImage("Projected");
+        InvertIntensity.process(projectedImage);
+
+        // Run skeletonisation
+        BinaryOperations2D.process(projectedImage,BinaryOperations2D.OperationModes.SKELETONISE,1);
+        InvertIntensity.process(projectedImage);
+
+        return projectedImage;
+
+    }
 
     @Override
     public String getPackageName() {
@@ -72,6 +98,7 @@ public class MeasureSkeleton extends Module {
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
         boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         ObjCollection outputObjects = null;
         if (addToWorkspace) {
@@ -79,48 +106,56 @@ public class MeasureSkeleton extends Module {
             workspace.addObjects(outputObjects);
         }
 
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        int nTotal = inputObjects.size();
+        AtomicInteger count = new AtomicInteger();
+
         // For each object, create a child projected object, then generate a binary image.  This is run through ImageJ's
         // skeletonize plugin to ensure it has 4-way connectivity.  Finally, it is processed with the AnalyzeSkeleton
         // plugin.
         for (Obj inputObject:inputObjects.values()) {
-            // Generate projected object
-            Obj projectedObj;
-            try {
-                projectedObj = ProjectObjects.process(inputObject,"Projected",true,false);
-            } catch (IntegerOverflowException e) {
-                e.printStackTrace();
-                continue;
-            }
-            Image projectedImage = projectedObj.convertObjToImage("Projected");
-            InvertIntensity.process(projectedImage);
+            ObjCollection finalOutputObjects = outputObjects;
+            Runnable task = () -> {
+                Image projectedImage = getProjectedImage(inputObject);
 
-            // Run skeletonisation
-            BinaryOperations2D.process(projectedImage,BinaryOperations2D.OperationModes.SKELETONISE,1);
-            InvertIntensity.process(projectedImage);
+                AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
+                analyzeSkeleton.setup("",projectedImage.getImagePlus());
+                SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE,false,false,projectedImage.getImagePlus(),true,false);
 
-            // Running skeleton analysis
-            AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
-            analyzeSkeleton.setup("",projectedImage.getImagePlus());
-            SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE,false,false,projectedImage.getImagePlus(),true,false);
+                // Adding the skeleton to the input object
+                if (addToWorkspace) {
+                    try {
+                        Obj outputObject = projectedImage.convertImageToObjects(outputObjectsName).getFirst();
+                        outputObject.setID(finalOutputObjects.getAndIncrementID());
+                        inputObject.addChild(outputObject);
+                        outputObject.addParent(inputObject);
+                        finalOutputObjects.add(outputObject);
 
-            // Adding the skeleton to the input object
-            if (addToWorkspace) {
-                try {
-                    Obj outputObject = projectedImage.convertImageToObjects(outputObjectsName).getFirst();
-                    outputObject.setID(outputObjects.getAndIncrementID());
-                    inputObject.addChild(outputObject);
-                    outputObject.addParent(inputObject);
-                    outputObjects.add(outputObject);
-
-                } catch (IntegerOverflowException e) {
-                    e.printStackTrace();
+                    } catch (IntegerOverflowException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            // Taking the first result for each (in the event there was more than one isolated region)
-            addMeasurements(inputObject,skeletonResult);
+                // Taking the first result for each (in the event there was more than one isolated region)
+                addMeasurements(inputObject,skeletonResult);
+
+                writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
+
+            };
+            pool.submit(task);
 
         }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
@@ -135,6 +170,7 @@ public class MeasureSkeleton extends Module {
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(ADD_SKELETONS_TO_WORKSPACE,this,false));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
@@ -151,6 +187,8 @@ public class MeasureSkeleton extends Module {
         if (parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         }
+
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 

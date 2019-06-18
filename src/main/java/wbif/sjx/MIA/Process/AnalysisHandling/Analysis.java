@@ -8,6 +8,11 @@ import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.Logging.Log;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 /**
  * Created by sc13967 on 21/10/2016.
  *
@@ -67,6 +72,24 @@ public class Analysis {
         // We're only interested in the measurements now, so clearing images and object coordinates
         workspace.clearAllImages(true);
         workspace.clearAllObjects(true);
+
+        // If enabled, write the current memory usage to the console
+        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
+            double totalMemory = Runtime.getRuntime().totalMemory();
+            double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+            DecimalFormat df = new DecimalFormat("#.0");
+
+            String memoryMessage = df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
+                    ", analysis complete"+
+                    ", file \""+workspace.getMetadata().getFile() +
+                    ", time "+dateTime;
+
+            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+
+        }
 
         return true;
 

@@ -38,7 +38,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return name;
     }
 
-    public void add(Obj object) {
+    synchronized public void add(Obj object) {
         put(object.getID(),object);
 
     }
