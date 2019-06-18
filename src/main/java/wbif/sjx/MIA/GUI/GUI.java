@@ -148,6 +148,8 @@ public class GUI {
         menuBar.add(menu);
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
+        menu.add(new MenuItem(MenuItem.SHOW_ABOUT));
+
         JMenu logMenu = new JMenu("Logging");
         menu.add(logMenu);
         logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));

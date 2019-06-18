@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.Panels.DocumentationPanel;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
@@ -37,6 +38,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String BASIC_VIEW = "Switch to basic view";
     public static final String EDITING_VIEW = "Switch to editing view";
     public static final String SHOW_GLOBAL_VARIABLES = "Show global variables";
+    public static final String SHOW_ABOUT = "About";
 
     public MenuItem(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -139,6 +141,10 @@ public class MenuItem extends JMenuItem implements ActionListener {
                 case SHOW_GLOBAL_VARIABLES:
                     GUI.setActiveModule(MIA.getGlobalVariables());
                     GUI.updateParameters();
+                    break;
+
+                case SHOW_ABOUT:
+                    DocumentationPanel.showAbout();
                     break;
 
             }

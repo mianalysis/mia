@@ -1,5 +1,8 @@
 package wbif.sjx.MIA.Process;
 
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.Module;
@@ -20,10 +23,15 @@ import java.util.*;
 public class DocumentationGenerator {
     public static void main(String[]args){
         try {
+            // Creating README.md
+            generateReadmeMarkdown();
+
+            // Creating website content
             generateModuleList();
             generateModulePages();
             generateMacroList();
             generateMacroPages();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -303,6 +311,61 @@ public class DocumentationGenerator {
                 .append(".html");
 
         return sb.toString();
+
+    }
+
+    public static void generateReadmeMarkdown() throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
+        sb.append("\n\n");
+
+        String introduction = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
+        introduction = introduction.replace("${root}","./docs");
+        sb.append(introduction);
+        sb.append("\n\n");
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md"))));
+        sb.append("\n\n");
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md"))));
+        sb.append("\n\n");
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));
+        sb.append("\n\n");
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md"))));
+        sb.append("\n\n");
+
+        FileWriter writer = new FileWriter("README.md");
+        writer.write(sb.toString());
+        writer.flush();
+        writer.close();
+
+    }
+
+    public static String generateAboutGUI() throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
+        sb.append("\n\n");
+
+        String introduction = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
+        introduction = introduction.replace("${root}","./../../docs");
+        sb.append(introduction);
+        sb.append("\n\n");
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));
+        sb.append("\n\n");
+        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md"))));
+        sb.append("\n\n");
+
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        Node node = parser.parse(sb.toString());
+        String html = renderer.render(node);
+
+//        FileWriter writer = new FileWriter("src/main/resources/Pages/About.html");
+//        writer.write(html);
+//        writer.flush();
+//        writer.close();
+
+        return html;
 
     }
 }
