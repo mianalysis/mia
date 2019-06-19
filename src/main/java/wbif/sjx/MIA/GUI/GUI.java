@@ -171,6 +171,11 @@ public class GUI {
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
+        menuBar.add(Box.createHorizontalGlue());
+        menu = new JMenu("");
+        menuBar.add(menu);
+        menu.add(new MenuItem(MenuItem.SHOW_PONY));
+
     }
 
     public static void updatePanel() {

@@ -40,6 +40,7 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String SHOW_GLOBAL_VARIABLES = "Show global variables";
     public static final String SHOW_ABOUT = "About";
     public static final String SHOW_GETTING_STARTED = "Getting started";
+    public static final String SHOW_PONY = "Pony?";
 
     public MenuItem(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -150,6 +151,10 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
                 case SHOW_GETTING_STARTED:
                     DocumentationPanel.showGettingStarted();
+                    break;
+
+                case SHOW_PONY:
+                    DocumentationPanel.showPony();
                     break;
 
             }

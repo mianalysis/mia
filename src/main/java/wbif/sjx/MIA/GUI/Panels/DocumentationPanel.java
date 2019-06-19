@@ -22,7 +22,20 @@ public class DocumentationPanel {
 
     }
 
-    static void showDocumentation(String textToDisplay) {
+    public static void showPony() {
+        String area51 = "<html><body><div style=\"text-align: center;\">" +
+                "<img src=\""+MIA.class.getResource("/Images/giphy.gif").toString()+"\" align=\"middle\">" +
+                "</div></body></html>";
+
+        JFrame frame = showDocumentation(area51);
+        frame.setPreferredSize(new Dimension(400,465));
+        frame.setMinimumSize(new Dimension(400,465));
+        ((JScrollPane) frame.getContentPane().getComponent(0)).setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        frame.pack();
+
+    }
+
+    static JFrame showDocumentation(String textToDisplay) {
             JEditorPane editorPane = new JEditorPane();
             editorPane.setEditable(false);
             editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
@@ -47,6 +60,8 @@ public class DocumentationPanel {
             frame.pack();
             frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
             frame.setVisible(true);
+
+            return frame;
 
     }
 }
