@@ -71,13 +71,8 @@ public class GUI {
         analysis.getModules().add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
-        if (MIA.isDebug()) {
-            mainPanel = editingPan;
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        } else {
-            mainPanel = basicPan;
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        }
+        if (MIA.isDebug()) mainPanel = editingPan;
+        else mainPanel = basicPan;
 
         initialiseStatusTextField();
         initialiseMenuBar();
@@ -149,6 +144,7 @@ public class GUI {
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
         menu.add(new MenuItem(MenuItem.SHOW_ABOUT));
+        menu.add(new MenuItem(MenuItem.SHOW_GETTING_STARTED));
 
         JMenu logMenu = new JMenu("Logging");
         menu.add(logMenu);

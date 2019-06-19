@@ -25,4 +25,24 @@ public interface Log {
     public void setWriteEnabled(Level level, boolean writeEnabled);
     public String getLogText();
     public void clearLog();
+
+    default public void writeError(String message) {
+        write(message,Level.ERROR);
+    }
+
+    default public void writeWarning(String message) {
+        write(message,Level.WARNING);
+    }
+
+    default public void writeMessage(String message) {
+        write(message,Level.MESSAGE);
+    }
+
+    default public void writeDebug(String message) {
+        write(message,Level.DEBUG);
+    }
+
+    default public void writeMemory(String message) {
+        write(message,Level.MEMORY);
+    }
 }

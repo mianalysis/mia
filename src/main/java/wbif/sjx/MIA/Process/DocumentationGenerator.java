@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.print.Doc;
 import java.io.File;
@@ -29,6 +30,7 @@ public class DocumentationGenerator {
             generateReadmeMarkdown();
 
             // Creating website content
+            generateIndexPage();
             generateModuleList();
             generateModulePages();
             generateMacroList();
@@ -37,6 +39,18 @@ public class DocumentationGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void generateIndexPage() throws IOException {
+        // Generate module list HTML document
+        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/index.html")));
+        String indexContent = getIndexContent();
+        template = template.replace("${INSERT}",indexContent);
+
+        FileWriter writer = new FileWriter("docs/index.html");
+        writer.write(template);
+        writer.flush();
+        writer.close();
     }
 
     private static void generateModuleList() throws IOException {
@@ -101,7 +115,45 @@ public class DocumentationGenerator {
         }
     }
 
-    private static String getModuleSummary(Module module) throws IOException {
+    private static String getIndexContent() {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            String string = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/citing.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
+
+    }
+
+    private static String getModuleSummary(Module module) {
         StringBuilder sb = new StringBuilder();
 
         // Adding a return to Module list button
@@ -164,7 +216,7 @@ public class DocumentationGenerator {
 
     }
 
-    private static String getMacroSummary(MacroOperation macro) throws IOException {
+    private static String getMacroSummary(MacroOperation macro) {
         StringBuilder sb = new StringBuilder();
 
         // Adding a return to Module list button
@@ -187,7 +239,7 @@ public class DocumentationGenerator {
         String parameterList = macro.getArgumentsDescription();
         String[] parameters = parameterList.split(",");
         if (parameters.length > 0) sb.append("<ul");
-        
+
         for (String parameter:parameters) {
             sb.append("<li>")
                     .append(parameter)
@@ -316,56 +368,103 @@ public class DocumentationGenerator {
 
     }
 
-    public static void generateReadmeMarkdown() throws IOException {
+    public static void generateReadmeMarkdown() {
+        try {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
+            sb.append("\n\n");
+
+            sb.append("[![Wolfson Bioimmaging](./docs/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
+            sb.append("\n\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md"))));
+            sb.append("\n\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md"))));
+            sb.append("\n\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md"))));
+            sb.append("\n\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));
+            sb.append("\n\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md"))));
+            sb.append("\n\n");
+
+            FileWriter writer = new FileWriter("README.md");
+            writer.write(sb.toString());
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String generateAboutGUI() {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
         StringBuilder sb = new StringBuilder();
 
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
-        sb.append("\n\n");
+        try {
+            sb.append("<html><body><div align=\"justify\">");
 
-        String introduction = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
-        introduction = introduction.replace("${root}","./docs");
-        sb.append(introduction);
-        sb.append("\n\n");
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md"))));
-        sb.append("\n\n");
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md"))));
-        sb.append("\n\n");
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));
-        sb.append("\n\n");
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md"))));
-        sb.append("\n\n");
+            sb.append("<img src=\"");
+            sb.append(MIA.class.getResource("/Images/Logo_text_UoB_64.png").toString());
+            sb.append("\" align=\"middle\">");
+            sb.append("<br><br>");
 
-        FileWriter writer = new FileWriter("README.md");
-        writer.write(sb.toString());
-        writer.flush();
-        writer.close();
+            String string = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/citing.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            sb.append("</div></body></html>");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
 
     }
 
-    public static String generateAboutGUI() throws IOException {
-        StringBuilder sb = new StringBuilder();
-
-        String introduction = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
-        System.err.println("PATHHHH "+MIA.class.getClassLoader().getResource("/Images/Logo_text_UoB_128.png").getPath());
-        introduction = introduction.replace("${imagePath}","./../../docs");
-        sb.append(introduction);
-        sb.append("\n\n");
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));
-        sb.append("\n\n");
-        sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md"))));
-        sb.append("\n\n");
-
+    public static String generateGettingStartedGUI() {
         Parser parser = Parser.builder().build();
         HtmlRenderer renderer = HtmlRenderer.builder().build();
-        Node node = parser.parse(sb.toString());
-        String html = renderer.render(node);
+        StringBuilder sb = new StringBuilder();
 
-//        FileWriter writer = new FileWriter("src/main/resources/Pages/About.html");
-//        writer.write(html);
-//        writer.flush();
-//        writer.close();
+        try {
+            sb.append("<html><body><div align=\"justify\">");
 
-        return html;
+            sb.append("<img src=\"");
+            sb.append(MIA.class.getResource("/Images/Logo_text_UoB_64.png").toString());
+            sb.append("\" align=\"middle\">");
+            sb.append("<br><br>");
+
+            String string = new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md")));
+            sb.append(renderer.render(parser.parse(string)));
+            sb.append("<br><br>");
+
+            sb.append("</div></body></html>");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
 
     }
 }
