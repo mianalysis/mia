@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -7,7 +8,7 @@ import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 
-public class FilterWithWithoutMeasurement extends CoreFilter {
+public class FilterWithoutMeasurement extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
@@ -18,8 +19,8 @@ public class FilterWithWithoutMeasurement extends CoreFilter {
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public FilterWithWithoutMeasurement(ModuleCollection modules) {
-        super("With / without measurement",modules);
+    public FilterWithoutMeasurement(ModuleCollection modules) {
+        super("Without measurement",modules);
     }
 
 

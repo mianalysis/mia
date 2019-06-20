@@ -13,11 +13,15 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.DefaultUIService;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Process.ClassHunter;
 import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
@@ -27,7 +31,12 @@ import wbif.sjx.MIA.Process.DependencyValidator;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeMap;
 
 
 /**
@@ -152,4 +161,5 @@ public class MIA implements Command {
     public static Log getLog() {
         return log;
     }
+
 }

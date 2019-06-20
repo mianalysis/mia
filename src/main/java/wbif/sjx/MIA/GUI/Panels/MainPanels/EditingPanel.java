@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.Panels.MainPanels;
 
+import ij.IJ;
 import ij.Prefs;
 import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;
@@ -48,15 +49,8 @@ public class EditingPanel extends MainPanel {
 
 
     public EditingPanel() {
-        // Starting this process, as it takes longest
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listAvailableModules();
-            }
-        }).start();
-
         addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,GUI.getBigButtonSize(),moduleListMenu);
+        listAvailableModules();
 
         setLayout(new GridBagLayout());
 
@@ -223,72 +217,46 @@ public class EditingPanel extends MainPanel {
     }
 
     private void listAvailableModules() {
-        try {
-            // Waiting until the addRef module button has been created
-            while (addModuleButton == null) Thread.sleep(100);
+        addModuleButton.setEnabled(false);
+        addModuleButton.setToolTipText("Loading modules");
 
-            addModuleButton.setEnabled(false);
-            addModuleButton.setToolTipText("Loading modules");
+        TreeMap<String,Module> availableModules = GUI.getAvailableModules();
+        TreeSet<ModuleListMenu> topList = new TreeSet<>();
+        TreeSet<String> moduleNames = new TreeSet<>();
+        moduleNames.addAll(availableModules.keySet());
 
-            Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
+        for (String name : moduleNames) {
+            // ActiveList starts at the top list
+            TreeSet<ModuleListMenu> activeList = topList;
+            ModuleListMenu activeItem = null;
 
-            // Creating an alphabetically-ordered list of all modules
-            ModuleCollection moduleCollection = new ModuleCollection();
-            TreeMap<String, Module> modules = new TreeMap<>();
-            for (Class clazz : availableModules) {
-                if (clazz != InputControl.class && clazz != OutputControl.class) {
-                    // Skip any abstract Modules
-                    if (Modifier.isAbstract(clazz.getModifiers())) continue;
-
-                    Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
-                    Module module = (Module) constructor.newInstance(moduleCollection);
-                    String packageName = module.getPackageName();
-                    String moduleName = module.getName();
-                    modules.put(packageName+moduleName, module);
-
-                }
-            }
-
-            TreeSet<ModuleListMenu> topList = new TreeSet<>();
-            TreeSet<String> moduleNames = new TreeSet<>();
-            moduleNames.addAll(modules.keySet());
-
-            for (String name : moduleNames) {
-                // ActiveList starts at the top list
-                TreeSet<ModuleListMenu> activeList = topList;
-                ModuleListMenu activeItem = null;
-
-                String[] names = name.split("\\\\");
-                for (int i = 0; i < names.length-1; i++) {
-                    boolean found = false;
-                    for (ModuleListMenu listItemm : activeList) {
-                        if (listItemm.getName().equals(names[i])) {
-                            activeItem = listItemm;
-                            found = true;
-                        }
+            String[] names = name.split("\\\\");
+            for (int i = 0; i < names.length-1; i++) {
+                boolean found = false;
+                for (ModuleListMenu listItemm : activeList) {
+                    if (listItemm.getName().equals(names[i])) {
+                        activeItem = listItemm;
+                        found = true;
                     }
-
-                    if (!found) {
-                        ModuleListMenu newItem = new ModuleListMenu(names[i], new ArrayList<>(),moduleListMenu);
-                        newItem.setName(names[i]);
-                        activeList.add(newItem);
-                        if (activeItem != null) activeItem.add(newItem);
-                        activeItem = newItem;
-                    }
-
-                    activeList = activeItem.getChildren();
-
                 }
 
-                if (activeItem != null) activeItem.addMenuItem(modules.get(name));
+                if (!found) {
+                    ModuleListMenu newItem = new ModuleListMenu(names[i], new ArrayList<>(),moduleListMenu);
+                    newItem.setName(names[i]);
+                    activeList.add(newItem);
+                    if (activeItem != null) activeItem.add(newItem);
+                    activeItem = newItem;
+                }
+
+                activeList = activeItem.getChildren();
 
             }
 
-            for (ModuleListMenu listMenu : topList) moduleListMenu.add(listMenu);
+            if (activeItem != null) activeItem.addMenuItem(availableModules.get(name));
 
-        } catch (IllegalAccessException | InstantiationException | InterruptedException | NoSuchMethodException | InvocationTargetException e){
-            e.printStackTrace(System.err);
         }
+
+        for (ModuleListMenu listMenu : topList) moduleListMenu.add(listMenu);
 
         addModuleButton.setToolTipText("Add module");
         addModuleButton.setEnabled(true);

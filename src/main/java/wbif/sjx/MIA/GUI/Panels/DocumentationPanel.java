@@ -2,12 +2,9 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.DocumentationGenerator;
-import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
-import java.io.IOException;
 
 public class DocumentationPanel {
     public static void showAbout() {
@@ -23,11 +20,11 @@ public class DocumentationPanel {
     }
 
     public static void showPony() {
-        String area51 = "<html><body><div style=\"text-align: center;\">" +
-                "<img src=\""+MIA.class.getResource("/Images/giphy.gif").toString()+"\" align=\"middle\">" +
+        String pony = "<html><body><div style=\"text-align: center;\">" +
+                "<img src=\""+MIA.class.getResource("/Images/Pony.gif").toString()+"\" align=\"middle\">" +
                 "</div></body></html>";
 
-        JFrame frame = showDocumentation(area51);
+        JFrame frame = showDocumentation(pony);
         frame.setPreferredSize(new Dimension(400,465));
         frame.setMinimumSize(new Dimension(400,465));
         ((JScrollPane) frame.getContentPane().getComponent(0)).setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);

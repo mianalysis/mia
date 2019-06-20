@@ -4,6 +4,7 @@
 
 package wbif.sjx.MIA.GUI;
 
+import ij.IJ;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.GUI.ControlObjects.MenuItem;
@@ -12,6 +13,7 @@ import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
@@ -22,12 +24,18 @@ import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
+import wbif.sjx.MIA.Process.ClassHunter;
 import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -50,13 +58,14 @@ public class GUI {
     private static int statusHeight = 20;
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
-    private static final JFrame frame = new JFrame();
-    private static final JMenuBar menuBar = new JMenuBar();
-    private static final StatusTextField textField = new StatusTextField();
-    private static final BasicPanel basicPan = new BasicPanel();
-    private static final EditingPanel editingPan = new EditingPanel();
+    private static JFrame frame = new JFrame();
+    private static JMenuBar menuBar = new JMenuBar();
+    private static StatusTextField textField = new StatusTextField();
+    private static BasicPanel basicPan = new BasicPanel();
+    private static EditingPanel editingPan;
     private static MainPanel mainPanel;
     private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
+    private static TreeMap<String,Module> availableModules = new TreeMap<>();
 
 
     public GUI() throws InstantiationException, IllegalAccessException {
@@ -66,6 +75,11 @@ public class GUI {
             return;
         }
         initialised = true;
+
+        detectAvailableModules();
+
+        editingPan = new EditingPanel();
+        basicPan = new BasicPanel();
 
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
@@ -97,6 +111,31 @@ public class GUI {
         updateModules();
         updateParameters();
 
+    }
+
+    void detectAvailableModules() {
+        try {
+            Set<Class<? extends Module>> detectedModules = new ClassHunter<Module>().getClasses(Module.class, MIA.isDebug());
+
+            // Creating an alphabetically-ordered list of all modules
+            ModuleCollection moduleCollection = new ModuleCollection();
+            availableModules = new TreeMap<>();
+            for (Class clazz : detectedModules) {
+                if (clazz != InputControl.class && clazz != OutputControl.class) {
+                    // Skip any abstract Modules
+                    if (Modifier.isAbstract(clazz.getModifiers())) continue;
+
+                    Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                    Module module = (Module) constructor.newInstance(moduleCollection);
+                    String packageName = module.getPackageName();
+                    String moduleName = module.getName();
+                    availableModules.put(packageName + moduleName, module);
+
+                }
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void initialiseMenuBar() {
@@ -400,6 +439,10 @@ public class GUI {
 
     public static boolean showHelpNotes() {
         return mainPanel.showHelpNotes();
+    }
+
+    public static TreeMap<String, Module> getAvailableModules() {
+        return availableModules;
     }
 
 
