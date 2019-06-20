@@ -78,14 +78,14 @@ public class GUI {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        MIA.log.writeDebug("test");
         Splash splash = new Splash();
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
         splash.setVisible(true);
 
-        MIA.log.writeDebug("test2");
+        splash.setMessage("Detecting modules");
         detectAvailableModules();
 
+        splash.setMessage("Initialising GUI");
         editingPan = new EditingPanel();
         basicPan = new BasicPanel();
 
@@ -106,6 +106,8 @@ public class GUI {
         frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"),"").getImage());
 
         mainPanel.updatePanel();
+
+        splash.setVisible(false);
 
         // Final bits for listeners
         frame.pack();
