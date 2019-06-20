@@ -76,6 +76,14 @@ public class GUI {
         }
         initialised = true;
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        MIA.log.writeDebug("test");
+        Splash splash = new Splash();
+        splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
+        splash.setVisible(true);
+
+        MIA.log.writeDebug("test2");
         detectAvailableModules();
 
         editingPan = new EditingPanel();
@@ -100,16 +108,11 @@ public class GUI {
         mainPanel.updatePanel();
 
         // Final bits for listeners
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.pack();
         frame.setVisible(true);
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2, (screenSize.height - frameHeight) / 2);
 
         updatePanel();
-
-        AnalysisTester.testModules(analysis.modules);
-        updateModules();
-        updateParameters();
 
     }
 
