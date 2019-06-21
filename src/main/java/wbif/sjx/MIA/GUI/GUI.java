@@ -4,7 +4,6 @@
 
 package wbif.sjx.MIA.GUI;
 
-import ij.IJ;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.GUI.ControlObjects.MenuItem;
@@ -83,7 +82,10 @@ public class GUI {
         splash.setVisible(true);
 
         splash.setStatus(Splash.Status.DETECTING_MODULES);
-        detectAvailableModules();
+        Set<Class<? extends Module>> detectedModules = new ClassHunter<Module>().getClasses(Module.class, MIA.isDebug());
+
+        splash.setStatus(Splash.Status.INITIALISING_MODULES);
+        initialiseAvailableModules(detectedModules);
 
         splash.setStatus(Splash.Status.CREATING_INTERFACE);
         editingPan = new EditingPanel();
@@ -118,10 +120,8 @@ public class GUI {
 
     }
 
-    void detectAvailableModules() {
+    void initialiseAvailableModules(Set<Class<? extends Module>> detectedModules) {
         try {
-            Set<Class<? extends Module>> detectedModules = new ClassHunter<Module>().getClasses(Module.class, MIA.isDebug());
-
             // Creating an alphabetically-ordered list of all modules
             ModuleCollection moduleCollection = new ModuleCollection();
             availableModules = new TreeMap<>();

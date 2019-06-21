@@ -33,6 +33,7 @@ public class ConsoleLog implements Log {
         JPanel panel = (JPanel) consolePane.getComponent();
         JTabbedPane tabbedPane = (JTabbedPane) panel.getComponent(0);
         ConsolePanel consolePanel = (ConsolePanel) tabbedPane.getComponent(0);
+        consolePanel.setAutoscrolls(true);
         consoleTextPane = consolePanel.getTextPane();
 
         Style messageStyle = consoleTextPane.addStyle("Message style", null);
@@ -80,6 +81,8 @@ public class ConsoleLog implements Log {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+
+
     }
 
 

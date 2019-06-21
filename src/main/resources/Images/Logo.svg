@@ -127,6 +127,19 @@
          stdDeviation="6.246042"
          id="feGaussianBlur1172" />
     </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1049"
+       x="-0.046670209"
+       width="1.0933404"
+       y="-0.4197133"
+       height="1.8394266">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="6.405"
+         id="feGaussianBlur1051" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -196,8 +209,53 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
+       id="g1061"
+       transform="translate(-14.576158,-105.17782)">
+      <flowRoot
+         inkscape:export-ydpi="40.138256"
+         inkscape:export-xdpi="40.138256"
+         transform="matrix(0.26458333,0,0,0.26458333,-19.650828,169.08582)"
+         style="font-style:normal;font-weight:normal;font-size:133.33332825px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36000001;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1049)"
+         id="flowRoot906-1-4-4-3-7-7-7"
+         xml:space="preserve"><flowRegion
+           style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="flowRegion908-3-5-5-3-4-1-8"><rect
+             style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             y="3848.5198"
+             x="-1046"
+             height="401.99976"
+             width="2722"
+             id="rect910-6-1-2-4-4-68-0" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="flowPara912-6-2-1-6-8-5-0">Initialising modules</flowPara></flowRoot>      <flowRoot
+         inkscape:export-ydpi="40.138256"
+         inkscape:export-xdpi="40.138256"
+         transform="matrix(0.26458333,0,0,0.26458333,-19.650829,169.08582)"
+         style="font-style:normal;font-weight:normal;font-size:133.33332825px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+         id="flowRoot906-1-4-4-3-7-7"
+         xml:space="preserve"><flowRegion
+           style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1"
+           id="flowRegion908-3-5-5-3-4-1"><rect
+             style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1"
+             y="3848.5198"
+             x="-1046"
+             height="401.99976"
+             width="2722"
+             id="rect910-6-1-2-4-4-68" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1"
+           id="flowPara912-6-2-1-6-8-5">Initialising modules</flowPara></flowRoot>    </g>
+    <rect
+       style="opacity:0.36000001;fill:#000000;fill-opacity:0.56284156;stroke:none;stroke-width:2.92477393;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect979"
+       width="146.091"
+       height="121.452"
+       x="-339.39227"
+       y="1002.4933"
+       inkscape:export-xdpi="40.16"
+       inkscape:export-ydpi="40.16" />
+    <g
        id="g1194"
-       transform="translate(41.226849,-65.716859)">
+       transform="translate(67.156016,47.524808)">
       <flowRoot
          inkscape:export-ydpi="40.138256"
          inkscape:export-xdpi="40.138256"
@@ -253,18 +311,9 @@
            id="tspan1062-9"
            sodipodi:role="line"> </tspan></text>
     </g>
-    <rect
-       style="opacity:0.36000001;fill:#000000;fill-opacity:0.56284156;stroke:none;stroke-width:2.92477393;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-       id="rect979"
-       width="146.091"
-       height="121.452"
-       x="-339.39227"
-       y="1002.4933"
-       inkscape:export-xdpi="40.138256"
-       inkscape:export-ydpi="40.138256" />
     <g
        id="g1138"
-       transform="translate(-51.617828,7.5346808)">
+       transform="translate(-51.617828,31.876347)">
       <flowRoot
          inkscape:export-ydpi="40.138256"
          inkscape:export-xdpi="40.138256"

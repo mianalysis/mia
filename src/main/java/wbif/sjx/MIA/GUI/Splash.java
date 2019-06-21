@@ -12,10 +12,11 @@ public class Splash extends JFrame {
 
     private ImageIcon blankLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash.png"));
     private ImageIcon detectingModulesLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_detecting-modules.png"));
+    private ImageIcon initialisingModulesLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_initialising-modules.png"));
     private ImageIcon creatingInterfaceLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_creating-interface.png"));
 
     public enum Status {
-        BLANK, DETECTING_MODULES, CREATING_INTERFACE;
+        BLANK, DETECTING_MODULES, INITIALISING_MODULES, CREATING_INTERFACE;
     }
 
     public Splash() {
@@ -41,6 +42,9 @@ public class Splash extends JFrame {
                 break;
             case DETECTING_MODULES:
                 image.setIcon(detectingModulesLogo);
+                break;
+            case INITIALISING_MODULES:
+                image.setIcon(initialisingModulesLogo);
                 break;
             case CREATING_INTERFACE:
                 image.setIcon(creatingInterfaceLogo);
