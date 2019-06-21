@@ -6,13 +6,13 @@ import java.awt.*;
 
 
 public class Splash extends JFrame {
-    private int height = 166;
+    private int height = 192;
     private int width = 231;
     private JLabel image;
 
     private ImageIcon blankLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash.png"));
-    private ImageIcon detectingModulesLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_detecting.png"));
-    private ImageIcon creatingInterfaceLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_creating.png"));
+    private ImageIcon detectingModulesLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_detecting-modules.png"));
+    private ImageIcon creatingInterfaceLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_creating-interface.png"));
 
     public enum Status {
         BLANK, DETECTING_MODULES, CREATING_INTERFACE;
@@ -26,7 +26,6 @@ public class Splash extends JFrame {
         setMinimumSize(new Dimension(width,250));
         setMaximumSize(new Dimension(width,250));
         setResizable(false);
-        setStatus(Status.BLANK);
 
         image = new JLabel("", blankLogo, SwingConstants.CENTER);
         image.setOpaque(false);

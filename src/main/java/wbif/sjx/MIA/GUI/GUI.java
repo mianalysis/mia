@@ -107,7 +107,7 @@ public class GUI {
 
         mainPanel.updatePanel();
 
-//        splash.setVisible(false);
+        splash.setVisible(false);
 
         // Final bits for listeners
         frame.pack();
