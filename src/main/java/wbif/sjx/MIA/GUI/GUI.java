@@ -82,10 +82,10 @@ public class GUI {
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
         splash.setVisible(true);
 
-        splash.setMessage("Detecting modules");
+        splash.setStatus(Splash.Status.DETECTING_MODULES);
         detectAvailableModules();
 
-        splash.setMessage("Initialising GUI");
+        splash.setStatus(Splash.Status.CREATING_INTERFACE);
         editingPan = new EditingPanel();
         basicPan = new BasicPanel();
 
@@ -107,7 +107,7 @@ public class GUI {
 
         mainPanel.updatePanel();
 
-        splash.setVisible(false);
+//        splash.setVisible(false);
 
         // Final bits for listeners
         frame.pack();

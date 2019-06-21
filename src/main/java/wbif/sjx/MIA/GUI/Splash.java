@@ -1,44 +1,51 @@
 package wbif.sjx.MIA.GUI;
 
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 
 public class Splash extends JFrame {
-    private JLabel text;
+    private int height = 166;
+    private int width = 231;
+    private JLabel image;
+
+    private ImageIcon blankLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash.png"));
+    private ImageIcon detectingModulesLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_detecting.png"));
+    private ImageIcon creatingInterfaceLogo = new ImageIcon(Splash.class.getResource("/Images/Logo_splash_creating.png"));
+
+    public enum Status {
+        BLANK, DETECTING_MODULES, CREATING_INTERFACE;
+    }
 
     public Splash() {
-        Container container = getContentPane();
-        setLayout(new BoxLayout(container,BoxLayout.PAGE_AXIS));
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
         setAlwaysOnTop(true);
-        setPreferredSize(new Dimension(190,200));
-        setMinimumSize(new Dimension(190,200));
-        setMaximumSize(new Dimension(190,200));
+        setPreferredSize(new Dimension(width,250));
+        setMinimumSize(new Dimension(width,250));
+        setMaximumSize(new Dimension(width,250));
         setResizable(false);
+        setStatus(Status.BLANK);
 
-        JLabel image = new JLabel("", new ImageIcon(Splash.class.getResource("/Images/Logo_128.png")), SwingConstants.CENTER);
+        image = new JLabel("", blankLogo, SwingConstants.CENTER);
         image.setOpaque(false);
         add(image);
 
-        text = new JLabel("", SwingConstants.CENTER);
-        text.setPreferredSize(new Dimension(190,30));
-        text.setMinimumSize(new Dimension(190,30));
-        text.setMaximumSize(new Dimension(190,30));
-        text.setBorder(new EmptyBorder(10,0,0,0));
-        text.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-        text.setForeground(Color.WHITE);
-        text.setText("Initialising plugin");
-
-        add(text);
-
     }
 
-    public void setMessage(String message) {
-        text.setText(message);
+    public void setStatus(Status status) {
+        switch (status) {
+            default:
+            case BLANK:
+                image.setIcon(blankLogo);
+                break;
+            case DETECTING_MODULES:
+                image.setIcon(detectingModulesLogo);
+                break;
+            case CREATING_INTERFACE:
+                image.setIcon(creatingInterfaceLogo);
+                break;
+        }
     }
 }
