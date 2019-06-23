@@ -35,7 +35,11 @@ public class HelpArea extends JTextPane {
                 .append("<br><br><br>")
                 .append("<b>PARAMETERS</b><br>");
 
-        for (Parameter parameter:module.getAllParameters().values()) sb.append(getParameterHelpText(parameter));
+        for (Parameter parameter:module.getAllParameters().values()) {
+            if (parameter.isExported()) {
+                sb.append(getParameterHelpText(parameter));
+            }
+        }
 
         sb.append("<br>");
 
