@@ -37,13 +37,15 @@ public class ModuleList {
     public void test() throws UnsupportedEncodingException {
         JFrame frame = new JFrame();
 
-        Module mod1 = new ImageLoader<>();
-        Module mod2 = new FilterImage();
-        Module mod3 = new ImageSaver();
         ModuleCollection modules = GUI.getModules();
+
+        Module mod1 = new ImageLoader<>(modules);
+        Module mod2 = new FilterImage(modules);
+        Module mod3 = new ImageSaver(modules);
+
         modules.add(mod1);
         modules.add(mod2);
-//        modules.add(mod3);
+        modules.add(mod3);
 
         // Setting parameters for ImageLoader
         ImageLoader imageLoader = (ImageLoader) mod1;
@@ -64,10 +66,10 @@ public class ModuleList {
         String[] columnNames = {"Enable", "ShowOutput", "Title", "Evaluate"};
         Object[][] data = {{mod1, mod1, mod1, mod1},
                 {mod2,mod2,mod2,mod2},
-//                {mod3,mod3,mod3,mod3},
+                {mod3,mod3,mod3,mod3},
         };
 
-        MyTableModel tableModel = new MyTableModel(data,columnNames);
+        MyTableModel tableModel = new MyTableModel(data,columnNames,modules);
         JTable table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         table.setTableHeader(null);
@@ -135,7 +137,7 @@ public class ModuleList {
         if (idx == GUI.getModuleBeingEval()) {
             System.out.println("Stopping");
             GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates();
+            GUI.updateModuleStates(true);
             t.stop();
             return;
         }
@@ -151,7 +153,7 @@ public class ModuleList {
                     table.repaint();
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
-                    GUI.updateModuleStates();
+                    GUI.updateModuleStates(true);
                     e1.printStackTrace();
                     table.repaint();
                 }
@@ -190,8 +192,8 @@ public class ModuleList {
 
         Module.setVerbose(true);
         module.execute(testWorkspace);
-        GUI.setLastModuleEval(modules.indexOf(module));
-        GUI.setModuleBeingEval(-1);
+//        GUI.setLastModuleEval(modules.indexOf(module));
+//        GUI.setModuleBeingEval(-1);
 
 //        GUI.updateModuleStates();
 

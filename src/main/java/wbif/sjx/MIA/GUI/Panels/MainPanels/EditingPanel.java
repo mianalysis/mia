@@ -37,7 +37,7 @@ public class EditingPanel extends MainPanel {
     private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final InputOutputPanel inputPanel = new InputOutputPanel(moduleGroup);
     private final InputOutputPanel outputPanel = new InputOutputPanel(moduleGroup);
-    private final ModulesPanel modulesPanel = new ModulesPanel(moduleGroup);
+    private final DraggableModulesPanel modulesPanel = new DraggableModulesPanel(moduleGroup);
     private final ParametersPanel parametersPanel = new ParametersPanel();
     private final JPanel helpNotesPanel = new JPanel();
     private final NotesPanel notesPanel = new NotesPanel();

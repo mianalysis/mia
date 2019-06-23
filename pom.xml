@@ -50,6 +50,11 @@
             <roles><role>founder</role></roles>
             <properties><id>sjcross</id></properties>
         </contributor>
+        <contributor>
+            <name>Gemma Fisher</name>
+            <roles><role>Annotation</role></roles>
+            <properties><id>glmfisher</id></properties>
+        </contributor>
     </contributors>
 
     <issueManagement>

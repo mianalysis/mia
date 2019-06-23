@@ -377,53 +377,6 @@ public class GUI {
         GUI.lastModuleEval = Math.max(lastModuleEval,-1);
     }
 
-    public static void evaluateModule(Module module) {
-        if (!module.isEnabled()) return;
-
-        int idx = GUI.getModules().indexOf(module);
-
-        // If it's currently evaluating, this will kill the thread
-        if (idx == GUI.getModuleBeingEval()) {
-            System.out.println("Stopping");
-            GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates();
-            t.stop();
-            return;
-        }
-
-        // If the module is ready to be evaluated
-        if (idx <= GUI.getLastModuleEval()) {
-            t = new Thread(() -> {
-                try {
-                    // For some reason it's necessary to have a brief pause here to prevent the module executing twice
-                    Thread.sleep(1);
-                    evaluateModule(module);
-                } catch (Exception e1) {
-                    GUI.setModuleBeingEval(-1);
-                    GUI.updateModuleStates();
-                    e1.printStackTrace();
-                }
-            });
-            t.start();
-
-        } else {
-            // If multiple modules will need to be evaluated first
-            t = new Thread(() -> {
-                for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
-                    Module currModule = GUI.getModules().get(i);
-                    if (currModule.isEnabled() && currModule.isRunnable()) try {
-                        evaluateModule(currModule);
-                    } catch (Exception e1) {
-                        GUI.setModuleBeingEval(-1);
-                        e1.printStackTrace();
-                        Thread.currentThread().getThreadGroup().interrupt();
-                    }
-                }
-            });
-            t.start();
-        }
-    }
-
     public static Workspace getTestWorkspace() {
         return testWorkspace;
     }

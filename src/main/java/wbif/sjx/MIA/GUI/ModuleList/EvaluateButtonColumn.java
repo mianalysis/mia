@@ -56,8 +56,11 @@ public class EvaluateButtonColumn extends ButtonColumn implements TableCellRende
 
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
+            Point point = table.getMousePosition();
+            int mouseRow = table.rowAtPoint(point);
+            System.out.println(mouseRow);
+
             editButton.setIcon(amberIcon);
-            editButton.setRolloverIcon(redStopIcon);
             this.editorValue = value;
             return editButton;
         }
@@ -98,7 +101,6 @@ public class EvaluateButtonColumn extends ButtonColumn implements TableCellRende
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
             renderButton.setIcon(amberIcon);
-            renderButton.setRolloverIcon(redStopIcon);
             this.editorValue = value;
             return renderButton;
         }
@@ -125,5 +127,19 @@ public class EvaluateButtonColumn extends ButtonColumn implements TableCellRende
 
         return renderButton;
 
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        Point point = e.getPoint();
+        int row = table.rowAtPoint(point);
+        Module module = (Module) table.getValueAt(row,0);
+        int idx = GUI.getModules().indexOf(module);
+
+        System.out.println(module+"_"+idx+"_"+GUI.getModuleBeingEval());
+        if (idx == GUI.getModuleBeingEval()) {
+            System.out.println("    here!");
+            actionPerformed(null);
+        }
     }
 }

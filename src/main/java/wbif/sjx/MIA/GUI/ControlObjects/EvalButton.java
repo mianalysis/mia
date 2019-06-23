@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 08/06/2017.
  */
 public class EvalButton extends JButton implements ActionListener {
+    private static Thread t;
+
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");

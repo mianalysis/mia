@@ -2,11 +2,13 @@
 
 package wbif.sjx.MIA.GUI.ModuleList;
 
+import ij.IJ;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.Module.Module;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
@@ -33,8 +35,8 @@ public abstract class ButtonColumn extends AbstractCellEditor
     Border originalBorder;
     Border focusBorder;
 
-    JButton renderButton;
-    JButton editButton;
+    MouseButton renderButton;
+    MouseButton editButton;
     Object editorValue;
     boolean isButtonColumnEditor;
 
@@ -51,14 +53,14 @@ public abstract class ButtonColumn extends AbstractCellEditor
         this.table = table;
         this.action = action;
 
-        renderButton = new JButton();
+        renderButton = new MouseButton();
         renderButton.setFocusPainted(false);
         renderButton.setSelected(false);
         renderButton.setMargin(new Insets(0,0,0,0));
         renderButton.setName("ModuleEnabled");
         renderButton.setToolTipText("Enable/disable module");
 
-        editButton = new JButton();
+        editButton = new MouseButton();
         editButton.setSelected(false);
         editButton.setMargin(new Insets(0,0,0,0));
         editButton.setName("ModuleEnabled");
@@ -138,8 +140,8 @@ public abstract class ButtonColumn extends AbstractCellEditor
     }
 
     //
-//  Implement MouseListener interface
-//
+    //  Implement MouseListener interface
+    //
     /*
      *  When the mouse is pressed the editor is invoked. If you then then drag
      *  the mouse to another cell before releasing it, the editor is still
