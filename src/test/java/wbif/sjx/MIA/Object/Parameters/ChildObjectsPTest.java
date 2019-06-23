@@ -1,17 +1,13 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.TrackObjects;
-import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,14 +19,14 @@ public class ChildObjectsPTest {
     @Test
     public void testDuplicate() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Par_name");
         ChildObjectsP duplicated = childObjectsP.duplicate();
 
         assertEquals("Test param",duplicated.getName());
-        assertEquals(filterImage,duplicated.getModule());
+        assertEquals(paramTest,duplicated.getModule());
                 
 
     }
@@ -38,9 +34,9 @@ public class ChildObjectsPTest {
     @Test
     public void testGetRawStringValueBlank() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
 
         assertEquals("",childObjectsP.getRawStringValue());
 
@@ -49,12 +45,24 @@ public class ChildObjectsPTest {
     @Test
     public void testGetRawStringValue() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setChoice("Par_name");
 
         assertEquals("Par_name",childObjectsP.getRawStringValue());
+
+    }
+
+    @Test
+    public void testGetRawStringValueNull() {
+        ModuleCollection modules = new ModuleCollection();
+        ParamTest paramTest = new ParamTest(modules);
+
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
+        childObjectsP.setChoice(null);
+
+        assertEquals("",childObjectsP.getRawStringValue());
 
     }
 
@@ -83,11 +91,10 @@ public class ChildObjectsPTest {
         extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
 
         String[] actual = childObjectsP.getChoices();
@@ -123,11 +130,10 @@ public class ChildObjectsPTest {
         extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
 
         String[] actual = childObjectsP.getChoices();
@@ -151,11 +157,10 @@ public class ChildObjectsPTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Obj out");
         modules.add(identifyObjects);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
 
         String[] actual = childObjectsP.getChoices();
@@ -192,11 +197,10 @@ public class ChildObjectsPTest {
         extractObjectEdges.setEnabled(false);
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
 
         String[] actual = childObjectsP.getChoices();
@@ -232,11 +236,10 @@ public class ChildObjectsPTest {
         extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
         childObjectsP.setChoice("Flat obj");
 
@@ -269,11 +272,10 @@ public class ChildObjectsPTest {
         extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
         childObjectsP.setChoice("Flat obj // Obj int");
 
@@ -307,11 +309,10 @@ public class ChildObjectsPTest {
         extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
         childObjectsP.setChoice("Flat obj");
 
@@ -332,11 +333,10 @@ public class ChildObjectsPTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Obj out");
         modules.add(identifyObjects);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
 
         assertFalse(childObjectsP.verify());
@@ -369,13 +369,47 @@ public class ChildObjectsPTest {
         extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
         modules.add(extractObjectEdges);
 
-        FilterImage filterImage = new FilterImage(modules);
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Demo im");
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
         childObjectsP.setChoice("Wrong obj");
+
+        assertFalse(childObjectsP.verify());
+
+    }
+
+    @Test
+    public void testVerifyNoParentSpecified() {
+        ModuleCollection modules = new ModuleCollection();
+
+        ImageLoader imageLoader = new ImageLoader(modules);
+        imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Demo im");
+        modules.add(imageLoader);
+
+        IdentifyObjects identifyObjects = new IdentifyObjects(modules);
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Demo im");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Obj out");
+        modules.add(identifyObjects);
+
+        ProjectObjects projectObjects = new ProjectObjects(modules);
+        projectObjects.updateParameterValue(ProjectObjects.INPUT_OBJECTS,"Obj out");
+        projectObjects.updateParameterValue(ProjectObjects.OUTPUT_OBJECTS,"Flat obj");
+        modules.add(projectObjects);
+
+        ExtractObjectEdges extractObjectEdges = new ExtractObjectEdges(modules);
+        extractObjectEdges.updateParameterValue(ExtractObjectEdges.INPUT_OBJECTS,"Obj out");
+        extractObjectEdges.updateParameterValue(ExtractObjectEdges.CREATE_EDGE_OBJECTS,false);
+        extractObjectEdges.updateParameterValue(ExtractObjectEdges.CREATE_INTERIOR_OBJECTS,true);
+        extractObjectEdges.updateParameterValue(ExtractObjectEdges.OUTPUT_INTERIOR_OBJECTS,"Obj int");
+        modules.add(extractObjectEdges);
+
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
+
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
+        childObjectsP.setChoice("Flat obj");
 
         assertFalse(childObjectsP.verify());
 
@@ -385,10 +419,10 @@ public class ChildObjectsPTest {
     public void appendXMLAttributes() throws ParserConfigurationException {
         ModuleCollection modules = new ModuleCollection();
 
-        FilterImage filterImage = new FilterImage(modules);
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Obj out");
         childObjectsP.setChoice("Flat obj");
         childObjectsP.setVisible(true);
@@ -416,10 +450,10 @@ public class ChildObjectsPTest {
     public void setAttributesFromXML() throws ParserConfigurationException {
         ModuleCollection modules = new ModuleCollection();
 
-        FilterImage filterImage = new FilterImage(modules);
-        modules.add(filterImage);
+        ParamTest paramTest = new ParamTest(modules);
+        modules.add(paramTest);
 
-        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",filterImage);
+        ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element element = doc.createElement("Test");

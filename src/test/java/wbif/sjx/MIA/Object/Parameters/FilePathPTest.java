@@ -1,12 +1,10 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,9 +23,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(testFile.getAbsolutePath());
 
         assertFalse(filePathP.isDirectory());
@@ -46,9 +44,9 @@ public class FilePathPTest {
         temporaryFolder.create();
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
 
         assertTrue(filePathP.isDirectory());
@@ -58,9 +56,9 @@ public class FilePathPTest {
     @Test
     public void isDirectoryMissing() throws IOException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath("");
 
         assertFalse(filePathP.isDirectory());
@@ -70,9 +68,9 @@ public class FilePathPTest {
     @Test
     public void isDirectoryNull() throws IOException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(null);
 
         assertFalse(filePathP.isDirectory());
@@ -87,9 +85,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(testFile.getAbsolutePath());
 
         assertEquals(testFile.getAbsolutePath(),filePathP.getPath());
@@ -104,9 +102,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
 
         assertEquals(temporaryFolder.getRoot().getAbsolutePath(),filePathP.getPath());
@@ -121,9 +119,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(testFile.getAbsolutePath());
 
         assertEquals(testFile.getAbsolutePath(),filePathP.getRawStringValue());
@@ -137,9 +135,9 @@ public class FilePathPTest {
         temporaryFolder.create();
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
 
         assertEquals(temporaryFolder.getRoot().getAbsolutePath(),filePathP.getRawStringValue());
@@ -154,9 +152,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setValueFromString(testFile.getAbsolutePath());
 
         assertEquals(testFile.getAbsolutePath(),filePathP.getRawStringValue());
@@ -170,9 +168,9 @@ public class FilePathPTest {
         temporaryFolder.create();
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setValueFromString(temporaryFolder.getRoot().getAbsolutePath());
 
         assertEquals(temporaryFolder.getRoot().getAbsolutePath(),filePathP.getRawStringValue());
@@ -187,9 +185,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(testFile.getAbsolutePath());
 
         assertTrue(filePathP.verify());
@@ -203,9 +201,9 @@ public class FilePathPTest {
         temporaryFolder.create();
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
 
         assertFalse(filePathP.verify());
@@ -220,9 +218,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(testFile.getAbsolutePath());
 
         // Now, remove the file, so it's missing when tested.
@@ -234,9 +232,9 @@ public class FilePathPTest {
     @Test
     public void verifyMissing() throws IOException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath("");
 
         assertFalse(filePathP.verify());
@@ -246,9 +244,9 @@ public class FilePathPTest {
     @Test
     public void verifyNull() throws IOException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(null);
 
         assertFalse(filePathP.verify());
@@ -263,9 +261,9 @@ public class FilePathPTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
         filePathP.setPath(testFile.getAbsolutePath());
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -290,9 +288,9 @@ public class FilePathPTest {
     @Test
     public void setAttributesFromXML() throws ParserConfigurationException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        FilePathP filePathP = new FilePathP("Demo file",filterImage);
+        FilePathP filePathP = new FilePathP("Demo file",paramTest);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element element = doc.createElement("Test");

@@ -1,11 +1,9 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,13 +16,13 @@ public class BooleanPTest {
     @Test
     public void testDuplicate() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
         BooleanP duplicated = booleanP.duplicate();
 
         assertEquals("TestBoo",duplicated.getName());
-        assertEquals(filterImage,duplicated.getModule());
+        assertEquals(paramTest,duplicated.getModule());
         assertTrue(duplicated.getValue());
 
     }
@@ -32,9 +30,9 @@ public class BooleanPTest {
     @Test
     public void testFlipBoolean() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
         assertTrue(booleanP.getValue());
 
         booleanP.flipBoolean();
@@ -48,9 +46,9 @@ public class BooleanPTest {
     @Test
     public void testGetRawStringValueTrue() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
 
         assertEquals("true",booleanP.getRawStringValue());
 
@@ -59,9 +57,9 @@ public class BooleanPTest {
     @Test
     public void testGetRawStringValueFalse() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,false);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
 
         assertEquals("false",booleanP.getRawStringValue());
 
@@ -70,9 +68,9 @@ public class BooleanPTest {
     @Test
     public void testSetValueFromStringTrue() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,false);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
         assertFalse(booleanP.getValue());
 
         booleanP.setValueFromString("true");
@@ -83,9 +81,9 @@ public class BooleanPTest {
     @Test
     public void testSetValueFromStringFalse() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
         assertTrue(booleanP.getValue());
 
         booleanP.setValueFromString("false");
@@ -96,9 +94,9 @@ public class BooleanPTest {
     @Test
     public void testVerifyTrue() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
 
         assertTrue(booleanP.verify());
 
@@ -107,9 +105,9 @@ public class BooleanPTest {
     @Test
     public void testVerifyFalse() {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,false);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
 
         assertTrue(booleanP.verify());
 
@@ -118,9 +116,9 @@ public class BooleanPTest {
     @Test
     public void testAppendXMLAttributes() throws ParserConfigurationException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element element = doc.createElement("Test");
@@ -144,9 +142,9 @@ public class BooleanPTest {
     @Test
     public void testSetAttributesFromXML() throws ParserConfigurationException {
         ModuleCollection modules = new ModuleCollection();
-        FilterImage filterImage = new FilterImage(modules);
+        ParamTest paramTest = new ParamTest(modules);
 
-        BooleanP booleanP = new BooleanP("TestBoo",filterImage,true);
+        BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element element = doc.createElement("Test");
