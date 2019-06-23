@@ -23,13 +23,6 @@ public class FileFolderPathP extends FileFolderType {
     }
 
     @Override
-    public boolean isDirectory() {
-        String fileFolderPath = getPath();
-        if (fileFolderPath == null) return false;
-        return new File(fileFolderPath).isDirectory();
-    }
-
-    @Override
     protected ParameterControl initialiseControl() {
         return new FileParameter(this,FileParameter.FileTypes.EITHER_TYPE);
     }
