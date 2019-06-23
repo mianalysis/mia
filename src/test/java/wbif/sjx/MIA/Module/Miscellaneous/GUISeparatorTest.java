@@ -13,14 +13,8 @@ public class GUISeparatorTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new GUISeparator().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new GUISeparator().getHelp());
+        assertNotNull(new GUISeparator(null).getDescription());
 
     }
 }

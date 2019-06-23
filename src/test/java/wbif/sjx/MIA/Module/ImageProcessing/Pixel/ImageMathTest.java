@@ -21,13 +21,8 @@ public class ImageMathTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageMath().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ImageMath().getHelp());
+        assertNotNull(new ImageMath(null).getDescription());
     }
 
     @Test
@@ -49,7 +44,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -91,7 +86,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -133,7 +128,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -175,7 +170,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -217,7 +212,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -258,7 +253,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -299,7 +294,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
@@ -341,7 +336,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -383,7 +378,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -425,7 +420,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -467,7 +462,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -509,7 +504,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -551,7 +546,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -593,7 +588,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -635,7 +630,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -677,7 +672,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
@@ -719,7 +714,7 @@ public class ImageMathTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ImageMath imageMath = new ImageMath();
+        ImageMath imageMath = new ImageMath(null);
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");

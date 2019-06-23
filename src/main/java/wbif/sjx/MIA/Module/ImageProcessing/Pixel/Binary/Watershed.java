@@ -12,6 +12,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,6 +35,10 @@ public class Watershed extends Module {
     public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public Watershed(ModuleCollection modules) {
+        super("Watershed transform",modules);
+    }
 
     public interface IntensityModes {
         String DISTANCE = "Distance";
@@ -121,17 +129,12 @@ public class Watershed extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Watershed transform";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses MorphoLibJ implementation of watershed transform.";
     }
 
@@ -247,22 +250,22 @@ public class Watershed extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

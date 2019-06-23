@@ -23,6 +23,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
@@ -41,6 +45,10 @@ public class BinaryOperations extends Module {
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
+
+    public BinaryOperations(ModuleCollection modules) {
+        super("Binary operations (legacy)",modules);
+    }
 
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
@@ -297,10 +305,6 @@ public class BinaryOperations extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Binary operations (legacy)";
-    }
 
     @Override
     public String getPackageName() {
@@ -308,7 +312,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
                 "be removed in a future release.\r\n";
 
@@ -471,22 +475,22 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

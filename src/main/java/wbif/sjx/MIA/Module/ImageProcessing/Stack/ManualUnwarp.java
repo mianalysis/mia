@@ -7,7 +7,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PointRoi;
-import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -18,10 +17,14 @@ import wbif.sjx.MIA.Object.*;
 
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Interactable.Interactable;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector.PointPair;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 import wbif.sjx.MIA.ThirdParty.bUnwarpJ_Mod;
 
 import java.awt.*;
@@ -56,6 +59,10 @@ public class ManualUnwarp extends Module implements Interactable {
     private Param param;
     private Image inputImage;
     private Image reference;
+
+    public ManualUnwarp(ModuleCollection modules) {
+        super("Unwarp images (manual)",modules);
+    }
 
 
     public interface PointSelectionModes {
@@ -176,13 +183,11 @@ public class ManualUnwarp extends Module implements Interactable {
 
         // Invert the intensity before applying transformation if using white fill
         if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(inputIpl);
-        if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(outputIpl);
 
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
         int bitDepth = inputIpl.getBitDepth();
-
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 
@@ -196,7 +201,7 @@ public class ManualUnwarp extends Module implements Interactable {
                     Runnable task = () -> {
                         ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
                         bUnwarpJ_.applyTransformToSource(tempPath, outputImage.getImagePlus(), slice);
-                        ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
+                        ImageTypeConverter.applyConversion(slice, inputIpl.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
 
                         getSetStack(outputIpl, finalT, finalC, finalZ, slice.getProcessor());
 
@@ -209,7 +214,6 @@ public class ManualUnwarp extends Module implements Interactable {
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        // If using white fill, invert the image again
         if (fillMode.equals(FillModes.WHITE)) InvertIntensity.process(outputIpl);
 
     }
@@ -253,7 +257,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
     }
 
-    public Image processManual(Image inputImage, String outputImageName, Image reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
+    public Image process(Image inputImage, String outputImageName, Image reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
         // Converting point pairs into format for bUnwarpJ
         Stack<Point> points1 = new Stack<>();
         Stack<Point> points2 = new Stack<>();
@@ -325,14 +329,8 @@ public class ManualUnwarp extends Module implements Interactable {
             e.printStackTrace();
         }
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
-        concatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
+        ConcatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
 
-    }
-
-    @Override
-    public String getTitle() {
-        return "Unwarp images (manual)";
     }
 
     @Override
@@ -341,7 +339,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -401,7 +399,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
         Image outputImage = null;
         try {
-            outputImage = processManual(inputImage, outputImageName, reference, pairs, param, fillMode, multithread);
+            outputImage = process(inputImage, outputImageName, reference, pairs, param, fillMode, multithread);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -472,22 +470,22 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

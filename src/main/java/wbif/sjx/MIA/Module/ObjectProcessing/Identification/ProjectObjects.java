@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -22,7 +26,11 @@ public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
+    public ProjectObjects(ModuleCollection modules) {
+        super("Project objects",modules);
+    }
+
+    public static Obj process(Obj inputObject, String outputObjectsName, boolean is2D, boolean addRelationship) throws IntegerOverflowException {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
 
@@ -47,8 +55,6 @@ public class ProjectObjects extends Module {
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
         Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,is2D);
-        outputObject.addParent(inputObject);
-        inputObject.addChild(outputObject);
 
         // Adding coordinates to the projected object
         for (Double key : projCoords.keySet()) {
@@ -57,15 +63,16 @@ public class ProjectObjects extends Module {
         }
         outputObject.setT(inputObject.getT());
 
+        // If adding relationship
+        if (addRelationship) {
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
+        }
+
         return outputObject;
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Project objects";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -73,7 +80,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -88,7 +95,7 @@ public class ProjectObjects extends Module {
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;
             try {
-                outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
+                outputObject = process(inputObject,outputObjectsName, inputObject.is2D(),true);
             } catch (IntegerOverflowException e) {
                 return false;
             }
@@ -125,28 +132,27 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
 
-        relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
+        returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS)));
 
-        return relationships;
+        return returnedRelationships;
 
     }
-
 }

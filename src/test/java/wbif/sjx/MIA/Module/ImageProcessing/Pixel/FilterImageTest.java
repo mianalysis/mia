@@ -28,13 +28,8 @@ public class FilterImageTest extends ModuleTest {
     // GENERAL TESTS
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new FilterImage().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new FilterImage().getHelp());
+        assertNotNull(new FilterImage(null).getDescription());
     }
 
 
@@ -75,7 +70,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -117,7 +112,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -158,7 +153,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -206,7 +201,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -248,7 +243,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -289,7 +284,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -333,7 +328,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -374,7 +369,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -416,7 +411,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -457,7 +452,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -498,7 +493,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -539,7 +534,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -580,7 +575,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -621,7 +616,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -662,7 +657,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -703,7 +698,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -745,7 +740,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -789,7 +784,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -832,7 +827,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -873,7 +868,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -916,7 +911,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -958,7 +953,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1000,7 +995,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1042,7 +1037,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1088,7 +1083,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1130,7 +1125,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1172,7 +1167,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1214,7 +1209,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1255,7 +1250,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1297,7 +1292,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1339,7 +1334,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1381,7 +1376,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1424,7 +1419,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
@@ -1466,7 +1461,7 @@ public class FilterImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");

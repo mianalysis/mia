@@ -22,13 +22,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new NormaliseIntensity().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new NormaliseIntensity().getHelp());
+        assertNotNull(new NormaliseIntensity(null).getDescription());
     }
 
     @Test
@@ -50,7 +45,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -88,7 +83,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -126,7 +121,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -164,7 +159,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -202,7 +197,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -240,7 +235,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -278,7 +273,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
@@ -316,7 +311,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,true);
 
@@ -352,7 +347,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity(null);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");

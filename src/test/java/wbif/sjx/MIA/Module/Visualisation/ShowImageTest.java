@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class ShowImageTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ShowImage().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ShowImage().getHelp());
+        assertNotNull(new ShowImage(null).getDescription());
     }
 }

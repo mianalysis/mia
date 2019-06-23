@@ -26,14 +26,8 @@ public class MeasureObjectShapeTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectShape().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectShape().getHelp());
+        assertNotNull(new MeasureObjectShape(null).getDescription());
 
     }
 
@@ -53,7 +47,7 @@ public class MeasureObjectShapeTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectShape
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape();
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(null);
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,inputObjectsName);
 

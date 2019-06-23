@@ -7,6 +7,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.awt.*;
@@ -22,6 +26,10 @@ public class PlotMeasurementsScatter extends Module {
     public static final String INCLUDE_COLOUR = "Add third measurement as colour";
     public static final String MEASUREMENT3 = "Third measurement (Colour)";
     public static final String COLOURMAP = "Colourmap";
+
+    public PlotMeasurementsScatter(ModuleCollection modules) {
+        super("Plot measurements as scatter",modules);
+    }
 
     public interface ColourMaps {
         String RED_TO_BLUE = "Red to blue";
@@ -50,17 +58,12 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Plot measurements as scatter";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -202,22 +205,22 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

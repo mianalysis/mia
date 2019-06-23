@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -20,6 +21,10 @@ public class MeasureImageColocalisation extends Module {
     public static final String INPUT_IMAGE_2 = "Input image 2";
     public static final String MASKING_MODE = "Masking mode";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public MeasureImageColocalisation(ModuleCollection modules) {
+        super("Measure image colocalisation",modules);
+    }
 
 
     public interface MaskingModes {
@@ -89,10 +94,6 @@ public class MeasureImageColocalisation extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure image colocalisation";
-    }
 
     @Override
     public String getPackageName() {
@@ -100,7 +101,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Calculates PCC, averaged across all timepoints and channels.";
     }
 
@@ -161,33 +162,33 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
         String inputImage1Name = parameters.getValue(INPUT_IMAGE_1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE_2);
 
-        imageMeasurementRefs.setAllCalculated(false);
-
         String name = getFullName(inputImage2Name,Measurements.MEAN_PCC);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImage1Name);
-        reference.setCalculated(true);
+        ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImage1Name);
+        returnedRefs.add(reference);
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

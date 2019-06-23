@@ -1,96 +1,160 @@
-// TODO: Could add optional argument to getParametersMatchingType for the removal type (i.e. if it matches type 1 add
+// TODO: Could addRef optional argument to getParametersMatchingType for the removal type (i.e. if it matches type 1 addRef
 // to the list, but if it matches type 2 remove the same parameter from the list.  Would need to compare Parameters for
 // value.
 
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ModuleCollection extends ArrayList<Module> implements Serializable {
-    public MeasurementRefCollection getImageMeasurementRefs(String imageName) {
+public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module> {
+    private InputControl inputControl = new InputControl(this);
+    private OutputControl outputControl = new OutputControl(this);
+
+    public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName) {
         return getImageMeasurementRefs(imageName,null);
     }
 
-    public MeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
-        MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
+    public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
+        ImageMeasurementRefCollection measurementRefs = new ImageMeasurementRefCollection();
+
+        addImageMeasurementRefs(inputControl, measurementRefs, imageName);
+        addImageMeasurementRefs(outputControl, measurementRefs, imageName);
 
         // Iterating over all modules, collecting any measurements for the current image
         for (Module module:this) {
             if (module == cutoffModule) break;
-            if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
-
-            if (currentMeasurementRefs == null) continue;
-
-            for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
-                if (measurementReference.getImageObjName() == null) continue;
-                if (measurementReference.getImageObjName().equals(imageName)
-                        & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference);
-
-            }
+            if (!module.isEnabled() |! module.isRunnable()) continue;
+            addImageMeasurementRefs(module, measurementRefs, imageName);
         }
 
-        return measurementReferences;
+        return measurementRefs;
 
     }
 
-    public MeasurementRefCollection getObjectMeasurementRefs(String objectName) {
+    void addImageMeasurementRefs(Module module, ImageMeasurementRefCollection measurementRefs, String imageName) {
+        if (!module.isEnabled()) return;
+        ImageMeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
+
+        if (currentMeasurementRefs == null) return;
+
+        for (ImageMeasurementRef measurementRef:currentMeasurementRefs.values()) {
+            if (measurementRef.getImageName() == null) continue;
+            if (measurementRef.getImageName().equals(imageName))
+                measurementRefs.put(measurementRef.getName(),measurementRef);
+
+        }
+    }
+
+    public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName) {
         return getObjectMeasurementRefs(objectName,null);
 
     }
 
-    public MeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
-        MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
+    public ObjMeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
+        ObjMeasurementRefCollection measurementRefs = new ObjMeasurementRefCollection();
 
         // If this is a distant relative there will be "//" in the name that need to be removed
         if (objectName.contains("//")) objectName = objectName.substring(objectName.indexOf("//")+3);
 
+        addObjectMeasurementRefs(inputControl,measurementRefs,objectName);
+        addObjectMeasurementRefs(outputControl,measurementRefs,objectName);
+
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
-            if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementRefs =
-                    module.updateAndGetObjectMeasurementRefs();
-            if (currentMeasurementRefs == null) continue;
-
-            for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
-                if (measurementReference.getImageObjName() == null) continue;
-                if (measurementReference.getImageObjName().equals(objectName)
-                        & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference);
-
-            }
+            if (!module.isEnabled() |! module.isRunnable()) continue;
+            addObjectMeasurementRefs(module,measurementRefs,objectName);
         }
 
-        return measurementReferences;
+        return measurementRefs;
 
     }
 
-    public MetadataRefCollection getMetadataReferences(Module cutoffModule) {
+    void addObjectMeasurementRefs(Module module, ObjMeasurementRefCollection measurementRefs, String objectName) {
+        if (!module.isEnabled()) return;
+        ObjMeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();
+        if (currentMeasurementRefs == null) return;
+
+        for (ObjMeasurementRef ref:currentMeasurementRefs.values()) {
+            if (ref.getObjectsName() == null) continue;
+            if (ref.getObjectsName().equals(objectName)) measurementRefs.put(ref.getName(),ref);
+
+        }
+    }
+
+    public MetadataRefCollection getMetadataRefs() {
+        return getMetadataRefs(null);
+
+    }
+
+    public MetadataRefCollection getMetadataRefs(Module cutoffModule) {
         MetadataRefCollection metadataRefs = new MetadataRefCollection();
+
+        addMetadataRefs(inputControl, metadataRefs);
+        addMetadataRefs(outputControl, metadataRefs);
 
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
-            if (!module.isEnabled()) continue;
-            MetadataRefCollection currentMetadataReferences = module.updateAndGetImageMetadataReferences();
-            if (currentMetadataReferences == null) continue;
-
-            metadataRefs.putAll(currentMetadataReferences);
-
+            addMetadataRefs(module, metadataRefs);
         }
 
         return metadataRefs;
+
+    }
+
+    void addMetadataRefs(Module module, MetadataRefCollection metadataRefs) {
+        if (!module.isEnabled()) return;
+
+        MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
+        if (currentMetadataReferences == null) return;
+
+        metadataRefs.putAll(currentMetadataReferences);
+
+    }
+
+    public RelationshipRefCollection getRelationshipRefs() {
+        return getRelationshipRefs(null);
+
+    }
+
+    public RelationshipRefCollection getRelationshipRefs(Module cutoffModule) {
+        RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
+
+        addRelationshipRefs(inputControl, relationshipRefs);
+        addRelationshipRefs(outputControl, relationshipRefs);
+
+        for (Module module:this) {
+            if (module == cutoffModule) break;
+            if (!module.isEnabled() |! module.isRunnable()) continue;
+
+            addRelationshipRefs(module,relationshipRefs);
+        }
+
+        return relationshipRefs;
+
+    }
+
+    void addRelationshipRefs(Module module, RelationshipRefCollection relationshipRefs) {
+        if (!module.isEnabled()) return;
+
+        RelationshipRefCollection currentRelationshipRefs = module.updateAndGetRelationships();
+        if (currentRelationshipRefs == null) return;
+
+        relationshipRefs.putAll(currentRelationshipRefs);
 
     }
 
@@ -109,7 +173,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
             // Running through all parameters, adding all images to the list
             ParameterCollection currParameters = module.updateAndGetParameters();
-            for (Parameter currParameter : currParameters) {
+            for (Parameter currParameter : currParameters.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
                 }
@@ -125,16 +189,25 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     }
 
     public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
-        // Getting a list of available images
-        LinkedHashSet<OutputObjectsP> objects = getParametersMatchingType(OutputObjectsP.class,cutoffModule);
+        LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
 
-        if (!ignoreRemoved) return objects;
+        for (Module module:this) {
+            if (module == cutoffModule) break;
 
-        // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<RemovedObjectsP> removedObjectParams = getParametersMatchingType(RemovedObjectsP.class,cutoffModule);
-        for (Parameter removedObject: removedObjectParams) {
-            String removeObjectName = removedObject.getValueAsString();
-            objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeObjectName));
+            // Get the added and removed images
+            LinkedHashSet<OutputObjectsP> addedObjects = module.getParametersMatchingType(OutputObjectsP.class);
+            LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
+
+            // Adding new images
+            if (addedObjects != null) objects.addAll(addedObjects);
+
+            // Removing images
+            if (!ignoreRemoved || removedObjects == null) continue;
+
+            for (Parameter removedImage: removedObjects) {
+                String removeImageName = removedImage.getRawStringValue();
+                objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeImageName));
+            }
         }
 
         return objects;
@@ -150,44 +223,61 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     }
 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
-        // Getting a list of available images
-        LinkedHashSet<OutputImageP> images = getParametersMatchingType(OutputImageP.class,cutoffModule);
+        LinkedHashSet<OutputImageP> images = new LinkedHashSet<>();
 
-        if (!ignoreRemoved) return images;
+        for (Module module:this) {
+            if (module == cutoffModule) break;
 
-        // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<RemovedImageP> removedImagePS = getParametersMatchingType(RemovedImageP.class,cutoffModule);
-        for (Parameter removedImage: removedImagePS) {
-            String removeImageName = removedImage.getValueAsString();
-            images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+            // Get the added and removed images
+            LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
+            LinkedHashSet<RemovedImageP> removedImages = module.getParametersMatchingType(RemovedImageP.class);
+
+            // Adding new images
+            if (addedImages != null) images.addAll(addedImages);
+
+            // Removing images
+            if (!ignoreRemoved || removedImages == null) continue;
+
+            for (Parameter removedImage:removedImages) {
+                String removeImageName = removedImage.getRawStringValue();
+                images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+            }
         }
 
         return images;
 
     }
 
-    public RelationshipCollection getRelationships(Module cutoffModule) {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public boolean hasVisibleParameters() {
+        if (inputControl.hasVisibleParameters()) return true;
+        if (outputControl.hasVisibleParameters()) return true;
 
         for (Module module:this) {
-            if (module == cutoffModule) {
-                break;
-            }
-
-            if (module.isEnabled()) {
-                RelationshipCollection currRelationships = module.updateAndGetRelationships();
-                if (currRelationships == null) continue;
-                relationships.addAll(currRelationships);
-            }
+            if (module.hasVisibleParameters()) return true;
         }
 
-        return relationships;
+        return false;
 
     }
 
-    public RelationshipCollection getRelationships() {
-        return getRelationships(null);
-
+    public InputControl getInputControl() {
+        return inputControl;
     }
 
+    public void setInputControl(InputControl inputControl) {
+        this.inputControl = inputControl;
+    }
+
+    public OutputControl getOutputControl() {
+        return outputControl;
+    }
+
+    public void setOutputControl(OutputControl outputControl) {
+        this.outputControl = outputControl;
+    }
+
+    @Override
+    public Collection<Module> values() {
+        return this;
+    }
 }

@@ -2,6 +2,10 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -14,7 +18,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class BasicControlPanel extends JScrollPane {
-    private static final GUISeparator loadSeparator = new GUISeparator();
+    private static GUISeparator loadSeparator;
     private JPanel panel;
 
     public BasicControlPanel() {
@@ -23,6 +27,8 @@ public class BasicControlPanel extends JScrollPane {
 
         int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
+
+        loadSeparator = new GUISeparator(GUI.getModules());
 
         // Initialising the scroll panel
         setPreferredSize(new Dimension(frameWidth-30, -1));
@@ -44,8 +50,14 @@ public class BasicControlPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        AnalysisTester.testModule(GUI.getAnalysis().getInputControl(),GUI.getModules());
-        AnalysisTester.testModule(GUI.getAnalysis().getOutputControl(),GUI.getModules());
+        GlobalVariables globalVariables = MIA.getGlobalVariables();
+        InputControl inputControl = GUI.getModules().getInputControl();
+        OutputControl outputControl = GUI.getModules().getOutputControl();
+
+        AnalysisTester.testModule(globalVariables,GUI.getModules());
+        AnalysisTester.testModule(inputControl,GUI.getModules());
+        AnalysisTester.testModule(outputControl,GUI.getModules());
+        AnalysisTester.testModules(GUI.getModules());
 
         int frameWidth = GUI.getMinimumFrameWidth();
         Analysis analysis = GUI.getAnalysis();
@@ -64,16 +76,26 @@ public class BasicControlPanel extends JScrollPane {
         c.insets = new Insets(0,5,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Check if there are no modules
-        if (analysis.modules.size()==0) return;
+        // Check if there are no controls to be displayed
+        if (!analysis.hasVisibleParameters()) {
+            showUsageMessage();
+            return;
+        }
 
         // Adding a separator between the input and main modules
         panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
 
+        // Adding global variable options
+        if (expanded.isSelected()) {
+            c.gridy++;
+            JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
+            if (globalVariablesPanel != null) panel.add(globalVariablesPanel, c);
+        }
+
         // Adding input control options
         if (expanded.isSelected()) {
             c.gridy++;
-            JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(), frameWidth - 80);
+            JPanel inputPanel = componentFactory.createBasicModuleControl(inputControl, frameWidth - 80);
             if (inputPanel != null) panel.add(inputPanel, c);
         }
 
@@ -82,7 +104,7 @@ public class BasicControlPanel extends JScrollPane {
         for (Module module : modules) {
             // If the module is the special-case GUISeparator, create this module, then return
             JPanel modulePanel = null;
-            if (module.getClass().isInstance(new GUISeparator())) {
+            if (module instanceof GUISeparator) {
                 // Not all GUI separators are shown on the basic panel
                 BooleanP showBasic = (BooleanP) module.getParameter(GUISeparator.SHOW_BASIC);
                 if (!showBasic.isSelected()) continue;
@@ -97,19 +119,20 @@ public class BasicControlPanel extends JScrollPane {
 
                 expanded = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                 modulePanel = componentFactory.createBasicSeparator(module, frameWidth-80);
+
             } else {
                 if (module.isRunnable() || module.invalidParameterIsVisible()) {
                     modulePanel = componentFactory.createBasicModuleControl(module, frameWidth - 80);
                 }
             }
 
-            if (modulePanel!=null && (expanded.isSelected() || module.getClass().isInstance(new GUISeparator()))) {
+            if (modulePanel!=null && (expanded.isSelected() || module instanceof GUISeparator)) {
                 c.gridy++;
                 panel.add(modulePanel,c);
             }
         }
 
-        JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),frameWidth-80);
+        JPanel outputPanel =componentFactory.createBasicModuleControl(outputControl,frameWidth-80);
         if (outputPanel != null && expanded.isSelected()) {
             c.gridy++;
             panel.add(outputPanel,c);
@@ -129,4 +152,34 @@ public class BasicControlPanel extends JScrollPane {
         repaint();
 
     }
+
+    public void showUsageMessage() {
+        panel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JTextPane usageMessage = new JTextPane();
+        usageMessage.setContentType("text/html");
+        usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
+                "To load an existing workflow,<br>click \"Load\" and select a .mia file."+
+                "<br><br>" +
+                "To start creating a new workflow,<br>go to View > Switch to editing view." +
+                "</font></center></html>");
+        usageMessage.setEditable(false);
+        usageMessage.setBackground(null);
+        panel.add(usageMessage);
+
+        panel.revalidate();
+        panel.repaint();
+
+    }
+
 }

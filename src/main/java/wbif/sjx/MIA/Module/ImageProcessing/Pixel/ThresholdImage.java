@@ -3,25 +3,28 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
 public class ThresholdImage extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    
+    public static final String THRESHOLD_SEPARATOR = "Threshold controls";
     public static final String THRESHOLD_TYPE = "Threshold type";
     public static final String GLOBAL_ALGORITHM = "Global threshold algorithm";
     public static final String LOCAL_ALGORITHM = "Local threshold algorithm";
@@ -34,6 +37,10 @@ public class ThresholdImage extends Module {
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
+
+    public ThresholdImage(ModuleCollection modules) {
+        super("Threshold image",modules);
+    }
 
 
     public interface ThresholdTypes {
@@ -197,17 +204,12 @@ public class ThresholdImage extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Threshold image";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -245,14 +247,13 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (!thresholdType.equals(ThresholdTypes.MANUAL) && inputImagePlus.getBitDepth() != 8) {
-            IntensityMinMax.run(inputImagePlus, true, 0, IntensityMinMax.PROCESS_PRECISE);
-            IJ.run(inputImagePlus, "8-bit", null);
+            ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
         }
 
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL:
-                writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
+                writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multiplier = "+thrMult+" x)");
                 threshold = runGlobalThresholdOnStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
 
                 break;
@@ -326,9 +327,12 @@ public class ThresholdImage extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR,this));
         parameters.add(new ChoiceP(THRESHOLD_TYPE,this,ThresholdTypes.GLOBAL,ThresholdTypes.ALL));
         parameters.add(new ChoiceP(GLOBAL_ALGORITHM,this,GlobalAlgorithms.HUANG,GlobalAlgorithms.ALL));
         parameters.add(new ChoiceP(LOCAL_ALGORITHM,this,LocalAlgorithms.PHANSALKAR_3D,LocalAlgorithms.ALL));
@@ -347,6 +351,7 @@ public class ThresholdImage extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -354,6 +359,7 @@ public class ThresholdImage extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(THRESHOLD_SEPARATOR));
         returnedParameters.add(parameters.getParameter(THRESHOLD_TYPE));
 
         switch ((String) parameters.getValue(THRESHOLD_TYPE)) {
@@ -392,8 +398,8 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
                 && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
@@ -401,28 +407,28 @@ public class ThresholdImage extends Module {
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 
-            MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
-            reference.setImageObjName(imageName);
-            reference.setCalculated(true);
+            ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
+            reference.setImageName(imageName);
+            returnedRefs.add(reference);
 
         }
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

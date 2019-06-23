@@ -29,6 +29,7 @@ public class OutputImageP extends TextType {
     @Override
     public <T> T getValue() {
         return (T) imageName;
+
     }
 
     @Override
@@ -37,7 +38,7 @@ public class OutputImageP extends TextType {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return imageName;
     }
 

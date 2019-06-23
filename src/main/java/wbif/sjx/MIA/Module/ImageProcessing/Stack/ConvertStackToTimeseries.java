@@ -11,6 +11,10 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 19/06/2017.
@@ -20,10 +24,10 @@ public class ConvertStackToTimeseries extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    @Override
-    public String getTitle() {
-        return "Convert stack to timeseries";
+    public ConvertStackToTimeseries(ModuleCollection modules) {
+        super("Convert stack to timeseries",modules);
     }
+
 
     @Override
     public String getPackageName() {
@@ -31,7 +35,7 @@ public class ConvertStackToTimeseries extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Checks if there is only 1 frame, but multiple Z-sections.  " +
                 "In this case, the Z and T ordering will be switched";
     }
@@ -100,22 +104,22 @@ public class ConvertStackToTimeseries extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

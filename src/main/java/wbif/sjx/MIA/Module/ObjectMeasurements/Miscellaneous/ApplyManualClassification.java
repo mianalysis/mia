@@ -39,7 +39,7 @@
 //    }
 //
 //    @Override
-//    public String getHelp() {
+//    public String getDescription() {
 //        return "";
 //    }
 //
@@ -104,7 +104,7 @@
 //            e.printStackTrace();
 //        }
 //
-//        if (showOutput) inputObjects.showMeasurements(this);
+//        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 //
 //        return true;
 //
@@ -112,13 +112,13 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new InputObjectsP(TRACK_OBJECTS,this));
-//        parameters.add(new FilePathP(CLASSIFICATION_FILE, this));
+//        parameters.addRef(new InputObjectsP(TRACK_OBJECTS,this));
+//        parameters.addRef(new FilePathP(CLASSIFICATION_FILE, this));
 //
 //        ParameterCollection collection = new ParameterCollection();
-//        collection.add(new ObjectMeasurementP(MEASUREMENT,this));
-//        parameters.add(new ParameterGroup(ADD_MEASUREMENT,this,collection));
-//        parameters.add(new BooleanP(REMOVE_MISSING, this,false));
+//        collection.addRef(new ObjectMeasurementP(MEASUREMENT,this));
+//        parameters.addRef(new ParameterGroup(ADD_MEASUREMENT,this,collection));
+//        parameters.addRef(new BooleanP(REMOVE_MISSING, this,false));
 //
 //    }
 //
@@ -137,29 +137,29 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-//        objectMeasurementRefs.setAllCalculated(false);
+//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//        objectMeasurementRefs.setAllAvailable(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
-//        classMeas.setImageObjName(parameters.getValue(TRACK_OBJECTS));
-//        classMeas.setCalculated(true);
+//        classMeas.setObjectsName(parameters.getValue(TRACK_OBJECTS));
+//        classMeas.setAvailable(true);
 //
 //        return objectMeasurementRefs;
 //
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+//    public MetadataRefCollection updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //
 //    @Override
-//    public RelationshipCollection updateAndGetRelationships() {
+//    public RelationshipRefCollection updateAndGetRelationships() {
 //        return null;
 //    }
 //

@@ -14,5 +14,7 @@ public class SeriesSelector extends TextParameter {
     public void focusLost(FocusEvent e) {
         super.focusLost(e);
         GUI.updateTestFile();
+        GUI.updateModuleStates(true);
+
     }
 }

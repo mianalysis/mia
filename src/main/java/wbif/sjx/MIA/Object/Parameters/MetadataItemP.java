@@ -24,7 +24,7 @@ public class MetadataItemP extends ChoiceType {
 
     @Override
     public String[] getChoices() {
-        return GUI.getModules().getMetadataReferences(module).getMetadataNames();
+        return module.getModules().getMetadataRefs(module).getMetadataNames();
     }
 
     @Override

@@ -55,9 +55,9 @@
 //        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
 //
 //        JLabel headerLabel = new JLabel("<html>Draw round a region, then select \"Add\"<br>(or click \"Finish adding regions\" at any time)</html>");
-//        headerPanel.add(headerLabel);
+//        headerPanel.addRef(headerLabel);
 //
-//        frame.add(headerPanel);
+//        frame.addRef(headerPanel);
 //
 //        // Buttons panel
 //        JPanel buttonsPanel = new JPanel();
@@ -66,14 +66,14 @@
 //        JButton newObjectButton = new JButton("Add region");
 //        newObjectButton.addActionListener(this);
 //        newObjectButton.setActionCommand(ADD);
-//        buttonsPanel.add(newObjectButton);
+//        buttonsPanel.addRef(newObjectButton);
 //
 //        JButton finishButton = new JButton("Finish adding regions");
 //        finishButton.addActionListener(this);
 //        finishButton.setActionCommand(FINISH);
-//        buttonsPanel.add(finishButton);
+//        buttonsPanel.addRef(finishButton);
 //
-//        frame.add(buttonsPanel);
+//        frame.addRef(buttonsPanel);
 //
 //        frame.pack();
 //        frame.setVisible(true);
@@ -91,7 +91,7 @@
 //    }
 //
 //    @Override
-//    public String getHelp() {
+//    public String getDescription() {
 //        return null;
 //    }
 //
@@ -166,8 +166,8 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_IMAGE, this, null));
-//        parameters.add(new Parameter(OUTPUT_IMAGE, this, null));
+//        parameters.addRef(new Parameter(INPUT_IMAGE, this, null));
+//        parameters.addRef(new Parameter(OUTPUT_IMAGE, this, null));
 //
 //    }
 //
@@ -177,22 +177,22 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+//    public MetadataRefCollection updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //
 //    @Override
-//    public void updateAndGetRelationships(RelationshipCollection relationships) {
+//    public void updateAndGetRelationships(RelationshipRefCollection relationships) {
 //
 //    }
 //
@@ -213,7 +213,7 @@
 //                }
 //
 //                // Adding overlay showing ROI and its ID number
-//                overlay.add(roi);
+//                overlay.addRef(roi);
 //                displayImagePlus.updateAndDraw();
 //
 //                break;

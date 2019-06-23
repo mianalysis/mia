@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -29,6 +33,10 @@ public class ConvertObjectsToImage extends Module {
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String MEASUREMENT = "Measurement";
 
+    public ConvertObjectsToImage(ModuleCollection modules) {
+        super("Convert objects to image",modules);
+    }
+
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
         String OBJECTS_TO_IMAGE = "Objects to image";
@@ -39,10 +47,6 @@ public class ConvertObjectsToImage extends Module {
 
     public interface ColourModes extends ObjCollection.ColourModes  {}
 
-    @Override
-    public String getTitle() {
-        return "Convert objects to image";
-    }
 
     @Override
     public String getPackageName() {
@@ -50,7 +54,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -218,22 +222,22 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

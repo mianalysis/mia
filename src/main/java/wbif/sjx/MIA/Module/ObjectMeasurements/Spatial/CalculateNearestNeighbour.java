@@ -4,19 +4,24 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 
 /**
  * Created by sc13967 on 22/06/2017.
  */
 public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String RELATIONSHIP_MODE = "Relationship mode";
+    public static final String RELATIONSHIP_MODE = "RelationshipRef mode";
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
     public static final String LIMIT_LINKING_DISTANCE = "Limit linking distance";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance";
     public static final String CALIBRATED_DISTANCE = "Calibrated distance";
+
+    public CalculateNearestNeighbour(ModuleCollection modules) {
+        super("Calculate nearest neighbour",modules);
+    }
 
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
@@ -87,17 +92,12 @@ public class CalculateNearestNeighbour extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Calculate nearest neighbour";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -159,7 +159,7 @@ public class CalculateNearestNeighbour extends Module {
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -210,13 +210,13 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
@@ -231,33 +231,32 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
-
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputObjectsName);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

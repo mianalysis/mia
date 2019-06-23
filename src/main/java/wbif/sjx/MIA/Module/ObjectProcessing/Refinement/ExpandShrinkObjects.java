@@ -9,6 +9,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
@@ -25,6 +29,10 @@ public class ExpandShrinkObjects extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String METHOD = "Method";
     public static final String RADIUS_CHANGE_PX = "Radius change (px)";
+
+    public ExpandShrinkObjects(ModuleCollection modules) {
+        super("Expand and shrink objects",modules);
+    }
 
     public interface Methods {
         String EXPAND_2D = "Expand 2D";
@@ -83,10 +91,6 @@ public class ExpandShrinkObjects extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Expand and shrink objects";
-    }
 
     @Override
     public String getPackageName() {
@@ -94,7 +98,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -153,7 +157,7 @@ public class ExpandShrinkObjects extends Module {
             if (updateInputObjects) {
                 inputObject.setPoints(newObject.getPoints());
             } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,twoD);
+                Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,twoD);
                 outputObject.setPoints(newObject.getPoints());
                 outputObjects.add(outputObject);
             }
@@ -208,22 +212,22 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

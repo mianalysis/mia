@@ -6,6 +6,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 19/09/2017.
@@ -18,6 +22,10 @@ public class ImageMath extends Module {
     public static final String VALUE_SOURCE = "Value source";
     public static final String MEASUREMENT = "Measurement";
     public static final String MATH_VALUE = "Value";
+
+    public ImageMath(ModuleCollection modules) {
+        super("Image math",modules);
+    }
 
     public interface CalculationTypes {
         String ADD = "Add";
@@ -73,10 +81,6 @@ public class ImageMath extends Module {
         inputImagePlus.setPosition(1, 1, 1);
     }
 
-    @Override
-    public String getTitle() {
-        return "Image math";
-    }
 
     @Override
     public String getPackageName() {
@@ -84,7 +88,7 @@ public class ImageMath extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -177,22 +181,22 @@ public class ImageMath extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -23,12 +23,10 @@ public class LoadImageFromImageJMacro extends MacroOperation {
     @Override
     public String action(Object[] objects, Workspace workspace) {
         // Create Module
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = new ImageLoader(workspace.getAnalysis().getModules());
 
         // Updating parameters
-        imageLoader.updateParameterValue(ImageLoader.OUTPUT_MODE,ImageLoader.OutputModes.IMAGE);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,(String) objects[0]);
-        imageLoader.updateParameterValue(ImageLoader.OUTPUT_OBJECTS,"");
         imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE,ImageLoader.ImportModes.IMAGEJ);
         imageLoader.updateParameterValue(ImageLoader.NUMBER_OF_ZEROES,0);
         imageLoader.updateParameterValue(ImageLoader.STARTING_INDEX,0);

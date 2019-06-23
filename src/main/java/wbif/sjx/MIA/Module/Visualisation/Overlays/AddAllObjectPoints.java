@@ -11,6 +11,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.awt.*;
@@ -21,15 +25,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddAllObjectPoints extends Module {
+    public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String OUTPUT_SEPARATOR = "Image output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String RENDERING_SEPARATOR = "Overlay rendering";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private ColourServer colourServer;
+
+    public AddAllObjectPoints(ModuleCollection modules) {
+        super("Add all object points",modules);
+    }
 
 
     public void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
@@ -63,10 +78,6 @@ public class AddAllObjectPoints extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Add all object points";
-    }
 
     @Override
     public String getPackageName() {
@@ -74,7 +85,7 @@ public class AddAllObjectPoints extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -148,12 +159,19 @@ public class AddAllObjectPoints extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
+
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
@@ -164,10 +182,13 @@ public class AddAllObjectPoints extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
@@ -177,7 +198,11 @@ public class AddAllObjectPoints extends Module {
             }
         }
 
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -185,22 +210,22 @@ public class AddAllObjectPoints extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

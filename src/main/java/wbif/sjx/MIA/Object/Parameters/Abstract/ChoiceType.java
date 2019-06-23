@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ChoiceArrayParameter;
 import wbif.sjx.MIA.Module.Module;
 
@@ -20,14 +20,23 @@ public abstract class ChoiceType extends Parameter {
     }
 
     public void setChoice(String choice) {
+        if (choice == null) choice = "";
         this.choice = choice;
     }
 
     public abstract String[] getChoices();
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return choice;
+    }
+
+    @Override
+    public void setValueFromString(String string) {
+        if (string == null) string = "";
+
+        this.choice = string;
+
     }
 
     @Override

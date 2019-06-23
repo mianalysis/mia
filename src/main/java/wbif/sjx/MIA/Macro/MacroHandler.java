@@ -23,7 +23,9 @@ public class MacroHandler implements MacroExtension {
         if (macroHandler == null) {
             macroHandler = new MacroHandler();
             try {
-                workspace = new Workspace(0,File.createTempFile("Temp","File"),0);
+                if (workspace == null) {
+                    workspace = new Workspace(0, File.createTempFile("Temp", "File"), 0);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

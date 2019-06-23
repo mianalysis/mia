@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class CreateDistanceMapTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CreateDistanceMap().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new CreateDistanceMap().getHelp());
+        assertNotNull(new CreateDistanceMap(null).getDescription());
     }
 }

@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.Object;
 
+import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
@@ -14,9 +16,12 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -90,7 +95,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                             if (singleObject && imageID != 0) imageID = 1;
 
                             if (imageID != 0) {
-                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
+                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getAndIncrementID());
                                 int outID = IDlink.get(imageID);
 
                                 outputObjects.computeIfAbsent(outID, k ->
@@ -123,15 +128,20 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public void showImage(String title, LUT lut) {
+    public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
-        IntensityMinMax.run(dispIpl,true);
+        if (normalise) IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
-        dispIpl.setLut(lut);
+        if (lut != null && dispIpl.getBitDepth() != 24) dispIpl.setLut(lut);
+        if (composite) dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
         dispIpl.show();
 
+    }
+
+    public void showImage(String title, LUT lut) {
+        showImage(title,lut,true,false);
     }
 
     public void showImage(String title) {
@@ -152,15 +162,15 @@ public class Image < T extends RealType< T > & NativeType< T >> {
      */
     public void showMeasurements(Module module) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefCollection measRefs = module.updateAndGetImageMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
 
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
-        for (MeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageObjName().equals(name) && measRef.isCalculated()) measNames.add(measRef.getName());
+        for (ImageMeasurementRef measRef:measRefs.values()) {
+            if (measRef.getImageName().equals(name)) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values
@@ -177,7 +187,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         }
 
         // Displaying the results table
-        rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
+        rt.show("\""+module.getName()+" \"measurements for \""+name+"\"");
 
     }
 

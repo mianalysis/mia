@@ -20,13 +20,8 @@ public class GetLocalObjectRegionTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new GetLocalObjectRegion().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new GetLocalObjectRegion().getHelp());
+        assertNotNull(new GetLocalObjectRegion(null).getDescription());
     }
 
     @Test @Ignore
@@ -46,7 +41,7 @@ public class GetLocalObjectRegionTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
-        GetLocalObjectRegion getLocalObjectRegion = new GetLocalObjectRegion();
+        GetLocalObjectRegion getLocalObjectRegion = new GetLocalObjectRegion(null);
         getLocalObjectRegion.initialiseParameters();
         getLocalObjectRegion.updateParameterValue(GetLocalObjectRegion.INPUT_OBJECTS,inputObjectsName);
         getLocalObjectRegion.updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,outputObjectsName);

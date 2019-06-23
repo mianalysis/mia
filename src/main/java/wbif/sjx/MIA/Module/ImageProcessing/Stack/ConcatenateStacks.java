@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import ij.process.LUT;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
@@ -14,20 +14,34 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.SetLookupTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.LinkedHashSet;
 
 public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String CONCAT_SEPARATOR = "Stack concatenation";
     public static final String AXIS_MODE = "Axis mode";
+
+
+    public ConcatenateStacks(ModuleCollection modules) {
+        super("Concatenate stacks",modules);
+    }
+
 
     public interface AxisModes {
         String X = "X";
@@ -56,7 +70,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    long getCombinedAxisLength(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
+    static <T extends RealType<T> & NativeType<T>> long getCombinedAxisLength(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
         long lengthIn1 = getAxisLength(img1,axis);
         long lengthIn2 = getAxisLength(img2,axis);
 
@@ -72,13 +86,13 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    long getAxisLength(ImgPlus<T> img, AxisType axis) {
+    static <T extends RealType<T> & NativeType<T>> long getAxisLength(ImgPlus<T> img, AxisType axis) {
         int idxIn = img.dimensionIndex(axis);
         return idxIn == -1 ? 1 : img.dimension(idxIn);
 
     }
 
-    void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg, long[] offset, long[] dims) {
+    static <T extends RealType<T> & NativeType<T>> void copyPixels(ImgPlus<T> sourceImg, ImgPlus targetImg, long[] offset, long[] dims) {
         int xIdxIn1 = sourceImg.dimensionIndex(Axes.X);
         int yIdxIn1 = sourceImg.dimensionIndex(Axes.Y);
         int cIdxIn1 = sourceImg.dimensionIndex(Axes.CHANNEL);
@@ -116,7 +130,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    public ImgPlus<T> concatenateImages(ImgPlus<T> img1, ImgPlus<T> img2, String axis) {
+    public static <T extends RealType<T> & NativeType<T>> ImgPlus<T> concatenateImages(ImgPlus<T> img1, ImgPlus<T> img2, String axis) {
         long[] dimsOutCombined = new long[5];
         long[] offsetOut1 = new long[5];
         long[] offsetOut2 = new long[5];
@@ -189,7 +203,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public Image<T> concatenateImages(Image<T>[] inputImages, String axis, String outputImageName) {
+    public static <T extends RealType<T> & NativeType<T>> Image<T> concatenateImages(Image<T>[] inputImages, String axis, String outputImageName) {
         // Processing first two images
         ImgPlus<T> imgOut = concatenateImages(inputImages[0].getImgPlus(),inputImages[1].getImgPlus(),axis);
 
@@ -203,7 +217,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut,outputImageName);
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut,outputImageName).duplicate();
         outputImagePlus.setCalibration(inputImages[0].getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(imgOut,outputImagePlus);
 
@@ -211,22 +225,51 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    private void convertToComposite(Image<T> image) {
+    static LUT[] getLUTs(Image[] images){
+        int count = 0;
+        for (int i=0;i<images.length;i++) {
+            count = count + images[i].getImagePlus().getNChannels();
+        }
+
+        LUT[] luts = new LUT[count];
+        count = 0;
+        for (int i=0;i<images.length;i++) {
+            ImagePlus currIpl = images[i].getImagePlus();
+            for (int c=0;c<currIpl.getNChannels();c++) {
+                currIpl.setPosition(c+1,1,1);
+                luts[count++] = currIpl.getProcessor().getLut();
+            }
+        }
+
+        return luts;
+
+    }
+
+    public static void convertToColour(Image image, Image[] inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
-        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
+        int nChannels = ipl.getNChannels();
+        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
+        if (nChannels > 1) ipl = HyperStackConverter.toHyperStack(ipl, nChannels, nSlices, nFrames, "xyczt", "color");
 
         // Updating the display range to help show all the colours
         IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
 
         image.setImagePlus(ipl);
 
+        // Set LUTs
+        int count = 1;
+        for (int i=0;i<inputImages.length;i++) {
+            ImagePlus currIpl = inputImages[i].getImagePlus();
+            for (int c=0;c<currIpl.getNChannels();c++) {
+                currIpl.setPosition(c+1,1,1);
+                LUT lut = currIpl.getProcessor().getLut();
+                SetLookupTable.setLUT(image,lut,SetLookupTable.ChannelModes.SPECIFIC_CHANNELS,count++);
+            }
+        }
     }
 
-    @Override
-    public String getTitle() {
-        return "Concatenate stacks";
-    }
 
     @Override
     public String getPackageName() {
@@ -234,7 +277,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -252,14 +295,16 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
         }
 
-        // Applying concatenation
-        Image outputImage = concatenateImages(inputImages, axisMode, outputImageName);
-        if (outputImage == null) return false;
-
-        if (axisMode.equals(AxisModes.CHANNEL)) {
-            convertToComposite(outputImage);
+        // If only one image was specified, simply create a duplicate of the input, otherwise do concatenation.
+        Image outputImage;
+        if (inputImages.length == 1) {
+            outputImage = new Image(outputImageName,inputImages[0].getImagePlus());
+        } else {
+            outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         }
 
+        if (outputImage == null) return false;
+        if (axisMode.equals(AxisModes.CHANNEL)) convertToColour(outputImage, inputImages);
         if (showOutput) outputImage.showImage();
         workspace.addImage(outputImage);
 
@@ -270,10 +315,14 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     protected void initialiseParameters() {
         ParameterCollection collection = new ParameterCollection();
+
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         collection.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
 
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(CONCAT_SEPARATOR,this));
         parameters.add(new ChoiceP(AXIS_MODE,this,AxisModes.X,AxisModes.ALL));
 
     }
@@ -285,22 +334,22 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

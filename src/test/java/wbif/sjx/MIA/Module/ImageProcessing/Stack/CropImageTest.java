@@ -20,13 +20,8 @@ public class CropImageTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CropImage<>().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new CropImage<>().getHelp());
+        assertNotNull(new CropImage<>(null).getDescription());
     }
 
     @Test
@@ -48,7 +43,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage();
+        CropImage cropImage = new CropImage(null);
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -90,7 +85,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage();
+        CropImage cropImage = new CropImage(null);
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -132,7 +127,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage();
+        CropImage cropImage = new CropImage(null);
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -174,7 +169,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage();
+        CropImage cropImage = new CropImage(null);
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -215,7 +210,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage();
+        CropImage cropImage = new CropImage(null);
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");
@@ -256,7 +251,7 @@ public class CropImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising CropImage
-        CropImage cropImage = new CropImage();
+        CropImage cropImage = new CropImage(null);
         cropImage.initialiseParameters();
         cropImage.updateParameterValue(CropImage.INPUT_IMAGE,"Test_image");
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Test_output");

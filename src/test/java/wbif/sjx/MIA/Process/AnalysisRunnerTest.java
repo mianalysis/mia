@@ -3,7 +3,8 @@ package wbif.sjx.MIA.Process;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 
@@ -34,7 +35,7 @@ public class AnalysisRunnerTest {
         File file = temporaryFolder.newFile("fake file.tif");
         String path = file.getAbsolutePath();
 
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -48,7 +49,7 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetInputFileSingleFileMissing() throws Exception {
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,"");
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -65,7 +66,7 @@ public class AnalysisRunnerTest {
         File folder = temporaryFolder.newFolder("test folder");
         String path = folder.getAbsolutePath();
 
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -149,7 +150,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameSingleFileSingleSeries() throws Exception {
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
 
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
         inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
@@ -158,7 +160,7 @@ public class AnalysisRunnerTest {
         temporaryFolder.create();
         File file = temporaryFolder.newFile("fake file.tif");
 
-        String actual = AnalysisRunner.getExportName(inputControl,file);
+        String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
         String expected = file.getParent()+ MIA.getSlashes() + "fake file_S3";
 
         assertEquals(expected,actual);
@@ -167,7 +169,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameSingleFileAllSeries() throws Exception {
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 
@@ -175,7 +178,7 @@ public class AnalysisRunnerTest {
         temporaryFolder.create();
         File file = temporaryFolder.newFile("fake file.tif");
 
-        String actual = AnalysisRunner.getExportName(inputControl,file);
+        String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
         String expected = file.getParent()+ MIA.getSlashes() + "fake file";
 
         assertEquals(expected,actual);
@@ -184,7 +187,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameBatchSingleSeries() throws Exception {
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
 
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
         inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
@@ -194,7 +198,7 @@ public class AnalysisRunnerTest {
         temporaryFolder.create();
         File folder = temporaryFolder.newFolder("test folder");
 
-        String actual = AnalysisRunner.getExportName(inputControl,folder);
+        String actual = AnalysisRunner.getExportName(inputControl,outputControl,folder);
         String expected = folder+MIA.getSlashes()+folder.getName()+"_S3";
 
         assertEquals(expected,actual);
@@ -203,7 +207,8 @@ public class AnalysisRunnerTest {
 
     @Test
     public void testGetExportNameBatchAllSeries() throws Exception {
-        InputControl inputControl = new InputControl();
+        InputControl inputControl = new InputControl(null);
+        OutputControl outputControl = new OutputControl(null);
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 
@@ -212,7 +217,7 @@ public class AnalysisRunnerTest {
         temporaryFolder.create();
         File folder = temporaryFolder.newFolder("test folder");
 
-        String actual = AnalysisRunner.getExportName(inputControl,folder);
+        String actual = AnalysisRunner.getExportName(inputControl,outputControl,folder);
         String expected = folder+MIA.getSlashes()+folder.getName();
 
         assertEquals(expected,actual);

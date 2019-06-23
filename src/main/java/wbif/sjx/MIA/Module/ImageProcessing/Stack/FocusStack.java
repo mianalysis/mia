@@ -11,6 +11,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.ThirdParty.Stack_Focuser_;
 
 public class FocusStack extends Module {
@@ -23,6 +27,10 @@ public class FocusStack extends Module {
     public static final String ADD_HEIGHT_MAP_TO_WORKSPACE = "Add height map image to workspace";
     public static final String OUTPUT_HEIGHT_IMAGE = "Output height image";
     public static final String SHOW_HEIGHT_IMAGE = "Show height image";
+
+    public FocusStack(ModuleCollection modules) {
+        super("Focus stack",modules);
+    }
 
 
     public Image[] focusStack(Image inputImage, String outputImageName, int range, boolean smooth, @Nullable String outputHeightImageName, @Nullable Image inputHeightImage) {
@@ -124,17 +132,12 @@ public class FocusStack extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Focus stack";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Channels will be focused individually.\n" +
                 "Uses the StackFocuser plugin created by Mikhail Umorin.\n" +
                 "Source downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2018";
@@ -228,22 +231,22 @@ public class FocusStack extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

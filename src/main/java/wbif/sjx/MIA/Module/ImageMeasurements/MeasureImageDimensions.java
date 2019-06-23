@@ -6,9 +6,14 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.*;
 
 public class MeasureImageDimensions extends Module {
     public final static String INPUT_IMAGE = "Input image";
+
+    public MeasureImageDimensions(ModuleCollection modules) {
+        super("Measure image dimensions",modules);
+    }
 
 
     public interface Measurements {
@@ -27,10 +32,6 @@ public class MeasureImageDimensions extends Module {
         return Units.replace("DIMENSIONS // "+measurement);
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure image dimensions";
-    }
 
     @Override
     public String getPackageName() {
@@ -38,7 +39,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -86,62 +87,62 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         String name = getFullName(Measurements.WIDTH);
-        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.HEIGHT);
         reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_CHANNELS);
         reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_SLICES);
         reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_FRAMES);
         reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.DIST_PER_PX_XY);
         reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.DIST_PER_SLICE_Z);
         reference = imageMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputImageName);
-        reference.setCalculated(true);
+        reference.setImageName(inputImageName);
+        returnedRefs.add(reference);
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

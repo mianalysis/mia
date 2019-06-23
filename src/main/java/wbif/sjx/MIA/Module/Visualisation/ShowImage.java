@@ -3,9 +3,14 @@ package wbif.sjx.MIA.Module.Visualisation;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -13,6 +18,9 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 public class ShowImage extends Module {
     public final static String DISPLAY_IMAGE = "Display image";
     public static final String TITLE_MODE = "Title mode";
+    public static final String QUICK_NORMALISATION = "Quick normalisation";
+    public static final String CHANNEL_MODE = "Channel mode";
+
 
     public interface TitleModes {
         String FILE_NAME = "Filename";
@@ -23,16 +31,23 @@ public class ShowImage extends Module {
 
     }
 
-    public ShowImage() {
+    public interface ChannelModes {
+        String COLOUR = "Colour (separate channels)";
+        String COMPOSITE = "Composite";
+
+        String[] ALL = new String[]{COLOUR,COMPOSITE};
+
+    }
+
+
+    public ShowImage(ModuleCollection modules) {
+        super("Show image",modules);
+
         // This module likely wants to have this enabled (otherwise it does nothing)
         showOutput = true;
-    }
-
-    @Override
-    public String getTitle() {
-        return "Show image";
 
     }
+
 
     @Override
     public String getPackageName() {
@@ -40,7 +55,7 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -49,6 +64,10 @@ public class ShowImage extends Module {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
         String titleMode = parameters.getValue(TITLE_MODE);
+        boolean normalisation = parameters.getValue(QUICK_NORMALISATION);
+        String channelMode = parameters.getValue(CHANNEL_MODE);
+
+        boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
 
         String title = "";
         switch (titleMode) {
@@ -63,7 +82,7 @@ public class ShowImage extends Module {
                 break;
         }
 
-        if (showOutput) image.showImage(title);
+        if (showOutput) image.showImage(title,null,normalisation,composite);
 
         return true;
 
@@ -73,6 +92,8 @@ public class ShowImage extends Module {
     protected void initialiseParameters() {
         parameters.add(new InputImageP(DISPLAY_IMAGE, this));
         parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL));
+        parameters.add(new BooleanP(QUICK_NORMALISATION,this,true));
+        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL));
 
     }
 
@@ -82,22 +103,22 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

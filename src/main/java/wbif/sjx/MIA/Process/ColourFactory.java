@@ -230,7 +230,7 @@ public class ColourFactory {
         } else if (hue == Float.MIN_VALUE) {
             return Color.getHSBColor(0f,0f,0f);
         } else {
-            // Have to add 1E-8 to prevent 0 values having a rounding error that makes them negative
+            // Have to addRef 1E-8 to prevent 0 values having a rounding error that makes them negative
             return Color.getHSBColor(hue+1E-8f,1f,1f);
         }
     }

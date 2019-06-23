@@ -10,6 +10,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
@@ -22,6 +26,10 @@ public class CreateObjectDensityMap extends Module {
     public static final String RANGE = "Range";
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
+
+    public CreateObjectDensityMap(ModuleCollection modules) {
+        super("Create object density map",modules);
+    }
 
 
     public static void process(CumStat[] cumStats, Indexer indexer, ObjCollection objects, @Nullable String message) {
@@ -79,17 +87,12 @@ public class CreateObjectDensityMap extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Create object density map";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -114,7 +117,7 @@ public class CreateObjectDensityMap extends Module {
         Indexer indexer = CreateMeasurementMap.initialiseIndexer(templateImage,averageZ,averageT);
 
         // Compressing relevant measures
-        process(cumStats,indexer,inputObjects,getTitle());
+        process(cumStats,indexer,inputObjects,getName());
 
         // Converting statistic array to Image
         writeMessage("Creating output image");
@@ -122,7 +125,7 @@ public class CreateObjectDensityMap extends Module {
         Image outputImage = convertToImage(cumStats,indexer,outputImageName,calibration);
 
         // Applying blur
-        new FilterImage().runGaussian2DFilter(outputImage.getImagePlus(),range);
+        FilterImage.runGaussian2DFilter(outputImage.getImagePlus(),range);
 
         workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
@@ -149,22 +152,22 @@ public class CreateObjectDensityMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

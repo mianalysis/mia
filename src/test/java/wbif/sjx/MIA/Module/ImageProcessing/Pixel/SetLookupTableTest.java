@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class SetLookupTableTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new SetLookupTable().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new SetLookupTable().getHelp());
+        assertNotNull(new SetLookupTable(null).getDescription());
     }
 }

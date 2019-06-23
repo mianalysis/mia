@@ -9,9 +9,10 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -38,6 +39,10 @@ public class RidgeDetection extends Module {
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
 
+    public RidgeDetection(ModuleCollection modules) {
+        super("Ridge detection",modules);
+    }
+
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
         String LENGTH_CAL = "RIDGE_DETECT // LENGTH_(${CAL})";
@@ -53,6 +58,26 @@ public class RidgeDetection extends Module {
 
         String[] ALL = new String[]{DARK_LINE,LIGHT_LINE};
 
+    }
+
+    public static void linkJunctions(HashMap<Line, HashSet<Line>> groups, Junctions junctions) {
+        for (Junction junction : junctions) {
+            // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
+            Line line1 = junction.getLine1();
+            HashSet<Line> group1 = groups.get(line1);
+
+            // Getting the LineGroup associated with Line2.  If there isn't one, creating a new one
+            Line line2 = junction.getLine2();
+            HashSet<Line> group2 = groups.get(line2);
+
+            // Adding all entries from the second LineGroup into the first
+            group1.addAll(group2);
+
+            // Removing the second Line from the HashMap, then re-adding it with the first LineGroup
+            groups.remove(line2);
+            groups.put(line2, group1);
+
+        }
     }
 
     public ObjCollection process(Image inputImage, String outputObjectsName, String contourContrast, double sigma,
@@ -106,32 +131,12 @@ public class RidgeDetection extends Module {
                     }
 
                     // Iterating over each object, adding it to the nascent ObjCollection
-                    if (linkContours) {
-                        writeMessage("Linking contours");
-
-                        for (Junction junction : junctions) {
-                            // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
-                            Line line1 = junction.getLine1();
-                            HashSet<Line> group1 = groups.get(line1);
-
-                            // Getting the LineGroup associated with Line2.  If there isn't one, creating a new one
-                            Line line2 = junction.getLine2();
-                            HashSet<Line> group2 = groups.get(line2);
-
-                            // Adding all entries from the second LineGroup into the first
-                            group1.addAll(group2);
-
-                            // Removing the second Line from the HashMap, then re-adding it with the first LineGroup
-                            groups.remove(line2);
-                            groups.put(line2, group1);
-
-                        }
-                    }
+                    if (linkContours) linkJunctions(groups,junctions);
 
                     // Getting the unique LineGroups
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
-                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
+                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), dppXY, dppZ,
                                 calibrationUnits,twoD);
 
                         double estimatedLength = 0;
@@ -198,17 +203,12 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Ridge detection";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses the RidgeDetection Fiji plugin by Thorsten Wagner, which implements Carsten " +
                 "\nSteger's paper \"An Unbiased Detector of Curvilinear Structures\"" +
                 "\nINCOMPLETE";
@@ -267,12 +267,7 @@ public class RidgeDetection extends Module {
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-
-            try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.2,false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            AddObjectOutline.addOverlay(dispIpl,outputObjects,0.2,hues,false,true);
 
             // Displaying the overlay
             dispIpl.setPosition(1,1,1);
@@ -307,68 +302,69 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
-        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        reference.setCalculated(true);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in pixel " +
                 "units.");
+        returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
-        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        reference.setCalculated(true);
+        reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
+        returnedRefs.add(reference);
 
         if (parameters.getValue(ESTIMATE_WIDTH)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
+            returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "pixel units.");
+            returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
                     "("+Units.getOMEUnits().getSymbol()+") units.");
+            returnedRefs.add(reference);
 
             reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
-            reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-            reference.setCalculated(true);
+            reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+            returnedRefs.add(reference);
+
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

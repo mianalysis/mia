@@ -160,6 +160,8 @@ public class Obj extends Volume {
             if (i != elements.length-1) stringBuilder.append(" // ");
         }
 
+        if (parent == null) return null;
+
         return parent.getParent(stringBuilder.toString());
 
     }
@@ -200,7 +202,7 @@ public class Obj extends Volume {
         }
 
         // Going through each child in the current set, then adding all their children to the output set
-        ObjCollection outputChildren = new ObjCollection("name");
+        ObjCollection outputChildren = new ObjCollection(name);
         for (Obj child:allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);

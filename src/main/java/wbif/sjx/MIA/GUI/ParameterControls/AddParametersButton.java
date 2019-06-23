@@ -1,10 +1,10 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ParameterControl;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,6 +21,7 @@ public class AddParametersButton extends ParameterControl implements ActionListe
 
         control = new JButton("Add");
         control.addActionListener(this);
+        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
     }
 
@@ -41,8 +42,9 @@ public class AddParametersButton extends ParameterControl implements ActionListe
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        GUI.updateModules(true);
+        GUI.updateModules();
         GUI.populateModuleParameters();
+        GUI.updateModuleStates(true);
 
         updateControl();
 

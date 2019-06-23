@@ -9,12 +9,20 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
+
+    public ReassignEnclosedObjects(ModuleCollection modules) {
+        super("Reassign enclosed objects",modules);
+    }
 
     public void testEncloses(ObjCollection objects, Image templateImage) throws IntegerOverflowException {
         int count = 0;
@@ -68,10 +76,6 @@ public class ReassignEnclosedObjects extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Reassign enclosed objects";
-    }
 
     @Override
     public String getPackageName() {
@@ -79,7 +83,7 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Objects entirely enclosed by another are reassigned as being the enclosing objects";
     }
 
@@ -113,22 +117,22 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

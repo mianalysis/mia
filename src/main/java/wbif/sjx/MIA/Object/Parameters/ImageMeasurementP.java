@@ -40,7 +40,7 @@ public class ImageMeasurementP extends ChoiceType {
 
     @Override
     public String[] getChoices() {
-        return GUI.getModules().getImageMeasurementRefs(imageName,module).getMeasurementNames();
+        return module.getModules().getImageMeasurementRefs(imageName,module).getMeasurementNames();
     }
 
     @Override

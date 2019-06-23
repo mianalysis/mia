@@ -5,6 +5,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 
@@ -19,6 +23,10 @@ public class GetLocalObjectRegion extends Module {
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
     public static final String USE_MEASUREMENT = "Use measurement for radius";
     public static final String MEASUREMENT_NAME = "Measurement name";
+
+    public GetLocalObjectRegion(ModuleCollection modules) {
+        super("Get local object region",modules);
+    }
 
 
     public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated) throws IntegerOverflowException {
@@ -119,7 +127,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) throws IntegerOverflowException {
+    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) throws IntegerOverflowException {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -129,8 +137,6 @@ public class GetLocalObjectRegion extends Module {
         int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
-            writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
-
             if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
             Obj outputObject = getLocalRegion(inputObject,outputObjectsName,referenceImage,radius,calibrated);
 
@@ -143,11 +149,6 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Get local object region";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -155,7 +156,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -225,28 +226,27 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
 
-        relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
+        returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS)));
 
-        return relationships;
+        return returnedRelationships;
 
     }
-
 }

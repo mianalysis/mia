@@ -6,7 +6,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
@@ -27,13 +26,8 @@ public class ImageSaverTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageSaver().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ImageSaver().getHelp());
+        assertNotNull(new ImageSaver(null).getDescription());
     }
 
     @Test
@@ -53,7 +47,7 @@ public class ImageSaverTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        ImageSaver imageSaver = new ImageSaver();
+        ImageSaver imageSaver = new ImageSaver(null);
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SAVE_WITH_INPUT);
@@ -95,12 +89,14 @@ public class ImageSaverTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        ImageSaver imageSaver = new ImageSaver();
+        ImageSaver imageSaver = new ImageSaver(null);
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);
         imageSaver.updateParameterValue(ImageSaver.MIRROR_DIRECTORY_ROOT,"");
-        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getRoot().getAbsolutePath()+MIA.getSlashes()+"TestFile.tif");
+        imageSaver.updateParameterValue(ImageSaver.SAVE_NAME_MODE,ImageSaver.SaveNameModes.SPECIFIC_NAME);
+        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_NAME,"TestFile.tif");
+        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getRoot().getAbsolutePath());
         imageSaver.updateParameterValue(ImageSaver.APPEND_SERIES_MODE,ImageSaver.AppendSeriesModes.SERIES_NUMBER);
         imageSaver.updateParameterValue(ImageSaver.APPEND_DATETIME_MODE,ImageSaver.AppendDateTimeModes.NEVER);
         imageSaver.updateParameterValue(ImageSaver.SAVE_SUFFIX,"_test2");

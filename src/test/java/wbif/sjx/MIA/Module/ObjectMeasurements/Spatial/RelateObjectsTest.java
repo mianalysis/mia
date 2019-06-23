@@ -31,14 +31,8 @@ public class RelateObjectsTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new RelateObjects().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new RelateObjects().getHelp());
+        assertNotNull(new RelateObjects(null).getDescription());
 
     }
 
@@ -61,7 +55,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.MATCHING_IDS);
@@ -126,7 +120,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -211,7 +205,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
@@ -298,7 +292,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
@@ -343,7 +337,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
@@ -400,7 +394,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
@@ -462,7 +456,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
@@ -508,7 +502,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
@@ -554,7 +548,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
@@ -600,7 +594,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
@@ -657,7 +651,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
@@ -719,7 +713,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
@@ -765,7 +759,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
@@ -811,7 +805,7 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
-        RelateObjects relateObjects = new RelateObjects();
+        RelateObjects relateObjects = new RelateObjects(null);
         
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);

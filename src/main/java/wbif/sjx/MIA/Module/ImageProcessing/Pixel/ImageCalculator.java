@@ -8,18 +8,28 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 19/09/2017.
  */
 public class ImageCalculator extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE1 = "Input image 1";
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_32BIT = "Output 32-bit image";
+    public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_METHOD = "Calculation method";
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
+
+    public ImageCalculator(ModuleCollection modules) {
+        super("Image calculator",modules);
+    }
 
     public interface OverwriteModes {
         String CREATE_NEW = "Create new image";
@@ -41,7 +51,7 @@ public class ImageCalculator extends Module {
 
     }
 
-    private void removeNaNs(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2) {
+    private static void removeNaNs(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2) {
         int width = inputImagePlus1.getWidth();
         int height = inputImagePlus1.getHeight();
         int nChannels = inputImagePlus1.getNChannels();
@@ -73,7 +83,7 @@ public class ImageCalculator extends Module {
         }
     }
 
-    public ImagePlus process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
+    public static ImagePlus process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
                         String overwriteMode, boolean output32Bit, boolean setNaNToZero) {
         // If applying to a new image, the input image is duplicated
         switch (overwriteMode) {
@@ -114,8 +124,6 @@ public class ImageCalculator extends Module {
         for (int z = 1; z <= nSlices; z++) {
             for (int c = 1; c <= nChannels; c++) {
                 for (int t = 1; t <= nFrames; t++) {
-                    writeMessage("Processing "+(++count)+" of "+nImages+" images");
-
                     inputImagePlus1.setPosition(c,z,t);
                     ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
 
@@ -192,17 +200,12 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Image calculator";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -249,11 +252,13 @@ public class ImageCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE1,this));
         parameters.add(new InputImageP(INPUT_IMAGE2,this));
         parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new BooleanP(OUTPUT_32BIT,this,false));
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_METHOD,this,CalculationMethods.ADD,CalculationMethods.ALL));
         parameters.add(new BooleanP(SET_NAN_TO_ZERO,this,false));
 
@@ -263,6 +268,7 @@ public class ImageCalculator extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE1));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
@@ -272,6 +278,8 @@ public class ImageCalculator extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
+
+        returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
 
@@ -280,22 +288,22 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

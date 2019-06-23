@@ -19,13 +19,8 @@ public class MetadataExtractorTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MetadataExtractor().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MetadataExtractor().getHelp());
+        assertNotNull(new MetadataExtractor(null).getDescription());
     }
 
     @Test
@@ -42,7 +37,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor();
+        MetadataExtractor extractor = new MetadataExtractor(null);
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
@@ -69,7 +64,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor();
+        MetadataExtractor extractor = new MetadataExtractor(null);
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
@@ -96,7 +91,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, %$, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor();
+        MetadataExtractor extractor = new MetadataExtractor(null);
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
@@ -123,7 +118,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor();
+        MetadataExtractor extractor = new MetadataExtractor(null);
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);

@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
@@ -14,6 +18,10 @@ public class ObjectMeasurementCalculator extends Module {
     public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
     public static final String CALCULATION_MODE = "Calculation mode";
+
+    public ObjectMeasurementCalculator(ModuleCollection modules) {
+        super("Object measurement calculator",modules);
+    }
 
 
     public interface CalculationModes {
@@ -68,10 +76,6 @@ public class ObjectMeasurementCalculator extends Module {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
-    @Override
-    public String getTitle() {
-        return "Object measurement calculator";
-    }
 
     @Override
     public String getPackageName() {
@@ -79,7 +83,7 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -98,7 +102,7 @@ public class ObjectMeasurementCalculator extends Module {
         }
 
         // Showing results
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -128,33 +132,31 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         // Creating new MeasurementRef
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        MeasurementRef measurementRef = objectMeasurementRefs.getOrPut(measurementName);
-        measurementRef.setCalculated(true);
-        measurementRef.setImageObjName(inputObjectsName);
-        objectMeasurementRefs.add(measurementRef);
 
-        return objectMeasurementRefs;
+        String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
+        returnedRefs.add(objectMeasurementRefs.getOrPut(measurementName).setObjectsName(inputObjectsName));
+
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

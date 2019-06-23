@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -39,6 +40,10 @@ public class MeasureObjectCurvature extends Module {
     public static final String APPLY_TO_IMAGE = "Apply to image";
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
+
+    public MeasureObjectCurvature(ModuleCollection modules) {
+        super("Measure object curvature",modules);
+    }
 
     interface SplineFittingMethods {
         String LOESS = "LOESS (smooth fitting)";
@@ -292,10 +297,6 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Measure object curvature";
-    }
 
     @Override
     public String getPackageName() {
@@ -303,7 +304,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -398,7 +399,7 @@ public class MeasureObjectCurvature extends Module {
             new Image("Spline",referenceImageImagePlus).showImage();
         }
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -475,63 +476,62 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
-
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementRef meanCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MEAN_ABSOLUTE_CURVATURE_PX);
-        MeasurementRef minCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MIN_ABSOLUTE_CURVATURE_PX);
-        MeasurementRef maxCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MAX_ABSOLUTE_CURVATURE_PX);
-        MeasurementRef stdCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.STD_ABSOLUTE_CURVATURE_PX);
-        MeasurementRef meanCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL));
-        MeasurementRef minCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MIN_ABSOLUTE_CURVATURE_CAL));
-        MeasurementRef maxCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAX_ABSOLUTE_CURVATURE_CAL));
-        MeasurementRef stdCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STD_ABSOLUTE_CURVATURE_CAL));
-        MeasurementRef meanCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.MEAN_SIGNED_CURVATURE_PX);
-        MeasurementRef minCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.MIN_SIGNED_CURVATURE_PX);
-        MeasurementRef maxCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.MAX_SIGNED_CURVATURE_PX);
-        MeasurementRef stdCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.STD_SIGNED_CURVATURE_PX);
-        MeasurementRef meanCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_SIGNED_CURVATURE_CAL));
-        MeasurementRef minCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MIN_SIGNED_CURVATURE_CAL));
-        MeasurementRef maxCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAX_SIGNED_CURVATURE_CAL));
-        MeasurementRef stdCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STD_SIGNED_CURVATURE_CAL));
-        MeasurementRef splineLengthPx = objectMeasurementRefs.getOrPut(Measurements.SPLINE_LENGTH_PX);
-        MeasurementRef splineLengthCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SPLINE_LENGTH_CAL));
-        MeasurementRef firstPointX = objectMeasurementRefs.getOrPut(Measurements.FIRST_POINT_X_PX);
-        MeasurementRef firstPointY = objectMeasurementRefs.getOrPut(Measurements.FIRST_POINT_Y_PX);
-        MeasurementRef relLocMinCurvature = objectMeasurementRefs.getOrPut(Measurements.REL_LOC_OF_MIN_CURVATURE);
-        MeasurementRef relLocMaxCurvature= objectMeasurementRefs.getOrPut(Measurements.REL_LOC_OF_MAX_CURVATURE);
-        MeasurementRef headTailAngle = objectMeasurementRefs.getOrPut(Measurements.HEAD_TAIL_ANGLE_DEGS);
+        ObjMeasurementRef meanCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MEAN_ABSOLUTE_CURVATURE_PX);
+        ObjMeasurementRef minCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MIN_ABSOLUTE_CURVATURE_PX);
+        ObjMeasurementRef maxCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.MAX_ABSOLUTE_CURVATURE_PX);
+        ObjMeasurementRef stdCurvatureAbsolutePx = objectMeasurementRefs.getOrPut(Measurements.STD_ABSOLUTE_CURVATURE_PX);
+        ObjMeasurementRef meanCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL));
+        ObjMeasurementRef minCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MIN_ABSOLUTE_CURVATURE_CAL));
+        ObjMeasurementRef maxCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAX_ABSOLUTE_CURVATURE_CAL));
+        ObjMeasurementRef stdCurvatureAbsoluteCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STD_ABSOLUTE_CURVATURE_CAL));
+        ObjMeasurementRef meanCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.MEAN_SIGNED_CURVATURE_PX);
+        ObjMeasurementRef minCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.MIN_SIGNED_CURVATURE_PX);
+        ObjMeasurementRef maxCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.MAX_SIGNED_CURVATURE_PX);
+        ObjMeasurementRef stdCurvatureSignedPx = objectMeasurementRefs.getOrPut(Measurements.STD_SIGNED_CURVATURE_PX);
+        ObjMeasurementRef meanCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_SIGNED_CURVATURE_CAL));
+        ObjMeasurementRef minCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MIN_SIGNED_CURVATURE_CAL));
+        ObjMeasurementRef maxCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAX_SIGNED_CURVATURE_CAL));
+        ObjMeasurementRef stdCurvatureSignedCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STD_SIGNED_CURVATURE_CAL));
+        ObjMeasurementRef splineLengthPx = objectMeasurementRefs.getOrPut(Measurements.SPLINE_LENGTH_PX);
+        ObjMeasurementRef splineLengthCal = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SPLINE_LENGTH_CAL));
+        ObjMeasurementRef firstPointX = objectMeasurementRefs.getOrPut(Measurements.FIRST_POINT_X_PX);
+        ObjMeasurementRef firstPointY = objectMeasurementRefs.getOrPut(Measurements.FIRST_POINT_Y_PX);
+        ObjMeasurementRef relLocMinCurvature = objectMeasurementRefs.getOrPut(Measurements.REL_LOC_OF_MIN_CURVATURE);
+        ObjMeasurementRef relLocMaxCurvature= objectMeasurementRefs.getOrPut(Measurements.REL_LOC_OF_MAX_CURVATURE);
+        ObjMeasurementRef headTailAngle = objectMeasurementRefs.getOrPut(Measurements.HEAD_TAIL_ANGLE_DEGS);
 
-        meanCurvatureAbsolutePx.setImageObjName(inputObjectsName);
-        minCurvatureAbsolutePx.setImageObjName(inputObjectsName);
-        maxCurvatureAbsolutePx.setImageObjName(inputObjectsName);
-        stdCurvatureAbsolutePx.setImageObjName(inputObjectsName);
-        meanCurvatureAbsoluteCal.setImageObjName(inputObjectsName);
-        minCurvatureAbsoluteCal.setImageObjName(inputObjectsName);
-        maxCurvatureAbsoluteCal.setImageObjName(inputObjectsName);
-        stdCurvatureAbsoluteCal.setImageObjName(inputObjectsName);
-        meanCurvatureSignedPx.setImageObjName(inputObjectsName);
-        minCurvatureSignedPx.setImageObjName(inputObjectsName);
-        maxCurvatureSignedPx.setImageObjName(inputObjectsName);
-        stdCurvatureSignedPx.setImageObjName(inputObjectsName);
-        meanCurvatureSignedCal.setImageObjName(inputObjectsName);
-        minCurvatureSignedCal.setImageObjName(inputObjectsName);
-        maxCurvatureSignedCal.setImageObjName(inputObjectsName);
-        stdCurvatureSignedCal.setImageObjName(inputObjectsName);
-        splineLengthPx.setImageObjName(inputObjectsName);
-        splineLengthCal.setImageObjName(inputObjectsName);
-        firstPointX.setImageObjName(inputObjectsName);
-        firstPointY.setImageObjName(inputObjectsName);
-        relLocMinCurvature.setImageObjName(inputObjectsName);
-        relLocMaxCurvature.setImageObjName(inputObjectsName);
-        headTailAngle.setImageObjName(inputObjectsName);
+        meanCurvatureAbsolutePx.setObjectsName(inputObjectsName);
+        minCurvatureAbsolutePx.setObjectsName(inputObjectsName);
+        maxCurvatureAbsolutePx.setObjectsName(inputObjectsName);
+        stdCurvatureAbsolutePx.setObjectsName(inputObjectsName);
+        meanCurvatureAbsoluteCal.setObjectsName(inputObjectsName);
+        minCurvatureAbsoluteCal.setObjectsName(inputObjectsName);
+        maxCurvatureAbsoluteCal.setObjectsName(inputObjectsName);
+        stdCurvatureAbsoluteCal.setObjectsName(inputObjectsName);
+        meanCurvatureSignedPx.setObjectsName(inputObjectsName);
+        minCurvatureSignedPx.setObjectsName(inputObjectsName);
+        maxCurvatureSignedPx.setObjectsName(inputObjectsName);
+        stdCurvatureSignedPx.setObjectsName(inputObjectsName);
+        meanCurvatureSignedCal.setObjectsName(inputObjectsName);
+        minCurvatureSignedCal.setObjectsName(inputObjectsName);
+        maxCurvatureSignedCal.setObjectsName(inputObjectsName);
+        stdCurvatureSignedCal.setObjectsName(inputObjectsName);
+        splineLengthPx.setObjectsName(inputObjectsName);
+        splineLengthCal.setObjectsName(inputObjectsName);
+        firstPointX.setObjectsName(inputObjectsName);
+        firstPointY.setObjectsName(inputObjectsName);
+        relLocMinCurvature.setObjectsName(inputObjectsName);
+        relLocMaxCurvature.setObjectsName(inputObjectsName);
+        headTailAngle.setObjectsName(inputObjectsName);
 
         boolean relateToReference = false;
         boolean absoluteCurvature = false;
@@ -550,41 +550,41 @@ public class MeasureObjectCurvature extends Module {
             }
         }
 
-        splineLengthPx.setCalculated(true);
-        splineLengthCal.setCalculated(true);
-        meanCurvatureAbsolutePx.setCalculated(absoluteCurvature);
-        minCurvatureAbsolutePx.setCalculated(absoluteCurvature);
-        maxCurvatureAbsolutePx.setCalculated(absoluteCurvature);
-        stdCurvatureAbsolutePx.setCalculated(absoluteCurvature);
-        meanCurvatureAbsoluteCal.setCalculated(absoluteCurvature);
-        minCurvatureAbsoluteCal.setCalculated(absoluteCurvature);
-        maxCurvatureAbsoluteCal.setCalculated(absoluteCurvature);
-        stdCurvatureAbsoluteCal.setCalculated(absoluteCurvature);
-        meanCurvatureSignedPx.setCalculated(signedCurvature);
-        minCurvatureSignedPx.setCalculated(signedCurvature);
-        maxCurvatureSignedPx.setCalculated(signedCurvature);
-        stdCurvatureSignedPx.setCalculated(signedCurvature);
-        meanCurvatureSignedCal.setCalculated(signedCurvature);
-        minCurvatureSignedCal.setCalculated(signedCurvature);
-        maxCurvatureSignedCal.setCalculated(signedCurvature);
-        stdCurvatureSignedCal.setCalculated(signedCurvature);
-        firstPointX.setCalculated(relateToReference);
-        firstPointY.setCalculated(relateToReference);
-        relLocMinCurvature.setCalculated(relateToReference);
-        relLocMaxCurvature.setCalculated(relateToReference);
-        headTailAngle.setCalculated(calculateHeadTailAngle);
+        returnedRefs.add(splineLengthPx);
+        returnedRefs.add(splineLengthCal);
+        if (absoluteCurvature) returnedRefs.add(meanCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(minCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(maxCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(stdCurvatureAbsolutePx);
+        if (absoluteCurvature) returnedRefs.add(meanCurvatureAbsoluteCal);
+        if (absoluteCurvature) returnedRefs.add(minCurvatureAbsoluteCal);
+        if (absoluteCurvature) returnedRefs.add(maxCurvatureAbsoluteCal);
+        if (absoluteCurvature) returnedRefs.add(stdCurvatureAbsoluteCal);
+        if (signedCurvature) returnedRefs.add(meanCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(minCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(maxCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(stdCurvatureSignedPx);
+        if (signedCurvature) returnedRefs.add(meanCurvatureSignedCal);
+        if (signedCurvature) returnedRefs.add(minCurvatureSignedCal);
+        if (signedCurvature) returnedRefs.add(maxCurvatureSignedCal);
+        if (signedCurvature) returnedRefs.add(stdCurvatureSignedCal);
+        if (relateToReference) returnedRefs.add(firstPointX);
+        if (relateToReference) returnedRefs.add(firstPointY);
+        if (relateToReference) returnedRefs.add(relLocMinCurvature);
+        if (relateToReference) returnedRefs.add(relLocMaxCurvature);
+        if (calculateHeadTailAngle) returnedRefs.add(headTailAngle);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

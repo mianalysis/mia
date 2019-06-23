@@ -23,7 +23,7 @@ public class ShowImageMacro extends MacroOperation {
     @Override
     public String action(Object[] objects, Workspace workspace) {
         // Create Module
-        ShowImage showImage = new ShowImage();
+        ShowImage showImage = new ShowImage(workspace.getAnalysis().getModules());
 
         // Updating parameters
         showImage.updateParameterValue(ShowImage.DISPLAY_IMAGE,(String) objects[0]);

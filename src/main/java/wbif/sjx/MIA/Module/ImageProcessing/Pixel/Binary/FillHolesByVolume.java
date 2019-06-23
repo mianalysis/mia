@@ -10,6 +10,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.LongOverflowException;
 
 import java.util.HashMap;
@@ -24,6 +28,10 @@ public class FillHolesByVolume extends Module {
     public static final String USE_MAXIMUM_VOLUME = "Use maximum volume";
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+    public FillHolesByVolume(ModuleCollection modules) {
+        super("Fill holes by volume",modules);
+    }
 
 
     public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits, int labelBitDepth)
@@ -93,10 +101,6 @@ public class FillHolesByVolume extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Fill holes by volume";
-    }
 
     @Override
     public String getPackageName() {
@@ -104,7 +108,7 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Larger label bit depths will require more memory, but will enable more objects " +
                 "\nto be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.";
     }
@@ -134,7 +138,6 @@ public class FillHolesByVolume extends Module {
             try {
                 process(inputImagePlus,minVolume,maxVolume,calibratedUnits,16);
             } catch (RuntimeException e2) {
-                System.err.println("Maximum number of labels reached while filling holes.  Switching to 32-bit mode.  No action necessary.");
                 process(inputImagePlus,minVolume,maxVolume,calibratedUnits,32);
             }
         } catch (LongOverflowException e) {
@@ -196,22 +199,22 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

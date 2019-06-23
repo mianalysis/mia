@@ -11,6 +11,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.io.File;
 
@@ -25,6 +29,10 @@ public class WekaProbabilityMaps extends Module {
     public static final String OUTPUT_CLASS = "Output class";
     public static final String CLASSIFIER_FILE = "Classifier file path";
     public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
+
+    public WekaProbabilityMaps(ModuleCollection modules) {
+        super("Weka probability maps",modules);
+    }
 
 
     public interface OutputBitDepths {
@@ -127,17 +135,12 @@ public class WekaProbabilityMaps extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Weka probability maps";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Loads a saved WEKA classifier model and applies it to the input image.  Returns the " +
                 "\nmulti-channel probability map";
     }
@@ -212,22 +215,22 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

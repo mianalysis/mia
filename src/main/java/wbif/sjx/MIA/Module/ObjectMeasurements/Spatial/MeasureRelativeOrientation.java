@@ -4,6 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -22,6 +23,10 @@ public class MeasureRelativeOrientation extends Module {
     public static final String REFERENCE_OBJECTS = "Reference objects";
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
+
+    public MeasureRelativeOrientation(ModuleCollection modules) {
+        super("Measure relative orientation",modules);
+    }
 
 
     public interface OrientationModes {
@@ -309,17 +314,12 @@ public class MeasureRelativeOrientation extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure relative orientation";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Currently only works for X-Y plane measurements";
     }
 
@@ -389,7 +389,7 @@ public class MeasureRelativeOrientation extends Module {
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -458,19 +458,19 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
         String reference = getMeasurementRef();
 
-        if (reference == null) return objectMeasurementRefs;
+        if (reference == null) return returnedRefs;
 
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
@@ -496,27 +496,28 @@ public class MeasureRelativeOrientation extends Module {
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
-                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
-                measurementReference.setImageObjName(inputObjectsName);
-                measurementReference.setCalculated(true);
+                ObjMeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
+                measurementReference.setObjectsName(inputObjectsName);
+                returnedRefs.add(measurementReference);
 
                 String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
                 measurementReference.setDescription("Orientation of the object (specified by the measurements \""+
                         xyOriMeasName+"\") relative to "+referenceDescription+". Measured in degrees between 0 and 90.");
+                returnedRefs.add(measurementReference);
                 break;
         }
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

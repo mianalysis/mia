@@ -1,18 +1,21 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.MeasurementRef;
-import wbif.sjx.MIA.Object.MeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
 
 public class HelpArea extends JTextPane {
-    public HelpArea(Module module) {
+    public HelpArea(Module module, ModuleCollection modules) {
         setContentType("text/html");
         if (module != null) {
-            setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(module)+"</font></body></html>");
+            setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(module,modules)+"</font></body></html>");
         }
 
         setBackground(null);
@@ -24,24 +27,28 @@ public class HelpArea extends JTextPane {
 
     }
 
-    private static String getHelpText(Module module) {
+    private static String getHelpText(Module module, ModuleCollection modules) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<b>DESCRIPTION</b><br>")
-                .append(module.getHelp())
+                .append(module.getDescription())
                 .append("<br><br><br>")
                 .append("<b>PARAMETERS</b><br>");
 
-        for (Parameter parameter:module.getAllParameters()) sb.append(getParameterHelpText(parameter));
+        for (Parameter parameter:module.getAllParameters().values()) {
+            if (parameter.isExported()) {
+                sb.append(getParameterHelpText(parameter));
+            }
+        }
 
         sb.append("<br>");
 
-        MeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>OBJECT MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
-            for (MeasurementRef measurementRef : objectMeasRefs.values()) {
+            for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
                 sb.append("<i>")
                         .append(measurementRef.getFinalName())
                         .append("</i>:<br>")
@@ -52,12 +59,12 @@ public class HelpArea extends JTextPane {
 
         }
 
-        MeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
+        ImageMeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
         if (imageMeasRefs != null && imageMeasRefs.hasExportedMeasurements()) {
             sb.append("<b>IMAGE MEASUREMENTS</b><br>")
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
-            for (MeasurementRef measurementRef : imageMeasRefs.values()) {
+            for (ImageMeasurementRef measurementRef : imageMeasRefs.values()) {
                 sb.append("<i>")
                         .append(measurementRef.getName())
                         .append("</i>:<br>")
@@ -80,7 +87,7 @@ public class HelpArea extends JTextPane {
                 .append("<br><br>");
 
         if  (parameter instanceof ParameterGroup) {
-            for (Parameter currParameter:((ParameterGroup) parameter).getTemplateParameters()) {
+            for (Parameter currParameter:((ParameterGroup) parameter).getTemplateParameters().values()) {
                 sb.append(getParameterHelpText(currParameter));
             }
         }

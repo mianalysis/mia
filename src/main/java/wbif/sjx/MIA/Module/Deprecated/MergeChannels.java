@@ -18,6 +18,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.Arrays;
@@ -32,6 +36,10 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
+
+    public MergeChannels(ModuleCollection modules) {
+        super("Merge channels",modules);
+    }
 
 
     public interface OverwriteModes {
@@ -217,17 +225,12 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public String getTitle() {
-        return "Merge channels";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "NOTE: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will " +
                 "be removed in a future release.\r\n" +
                 "Combines image stacks as different channels.  Output is automatically converted to a composite image.";
@@ -305,22 +308,22 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

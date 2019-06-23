@@ -8,11 +8,11 @@
 //
 //    @Override
 //    public void testGetTitle() {
-//        assertNotNull(new ApplyManualClassification().getTitle());
+//        assertNotNull(new ApplyManualClassification(null).getTitle());
 //    }
 //
 //    @Override
 //    public void testGetHelp() {
-//        assertNotNull(new ApplyManualClassification().getHelp());
+//        assertNotNull(new ApplyManualClassification(null).getDescription());
 //    }
 //}

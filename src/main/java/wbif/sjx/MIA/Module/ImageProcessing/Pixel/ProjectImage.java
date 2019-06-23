@@ -10,10 +10,11 @@ import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 //import ij.plugin.ZProjector;
 
@@ -21,9 +22,15 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
  * Created by sc13967 on 04/05/2017.
  */
 public class ProjectImage < T extends RealType< T > & NativeType< T >> extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String PROJECTION_SEPARATOR = "Image projection";
     public static final String PROJECTION_MODE = "Projection mode";
+
+    public ProjectImage(ModuleCollection modules) {
+        super("Project image",modules);
+    }
 
     public interface ProjectionModes {
         String AVERAGE = "Average";
@@ -113,11 +120,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Project image";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -125,7 +127,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -153,8 +155,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ParamSeparatorP(PROJECTION_SEPARATOR,this));
         parameters.add(new ChoiceP(PROJECTION_MODE,this,ProjectionModes.AVERAGE,ProjectionModes.ALL));
 
     }
@@ -165,22 +169,22 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -1,12 +1,11 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ParameterControls.WiderDropDownCombo;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.RelationshipCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import javax.annotation.Nonnull;
 
@@ -51,8 +50,9 @@ public class ChildObjectsP extends ChoiceType {
     public String[] getChoices() {
         if (parentObjectsName == null) return null;
 
-        ModuleCollection modules = GUI.getModules();
-        RelationshipCollection relationships = modules.getRelationships(module);
+        ModuleCollection modules = module.getModules();
+        RelationshipRefCollection relationships = modules.getRelationshipRefs(module);
+
         return relationships.getChildNames(parentObjectsName, true);
 
     }

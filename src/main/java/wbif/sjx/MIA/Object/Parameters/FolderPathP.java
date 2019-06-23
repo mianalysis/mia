@@ -1,12 +1,13 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.FileParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 
 public class FolderPathP extends FileFolderType {
     public FolderPathP(String name, Module module) {
@@ -22,11 +23,6 @@ public class FolderPathP extends FileFolderType {
     }
 
     @Override
-    public boolean isDirectory() {
-        return true;
-    }
-
-    @Override
     protected ParameterControl initialiseControl() {
         return new FileParameter(this,FileParameter.FileTypes.FOLDER_TYPE);
     }
@@ -34,5 +30,18 @@ public class FolderPathP extends FileFolderType {
     @Override
     public <T extends Parameter> T duplicate() {
         return (T) new FilePathP(name,module,getPath(),getDescription());
+    }
+
+    @Override
+    public boolean verify() {
+        // Check file is specified
+        if (!super.verify()) return false;
+
+        // Check file exists
+        if (!new File(path).exists()) return false;
+
+        // Finally, check file is a file (not a folder)
+        return new File(path).isDirectory();
+
     }
 }

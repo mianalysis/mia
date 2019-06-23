@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class DilateErodeTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new DilateErode().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new DilateErode().getHelp());
+        assertNotNull(new DilateErode(null).getDescription());
     }
 }

@@ -10,6 +10,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
@@ -30,6 +34,10 @@ public class CreateMeasurementMap extends Module {
     public static final String RANGE = "Range";
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
+
+    public CreateMeasurementMap(ModuleCollection modules) {
+        super("Create measurement map",modules);
+    }
 
     public interface MeasurementModes {
         String MEASUREMENT = "Measurement";
@@ -258,10 +266,6 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Create measurement map";
-    }
 
     @Override
     public String getPackageName() {
@@ -269,7 +273,7 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -300,10 +304,10 @@ public class CreateMeasurementMap extends Module {
         // Compressing relevant measures
         switch (measurementMode) {
             case MeasurementModes.MEASUREMENT:
-                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName,getTitle());
+                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName,getName());
                 break;
             case MeasurementModes.PARENT_MEASUREMENT:
-                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName,getTitle());
+                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName,getName());
                 break;
         }
 
@@ -375,22 +379,22 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

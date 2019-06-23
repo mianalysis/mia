@@ -13,13 +13,8 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new CalculateNearestNeighbour().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new CalculateNearestNeighbour().getHelp());
+        assertNotNull(new CalculateNearestNeighbour(null).getDescription());
     }
 
     @Test
@@ -50,7 +45,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Testing against first object in set
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour();
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(null);
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE);
 
         assertEquals(obj3,nearestNeighour);
@@ -89,7 +84,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj5);
 
         // Testing against first object in set
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour();
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(null);
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE);
 
         assertEquals(obj5,nearestNeighour);
@@ -124,7 +119,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Testing against first object in set
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour();
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(null);
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,100d);
 
         assertEquals(obj3,nearestNeighour);
@@ -159,7 +154,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Testing against first object in set
-        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour();
+        CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(null);
         Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,50d);
 
         assertNull(nearestNeighour);
@@ -190,7 +185,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,null)
@@ -258,7 +253,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,null)
@@ -277,15 +272,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //
 //        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.addCoord(12,25,40);
-//        objects2.add(obj5);
+//        objects2.addRef(obj5);
 //
 //        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.addCoord(20,35,10);
-//        objects2.add(obj6);
+//        objects2.addRef(obj6);
 //
 //        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.addCoord(35,20,20);
-//        objects2.add(obj7);
+//        objects2.addRef(obj7);
 
 
         // Testing against first object in set
@@ -343,7 +338,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,null)
@@ -362,15 +357,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //
 //        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.addCoord(12,25,40);
-//        objects2.add(obj5);
+//        objects2.addRef(obj5);
 //
 //        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.addCoord(20,35,10);
-//        objects2.add(obj6);
+//        objects2.addRef(obj6);
 //
 //        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.addCoord(35,20,20);
-//        objects2.add(obj7);
+//        objects2.addRef(obj7);
 
 
         // Testing against first object in set
@@ -428,7 +423,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,null)
@@ -447,15 +442,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //
 //        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.addCoord(12,25,40);
-//        objects2.add(obj5);
+//        objects2.addRef(obj5);
 //
 //        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.addCoord(20,35,10);
-//        objects2.add(obj6);
+//        objects2.addRef(obj6);
 //
 //        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.addCoord(35,20,20);
-//        objects2.add(obj7);
+//        objects2.addRef(obj7);
 
 
         // Testing against first object in set
@@ -529,7 +524,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,null)
@@ -613,7 +608,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.WITHIN_SAME_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,null)
@@ -688,7 +683,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects2.add(obj7);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,secondObjectsName)
@@ -763,7 +758,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects2.add(obj7);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,secondObjectsName)
@@ -863,7 +858,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj6.addParent(parent2);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,secondObjectsName)
@@ -963,7 +958,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         obj6.addParent(parent2);
 
         // Initialising Module
-        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour()
+        CalculateNearestNeighbour calculateNearestNeighbour = (CalculateNearestNeighbour) new CalculateNearestNeighbour(null)
                 .updateParameterValue(CalculateNearestNeighbour.INPUT_OBJECTS,inputObjectsName)
                 .updateParameterValue(CalculateNearestNeighbour.RELATIONSHIP_MODE, CalculateNearestNeighbour.RelationshipModes.DIFFERENT_SET)
                 .updateParameterValue(CalculateNearestNeighbour.NEIGHBOUR_OBJECTS,secondObjectsName)

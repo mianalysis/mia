@@ -10,12 +10,7 @@ import static org.junit.Assert.*;
 public class AddTracksTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new AddTracks().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new AddTracks().getHelp());
+        assertNotNull(new AddTracks(null).getDescription());
     }
 }

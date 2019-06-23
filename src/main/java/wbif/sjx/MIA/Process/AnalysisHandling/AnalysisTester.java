@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -12,7 +14,7 @@ public class AnalysisTester {
 
             module.setRunnable(runnable);
 
-            if (runnable) nRunnable++;
+            if (runnable && module.isEnabled()) nRunnable++;
 
         }
 
@@ -23,8 +25,10 @@ public class AnalysisTester {
     public static boolean testModule(Module module, ModuleCollection modules) {
         boolean runnable = true;
 
+        if (module == null) return false;
+
         // Iterating over each parameter, checking if it's currently available
-        for (Parameter parameter:module.updateAndGetParameters()) {
+        for (Parameter parameter:module.updateAndGetParameters().values()) {
             runnable = parameter.verify();
             parameter.setValid(runnable);
 
@@ -34,14 +38,5 @@ public class AnalysisTester {
 
         return true;
 
-    }
-
-    public static void reportStatus(ModuleCollection modules) {
-        for (Module module:modules) {
-            if (module.isEnabled() & !module.isRunnable()) {
-                System.err.println("Module \"" + module.getTitle() +
-                        "\" not runnable (likely a missing input).  This module has been skipped.");
-            }
-        }
     }
 }

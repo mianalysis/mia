@@ -8,16 +8,27 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 07/06/2017.
  */
 public class ImageTypeConverter extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_TYPE = "Output image type";
+
+    public static final String CONVERSION_SEPARATOR = "Image type conversion";
     public static final String SCALING_MODE = "Scaling mode";
+
+    public ImageTypeConverter(ModuleCollection modules) {
+        super("Image type converter",modules);
+    }
 
 
     public interface ScalingModes {
@@ -63,7 +74,6 @@ public class ImageTypeConverter extends Module {
             case ScalingModes.CLIP:
                 applyClippedRange(inputImagePlus,outputBitDepth);
                 break;
-
             case ScalingModes.FILL:
                 applyFilledRange(inputImagePlus);
                 break;
@@ -76,16 +86,15 @@ public class ImageTypeConverter extends Module {
         // Converting to requested type
         switch (outputBitDepth) {
             case 8:
-                IJ.run(inputImagePlus, "8-bit", null);
+                IJ.run(inputImagePlus,"8-bit",null);
                 break;
             case 16:
-                IJ.run(inputImagePlus, "16-bit", null);
+                IJ.run(inputImagePlus,"16-bit",null);
                 break;
             case 32:
-                IJ.run(inputImagePlus, "32-bit", null);
+                IJ.run(inputImagePlus,"32-bit",null);
                 break;
         }
-
     }
 
     /**
@@ -139,13 +148,9 @@ public class ImageTypeConverter extends Module {
      */
     static void applyFilledRange(ImagePlus imagePlus) {
         StackStatistics stackStatistics = new StackStatistics(imagePlus);
-       imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
+        imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
     }
 
-    @Override
-    public String getTitle() {
-        return "Image type converter";
-    }
 
     @Override
     public String getPackageName() {
@@ -153,7 +158,7 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 
@@ -195,10 +200,13 @@ public class ImageTypeConverter extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(OUTPUT_TYPE,this,OutputTypes.INT8,OutputTypes.ALL));
+
+        parameters.add(new ParamSeparatorP(CONVERSION_SEPARATOR,this));
         parameters.add(new ChoiceP(SCALING_MODE,this,ScalingModes.CLIP,ScalingModes.ALL));
 
     }
@@ -206,6 +214,8 @@ public class ImageTypeConverter extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -214,6 +224,8 @@ public class ImageTypeConverter extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_TYPE));
+
+        returnedParameters.add(parameters.getParameter(CONVERSION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SCALING_MODE));
 
         return returnedParameters;
@@ -221,22 +233,22 @@ public class ImageTypeConverter extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

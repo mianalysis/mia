@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by steph on 28/07/2017.
@@ -46,7 +47,8 @@ public class AnalysisControlButton extends JButton implements ActionListener {
 
                     GUI.setLastModuleEval(-1);
                     GUI.updateTestFile();
-                    GUI.updateModules(true);
+                    GUI.updateModules();
+                    GUI.updateModuleStates(true);
 
                     break;
 
@@ -72,7 +74,8 @@ public class AnalysisControlButton extends JButton implements ActionListener {
             }
 
         } catch (IOException | ClassNotFoundException | ParserConfigurationException | SAXException
-                | IllegalAccessException | InstantiationException | TransformerException e1) {
+                | IllegalAccessException | InstantiationException | TransformerException | NoSuchMethodException
+                | InvocationTargetException e1) {
             e1.printStackTrace();
         }
     }

@@ -10,9 +10,6 @@ public abstract class ModuleTest {
     }
 
     @Test
-    public abstract void testGetTitle();
-
-    @Test
     public abstract void testGetHelp();
 
 }

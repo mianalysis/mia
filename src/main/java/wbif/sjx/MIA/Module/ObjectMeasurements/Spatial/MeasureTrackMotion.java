@@ -3,10 +3,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
-import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Timepoint;
@@ -18,9 +16,16 @@ import java.util.TreeMap;
  * Created by steph on 24/05/2017.
  */
 public class MeasureTrackMotion extends Module {
+    public static final String INPUT_SEPARATOR = "Input objects";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
+
+    public static final String MEASUREMENT_SEPARATOR = "Measurement controls";
     public static final String SUBTRACT_AVERAGE_MOTION = "Subtract average motion";
+
+    public MeasureTrackMotion(ModuleCollection modules) {
+        super("Measure track motion",modules);
+    }
 
 
     public interface Measurements {
@@ -359,17 +364,12 @@ public class MeasureTrackMotion extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure track motion";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -404,8 +404,8 @@ public class MeasureTrackMotion extends Module {
 
         }
 
-        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this);
-        if (showOutput) trackObjects.showMeasurements(this);
+        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) trackObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -413,8 +413,11 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
+
+        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(SUBTRACT_AVERAGE_MOTION,this,false));
 
     }
@@ -422,191 +425,194 @@ public class MeasureTrackMotion extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ((ChildObjectsP) parameters.getParameter(INPUT_SPOT_OBJECTS)).setParentObjectsName(objectName);
 
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SUBTRACT_AVERAGE_MOTION));
 
         return returnedParameters;
+
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
-
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
         String inputSpotObjects  = parameters.getValue(INPUT_SPOT_OBJECTS);
         boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION);
 
         String name = getFullName(Measurements.DIRECTIONALITY_RATIO,subtractAverage);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.EUCLIDEAN_DISTANCE_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.EUCLIDEAN_DISTANCE_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.TOTAL_PATH_LENGTH_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.TOTAL_PATH_LENGTH_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.DURATION,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.FIRST_FRAME,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_X_VELOCITY_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_X_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_Y_VELOCITY_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_Y_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.DETECTION_FRACTION,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputTrackObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputTrackObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.X_VELOCITY_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.X_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.Y_VELOCITY_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.Y_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.Z_VELOCITY_SLICES,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.Z_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.INSTANTANEOUS_SPEED_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.INSTANTANEOUS_SPEED_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.CUMULATIVE_PATH_LENGTH_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.CUMULATIVE_PATH_LENGTH_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.ROLLING_EUCLIDEAN_DISTANCE_PX,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.ROLLING_EUCLIDEAN_DISTANCE_CAL,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.ROLLING_DIRECTIONALITY_RATIO,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
         name = getFullName(Measurements.RELATIVE_FRAME,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputSpotObjects);
-        reference.setCalculated(true);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

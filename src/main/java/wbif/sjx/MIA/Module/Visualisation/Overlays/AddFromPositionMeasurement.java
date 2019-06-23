@@ -12,6 +12,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.awt.*;
@@ -22,11 +26,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddFromPositionMeasurement extends Module {
+    public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String OUTPUT_SEPARATOR = "Image output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String RENDERING_SEPARATOR = "Overlay rendering";
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
@@ -34,12 +43,18 @@ public class AddFromPositionMeasurement extends Module {
     public static final String MEASUREMENT_FOR_RADIUS = "Measurement for radius";
     public static final String LINE_WIDTH = "Line width";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private ColourServer colourServer;
 
+    public AddFromPositionMeasurement(ModuleCollection modules) {
+        super("Add from position measurement",modules);
+    }
 
-    public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
+
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
@@ -82,17 +97,12 @@ public class AddFromPositionMeasurement extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Add from position measurement";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -151,7 +161,7 @@ public class AddFromPositionMeasurement extends Module {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
+                    addOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
                     writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
                 };
@@ -177,11 +187,16 @@ public class AddFromPositionMeasurement extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new ObjectMeasurementP(X_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
@@ -189,6 +204,8 @@ public class AddFromPositionMeasurement extends Module {
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_RADIUS, this));
         parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
+
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
@@ -201,10 +218,13 @@ public class AddFromPositionMeasurement extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
@@ -214,6 +234,7 @@ public class AddFromPositionMeasurement extends Module {
             }
         }
 
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
         returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
         returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
@@ -229,6 +250,9 @@ public class AddFromPositionMeasurement extends Module {
         }
 
         returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -236,22 +260,22 @@ public class AddFromPositionMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

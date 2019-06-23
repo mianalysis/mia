@@ -31,14 +31,8 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ImageLoader().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ImageLoader().getHelp());
+        assertNotNull(new ImageLoader(null).getDescription());
 
     }
 
@@ -48,7 +42,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Initialising ImageFileLoader
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = new ImageLoader(null);
         imageLoader.initialiseParameters();
 
         // Setting parameters
@@ -95,7 +89,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -140,7 +134,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -185,7 +179,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -236,7 +230,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -277,6 +271,60 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Test
+    public void testRunWithCurrentTiffSubsetCTooLow() throws Exception {
+        // Getting path to image file
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+
+        // Initialising a blank workspace
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
+
+        // Initialising the ImageFileLoader
+        ImageLoader imageFileLoader = new ImageLoader(null);
+        imageFileLoader.initialiseParameters();
+
+        // Setting parameters
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"0-3");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+
+        // Running module
+        boolean status = imageFileLoader.execute(workspace);
+
+        assertFalse(status);
+
+    }
+
+    @Test
+    public void testRunWithCurrentTiffSubsetCTooHigh() throws Exception {
+        // Getting path to image file
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+
+        // Initialising a blank workspace
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
+
+        // Initialising the ImageFileLoader
+        ImageLoader imageFileLoader = new ImageLoader(null);
+        imageFileLoader.initialiseParameters();
+
+        // Setting parameters
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"5-8");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+
+        // Running module
+        boolean status = imageFileLoader.execute(workspace);
+
+        assertFalse(status);
+
+    }
+
+    @Test
     public void testRunWithCurrentTiffSubsetZ() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
@@ -285,7 +333,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -326,6 +374,60 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Test
+    public void testRunWithCurrentTiffSubsetZTooLow() throws Exception {
+        // Getting path to image file
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+
+        // Initialising a blank workspace
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
+
+        // Initialising the ImageFileLoader
+        ImageLoader imageFileLoader = new ImageLoader(null);
+        imageFileLoader.initialiseParameters();
+
+        // Setting parameters
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"0-1");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+
+        // Running module
+        boolean status = imageFileLoader.execute(workspace);
+
+        assertFalse(status);
+
+    }
+
+    @Test
+    public void testRunWithCurrentTiffSubsetZTooHigh() throws Exception {
+        // Getting path to image file
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+
+        // Initialising a blank workspace
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
+
+        // Initialising the ImageFileLoader
+        ImageLoader imageFileLoader = new ImageLoader(null);
+        imageFileLoader.initialiseParameters();
+
+        // Setting parameters
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"13");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+
+        // Running module
+        boolean status = imageFileLoader.execute(workspace);
+
+        assertFalse(status);
+
+    }
+
+    @Test
     public void testRunWithCurrentTiffSubsetT() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
@@ -334,7 +436,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -375,6 +477,60 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Test
+    public void testRunWithCurrentTiffSubsetTTooLow() throws Exception {
+        // Getting path to image file
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+
+        // Initialising a blank workspace
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
+
+        // Initialising the ImageFileLoader
+        ImageLoader imageFileLoader = new ImageLoader(null);
+        imageFileLoader.initialiseParameters();
+
+        // Setting parameters
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"-4");
+        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+
+        // Running module
+        boolean status = imageFileLoader.execute(workspace);
+
+        assertFalse(status);
+
+    }
+
+    @Test
+    public void testRunWithCurrentTiffSubsetTTooHigh() throws Exception {
+        // Getting path to image file
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
+
+        // Initialising a blank workspace
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
+
+        // Initialising the ImageFileLoader
+        ImageLoader imageFileLoader = new ImageLoader(null);
+        imageFileLoader.initialiseParameters();
+
+        // Setting parameters
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"7-8");
+        imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
+
+        // Running module
+        boolean status = imageFileLoader.execute(workspace);
+
+        assertFalse(status);
+
+    }
+
+    @Test
     public void testRunWithCurrentTiffSubsetAll() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
@@ -383,7 +539,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -432,7 +588,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -477,7 +633,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -518,7 +674,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -564,7 +720,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -617,7 +773,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -667,7 +823,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -712,7 +868,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -757,7 +913,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -802,7 +958,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -847,7 +1003,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -887,7 +1043,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -927,7 +1083,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
+        ImageLoader imageFileLoader = new ImageLoader(null);
         imageFileLoader.initialiseParameters();
 
         // Setting parameters

@@ -6,15 +6,19 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1 (to be replaced)";
     public static final String INPUT_IMAGE2 = "Input image 2";
 
-    @Override
-    public String getTitle() {
-        return "Replace image";
+    public ReplaceImage(ModuleCollection modules) {
+        super("Replace image",modules);
     }
+
 
     @Override
     public String getPackageName() {
@@ -22,7 +26,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "This module duplicates an image into another, existing, image.  " +
                 "\nThis is useful when dealing with optional modules, where a specific input is required later on.";
     }
@@ -56,22 +60,22 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

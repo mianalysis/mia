@@ -11,6 +11,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -21,11 +25,18 @@ import java.util.HashMap;
  * Created by sc13967 on 06/06/2017.
  */
 public class IdentifyObjects extends Module {
+    public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+    public static final String IDENTIFICATION_SEPARATOR = "Object identification";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
+
+    public IdentifyObjects(ModuleCollection modules) {
+        super("Identify objects",modules);
+    }
 
     public interface Connectivity {
         String SIX = "6";
@@ -98,17 +109,12 @@ public class IdentifyObjects extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Identify objects";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return  "Takes a binary image and uses connected components labelling to create objects" +
                 "\nUses MorphoLibJ to perform connected components labelling in 3D. " +
                 "\n\nLarger label bit depths will require more memory, but will enable more objects " +
@@ -135,7 +141,6 @@ public class IdentifyObjects extends Module {
             try {
                 outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 16);
             } catch (RuntimeException e2) {
-                System.err.println("Maximum number of labels reached while identifying objects.  Switching to 32-bit mode.  No action necessary.");
                 outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 32);
             }
         } catch (IntegerOverflowException e3) {
@@ -164,8 +169,11 @@ public class IdentifyObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+
+        parameters.add(new ParamSeparatorP(IDENTIFICATION_SEPARATOR,this));
         parameters.add(new BooleanP(WHITE_BACKGROUND,this,true));
         parameters.add(new BooleanP(SINGLE_OBJECT,this,false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
@@ -178,22 +186,22 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

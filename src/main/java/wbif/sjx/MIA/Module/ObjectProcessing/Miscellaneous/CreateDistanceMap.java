@@ -15,6 +15,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
@@ -29,6 +33,10 @@ public class CreateDistanceMap extends Module {
     public static final String MASKING_MODE = "Masking mode";
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
     public static final String SPATIAL_UNITS = "Spatial units";
+
+    public CreateDistanceMap(ModuleCollection modules) {
+        super("Create distance map",modules);
+    }
 
 
     public interface ReferenceModes {
@@ -101,7 +109,7 @@ public class CreateDistanceMap extends Module {
         if (invertInside) ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
 
         // Compiling the distance map
-        ImagePlus distanceMap = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
+        ImagePlus distanceMap = ImageCalculator.process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
 
         return new Image(outputImageName,distanceMap);
@@ -127,7 +135,7 @@ public class CreateDistanceMap extends Module {
         // Applying the mask
         String calculationMode = ImageCalculator.CalculationMethods.MULTIPLY;
         String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
-        new ImageCalculator().process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
+        ImageCalculator.process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
 
     }
 
@@ -202,10 +210,6 @@ public class CreateDistanceMap extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Create distance map";
-    }
 
     @Override
     public String getPackageName() {
@@ -213,7 +217,7 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -315,22 +319,22 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

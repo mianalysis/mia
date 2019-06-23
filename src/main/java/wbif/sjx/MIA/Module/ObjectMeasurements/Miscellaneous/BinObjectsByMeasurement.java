@@ -4,6 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.*;
 
 public class BinObjectsByMeasurement extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -11,6 +12,10 @@ public class BinObjectsByMeasurement extends Module {
     public static final String SMALLEST_BIN_CENTRE = "Smallest bin centre";
     public static final String LARGEST_BIN_CENTRE = "Largest bin centre";
     public static final String NUMBER_OF_BINS = "Number of bins";
+
+    public BinObjectsByMeasurement(ModuleCollection modules) {
+        super("Bin objects by measurement",modules);
+    }
 
     interface Measurements {
         String BIN = "Bin";
@@ -20,10 +25,6 @@ public class BinObjectsByMeasurement extends Module {
         return "BIN // "+measurement;
     }
 
-    @Override
-    public String getTitle() {
-        return "Bin objects by measurement";
-    }
 
     @Override
     public String getPackageName() {
@@ -31,7 +32,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -61,7 +62,7 @@ public class BinObjectsByMeasurement extends Module {
 
         }
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -86,33 +87,33 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        objectMeasurementRefs.setAllCalculated(false);
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
 
         String name = getFullName(measurement);
-        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
-        binMeasurement.setImageObjName(inputObjectsName);
-        binMeasurement.setCalculated(true);
+        ObjMeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
+        binMeasurement.setObjectsName(inputObjectsName);
+        returnedRefs.add(binMeasurement);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

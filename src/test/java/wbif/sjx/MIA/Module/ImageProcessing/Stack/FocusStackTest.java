@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class FocusStackTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new FocusStack().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new FocusStack().getHelp());
+        assertNotNull(new FocusStack(null).getDescription());
     }
 }

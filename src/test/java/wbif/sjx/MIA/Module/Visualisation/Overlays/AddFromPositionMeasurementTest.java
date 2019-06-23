@@ -10,12 +10,7 @@ import static org.junit.Assert.*;
 public class AddFromPositionMeasurementTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new AddFromPositionMeasurement().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new AddFromPositionMeasurement().getHelp());
+        assertNotNull(new AddFromPositionMeasurement(null).getDescription());
     }
 }

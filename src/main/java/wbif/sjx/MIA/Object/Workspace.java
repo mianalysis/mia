@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
@@ -13,6 +14,7 @@ public class Workspace {
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
+    private Analysis analysis = null;
     private int ID;
 
     // CONSTRUCTOR
@@ -56,9 +58,6 @@ public class Workspace {
             objects.remove(name);
         }
 
-        // Running garbage collector
-        Runtime.getRuntime().gc();
-
     }
 
     public void addImage(Image<?> image) {
@@ -67,14 +66,10 @@ public class Workspace {
 
     public void removeImage(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
-            images.get(name).setImagePlus(null);
+            images.get(name).getImagePlus().close();
         } else {
             images.remove(name);
         }
-
-        // Running garbage collector
-        Runtime.getRuntime().gc();
-
     }
 
     /**
@@ -132,7 +127,7 @@ public class Workspace {
             for (Obj obj:collection.values()) {
                 int t = obj.getT();
 
-                // If there isn't already a Workspace for this time point, add one
+                // If there isn't already a Workspace for this time point, addRef one
                 if (!workspaces.containsKey(t)) {
                     Workspace workspace = new Workspace(ID,null,-1);
                     workspace.setMetadata(metadata);
@@ -153,7 +148,15 @@ public class Workspace {
 
     // GETTERS AND SETTERS
 
-    public HashMap<String, ObjCollection> getObjects() {
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
+    }
+
+    public LinkedHashMap<String, ObjCollection> getObjects() {
         return objects;
     }
 
@@ -161,7 +164,7 @@ public class Workspace {
         this.objects = objects;
     }
 
-    public HashMap<String, Image<?>> getImages() {
+    public LinkedHashMap<String, Image<?>> getImages() {
         return images;
     }
 

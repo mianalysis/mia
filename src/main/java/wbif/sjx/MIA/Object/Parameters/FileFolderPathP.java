@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.FileParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
@@ -20,13 +20,6 @@ public class FileFolderPathP extends FileFolderType {
 
     public FileFolderPathP(String name, Module module, @Nonnull String fileFolderPath, String description) {
         super(name,module,fileFolderPath,description);
-    }
-
-    @Override
-    public boolean isDirectory() {
-        String fileFolderPath = getPath();
-        if (fileFolderPath == null) return false;
-        return new File(fileFolderPath).isDirectory();
     }
 
     @Override

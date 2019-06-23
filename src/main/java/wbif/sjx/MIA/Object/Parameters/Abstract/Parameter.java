@@ -1,27 +1,30 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
-public abstract class Parameter {
-    protected final String name;
+public abstract class Parameter extends Ref {
     protected final Module module;
-    private final String description;
     private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
+    private boolean exported = true;
+    private String description = "";
 
 
     // CONSTRUCTORS
 
     public Parameter(String name, Module module) {
-        this.name = name;
+        super(name);
         this.module = module;
-        this.description = "";
     }
 
     public Parameter(String name, Module module, String description) {
-        this.name = name;
+        super(name);
         this.module = module;
         this.description = description;
     }
@@ -35,7 +38,9 @@ public abstract class Parameter {
 
     public abstract <T> void setValue(T value);
 
-    public abstract String getValueAsString();
+    public abstract String getRawStringValue();
+
+    public abstract void setValueFromString(String string);
 
     public abstract boolean verify();
 
@@ -51,14 +56,6 @@ public abstract class Parameter {
 
     // GETTERS AND SETTERS
 
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getName() {
-        return name;
-    }
 
     public Module getModule() {
         return module;
@@ -83,5 +80,43 @@ public abstract class Parameter {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public boolean isExported() {
+        return exported;
+    }
+
+    public void setExported(boolean exported) {
+        this.exported = exported;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public void appendXMLAttributes(Element element) {
+        super.appendXMLAttributes(element);
+
+        String stringValue = getRawStringValue();
+        if (stringValue == null) stringValue = "";
+        element.setAttribute("VALUE",getRawStringValue());
+        element.setAttribute("VISIBLE",Boolean.toString(isVisible()));
+
+    }
+
+    @Override
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
+
+        NamedNodeMap map = node.getAttributes();
+        setValueFromString(map.getNamedItem("VALUE").getNodeValue());
+        setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));
+
     }
 }

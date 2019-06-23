@@ -4,6 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -36,12 +38,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return name;
     }
 
-    public void add(Obj object) {
+    synchronized public void add(Obj object) {
         put(object.getID(),object);
 
     }
 
-    public int getNextID() {
+    public int getAndIncrementID() {
         maxID++;
         return maxID;
     }
@@ -110,6 +112,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         ImagePlus ipl;
 
         if (templateIpl == null) {
+            if (size() == 0) return null;
+
             // Getting range of object pixels
             int[][] spatialLimits = getSpatialLimits();
             int[] temporalLimits = getTemporalLimits();
@@ -202,17 +206,17 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
      * Displays measurement values from a specific Module
      * @param module
      */
-    public void showMeasurements(Module module) {
+    public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
-        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
+        ObjMeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
 
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
-        for (MeasurementRef measRef:measRefs.values()) {
-            if (measRef.getImageObjName().equals(name) && measRef.isCalculated()) measNames.add(measRef.getName());
+        for (ObjMeasurementRef measRef:measRefs.values()) {
+            if (measRef.getObjectsName().equals(name)) measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values
@@ -242,7 +246,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Displaying the results table
-        rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
+        rt.show("\""+module.getName()+" \"measurements for \""+name+"\"");
 
     }
 

@@ -8,6 +8,10 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 23/03/2018.
@@ -15,6 +19,10 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 public class InterpolateZAxis extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public InterpolateZAxis(ModuleCollection modules) {
+        super("Interpolate Z axis",modules);
+    }
 
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
         // Calculating scaling
@@ -31,10 +39,6 @@ public class InterpolateZAxis extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Interpolate Z axis";
-    }
 
     @Override
     public String getPackageName() {
@@ -42,7 +46,7 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Interpolates Z-axis of image to match XY spatial calibration";
     }
 
@@ -80,22 +84,22 @@ public class InterpolateZAxis extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

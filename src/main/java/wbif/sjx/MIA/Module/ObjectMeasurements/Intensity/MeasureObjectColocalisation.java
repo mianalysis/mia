@@ -6,13 +6,22 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 
 public class MeasureObjectColocalisation extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String COLOC_SEPARATOR = "Images to measure";
     public static final String INPUT_IMAGE_1 = "Input image 1";
     public static final String INPUT_IMAGE_2 = "Input image 2";
+
+    public MeasureObjectColocalisation(ModuleCollection modules) {
+        super("Measure object colocalisation",modules);
+    }
 
 
     public interface Measurements {
@@ -37,17 +46,12 @@ public class MeasureObjectColocalisation extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Measure object colocalisation";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -69,7 +73,7 @@ public class MeasureObjectColocalisation extends Module {
             measurePCC(inputObject,image1,image2);
         }
 
-        if (showOutput) objects.showMeasurements(this);
+        if (showOutput) objects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -77,7 +81,10 @@ public class MeasureObjectColocalisation extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(COLOC_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE_1, this));
         parameters.add(new InputImageP(INPUT_IMAGE_2, this));
 
@@ -89,38 +96,38 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);
 
-        objectMeasurementRefs.setAllCalculated(false);
-
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
-        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
-        reference.setImageObjName(inputObjectsName);
-        reference.setCalculated(true);
+        ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputObjectsName);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +
                 "within each \""+inputObjectsName+"\" object between images \""+inputImageName1+"\" and \""+
                 inputImageName2+"\".  PCC values range from -1 to +1, where -1 corresponds to perfect anti-correlation " +
                 "of signal and +1 to perfect correlation.");
+        returnedRefs.add(reference);
 
-        return objectMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

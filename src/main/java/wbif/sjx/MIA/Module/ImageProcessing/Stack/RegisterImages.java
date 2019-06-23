@@ -13,16 +13,19 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Interactable.Interactable;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector;
-import wbif.sjx.MIA.Object.Interactable.PointPairSelector.PointPair;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
+import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -60,6 +63,10 @@ public class RegisterImages extends Module implements Interactable {
 
     private Image inputImage;
     private Image reference;
+
+    public RegisterImages(ModuleCollection modules) {
+        super("Register images",modules);
+    }
 
 
     public interface AlignmentModes {
@@ -135,7 +142,7 @@ public class RegisterImages extends Module implements Interactable {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -156,7 +163,7 @@ public class RegisterImages extends Module implements Interactable {
                 // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
             }
 
@@ -189,6 +196,7 @@ public class RegisterImages extends Module implements Interactable {
                         return;
                     }
                     replaceStack(inputImage, warped, c, tt);
+
                 }
             }
 
@@ -405,6 +413,20 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
+    static Image createOverlay(Image inputImage, Image referenceImage) {
+        // Only create the overlay if the two images have matching dimensions
+        ImagePlus ipl1 = inputImage.getImagePlus();
+        ImagePlus ipl2 = referenceImage.getImagePlus();
+
+        if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
+            String axis = ConcatenateStacks.AxisModes.CHANNEL;
+            return ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
+        }
+
+        return inputImage;
+
+    }
+
     @Override
     public void doAction(Object[] objects) {
         writeMessage("Running test registration");
@@ -449,15 +471,10 @@ public class RegisterImages extends Module implements Interactable {
 
         }
 
-        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
-        concatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
+        ConcatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Register images";
-    }
 
     @Override
     public String getPackageName() {
@@ -465,7 +482,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Uses SIFT image registration toolbox";
     }
 
@@ -475,7 +492,7 @@ public class RegisterImages extends Module implements Interactable {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        inputImage = workspace.getImages().get(inputImageName);
+        inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -519,19 +536,29 @@ public class RegisterImages extends Module implements Interactable {
                 param.minInlierRatio = (float) minInlierRatio;
 
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
-
                 processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference, externalSource);
+
+                if (showOutput) {
+                    if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
+                        createOverlay(inputImage, reference).showImage();
+                    } else {
+                        inputImage.showImage();
+                    }
+                }
+
                 break;
 
             case AlignmentModes.MANUAL:
                 reference = workspace.getImage(referenceImageName);
                 processManual(inputImage,transformationMode,multithread,fillMode,reference);
+
+                if (showOutput) inputImage.showImage();
+
                 break;
         }
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
-        if (showOutput) inputImage.showImage();
 
         return true;
 
@@ -627,35 +654,37 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_Y,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_Y,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_X,outputImageName));
-            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_Y,outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_X).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.TRANSLATE_Y).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SCALE_X).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SCALE_Y).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SHEAR_X).setImageName(outputImageName));
+            returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.SHEAR_Y).setImageName(outputImageName));
 
         }
 
-        return imageMeasurementRefs;
+        return returnedRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

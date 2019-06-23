@@ -20,13 +20,8 @@ public class ProjectImageTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ProjectImage().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ProjectImage().getHelp());
+        assertNotNull(new ProjectImage(null).getDescription());
     }
 
     @Test
@@ -48,7 +43,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -90,7 +85,7 @@ public class ProjectImageTest extends ModuleTest {
         expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -129,7 +124,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -168,7 +163,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -210,7 +205,7 @@ public class ProjectImageTest extends ModuleTest {
         expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -252,7 +247,7 @@ public class ProjectImageTest extends ModuleTest {
         expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -291,7 +286,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -330,7 +325,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -369,7 +364,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -408,7 +403,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
@@ -447,7 +442,7 @@ public class ProjectImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
-        ProjectImage projectImage = new ProjectImage();
+        ProjectImage projectImage = new ProjectImage(null);
         projectImage.initialiseParameters();
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");

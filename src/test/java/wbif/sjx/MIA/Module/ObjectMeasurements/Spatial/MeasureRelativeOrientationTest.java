@@ -19,13 +19,8 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureRelativeOrientation().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureRelativeOrientation().getHelp());
+        assertNotNull(new MeasureRelativeOrientation(null).getDescription());
     }
 
 

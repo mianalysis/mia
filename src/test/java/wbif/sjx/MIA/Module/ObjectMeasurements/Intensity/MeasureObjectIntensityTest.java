@@ -31,14 +31,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectIntensity().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectIntensity().getHelp());
+        assertNotNull(new MeasureObjectIntensity(null).getDescription());
 
     }
 
@@ -64,7 +58,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureObjectIntensity
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity();
+        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
@@ -128,7 +122,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureObjectIntensity
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity();
+        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
@@ -192,7 +186,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising MeasureObjectIntensity
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity();
+        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
@@ -261,7 +255,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         Image intensityImage = new Image(imageName,ipl);
         workspace.addImage(intensityImage);
 
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity();
+        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
@@ -304,7 +298,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         Image intensityImage = new Image(imageName,ipl);
         workspace.addImage(intensityImage);
 
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity();
+        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(null);
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);

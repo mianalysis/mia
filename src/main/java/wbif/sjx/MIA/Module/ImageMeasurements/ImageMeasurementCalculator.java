@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
@@ -14,6 +18,10 @@ public class ImageMeasurementCalculator extends Module {
     public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
     public static final String CALCULATION_MODE = "Calculation mode";
+
+    public ImageMeasurementCalculator(ModuleCollection modules) {
+        super("Image measurement calculator",modules);
+    }
 
 
     public interface CalculationModes {
@@ -68,10 +76,6 @@ public class ImageMeasurementCalculator extends Module {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
-    @Override
-    public String getTitle() {
-        return "Image measurement calculator";
-    }
 
     @Override
     public String getPackageName() {
@@ -79,7 +83,7 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -127,33 +131,31 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        imageMeasurementRefs.setAllCalculated(false);
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         // Creating new MeasurementRef
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
-        MeasurementRef measurementRef = imageMeasurementRefs.getOrPut(measurementName);
-        measurementRef.setImageObjName(inputImageName);
-        measurementRef.setCalculated(true);
-        imageMeasurementRefs.add(measurementRef);
 
-        return imageMeasurementRefs;
+        returnedRefs.add(imageMeasurementRefs.getOrPut(measurementName).setImageName(inputImageName));
+
+        return returnedRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

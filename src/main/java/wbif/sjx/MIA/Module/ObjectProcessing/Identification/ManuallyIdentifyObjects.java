@@ -7,6 +7,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
@@ -15,7 +16,12 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
@@ -35,10 +41,9 @@ import java.util.List;
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;
-    DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
-    JList<ObjRoi> list = new JList<>(listModel);
-    JScrollPane objectsScrollPane = new JScrollPane(list);
-    private final GridBagConstraints objectsC = new GridBagConstraints();
+    private DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
+    private JList<ObjRoi> list = new JList<>(listModel);
+    private JScrollPane objectsScrollPane = new JScrollPane(list);
 
     private Workspace workspace;
     private ImagePlus displayImagePlus;
@@ -65,6 +70,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
+
+    public ManuallyIdentifyObjects(ModuleCollection modules) {
+        super("Manually identify objects",modules);
+    }
 
 
     public interface InterpolationModes {
@@ -142,7 +151,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         objectNumberField = new JTextField();
         c.gridx++;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField,c);
 
@@ -253,17 +262,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
 
     @Override
-    public String getTitle() {
-        return "Manually identify objects";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 
@@ -286,6 +290,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle("Draw objects on this image");
+
+        // Checking if we have a 2D or 3D image
+        twoD = displayImagePlus.getNSlices() == 1;
+
         overlay = displayImagePlus.getOverlay();
         if (overlay == null) {
             overlay = new Overlay();
@@ -294,7 +302,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
-        list.removeAll();
+        listModel.clear();
 
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName);
@@ -359,22 +367,22 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 
@@ -474,6 +482,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         for (int ID:rois.keySet()) {
             ArrayList<ObjRoi> currentRois = rois.get(ID);
 
+            // This Obj may be empty; if so, skip it
+            if (currentRois.size() == 0) continue;
+
             // Creating the new object
             Obj outputObject = new Obj(outputObjectsName, ID, dppXY, dppZ, calibrationUnits, twoD);
             outputObjects.add(outputObject);
@@ -499,9 +510,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
         listModel.addElement(objRoi);
-
-        objectsC.gridy++;
-        objectsC.weighty = objectsC.weighty*1000;
 
         // Ensuring the scrollbar is visible if necessary and moving to the bottom
         JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
@@ -544,116 +552,116 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     void displayObject(ObjRoi objRoi) {
         displayImagePlus.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
     }
-}
 
-class ObjRoi {
-    private final int ID;
-    private final Roi roi;
-    private final int t;
-    private final int z;
+    static class ObjRoi {
+        private final int ID;
+        private final Roi roi;
+        private final int t;
+        private final int z;
 
-    ObjRoi(int ID, Roi roi, int t, int z) {
-        this.ID = ID;
-        this.roi = duplicateRoi(roi);
-        this.t = t;
-        this.z = z;
+        ObjRoi(int ID, Roi roi, int t, int z) {
+            this.ID = ID;
+            this.roi = duplicateRoi(roi);
+            this.t = t;
+            this.z = z;
 
-    }
-
-    public static Roi duplicateRoi(Roi roi) {
-        Roi newRoi;
-        // Need to processAutomatic Roi depending on its type
-        switch (roi.getType()) {
-            case Roi.RECTANGLE:
-                newRoi = new Roi(roi.getBounds());
-                break;
-
-            case Roi.OVAL:
-                Rectangle bounds = roi.getBounds();
-                newRoi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
-                break;
-
-            case Roi.FREEROI:
-            case Roi.POLYGON:
-                PolygonRoi polyRoi = (PolygonRoi) roi;
-                int[] x = polyRoi.getXCoordinates();
-                int[] xx = new int[x.length];
-                for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
-
-                int[] y = polyRoi.getYCoordinates();
-                int[] yy = new int[x.length];
-                for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
-
-                newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
-                break;
-
-            case Roi.FREELINE:
-            case Roi.POLYLINE:
-                polyRoi = (PolygonRoi) roi;
-
-                if (polyRoi.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
-
-                x = polyRoi.getXCoordinates();
-                xx = new int[x.length];
-                for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
-
-                y = polyRoi.getYCoordinates();
-                yy = new int[x.length];
-                for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
-
-                newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
-                break;
-
-            case Roi.LINE:
-                Line line = (Line) roi;
-
-                if (line.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
-
-                newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
-                break;
-
-            case Roi.POINT:
-                PointRoi pointRoi = (PointRoi) roi;
-
-                Point[] points = pointRoi.getContainedPoints();
-                int[] xxx = new int[points.length];
-                int[] yyy = new int[points.length];
-                for (int i=0;i<points.length;i++) {
-                    xxx[i] = points[i].x;
-                    yyy[i] = points[i].y;
-                }
-
-                newRoi = new PointRoi(xxx,yyy,points.length);
-                break;
-
-            default:
-                System.err.println("ROI type unsupported.  Using bounding box for selection.");
-                newRoi = new Roi(roi.getBounds());
-                break;
         }
 
-        return newRoi;
+        public static Roi duplicateRoi(Roi roi) {
+            Roi newRoi;
+            // Need to processAutomatic Roi depending on its type
+            switch (roi.getType()) {
+                case Roi.RECTANGLE:
+                    newRoi = new Roi(roi.getBounds());
+                    break;
 
-    }
+                case Roi.OVAL:
+                    Rectangle bounds = roi.getBounds();
+                    newRoi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
+                    break;
 
-    public int getID() {
-        return ID;
-    }
+                case Roi.FREEROI:
+                case Roi.POLYGON:
+                    PolygonRoi polyRoi = (PolygonRoi) roi;
+                    int[] x = polyRoi.getXCoordinates();
+                    int[] xx = new int[x.length];
+                    for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
 
-    public Roi getRoi() {
-        return roi;
-    }
+                    int[] y = polyRoi.getYCoordinates();
+                    int[] yy = new int[x.length];
+                    for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
 
-    public int getT() {
-        return t;
-    }
+                    newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
+                    break;
 
-    public int getZ() {
-        return z;
-    }
+                case Roi.FREELINE:
+                case Roi.POLYLINE:
+                    polyRoi = (PolygonRoi) roi;
 
-    @Override
-    public String toString() {
-        return "Object "+String.valueOf(ID)+", T = "+(t+1)+", Z = "+z;
+                    if (polyRoi.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.",Log.Level.WARNING);
+
+                    x = polyRoi.getXCoordinates();
+                    xx = new int[x.length];
+                    for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
+
+                    y = polyRoi.getYCoordinates();
+                    yy = new int[x.length];
+                    for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
+
+                    newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
+                    break;
+
+                case Roi.LINE:
+                    Line line = (Line) roi;
+
+                    if (line.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.",Log.Level.WARNING);
+
+                    newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
+                    break;
+
+                case Roi.POINT:
+                    PointRoi pointRoi = (PointRoi) roi;
+
+                    Point[] points = pointRoi.getContainedPoints();
+                    int[] xxx = new int[points.length];
+                    int[] yyy = new int[points.length];
+                    for (int i=0;i<points.length;i++) {
+                        xxx[i] = points[i].x;
+                        yyy[i] = points[i].y;
+                    }
+
+                    newRoi = new PointRoi(xxx,yyy,points.length);
+                    break;
+
+                default:
+                    MIA.log.write("ROI type unsupported.  Using bounding box for selection.",Log.Level.WARNING);
+                    newRoi = new Roi(roi.getBounds());
+                    break;
+            }
+
+            return newRoi;
+
+        }
+
+        public int getID() {
+            return ID;
+        }
+
+        public Roi getRoi() {
+            return roi;
+        }
+
+        public int getT() {
+            return t;
+        }
+
+        public int getZ() {
+            return z;
+        }
+
+        @Override
+        public String toString() {
+            return "Object "+String.valueOf(ID)+", T = "+(t+1)+", Z = "+z;
+        }
     }
 }

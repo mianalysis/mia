@@ -29,7 +29,11 @@ public abstract class FileFolderType extends Parameter {
         this.path= path;
     }
 
-    public abstract boolean isDirectory();
+    public boolean isDirectory() {
+        String fileFolderPath = getPath();
+        if (fileFolderPath == null) return false;
+        return new File(fileFolderPath).isDirectory();
+    }
 
     @Override
     public <T> T getValue() {
@@ -38,17 +42,26 @@ public abstract class FileFolderType extends Parameter {
 
     @Override
     public <T> void setValue(T value) {
-        path = (String) value;
+        setPath((String) value);
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return path;
     }
 
     @Override
+    public void setValueFromString(String string) {
+        setPath(string);
+    }
+
+    @Override
     public boolean verify() {
+        // Checking a file has been specified
+        if (path == null || path.equals("")) return false;
+
         // Checking the file exists
         return new File(path).exists();
+
     }
 }

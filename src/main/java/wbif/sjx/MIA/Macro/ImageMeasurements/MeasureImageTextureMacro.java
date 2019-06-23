@@ -22,7 +22,7 @@ public class MeasureImageTextureMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        MeasureImageTexture measureImageTexture = new MeasureImageTexture();
+        MeasureImageTexture measureImageTexture = new MeasureImageTexture(workspace.getAnalysis().getModules());
 
         measureImageTexture.updateParameterValue(MeasureImageTexture.INPUT_IMAGE,objects[0]);
         measureImageTexture.updateParameterValue(MeasureImageTexture.X_OFFSET,(int) Math.round((double) objects[1]));

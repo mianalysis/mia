@@ -80,6 +80,47 @@ public class EvalButton extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        int idx = GUI.getModules().indexOf(module);
+
+        // If it's currently evaluating, this will kill the thread
+        if (idx == GUI.getModuleBeingEval()) {
+            System.out.println("Stopping");
+            GUI.setModuleBeingEval(-1);
+            GUI.updateModuleStates(false);
+            t.stop();
+            return;
+        }
+
+        // If the module is ready to be evaluated
+        if (idx <= GUI.getLastModuleEval()) {
+            t = new Thread(() -> {
+                try {
+                    // For some reason it's necessary to have a brief pause here to prevent the module executing twice
+                    Thread.sleep(1);
+                    evaluateModule(module);
+                } catch (Exception e1) {
+                    GUI.setModuleBeingEval(-1);
+                    e1.printStackTrace();
+                }
+            });
+            t.start();
+
+        } else {
+            // If multiple modules will need to be evaluated first
+            t = new Thread(() -> {
+                for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
+                    Module module = GUI.getModules().get(i);
+                    if (module.isEnabled() && module.isRunnable()) try {
+                        evaluateModule(module);
+                    } catch (Exception e1) {
+                        GUI.setModuleBeingEval(-1);
+                        e1.printStackTrace();
+                        Thread.currentThread().getThreadGroup().interrupt();
+                    }
+                }
+            });
+            t.start();
+        }
     }
 
     public void evaluateModule(Module module) {
@@ -89,14 +130,15 @@ public class EvalButton extends JButton implements ActionListener {
         // Setting the index to the previous module.  This will make the currently-evaluated module go red
         GUI.setLastModuleEval(modules.indexOf(module) - 1);
         GUI.setModuleBeingEval(modules.indexOf(module));
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(false);
 
         Module.setVerbose(true);
+        testWorkspace.setAnalysis(GUI.getAnalysis());
         module.execute(testWorkspace);
         GUI.setLastModuleEval(modules.indexOf(module));
         GUI.setModuleBeingEval(-1);
 
-        GUI.updateModuleStates();
+        GUI.updateModuleStates(false);
 
     }
 }

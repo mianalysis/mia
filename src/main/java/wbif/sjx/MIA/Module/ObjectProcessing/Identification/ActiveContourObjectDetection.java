@@ -6,10 +6,14 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
@@ -42,11 +46,10 @@ public class ActiveContourObjectDetection extends Module {
     public static final String NUMBER_OF_ITERATIONS = "Maximum nmber of iterations";
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
-
-    @Override
-    public String getTitle() {
-        return "Active contour-based detection";
+    public ActiveContourObjectDetection(ModuleCollection modules) {
+        super("Active contour-based detection",modules);
     }
+
 
     @Override
     public String getPackageName() {
@@ -54,7 +57,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -170,7 +173,7 @@ public class ActiveContourObjectDetection extends Module {
                     inputObject.clearPoints();
                     inputObject.addPointsFromRoi(newRoi,z);
                 } else {
-                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
+                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi,z);
                     outputObjects.add(outputObject);
@@ -186,17 +189,12 @@ public class ActiveContourObjectDetection extends Module {
         if (showOutput) {
             // Removing old overlay
             dispIpl.setOverlay(null);
-            AddObjectsOverlay addObjectsOverlay = new AddObjectsOverlay();
-            try {
-                if (updateInputObjects) {
-                    HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
-                    addObjectsOverlay.createOutlineOverlay(dispIpl, inputObjects, hues, false, 0.5, false);
-                } else {
-                    HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
-                    addObjectsOverlay.createOutlineOverlay(dispIpl, outputObjects, hues, false, 0.5, false);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (updateInputObjects) {
+                HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
+                AddObjectOutline.addOverlay(dispIpl,inputObjects,0.5,hues,false,true);
+            } else {
+                HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
+                AddObjectOutline.addOverlay(dispIpl,outputObjects,0.5,hues,false,true);
             }
 
             dispIpl.setPosition(1,1,1);
@@ -252,22 +250,22 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

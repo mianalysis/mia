@@ -5,6 +5,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Filters.CombingCorrector;
 
 public class CombingCorrection extends Module {
@@ -13,11 +17,10 @@ public class CombingCorrection extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OFFSET = "Offset (px)";
 
-
-    @Override
-    public String getTitle() {
-        return "Combing correction";
+    public CombingCorrection(ModuleCollection modules) {
+        super("Combing correction",modules);
     }
+
 
     @Override
     public String getPackageName() {
@@ -25,7 +28,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Applies an integer pixel row shift to every other row (starting with top-most row).";
     }
 
@@ -87,22 +90,22 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

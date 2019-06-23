@@ -27,13 +27,8 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectCurvature().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectCurvature().getHelp());
+        assertNotNull(new MeasureObjectCurvature(null).getDescription());
     }
 
     @Test
@@ -57,7 +52,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature();
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(null);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -110,7 +105,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature();
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(null);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -172,7 +167,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature();
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(null);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);

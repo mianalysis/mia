@@ -4,6 +4,10 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -18,6 +22,10 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REFERENCE_VALUE = "Reference value";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
+
+    public ConditionalAnalysisTermination(ModuleCollection modules) {
+        super("Conditional analysis termination",modules);
+    }
 
 
     public interface TestModes {
@@ -83,17 +91,12 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Conditional analysis termination";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.MISCELLANEOUS;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -182,22 +185,22 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 }

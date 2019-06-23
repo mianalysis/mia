@@ -1,14 +1,17 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Process.Logging.Log;
 
-import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -16,10 +19,8 @@ import java.io.Serializable;
  * Abstract Analysis-type class, which will be extended by particular analyses
  *
  */
-public class Analysis implements Serializable {
+public class Analysis {
     public ModuleCollection modules = new ModuleCollection();
-    public InputControl inputControl = new InputControl();
-    public OutputControl outputControl = new OutputControl();
     private boolean shutdown = false;
     private String analysisFilename = "";
 
@@ -51,9 +52,9 @@ public class Analysis implements Serializable {
             if (module.isEnabled() && module.isRunnable()) {
                 boolean status = module.execute(workspace);
                 if (!status) {
-                    // The module failed or requested analysis termination.  Add this message to the log
-                    System.err.println("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
-                            "\" by module \""+module.getTitle()+"\" (\""+module.getNickname()+"\").");
+                    // The module failed or requested analysis termination.  Add this message to the write
+                    MIA.log.write("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
+                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").",Log.Level.WARNING);
 
                     // End the analysis generateModuleList
                     break;
@@ -72,24 +73,26 @@ public class Analysis implements Serializable {
         workspace.clearAllImages(true);
         workspace.clearAllObjects(true);
 
+        // If enabled, write the current memory usage to the console
+        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
+            double totalMemory = Runtime.getRuntime().totalMemory();
+            double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+            DecimalFormat df = new DecimalFormat("#.0");
+
+            String memoryMessage = df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
+                    ", analysis complete"+
+                    ", file \""+workspace.getMetadata().getFile() +
+                    ", time "+dateTime;
+
+            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+
+        }
+
         return true;
 
-    }
-
-    public InputControl getInputControl() {
-        return inputControl;
-    }
-
-    public void setInputControl(InputControl inputControl) {
-        this.inputControl = inputControl;
-    }
-
-    public OutputControl getOutputControl() {
-        return outputControl;
-    }
-
-    public void setOutputControl(OutputControl outputControl) {
-        this.outputControl = outputControl;
     }
 
     public ModuleCollection getModules() {
@@ -113,5 +116,10 @@ public class Analysis implements Serializable {
 
     public void setAnalysisFilename(String analysisFilename) {
         this.analysisFilename = analysisFilename;
+    }
+
+    public boolean hasVisibleParameters() {
+        if (MIA.getGlobalVariables().hasVisibleParameters()) return true;
+        return (modules.hasVisibleParameters());
     }
 }

@@ -15,6 +15,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 
@@ -67,6 +71,10 @@ public class AddObjectsOverlay extends Module {
     public static final String LINE_WIDTH = "Line width";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    public AddObjectsOverlay(ModuleCollection modules) {
+        super("Add overlay",modules);
+    }
 
 
     public interface OrientationModes {
@@ -350,7 +358,6 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
-                System.out.println(parentObjectsForColourName+"_"+measurementForColour);
                 return ColourFactory.getParentMeasurementValueHues(inputObjects,parentObjectsForColourName,measurementForColour,true);
         }
     }
@@ -620,17 +627,12 @@ public class AddObjectsOverlay extends Module {
 
 
     @Override
-    public String getTitle() {
-        return "Add overlay";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -947,22 +949,22 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

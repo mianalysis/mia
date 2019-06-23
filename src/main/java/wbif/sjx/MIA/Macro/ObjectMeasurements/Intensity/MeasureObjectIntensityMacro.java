@@ -23,7 +23,7 @@ public class MeasureObjectIntensityMacro extends MacroOperation {
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
-        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity();
+        MeasureObjectIntensity measureObjectIntensity = new MeasureObjectIntensity(workspace.getAnalysis().getModules());
 
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,objects[0]);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,objects[1]);

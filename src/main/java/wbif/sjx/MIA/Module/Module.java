@@ -3,23 +3,38 @@
 package wbif.sjx.MIA.Module;
 
 import ij.Prefs;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Process.Logging.Log;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module implements Comparable {
+public abstract class Module extends Ref implements Comparable {
+    protected ModuleCollection modules;
+
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
-    protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
+    protected ImageMeasurementRefCollection imageMeasurementRefs = new ImageMeasurementRefCollection();
+    protected ObjMeasurementRefCollection objectMeasurementRefs = new ObjMeasurementRefCollection();
+    protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
+    protected RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
 
     private static boolean verbose = false;
-    private String nickname;
     private String notes = "";
     private boolean enabled = true;
-    private String moduleName;
     private String packageName;
     private boolean canBeDisabled = false;
     protected boolean showOutput = false;
@@ -28,22 +43,16 @@ public abstract class Module implements Comparable {
 
     // CONSTRUCTOR
 
-    public Module() {
-        moduleName = getTitle();
-        nickname = moduleName;
-
+    public Module(String name, ModuleCollection modules) {
+        super(name);
+        this.modules = modules;
         initialiseParameters();
-
     }
 
 
     // PUBLIC METHODS
 
-    public abstract String getTitle();
-
     public abstract String getPackageName();
-
-    public abstract String getHelp();
 
     protected abstract boolean process(Workspace workspace);
 
@@ -60,6 +69,24 @@ public abstract class Module implements Comparable {
             writeMessage("Completed");
         } else {
             writeMessage("Did not complete");
+        }
+
+        // If enabled, write the current memory usage to the console
+        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
+            double totalMemory = Runtime.getRuntime().totalMemory();
+            double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+            DecimalFormat df = new DecimalFormat("#.0");
+
+            String memoryMessage = df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
+                    ", module \""+getName()+"\"" +
+                    ", file \""+workspace.getMetadata().getFile() +
+                    ", time "+dateTime;
+
+            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+
         }
 
         return status;
@@ -81,24 +108,45 @@ public abstract class Module implements Comparable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
+    public abstract ImageMeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
+    public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
-    public abstract MetadataRefCollection updateAndGetImageMetadataReferences();
+    public void addObjectMeasurementRef(ObjMeasurementRef ref) {
+        objectMeasurementRefs.add(ref);
+    }
 
-    public MeasurementRef getImageMeasurementRef(String name) {
+    public abstract MetadataRefCollection updateAndGetMetadataReferences();
+
+    public abstract RelationshipRefCollection updateAndGetRelationships();
+
+    public ImageMeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);
     }
 
-    public MeasurementRef getObjectMeasurementRef(String name) {
+    public void addImageMeasurementRef(ImageMeasurementRef ref) {
+        imageMeasurementRefs.add(ref);
+    }
+
+    public ObjMeasurementRef getObjectMeasurementRef(String name) {
         return objectMeasurementRefs.getOrPut(name);
     }
 
-    /*
-     * Returns a LinkedHashMap containing the parents (key) and their children (value)
-     */
-    public abstract RelationshipCollection updateAndGetRelationships();
+    public MetadataRef getMetadataRef(String name) {
+        return metadataRefs.getOrPut(name);
+    }
+
+    public void addMetadataRef(MetadataRef ref) {
+        metadataRefs.add(ref);
+    }
+
+    public RelationshipRef getRelationshipRef(String parentName, String childName) {
+        return relationshipRefs.getOrPut(parentName,childName);
+    }
+
+    public void addRelationshipRef(RelationshipRef ref) {
+        relationshipRefs.add(ref);
+    }
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);
@@ -123,7 +171,7 @@ public abstract class Module implements Comparable {
     }
 
     public boolean invalidParameterIsVisible() {
-        for (Parameter parameter:updateAndGetParameters()) {
+        for (Parameter parameter:updateAndGetParameters().values()) {
             if (!parameter.isValid() && parameter.isVisible()) return true;
         }
 
@@ -131,16 +179,34 @@ public abstract class Module implements Comparable {
 
     }
 
+    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
+        // If the current module is the cutoff the loop terminates.  This prevents the system offering measurements
+        // that are created after this module or are currently unavailable.
+        if (!isEnabled()) return null;
+        if (!isRunnable()) return null;
+
+        // Running through all parameters, adding all images to the list
+        LinkedHashSet<T> parameters = new LinkedHashSet<>();
+        ParameterCollection currParameters = updateAndGetParameters();
+        for (Parameter currParameter : currParameters.values()) {
+            if (type.isInstance(currParameter)) {
+                parameters.add((T) currParameter);
+            }
+        }
+
+        return parameters;
+
+    }
+
+    public ModuleCollection getModules() {
+        return modules;
+    }
+
+    public void setModules(ModuleCollection modules) {
+        this.modules = modules;
+    }
 
     // PRIVATE METHODS
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
 
     public String getNotes() {
         return notes;
@@ -161,11 +227,11 @@ public abstract class Module implements Comparable {
     }
 
     protected void writeMessage(String message) {
-        if (verbose) new Thread(() -> System.out.println("[" + moduleName + "] "+message)).start();
+        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
     }
 
-    protected static void writeMessage(String message, String moduleName) {
-        if (verbose) new Thread(() -> System.out.println("[" + moduleName + "] "+message)).start();
+    protected static void writeMessage(String message, String name) {
+        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
     }
 
     public boolean canBeDisabled() {
@@ -200,9 +266,39 @@ public abstract class Module implements Comparable {
         this.runnable = runnable;
     }
 
+    public boolean hasVisibleParameters() {
+        return updateAndGetParameters().hasVisibleParameters();
+
+    }
+
     @Override
     public int compareTo(Object o) {
-        return getTitle().compareTo(((Module) o).getTitle());
+        return getName().compareTo(((Module) o).getNotes());
+
+    }
+
+    @Override
+    public void appendXMLAttributes(Element element) {
+        super.appendXMLAttributes(element);
+
+        element.setAttribute("CLASSNAME",getClass().getName());
+        element.setAttribute("ENABLED",String.valueOf(enabled));
+        element.setAttribute("DISABLEABLE",String.valueOf(canBeDisabled));
+        element.setAttribute("SHOW_OUTPUT",String.valueOf(showOutput));
+        element.setAttribute("NOTES",notes);
+
+    }
+
+    @Override
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
+
+        NamedNodeMap map = node.getAttributes();
+
+        this.enabled = Boolean.parseBoolean(map.getNamedItem("ENABLED").getNodeValue());
+        this.canBeDisabled = Boolean.parseBoolean(map.getNamedItem("DISABLEABLE").getNodeValue());
+        this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
+        this.notes = map.getNamedItem("NOTES").getNodeValue();
 
     }
 

@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class VideoLoaderTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new VideoLoader().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new VideoLoader().getHelp());
+        assertNotNull(new VideoLoader(null).getDescription());
     }
 }

@@ -14,11 +14,19 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 public class DistanceMap extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
+
+    public DistanceMap(ModuleCollection modules) {
+        super("Calculate distance map",modules);
+    }
 
 
     public static ImagePlus getDistanceMap(ImagePlus ipl, boolean matchZToXY) {
@@ -48,10 +56,6 @@ public class DistanceMap extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Calculate distance map";
-    }
 
     @Override
     public String getPackageName() {
@@ -59,7 +63,7 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return null;
     }
 
@@ -102,22 +106,22 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

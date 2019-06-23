@@ -42,7 +42,7 @@ public class OutputObjectsP extends TextType {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return objectsName;
     }
 

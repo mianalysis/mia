@@ -17,7 +17,7 @@ public class MeasurementTest {
 
     @Test
     public void testConstructionNameSource() {
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         Measurement measurement = new Measurement("Meas 1",filterImage);
 
         assertEquals("Meas 1", measurement.getName());
@@ -36,7 +36,7 @@ public class MeasurementTest {
 
     @Test
     public void testConstructionNameValueSource() {
-        FilterImage filterImage = new FilterImage();
+        FilterImage filterImage = new FilterImage(null);
         Measurement measurement = new Measurement("Meas 1",-4.2,filterImage);
 
         assertEquals("Meas 1", measurement.getName());

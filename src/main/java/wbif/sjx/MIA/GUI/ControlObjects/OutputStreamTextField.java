@@ -18,7 +18,7 @@ public class OutputStreamTextField extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        // If the current character is a return line don't add anything to the
+        // If the current character is a return line don't addRef anything to the
         if (b == '\n') {
             currText = "";
 

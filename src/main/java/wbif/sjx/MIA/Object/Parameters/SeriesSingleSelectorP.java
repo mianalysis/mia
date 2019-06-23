@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.SeriesSelector;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -10,7 +10,15 @@ public class SeriesSingleSelectorP extends IntegerP {
         super(name, module, value);
     }
 
+    public SeriesSingleSelectorP(String name, Module module, String value) {
+        super(name, module, value);
+    }
+
     public SeriesSingleSelectorP(String name, Module module, int value, String description) {
+        super(name, module, value, description);
+    }
+
+    public SeriesSingleSelectorP(String name, Module module, String value, String description) {
         super(name, module, value, description);
     }
 

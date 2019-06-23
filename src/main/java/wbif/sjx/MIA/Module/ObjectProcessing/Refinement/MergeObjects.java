@@ -6,7 +6,12 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.util.HashMap;
@@ -15,15 +20,15 @@ import java.util.HashMap;
  * Created by sc13967 on 31/01/2018.
  */
 public class MergeObjects extends Module {
+    public static final String INPUT_SEPARATOR = "Objects input/output";
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-
-    @Override
-    public String getTitle() {
-        return "Merge objects";
+    public MergeObjects(ModuleCollection modules) {
+        super("Merge objects",modules);
     }
+
 
     @Override
     public String getPackageName() {
@@ -31,7 +36,7 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -47,7 +52,7 @@ public class MergeObjects extends Module {
 
         // Doing object merging
         for (Obj obj1:inputObjects1.values()) {
-            int ID = outputObjects.getNextID();
+            int ID = outputObjects.getAndIncrementID();
             double distXY = obj1.getDistPerPxXY();
             double distZ = obj1.getDistPerPxZ();
             String units = obj1.getCalibratedUnits();
@@ -61,7 +66,7 @@ public class MergeObjects extends Module {
         }
 
         for (Obj obj2:inputObjects2.values()) {
-            int ID = outputObjects.getNextID();
+            int ID = outputObjects.getAndIncrementID();
             double distXY = obj2.getDistPerPxXY();
             double distZ = obj2.getDistPerPxZ();
             String units = obj2.getCalibratedUnits();
@@ -89,6 +94,7 @@ public class MergeObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
@@ -101,22 +107,22 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

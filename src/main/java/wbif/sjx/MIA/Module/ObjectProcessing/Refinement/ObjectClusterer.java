@@ -18,9 +18,13 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -43,6 +47,10 @@ public class ObjectClusterer extends Module {
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
+    public ObjectClusterer(ModuleCollection modules) {
+        super("Object clustering",modules);
+    }
+
     public interface ClusteringAlgorithms {
         String KMEANSPLUSPLUS = "KMeans++";
         String DBSCAN = "DBSCAN";
@@ -61,7 +69,7 @@ public class ObjectClusterer extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits,is2D);
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,is2D);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -87,7 +95,7 @@ public class ObjectClusterer extends Module {
 
         // Assigning relationships between points and clusters
         for (Cluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits,is2D);
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,is2D);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -137,11 +145,6 @@ public class ObjectClusterer extends Module {
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "Object clustering";
-
-    }
 
     @Override
     public String getPackageName() {
@@ -149,7 +152,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "Clusters objects using K-Means and/or DB-SCAN algorithms." +
                 "\nUses Apache Commons Math library for clustering.";
 
@@ -230,11 +233,8 @@ public class ObjectClusterer extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
 
             // Adding overlay and displaying image
-            try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2,false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            AddObjectOutline.addOverlay(dispIpl,inputObjects,0.2,hues,false,true);
+
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
             dispIpl.show();
@@ -283,31 +283,30 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
-        RelationshipCollection relationships = new RelationshipCollection();
+    public RelationshipRefCollection updateAndGetRelationships() {
+        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
 
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        relationships.addRelationship(clusterObjectsName,inputObjectsName);
+        returnedRelationships.add(relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName));
 
-        return relationships;
+        return returnedRelationships;
 
     }
-
 }

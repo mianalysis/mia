@@ -7,12 +7,7 @@ import static org.junit.Assert.*;
 public class UnwarpImagesTest extends ModuleTest {
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new UnwarpImages().getTitle());
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new UnwarpImages().getHelp());
+        assertNotNull(new UnwarpImages(null).getDescription());
     }
 }

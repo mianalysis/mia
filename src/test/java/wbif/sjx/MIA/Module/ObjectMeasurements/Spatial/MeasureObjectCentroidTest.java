@@ -24,14 +24,8 @@ public class MeasureObjectCentroidTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new MeasureObjectCentroid().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new MeasureObjectCentroid().getHelp());
+        assertNotNull(new MeasureObjectCentroid(null).getDescription());
 
     }
 
@@ -51,7 +45,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectCentroid
-        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid();
+        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(null);
         measureObjectCentroid.initialiseParameters();
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS,inputObjectsName);
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.CENTROID_METHOD,MeasureObjectCentroid.Methods.MEAN);
@@ -93,7 +87,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectCentroid
-        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid();
+        MeasureObjectCentroid measureObjectCentroid = new MeasureObjectCentroid(null);
         measureObjectCentroid.initialiseParameters();
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.INPUT_OBJECTS,inputObjectsName);
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.CENTROID_METHOD,MeasureObjectCentroid.Methods.MEDIAN);

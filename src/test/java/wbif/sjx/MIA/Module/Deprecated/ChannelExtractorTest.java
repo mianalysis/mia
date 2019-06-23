@@ -23,14 +23,8 @@ public class ChannelExtractorTest extends ModuleTest {
     }
 
     @Override
-    public void testGetTitle() {
-        assertNotNull(new ChannelExtractor().getTitle());
-
-    }
-
-    @Override
     public void testGetHelp() {
-        assertNotNull(new ChannelExtractor().getHelp());
+        assertNotNull(new ChannelExtractor(null).getDescription());
 
     }
 
@@ -54,7 +48,7 @@ public class ChannelExtractorTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
-        ChannelExtractor channelExtractor = new ChannelExtractor();
+        ChannelExtractor channelExtractor = new ChannelExtractor(null);
         channelExtractor.initialiseParameters();
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
@@ -93,7 +87,7 @@ public class ChannelExtractorTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
-        ChannelExtractor channelExtractor = new ChannelExtractor();
+        ChannelExtractor channelExtractor = new ChannelExtractor(null);
         channelExtractor.initialiseParameters();
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
@@ -133,7 +127,7 @@ public class ChannelExtractorTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
-        ChannelExtractor channelExtractor = new ChannelExtractor();
+        ChannelExtractor channelExtractor = new ChannelExtractor(null);
         channelExtractor.initialiseParameters();
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
@@ -173,7 +167,7 @@ public class ChannelExtractorTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
-        ChannelExtractor channelExtractor = new ChannelExtractor();
+        ChannelExtractor channelExtractor = new ChannelExtractor(null);
         channelExtractor.initialiseParameters();
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
@@ -213,7 +207,7 @@ public class ChannelExtractorTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
-        ChannelExtractor channelExtractor = new ChannelExtractor();
+        ChannelExtractor channelExtractor = new ChannelExtractor(null);
         channelExtractor.initialiseParameters();
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
@@ -253,7 +247,7 @@ public class ChannelExtractorTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
-        ChannelExtractor channelExtractor = new ChannelExtractor();
+        ChannelExtractor channelExtractor = new ChannelExtractor(null);
         channelExtractor.initialiseParameters();
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");

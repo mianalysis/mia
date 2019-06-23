@@ -3,8 +3,9 @@
 package wbif.sjx.MIA.Process;
 
 import ij.Prefs;
-import wbif.sjx.MIA.GUI.InputOutput.InputControl;
-import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -14,11 +15,16 @@ import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.MIA.Process.Exporting.Exporter;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -52,10 +58,13 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public void run(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
-        shutdownEarly = false;
-        String exportMode = ((ChoiceP) analysis.getOutputControl().getParameter(OutputControl.EXPORT_MODE)).getChoice();
+    public void run(Analysis analysis, Exporter exporter, String exportName) throws IOException, InterruptedException {
+        MIA.log.clearLog();
 
+        shutdownEarly = false;
+
+        OutputControl outputControl = analysis.getModules().getOutputControl();
+        String exportMode = ((ChoiceP) outputControl.getParameter(OutputControl.EXPORT_MODE)).getChoice();
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
         // The protocol to generateModuleList will depend on if a single file or a folder was selected
@@ -64,7 +73,7 @@ public class BatchProcessor extends FileCrawler {
 
             if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
                 System.out.println("Exporting results to spreadsheet");
-                exporter.exportResults(workspaces, analysis);
+                if (exporter != null) exporter.exportResults(workspaces, analysis);
             }
 
         } else {
@@ -75,7 +84,7 @@ public class BatchProcessor extends FileCrawler {
                 case OutputControl.ExportModes.ALL_TOGETHER:
                 case OutputControl.ExportModes.GROUP_BY_METADATA:
                     System.out.println("Exporting results to spreadsheet");
-                    exporter.exportResults(workspaces,analysis);
+                    if (exporter != null) exporter.exportResults(workspaces,analysis);
                     break;
             }
         }
@@ -89,15 +98,17 @@ public class BatchProcessor extends FileCrawler {
 
     private void runParallel(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException {
         File next = getNextValidFileInStructure();
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
 
-        boolean continuousExport = ((BooleanP) analysis.getOutputControl().getParameter(OutputControl.CONTINUOUS_DATA_EXPORT)).isSelected();
-        int saveNFiles = ((IntegerP) analysis.getOutputControl().getParameter(OutputControl.SAVE_EVERY_N)).getValue();
-        String exportMode = ((ChoiceP) analysis.getOutputControl().getParameter(OutputControl.EXPORT_MODE)).getChoice();
+        boolean continuousExport = ((BooleanP) outputControl.getParameter(OutputControl.CONTINUOUS_DATA_EXPORT)).isSelected();
+        int saveNFiles = ((IntegerP) outputControl.getParameter(OutputControl.SAVE_EVERY_N)).getValue();
+        String exportMode = ((ChoiceP) outputControl.getParameter(OutputControl.EXPORT_MODE)).getChoice();
 
         Module.setVerbose(false);
 
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
-        int nSimultaneousJobs = ((IntegerP) analysis.getInputControl().getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
+        int nSimultaneousJobs = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         if (nSimultaneousJobs != 1) {
             int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
             Prefs.setThreads(nThreads);
@@ -123,7 +134,7 @@ public class BatchProcessor extends FileCrawler {
             }
 
             // For the current file, determining how many series to processAutomatic (and which ones)
-            TreeMap<Integer,String> seriesNumbers = analysis.getInputControl().getSeriesNumbers(next);
+            TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(next);
 
             // Iterating over all series to analyse, adding each one as a new workspace
             for (int seriesNumber:seriesNumbers.keySet()) {
@@ -197,7 +208,8 @@ public class BatchProcessor extends FileCrawler {
         pool = new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         // For the current file, determining how many series to processAutomatic (and which ones)
-        TreeMap<Integer,String> seriesNumbers = analysis.getInputControl().getSeriesNumbers(rootFolder.getFolderAsFile());
+        InputControl inputControl = analysis.getModules().getInputControl();
+        TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder.getFolderAsFile());
 
         // Only set verbose if a single series is being processed
         Module.setVerbose(seriesNumbers.size() == 1);
@@ -205,6 +217,9 @@ public class BatchProcessor extends FileCrawler {
         // Iterating over all series to analyse, adding each one as a new workspace
         for (int seriesNumber:seriesNumbers.keySet()) {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
+
+            // Setting a reference to the analysis (this may be wanted by certain modules to check input/output options)
+            workspace.setAnalysis(analysis);
             String seriesName = seriesNumbers.get(seriesNumber);
             if (seriesName.equals("")) seriesName = "FILE: "+rootFolder.getFolderAsFile().getName();
             workspace.getMetadata().setSeriesName(seriesName);
@@ -215,6 +230,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     analysis.execute(workspace);
+
                 } catch (Throwable t) {
                     t.printStackTrace(System.err);
                 }
@@ -232,6 +248,7 @@ public class BatchProcessor extends FileCrawler {
 
                 // Clearing images from the workspace to prevent memory leak
                 workspace.clearAllImages(true);
+                workspace.clearAllObjects(true);
 
             };
 

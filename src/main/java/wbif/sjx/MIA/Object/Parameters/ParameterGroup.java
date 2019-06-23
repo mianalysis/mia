@@ -1,11 +1,14 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControl;
+import org.w3c.dom.*;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.AddParametersButton;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 import java.util.LinkedHashSet;
+
+import static wbif.sjx.MIA.Process.AnalysisHandling.AnalysisWriter.prepareRefsXML;
 
 /**
  * The value for this parameter is the number of collections that have been created.  The value source is a comma,
@@ -58,12 +61,21 @@ public class ParameterGroup extends Parameter {
     public ParameterCollection addParameters() {
         // Create new copy of template collections
         ParameterCollection newParameters = new ParameterCollection();
-        for (Parameter templateParameter:templateParameters) {
-            newParameters.add(templateParameter.duplicate());
+        for (Parameter templateParameter:templateParameters.values()) {
+            Parameter newParameter = templateParameter.duplicate();
+
+            // New parameters should inherit the visibility of the addRef button
+            newParameter.setVisible(isVisible());
+
+            // Adding parameter to the collection
+            newParameters.add(newParameter);
+
         }
 
         // Adding the necessary RemoveParameter Parameter
-        newParameters.add(new RemoveParameters("Remove collections",module,this,newParameters));
+        RemoveParameters removeParameters = new RemoveParameters("Remove collections",module,this,newParameters);
+        removeParameters.setVisible(isVisible());
+        newParameters.add(removeParameters);
 
         collections.add(newParameters);
 
@@ -99,15 +111,20 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    public String getValueAsString() {
+    public String getRawStringValue() {
         return "";
+    }
+
+    @Override
+    public void setValueFromString(String string) {
+
     }
 
     @Override
     public boolean verify() {
         boolean runnable = true;
         for (ParameterCollection collection: collections) {
-            for (Parameter parameter:collection) {
+            for (Parameter parameter:collection.values()) {
                 boolean currentRunnable = parameter.verify();
                 parameter.setValid(currentRunnable);
                 if (!currentRunnable && runnable) runnable = false;
@@ -131,5 +148,52 @@ public class ParameterGroup extends Parameter {
 
     public ParameterCollection getTemplateParameters() {
         return templateParameters;
+    }
+
+    @Override
+    public void appendXMLAttributes(Element element) {
+        super.appendXMLAttributes(element);
+
+        Document doc = element.getOwnerDocument();
+        Element collectionElement = doc.createElement("COLLECTION");
+
+        for (ParameterCollection collection:collections) {
+            Element paramElement = doc.createElement("PARAMS");
+
+            collectionElement.appendChild(prepareRefsXML(doc,paramElement,collection,"PARAM"));
+
+        }
+
+        element.appendChild(collectionElement);
+
+    }
+
+    @Override
+    public void setAttributesFromXML(Node node) {
+        super.setAttributesFromXML(node);
+
+        // If there are no collections, skip this
+        if (node.getChildNodes().item(0) == null) return;
+
+        NodeList collectionNodes = node.getChildNodes().item(0).getChildNodes();
+
+        // Resetting the collections
+        removeAllParameters();
+
+        // Iterating over each parameter collection
+        for (int i=0;i<collectionNodes.getLength();i++) {
+            ParameterCollection newParameters = addParameters();
+
+            NodeList newParametersNodes = collectionNodes.item(i).getChildNodes();
+
+            // Iterating over each parameter in this parameter collection
+            for (int j=0;j<newParametersNodes.getLength();j++) {
+                Node newParametersNode = newParametersNodes.item(j);
+
+                String parameterName = newParametersNode.getAttributes().getNamedItem("NAME").getNodeValue();
+                newParameters.getParameter(parameterName).setAttributesFromXML(newParametersNode);
+
+            }
+        }
     }
 }

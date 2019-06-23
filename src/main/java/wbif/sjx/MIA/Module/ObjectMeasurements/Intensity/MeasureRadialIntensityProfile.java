@@ -10,6 +10,10 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
@@ -25,6 +29,10 @@ public class MeasureRadialIntensityProfile extends Module {
     public static final String RANGE_MODE = "Range mode";
     public static final String MIN_DISTANCE = "Minimum distance";
     public static final String MAX_DISTANCE = "Maximum distance";
+
+    public MeasureRadialIntensityProfile(ModuleCollection modules) {
+        super("Measure radial intensity profile",modules);
+    }
 //    public static final String NORMALISE_DISTANCES = "Normalise distances to object size";
     //public static final String CALIBRATED_UNITS = "Calibrated units"; // To be added
 
@@ -102,17 +110,12 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public String getTitle() {
-        return "Measure radial intensity profile";
-    }
-
-    @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override
-    public String getHelp() {
+    public String getDescription() {
         return "";
     }
 
@@ -186,7 +189,7 @@ public class MeasureRadialIntensityProfile extends Module {
 
         resultsTable.show("Radial intensity profile");
 
-        if (showOutput) inputObjects.showMeasurements(this);
+        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
 
         return true;
 
@@ -236,22 +239,22 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataRefCollection updateAndGetImageMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
     @Override
-    public RelationshipCollection updateAndGetRelationships() {
+    public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
 

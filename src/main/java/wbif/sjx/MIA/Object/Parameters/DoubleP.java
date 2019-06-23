@@ -1,29 +1,57 @@
 package wbif.sjx.MIA.Object.Parameters;
 
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 public class DoubleP extends TextType {
-    protected double value;
+    protected String value;
 
     public DoubleP(String name, Module module, double value) {
+        super(name,module);
+        this.value = String.valueOf(value);
+    }
+
+    public DoubleP(String name, Module module, String value) {
         super(name,module);
         this.value = value;
     }
 
     public DoubleP(String name, Module module, double value, String description) {
         super(name,module,description);
+        this.value = String.valueOf(value);
+    }
+
+    public DoubleP(String name, Module module, String value, String description) {
+        super(name,module,description);
         this.value = value;
     }
 
     public void setValue(double value) {
-        this.value = value;
+        this.value = String.valueOf(value);
+    }
+
+    public void setValue(String value) throws NumberFormatException {
+        // Checking this is valid
+        if (GlobalVariables.containsMetadata(value)) {
+            this.value = value;
+        } else {
+            try {
+                Double.parseDouble(value);
+                this.value = value;
+            } catch (NumberFormatException e) {
+                MIA.log.write("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or metadata handle (e.g. ${name})",Log.Level.WARNING);
+            }
+        }
     }
 
     @Override
-    public String getValueAsString() {
-        return String.valueOf(value);
+    public String getRawStringValue() {
+        return value;
+
     }
 
     @Override
@@ -33,17 +61,17 @@ public class DoubleP extends TextType {
 
     @Override
     public void setValueFromString(String value) {
-        this.value = Double.valueOf(value);
+        setValue(value);
     }
 
     @Override
-    public <T> T getValue() {
-        return (T) (Double) value;
+    public <T> T getValue() throws NumberFormatException {
+        return (T) (Double) Double.parseDouble(MIA.getGlobalVariables().convertString(value));
     }
 
     @Override
     public <T> void setValue(T value) {
-        this.value = (Double) value;
-    }
+        this.value = String.valueOf(value);
 
+    }
 }
