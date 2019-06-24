@@ -3,6 +3,7 @@
 package wbif.sjx.MIA.GUI.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 
 import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
@@ -58,15 +59,15 @@ public class DraggableTransferHandler extends TransferHandler {
         target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
         int[] fromIndices = table.getSelectedRows();
-        if (fromIndices.length != 0) {
-            ((Reorderable) table.getModel()).reorder(fromIndices, toIndex);
-            target.getSelectionModel().setSelectionInterval(-1,-1);
+//        System.err.println("Here2");
+//        System.err.println(fromIndices[0]+"_"+fromIndices[1]+"_"+toIndex);
+//        System.err.println("Here again!");
+        if (fromIndices.length == 0) return false;
 
-            return true;
+        ((Reorderable) table.getModel()).reorder(fromIndices, toIndex);
+        target.getSelectionModel().setSelectionInterval(-1,-1);
 
-        }
-
-        return false;
+        return true;
 
     }
 

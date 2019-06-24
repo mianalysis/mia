@@ -2,8 +2,10 @@ package wbif.sjx.MIA.GUI.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +24,17 @@ public class DraggableTableModel extends DefaultTableModel implements Reorderabl
 
     @Override
     public void reorder(int[] fromIndices, int toIndex) {
-        modules.reorder(fromIndices,toIndex);
+//        MIA.log.writeDebug("Arrived at DraggableTableModel reorder");
+        Module[] toMove = new Module[fromIndices.length];
+        for (int i=0;i<fromIndices.length;i++) {
+            toMove[i] = (Module) getValueAt(fromIndices[i],0);
+        }
+
+        Module moduleToFollow;
+        if (toIndex == 0) moduleToFollow = null;
+        else moduleToFollow = (Module) getValueAt(toIndex-1,0);
+
+        modules.reorder(toMove,moduleToFollow);
 
         GUI.updateModules();
         GUI.updateParameters();

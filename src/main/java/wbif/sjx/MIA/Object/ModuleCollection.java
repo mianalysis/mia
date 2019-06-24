@@ -5,6 +5,7 @@
 package wbif.sjx.MIA.Object;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
@@ -14,6 +15,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -278,6 +280,9 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
     }
 
     public void reorder(int[] fromIndices, int toIndex) {
+//        MIA.log.writeDebug("Arrived at final method");
+//        MIA.log.writeDebug("Final shift "+fromIndices[0]+"_"+fromIndices[1]+"_"+toIndex);
+
         // Creating a list of initial indices
         ArrayList<Integer> inIdx = new ArrayList<>();
         for (int i=0;i<size();i++) inIdx.add(i);
@@ -304,6 +309,23 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
         removeAll(this);
         addAll(newModules);
+
+    }
+
+    public void reorder(Module[] modulesToMove, Module moduleToFollow) {
+        int[] fromIndices = new int[modulesToMove.length];
+        for (int i=0;i<modulesToMove.length;i++) {
+            fromIndices[i] = indexOf(modulesToMove[i]);
+        }
+
+        int toIndex;
+        if (moduleToFollow == null) toIndex = 0;
+        else toIndex = indexOf(moduleToFollow)+1;
+
+//        MIA.log.writeDebug("Here! "+fromIndices.length);
+//        MIA.log.writeDebug(fromIndices[0]+"_"+fromIndices[1]+"_"+toIndex);
+//        MIA.log.writeDebug("Going to final method");
+        reorder(fromIndices,toIndex);
 
     }
 

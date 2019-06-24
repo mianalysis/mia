@@ -179,7 +179,7 @@ public class DraggableModulesPanel extends JScrollPane {
                 int[] rows = table.getSelectedRows();
                 Module[] selectedModules = new Module[rows.length];
                 for (int i=0;i<rows.length;i++) {
-                    selectedModules[i] = (Module) table.getValueAt(0,rows[i]);
+                    selectedModules[i] = (Module) table.getValueAt(rows[i],0);
                 }
 
                 GUI.setSelectedModules(selectedModules);
@@ -202,11 +202,11 @@ public class DraggableModulesPanel extends JScrollPane {
         table.setBackground(new Color(0, 0, 0, 0));
 
         // Adding selection
-        int[] selectedIndices = GUI.getSelectedModuleIndices();
-        table.clearSelection();
-        if (selectedIndices != null) {
-            for (int selectedIndex : selectedIndices) table.addRowSelectionInterval(selectedIndex, selectedIndex);
-        }
+//        int[] selectedIndices = GUI.getSelectedModuleIndices();
+//        table.clearSelection();
+//        if (selectedIndices != null) {
+//            for (int selectedIndex : selectedIndices) table.addRowSelectionInterval(selectedIndex, selectedIndex);
+//        }
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setOpaque(false);
