@@ -130,18 +130,18 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
                 case BASIC_VIEW:
                     GUI.enableBasicMode();
-                    GUI.setActiveModule(null);
+                    GUI.setSelectedModules(null);
                     setText(MenuItem.EDITING_VIEW);
                     break;
 
                 case EDITING_VIEW:
                     GUI.enableEditingMode();
-                    GUI.setActiveModule(null);
+                    GUI.setSelectedModules(null);
                     setText(MenuItem.BASIC_VIEW);
                     break;
 
                 case SHOW_GLOBAL_VARIABLES:
-                    GUI.setActiveModule(MIA.getGlobalVariables());
+                    GUI.setSelectedModules(new Module[]{MIA.getGlobalVariables()});
                     GUI.updateParameters();
                     break;
 

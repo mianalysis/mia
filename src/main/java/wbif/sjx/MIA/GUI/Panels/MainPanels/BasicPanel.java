@@ -195,7 +195,7 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public void updateHelpNotes() {
-        Module activeModule  = GUI.getActiveModule();
+        Module activeModule  = GUI.getFirstSelectedModule();
 
         // If null, show a special message
         if (activeModule == null) {

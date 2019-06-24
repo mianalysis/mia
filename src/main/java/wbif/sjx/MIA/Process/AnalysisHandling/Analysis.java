@@ -20,7 +20,7 @@ import java.util.Date;
  *
  */
 public class Analysis {
-    public ModuleCollection modules = new ModuleCollection();
+    private ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
     private String analysisFilename = "";
 
@@ -98,6 +98,10 @@ public class Analysis {
     public ModuleCollection getModules() {
         return modules;
 
+    }
+
+    public void setModules(ModuleCollection modules) {
+        this.modules = modules;
     }
 
     public void removeAllModules() {

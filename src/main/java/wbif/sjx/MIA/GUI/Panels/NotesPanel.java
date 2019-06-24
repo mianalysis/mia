@@ -22,7 +22,7 @@ public class NotesPanel extends JPanel {
     }
 
     public void updatePanel() {
-        Module activeModule = GUI.getActiveModule();
+        Module activeModule = GUI.getFirstSelectedModule();
 
         removeAll();
 

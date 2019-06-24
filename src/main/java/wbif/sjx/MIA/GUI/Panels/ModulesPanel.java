@@ -52,7 +52,6 @@ public class ModulesPanel extends JScrollPane {
     public void updatePanel() {
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        Module activeModule = GUI.getActiveModule();
         int moduleButtonWidth = GUI.getModuleButtonWidth();
 
         panel.removeAll();
@@ -76,10 +75,10 @@ public class ModulesPanel extends JScrollPane {
             JPanel modulePanel = null;
             if (module instanceof GUISeparator) {
                 expanded = ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).isSelected();
-                modulePanel = componentFactory.createEditingSeparator(module, buttonGroup, activeModule, moduleButtonWidth - 25);
+                modulePanel = componentFactory.createEditingSeparator(module, buttonGroup, moduleButtonWidth - 25);
             } else {
                 if (!expanded) continue;
-                modulePanel = componentFactory.createAdvancedModuleControl(module, buttonGroup, activeModule, moduleButtonWidth - 25);
+                modulePanel = componentFactory.createAdvancedModuleControl(module, buttonGroup, moduleButtonWidth - 25);
             }
 
             // If this is the final module, addRef a gap at the bottom

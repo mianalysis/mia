@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
@@ -66,30 +67,32 @@ public class ModuleControlButton extends JButton implements ActionListener {
     }
 
     public void removeModule() {
-        Module activeModule = GUI.getActiveModule();
+        Module[] activeModules = GUI.getSelectedModules();
         int lastModuleEval = GUI.getLastModuleEval();
 
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            // Removing a module resets all the current evaluation
-            int idx = modules.indexOf(activeModule);
+        if (activeModules == null) return;
 
-            if (idx <= lastModuleEval) GUI.setLastModuleEval(idx - 1);
+        // Getting lowest index
+        ModuleCollection modules = GUI.getAnalysis().getModules();
+        int lowestIdx = modules.indexOf(activeModules[0]);
+        if (lowestIdx <= lastModuleEval) GUI.setLastModuleEval(lowestIdx - 1);
 
+        // Removing modules
+        for (Module activeModule:activeModules) {
             modules.remove(activeModule);
-            activeModule = null;
-
-            GUI.setActiveModule(null);
-            GUI.updateModules();
-            GUI.updateModuleStates(true);
-            GUI.populateModuleParameters();
-            GUI.populateHelpNotes();
-
         }
+
+        GUI.setSelectedModules(null);
+        GUI.updateModules();
+        GUI.updateModuleStates(true);
+        GUI.populateModuleParameters();
+        GUI.populateHelpNotes();
+
     }
 
     public void moveModuleUp() {
-        Module activeModule = GUI.getActiveModule();
+        MIA.log.writeDebug("To update");
+        Module activeModule = GUI.getFirstSelectedModule();
         int lastModuleEval = GUI.getLastModuleEval();
 
         if (activeModule != null) {
@@ -109,7 +112,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
     }
 
     public void moveModuleDown() {
-        Module activeModule = GUI.getActiveModule();
+        MIA.log.writeDebug("To update");
+        Module activeModule = GUI.getFirstSelectedModule();
         int lastModuleEval = GUI.getLastModuleEval();
 
         if (activeModule != null) {

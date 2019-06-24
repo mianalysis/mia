@@ -26,7 +26,7 @@ public class ModuleTitle extends JTextField implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        GUI.setActiveModule(module);
+        GUI.setSelectedModules(new Module[]{module});
         GUI.populateHelpNotes();
 
     }

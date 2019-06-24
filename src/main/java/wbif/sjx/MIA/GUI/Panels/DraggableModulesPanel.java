@@ -2,23 +2,21 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.ControlObjects.EvalButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ShowOutputButton;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ModuleList.MyTableModel;
 import wbif.sjx.MIA.GUI.ModuleList.MyTransferHandler;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
@@ -58,7 +56,6 @@ public class DraggableModulesPanel extends JScrollPane {
     public void updatePanel() {
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        Module activeModule = GUI.getActiveModule();
         int moduleButtonWidth = GUI.getModuleButtonWidth();
 
         panel.removeAll();
@@ -78,11 +75,21 @@ public class DraggableModulesPanel extends JScrollPane {
         for (Module module:modules) {
 //            if (!expandedStatus.get(module))
             c.gridx = 0;
+            if (c.gridy == 0) {
+                c.insets = new Insets(5, 5, 0, 0);
+            } else {
+                c.insets = new Insets(0, 5, 0, 0);
+            }
 
             ModuleEnabledButton enabledButton = new ModuleEnabledButton(module);
             enabledButton.setPreferredSize(new Dimension(26,26));
             panel.add(enabledButton,c);
             c.gridx++;
+            if (c.gridy == 0) {
+                c.insets = new Insets(5, 0, 0, 0);
+            } else {
+                c.insets = new Insets(0, 0, 0, 0);
+            }
 
             ShowOutputButton showOutputButton = new ShowOutputButton(module);
             showOutputButton.setPreferredSize(new Dimension(26,26));
@@ -102,6 +109,7 @@ public class DraggableModulesPanel extends JScrollPane {
         c.gridx = 2;
         c.gridy = 0;
         c.gridheight = modules.size();
+        c.insets = new Insets(5,0,0,0);
         panel.add(moduleNameTable,c);
 
 
@@ -186,9 +194,13 @@ public class DraggableModulesPanel extends JScrollPane {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                int row = table.getSelectedRow();
-                GUI.setActiveModule(modules.get(row));
+                int[] rows = table.getSelectedRows();
+                Module[] selectedModules = new Module[rows.length];
+                for (int i=0;i<rows.length;i++) selectedModules[i] = modules.get(rows[i]);
+
+                GUI.setSelectedModules(selectedModules);
                 GUI.updateParameters();
+
             }
 
             @Override
@@ -205,6 +217,7 @@ public class DraggableModulesPanel extends JScrollPane {
 
             }
         });
+
         table.setTableHeader(null);
         table.setOpaque(false);
         table.setDragEnabled(true);
@@ -214,8 +227,12 @@ public class DraggableModulesPanel extends JScrollPane {
         table.setRowHeight(26);
         table.setShowGrid(false);
         table.setFillsViewportHeight(true);
+        table.setBackground(new Color(0, 0, 0, 0));
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBackground(new Color(0, 0, 0, 0));
 
         return table;
 

@@ -43,7 +43,7 @@ public class GUI {
     private static boolean initialised = false;
 
     private static Analysis analysis = new Analysis();
-    private static Module activeModule = null;
+    private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
@@ -393,12 +393,17 @@ public class GUI {
         GUI.moduleBeingEval = moduleBeingEval;
     }
 
-    public static Module getActiveModule() {
-        return activeModule;
+    public static Module getFirstSelectedModule() {
+        if (selectedModules == null) return null;
+        return selectedModules[0];
     }
 
-    public static void setActiveModule(Module activeModule) {
-        GUI.activeModule = activeModule;
+    public static Module[] getSelectedModules() {
+        return selectedModules;
+    }
+
+    public static void setSelectedModules(Module[] activeModule) {
+        GUI.selectedModules = activeModule;
     }
 
     public static Analysis getAnalysis() {

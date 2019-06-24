@@ -101,7 +101,9 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createAdvancedModuleControl(Module module, ButtonGroup group, Module activeModule, int panelWidth) {
+    public JPanel createAdvancedModuleControl(Module module, ButtonGroup group, int panelWidth) {
+        Module activeModule = GUI.getFirstSelectedModule();
+
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -148,9 +150,10 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createEditingSeparator(Module module, ButtonGroup group, Module activeModule, int panelWidth) {
+    public JPanel createEditingSeparator(Module module, ButtonGroup group, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        Module activeModule = GUI.getFirstSelectedModule();
 
         // Adding the module enabled checkbox
         c.gridx = 0;
