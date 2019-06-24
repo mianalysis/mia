@@ -45,4 +45,24 @@ public interface Log {
     default public void writeMemory(String message) {
         write(message,Level.MEMORY);
     }
+
+    default public void writeError(Object message) {
+        write(message.toString(),Level.ERROR);
+    }
+
+    default public void writeWarning(Object message) {
+        write(message.toString(),Level.WARNING);
+    }
+
+    default public void writeMessage(Object message) {
+        write(message.toString(),Level.MESSAGE);
+    }
+
+    default public void writeDebug(Object message) {
+        write(message.toString(),Level.DEBUG);
+    }
+
+    default public void writeMemory(Object message) {
+        write(message.toString(),Level.MEMORY);
+    }
 }

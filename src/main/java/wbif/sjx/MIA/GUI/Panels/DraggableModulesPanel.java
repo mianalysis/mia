@@ -3,10 +3,12 @@ package wbif.sjx.MIA.GUI.Panels;
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.ControlObjects.EvalButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledButton;
+import wbif.sjx.MIA.GUI.ControlObjects.SeparatorButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ShowOutputButton;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ModuleList.MyTableModel;
-import wbif.sjx.MIA.GUI.ModuleList.MyTransferHandler;
+import wbif.sjx.MIA.GUI.ModuleList.ModuleTableCellRenderer;
+import wbif.sjx.MIA.GUI.ModuleList.DraggableTableModel;
+import wbif.sjx.MIA.GUI.ModuleList.DraggableTransferHandler;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -17,10 +19,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 
 public class DraggableModulesPanel extends JScrollPane {
@@ -67,41 +65,49 @@ public class DraggableModulesPanel extends JScrollPane {
         c.gridy = 0;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-//        c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         ModuleCollection modules = GUI.getModules();
-        JTable moduleNameTable = getModuleNameTable(modules);
         HashMap<Module,Boolean> expandedStatus = getExpandedModules(modules);
+        JTable moduleNameTable = getModuleNameTable(modules,expandedStatus);
 
         // Creating control buttons for modules
         for (Module module:modules) {
-//            if (!expandedStatus.get(module))
+            if (!expandedStatus.get(module)) continue;
+
+            int top = c.gridy == 0 ? 5 : 0;
             c.gridx = 0;
-            if (c.gridy == 0) {
-                c.insets = new Insets(5, 5, 0, 0);
-            } else {
-                c.insets = new Insets(0, 5, 0, 0);
-            }
+            c.insets = new Insets(top, 5, 0, 0);
 
             ModuleEnabledButton enabledButton = new ModuleEnabledButton(module);
             enabledButton.setPreferredSize(new Dimension(26,26));
             panel.add(enabledButton,c);
             c.gridx++;
-            if (c.gridy == 0) {
-                c.insets = new Insets(5, 0, 0, 0);
+            c.insets = new Insets(top, 0, 0, 0);
+
+            // If GUISeparator, add controls
+            if (module instanceof GUISeparator) {
+                SeparatorButton separatorButton = new SeparatorButton(module,true);
+                separatorButton.setPreferredSize(new Dimension(26, 26));
+                panel.add(separatorButton, c);
+                c.gridx++;
+                c.gridx++;
+
+                separatorButton = new SeparatorButton(module,false);
+                separatorButton.setPreferredSize(new Dimension(26, 26));
+                panel.add(separatorButton, c);
+
             } else {
-                c.insets = new Insets(0, 0, 0, 0);
+                ShowOutputButton showOutputButton = new ShowOutputButton(module);
+                showOutputButton.setPreferredSize(new Dimension(26, 26));
+                panel.add(showOutputButton, c);
+                c.gridx++;
+                c.gridx++;
+
+                EvalButton evalButton = new EvalButton(module);
+                evalButton.setPreferredSize(new Dimension(26, 26));
+                panel.add(evalButton, c);
+
             }
-
-            ShowOutputButton showOutputButton = new ShowOutputButton(module);
-            showOutputButton.setPreferredSize(new Dimension(26,26));
-            panel.add(showOutputButton,c);
-            c.gridx++;
-            c.gridx++;
-
-            EvalButton evalButton = new EvalButton(module);
-            evalButton.setPreferredSize(new Dimension(26,26));
-            panel.add(evalButton,c);
 
             c.gridy++;
 
@@ -111,38 +117,8 @@ public class DraggableModulesPanel extends JScrollPane {
         c.gridx = 2;
         c.gridy = 0;
         c.gridheight = modules.size();
-        c.insets = new Insets(5,2,0,0);
+        c.insets = new Insets(5,0,0,0);
         panel.add(moduleNameTable,c);
-
-
-
-
-//        boolean expanded = true;
-//        // Adding module buttons
-//        ModuleCollection modules = analysis.getModules();
-//        c.insets = new Insets(2,0,0,0);
-//        for (int i=0;i<modules.size();i++) {
-//            Module module = modules.get(i);
-//            int idx = modules.indexOf(module);
-//            if (idx == modules.size() - 1) c.weighty = 1;
-//
-//            JPanel modulePanel = null;
-//            if (module instanceof GUISeparator) {
-//                expanded = ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).isSelected();
-//                modulePanel = componentFactory.createEditingSeparator(module, buttonGroup, activeModule, moduleButtonWidth - 25);
-//            } else {
-//                if (!expanded) continue;
-//                modulePanel = componentFactory.createAdvancedModuleControl(module, buttonGroup, activeModule, moduleButtonWidth - 25);
-//            }
-//
-//            // If this is the final module, addRef a gap at the bottom
-//            if (i==modules.size()-1) modulePanel.setBorder(new EmptyBorder(0,0,5,0));
-//
-//            panel.add(modulePanel, c);
-//            c.insets = new Insets(0,0,0,0);
-//            c.gridy++;
-//
-//        }
 
         c.gridwidth = 4;
         c.gridy = modules.size();
@@ -171,78 +147,66 @@ public class DraggableModulesPanel extends JScrollPane {
 
         for (Module module:modules) {
             // If module is a GUI separator, update expanded status
-            if (module instanceof GUISeparator) expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
-
-            expandedStatus.put(module,expanded);
-
+            if (module instanceof GUISeparator) {
+                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
+                expandedStatus.put(module,true); // GUISeparator is always expanded
+            } else {
+                expandedStatus.put(module,expanded);
+            }
         }
 
         return expandedStatus;
 
     }
 
-    private JTable getModuleNameTable(ModuleCollection modules) {
+    private JTable getModuleNameTable(ModuleCollection modules, HashMap<Module,Boolean> expandedStatus) {
+        // Get number of visible modules
+        int expandedCount = (int) expandedStatus.values().stream().filter(p -> p).count();
+
         String[] columnNames = {"Title"};
-        Object[][] data = new Object[modules.size()][1];
-        for (int i=0;i<modules.size();i++) data[i][0] = modules.get(i);
+        Object[][] data = new Object[expandedCount][1];
+        int count = 0;
+        for (int i=0;i<modules.size();i++) {
+            if (expandedStatus.get(modules.get(i))) data[count++][0] = modules.get(i);
+        }
 
-        MyTableModel tableModel = new MyTableModel(data, columnNames,modules);
+        DraggableTableModel tableModel = new DraggableTableModel(data, columnNames,modules);
         JTable table = new JTable(tableModel);
-//        table.addMouseListener(new MouseListener() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                int[] rows = table.getSelectedRows();
-//                Module[] selectedModules = new Module[rows.length];
-//                for (int i=0;i<rows.length;i++) selectedModules[i] = modules.get(rows[i]);
-//
-//                GUI.setSelectedModules(selectedModules);
-//                GUI.updateParameters();
-//
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//
-//            }
-//        });
-
         ListSelectionModel listSelectionModel = table.getSelectionModel();
         listSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int[] rows = table.getSelectedRows();
                 Module[] selectedModules = new Module[rows.length];
-                for (int i=0;i<rows.length;i++) selectedModules[i] = modules.get(rows[i]);
+                for (int i=0;i<rows.length;i++) {
+                    selectedModules[i] = (Module) table.getValueAt(0,rows[i]);
+                }
 
                 GUI.setSelectedModules(selectedModules);
                 GUI.updateParameters();
+
             }
         });
 
+        table.setCellEditor(null);
+        table.getColumnModel().getColumn(0).setCellRenderer(new ModuleTableCellRenderer());
         table.setTableHeader(null);
         table.setOpaque(false);
         table.setDragEnabled(true);
         table.setDropMode(DropMode.INSERT_ROWS);
-        table.setTransferHandler(new MyTransferHandler(table));
+        table.setTransferHandler(new DraggableTransferHandler(table));
         table.getColumn("Title").setPreferredWidth(200);
         table.setRowHeight(26);
         table.setShowGrid(false);
         table.setFillsViewportHeight(true);
         table.setBackground(new Color(0, 0, 0, 0));
+
+        // Adding selection
+        int[] selectedIndices = GUI.getSelectedModuleIndices();
+        table.clearSelection();
+        if (selectedIndices != null) {
+            for (int selectedIndex : selectedIndices) table.addRowSelectionInterval(selectedIndex, selectedIndex);
+        }
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setOpaque(false);
@@ -255,20 +219,5 @@ public class DraggableModulesPanel extends JScrollPane {
 
     public void updateButtonStates() {
         updatePanel();
-//        for (Component panel : panel.getComponents()) {
-//            if (panel.getClass() == JPanel.class) {
-//                for (Component component: ((JPanel) panel).getComponents()) {
-//                    if (component.getClass() == ModuleEnabledButton.class) {
-//                        ((ModuleEnabledButton) component).updateState();
-//                    } else if (component.getClass() == ShowOutputButton.class) {
-//                        ((ShowOutputButton) component).updateState();
-//                    } else if (component.getClass() == ModuleButton.class) {
-//                        ((ModuleButton) component).updateState();
-//                    } else if (component.getClass() == EvalButton.class) {
-//                        ((EvalButton) component).updateState();
-//                    }
-//                }
-//            }
-//        }
     }
 }

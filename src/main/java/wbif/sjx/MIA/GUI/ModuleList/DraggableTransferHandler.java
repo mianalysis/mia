@@ -2,6 +2,8 @@
 
 package wbif.sjx.MIA.GUI.ModuleList;
 
+import wbif.sjx.MIA.GUI.GUI;
+
 import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
 import javax.swing.*;
@@ -9,29 +11,34 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.util.stream.IntStream;
 
 /**
- * Handles drag & drop row reordering
+ * Handles drag and drop row reordering
  */
-public class MyTransferHandler extends TransferHandler {
+public class DraggableTransferHandler extends TransferHandler {
     private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, "application/x-java-Integer;class=java.lang.Integer", "Integer Row Index");
-    private JTable           table             = null;
+    private JTable table = null;
 
-    public MyTransferHandler(JTable table) {
+    public DraggableTransferHandler(JTable table) {
         this.table = table;
     }
 
     @Override
     protected Transferable createTransferable(JComponent c) {
         assert (c == table);
-        return new DataHandler(new Integer(table.getSelectedRow()), localObjectFlavor.getMimeType());
+
+        return new DataHandler(table.getSelectedRow(), localObjectFlavor.getMimeType());
+
     }
 
     @Override
     public boolean canImport(TransferHandler.TransferSupport info) {
         boolean b = info.getComponent() == table && info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
         table.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
+
         return b;
+
     }
 
     @Override
@@ -43,24 +50,24 @@ public class MyTransferHandler extends TransferHandler {
     public boolean importData(TransferHandler.TransferSupport info) {
         JTable target = (JTable) info.getComponent();
         JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
-        int index = dl.getRow();
+
+        int toIndex = dl.getRow();
         int max = table.getModel().getRowCount();
-        if (index < 0 || index > max)
-            index = max;
+        if (toIndex < 0 || toIndex > max) toIndex = max;
+
         target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        try {
-            int[] rowsFrom = table.getSelectedRows();
-            if (rowsFrom.length != 0) {
-                ((Reorderable) table.getModel()).reorder(rowsFrom, index);
-//                if (index > rowFrom) index--;
-                target.getSelectionModel().setSelectionInterval(-1,-1);
-//                target.getSelectionModel().addSelectionInterval(index, index);
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        int[] fromIndices = table.getSelectedRows();
+        if (fromIndices.length != 0) {
+            ((Reorderable) table.getModel()).reorder(fromIndices, toIndex);
+            target.getSelectionModel().setSelectionInterval(-1,-1);
+
+            return true;
+
         }
+
         return false;
+
     }
 
     @Override

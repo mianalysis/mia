@@ -402,8 +402,22 @@ public class GUI {
         return selectedModules;
     }
 
-    public static void setSelectedModules(Module[] activeModule) {
-        GUI.selectedModules = activeModule;
+    public static int[] getSelectedModuleIndices() {
+        if (selectedModules == null) return new int[0];
+
+        int[] selectedIndices = new int[selectedModules.length];
+        ModuleCollection modules = getModules();
+
+        for (int i=0;i<selectedModules.length;i++) {
+            selectedIndices[i] = modules.indexOf(selectedModules[i]);
+        }
+
+        return selectedIndices;
+
+    }
+
+    public static void setSelectedModules(Module[] selectedModules) {
+        GUI.selectedModules = selectedModules;
     }
 
     public static Analysis getAnalysis() {

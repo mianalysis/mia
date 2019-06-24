@@ -4,6 +4,7 @@
 
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
@@ -274,6 +275,36 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     public void setOutputControl(OutputControl outputControl) {
         this.outputControl = outputControl;
+    }
+
+    public void reorder(int[] fromIndices, int toIndex) {
+        // Creating a list of initial indices
+        ArrayList<Integer> inIdx = new ArrayList<>();
+        for (int i=0;i<size();i++) inIdx.add(i);
+
+        // Creating a list of the indices to move
+        ArrayList<Integer> toMove = new ArrayList<>();
+        for (int fromIndex:fromIndices) toMove.add(fromIndex);
+
+        // Removing the indices to be moved
+        inIdx.removeAll(toMove);
+
+        // Iterating over all input indices, when we get to the target index, add the moved values
+        ModuleCollection newModules = new ModuleCollection();
+        for (int idx=0;idx<inIdx.size()+fromIndices.length+1;idx++) {
+            // If this is the target, move the relevant indices, else move the current value
+            if (idx == toIndex) {
+                for (int toMoveIdx:toMove) newModules.add(get(toMoveIdx));
+            }
+
+            if (idx < size() &! toMove.contains(idx)) {
+                newModules.add(get(idx));
+            }
+        }
+
+        removeAll(this);
+        addAll(newModules);
+
     }
 
     @Override
