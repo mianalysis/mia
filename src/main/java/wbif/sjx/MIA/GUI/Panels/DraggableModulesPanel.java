@@ -14,6 +14,8 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -109,7 +111,7 @@ public class DraggableModulesPanel extends JScrollPane {
         c.gridx = 2;
         c.gridy = 0;
         c.gridheight = modules.size();
-        c.insets = new Insets(5,0,0,0);
+        c.insets = new Insets(5,2,0,0);
         panel.add(moduleNameTable,c);
 
 
@@ -186,35 +188,48 @@ public class DraggableModulesPanel extends JScrollPane {
 
         MyTableModel tableModel = new MyTableModel(data, columnNames,modules);
         JTable table = new JTable(tableModel);
-        table.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+//        table.addMouseListener(new MouseListener() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                int[] rows = table.getSelectedRows();
+//                Module[] selectedModules = new Module[rows.length];
+//                for (int i=0;i<rows.length;i++) selectedModules[i] = modules.get(rows[i]);
+//
+//                GUI.setSelectedModules(selectedModules);
+//                GUI.updateParameters();
+//
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//
+//            }
+//        });
 
-            }
-
+        ListSelectionModel listSelectionModel = table.getSelectionModel();
+        listSelectionModel.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void valueChanged(ListSelectionEvent e) {
                 int[] rows = table.getSelectedRows();
                 Module[] selectedModules = new Module[rows.length];
                 for (int i=0;i<rows.length;i++) selectedModules[i] = modules.get(rows[i]);
 
                 GUI.setSelectedModules(selectedModules);
                 GUI.updateParameters();
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
 
