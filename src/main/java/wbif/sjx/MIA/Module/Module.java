@@ -16,6 +16,8 @@ import wbif.sjx.MIA.Process.Logging.Log;
 
 import java.awt.datatransfer.Transferable;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -25,7 +27,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module extends Ref implements Comparable {
+public abstract class Module extends Ref implements Comparable, Serializable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
@@ -270,6 +272,20 @@ public abstract class Module extends Ref implements Comparable {
 
     public boolean hasVisibleParameters() {
         return updateAndGetParameters().hasVisibleParameters();
+
+    }
+
+    public Module duplicate() throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        Constructor constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
+        Module newModule = (Module) constructor.newInstance(modules);
+
+        for (Parameter parameter:parameters.values()) {
+            
+        }
+
+        MIA.log.writeDebug("STILL NEED TO IMPLEMENT PARAMETER TRANSFER FOR MODULE DUPLICATION");
+
+        return newModule;
 
     }
 

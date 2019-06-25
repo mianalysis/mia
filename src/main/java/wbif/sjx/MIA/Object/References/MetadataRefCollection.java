@@ -2,9 +2,10 @@ package wbif.sjx.MIA.Object.References;
 
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
+import java.io.Serializable;
 import java.util.TreeMap;
 
-public class MetadataRefCollection extends TreeMap<String,MetadataRef> implements RefCollection<MetadataRef> {
+public class MetadataRefCollection extends TreeMap<String,MetadataRef> implements RefCollection<MetadataRef>, Serializable {
     public String[] getMetadataNames() {
         return keySet().toArray(new String[0]);
     }

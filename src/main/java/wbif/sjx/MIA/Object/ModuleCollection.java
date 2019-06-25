@@ -14,6 +14,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +23,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module> {
+public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module>, Serializable {
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
 
@@ -280,9 +281,6 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
     }
 
     public void reorder(int[] fromIndices, int toIndex) {
-//        MIA.log.writeDebug("Arrived at final method");
-//        MIA.log.writeDebug("Final shift "+fromIndices[0]+"_"+fromIndices[1]+"_"+toIndex);
-
         // Creating a list of initial indices
         ArrayList<Integer> inIdx = new ArrayList<>();
         for (int i=0;i<size();i++) inIdx.add(i);
@@ -322,11 +320,26 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         if (moduleToFollow == null) toIndex = 0;
         else toIndex = indexOf(moduleToFollow)+1;
 
-//        MIA.log.writeDebug("Here! "+fromIndices.length);
-//        MIA.log.writeDebug(fromIndices[0]+"_"+fromIndices[1]+"_"+toIndex);
-//        MIA.log.writeDebug("Going to final method");
         reorder(fromIndices,toIndex);
 
+    }
+
+    public void insert(ModuleCollection modulesToInsert, int toIndex) {
+        // Iterating over all input indices, when we get to the target index, add the moved values
+        ModuleCollection newModules = new ModuleCollection();
+        for (Module module:this) {
+            int idx = indexOf(module);
+
+            // Adding in the module at this location
+            newModules.add(module);
+
+            // If this is where the modules should go, add them in
+            if (idx == toIndex) newModules.addAll(modulesToInsert);
+
+        }
+
+        removeAll(this);
+        addAll(newModules);
     }
 
     @Override

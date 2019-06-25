@@ -1,6 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -13,7 +15,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class ModuleTable extends JTable implements ActionListener, TableCellRenderer {
@@ -93,40 +98,39 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
                 }
                 break;
             case "Copy":
-//                int[] selectedRows = getSelectedRows();
-//                if (selectedRows.length == 0) return;
-//
-//                // Adding first value
-//                StringBuilder sb = new StringBuilder();
-//                Module module = (Module) getValueAt(selectedRows[0], 0);
-//                sb.append(modules.indexOf(module));
-//
-//                // Adding remaining values
-//                for (int i=1;i<selectedRows.length;i++) {
-//                    module = (Module) getValueAt(selectedRows[i], 0);
-//
-//                }
-//
-//                // Adding to clipboard
-//                StringSelection stringSelection = new StringSelection(sb.toString());
-//                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//                clipboard.setContents(stringSelection,null);
+                try {
+                    int[] selectedRows = getSelectedRows();
+                    if (selectedRows.length == 0) return;
+
+                    ModuleCollection copyModules = new ModuleCollection();
+                    for (int i=0;i<selectedRows.length;i++) {
+                        copyModules.add(((Module) getValueAt(selectedRows[i], 0)).duplicate());
+                    }
+
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
+                    clipboard.setContents(transfer,null);
+
+                } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
+                    e1.printStackTrace();
+                }
 
                 break;
             case "Paste":
-//                selectedRows = getSelectedRows();
-//                if (selectedRows.length == 0) return;
-//
-//                try {
-//                    // Getting clipboard contents specifying modules to copy
-//                    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//                    String fromIdxString = (String) clipboard.getData(DataFlavor.stringFlavor);
-//                    int[] fromIdxInts = CommaSeparatedStringInterpreter.interpretIntegers(fromIdxString,true);
-//                    int toIdx = selectedRows[selectedRows.length-1];
-//
-//                } catch (UnsupportedFlavorException | IOException ex) {
-//                    ex.printStackTrace();
-//                }
+                try {
+                    int[] selectedRows = getSelectedRows();
+                    if (selectedRows.length == 0) return;
+                    int toIdx = selectedRows[selectedRows.length-1];
+
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
+                    ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
+
+                    modules.insert(copyModules,toIdx);
+
+                } catch (ClassNotFoundException | IOException | UnsupportedFlavorException e1) {
+                    e1.printStackTrace();
+                }
 
                 break;
         }
