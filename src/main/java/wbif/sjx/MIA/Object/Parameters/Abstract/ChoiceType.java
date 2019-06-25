@@ -20,6 +20,7 @@ public abstract class ChoiceType extends Parameter {
     }
 
     public void setChoice(String choice) {
+        if (choice == null) choice = "";
         this.choice = choice;
     }
 
@@ -32,7 +33,10 @@ public abstract class ChoiceType extends Parameter {
 
     @Override
     public void setValueFromString(String string) {
+        if (string == null) string = "";
+
         this.choice = string;
+
     }
 
     @Override

@@ -181,7 +181,7 @@ public class ParametersPanel extends JScrollPane {
 
     public void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        Module activeModule = GUI.getActiveModule();
+        Module activeModule = GUI.getFirstSelectedModule();
         int elementHeight = GUI.getElementHeight();
 
         c.insets = new Insets(2, 5, 0, 0);

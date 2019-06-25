@@ -3,7 +3,6 @@
 package wbif.sjx.MIA.Module;
 
 import ij.Prefs;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -13,7 +12,10 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Process.Logging.Log;
 
+import java.awt.datatransfer.Transferable;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -72,7 +74,7 @@ public abstract class Module extends Ref implements Comparable {
         }
 
         // If enabled, write the current memory usage to the console
-        if (MIA.isLogMemory()) {
+        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
             ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -80,10 +82,13 @@ public abstract class Module extends Ref implements Comparable {
 
             DecimalFormat df = new DecimalFormat("#.0");
 
-            System.err.println("[MEMORY] " + df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
+            String memoryMessage = df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
                     ", module \""+getName()+"\"" +
                     ", file \""+workspace.getMetadata().getFile() +
-                    ", time "+dateTime);
+                    ", time "+dateTime;
+
+            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+
         }
 
         return status;
@@ -297,5 +302,10 @@ public abstract class Module extends Ref implements Comparable {
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
         this.notes = map.getNamedItem("NOTES").getNodeValue();
 
+    }
+
+    @Override
+    public String toString() {
+        return getNickname();
     }
 }

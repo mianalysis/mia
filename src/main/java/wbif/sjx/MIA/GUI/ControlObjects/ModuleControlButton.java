@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
@@ -66,65 +67,64 @@ public class ModuleControlButton extends JButton implements ActionListener {
     }
 
     public void removeModule() {
-        Module activeModule = GUI.getActiveModule();
+        Module[] activeModules = GUI.getSelectedModules();
         int lastModuleEval = GUI.getLastModuleEval();
 
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            // Removing a module resets all the current evaluation
-            int idx = modules.indexOf(activeModule);
+        if (activeModules == null) return;
 
-            if (idx <= lastModuleEval) GUI.setLastModuleEval(idx - 1);
+        // Getting lowest index
+        ModuleCollection modules = GUI.getAnalysis().getModules();
+        int lowestIdx = modules.indexOf(activeModules[0]);
+        if (lowestIdx <= lastModuleEval) GUI.setLastModuleEval(lowestIdx - 1);
 
+        // Removing modules
+        for (Module activeModule:activeModules) {
             modules.remove(activeModule);
-            activeModule = null;
-
-            GUI.setActiveModule(null);
-            GUI.updateModules();
-            GUI.updateModuleStates(true);
-            GUI.populateModuleParameters();
-            GUI.populateHelpNotes();
-
         }
+
+        GUI.setSelectedModules(null);
+        GUI.updateModules();
+        GUI.updateModuleStates(true);
+        GUI.populateModuleParameters();
+        GUI.populateHelpNotes();
+
     }
 
     public void moveModuleUp() {
-        Module activeModule = GUI.getActiveModule();
+        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Module[] selectedModules = GUI.getSelectedModules();
+        if (selectedModules== null) return;
+
+        int[] fromIndices = GUI.getSelectedModuleIndices();
+        int toIndex = fromIndices[0]-1;
+        if (toIndex < 0) return;
+
+        modules.reorder(fromIndices,toIndex);
+
         int lastModuleEval = GUI.getLastModuleEval();
+        if (toIndex <= lastModuleEval) GUI.setLastModuleEval(toIndex - 1);
 
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            int idx = modules.indexOf(activeModule);
+        GUI.updateModules();
+        GUI.updateModuleStates(true);
 
-            if (idx != 0) {
-                if (idx - 2 <= lastModuleEval) GUI.setLastModuleEval(idx - 2);
-
-                modules.remove(activeModule);
-                modules.add(idx - 1, activeModule);
-                GUI.updateModules();
-                GUI.updateModuleStates(true);
-
-            }
-        }
     }
 
     public void moveModuleDown() {
-        Module activeModule = GUI.getActiveModule();
+        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Module[] selectedModules = GUI.getSelectedModules();
+        if (selectedModules== null) return;
+
+        int[] fromIndices = GUI.getSelectedModuleIndices();
+        int toIndex = fromIndices[fromIndices.length-1]+2;
+        if (toIndex > modules.size()) return;
+
+        modules.reorder(fromIndices,toIndex);
+
         int lastModuleEval = GUI.getLastModuleEval();
+        if (fromIndices[0] <= lastModuleEval) GUI.setLastModuleEval(fromIndices[0] - 1);
 
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            int idx = modules.indexOf(activeModule);
+        GUI.updateModules();
+        GUI.updateModuleStates(true);
 
-            if (idx < modules.size()-1) {
-                if (idx <= lastModuleEval) GUI.setLastModuleEval(idx - 1);
-
-                modules.remove(activeModule);
-                modules.add(idx + 1, activeModule);
-                GUI.updateModules();
-                GUI.updateModuleStates(true);
-
-            }
-        }
     }
 }

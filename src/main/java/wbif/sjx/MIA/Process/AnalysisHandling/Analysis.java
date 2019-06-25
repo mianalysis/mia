@@ -6,6 +6,12 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Process.Logging.Log;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -14,7 +20,7 @@ import wbif.sjx.MIA.Object.Workspace;
  *
  */
 public class Analysis {
-    public ModuleCollection modules = new ModuleCollection();
+    private ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
     private String analysisFilename = "";
 
@@ -46,9 +52,9 @@ public class Analysis {
             if (module.isEnabled() && module.isRunnable()) {
                 boolean status = module.execute(workspace);
                 if (!status) {
-                    // The module failed or requested analysis termination.  Add this message to the log
-                    System.err.println("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
-                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").");
+                    // The module failed or requested analysis termination.  Add this message to the write
+                    MIA.log.write("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
+                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").",Log.Level.WARNING);
 
                     // End the analysis generateModuleList
                     break;
@@ -67,6 +73,24 @@ public class Analysis {
         workspace.clearAllImages(true);
         workspace.clearAllObjects(true);
 
+        // If enabled, write the current memory usage to the console
+        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
+            double totalMemory = Runtime.getRuntime().totalMemory();
+            double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+            DecimalFormat df = new DecimalFormat("#.0");
+
+            String memoryMessage = df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
+                    ", analysis complete"+
+                    ", file \""+workspace.getMetadata().getFile() +
+                    ", time "+dateTime;
+
+            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+
+        }
+
         return true;
 
     }
@@ -74,6 +98,10 @@ public class Analysis {
     public ModuleCollection getModules() {
         return modules;
 
+    }
+
+    public void setModules(ModuleCollection modules) {
+        this.modules = modules;
     }
 
     public void removeAllModules() {

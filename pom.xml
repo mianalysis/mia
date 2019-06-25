@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.10.2</version>
+    <version>0.10.3</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -49,6 +49,11 @@
             <name>Stephen Cross</name>
             <roles><role>founder</role></roles>
             <properties><id>sjcross</id></properties>
+        </contributor>
+        <contributor>
+            <name>Gemma Fisher</name>
+            <roles><role>support</role></roles>
+            <properties><id>glmfisher</id></properties>
         </contributor>
     </contributors>
 
@@ -165,6 +170,11 @@
 
         <dependency>
             <groupId>net.imagej</groupId>
+            <artifactId>imagej</artifactId>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>
             <scope>${myscope}</scope>
         </dependency>
@@ -279,12 +289,18 @@
         </dependency>
 
         <dependency>
+            <groupId>com.atlassian.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+            <version>0.12.1</version>
+        </dependency>
+
+        <dependency>
 <!--            <groupId>wbif.sjx</groupId>-->
 <!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.4.33</version>-->
+<!--            <version>1.4.34-SNAPSHOT</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.33</version>
+            <version>1.4.34</version>
         </dependency>
     </dependencies>
 

@@ -3,6 +3,7 @@
 package wbif.sjx.MIA.Process;
 
 import ij.Prefs;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
@@ -15,11 +16,15 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Exporting.Exporter;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -54,6 +59,8 @@ public class BatchProcessor extends FileCrawler {
     // PUBLIC METHODS
 
     public void run(Analysis analysis, Exporter exporter, String exportName) throws IOException, InterruptedException {
+        MIA.log.clearLog();
+
         shutdownEarly = false;
 
         OutputControl outputControl = analysis.getModules().getOutputControl();
@@ -223,6 +230,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     analysis.execute(workspace);
+
                 } catch (Throwable t) {
                     t.printStackTrace(System.err);
                 }

@@ -21,7 +21,7 @@ import java.awt.*;
  * 09.10.02 (i.e. October 9th, 2002) modified 10.07.03 -- added generation of
  * height map; 4.08.03 -- changed interface for k_size and yes/no height map;
  * 7.08.03 -- Plugin can be initialized with arg string to setup method and then
- * runs non-interactively; sometime in 2004 -- added color support; 
+ * runs non-interactively; sometime in 2004 -- added color support;
  *
  * Inspired by the mentioning of the capability of "flattening" a set of images
  * of different focal planes in ImagePro 4.0. The author, however came up with
@@ -30,7 +30,7 @@ import java.awt.*;
  * author is open to any suggestions regarding algorithm(s), implementation,
  * and/or features of the program. The program may be distributed and modified
  * freely under GPL with the reference of the original source. No implicit or
- * explicit warranty or suitabiluty for a particular purpose is given. See license.txt 
+ * explicit warranty or suitabiluty for a particular purpose is given. See license.txt
  * for detailed conditions on use, modification, and distribution of the source and binary code
  * of the plugin.
  *
@@ -54,9 +54,9 @@ import java.awt.*;
  * image is created from the 8-bit pasted images from each component stack. The
  * height map is an average of individual height maps for RGB case.
  *
- * If the option "R, G, and B come from same objects/structures" is set, the plugin 
+ * If the option "R, G, and B come from same objects/structures" is set, the plugin
  * determines focussed areas for green colour component only and pastes R and B components
- * from the corresponding green-focussed areas. 
+ * from the corresponding green-focussed areas.
  *
  * plugin converts stacks to 32-bit float to preserve precision before any
  * manipulation is performed. The size in pixels (odd integer > 1) of the
@@ -559,7 +559,7 @@ public class Stack_Focuser_ implements PlugInFilter
      * Apply median filter to the provided height map image
      */
     private void smoothHeightMap(ImageProcessor height_ip, int r) {
-       new RankFilters().rank(height_ip,r,RankFilters.MEDIAN);
+        new RankFilters().rank(height_ip,r,RankFilters.MEDIAN);
     }
 
     /*

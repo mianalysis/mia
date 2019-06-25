@@ -7,6 +7,8 @@ import net.imagej.updater.UpdateSite;
 import net.imagej.updater.util.AvailableSites;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
@@ -49,7 +51,7 @@ public class DependencyValidator {
             int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependencies missing", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 update(toInstall);
-                System.err.println("Installation complete.  Please restart Fiji.");
+                MIA.log.write("Installation complete.  Please restart Fiji.",Log.Level.MESSAGE);
                 JOptionPane.showMessageDialog(null, "Please restart Fiji, then process the plugin again");
             }
         }
@@ -70,7 +72,7 @@ public class DependencyValidator {
             final ResolveDependencies resolver = new ResolveDependencies(null, files, true);
             resolver.resolve();
 
-            System.err.println("Gathering available sites");
+            MIA.log.write("Gathering available sites",Log.Level.MESSAGE);
             Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
             if (toInstall[0]) {
                 UpdateSite updateSite = sites.get("http://sites.imagej.net/Biomedgroup/");
@@ -83,12 +85,12 @@ public class DependencyValidator {
                 files.activateUpdateSite(updateSite, null);
             }
 
-            System.err.println("Installing dependencies");
+            MIA.log.write("Installing dependencies",Log.Level.MESSAGE);
             Installer installer = new Installer(files,null);
             installer.start();
             installer.moveUpdatedIntoPlace();
 
-            System.err.println("Writing to file");
+            MIA.log.write("Writing to file",Log.Level.MESSAGE);
             files.write();
 
         } catch (SAXException | ParserConfigurationException | IOException | TransformerConfigurationException e) {

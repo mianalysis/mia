@@ -48,23 +48,23 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
             e1.printStackTrace();
         }
 
-        Module activeModule = GUI.getActiveModule();
+        Module activeModule = GUI.getFirstSelectedModule();
         ModuleCollection modules = GUI.getModules();
         if (activeModule == null
                 || activeModule.getClass().isInstance(new InputControl(modules))
                 || activeModule.getClass().isInstance(new OutputControl(modules))) {
             GUI.getModules().add(newModule);
         } else {
-            int idx = GUI.getModules().indexOf(GUI.getActiveModule());
+            Module[] activeModules = GUI.getSelectedModules();
+            int idx = GUI.getModules().indexOf(activeModules[activeModules.length-1]);
             GUI.getModules().add(++idx,newModule);
         }
-        GUI.setActiveModule(newModule);
 
         // Adding to the list of modules
+        GUI.setSelectedModules(new Module[]{newModule});
         GUI.updateModules();
         GUI.updateModuleStates(true);
         GUI.populateModuleList();
-        GUI.setActiveModule(newModule);
         GUI.populateModuleParameters();
         GUI.populateHelpNotes();
 

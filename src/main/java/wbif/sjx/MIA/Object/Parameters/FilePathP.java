@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 
 public class FilePathP extends FileFolderType {
     public FilePathP(String name, Module module) {
@@ -21,9 +22,13 @@ public class FilePathP extends FileFolderType {
         super(name, module, filePath, description);
     }
 
+
     @Override
-    public boolean isDirectory() {
-        return false;
+    public void setPath(String path) {
+        if (path == null) return;
+
+        this.path = path;
+
     }
 
     @Override
@@ -34,5 +39,18 @@ public class FilePathP extends FileFolderType {
     @Override
     public <T extends Parameter> T duplicate() {
         return (T) new FilePathP(name,module,getPath(),getDescription());
+    }
+
+    @Override
+    public boolean verify() {
+        // Check file is specified
+        if (!super.verify()) return false;
+
+        // Check file exists
+        if (!new File(path).exists()) return false;
+
+        // Finally, check file is a file (not a folder)
+        return new File(path).isFile();
+
     }
 }

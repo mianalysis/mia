@@ -1,6 +1,11 @@
 package wbif.sjx.MIA.GUI;
 
 import wbif.sjx.MIA.GUI.ControlObjects.*;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.*;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
@@ -101,7 +106,9 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createAdvancedModuleControl(Module module, ButtonGroup group, Module activeModule, int panelWidth) {
+    public JPanel createAdvancedModuleControl(Module module, ButtonGroup group, int panelWidth) {
+        Module activeModule = GUI.getFirstSelectedModule();
+
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -148,9 +155,10 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createEditingSeparator(Module module, ButtonGroup group, Module activeModule, int panelWidth) {
+    public JPanel createEditingSeparator(Module module, ButtonGroup group, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        Module activeModule = GUI.getFirstSelectedModule();
 
         // Adding the module enabled checkbox
         c.gridx = 0;

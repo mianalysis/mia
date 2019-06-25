@@ -35,8 +35,7 @@ public abstract class CoreMacroRunner extends Module {
 
     }
 
-    public static String addVariables(String macroString, LinkedHashMap<String,String> variables) {
-        StringBuilder sb = new StringBuilder();
+    public static String addVariables(String macroString, LinkedHashMap<String,String> variables) {        StringBuilder sb = new StringBuilder();
 
         // Adding each variable
         for (String name:variables.keySet()) {

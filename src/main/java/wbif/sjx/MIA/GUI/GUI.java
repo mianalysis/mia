@@ -12,6 +12,7 @@ import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.*;
@@ -22,11 +23,19 @@ import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
+import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -35,7 +44,7 @@ public class GUI {
     private static boolean initialised = false;
 
     private static Analysis analysis = new Analysis();
-    private static Module activeModule = null;
+    private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
@@ -49,13 +58,13 @@ public class GUI {
     private static int statusHeight = 20;
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
-    private static final JFrame frame = new JFrame();
-    private static final JMenuBar menuBar = new JMenuBar();
-    private static final StatusTextField textField = new StatusTextField();
-    private static final BasicPanel basicPan = new BasicPanel();
-    private static final EditingPanel editingPan = new EditingPanel();
+    private static JFrame frame = new JFrame();
+    private static CustomMenuBar menuBar = new CustomMenuBar();
+    private static StatusTextField textField = new StatusTextField();
+    private static BasicPanel basicPan = new BasicPanel();
+    private static EditingPanel editingPan;
     private static MainPanel mainPanel;
-    private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
+    private static TreeMap<String,Module> availableModules = new TreeMap<>();
 
 
     public GUI() throws InstantiationException, IllegalAccessException {
@@ -66,20 +75,30 @@ public class GUI {
         }
         initialised = true;
 
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        Splash splash = new Splash();
+        splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
+        splash.setVisible(true);
+
+        splash.setStatus(Splash.Status.DETECTING_MODULES);
+        Set<Class<? extends Module>> detectedModules = new ClassHunter<Module>().getClasses(Module.class, MIA.isDebug());
+
+        splash.setStatus(Splash.Status.INITIALISING_MODULES);
+        initialiseAvailableModules(detectedModules);
+
+        splash.setStatus(Splash.Status.CREATING_INTERFACE);
+        editingPan = new EditingPanel();
+        basicPan = new BasicPanel();
+
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
-        if (MIA.isDebug()) {
-            mainPanel = editingPan;
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        } else {
-            mainPanel = basicPan;
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        }
+        if (MIA.isDebug()) mainPanel = editingPan;
+        else mainPanel = basicPan;
 
         initialiseStatusTextField();
-        initialiseMenuBar();
 
         frame.setTitle("MIA (version " + MIA.getVersion() + ")");
         frame.setJMenuBar(menuBar);
@@ -89,67 +108,38 @@ public class GUI {
 
         mainPanel.updatePanel();
 
+        splash.setVisible(false);
+
         // Final bits for listeners
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.pack();
         frame.setVisible(true);
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2, (screenSize.height - frameHeight) / 2);
 
         updatePanel();
 
-        AnalysisTester.testModules(analysis.modules);
-        updateModules();
-        updateParameters();
-
     }
 
-    private static void initialiseMenuBar() {
-        // Creating the file menu
-        JMenu menu = new JMenu("File");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.NEW_PIPELINE));
-        menu.add(new MenuItem(MenuItem.LOAD_PIPELINE));
-        menu.add(new MenuItem(MenuItem.SAVE_PIPELINE));
+    void initialiseAvailableModules(Set<Class<? extends Module>> detectedModules) {
+        try {
+            // Creating an alphabetically-ordered list of all modules
+            ModuleCollection moduleCollection = new ModuleCollection();
+            availableModules = new TreeMap<>();
+            for (Class clazz : detectedModules) {
+                if (clazz != InputControl.class && clazz != OutputControl.class) {
+                    // Skip any abstract Modules
+                    if (Modifier.isAbstract(clazz.getModifiers())) continue;
 
-        // Creating the edit menu
-        menu = new JMenu("Edit");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.RESET_ANALYSIS));
-        menu.add(new MenuItem(MenuItem.ENABLE_ALL));
-        menu.add(new MenuItem(MenuItem.DISABLE_ALL));
-        menu.add(new MenuItem(MenuItem.OUTPUT_ALL));
-        menu.add(new MenuItem(MenuItem.SILENCE_ALL));
+                    Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                    Module module = (Module) constructor.newInstance(moduleCollection);
+                    String packageName = module.getPackageName();
+                    String moduleName = module.getName();
+                    availableModules.put(packageName + moduleName, module);
 
-        // Creating the analysis menu
-        menu = new JMenu("Analysis");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.RUN_ANALYSIS));
-        menu.add(new MenuItem(MenuItem.STOP_ANALYSIS));
-
-        // Creating the new menu
-        menu = new JMenu("View");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        if (MIA.isDebug()) {
-            menu.add(new MenuItem(MenuItem.BASIC_VIEW));
-        } else {
-            menu.add(new MenuItem(MenuItem.EDITING_VIEW));
+                }
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
         }
-        menu.add(new MenuItem(MenuItem.SHOW_GLOBAL_VARIABLES));
-        helpNotesCheckbox.setSelected(showHelpNotes());
-        menu.add(helpNotesCheckbox);
-
-        // Creating the help menu
-        menu = new JMenu("Help");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        MenuCheckbox checkbox = new MenuCheckbox(MenuCheckbox.TOGGLE_MEMORY_LOGGING);
-        checkbox.setSelected(MIA.isLogMemory());
-        menu.add(checkbox);
-
     }
 
     public static void updatePanel() {
@@ -161,7 +151,7 @@ public class GUI {
         int minimumHeight = mainPanel.getMinimumHeight();
         frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
 
-        helpNotesCheckbox.setSelected(showHelpNotes());
+        menuBar.setHelpNotesSelected(showHelpNotes());
 
         frame.pack();
         frame.revalidate();
@@ -180,13 +170,9 @@ public class GUI {
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
-        if (MIA.isDebug()) {
-            TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
-            PrintStream printStream = new PrintStream(teeOutputStream);
-            System.setOut(printStream);
-        } else {
-            System.setOut(guiPrintStream);
-        }
+        TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
+        System.setOut(new PrintStream(teeOutputStream));
+
     }
 
     public static void populateModuleList() {
@@ -327,12 +313,31 @@ public class GUI {
         GUI.moduleBeingEval = moduleBeingEval;
     }
 
-    public static Module getActiveModule() {
-        return activeModule;
+    public static Module getFirstSelectedModule() {
+        if (selectedModules == null) return null;
+        return selectedModules[0];
     }
 
-    public static void setActiveModule(Module activeModule) {
-        GUI.activeModule = activeModule;
+    public static Module[] getSelectedModules() {
+        return selectedModules;
+    }
+
+    public static int[] getSelectedModuleIndices() {
+        if (selectedModules == null) return new int[0];
+
+        int[] selectedIndices = new int[selectedModules.length];
+        ModuleCollection modules = getModules();
+
+        for (int i=0;i<selectedModules.length;i++) {
+            selectedIndices[i] = modules.indexOf(selectedModules[i]);
+        }
+
+        return selectedIndices;
+
+    }
+
+    public static void setSelectedModules(Module[] selectedModules) {
+        GUI.selectedModules = selectedModules;
     }
 
     public static Analysis getAnalysis() {
@@ -377,7 +382,12 @@ public class GUI {
     }
 
     public static boolean showHelpNotes() {
+        if (mainPanel == null) return false;
         return mainPanel.showHelpNotes();
+    }
+
+    public static TreeMap<String, Module> getAvailableModules() {
+        return availableModules;
     }
 
 

@@ -24,13 +24,16 @@ public class FixSkeletonBreaks extends Module {
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String MAX_LINKING_ANGLE = "Maximum linking angle (degrees)";
     public static final String ONLY_LINK_ENDS = "Only link ends";
+    public static final String ANGLE_WEIGHT = "Angle weight";
+    public static final String DISTANCE_WEIGHT = "Distance weight";
+    public static final String END_WEIGHT = "End weight";
 
 
     public FixSkeletonBreaks(ModuleCollection modules) {
         super("Fix skeleton breaks", modules);
     }
 
-    public static void fixBreaks(Image inputImage, int nPx, int maxDist, double maxAngle, boolean onlyLinkEnds) {
+    public static void fixBreaks(Image inputImage, int nPx, int maxDist, double maxAngle, boolean onlyLinkEnds, double angleWeight, double distanceWeight, double endWeight) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
@@ -38,7 +41,7 @@ public class FixSkeletonBreaks extends Module {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     inputImagePlus.setPosition(c, z, t);
 
-                    BreakFixer.process(inputImagePlus.getProcessor(),nPx,maxDist,maxAngle,onlyLinkEnds);
+                    BreakFixer.process(inputImagePlus.getProcessor(),nPx,maxDist,maxAngle,onlyLinkEnds,angleWeight,distanceWeight,endWeight);
 
                 }
             }
@@ -68,20 +71,23 @@ public class FixSkeletonBreaks extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         double maxAngle = parameters.getValue(MAX_LINKING_ANGLE);
         boolean onlyLinkEnds = parameters.getValue(ONLY_LINK_ENDS);
+        double angleWeight = parameters.getValue(ANGLE_WEIGHT);
+        double distanceWeight = parameters.getValue(DISTANCE_WEIGHT);
+        double endWeight = parameters.getValue(END_WEIGHT);
 
         // Applying calibration
         if (calibratedUnits) maxDist = inputImagePlus.getCalibration().getRawX(maxDist);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = inputImagePlus.duplicate();}
+        if (!applyToInput) {inputImage = new Image("Temp",inputImagePlus.duplicate());}
 
         // Running skeleton break fixing
         int maxDistPx = (int) Math.round(maxDist);
-        fixBreaks(inputImage,nPx,maxDistPx,maxAngle,onlyLinkEnds);
+        fixBreaks(inputImage,nPx,maxDistPx,maxAngle,onlyLinkEnds,angleWeight,distanceWeight,endWeight);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName,inputImage.getImagePlus());
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
         } else {
@@ -104,6 +110,9 @@ public class FixSkeletonBreaks extends Module {
         parameters.add(new BooleanP(CALIBRATED_UNITS,this,false, "Select whether \"Maximum linking distance\" should be specified in pixel (false) or calibrated (true) units."));
         parameters.add(new DoubleP(MAX_LINKING_ANGLE,this,45, "Maximum angular deviation of linking region relative to orientation of existing branch end.  Specified in degrees."));
         parameters.add(new BooleanP(ONLY_LINK_ENDS,this,false,"Only remove breaks between pixels at branch ends.  When disabled, an end can link into the middle of another branch."));
+        parameters.add(new DoubleP(ANGLE_WEIGHT,this,1));
+        parameters.add(new DoubleP(DISTANCE_WEIGHT,this,1));
+        parameters.add(new DoubleP(END_WEIGHT,this,20));
 
     }
 
@@ -124,6 +133,12 @@ public class FixSkeletonBreaks extends Module {
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(MAX_LINKING_ANGLE));
         returnedParameters.add(parameters.getParameter(ONLY_LINK_ENDS));
+        returnedParameters.add(parameters.getParameter(ANGLE_WEIGHT));
+        returnedParameters.add(parameters.getParameter(DISTANCE_WEIGHT));
+
+        if (!((boolean) parameters.getValue(ONLY_LINK_ENDS))) {
+            returnedParameters.add(parameters.getParameter(END_WEIGHT));
+        }
 
         return returnedParameters;
 

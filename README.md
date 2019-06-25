@@ -2,13 +2,13 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 [![JitPack](https://jitpack.io/v/SJCross/ModularImageAnalysis.svg)](https://jitpack.io/#SJCross/ModularImageAnalysis/)
 
-<img src="./docs/images/Logo_text_UoB_128.png">
-<br>
+[![Wolfson Bioimmaging](./docs/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)
 
-MIA is an ImageJ/Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.</div>
+About
+-----
+MIA is a Fiji plugin which provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.  Analysis pipelines are batch-enabled by default, allowing easy processing of high-content datasets.
 
-MIA is developed in the Wolfson Bioimaging Facility at the University of Bristol.
-
+MIA is developed in the [Wolfson Bioimaging Facility](http://www.bristol.ac.uk/wolfson-bioimaging/) at the University of Bristol.
 
 Installation
 ------------
@@ -16,7 +16,7 @@ Installation
 - Place this .jar file into the /plugins directory of the your Fiji installation.
 - If the "Biomedgroup" and "IJPB-plugins" plugins aren't already installed, you'll be prompted to download these via an automated installer.
 
-Usage
+Getting started
 -----
 - In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 - To run an existing analysis workflow
@@ -61,3 +61,5 @@ Plugins bundled with MIA:
 - [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html)
 
 A list of bundled dependencies along with their respective licenses can be found [here](https://cdn.staticaly.com/gh/SJCross/ModularImageAnalysis/908a49be/target/site/dependencies.html).
+
+
