@@ -32,7 +32,7 @@ import java.io.IOException;
  * Created by Stephen on 22/06/2018.
  */
 public class AnalysisWriter {
-    public static void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
+    public static void saveAnalysisAs(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
         // Updating the analysis filename
         analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 
@@ -84,7 +84,7 @@ public class AnalysisWriter {
         if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }
-        saveAnalysis(analysis,outputFileName);
+        saveAnalysisAs(analysis,outputFileName);
 
     }
 

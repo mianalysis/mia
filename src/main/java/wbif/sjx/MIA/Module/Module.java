@@ -14,6 +14,8 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.Log;
 
+import java.awt.datatransfer.Transferable;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -300,5 +302,10 @@ public abstract class Module extends Ref implements Comparable {
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());
         this.notes = map.getNamedItem("NOTES").getNodeValue();
 
+    }
+
+    @Override
+    public String toString() {
+        return getNickname();
     }
 }

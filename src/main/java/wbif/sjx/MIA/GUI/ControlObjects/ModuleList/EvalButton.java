@@ -1,5 +1,6 @@
-package wbif.sjx.MIA.GUI.ControlObjects;
+package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -81,7 +82,6 @@ public class EvalButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!module.isEnabled()) return;
 
         int idx = GUI.getModules().indexOf(module);
 

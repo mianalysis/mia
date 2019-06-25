@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.GUI.ControlObjects;
+package wbif.sjx.MIA.GUI.ControlObjects.ParameterList;
 
 import wbif.sjx.MIA.Module.Module;
 

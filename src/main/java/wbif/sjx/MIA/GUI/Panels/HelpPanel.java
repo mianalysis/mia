@@ -4,8 +4,6 @@ import wbif.sjx.MIA.GUI.ControlObjects.HelpArea;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -25,7 +23,7 @@ public class HelpPanel extends JPanel {
     }
 
     public void updatePanel() {
-        Module activeModule = GUI.getActiveModule();
+        Module activeModule = GUI.getFirstSelectedModule();
         ModuleCollection modules = GUI.getModules();
 
         removeAll();

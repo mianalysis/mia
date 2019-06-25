@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.GUI.Panels.MainPanels;
 
-import ij.IJ;
 import ij.Prefs;
 import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;
@@ -9,19 +8,13 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.Panels.*;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
-import wbif.sjx.MIA.Process.ClassHunter;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class EditingPanel extends MainPanel {
@@ -37,7 +30,7 @@ public class EditingPanel extends MainPanel {
     private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final InputOutputPanel inputPanel = new InputOutputPanel(moduleGroup);
     private final InputOutputPanel outputPanel = new InputOutputPanel(moduleGroup);
-    private final ModulesPanel modulesPanel = new ModulesPanel(moduleGroup);
+    private final DraggableModulesPanel modulesPanel = new DraggableModulesPanel(moduleGroup);
     private final ParametersPanel parametersPanel = new ParametersPanel();
     private final JPanel helpNotesPanel = new JPanel();
     private final NotesPanel notesPanel = new NotesPanel();
@@ -342,7 +335,7 @@ public class EditingPanel extends MainPanel {
         outputPanel.updateButtonState();
         outputPanel.updatePanel(outputControl);
 
-        parametersPanel.updatePanel(GUI.getActiveModule());
+        parametersPanel.updatePanel(GUI.getFirstSelectedModule());
         modulesPanel.updateButtonStates();
         modulesPanel.updatePanel();
 
@@ -357,13 +350,13 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void updateParameters() {
-        parametersPanel.updatePanel(GUI.getActiveModule());
+        parametersPanel.updatePanel(GUI.getFirstSelectedModule());
     }
 
     @Override
     public void updateHelpNotes() {
         // Only update the help and notes if the module has changed
-        Module activeModule = GUI.getActiveModule();
+        Module activeModule = GUI.getFirstSelectedModule();
 
         if (activeModule != lastHelpNotesModule) {
             lastHelpNotesModule = activeModule;

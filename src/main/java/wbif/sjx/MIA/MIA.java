@@ -107,6 +107,7 @@ public class MIA implements Command {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             new GUI();
+
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
         }
