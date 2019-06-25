@@ -28,6 +28,7 @@ import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -58,12 +59,11 @@ public class GUI {
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();
-    private static JMenuBar menuBar = new JMenuBar();
+    private static CustomMenuBar menuBar = new CustomMenuBar();
     private static StatusTextField textField = new StatusTextField();
     private static BasicPanel basicPan = new BasicPanel();
     private static EditingPanel editingPan;
     private static MainPanel mainPanel;
-    private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
     private static TreeMap<String,Module> availableModules = new TreeMap<>();
 
 
@@ -99,7 +99,6 @@ public class GUI {
         else mainPanel = basicPan;
 
         initialiseStatusTextField();
-        initialiseMenuBar();
 
         frame.setTitle("MIA (version " + MIA.getVersion() + ")");
         frame.setJMenuBar(menuBar);
@@ -143,85 +142,6 @@ public class GUI {
         }
     }
 
-    private static void initialiseMenuBar() {
-        // Creating the file menu
-        JMenu menu = new JMenu("File");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.NEW_PIPELINE));
-        menu.add(new MenuItem(MenuItem.LOAD_PIPELINE));
-        menu.add(new MenuItem(MenuItem.SAVE_PIPELINE));
-
-        // Creating the edit menu
-        menu = new JMenu("Edit");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.RESET_ANALYSIS));
-        menu.add(new MenuItem(MenuItem.ENABLE_ALL));
-        menu.add(new MenuItem(MenuItem.DISABLE_ALL));
-        menu.add(new MenuItem(MenuItem.OUTPUT_ALL));
-        menu.add(new MenuItem(MenuItem.SILENCE_ALL));
-
-        // Creating the analysis menu
-        menu = new JMenu("Analysis");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.RUN_ANALYSIS));
-        menu.add(new MenuItem(MenuItem.STOP_ANALYSIS));
-
-        // Creating the new menu
-        menu = new JMenu("View");
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        menuBar.add(menu);
-        if (MIA.isDebug()) {
-            menu.add(new MenuItem(MenuItem.BASIC_VIEW));
-        } else {
-            menu.add(new MenuItem(MenuItem.EDITING_VIEW));
-        }
-        menu.add(new MenuItem(MenuItem.SHOW_GLOBAL_VARIABLES));
-        helpNotesCheckbox.setSelected(showHelpNotes());
-        menu.add(helpNotesCheckbox);
-
-        // Creating the help menu
-        menu = new JMenu("Help");
-        menuBar.add(menu);
-        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-
-        menu.add(new MenuItem(MenuItem.SHOW_ABOUT));
-        menu.add(new MenuItem(MenuItem.SHOW_GETTING_STARTED));
-
-        JMenu logMenu = new JMenu("Logging");
-        menu.add(logMenu);
-        logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-
-        Log.Level level = Log.Level.MESSAGE;
-        MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
-        logMenu.add(menuLogCheckbox);
-
-        level = Log.Level.WARNING;
-        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
-        logMenu.add(menuLogCheckbox);
-
-//        Enabling/disabling errors is disabled, because these should always be present
-//        level = Log.Level.ERROR;
-//        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
-//        logMenu.add(menuLogCheckbox);
-
-        level = Log.Level.DEBUG;
-        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
-        logMenu.add(menuLogCheckbox);
-
-        level = Log.Level.MEMORY;
-        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
-        logMenu.add(menuLogCheckbox);
-
-        menuBar.add(Box.createHorizontalGlue());
-        menu = new JMenu("");
-        menuBar.add(menu);
-        menu.add(new MenuItem(MenuItem.SHOW_PONY));
-
-    }
-
     public static void updatePanel() {
         int preferredWidth = mainPanel.getPreferredWidth();
         int preferredHeight = mainPanel.getPreferredHeight();
@@ -231,7 +151,7 @@ public class GUI {
         int minimumHeight = mainPanel.getMinimumHeight();
         frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
 
-        helpNotesCheckbox.setSelected(showHelpNotes());
+        menuBar.setHelpNotesSelected(showHelpNotes());
 
         frame.pack();
         frame.revalidate();
@@ -462,6 +382,7 @@ public class GUI {
     }
 
     public static boolean showHelpNotes() {
+        if (mainPanel == null) return false;
         return mainPanel.showHelpNotes();
     }
 

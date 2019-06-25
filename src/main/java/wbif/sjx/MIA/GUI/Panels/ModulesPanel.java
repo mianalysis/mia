@@ -1,10 +1,10 @@
 package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
-import wbif.sjx.MIA.GUI.ControlObjects.EvalButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ShowOutputButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;

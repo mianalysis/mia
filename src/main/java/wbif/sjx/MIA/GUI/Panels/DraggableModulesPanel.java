@@ -1,13 +1,14 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.GUI.ComponentFactory;
-import wbif.sjx.MIA.GUI.ControlObjects.EvalButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledButton;
-import wbif.sjx.MIA.GUI.ControlObjects.SeparatorButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ShowOutputButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.DraggableTableModel;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleTable;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ModuleList.ModuleTable;
-import wbif.sjx.MIA.GUI.ModuleList.DraggableTableModel;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -52,7 +53,6 @@ public class DraggableModulesPanel extends JScrollPane {
 
     public void updatePanel() {
         Analysis analysis = GUI.getAnalysis();
-        ComponentFactory componentFactory = GUI.getComponentFactory();
         int moduleButtonWidth = GUI.getModuleButtonWidth();
 
         panel.removeAll();
@@ -174,6 +174,16 @@ public class DraggableModulesPanel extends JScrollPane {
     }
 
     public void updateButtonStates() {
-        updatePanel();
+        for (Component component : panel.getComponents()) {
+            if (component.getClass() == ModuleEnabledButton.class) {
+                ((ModuleEnabledButton) component).updateState();
+            } else if (component.getClass() == ShowOutputButton.class) {
+                ((ShowOutputButton) component).updateState();
+            } else if (component.getClass() == ModuleButton.class) {
+                ((ModuleButton) component).updateState();
+            } else if (component.getClass() == EvalButton.class) {
+                ((EvalButton) component).updateState();
+            }
+        }
     }
 }

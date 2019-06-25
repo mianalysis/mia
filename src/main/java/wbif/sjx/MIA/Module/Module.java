@@ -14,6 +14,8 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.Log;
 
+import java.awt.datatransfer.Transferable;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;

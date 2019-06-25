@@ -101,12 +101,13 @@ public class MIA implements Command {
         if (DependencyValidator.run()) return;
 
         // Redirecting the standard output and error streams, so they are formatted by for the console
-//        System.setOut(new PrintStream(new MessageLog()));
-//        System.setErr(new PrintStream(new ErrorLog()));
+        System.setOut(new PrintStream(new MessageLog()));
+        System.setErr(new PrintStream(new ErrorLog()));
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             new GUI();
+
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
         }

@@ -1,9 +1,6 @@
 // From https://stackoverflow.com/questions/638807/how-do-i-drag-and-drop-a-row-in-a-jtable (Accessed 2019-04-03)
 
-package wbif.sjx.MIA.GUI.ModuleList;
-
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
+package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
@@ -12,7 +9,6 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
-import java.util.stream.IntStream;
 
 /**
  * Handles drag and drop row reordering
@@ -61,7 +57,7 @@ public class DraggableTransferHandler extends TransferHandler {
         int[] fromIndices = table.getSelectedRows();
         if (fromIndices.length == 0) return false;
 
-        ((Reorderable) table.getModel()).reorder(fromIndices, toIndex);
+        ((DraggableTableModel) table.getModel()).reorder(fromIndices, toIndex);
         target.getSelectionModel().setSelectionInterval(-1,-1);
 
         return true;

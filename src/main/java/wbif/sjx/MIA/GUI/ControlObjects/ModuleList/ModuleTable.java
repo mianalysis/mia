@@ -1,10 +1,11 @@
-package wbif.sjx.MIA.GUI.ModuleList;
+package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,7 +15,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class ModuleTable extends JTable implements ActionListener, TableCellRenderer {
@@ -54,6 +57,9 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
         setOpaque(false);
         setBackground(new Color(0, 0, 0, 0));
 
+        KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,0);
+        registerKeyboardAction(this,"Backspace",backspace,JComponent.WHEN_FOCUSED);
+
         KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0);
         registerKeyboardAction(this,"Delete",delete,JComponent.WHEN_FOCUSED);
 
@@ -82,6 +88,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
+            case "Backspace":
             case "Delete":
                 for (int row:getSelectedRows()) {
                     Module module = (Module) getValueAt(row, 0);
@@ -89,10 +96,41 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
                 }
                 break;
             case "Copy":
-//                MIA.log.writeDebug("Copying");
+//                int[] selectedRows = getSelectedRows();
+//                if (selectedRows.length == 0) return;
+//
+//                // Adding first value
+//                StringBuilder sb = new StringBuilder();
+//                Module module = (Module) getValueAt(selectedRows[0], 0);
+//                sb.append(modules.indexOf(module));
+//
+//                // Adding remaining values
+//                for (int i=1;i<selectedRows.length;i++) {
+//                    module = (Module) getValueAt(selectedRows[i], 0);
+//
+//                }
+//
+//                // Adding to clipboard
+//                StringSelection stringSelection = new StringSelection(sb.toString());
+//                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//                clipboard.setContents(stringSelection,null);
+
                 break;
             case "Paste":
-//                MIA.log.writeDebug("Pasting");
+//                selectedRows = getSelectedRows();
+//                if (selectedRows.length == 0) return;
+//
+//                try {
+//                    // Getting clipboard contents specifying modules to copy
+//                    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//                    String fromIdxString = (String) clipboard.getData(DataFlavor.stringFlavor);
+//                    int[] fromIdxInts = CommaSeparatedStringInterpreter.interpretIntegers(fromIdxString,true);
+//                    int toIdx = selectedRows[selectedRows.length-1];
+//
+//                } catch (UnsupportedFlavorException | IOException ex) {
+//                    ex.printStackTrace();
+//                }
+
                 break;
         }
 
