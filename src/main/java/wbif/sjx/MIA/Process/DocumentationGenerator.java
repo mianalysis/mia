@@ -375,7 +375,7 @@ public class DocumentationGenerator {
             sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
             sb.append("\n\n");
 
-            sb.append("[![Wolfson Bioimmaging](./docs/images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
+            sb.append("[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
             sb.append("\n\n");
             sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md"))));
             sb.append("\n\n");
