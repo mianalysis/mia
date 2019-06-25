@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI;
 
 import org.xml.sax.SAXException;
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -34,9 +33,9 @@ public class GUIAnalysisHandler {
         modules.add(new ImageLoader<>(modules));
 
         GUI.setAnalysis(analysis);
-        GUI.populateModuleList();
-        GUI.populateModuleParameters();
-        GUI.populateHelpNotes();
+        GUI.updateModuleList();
+        GUI.updateModuleParameters();
+        GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
 
     }
@@ -53,9 +52,9 @@ public class GUIAnalysisHandler {
         if (newAnalysis == null) return;
 
         GUI.setAnalysis(newAnalysis);
-        GUI.populateModuleList();
-        GUI.populateModuleParameters();
-        GUI.populateHelpNotes();
+        GUI.updateModuleList();
+        GUI.updateModuleParameters();
+        GUI.updateHelpNotes();
 
         GUI.setLastModuleEval(-1);
         GUI.updateTestFile();
@@ -100,22 +99,22 @@ public class GUIAnalysisHandler {
         for (
                 Module module : GUI.getModules())
             module.setEnabled(true);
-        GUI.populateModuleList();
+        GUI.updateModuleList();
 
     }
 
     public static void disableAllModules() {
         for (Module module:GUI.getModules()) module.setEnabled(false);
-        GUI.populateModuleList();
+        GUI.updateModuleList();
     }
 
     public static void enableAllModulesOutput() {
         for (Module module:GUI.getModules()) module.setShowOutput(true);
-        GUI.populateModuleList();
+        GUI.updateModuleList();
     }
 
     public static void disableAllModulesOutput() {
         for (Module module:GUI.getModules()) module.setShowOutput(false);
-        GUI.populateModuleList();
+        GUI.updateModuleList();
     }
 }

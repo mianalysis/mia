@@ -64,9 +64,9 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         GUI.setSelectedModules(new Module[]{newModule});
         GUI.updateModules();
         GUI.updateModuleStates(true);
-        GUI.populateModuleList();
-        GUI.populateModuleParameters();
-        GUI.populateHelpNotes();
+        GUI.updateModuleList();
+        GUI.updateModuleParameters();
+        GUI.updateHelpNotes();
 
         moduleListMenu.setVisible(false);
 

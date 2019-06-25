@@ -37,7 +37,7 @@ public class EnableRefsButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         for (ExportableRef ref: refs.values()) ref.setExportGlobal(true);
 
-        GUI.populateModuleParameters();
+        GUI.updateModuleParameters();
 
     }
 }

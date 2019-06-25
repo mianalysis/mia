@@ -1,11 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
-import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -15,9 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.datatransfer.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class ModuleTable extends JTable implements ActionListener, TableCellRenderer {
@@ -40,6 +36,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
 
                 GUI.setSelectedModules(selectedModules);
                 GUI.updateParameters();
+                GUI.updateHelpNotes();
 
             }
         });
@@ -142,7 +139,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = new JLabel();
 
-        Border margin = new EmptyBorder(0,5,0,0);
+        Border margin = new EmptyBorder(2,5,0,0);
         label.setBorder(margin);
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setOpaque(true);

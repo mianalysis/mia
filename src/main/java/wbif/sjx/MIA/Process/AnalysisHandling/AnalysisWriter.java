@@ -33,6 +33,11 @@ import java.io.IOException;
  */
 public class AnalysisWriter {
     public static void saveAnalysisAs(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
+        if (outputFileName == null || outputFileName.equals("")) {
+            saveAnalysis(analysis);
+            return;
+        }
+
         // Updating the analysis filename
         analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 

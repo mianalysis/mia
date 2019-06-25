@@ -43,7 +43,7 @@ public class AddParametersButton extends ParameterControl implements ActionListe
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules();
-        GUI.populateModuleParameters();
+        GUI.updateModuleParameters();
         GUI.updateModuleStates(true);
 
         updateControl();

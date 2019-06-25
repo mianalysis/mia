@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Process;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -19,7 +21,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -43,7 +47,7 @@ public class DocumentationGenerator {
 
     private static void generateIndexPage() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/index.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/index.html")));
         String indexContent = getIndexContent();
         template = template.replace("${INSERT}",indexContent);
 
@@ -55,7 +59,7 @@ public class DocumentationGenerator {
 
     private static void generateModuleList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/modulelist.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modulelist.html")));
         String moduleList = getModuleList();
         template = template.replace("${INSERT}",moduleList);
 
@@ -70,7 +74,7 @@ public class DocumentationGenerator {
     private static void generateModulePages() throws IOException {
         HashSet<Module> modules = getModules();
         for (Module module:modules) {
-            String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/modules.html")));
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modules.html")));
             String moduleList = getModuleSummary(module);
             template = template.replace("${INSERT}",moduleList);
 
@@ -86,7 +90,7 @@ public class DocumentationGenerator {
 
     private static void generateMacroList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/macrolist.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macrolist.html")));
         String macroList = getMacroList();
         template = template.replace("${INSERT}",macroList);
 
@@ -101,7 +105,7 @@ public class DocumentationGenerator {
     private static void generateMacroPages() throws IOException {
         ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
         for (MacroOperation macro:macros) {
-            String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/macros.html")));
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
             String macroList = getMacroSummary(macro);
             template = template.replace("${INSERT}",macroList);
 
@@ -121,27 +125,27 @@ public class DocumentationGenerator {
         StringBuilder sb = new StringBuilder();
 
         try {
-            String string = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
+            String string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md")));
+            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md")));
+            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/gettingStarted.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md")));
+            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/citing.md")));
+            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md")));
+            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
@@ -372,20 +376,20 @@ public class DocumentationGenerator {
         try {
             StringBuilder sb = new StringBuilder();
 
-            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/githubBadges.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/githubBadges.md"))));
             sb.append("\n\n");
 
             sb.append("[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md"))));
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md"))));
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/gettingStarted.md"))));
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md"))));
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md"))));
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md"))));
             sb.append("\n\n");
 
             FileWriter writer = new FileWriter("README.md");
@@ -411,19 +415,23 @@ public class DocumentationGenerator {
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 
-            String string = new String(Files.readAllBytes(Paths.get("docs/templatemd/introduction.md")));
+            URL url = Resources.getResource("templatemd/introduction.md");
+            String string = Resources.toString(url, Charsets.UTF_8);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/acknowledgements.md")));
+            url = Resources.getResource("templatemd/acknowledgements.md");
+            string = Resources.toString(url, Charsets.UTF_8);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/citing.md")));
+            url = Resources.getResource("templatemd/citing.md");
+            string = Resources.toString(url, Charsets.UTF_8);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/note.md")));
+            url = Resources.getResource("templatemd/note.md");
+            string = Resources.toString(url, Charsets.UTF_8);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
@@ -450,11 +458,13 @@ public class DocumentationGenerator {
             sb.append("\" align=\"middle\">");
             sb.append("<br><br>");
 
-            String string = new String(Files.readAllBytes(Paths.get("docs/templatemd/installation.md")));
+            URL url = Resources.getResource("templatemd/installation.md");
+            String string = Resources.toString(url, Charsets.UTF_8);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
-            string = new String(Files.readAllBytes(Paths.get("docs/templatemd/gettingStarted.md")));
+            url = Resources.getResource("templatemd/gettingStarted.md");
+            string = Resources.toString(url, Charsets.UTF_8);
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 

@@ -93,7 +93,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
         GUI.updateModules();
         GUI.updateModuleStates(true);
-        GUI.populateModuleParameters();
+        GUI.updateModuleParameters();
 
         updateControl();
 

@@ -175,15 +175,15 @@ public class GUI {
 
     }
 
-    public static void populateModuleList() {
+    public static void updateModuleList() {
         mainPanel.updateModules();
     }
 
-    public static void populateModuleParameters() {
+    public static void updateModuleParameters() {
         mainPanel.updateParameters();
     }
 
-    public static void populateHelpNotes() {
+    public static void updateHelpNotes() {
         mainPanel.updateHelpNotes();
     }
 

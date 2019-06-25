@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +23,7 @@ public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
                 case TOGGLE_HELP_NOTES:
                     GUI.setShowHelpNotes(isSelected());
                     GUI.updatePanel();
-                    GUI.populateHelpNotes();
+                    GUI.updateHelpNotes();
                     break;
 
             }

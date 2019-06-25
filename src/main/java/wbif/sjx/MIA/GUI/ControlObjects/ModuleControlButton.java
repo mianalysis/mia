@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 
@@ -85,8 +84,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
         GUI.setSelectedModules(null);
         GUI.updateModules();
         GUI.updateModuleStates(true);
-        GUI.populateModuleParameters();
-        GUI.populateHelpNotes();
+        GUI.updateModuleParameters();
+        GUI.updateHelpNotes();
 
     }
 

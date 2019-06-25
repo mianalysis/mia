@@ -25,12 +25,11 @@ public class EditingPanel extends MainPanel {
 
     private ModuleControlButton addModuleButton = null;
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
-    private static final ButtonGroup moduleGroup = new ButtonGroup();
 
     private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
-    private final InputOutputPanel inputPanel = new InputOutputPanel(moduleGroup);
-    private final InputOutputPanel outputPanel = new InputOutputPanel(moduleGroup);
-    private final DraggableModulesPanel modulesPanel = new DraggableModulesPanel(moduleGroup);
+    private final InputOutputPanel inputPanel = new InputOutputPanel();
+    private final InputOutputPanel outputPanel = new InputOutputPanel();
+    private final ModulesPanel modulesPanel = new ModulesPanel();
     private final ParametersPanel parametersPanel = new ParametersPanel();
     private final JPanel helpNotesPanel = new JPanel();
     private final NotesPanel notesPanel = new NotesPanel();

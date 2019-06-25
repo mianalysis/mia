@@ -9,11 +9,9 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class InputOutputPanel extends JPanel {
-    private ButtonGroup buttonGroup;
     private ModuleButton button;
 
-    public InputOutputPanel(ButtonGroup buttonGroup) {
-        this.buttonGroup = buttonGroup;
+    public InputOutputPanel() {
         int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
@@ -40,7 +38,6 @@ public class InputOutputPanel extends JPanel {
         c.fill = GridBagConstraints.BOTH;
 
         button = new ModuleButton(module);
-        buttonGroup.add(button);
         add(button, c);
 
         revalidate();

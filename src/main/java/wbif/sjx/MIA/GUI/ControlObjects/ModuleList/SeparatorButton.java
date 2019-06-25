@@ -54,9 +54,9 @@ public class SeparatorButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).flipBoolean();
 
-        GUI.populateModuleList();
-        GUI.populateModuleParameters();
-        GUI.populateHelpNotes();
+        GUI.updateModuleList();
+        GUI.updateModuleParameters();
+        GUI.updateHelpNotes();
 
     }
 }
