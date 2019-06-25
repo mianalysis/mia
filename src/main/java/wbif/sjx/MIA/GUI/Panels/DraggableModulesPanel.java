@@ -6,9 +6,8 @@ import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledButton;
 import wbif.sjx.MIA.GUI.ControlObjects.SeparatorButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ShowOutputButton;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ModuleList.ModuleTableCellRenderer;
+import wbif.sjx.MIA.GUI.ModuleList.ModuleTable;
 import wbif.sjx.MIA.GUI.ModuleList.DraggableTableModel;
-import wbif.sjx.MIA.GUI.ModuleList.DraggableTransferHandler;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
@@ -16,8 +15,6 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.HashMap;
 
@@ -68,7 +65,24 @@ public class DraggableModulesPanel extends JScrollPane {
 
         ModuleCollection modules = GUI.getModules();
         HashMap<Module,Boolean> expandedStatus = getExpandedModules(modules);
-        JTable moduleNameTable = getModuleNameTable(modules,expandedStatus);
+        // Get number of visible modules
+        int expandedCount = (int) expandedStatus.values().stream().filter(p -> p).count();
+
+        // Adding content
+        String[] columnNames = {"Title"};
+        Object[][] data = new Object[expandedCount][1];
+
+        int count = 0;
+        for (int i=0;i<modules.size();i++) {
+            if (expandedStatus.get(modules.get(i))) data[count++][0] = modules.get(i);
+        }
+        DraggableTableModel tableModel = new DraggableTableModel(data, columnNames,modules);
+        JTable moduleNameTable = new ModuleTable(tableModel, modules,expandedStatus);
+
+        JScrollPane scrollPane = new JScrollPane(moduleNameTable);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBackground(new Color(0, 0, 0, 0));
 
         // Creating control buttons for modules
         for (Module module:modules) {
@@ -156,64 +170,6 @@ public class DraggableModulesPanel extends JScrollPane {
         }
 
         return expandedStatus;
-
-    }
-
-    private JTable getModuleNameTable(ModuleCollection modules, HashMap<Module,Boolean> expandedStatus) {
-        // Get number of visible modules
-        int expandedCount = (int) expandedStatus.values().stream().filter(p -> p).count();
-
-        String[] columnNames = {"Title"};
-        Object[][] data = new Object[expandedCount][1];
-        int count = 0;
-        for (int i=0;i<modules.size();i++) {
-            if (expandedStatus.get(modules.get(i))) data[count++][0] = modules.get(i);
-        }
-
-        DraggableTableModel tableModel = new DraggableTableModel(data, columnNames,modules);
-        JTable table = new JTable(tableModel);
-        ListSelectionModel listSelectionModel = table.getSelectionModel();
-        listSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int[] rows = table.getSelectedRows();
-                Module[] selectedModules = new Module[rows.length];
-                for (int i=0;i<rows.length;i++) {
-                    selectedModules[i] = (Module) table.getValueAt(rows[i],0);
-                }
-
-                GUI.setSelectedModules(selectedModules);
-                GUI.updateParameters();
-
-            }
-        });
-
-        table.setCellEditor(null);
-        table.getColumnModel().getColumn(0).setCellRenderer(new ModuleTableCellRenderer());
-        table.setTableHeader(null);
-        table.setOpaque(false);
-        table.setDragEnabled(true);
-        table.setDropMode(DropMode.INSERT_ROWS);
-        table.setTransferHandler(new DraggableTransferHandler(table));
-        table.getColumn("Title").setPreferredWidth(200);
-        table.setRowHeight(26);
-        table.setShowGrid(false);
-        table.setFillsViewportHeight(true);
-        table.setBackground(new Color(0, 0, 0, 0));
-
-        // Adding selection
-//        int[] selectedIndices = GUI.getSelectedModuleIndices();
-//        table.clearSelection();
-//        if (selectedIndices != null) {
-//            for (int selectedIndex : selectedIndices) table.addRowSelectionInterval(selectedIndex, selectedIndex);
-//        }
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.setBackground(new Color(0, 0, 0, 0));
-
-        return table;
 
     }
 

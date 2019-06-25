@@ -24,7 +24,6 @@ public class DraggableTableModel extends DefaultTableModel implements Reorderabl
 
     @Override
     public void reorder(int[] fromIndices, int toIndex) {
-//        MIA.log.writeDebug("Arrived at DraggableTableModel reorder");
         Module[] toMove = new Module[fromIndices.length];
         for (int i=0;i<fromIndices.length;i++) {
             toMove[i] = (Module) getValueAt(fromIndices[i],0);

@@ -59,9 +59,6 @@ public class DraggableTransferHandler extends TransferHandler {
         target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
         int[] fromIndices = table.getSelectedRows();
-//        System.err.println("Here2");
-//        System.err.println(fromIndices[0]+"_"+fromIndices[1]+"_"+toIndex);
-//        System.err.println("Here again!");
         if (fromIndices.length == 0) return false;
 
         ((Reorderable) table.getModel()).reorder(fromIndices, toIndex);
