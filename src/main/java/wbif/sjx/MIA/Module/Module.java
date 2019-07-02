@@ -278,12 +278,17 @@ public abstract class Module extends Ref implements Comparable, Serializable {
     public Module duplicate() throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Constructor constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
         Module newModule = (Module) constructor.newInstance(modules);
+        newModule.setNickname(getNickname());
+        newModule.setEnabled(enabled);
+        newModule.setShowOutput(showOutput);
+        newModule.setNotes(notes);
+
+        ParameterCollection newParameters = newModule.getAllParameters();
 
         for (Parameter parameter:parameters.values()) {
-            
+            Parameter newParameter = parameter.duplicate();
+            newParameters.add(newParameter);
         }
-
-        MIA.log.writeDebug("STILL NEED TO IMPLEMENT PARAMETER TRANSFER FOR MODULE DUPLICATION");
 
         return newModule;
 

@@ -74,7 +74,7 @@ public class ModulesPanel extends JScrollPane {
             if (expandedStatus.get(modules.get(i))) data[count++][0] = modules.get(i);
         }
         DraggableTableModel tableModel = new DraggableTableModel(data, columnNames,modules);
-        JTable moduleNameTable = new ModuleTable(tableModel, modules,expandedStatus);
+        JTable moduleNameTable = new ModuleTable(tableModel,modules,expandedStatus);
 
         JScrollPane scrollPane = new JScrollPane(moduleNameTable);
         scrollPane.setOpaque(false);

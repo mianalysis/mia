@@ -48,6 +48,7 @@ public class GUI {
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
+    private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
     private static int minimumFrameWidth = 400;
@@ -390,6 +391,13 @@ public class GUI {
         return availableModules;
     }
 
+    public static UndoRedoStore getUndoRedoStore() {
+        return undoRedoStore;
+    }
+
+    public static void addUndo() {
+        undoRedoStore.addUndo(analysis.getModules());
+    }
 
     // COMPONENT SIZE GETTERS
 

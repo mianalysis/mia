@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -340,6 +341,14 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
         removeAll(this);
         addAll(newModules);
+    }
+
+    public ModuleCollection duplicate() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ModuleCollection copyModules = new ModuleCollection();
+        for (Module module:values()) copyModules.add(module.duplicate());
+
+        return copyModules;
+
     }
 
     @Override

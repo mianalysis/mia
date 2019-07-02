@@ -58,6 +58,8 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select file");
         fileChooser.setMultiSelectionEnabled(false);

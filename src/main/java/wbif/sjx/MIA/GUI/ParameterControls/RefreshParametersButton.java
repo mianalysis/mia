@@ -35,6 +35,8 @@ public class RefreshParametersButton extends ParameterControl implements ActionL
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 

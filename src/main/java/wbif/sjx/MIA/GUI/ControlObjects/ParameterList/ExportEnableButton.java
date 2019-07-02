@@ -44,6 +44,8 @@ public class ExportEnableButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         ref.setExportGlobal(!ref.isExportGlobal());
 
         setIcon();

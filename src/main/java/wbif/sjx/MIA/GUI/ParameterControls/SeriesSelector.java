@@ -13,6 +13,7 @@ public class SeriesSelector extends TextParameter {
     @Override
     public void focusLost(FocusEvent e) {
         super.focusLost(e);
+
         GUI.updateTestFile();
         GUI.updateModuleStates(true);
 

@@ -18,8 +18,6 @@ public class ModuleCollectionTransfer implements Transferable {
     @Override
     public DataFlavor[] getTransferDataFlavors() {
         try {
-//            String moduleCollectionType = DataFlavor.javaJVMLocalObjectMimeType + ";class=wbif.sjx.MIA.Object.ModuleCollection";
-//            DataFlavor moduleCollectionFlavour = new DataFlavor(moduleCollectionType);
             DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
             return new DataFlavor[]{dataFlavor};
 

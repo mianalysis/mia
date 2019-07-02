@@ -36,6 +36,7 @@ public class RenameListMenu extends JPopupMenu implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
         setVisible(false);
 
         switch (e.getActionCommand()) {

@@ -33,6 +33,8 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
+        GUI.addUndo();
+
         parameter.setValueFromString(control.getText());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());

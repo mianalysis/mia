@@ -33,6 +33,8 @@ public class BooleanParameter extends ParameterControl implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         parameter.setSelected(control.isSelected());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());

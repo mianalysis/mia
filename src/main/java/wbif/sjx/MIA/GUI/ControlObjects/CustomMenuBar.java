@@ -3,6 +3,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
@@ -95,6 +96,12 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         KeyStroke newAnalysis = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK);
         registerKeyboardAction(this,"New",newAnalysis,JComponent.WHEN_IN_FOCUSED_WINDOW);
 
+        KeyStroke undoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK);
+        registerKeyboardAction(this,"Undo",undoAction,JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        KeyStroke redoAction = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK);
+        registerKeyboardAction(this,"Redo",redoAction,JComponent.WHEN_IN_FOCUSED_WINDOW);
+
     }
 
     public void setHelpNotesSelected(Boolean showHelpNotes) {
@@ -110,6 +117,20 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
                 break;
             case "Save":
                 GUIAnalysisHandler.saveAnalysis();
+                break;
+            case "Undo":
+                ModuleCollection modules = GUI.getUndoRedoStore().getNextUndo();
+                if (modules == null) break;
+                GUI.getAnalysis().setModules(modules);
+                GUI.updateModules();
+                GUI.updateParameters();
+                break;
+            case "Redo":
+                modules = GUI.getUndoRedoStore().getNextRedo();
+                if (modules == null) break;
+                GUI.getAnalysis().setModules(modules);
+                GUI.updateModules();
+                GUI.updateParameters();
                 break;
         }
     }

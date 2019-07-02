@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ParameterList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 import javax.swing.*;
@@ -42,6 +43,8 @@ public class VisibleCheck extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         parameter.setVisible(!parameter.isVisible());
         updateIcon();
 

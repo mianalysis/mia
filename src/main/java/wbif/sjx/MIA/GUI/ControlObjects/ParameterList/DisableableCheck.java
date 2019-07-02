@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ParameterList;
 
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -23,6 +24,8 @@ public class DisableableCheck extends JCheckBox implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         module.setCanBeDisabled(isSelected());
 
     }

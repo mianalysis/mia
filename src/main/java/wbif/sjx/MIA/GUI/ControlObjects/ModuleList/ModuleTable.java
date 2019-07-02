@@ -92,6 +92,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
         switch (e.getActionCommand()) {
             case "Backspace":
             case "Delete":
+                GUI.addUndo();
                 for (int row:getSelectedRows()) {
                     Module module = (Module) getValueAt(row, 0);
                     modules.remove(module);
@@ -118,6 +119,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
                 break;
             case "Paste":
                 try {
+                    GUI.addUndo();
                     int[] selectedRows = getSelectedRows();
                     if (selectedRows.length == 0) return;
                     int toIdx = selectedRows[selectedRows.length-1];
@@ -126,9 +128,9 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
                     DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
                     ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
 
-                    modules.insert(copyModules,toIdx);
+                    modules.insert(copyModules.duplicate(),toIdx);
 
-                } catch (ClassNotFoundException | IOException | UnsupportedFlavorException e1) {
+                } catch (ClassNotFoundException | IOException | UnsupportedFlavorException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
                     e1.printStackTrace();
                 }
 

@@ -335,7 +335,7 @@ public class EditingPanel extends MainPanel {
         outputPanel.updatePanel(outputControl);
 
         parametersPanel.updatePanel(GUI.getFirstSelectedModule());
-        modulesPanel.updateButtonStates();
+//        modulesPanel.updateButtonStates();
         modulesPanel.updatePanel();
 
     }
