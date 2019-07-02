@@ -1,13 +1,13 @@
 package wbif.sjx.MIA.GUI;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
 public class UndoRedoStore {
-    private int limit = 5;
+    private int limit = 100;
     private LinkedList<ModuleCollection> undoStore = new LinkedList<>();
     private LinkedList<ModuleCollection> redoStore = new LinkedList<>();
 
@@ -17,44 +17,46 @@ public class UndoRedoStore {
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        MIA.log.writeDebug("(Add) Undo size = "+undoStore.size()+", redo size = "+redoStore.size());
+
+        checkLimit();
+
+        // Clear the redo store
+        redoStore = new LinkedList<>();
+
     }
 
-    public ModuleCollection getNextUndo() {
+    public ModuleCollection getNextUndo(ModuleCollection modules) {
         if (undoStore.size() == 0) return null;
 
         try {
-            ModuleCollection modules = undoStore.pop();
-            redoStore.addFirst(modules);
-            MIA.log.writeDebug("(Undo) Undo size = "+undoStore.size()+", redo size = "+redoStore.size());
-            return modules.duplicate();
+            if (modules != null) redoStore.addFirst(modules);
+            return undoStore.pop().duplicate();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public ModuleCollection getNextRedo() {
+    public ModuleCollection getNextRedo(ModuleCollection modules) {
         if (redoStore.size() == 0) return null;
 
         try {
-            ModuleCollection modules = redoStore.pop();
-            undoStore.addFirst(modules);
-            MIA.log.writeDebug("(Redo) Undo size = "+undoStore.size()+", redo size = "+redoStore.size());
-            return modules.duplicate();
+            if (modules != null) undoStore.addFirst(modules);
+            return redoStore.pop().duplicate();
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void reset() {
+        undoStore = new LinkedList<>();
+        redoStore = new LinkedList<>();
     }
 
     void checkLimit() {
         while (undoStore.size() > limit) {
             undoStore.removeLast();
-        }
-
-        while (redoStore.size() > limit) {
-            redoStore.removeLast();
         }
     }
 
@@ -65,4 +67,5 @@ public class UndoRedoStore {
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
 }

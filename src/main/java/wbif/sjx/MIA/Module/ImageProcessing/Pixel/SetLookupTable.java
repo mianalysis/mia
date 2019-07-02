@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 import ij.CompositeImage;
 import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;

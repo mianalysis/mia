@@ -53,6 +53,13 @@ public class OutputObjectsP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new OutputObjectsP(name,module,objectsName,getDescription());
+        OutputObjectsP newParameter = new OutputObjectsP(name,module,objectsName,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

@@ -6,7 +6,6 @@ package wbif.sjx.MIA.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.ControlObjects.MenuItem;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
@@ -15,6 +14,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
@@ -24,11 +24,9 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -180,10 +178,6 @@ public class GUI {
         mainPanel.updateModules();
     }
 
-    public static void updateModuleParameters() {
-        mainPanel.updateParameters();
-    }
-
     public static void updateHelpNotes() {
         mainPanel.updateHelpNotes();
     }
@@ -315,7 +309,7 @@ public class GUI {
     }
 
     public static Module getFirstSelectedModule() {
-        if (selectedModules == null) return null;
+        if (selectedModules == null || selectedModules.length == 0) return null;
         return selectedModules[0];
     }
 
@@ -324,17 +318,52 @@ public class GUI {
     }
 
     public static int[] getSelectedModuleIndices() {
-        if (selectedModules == null) return new int[0];
+        if (selectedModules == null || selectedModules.length == 0) return new int[0];
 
         int[] selectedIndices = new int[selectedModules.length];
         ModuleCollection modules = getModules();
 
         for (int i=0;i<selectedModules.length;i++) {
-            selectedIndices[i] = modules.indexOf(selectedModules[i]);
+            Module selectedModule = selectedModules[i];
+            if (selectedModule instanceof InputControl) {
+                selectedIndices[i] = -1;
+            } else if (selectedModule instanceof OutputControl) {
+                selectedIndices[i] = -2;
+            } else {
+                selectedIndices[i] = modules.indexOf(selectedModule);
+            }
         }
 
         return selectedIndices;
 
+    }
+
+    public static void setSelectedModulesByIndex(int[] selectedModuleIndices) {
+        if (selectedModuleIndices == null || selectedModuleIndices.length == 0) return;
+
+        // The input and output controls are special cases
+        if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -1) {
+            selectedModules = new Module[]{analysis.getModules().getInputControl()};
+            return;
+        } else if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -2) {
+            selectedModules = new Module[]{analysis.getModules().getOutputControl()};
+            return;
+        }
+
+        // If the largest index is out of range disable all selections
+        if (selectedModuleIndices[selectedModuleIndices.length-1] >= analysis.getModules().size()) {
+            selectedModules = new Module[0];
+            return;
+        }
+
+        selectedModules = new Module[selectedModuleIndices.length];
+        for (int i=0;i<selectedModuleIndices.length;i++) {
+            if (selectedModuleIndices[i] == -1) {
+                selectedModules[i] = analysis.getModules().getInputControl();
+            } else {
+                selectedModules[i] = analysis.getModules().get(selectedModuleIndices[i]);
+            }
+        }
     }
 
     public static void setSelectedModules(Module[] selectedModules) {
@@ -398,6 +427,37 @@ public class GUI {
     public static void addUndo() {
         undoRedoStore.addUndo(analysis.getModules());
     }
+
+    public static void undo() {
+        int[] selectedIndices = getSelectedModuleIndices();
+
+        ModuleCollection newModules = undoRedoStore.getNextUndo(analysis.getModules());
+        if (newModules == null) return;
+        analysis.setModules(newModules);
+
+        // Updating the selected modules
+        setSelectedModulesByIndex(selectedIndices);
+
+        updateParameters();
+        updateModules();
+
+    }
+
+    public static void redo() {
+        int[] selectedIndices = getSelectedModuleIndices();
+
+        ModuleCollection newModules = undoRedoStore.getNextRedo(analysis.getModules());
+        if (newModules == null) return;
+        analysis.setModules(newModules);
+
+        // Updating the selected modules
+        setSelectedModulesByIndex(selectedIndices);
+
+        updateParameters();
+        updateModules();
+
+    }
+
 
     // COMPONENT SIZE GETTERS
 

@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
@@ -8,8 +7,7 @@ import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import java.io.File;
 import java.io.IOException;

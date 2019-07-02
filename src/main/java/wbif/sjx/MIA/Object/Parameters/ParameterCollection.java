@@ -59,4 +59,13 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
         return false;
 
     }
+
+    public ParameterCollection duplicate() {
+        ParameterCollection copyParameters = new ParameterCollection();
+
+        for (Parameter parameter:values()) copyParameters.add(parameter);
+
+        return copyParameters;
+
+    }
 }

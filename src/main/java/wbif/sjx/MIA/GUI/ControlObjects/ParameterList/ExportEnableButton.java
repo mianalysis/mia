@@ -49,7 +49,7 @@ public class ExportEnableButton extends JButton implements ActionListener {
         ref.setExportGlobal(!ref.isExportGlobal());
 
         setIcon();
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
 
     }
 }

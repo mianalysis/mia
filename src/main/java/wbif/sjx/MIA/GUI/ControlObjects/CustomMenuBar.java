@@ -3,7 +3,6 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
@@ -31,11 +30,9 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu = new JMenu("Edit");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(menu);
-        menu.add(new MenuItem(MenuItem.RESET_ANALYSIS));
-        menu.add(new MenuItem(MenuItem.ENABLE_ALL));
-        menu.add(new MenuItem(MenuItem.DISABLE_ALL));
-        menu.add(new MenuItem(MenuItem.OUTPUT_ALL));
-        menu.add(new MenuItem(MenuItem.SILENCE_ALL));
+        menu.add(new MenuItem(MenuItem.UNDO));
+        menu.add(new MenuItem(MenuItem.REDO));
+
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");
@@ -43,6 +40,11 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         add(menu);
         menu.add(new MenuItem(MenuItem.RUN_ANALYSIS));
         menu.add(new MenuItem(MenuItem.STOP_ANALYSIS));
+        menu.add(new MenuItem(MenuItem.RESET_ANALYSIS));
+        menu.add(new MenuItem(MenuItem.ENABLE_ALL));
+        menu.add(new MenuItem(MenuItem.DISABLE_ALL));
+        menu.add(new MenuItem(MenuItem.OUTPUT_ALL));
+        menu.add(new MenuItem(MenuItem.SILENCE_ALL));
 
         // Creating the new menu
         menu = new JMenu("View");
@@ -119,18 +121,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
                 GUIAnalysisHandler.saveAnalysis();
                 break;
             case "Undo":
-                ModuleCollection modules = GUI.getUndoRedoStore().getNextUndo();
-                if (modules == null) break;
-                GUI.getAnalysis().setModules(modules);
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.undo();
                 break;
             case "Redo":
-                modules = GUI.getUndoRedoStore().getNextRedo();
-                if (modules == null) break;
-                GUI.getAnalysis().setModules(modules);
-                GUI.updateModules();
-                GUI.updateParameters();
+                GUI.redo();
                 break;
         }
     }

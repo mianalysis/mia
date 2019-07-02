@@ -41,7 +41,7 @@ public class RefreshParametersButton extends ParameterControl implements ActionL
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules();
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateModuleStates(true);
 
         updateControl();

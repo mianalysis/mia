@@ -6,15 +6,14 @@ import ij.WindowManager;
 import ij.macro.Interpreter;
 import ij.measure.ResultsTable;
 import ij.text.TextWindow;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

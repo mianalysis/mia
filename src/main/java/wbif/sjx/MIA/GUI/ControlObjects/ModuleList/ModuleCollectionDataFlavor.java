@@ -4,7 +4,7 @@ import java.awt.datatransfer.DataFlavor;
 
 public class ModuleCollectionDataFlavor extends DataFlavor {
     public ModuleCollectionDataFlavor() throws ClassNotFoundException {
-        super(DataFlavor.javaJVMLocalObjectMimeType + ";class=wbif.sjx.MIA.Object.ModuleCollection");
+        super(DataFlavor.javaJVMLocalObjectMimeType + ";class=wbif.sjx.MIA.Module.ModuleCollection");
 
     }
 }

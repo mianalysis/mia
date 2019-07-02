@@ -56,7 +56,13 @@ public class DoubleP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new DoubleP(name,module,value,getDescription());
+        DoubleP newParameter = new DoubleP(name,module,value,getDescription());
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 
     @Override

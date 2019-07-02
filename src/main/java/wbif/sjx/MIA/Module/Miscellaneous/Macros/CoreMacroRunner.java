@@ -1,11 +1,10 @@
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
 import ij.measure.ResultsTable;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 

@@ -14,7 +14,6 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.Log;
 
-import java.awt.datatransfer.Transferable;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -287,6 +286,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
 
         for (Parameter parameter:parameters.values()) {
             Parameter newParameter = parameter.duplicate();
+            if (newParameter == null) continue;
             newParameters.add(newParameter);
         }
 

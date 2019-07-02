@@ -47,22 +47,27 @@ public interface Log {
     }
 
     default public void writeError(Object message) {
-        write(message.toString(),Level.ERROR);
+        if (message == null) write("null",Level.ERROR);
+        else write(message.toString(),Level.ERROR);
     }
 
     default public void writeWarning(Object message) {
-        write(message.toString(),Level.WARNING);
+        if (message == null) write("null",Level.WARNING);
+        else write(message.toString(),Level.WARNING);
     }
 
     default public void writeMessage(Object message) {
-        write(message.toString(),Level.MESSAGE);
+        if (message == null) write("null",Level.MESSAGE);
+        else write(message.toString(),Level.MESSAGE);
     }
 
     default public void writeDebug(Object message) {
-        write(message.toString(),Level.DEBUG);
+        if (message == null) write("null",Level.DEBUG);
+        else write(message.toString(),Level.DEBUG);
     }
 
     default public void writeMemory(Object message) {
-        write(message.toString(),Level.MEMORY);
+        if (message == null) write("null",Level.MEMORY);
+        else write(message.toString(),Level.MEMORY);
     }
 }

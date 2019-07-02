@@ -8,10 +8,9 @@ import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleTable;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;

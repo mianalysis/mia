@@ -41,7 +41,7 @@ public class BooleanParameter extends ParameterControl implements ActionListener
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules();
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateModuleStates(true);
 
         updateControl();

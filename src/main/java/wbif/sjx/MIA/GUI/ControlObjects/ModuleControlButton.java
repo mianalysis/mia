@@ -2,7 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,6 +55,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
     }
 
     public void addModule() {
+        GUI.addUndo();
+
         // Populating the list containing all available modules
         moduleListMenu.show(GUI.getFrame(), 0, 0);
         moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
@@ -66,6 +68,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
     }
 
     public void removeModule() {
+        GUI.addUndo();
+
         Module[] activeModules = GUI.getSelectedModules();
         int lastModuleEval = GUI.getLastModuleEval();
 
@@ -84,12 +88,14 @@ public class ModuleControlButton extends JButton implements ActionListener {
         GUI.setSelectedModules(null);
         GUI.updateModules();
         GUI.updateModuleStates(true);
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateHelpNotes();
 
     }
 
     public void moveModuleUp() {
+        GUI.addUndo();
+
         ModuleCollection modules = GUI.getAnalysis().getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules== null) return;
@@ -109,6 +115,8 @@ public class ModuleControlButton extends JButton implements ActionListener {
     }
 
     public void moveModuleDown() {
+        GUI.addUndo();
+
         ModuleCollection modules = GUI.getAnalysis().getModules();
         Module[] selectedModules = GUI.getSelectedModules();
         if (selectedModules== null) return;

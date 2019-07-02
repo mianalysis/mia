@@ -3,7 +3,7 @@ package wbif.sjx.MIA.GUI;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
@@ -34,9 +34,10 @@ public class GUIAnalysisHandler {
 
         GUI.setAnalysis(analysis);
         GUI.updateModuleList();
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
+        GUI.getUndoRedoStore().reset();
 
     }
 
@@ -53,13 +54,13 @@ public class GUIAnalysisHandler {
 
         GUI.setAnalysis(newAnalysis);
         GUI.updateModuleList();
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateHelpNotes();
-
         GUI.setLastModuleEval(-1);
         GUI.updateTestFile();
         GUI.updateModules();
         GUI.updateModuleStates(true);
+        GUI.getUndoRedoStore().reset();
 
     }
 
@@ -96,9 +97,7 @@ public class GUIAnalysisHandler {
     }
 
     public static void enableAllModules() {
-        for (
-                Module module : GUI.getModules())
-            module.setEnabled(true);
+        for (Module module : GUI.getModules()) module.setEnabled(true);
         GUI.updateModuleList();
 
     }

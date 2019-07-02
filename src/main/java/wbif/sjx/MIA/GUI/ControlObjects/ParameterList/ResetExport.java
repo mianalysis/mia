@@ -31,7 +31,7 @@ public class ResetExport extends JButton implements ActionListener {
 
         ref.setAllExport(true);
 
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateHelpNotes();
 
     }

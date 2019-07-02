@@ -29,6 +29,11 @@ public class FileFolderPathP extends FileFolderType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new FileFolderPathP(name,module,getPath(),getDescription());
+        FileFolderPathP newParameter = new FileFolderPathP(name,module,getPath(),getDescription());
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
     }
 }

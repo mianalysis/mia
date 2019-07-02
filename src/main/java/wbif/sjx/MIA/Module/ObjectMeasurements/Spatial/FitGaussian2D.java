@@ -7,6 +7,7 @@ import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;

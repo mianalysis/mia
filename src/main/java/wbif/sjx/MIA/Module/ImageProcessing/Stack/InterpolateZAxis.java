@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 import ij.ImagePlus;
 import ij.plugin.Resizer;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;

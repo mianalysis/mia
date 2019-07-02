@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

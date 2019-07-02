@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.GUI.ParameterControls.WiderDropDownCombo;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
@@ -35,7 +35,12 @@ public class ChildObjectsP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ChildObjectsP(name,module,getChoice(),parentObjectsName,getDescription());
+        ChildObjectsP newParameter = new ChildObjectsP(name,module,getChoice(),parentObjectsName,getDescription());
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
     }
 
     public String getParentObjectsName() {

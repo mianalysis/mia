@@ -44,6 +44,13 @@ public class MessageP extends TextAreaP {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new MessageP(name,module, getValue(),color,getDescription());
+        MessageP newParameter = new MessageP(name,module, getValue(),color,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

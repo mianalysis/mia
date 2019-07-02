@@ -4,7 +4,7 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,7 +65,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         GUI.updateModules();
         GUI.updateModuleStates(true);
         GUI.updateModuleList();
-        GUI.updateModuleParameters();
+        GUI.updateParameters();
         GUI.updateHelpNotes();
 
         moduleListMenu.setVisible(false);

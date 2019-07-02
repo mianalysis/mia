@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.ImagePlus;
 import ij.ImageStack;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;

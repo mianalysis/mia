@@ -45,8 +45,8 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
 
         GUI.updateTestFile();
         GUI.updateModules();
+        GUI.updateParameters();
         GUI.updateModuleStates(true);
-        GUI.updateModuleParameters();
 
         updateControl();
 

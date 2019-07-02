@@ -135,7 +135,22 @@ public class ParameterGroup extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return null;
+        ParameterGroup newParameter = new ParameterGroup(name,module,templateParameters.duplicate(),getDescription());
+
+        LinkedHashSet<ParameterCollection> newCollections = new LinkedHashSet<>();
+        for (ParameterCollection collection:collections) newCollections.add(collection.duplicate());
+        newParameter.setCollections(newCollections);
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
+    }
+
+    public void setCollections(LinkedHashSet<ParameterCollection> collections) {
+        this.collections = collections;
     }
 
     public LinkedHashSet<ParameterCollection> getCollections() {

@@ -49,6 +49,13 @@ public class OutputImageP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new OutputImageP(name,module,imageName,getDescription());
+        OutputImageP newParameter = new OutputImageP(name,module,imageName,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

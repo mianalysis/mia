@@ -45,6 +45,13 @@ public class ParamSeparatorP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ParamSeparatorP(name,module);
+        ParamSeparatorP newParameter = new ParamSeparatorP(name,module);
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+        
     }
 }
