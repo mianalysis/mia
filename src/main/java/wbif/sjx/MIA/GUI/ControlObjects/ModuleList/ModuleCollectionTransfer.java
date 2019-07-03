@@ -2,12 +2,10 @@ package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.Module.ModuleCollection;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.*;
 import java.io.IOException;
 
-public class ModuleCollectionTransfer implements Transferable {
+public class ModuleCollectionTransfer implements Transferable, ClipboardOwner {
     private ModuleCollection modules;
 
     public ModuleCollectionTransfer(ModuleCollection modules) {
@@ -34,5 +32,10 @@ public class ModuleCollectionTransfer implements Transferable {
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         return modules;
+    }
+
+    @Override
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+
     }
 }

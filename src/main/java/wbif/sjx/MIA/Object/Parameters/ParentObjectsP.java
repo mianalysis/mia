@@ -51,6 +51,13 @@ public class ParentObjectsP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ParentObjectsP(name,module,choice,childObjectsName,getDescription());
+        ParentObjectsP newParameter = new ParentObjectsP(name,module,choice,childObjectsName,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

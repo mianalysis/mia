@@ -63,7 +63,7 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
     public ParameterCollection duplicate() {
         ParameterCollection copyParameters = new ParameterCollection();
 
-        for (Parameter parameter:values()) copyParameters.add(parameter);
+        for (Parameter parameter:values()) copyParameters.add(parameter.duplicate());
 
         return copyParameters;
 

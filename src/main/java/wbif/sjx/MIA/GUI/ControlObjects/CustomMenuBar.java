@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.UndoRedoStore;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.Logging.Log;
 
@@ -14,6 +15,8 @@ import java.awt.event.KeyEvent;
 
 public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
+    private static MenuItem undo = new MenuItem(MenuItem.UNDO);
+    private static MenuItem redo = new MenuItem(MenuItem.REDO);
 
 
     public CustomMenuBar() {
@@ -30,9 +33,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu = new JMenu("Edit");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(menu);
-        menu.add(new MenuItem(MenuItem.UNDO));
-        menu.add(new MenuItem(MenuItem.REDO));
-
+        menu.add(undo);
+        menu.add(redo);
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");
@@ -109,6 +111,11 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     public void setHelpNotesSelected(Boolean showHelpNotes) {
         helpNotesCheckbox.setSelected(showHelpNotes);
 
+    }
+
+    public void setUndoRedoStatus(UndoRedoStore undoRedoStatus) {
+        undo.setEnabled(undoRedoStatus.getUndoSize() != 0);
+        redo.setEnabled(undoRedoStatus.getRedoSize() != 0);
     }
 
     @Override

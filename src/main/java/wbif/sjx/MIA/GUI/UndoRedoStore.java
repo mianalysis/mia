@@ -60,6 +60,14 @@ public class UndoRedoStore {
         }
     }
 
+    public int getUndoSize() {
+        return undoStore.size();
+    }
+
+    public int getRedoSize() {
+        return redoStore.size();
+    }
+
     public int getLimit() {
         return limit;
     }

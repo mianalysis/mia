@@ -84,6 +84,13 @@ public class TextAreaP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new TextAreaP(name,module,value,editable,getDescription());
+        TextAreaP newParameter = new TextAreaP(name,module,value,editable,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

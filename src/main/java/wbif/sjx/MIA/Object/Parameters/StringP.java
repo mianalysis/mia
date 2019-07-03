@@ -50,7 +50,14 @@ public class StringP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new StringP(name,module,value,getDescription());
+        StringP newParameter = new StringP(name,module,value,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 
     @Override

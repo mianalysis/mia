@@ -28,7 +28,14 @@ public class SeriesListSelectorP extends StringP {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new SeriesListSelectorP(name,module,value,getDescription());
+        SeriesListSelectorP newParameter = new SeriesListSelectorP(name,module,value,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 
     public int[] getSeriesList() {

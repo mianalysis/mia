@@ -108,7 +108,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
 
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
-                    clipboard.setContents(transfer,null);
+                    clipboard.setContents(transfer,transfer);
 
                 } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
                     e1.printStackTrace();

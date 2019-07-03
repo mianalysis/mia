@@ -29,6 +29,13 @@ public class SeriesSingleSelectorP extends IntegerP {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new SeriesSingleSelectorP(name,module,value,getDescription());
+        SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name,module,value,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

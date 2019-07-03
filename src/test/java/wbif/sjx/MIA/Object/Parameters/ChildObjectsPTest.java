@@ -27,7 +27,7 @@ public class ChildObjectsPTest {
 
         assertEquals("Test param",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());
-                
+
 
     }
 

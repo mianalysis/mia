@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Object.Parameters;
 import org.w3c.dom.*;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.AddParametersButton;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
@@ -72,11 +73,6 @@ public class ParameterGroup extends Parameter {
 
         }
 
-        // Adding the necessary RemoveParameter Parameter
-        RemoveParameters removeParameters = new RemoveParameters("Remove collections",module,this,newParameters);
-        removeParameters.setVisible(isVisible());
-        newParameters.add(removeParameters);
-
         collections.add(newParameters);
 
         return newParameters;
@@ -84,9 +80,6 @@ public class ParameterGroup extends Parameter {
     }
 
     public void addParameters(ParameterCollection collection) {
-        // Adding the necessary RemoveParameter Parameter
-        collection.add(new RemoveParameters("Remove collections",module,this,collection));
-
         collections.add(collection);
 
     }
@@ -206,6 +199,12 @@ public class ParameterGroup extends Parameter {
                 Node newParametersNode = newParametersNodes.item(j);
 
                 String parameterName = newParametersNode.getAttributes().getNamedItem("NAME").getNodeValue();
+
+                if (newParameters.getParameter(parameterName) == null) {
+                    MIA.log.writeWarning("Parameter \""+parameterName+"\" not found for module \""+module.getName()+"\", skipping.");
+                    continue;
+                }
+
                 newParameters.getParameter(parameterName).setAttributesFromXML(newParametersNode);
 
             }

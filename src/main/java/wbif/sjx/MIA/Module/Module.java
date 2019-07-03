@@ -209,6 +209,11 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         this.modules = modules;
     }
 
+    public boolean hasParameter(String parameterName) {
+        return parameters.keySet().contains(parameterName);
+    }
+
+
     // PRIVATE METHODS
 
     public String getNotes() {

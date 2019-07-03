@@ -106,6 +106,7 @@ public class GUI {
         frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"),"").getImage());
 
         mainPanel.updatePanel();
+        menuBar.setUndoRedoStatus(undoRedoStore);
 
         splash.setVisible(false);
 
@@ -426,6 +427,7 @@ public class GUI {
 
     public static void addUndo() {
         undoRedoStore.addUndo(analysis.getModules());
+        menuBar.setUndoRedoStatus(undoRedoStore);
     }
 
     public static void undo() {
@@ -441,6 +443,8 @@ public class GUI {
         updateParameters();
         updateModules();
 
+        menuBar.setUndoRedoStatus(undoRedoStore);
+
     }
 
     public static void redo() {
@@ -455,6 +459,8 @@ public class GUI {
 
         updateParameters();
         updateModules();
+
+        menuBar.setUndoRedoStatus(undoRedoStore);
 
     }
 

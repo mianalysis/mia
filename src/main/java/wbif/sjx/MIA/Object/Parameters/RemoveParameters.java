@@ -18,12 +18,6 @@ public class RemoveParameters extends Parameter {
         this.collection = collection;
     }
 
-    public RemoveParameters(String name, Module module, ParameterGroup group, ParameterCollection collection, String description) {
-        super(name, module, description);
-        this.group = group;
-        this.collection = collection;
-    }
-
     @Override
     protected ParameterControl initialiseControl() {
         return new RemoveParametersButton(this);

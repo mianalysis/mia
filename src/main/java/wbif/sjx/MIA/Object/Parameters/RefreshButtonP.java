@@ -53,6 +53,13 @@ public class RefreshButtonP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new RefreshButtonP(name,module,buttonLabel,getDescription());
+        RefreshButtonP newParameter = new RefreshButtonP(name,module,buttonLabel,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }
