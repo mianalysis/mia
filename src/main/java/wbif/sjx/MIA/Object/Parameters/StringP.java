@@ -62,7 +62,7 @@ public class StringP extends TextType {
 
     @Override
     public boolean verify() {
-        // The only thing to check is that any global variables have been defined
+        // The only thing to check is that any global variables and metadata values have been defined
         return MIA.getGlobalVariables().variablesPresent(value);
 
     }

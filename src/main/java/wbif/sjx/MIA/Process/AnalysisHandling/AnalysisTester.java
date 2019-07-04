@@ -34,7 +34,8 @@ public class AnalysisTester {
 
         }
 
-        return true;
+        // Running module-specific test
+        return module.verify();
 
     }
 }

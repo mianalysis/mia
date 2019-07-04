@@ -689,6 +689,11 @@ public class RegisterImages extends Module implements Interactable {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
+
     private class Param extends FloatArray2DSIFT.Param {
         String transformationMode = TransformationModes.RIGID;
         float rod = 0.92f;

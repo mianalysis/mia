@@ -353,4 +353,9 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

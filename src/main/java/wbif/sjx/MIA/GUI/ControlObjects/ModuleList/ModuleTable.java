@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -90,11 +91,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
         switch (e.getActionCommand()) {
             case "Backspace":
             case "Delete":
-                GUI.addUndo();
-                for (int row:getSelectedRows()) {
-                    Module module = (Module) getValueAt(row, 0);
-                    modules.remove(module);
-                }
+                GUIAnalysisHandler.removeModules();
                 break;
             case "Copy":
                 try {

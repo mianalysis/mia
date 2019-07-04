@@ -189,4 +189,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

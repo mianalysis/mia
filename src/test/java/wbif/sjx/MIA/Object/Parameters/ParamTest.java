@@ -54,6 +54,11 @@ public class ParamTest extends Module {
     }
 
     @Override
+    public boolean verify() {
+        return true;
+    }
+
+    @Override
     public String getDescription() {
         return "Just used as a blank module for testing Parameters.";
     }

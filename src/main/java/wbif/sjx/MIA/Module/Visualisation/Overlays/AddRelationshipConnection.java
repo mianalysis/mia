@@ -250,4 +250,9 @@ public class AddRelationshipConnection extends Module {
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

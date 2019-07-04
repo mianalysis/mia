@@ -273,4 +273,9 @@ public class MeasureSkeleton extends Module {
     public String getDescription() {
         return "Uses the AnalyzeSkeleton plugin by Ignacio Arganda-Carreras (https://imagej.net/AnalyzeSkeleton).";
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

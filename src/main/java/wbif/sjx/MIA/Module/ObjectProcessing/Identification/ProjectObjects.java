@@ -156,4 +156,9 @@ public class ProjectObjects extends Module {
         return returnedRelationships;
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

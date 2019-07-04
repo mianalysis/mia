@@ -437,5 +437,10 @@ public class RunTrackMate extends Module {
         return returnedRelationships;
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }
 

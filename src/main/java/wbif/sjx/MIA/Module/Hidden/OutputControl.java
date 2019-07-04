@@ -200,5 +200,9 @@ public class OutputControl extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }
 

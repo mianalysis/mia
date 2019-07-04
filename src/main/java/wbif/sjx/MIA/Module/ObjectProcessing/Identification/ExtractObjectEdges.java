@@ -313,4 +313,8 @@ public class ExtractObjectEdges extends Module {
 
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

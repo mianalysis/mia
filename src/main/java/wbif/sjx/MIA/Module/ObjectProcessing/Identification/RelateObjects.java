@@ -722,4 +722,8 @@ public class RelateObjects extends Module {
 
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

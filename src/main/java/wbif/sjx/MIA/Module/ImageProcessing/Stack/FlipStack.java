@@ -193,4 +193,9 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

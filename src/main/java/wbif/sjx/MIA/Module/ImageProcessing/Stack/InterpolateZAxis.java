@@ -104,4 +104,8 @@ public class InterpolateZAxis extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

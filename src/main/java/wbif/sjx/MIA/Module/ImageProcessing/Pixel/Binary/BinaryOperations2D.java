@@ -186,4 +186,8 @@ public class BinaryOperations2D extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

@@ -97,4 +97,9 @@ public abstract class CoreFilter extends Module {
         dispIpl.show();
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

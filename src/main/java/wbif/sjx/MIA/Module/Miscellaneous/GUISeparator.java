@@ -85,4 +85,9 @@ public class GUISeparator extends Module{
     public boolean isRunnable() {
         return true;
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

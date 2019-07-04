@@ -262,4 +262,8 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

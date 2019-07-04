@@ -365,4 +365,8 @@ public class FitEllipse extends Module {
 
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

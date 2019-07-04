@@ -369,4 +369,8 @@ public class RidgeDetection extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

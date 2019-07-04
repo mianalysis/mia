@@ -489,4 +489,9 @@ public class ManualUnwarp extends Module implements Interactable {
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

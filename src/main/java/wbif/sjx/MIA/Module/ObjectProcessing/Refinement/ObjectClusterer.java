@@ -310,4 +310,9 @@ public class ObjectClusterer extends Module {
         return returnedRelationships;
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

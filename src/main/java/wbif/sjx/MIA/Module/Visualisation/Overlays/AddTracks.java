@@ -254,4 +254,8 @@ public class AddTracks extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

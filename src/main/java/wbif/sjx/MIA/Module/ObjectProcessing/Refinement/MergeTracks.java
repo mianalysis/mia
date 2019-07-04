@@ -245,6 +245,11 @@ public class MergeTracks extends Module implements ActionListener {
     }
 
     @Override
+    public boolean verify() {
+        return true;
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case MERGE:

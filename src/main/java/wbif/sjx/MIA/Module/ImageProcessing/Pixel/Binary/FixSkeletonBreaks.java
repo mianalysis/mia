@@ -168,4 +168,10 @@ public class FixSkeletonBreaks extends Module {
     public String getDescription() {
         return "";
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }
+

@@ -205,4 +205,8 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

@@ -328,4 +328,8 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

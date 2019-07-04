@@ -81,4 +81,9 @@ public abstract class CoreMacroRunner extends Module {
         return new Measurement(getFullName(heading),value);
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

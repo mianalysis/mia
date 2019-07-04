@@ -711,4 +711,9 @@ public class FilterObjects extends Module implements ActionListener {
             return referenceMultiplier;
         }
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

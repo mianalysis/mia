@@ -180,4 +180,8 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

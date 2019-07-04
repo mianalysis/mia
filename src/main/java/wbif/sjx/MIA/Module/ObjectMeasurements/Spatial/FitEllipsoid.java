@@ -380,4 +380,9 @@ public class FitEllipsoid extends Module {
         return returnedRelationships;
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

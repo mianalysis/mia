@@ -731,4 +731,9 @@ public class TrackObjects extends Module {
         return returnedRelationships;
 
     }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

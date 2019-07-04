@@ -204,4 +204,8 @@ public class SetDisplayRange extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }
