@@ -280,12 +280,14 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         newModule.setEnabled(enabled);
         newModule.setShowOutput(showOutput);
         newModule.setNotes(notes);
+        newModule.setCanBeDisabled(canBeDisabled);
 
         ParameterCollection newParameters = newModule.getAllParameters();
 
         for (Parameter parameter:parameters.values()) {
             Parameter newParameter = parameter.duplicate();
             if (newParameter == null) continue;
+            newParameter.setModule(newModule);
             newParameters.add(newParameter);
         }
 

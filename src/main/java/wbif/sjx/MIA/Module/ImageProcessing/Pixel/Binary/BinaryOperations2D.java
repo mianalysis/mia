@@ -37,9 +37,11 @@ public class BinaryOperations2D extends Module {
         String FILL_HOLES = "Fill holes";
         String OUTLINE = "Outline";
         String SKELETONISE = "Skeletonise";
+        String ULTIMATE_POINTS = "Ultimate points";
+        String VORONOI = "Voronoi";
         String WATERSHED = "Watershed";
 
-        String[] ALL = new String[]{DILATE, DISTANCE_MAP, ERODE, FILL_HOLES, OUTLINE, SKELETONISE, WATERSHED};
+        String[] ALL = new String[]{DILATE, DISTANCE_MAP, ERODE, FILL_HOLES, OUTLINE, SKELETONISE, ULTIMATE_POINTS, VORONOI, WATERSHED};
 
     }
 
@@ -70,6 +72,14 @@ public class BinaryOperations2D extends Module {
 
             case OperationModes.SKELETONISE:
                 IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Skeletonize stack");
+                break;
+
+            case OperationModes.VORONOI:
+                IJ.run(ipl,"Voronoi", "stack");
+                break;
+
+            case OperationModes.ULTIMATE_POINTS:
+                IJ.run(ipl,"Ultimate Points", "stack");
                 break;
 
             case OperationModes.WATERSHED:
@@ -155,7 +165,6 @@ public class BinaryOperations2D extends Module {
             case OperationModes.DILATE:
             case OperationModes.ERODE:
             case OperationModes.FILL_HOLES:
-            case OperationModes.OUTLINE:
             case OperationModes.SKELETONISE:
             case OperationModes.WATERSHED:
                 returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));

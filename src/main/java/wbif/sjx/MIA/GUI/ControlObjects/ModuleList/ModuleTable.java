@@ -117,7 +117,8 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
                     GUI.addUndo();
                     int[] selectedRows = getSelectedRows();
                     if (selectedRows.length == 0) return;
-                    int toIdx = selectedRows[selectedRows.length-1];
+                    Module toModule = (Module) getValueAt(selectedRows[selectedRows.length-1],0);
+                    int toIdx = modules.indexOf(toModule);
 
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     DataFlavor dataFlavor = new ModuleCollectionDataFlavor();

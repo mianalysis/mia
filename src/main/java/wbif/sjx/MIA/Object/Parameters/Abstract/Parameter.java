@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 public abstract class Parameter extends Ref {
-    protected final Module module;
+    protected Module module;
     private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
@@ -59,6 +59,10 @@ public abstract class Parameter extends Ref {
 
     public Module getModule() {
         return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
     }
 
     public ParameterControl getControl() {

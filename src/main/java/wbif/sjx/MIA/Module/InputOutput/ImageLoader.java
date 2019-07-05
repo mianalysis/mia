@@ -965,19 +965,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     valid = metadataRefs.hasRef(genericFormat);
                     parameters.getParameter(GENERIC_FORMAT).setValid(valid);
                     break;
-                case NameFormats.INCUCYTE_SHORT:
-                    if (! metadataRefs.containsKey(HCMetadata.EXTENSION)) valid = false;
-                    if (valid &! metadataRefs.containsKey(HCMetadata.FILE)) valid = false;
-                    if (valid &! metadataRefs.containsKey(HCMetadata.WELL)) valid = false;
-                    parameters.getParameter(NAME_FORMAT).setValid(valid);
-                break;
-                case NameFormats.YOKOGAWA:
-                    if (! metadataRefs.containsKey(HCMetadata.EXTENSION)) valid = false;
-                    if (valid &! metadataRefs.containsKey(HCMetadata.FILE)) valid = false;
-                    if (valid &! metadataRefs.containsKey(HCMetadata.WELL)) valid = false;
-                    parameters.getParameter(NAME_FORMAT).setValid(valid);
-                    break;
-
             }
         }
 
