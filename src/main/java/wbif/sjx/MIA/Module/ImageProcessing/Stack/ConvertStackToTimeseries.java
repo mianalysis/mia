@@ -76,6 +76,11 @@ public class ConvertStackToTimeseries extends Module {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
+            if (showOutput) outputImage.showImage();
+
+        } else {
+            if (showOutput) inputImage.showImage();
+            
         }
 
         return true;

@@ -51,7 +51,7 @@ public class AddRelationshipConnection extends Module {
     }
 
 
-    public interface ColourModes extends ObjCollection.ColourModes {}
+    public interface ColourModes extends ColourServer.ColourModes {}
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 

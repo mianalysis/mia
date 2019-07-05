@@ -8,6 +8,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -180,7 +181,7 @@ public class HoughObjectDetection extends Module {
             ImagePlus dispIpl = new Duplicator().run(ipl);
             IntensityMinMax.run(dispIpl,true);
 
-            String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+            String colourMode = ColourServer.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             HashMap<Integer, String> IDs = null;

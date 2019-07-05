@@ -761,6 +761,10 @@ public class Exporter {
             String[] parents = relationships.getParentNames(objectName,false);
             if (parents != null) {
                 for (String parent : parents) {
+                    RelationshipRef ref = relationships.getOrPut(parent,objectName);
+                    if (!ref.isExportGlobal()) continue;
+                    if (!ref.isExportIndividual()) continue;
+
                     parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
                     parentNames.get(objectName).put(col, parent);
                     Cell parentHeaderCell = objectHeaderRow.createCell(col++);
@@ -773,6 +777,10 @@ public class Exporter {
             String[] children = relationships.getChildNames(objectName,false);
             if (children != null) {
                 for (String child : children) {
+                    RelationshipRef ref = relationships.getOrPut(objectName,child);
+                    if (!ref.isExportGlobal()) continue;
+                    if (!ref.isExportIndividual()) continue;
+
                     childNames.putIfAbsent(objectName, new LinkedHashMap<>());
                     childNames.get(objectName).put(col, child);
                     Cell childHeaderCell = objectHeaderRow.createCell(col++);

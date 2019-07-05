@@ -41,8 +41,6 @@ public class TextParameter extends ParameterControl implements FocusListener {
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        MIA.log.writeDebug(idx);
-
         updateControl();
 
         GUI.updateModuleStates(true);

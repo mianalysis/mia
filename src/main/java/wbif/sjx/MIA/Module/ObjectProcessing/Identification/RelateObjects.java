@@ -487,6 +487,10 @@ public class RelateObjects extends Module {
         boolean mergeRelatedObjects = parameters.getValue(MERGE_RELATED_OBJECTS);
         String relatedObjectsName = parameters.getValue(RELATED_OBJECTS);
 
+        // Removing previous relationships
+        parentObjects.removeChildren(childObjectName);
+        childObjects.removeParents(parentObjectName);
+
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
                 writeMessage("Relating objects by matching ID numbers");
@@ -533,7 +537,7 @@ public class RelateObjects extends Module {
         parameters.add(new BooleanP(LIMIT_LINKING_BY_DISTANCE,this,false));
         parameters.add(new DoubleP(LINKING_DISTANCE,this,1.0));
         parameters.add(new ChoiceP(INSIDE_OUTSIDE_MODE,this,InsideOutsideModes.INSIDE_AND_OUTSIDE,InsideOutsideModes.ALL));
-        parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP,this,0d));
+        parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP,this,0d,"Percentage of total child volume overlapping with the parent object."));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP,this,true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
 

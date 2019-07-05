@@ -8,12 +8,13 @@ import java.util.HashMap;
 
 public class LabelFactory {
     public interface LabelModes {
+        String CHILD_COUNT = "Child count";
         String ID = "ID";
         String MEASUREMENT_VALUE = "Measurement value";
         String PARENT_ID = "Parent ID";
         String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
 
-        String[] ALL = new String[]{ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE};
+        String[] ALL = new String[]{CHILD_COUNT,ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE};
 
     }
 
@@ -41,6 +42,22 @@ public class LabelFactory {
         }
 
         return df;
+
+    }
+
+    public static HashMap<Integer,String> getChildCountLabels(ObjCollection objects, String childObjectsName, DecimalFormat df) {
+        HashMap<Integer,String> IDs = new HashMap<>();
+        if (objects == null) return IDs;
+
+        for (Obj object:objects.values()) {
+            if (object.getChildren(childObjectsName) == null) {
+                IDs.put(object.getID(), "NA");
+            } else {
+                IDs.put(object.getID(), df.format(object.getChildren(childObjectsName).size()));
+            }
+        }
+
+        return IDs;
 
     }
 
