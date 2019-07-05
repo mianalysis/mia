@@ -8,6 +8,7 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import sc.fiji.colourDeconvolution.StainMatrix;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -332,4 +333,8 @@ public class ColourDeconvolution extends Module {
 
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

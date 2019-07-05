@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
@@ -16,18 +17,6 @@ import java.util.*;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
-
-    public interface ColourModes {
-        String SINGLE_COLOUR = "Single colour";
-        String RANDOM_COLOUR = "Random colour";
-        String MEASUREMENT_VALUE = "Measurement value";
-        String ID = "ID";
-        String PARENT_ID = "Parent ID";
-        String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
-
-        String[] ALL = new String[]{SINGLE_COLOUR, RANDOM_COLOUR, MEASUREMENT_VALUE, ID, PARENT_ID, PARENT_MEASUREMENT_VALUE};
-
-    }
 
 
     public ObjCollection(String name) {
@@ -284,5 +273,14 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Displaying the results table
         rt.show("All measurements for \""+name+"\"");
 
+    }
+
+    public void removeParents(String parentObjectsName) {
+        for (Obj obj:values()) obj.removeParent(parentObjectsName);
+
+    }
+
+    public void removeChildren(String childObjectsName) {
+        for (Obj obj:values()) obj.removeChildren(childObjectsName);
     }
 }

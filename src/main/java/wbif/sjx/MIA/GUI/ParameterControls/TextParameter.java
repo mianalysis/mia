@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.swing.*;
@@ -33,6 +34,8 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
+        GUI.addUndo();
+
         parameter.setValueFromString(control.getText());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());

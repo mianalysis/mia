@@ -47,6 +47,13 @@ public class ObjectMeasurementP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ObjectMeasurementP(name,module,choice,objectName,getDescription());
+        ObjectMeasurementP newParameter =  new ObjectMeasurementP(name,module,choice,objectName,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

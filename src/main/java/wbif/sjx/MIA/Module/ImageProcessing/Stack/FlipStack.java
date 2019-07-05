@@ -11,6 +11,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -191,5 +192,10 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 }

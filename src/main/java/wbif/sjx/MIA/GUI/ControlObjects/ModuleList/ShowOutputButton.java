@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -54,6 +55,8 @@ public class ShowOutputButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         // Invert state
         state = !state;
 

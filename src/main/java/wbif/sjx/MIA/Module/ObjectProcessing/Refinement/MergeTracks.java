@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
@@ -241,6 +242,11 @@ public class MergeTracks extends Module implements ActionListener {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 
     @Override

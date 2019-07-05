@@ -16,6 +16,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.SetLookupTable;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -351,5 +352,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 }

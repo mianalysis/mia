@@ -9,6 +9,7 @@ import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
@@ -384,6 +385,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 
     @Override

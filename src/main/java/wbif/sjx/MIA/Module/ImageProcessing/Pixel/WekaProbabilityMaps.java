@@ -3,11 +3,13 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.plugin.RGBStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -23,6 +25,7 @@ import java.io.File;
  */
 public class WekaProbabilityMaps extends Module {
     public static final String INPUT_IMAGE = "Input image";
+    public static final String CONVERT_TO_RGB = "Convert to RGB";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String OUTPUT_SINGLE_CLASS = "Output single class";
@@ -153,12 +156,19 @@ public class WekaProbabilityMaps extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
+        boolean convertToRGB = parameters.getValue(CONVERT_TO_RGB);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
         boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS);
         int outputClass = parameters.getValue(OUTPUT_CLASS);
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
         int blockSize = parameters.getValue(BLOCK_SIZE);
+
+        // Converting to RGB if requested
+        if (convertToRGB) {
+            inputImagePlus = inputImagePlus.duplicate();
+            RGBStackConverter.convertToRGB(inputImagePlus);
+        }
 
         // Converting the bit depth to an integer
         int bitDepth = Integer.parseInt(outputBitDepth);
@@ -185,6 +195,7 @@ public class WekaProbabilityMaps extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(CONVERT_TO_RGB,this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL));
         parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS,this,false));
@@ -199,6 +210,7 @@ public class WekaProbabilityMaps extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(CONVERT_TO_RGB));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
 
@@ -234,4 +246,8 @@ public class WekaProbabilityMaps extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

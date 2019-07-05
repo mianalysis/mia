@@ -9,7 +9,9 @@ import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -570,7 +572,7 @@ public class TrackObjects extends Module {
         if (identifyLeading) identifyLeading(inputObjects,orientationMode);
 
         // If selected, showing an overlay of the tracked objects
-        String colourMode = ObjCollection.ColourModes.PARENT_ID;
+        String colourMode = ColourServer.ColourModes.PARENT_ID;
         if (showOutput) showObjects(inputObjects,trackObjectsName,colourMode);
 
         // Adding track objects to the workspace
@@ -729,5 +731,10 @@ public class TrackObjects extends Module {
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 }

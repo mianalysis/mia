@@ -31,6 +31,13 @@ public class InputImageP extends ImageNamesType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new InputImageP(name,module,getImageName(),getDescription());
+        InputImageP newParameter = new InputImageP(name,module,getImageName(),getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

@@ -11,13 +11,25 @@ import java.util.HashMap;
 public class ColourServer {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String SINGLE_COLOUR = "Single colour";
+    public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
 
     private ParameterCollection parameters = new ParameterCollection();
     private InputObjectsP inputObjects;
 
-    public interface ColourModes extends ObjCollection.ColourModes {}
+    public interface ColourModes {
+        String CHILD_COUNT = "Child count";
+        String ID = "ID";
+        String MEASUREMENT_VALUE = "Measurement value";
+        String PARENT_ID = "Parent ID";
+        String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
+        String RANDOM_COLOUR = "Random colour";
+        String SINGLE_COLOUR = "Single colour";
+
+        String[] ALL = new String[]{CHILD_COUNT,ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE,RANDOM_COLOUR,SINGLE_COLOUR};
+
+    }
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
@@ -32,6 +44,7 @@ public class ColourServer {
         // Getting colour settings
         String colourMode = parameters.getValue(COLOUR_MODE);
         String singleColour = parameters.getValue(SINGLE_COLOUR);
+        String childObjectsForColourName = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
         String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
 
@@ -40,6 +53,8 @@ public class ColourServer {
             case ColourModes.SINGLE_COLOUR:
             default:
                 return ColourFactory.getSingleColourHues(inputObjects,singleColour);
+            case ColourModes.CHILD_COUNT:
+                return ColourFactory.getChildCountHues(inputObjects,childObjectsForColourName,true);
             case ColourModes.ID:
                 return ColourFactory.getIDHues(inputObjects,true);
             case ColourModes.RANDOM_COLOUR:
@@ -56,6 +71,7 @@ public class ColourServer {
     private void initialiseParameters(Module module) {
         parameters.add(new ChoiceP(COLOUR_MODE, module, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
         parameters.add(new ChoiceP(SINGLE_COLOUR,module,SingleColours.WHITE,SingleColours.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,module));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, module));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, module));
 
@@ -69,11 +85,16 @@ public class ColourServer {
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
         switch ((String) parameters.getValue(COLOUR_MODE)) {
-            case AddObjectsOverlay.ColourModes.SINGLE_COLOUR:
+            case ColourModes.CHILD_COUNT:
+                returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
+                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
+                break;
+
+            case ColourModes.SINGLE_COLOUR:
                 returnedParameters.add(parameters.getParameter(SINGLE_COLOUR));
                 break;
 
-            case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
+            case ColourModes.MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 if (inputObjectsName != null) {
                     ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
@@ -81,12 +102,12 @@ public class ColourServer {
                 }
                 break;
 
-            case AddObjectsOverlay.ColourModes.PARENT_ID:
+            case ColourModes.PARENT_ID:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
                 break;
 
-            case AddObjectsOverlay.ColourModes.PARENT_MEASUREMENT_VALUE:
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
 

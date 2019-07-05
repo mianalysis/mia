@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -74,5 +75,10 @@ public class RemoveObjects extends Module {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 }

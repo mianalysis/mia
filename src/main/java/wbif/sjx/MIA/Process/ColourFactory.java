@@ -142,6 +142,43 @@ public class ColourFactory {
 
     }
 
+    public static HashMap<Integer,Float> getChildCountHues(ObjCollection objects, String childObjectsName, boolean normalised) {
+        HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
+
+        // Getting minimum and maximum values from measurement (if required)
+        CumStat cs = new CumStat();
+        for (Obj obj:objects.values()) {
+            if (obj.getChildren(childObjectsName) == null) continue;
+            cs.addMeasure(obj.getChildren(childObjectsName).size());
+        }
+
+        for (Obj object:objects.values()) {
+            int ID = object.getID();
+
+            // Default hue value in case none is assigned
+            float H = 0f;
+
+            ObjCollection childObjects = object.getChildren(childObjectsName);
+            if (childObjects== null) {
+                hues.put(ID,H);
+                continue;
+            }
+            H = (float) object.getChildren(childObjectsName).size();
+            if (normalised) {
+                double startH = 0;
+                double endH = 120d / 255d;
+                H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+            }
+
+            hues.put(ID,H);
+
+        }
+
+        return hues;
+
+    }
+
     public static HashMap<Integer,Float> getMeasurementValueHues(ObjCollection objects, String measurementName, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
         if (objects == null) return hues;

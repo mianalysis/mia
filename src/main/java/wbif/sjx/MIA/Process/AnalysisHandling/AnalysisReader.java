@@ -14,9 +14,9 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -181,6 +181,12 @@ public class AnalysisReader {
             NamedNodeMap attributes = referenceNode.getAttributes();
             String parameterName = attributes.getNamedItem("NAME").getNodeValue();
             Parameter parameter = module.getParameter(parameterName);
+
+            if (parameter == null) {
+                MIA.log.writeWarning("Parameter \""+parameterName+"\" not found for module \""+module.getName()+"\", skipping.");
+                continue;
+            }
+
             parameter.setAttributesFromXML(referenceNode);
 
         }

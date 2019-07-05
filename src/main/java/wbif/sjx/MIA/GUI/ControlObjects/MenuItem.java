@@ -8,6 +8,7 @@ import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,6 +20,10 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String LOAD_PIPELINE = "Load pipeline";
     public static final String SAVE_PIPELINE = "Save pipeline";
     public static final String SAVE_PIPELINE_AS = "Save pipeline as";
+    public static final String UNDO = "Undo";
+    public static final String REDO = "Redo";
+    public static final String COPY = "Copy";
+    public static final String PASTE = "Paste";
     public static final String RUN_ANALYSIS = "Run analysis";
     public static final String STOP_ANALYSIS = "Stop analysis";
     public static final String RESET_ANALYSIS = "Reset analysis";
@@ -57,6 +62,14 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
             case SAVE_PIPELINE_AS:
                 GUIAnalysisHandler.saveAnalysisAs();
+                break;
+
+            case UNDO:
+                GUI.undo();
+                break;
+
+            case REDO:
+                GUI.redo();
                 break;
 
             case RUN_ANALYSIS:

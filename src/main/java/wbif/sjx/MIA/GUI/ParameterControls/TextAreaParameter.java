@@ -73,6 +73,8 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
 
     @Override
     public void focusLost(FocusEvent e) {
+        GUI.addUndo();
+
         if (!parameter.isEditable()) return;
 
         parameter.setValueFromString(textArea.getText());
@@ -82,5 +84,6 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         updateControl();
 
         GUI.updateModuleStates(true);
+
     }
 }

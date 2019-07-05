@@ -5,6 +5,7 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
@@ -286,4 +287,8 @@ public class NormaliseIntensity extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

@@ -37,13 +37,15 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         parameter.getGroup().removeCollection(parameter.getCollection());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules();
-        GUI.populateModuleParameters();
+        GUI.updateParameters();
         GUI.updateModuleStates(true);
 
         updateControl();

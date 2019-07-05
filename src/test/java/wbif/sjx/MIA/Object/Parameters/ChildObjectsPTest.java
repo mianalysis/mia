@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,7 +27,7 @@ public class ChildObjectsPTest {
 
         assertEquals("Test param",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());
-                
+
 
     }
 

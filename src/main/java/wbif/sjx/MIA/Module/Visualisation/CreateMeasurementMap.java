@@ -7,6 +7,7 @@ import ij.measure.Calibration;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.analysis.function.Gaussian;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -398,4 +399,8 @@ public class CreateMeasurementMap extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

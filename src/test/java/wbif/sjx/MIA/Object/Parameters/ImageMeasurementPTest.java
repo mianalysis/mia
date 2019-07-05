@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,7 +7,7 @@ import org.w3c.dom.NamedNodeMap;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageTexture;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

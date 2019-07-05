@@ -7,6 +7,7 @@ import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -465,6 +466,10 @@ public class FitGaussian2D extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }
 
 //when signax_0:sigmay_o is >1.5, delete spot... i - 1 ;

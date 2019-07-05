@@ -4,6 +4,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 
 import javax.annotation.Nonnull;
 
@@ -45,6 +46,13 @@ public class ImageMeasurementP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ImageMeasurementP(name,module,getChoice(),imageName,getDescription());
+        ImageMeasurementP newParameter = new ImageMeasurementP(name,module,getChoice(),imageName,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

@@ -29,6 +29,13 @@ public class MetadataItemP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new MetadataItemP(name,module,choice,getDescription());
+        MetadataItemP newParameter = new MetadataItemP(name,module,choice,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

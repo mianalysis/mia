@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.Hidden;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.StringP;
@@ -55,7 +55,6 @@ public class GlobalVariables extends Module {
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
-            String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
 
             // Iterating over all parameters, finding the one with the matching name
@@ -71,7 +70,7 @@ public class GlobalVariables extends Module {
                 }
             }
 
-            // If the present parameter wasn't found, return false
+            // If the current parameter wasn't found, return false
             if (!found) return false;
 
         }
@@ -137,5 +136,10 @@ public class GlobalVariables extends Module {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 }

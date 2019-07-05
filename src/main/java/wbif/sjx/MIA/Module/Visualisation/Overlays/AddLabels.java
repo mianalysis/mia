@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Object.*;
@@ -47,6 +48,7 @@ public class AddLabels extends Module {
     public static final String DECIMAL_PLACES = "Decimal places";
     public static final String USE_SCIENTIFIC = "Use scientific notation";
     public static final String LABEL_SIZE = "Label size";
+    public static final String CHILD_OBJECTS_FOR_LABEL = "Child objects for label";
     public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
     public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
     public static final String LABEL_POSITION = "Label position";
@@ -173,8 +175,11 @@ public class AddLabels extends Module {
 
     }
 
-    public HashMap<Integer,String> getLabels(ObjCollection inputObjects, String labelMode, DecimalFormat df, String parentObjectsForLabelName, String measurementForLabel) {
+    public HashMap<Integer,String> getLabels(ObjCollection inputObjects, String labelMode, DecimalFormat df,
+                                             String childObjectsForLabelName,String parentObjectsForLabelName, String measurementForLabel) {
         switch (labelMode) {
+            case AddObjectsOverlay.LabelModes.CHILD_COUNT:
+                return LabelFactory.getChildCountLabels(inputObjects,childObjectsForLabelName,df);
             case AddObjectsOverlay.LabelModes.ID:
                 return LabelFactory.getIDLabels(inputObjects,df);
             case AddObjectsOverlay.LabelModes.MEASUREMENT_VALUE:
@@ -221,6 +226,7 @@ public class AddLabels extends Module {
         int labelSize = parameters.getValue(LABEL_SIZE);
         int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
         boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
+        String childObjectsForLabelName = parameters.getValue(CHILD_OBJECTS_FOR_LABEL);
         String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
         String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
         String labelPosition = parameters.getValue(LABEL_POSITION);
@@ -233,7 +239,7 @@ public class AddLabels extends Module {
         // Generating colours for each object
         HashMap<Integer,Float> hues = colourServer.getHues(inputObjects);
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces,useScientific);
-        HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,parentObjectsForLabelName,measurementForLabel);
+        HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,childObjectsForLabelName,parentObjectsForLabelName,measurementForLabel);
 
         addOverlay(ipl,inputObjects,labelPosition,labels,labelSize,hues,renderInAllFrames,multithread);
 
@@ -250,26 +256,27 @@ public class AddLabels extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE,this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new ChoiceP(LABEL_MODE, this, LabelModes.ID, LabelModes.ALL));
-        parameters.add(new IntegerP(DECIMAL_PLACES, this,0));
+        parameters.add(new ChoiceP(LABEL_MODE,this,LabelModes.ID, LabelModes.ALL));
+        parameters.add(new IntegerP(DECIMAL_PLACES,this,0));
         parameters.add(new BooleanP(USE_SCIENTIFIC,this,false));
-        parameters.add(new IntegerP(LABEL_SIZE, this,8));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL, this));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL, this));
+        parameters.add(new IntegerP(LABEL_SIZE,this,8));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_LABEL,this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL,this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL,this));
         parameters.add(new ChoiceP(LABEL_POSITION,this,LabelPositions.CENTRE,LabelPositions.ALL));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
 
         colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
         parameters.addAll(colourServer.getParameters());
@@ -301,6 +308,11 @@ public class AddLabels extends Module {
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LABEL_MODE));
         switch ((String) parameters.getValue(LABEL_MODE)) {
+            case LabelModes.CHILD_COUNT:
+                returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_LABEL));
+                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_LABEL)).setParentObjectsName(inputObjectsName);
+                break;
+
             case LabelModes.MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
                 ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(inputObjectsName);
@@ -353,5 +365,10 @@ public class AddLabels extends Module {
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
         return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
     }
 }

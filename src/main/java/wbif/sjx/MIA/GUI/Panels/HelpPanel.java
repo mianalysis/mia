@@ -3,7 +3,7 @@ package wbif.sjx.MIA.GUI.Panels;
 import wbif.sjx.MIA.GUI.ControlObjects.HelpArea;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;

@@ -14,8 +14,9 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.Log;
 
-import java.awt.datatransfer.Transferable;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -25,7 +26,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module extends Ref implements Comparable {
+public abstract class Module extends Ref implements Comparable, Serializable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
@@ -52,11 +53,39 @@ public abstract class Module extends Ref implements Comparable {
     }
 
 
-    // PUBLIC METHODS
+    // ABSTRACT METHODS
 
     public abstract String getPackageName();
 
     protected abstract boolean process(Workspace workspace);
+
+    /*
+     * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
+     * the ParameterCollection, rather than just setting the local variable directly, which helps ensure the correct
+     * operation is included in the method.
+     */
+    protected abstract void initialiseParameters();
+
+    /*
+     * Return a ParameterCollection of the currently active parameters.  This is generateModuleList each time a parameter is changed.
+     * For example, if "Export XML" is set to "false" a sub-parameter specifying the measurements to export won't be
+     * included in the ParameterCollection.  A separate rendering class will take this ParameterCollection and generate
+     * an appropriate GUI panel.
+     */
+    public abstract ParameterCollection updateAndGetParameters();
+
+    public abstract ImageMeasurementRefCollection updateAndGetImageMeasurementRefs();
+
+    public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
+
+    public abstract MetadataRefCollection updateAndGetMetadataReferences();
+
+    public abstract RelationshipRefCollection updateAndGetRelationships();
+
+    public abstract boolean verify();
+
+
+    // PUBLIC METHODS
 
     public boolean execute(Workspace workspace) {
         writeMessage("Processing");
@@ -95,32 +124,9 @@ public abstract class Module extends Ref implements Comparable {
 
     }
 
-    /*
-     * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
-     * the ParameterCollection, rather than just setting the local variable directly, which helps ensure the correct
-     * operation is included in the method.
-     */
-    protected abstract void initialiseParameters();
-
-    /*
-     * Return a ParameterCollection of the currently active parameters.  This is generateModuleList each time a parameter is changed.
-     * For example, if "Export XML" is set to "false" a sub-parameter specifying the measurements to export won't be
-     * included in the ParameterCollection.  A separate rendering class will take this ParameterCollection and generate
-     * an appropriate GUI panel.
-     */
-    public abstract ParameterCollection updateAndGetParameters();
-
-    public abstract ImageMeasurementRefCollection updateAndGetImageMeasurementRefs();
-
-    public abstract ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs();
-
     public void addObjectMeasurementRef(ObjMeasurementRef ref) {
         objectMeasurementRefs.add(ref);
     }
-
-    public abstract MetadataRefCollection updateAndGetMetadataReferences();
-
-    public abstract RelationshipRefCollection updateAndGetRelationships();
 
     public ImageMeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);
@@ -208,7 +214,9 @@ public abstract class Module extends Ref implements Comparable {
         this.modules = modules;
     }
 
-    // PRIVATE METHODS
+    public boolean hasParameter(String parameterName) {
+        return parameters.keySet().contains(parameterName);
+    }
 
     public String getNotes() {
         return notes;
@@ -226,14 +234,6 @@ public abstract class Module extends Ref implements Comparable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    protected void writeMessage(String message) {
-        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
-    }
-
-    protected static void writeMessage(String message, String name) {
-        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
     }
 
     public boolean canBeDisabled() {
@@ -272,6 +272,42 @@ public abstract class Module extends Ref implements Comparable {
         return updateAndGetParameters().hasVisibleParameters();
 
     }
+
+    public Module duplicate() throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        Constructor constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
+        Module newModule = (Module) constructor.newInstance(modules);
+        newModule.setNickname(getNickname());
+        newModule.setEnabled(enabled);
+        newModule.setShowOutput(showOutput);
+        newModule.setNotes(notes);
+        newModule.setCanBeDisabled(canBeDisabled);
+
+        ParameterCollection newParameters = newModule.getAllParameters();
+
+        for (Parameter parameter:parameters.values()) {
+            Parameter newParameter = parameter.duplicate();
+            if (newParameter == null) continue;
+            newParameter.setModule(newModule);
+            newParameters.add(newParameter);
+        }
+
+        return newModule;
+
+    }
+
+
+    // PROTECTED METHODS
+
+    protected void writeMessage(String message) {
+        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
+    }
+
+    protected static void writeMessage(String message, String name) {
+        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
+    }
+
+
+    // OVER-RIDDEN METHODS
 
     @Override
     public int compareTo(Object o) {

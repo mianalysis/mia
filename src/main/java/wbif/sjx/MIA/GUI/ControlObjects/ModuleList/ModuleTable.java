@@ -1,11 +1,10 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
-import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,6 +17,7 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class ModuleTable extends JTable implements ActionListener, TableCellRenderer {
@@ -40,6 +40,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
 
                 GUI.setSelectedModules(selectedModules);
                 GUI.updateParameters();
+                GUI.updateHelpNotes();
 
             }
         });
@@ -90,46 +91,44 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
         switch (e.getActionCommand()) {
             case "Backspace":
             case "Delete":
-                for (int row:getSelectedRows()) {
-                    Module module = (Module) getValueAt(row, 0);
-                    modules.remove(module);
-                }
+                GUIAnalysisHandler.removeModules();
                 break;
             case "Copy":
-//                int[] selectedRows = getSelectedRows();
-//                if (selectedRows.length == 0) return;
-//
-//                // Adding first value
-//                StringBuilder sb = new StringBuilder();
-//                Module module = (Module) getValueAt(selectedRows[0], 0);
-//                sb.append(modules.indexOf(module));
-//
-//                // Adding remaining values
-//                for (int i=1;i<selectedRows.length;i++) {
-//                    module = (Module) getValueAt(selectedRows[i], 0);
-//
-//                }
-//
-//                // Adding to clipboard
-//                StringSelection stringSelection = new StringSelection(sb.toString());
-//                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//                clipboard.setContents(stringSelection,null);
+                try {
+                    int[] selectedRows = getSelectedRows();
+                    if (selectedRows.length == 0) return;
+
+                    ModuleCollection copyModules = new ModuleCollection();
+                    for (int i=0;i<selectedRows.length;i++) {
+                        copyModules.add(((Module) getValueAt(selectedRows[i], 0)).duplicate());
+                    }
+
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
+                    clipboard.setContents(transfer,transfer);
+
+                } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
+                    e1.printStackTrace();
+                }
 
                 break;
             case "Paste":
-//                selectedRows = getSelectedRows();
-//                if (selectedRows.length == 0) return;
-//
-//                try {
-//                    // Getting clipboard contents specifying modules to copy
-//                    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//                    String fromIdxString = (String) clipboard.getData(DataFlavor.stringFlavor);
-//                    int[] fromIdxInts = CommaSeparatedStringInterpreter.interpretIntegers(fromIdxString,true);
-//                    int toIdx = selectedRows[selectedRows.length-1];
-//
-//                } catch (UnsupportedFlavorException | IOException ex) {
-//                    ex.printStackTrace();
-//                }
+                try {
+                    GUI.addUndo();
+                    int[] selectedRows = getSelectedRows();
+                    if (selectedRows.length == 0) return;
+                    Module toModule = (Module) getValueAt(selectedRows[selectedRows.length-1],0);
+                    int toIdx = modules.indexOf(toModule);
+
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
+                    ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
+
+                    modules.insert(copyModules.duplicate(),toIdx);
+
+                } catch (ClassNotFoundException | IOException | UnsupportedFlavorException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
+                    e1.printStackTrace();
+                }
 
                 break;
         }
@@ -142,7 +141,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = new JLabel();
 
-        Border margin = new EmptyBorder(0,5,0,0);
+        Border margin = new EmptyBorder(2,5,0,0);
         label.setBorder(margin);
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setOpaque(true);

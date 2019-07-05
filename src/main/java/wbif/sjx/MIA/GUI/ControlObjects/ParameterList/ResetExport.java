@@ -27,10 +27,12 @@ public class ResetExport extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         ref.setAllExport(true);
 
-        GUI.populateModuleParameters();
-        GUI.populateHelpNotes();
+        GUI.updateParameters();
+        GUI.updateHelpNotes();
 
     }
 }

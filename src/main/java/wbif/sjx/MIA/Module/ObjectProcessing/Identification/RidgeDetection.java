@@ -8,8 +8,10 @@ import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -265,7 +267,7 @@ public class RidgeDetection extends Module {
             IntensityMinMax.run(dispIpl, true);
 
             // Creating the overlay
-            String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+            String colourMode = ColourServer.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             AddObjectOutline.addOverlay(dispIpl,outputObjects,0.2,hues,false,true);
 
@@ -368,4 +370,8 @@ public class RidgeDetection extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

@@ -23,6 +23,13 @@ public class RemovedObjectsP extends ObjectNamesType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new RemovedObjectsP(name,module,choice,getDescription());
+        RemovedObjectsP newParameter = new RemovedObjectsP(name,module,choice,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

@@ -70,6 +70,13 @@ public class IntegerP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new IntegerP(name,module,value,getDescription());
+        IntegerP newParameter = new IntegerP(name,module,value,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

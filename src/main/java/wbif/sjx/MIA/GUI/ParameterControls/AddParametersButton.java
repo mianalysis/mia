@@ -37,13 +37,15 @@ public class AddParametersButton extends ParameterControl implements ActionListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         parameter.addParameters();
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules();
-        GUI.populateModuleParameters();
+        GUI.updateParameters();
         GUI.updateModuleStates(true);
 
         updateControl();

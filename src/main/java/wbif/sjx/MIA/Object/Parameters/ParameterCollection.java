@@ -3,12 +3,13 @@ package wbif.sjx.MIA.Object.Parameters;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class ParameterCollection extends LinkedHashMap<String,Parameter> implements RefCollection<Parameter> {
+public class ParameterCollection extends LinkedHashMap<String,Parameter> implements RefCollection<Parameter>, Serializable {
 
     // PUBLIC METHODS
 
@@ -56,6 +57,15 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
         }
 
         return false;
+
+    }
+
+    public ParameterCollection duplicate() {
+        ParameterCollection copyParameters = new ParameterCollection();
+
+        for (Parameter parameter:values()) copyParameters.add(parameter.duplicate());
+
+        return copyParameters;
 
     }
 }

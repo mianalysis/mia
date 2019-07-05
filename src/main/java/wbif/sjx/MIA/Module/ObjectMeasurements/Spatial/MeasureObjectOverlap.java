@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -214,4 +215,8 @@ public class MeasureObjectOverlap extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

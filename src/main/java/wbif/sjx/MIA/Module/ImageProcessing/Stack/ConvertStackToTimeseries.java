@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -75,6 +76,11 @@ public class ConvertStackToTimeseries extends Module {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
+            if (showOutput) outputImage.showImage();
+
+        } else {
+            if (showOutput) inputImage.showImage();
+            
         }
 
         return true;
@@ -123,4 +129,8 @@ public class ConvertStackToTimeseries extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

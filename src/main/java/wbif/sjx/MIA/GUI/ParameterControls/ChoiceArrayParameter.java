@@ -36,6 +36,8 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        GUI.addUndo();
+
         parameter.setChoice((String) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
@@ -43,8 +45,8 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
 
         GUI.updateTestFile();
         GUI.updateModules();
+        GUI.updateParameters();
         GUI.updateModuleStates(true);
-        GUI.populateModuleParameters();
 
         updateControl();
 

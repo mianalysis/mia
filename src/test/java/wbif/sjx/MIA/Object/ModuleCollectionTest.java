@@ -8,6 +8,7 @@ import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageTexture;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.RemoveImage;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;

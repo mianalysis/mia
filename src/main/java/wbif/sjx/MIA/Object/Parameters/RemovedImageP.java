@@ -23,6 +23,13 @@ public class RemovedImageP extends ImageNamesType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new RemovedImageP(name,module,choice,getDescription());
+        RemovedImageP newParameter = new RemovedImageP(name,module,choice,getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

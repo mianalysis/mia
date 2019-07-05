@@ -6,7 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
@@ -33,6 +33,11 @@ import java.io.IOException;
  */
 public class AnalysisWriter {
     public static void saveAnalysisAs(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
+        if (outputFileName == null || outputFileName.equals("")) {
+            saveAnalysis(analysis);
+            return;
+        }
+
         // Updating the analysis filename
         analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 

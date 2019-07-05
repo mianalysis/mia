@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.InputOutput;
 
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -481,7 +482,7 @@ public class MetadataExtractor extends Module {
                     case FilenameExtractors.GENERIC:
                         String groupString = parameters.getValue(GROUPS);
                         String[] groups = getGroups(groupString);
-                        for (String group:groups) metadataRefs.getOrPut((group));
+                        for (String group:groups) returnedRefs.add(metadataRefs.getOrPut((group)));
                         break;
 
                     case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
@@ -598,6 +599,10 @@ public class MetadataExtractor extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }
 
 

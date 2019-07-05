@@ -5,7 +5,9 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
@@ -30,6 +32,7 @@ public class ConvertObjectsToImage extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String COLOUR_MODE = "Colour mode";
+    public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String MEASUREMENT = "Measurement";
 
@@ -45,7 +48,7 @@ public class ConvertObjectsToImage extends Module {
 
     }
 
-    public interface ColourModes extends ObjCollection.ColourModes  {}
+    public interface ColourModes extends ColourServer.ColourModes  {}
 
 
     @Override
@@ -83,6 +86,7 @@ public class ConvertObjectsToImage extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             String colourMode = parameters.getValue(COLOUR_MODE);
             String measurementForColour = parameters.getValue(MEASUREMENT);
+            String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
@@ -93,6 +97,10 @@ public class ConvertObjectsToImage extends Module {
             boolean nanBackground = false;
             int bitDepth = 8;
             switch (colourMode) {
+                case ColourModes.CHILD_COUNT:
+                    hues = ColourFactory.getChildCountHues(inputObjects,childObjectsForColour,false);
+                    bitDepth = 32;
+                    break;
                 case ColourModes.ID:
                     hues = ColourFactory.getIDHues(inputObjects,false);
                     bitDepth = 32;
@@ -139,6 +147,7 @@ public class ConvertObjectsToImage extends Module {
                         dispIpl.setLut(LUTs.Random(true));
                         break;
 
+                    case ColourModes.CHILD_COUNT:
                     case ColourModes.MEASUREMENT_VALUE:
                         dispIpl.setLut(LUTs.BlackFire());
                         break;
@@ -169,6 +178,7 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(COLOUR_MODE, this,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
 
@@ -193,6 +203,12 @@ public class ConvertObjectsToImage extends Module {
 
             returnedParameters.add(parameters.getParameter(COLOUR_MODE));
             switch ((String) parameters.getValue(COLOUR_MODE)) {
+                case ColourModes.CHILD_COUNT:
+                    returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
+                    if (parameters.getValue(INPUT_OBJECTS) != null) {
+                        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
+                    }
+                    break;
                 case ColourModes.MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(MEASUREMENT));
                     if (parameters.getValue(INPUT_OBJECTS) != null) {
@@ -241,4 +257,8 @@ public class ConvertObjectsToImage extends Module {
         return null;
     }
 
+    @Override
+    public boolean verify() {
+        return true;
+    }
 }

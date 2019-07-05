@@ -25,6 +25,13 @@ public class InputObjectsP extends ObjectNamesType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new InputObjectsP(name,module,getChoice(),getDescription());
+        InputObjectsP newParameter = new InputObjectsP(name,module,getChoice(),getDescription());
+
+        newParameter.setNickname(getNickname());
+        newParameter.setVisible(isVisible());
+        newParameter.setExported(isExported());
+
+        return (T) newParameter;
+
     }
 }

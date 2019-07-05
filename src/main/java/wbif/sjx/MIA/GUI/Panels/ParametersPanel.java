@@ -1,11 +1,12 @@
 package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
+import wbif.sjx.MIA.GUI.ParameterControls.RemoveParametersButton;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
@@ -90,7 +91,7 @@ public class ParametersPanel extends JScrollPane {
         if (module.updateAndGetParameters() != null) {
             for (Parameter parameter : module.updateAndGetParameters().values()) {
                 if (parameter.getClass() == ParameterGroup.class) {
-                    addAdvancedParameterGroup((ParameterGroup) parameter,c);
+                    addAdvancedParameterGroup((ParameterGroup) parameter,module,c);
                 } else {
                     addAdvancedParameterControl(parameter,c);
                 }
@@ -195,13 +196,17 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
-    public void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {
+    public void addAdvancedParameterGroup(ParameterGroup group, Module module, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashSet<ParameterCollection> collections = group.getCollections();
 
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters
             for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
+
+            c.gridy++;
+            RemoveParameters removeParameters = new RemoveParameters("Remove",module,group,collection);
+            addAdvancedParameterControl(removeParameters,c);
 
             c.gridy++;
             panel.add(getInvisibleSeparator(), c);

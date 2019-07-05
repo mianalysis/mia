@@ -4,7 +4,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public abstract class Ref {
+import java.io.Serializable;
+
+public abstract class Ref implements Serializable {
     protected final String name;
     private String nickname = "";
 
