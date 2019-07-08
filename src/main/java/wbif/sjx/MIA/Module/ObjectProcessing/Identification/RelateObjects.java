@@ -102,7 +102,7 @@ public class RelateObjects extends Module {
     }
 
     /*
-     * Iterates over each testObject, calculating getting the smallest distance to a parentObject.  If this is smaller
+     * Iterates over each testOnEdge, calculating getting the smallest distance to a parentObject.  If this is smaller
      * than linkingDistance the link is assigned.
      */
     public void proximity(ObjCollection parentObjects, ObjCollection childObjects) {

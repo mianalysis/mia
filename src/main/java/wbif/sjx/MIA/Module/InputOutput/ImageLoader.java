@@ -16,6 +16,7 @@ import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
+import loci.plugins.in.ImagePlusReader;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
@@ -173,6 +174,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         IMetadata meta = service.createOMEXMLMetadata();
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
+
+        MIA.log.writeDebug(path);
 
         reader.setGroupFiles(false);
         reader.setId(path);
