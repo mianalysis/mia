@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -12,7 +13,11 @@ import java.awt.event.FocusListener;
  * Created by Stephen on 28/07/2017.
  */
 public class NotesArea extends JTextArea implements FocusListener {
+    Module module;
+
     public NotesArea(Module module) {
+        this.module = module;
+
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
         if (module == null) {
@@ -37,9 +42,7 @@ public class NotesArea extends JTextArea implements FocusListener {
     public void focusLost(FocusEvent e) {
         GUI.addUndo();
 
-        if (GUI.getSelectedModules() == null) return;
-
-        GUI.getFirstSelectedModule().setNotes(getText());
+        module.setNotes(getText());
 
     }
 }
