@@ -13,10 +13,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -71,6 +68,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
+    public static final String MESSAGE_ON_IMAGE = "Message on image";
 
     public ManuallyIdentifyObjects(ModuleCollection modules) {
         super("Manually identify objects",modules);
@@ -280,6 +278,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
+        String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -290,7 +289,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
-        displayImagePlus.setTitle("Draw objects on this image");
+        displayImagePlus.setTitle(messageOnImage);
 
         // Checking if we have a 2D or 3D image
         twoD = displayImagePlus.getNSlices() == 1;
@@ -359,6 +358,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL));
+        parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image"));
 
     }
 
