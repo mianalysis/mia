@@ -91,6 +91,7 @@ public class Watershed extends Module {
                         ImageStack timepointMarker = getSetStack(finalMarkerIpl, finalT, finalC, null);
                         timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
                         timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker, timepointMask, connectivity, true, false);
+
                     }
 
                     // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary and back to 8-bit.

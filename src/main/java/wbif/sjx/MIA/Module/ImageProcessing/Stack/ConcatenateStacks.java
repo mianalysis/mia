@@ -25,7 +25,6 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.LinkedHashSet;
 
@@ -253,9 +252,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         int nSlices = ipl.getNSlices();
         int nFrames = ipl.getNFrames();
         if (nChannels > 1) ipl = HyperStackConverter.toHyperStack(ipl, nChannels, nSlices, nFrames, "xyczt", "color");
-
-        // Updating the display range to help show all the colours
-        IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
 
         image.setImagePlus(ipl);
 

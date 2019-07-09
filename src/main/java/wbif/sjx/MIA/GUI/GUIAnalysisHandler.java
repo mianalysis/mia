@@ -1,6 +1,8 @@
 package wbif.sjx.MIA.GUI;
 
 import org.xml.sax.SAXException;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleCollectionDataFlavor;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleCollectionTransfer;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -13,6 +15,9 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -186,5 +191,45 @@ public class GUIAnalysisHandler {
         GUI.updateModules();
         GUI.updateModuleStates(true);
 
+    }
+
+    public static void copyModules() {
+        try {
+            Module[] selectedModules = GUI.getSelectedModules();
+            if (selectedModules == null) return;
+            if (selectedModules.length == 0) return;
+
+            ModuleCollection copyModules = new ModuleCollection();
+            for (Module selectedModule:selectedModules) copyModules.add(selectedModule.duplicate());
+
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
+            clipboard.setContents(transfer,transfer);
+
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    public static void pasteModules() {
+        try {
+            Module[] selectedModules = GUI.getSelectedModules();
+            if (selectedModules == null) return;
+            if (selectedModules.length == 0) return;
+
+            GUI.addUndo();
+            Module toModule = selectedModules[selectedModules.length-1];
+            ModuleCollection modules = GUI.getModules();
+            int toIdx = modules.indexOf(toModule);
+
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
+            ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
+
+            modules.insert(copyModules.duplicate(),toIdx);
+
+        } catch (ClassNotFoundException | IOException | UnsupportedFlavorException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
+            e1.printStackTrace();
+        }
     }
 }

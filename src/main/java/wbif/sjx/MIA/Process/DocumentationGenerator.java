@@ -173,6 +173,7 @@ public class DocumentationGenerator {
 
         sb.append("<h2>Parameters</h2>\r\n<ul>");
         for (Parameter parameter:module.getAllParameters().values()) {
+            if (!parameter.isExported()) continue;
             sb.append("<li>")
                     .append(parameter.getName())
                     .append("<ul>");
@@ -206,7 +207,7 @@ public class DocumentationGenerator {
                 sb.append("</ul></li>");
             }
 
-            sb.append("</ul>");
+            sb.append("</ul><br>");
 
         }
         sb.append("</ul>");
