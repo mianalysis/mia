@@ -20,6 +20,11 @@ public class TextAreaP extends TextType {
         this.editable = editable;
     }
 
+    public TextAreaP(String name, Module module, boolean editable, String description) {
+        super(name, module, description);
+        this.editable = editable;
+    }
+
     public TextAreaP(String name, Module module, @Nonnull String value, boolean editable) {
         super(name, module);
         this.value = value;

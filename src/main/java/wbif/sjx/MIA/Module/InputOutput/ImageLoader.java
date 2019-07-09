@@ -762,40 +762,49 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new ParamSeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name assigned to the image."));
         parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL, "File reader mode to use." +
-                "<br>- \"Current file\" (default option) will import the current root-file for the workspace." +
-                "<br>- \"From ImageJ\" will load the active image fromm ImageJ." +
-                "<br>- \"Image sequence\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.  " +
-                "<br>- \"Matching format\" will load the image matching a filename based on the root-file for the workspace and a series of rules.  " +
-                "<br>- \"Specific file\" will load the image at a specific location."));
+                "<br>- \""+ImportModes.CURRENT_FILE+"\" (default option) will import the current root-file for the workspace." +
+                "<br>- \""+ImportModes.IMAGEJ+"\" will load the active image fromm ImageJ." +
+                "<br>- \""+ImportModes.IMAGE_SEQUENCE+"\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.  " +
+                "<br>- \""+ImportModes.MATCHING_FORMAT+"\" will load the image matching a filename based on the root-file for the workspace and a series of rules.  " +
+                "<br>- \""+ImportModes.SPECIFIC_FILE+"\" will load the image at a specific location."));
         parameters.add(new BooleanP(USE_IMAGEJ_READER, this, false, "Use the stock ImageJ file reader, rather than the default BioFormats reader."));
         parameters.add(new IntegerP(NUMBER_OF_ZEROES, this, 4, "Number of digits in image sequence suffix."));
         parameters.add(new IntegerP(STARTING_INDEX, this, 0, "First number in sequence to load."));
         parameters.add(new IntegerP(FRAME_INTERVAL, this, 1, "Frame interval to use for loading."));
         parameters.add(new BooleanP(LIMIT_FRAMES, this, false, "When \"true\" this will load a pre-determined number of frames.  When \"false\" it will load all the available images."));
         parameters.add(new IntegerP(FINAL_INDEX, this, 1, "Final number in sequence to load."));
-        parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL));
-        parameters.add(new StringP(COMMENT, this));
-        parameters.add(new StringP(PREFIX, this));
-        parameters.add(new StringP(SUFFIX, this));
-        parameters.add(new StringP(EXTENSION, this));
-        parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false));
-        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
-        parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL, "Method to use for generation of the input filename." +
+                "<br>- \""+NameFormats.GENERIC+"\" (default) will generate a name from metadata values stored in the current workspace." +
+                "<br>- \""+NameFormats.HUYGENS+"\" will generate a name matching the SVI Huygens format, where channel numbers are specified as \"ch00\", \"ch01\", etc." +
+                "<br>- \""+NameFormats.INCUCYTE_SHORT+"\" will generate a name matching the short Incucyte Zoom format.  The root name is specified as the parameter \"Comment\"." +
+                "<br>- \""+NameFormats.YOKOGAWA+"\" will generate a name matching the Yokogawa high content microscope name format." +
+                "<br>- \""+NameFormats.INPUT_FILE_PREFIX+"\" will add the specified prefix to the input filename for the current workspace." +
+                "<br>- \""+NameFormats.INPUT_FILE_SUFFIX+"\" will add the specified suffix to the input filename for the current workspace."));
+        parameters.add(new StringP(COMMENT, this, "Root name for generation of Incucyte Zoom filenames.  This will be added before the standard well and field values."));
+        parameters.add(new StringP(PREFIX, this, "Text to append to the start of the root filename for this workspace.  For example, if the current root file is \"image.tif\" and a prefix of \"test_\" is specified, the generated filename will be \"test_image.tif\"."));
+        parameters.add(new StringP(SUFFIX, this, "Text to append to the end of the root filename for this workspace.  For example, if the current root file is \"image.tif\" and a prefix of \"_test\" is specified, the generated filename will be \"image_test.tif\"."));
+        parameters.add(new StringP(EXTENSION, this, "Extension for the generated filename."));
+        parameters.add(new StringP(GENERIC_FORMAT, this, "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"£{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"${name}\" notation."));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false, "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
+        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true, "Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file."));
+        parameters.add(new FilePathP(FILE_PATH, this, "Path to file to be loaded."));
 
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR, this));
-        parameters.add(new StringP(CHANNELS, this, "1-end"));
-        parameters.add(new StringP(SLICES, this, "1-end"));
-        parameters.add(new StringP(FRAMES, this, "1-end"));
-        parameters.add(new IntegerP(CHANNEL, this, 1));
-        parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL));
-        parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
-        parameters.add(new IntegerP(LEFT, this, 0));
-        parameters.add(new IntegerP(TOP, this, 0));
-        parameters.add(new IntegerP(WIDTH, this, 512));
-        parameters.add(new IntegerP(HEIGHT, this, 512));
-
+        parameters.add(new StringP(CHANNELS, this, "1-end", "Range of channels to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load channels 4,5,6 and 7) or as a range loading every nth channel (e.g. \"4-10-2\" will load channels 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available channels at runtime."));
+        parameters.add(new StringP(SLICES, this, "1-end", "Range of slices to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load slices 4,5,6 and 7) or as a range loading every nth slice (e.g. \"4-10-2\" will load slices 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available slices at runtime."));
+        parameters.add(new StringP(FRAMES, this, "1-end", "Range of frames to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load frames 4,5,6 and 7) or as a range loading every nth frame (e.g. \"4-10-2\" will load frames 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available frames at runtime."));
+        parameters.add(new IntegerP(CHANNEL, this, 1, "Channel to load when constructing a \"Yokogawa\" format name."));
+        parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL, "ImageJ will load 3D tifs as Z-stacks by default.  This control provides a choice between loading as a Z-stack or timeseries."));
+        parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL,"Choice of loading the entire image, or cropping in XY." +
+                "<br>- \""+CropModes.NONE+"\" (default) will load the entire image in XY." +
+                "<br>- \""+CropModes.FIXED+"\" will apply a pre-defined crop to the input image based on the parameters \"Left\", \"Top\",\"Width\" and \"Height\"." +
+                "<br>- \""+CropModes.FROM_REFERENCE+"\" will display a specified image and ask the user to select a region to crop the input image to."));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this, "The image to be displayed for selection of the cropping region if the cropping mode is set to \""+CropModes.FROM_REFERENCE+"\"."));
+        parameters.add(new IntegerP(LEFT, this, 0, "Left coordinate limit for image cropping (specified in pixel units)."));
+        parameters.add(new IntegerP(TOP, this, 0, "Top coordinate limit for image cropping (specified in pixel units)."));
+        parameters.add(new IntegerP(WIDTH, this, 512, "Width of the final cropped region (specified in pixel units)."));
+        parameters.add(new IntegerP(HEIGHT, this, 512, "Height of the final cropped region (specified in pixel units)."));
+        
         parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
