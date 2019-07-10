@@ -50,6 +50,9 @@ public class MenuItem extends JMenuItem implements ActionListener {
         switch (getText()) {
             case NEW_PIPELINE:
                 GUIAnalysisHandler.newAnalysis();
+                GUI.setSelectedModules(null);
+                GUI.updateModules();
+                GUI.updateParameters();
                 break;
 
             case LOAD_PIPELINE:
@@ -66,10 +69,26 @@ public class MenuItem extends JMenuItem implements ActionListener {
 
             case UNDO:
                 GUI.undo();
+                GUI.updateModules();
+                GUI.updateParameters();
                 break;
 
             case REDO:
                 GUI.redo();
+                GUI.updateModules();
+                GUI.updateParameters();
+                break;
+
+            case COPY:
+                GUIAnalysisHandler.copyModules();
+                GUI.updateModules();
+                GUI.updateParameters();
+                break;
+
+            case PASTE:
+                GUIAnalysisHandler.pasteModules();
+                GUI.updateModules();
+                GUI.updateParameters();
                 break;
 
             case RUN_ANALYSIS:

@@ -548,8 +548,8 @@ public class TrackObjects extends Module {
                 }
 
                 // Calculating distances between objects and populating the cost matrix
-                double[][] cost = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
-                HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(cost);
+                double[][] costs = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
+                HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(costs);
                 int[] assignment = hungarianAlgorithm.execute();
 
                 // Applying the calculated assignments as relationships
@@ -558,7 +558,7 @@ public class TrackObjects extends Module {
                     Obj currObj = nPObjects[1].get(curr);
 
                     // Checking if the previous and current objects can be linked
-                    if (assignment[curr] != -1 && cost[curr][assignment[curr]] != Double.MAX_VALUE) {
+                    if (assignment[curr] != -1 && costs[curr][assignment[curr]] != Double.MAX_VALUE) {
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
                         linkObjects(prevObj, currObj, trackObjectsName);
                     } else if (t1 == t2 - 1 - maxMissingFrames) {

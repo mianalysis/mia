@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -26,6 +27,8 @@ public class SetDisplayRange extends Module {
     public static final String RANGE_SEPARATOR = "Intensity range";
     public static final String CALCULATION_MODE = "Calculation mode";
     public static final String CLIP_FRACTION = "Clipping fraction";
+    public static final String SET_MINIMUM_VALUE = "Set minimum value";
+    public static final String SET_MAXIMUM_VALUE = "Set maximum value";
     public static final String MIN_RANGE = "Minimum range value";
     public static final String MAX_RANGE = "Maximum range value";
 
@@ -59,20 +62,25 @@ public class SetDisplayRange extends Module {
 
     }
 
-    public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double clipFraction) {
-        // Get min max values for whole stack
-        double[] intRange;
+    public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double clipFraction, boolean setMinimum, boolean setMaximum) {
         for (int c = 1; c <= ipl.getNChannels(); c++) {
+            // Get min max values for whole stack
+            double[] intRange = new double[]{ipl.getDisplayRangeMin(),ipl.getDisplayRangeMax()};
+            double[] newIntRange;
+
             switch (calculationMode) {
                 case CalculationModes.FAST:
                 default:
-                    intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction);
+                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction);
                     break;
 
                 case CalculationModes.PRECISE:
-                    intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction);
+                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction);
                     break;
             }
+
+            if (setMinimum) intRange[0] = newIntRange[0];
+            if (setMaximum) intRange[1] = newIntRange[1];
 
             ipl.setDisplayRange(intRange[0],intRange[1]);
 
@@ -105,6 +113,8 @@ public class SetDisplayRange extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String calculationMode = parameters.getValue(CALCULATION_MODE);
         double clipFraction = parameters.getValue(CLIP_FRACTION);
+        boolean setMinimumValue = parameters.getValue(SET_MINIMUM_VALUE);
+        boolean setMaximumValue = parameters.getValue(SET_MAXIMUM_VALUE);
         double minRange = parameters.getValue(MIN_RANGE);
         double maxRange = parameters.getValue(MAX_RANGE);
 
@@ -116,7 +126,7 @@ public class SetDisplayRange extends Module {
         switch (calculationMode) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
-                setDisplayRangeAuto(inputImagePlus,calculationMode,clipFraction);
+                setDisplayRangeAuto(inputImagePlus,calculationMode,clipFraction,setMinimumValue,setMaximumValue);
                 break;
             case CalculationModes.MANUAL:
                 setDisplayRangeManual(inputImagePlus,calculationMode,new double[]{minRange,maxRange});
@@ -149,6 +159,8 @@ public class SetDisplayRange extends Module {
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
         parameters.add(new DoubleP(CLIP_FRACTION,this,0d));
+        parameters.add(new BooleanP(SET_MINIMUM_VALUE,this,true));
+        parameters.add(new BooleanP(SET_MAXIMUM_VALUE,this,true));
         parameters.add(new DoubleP(MIN_RANGE,this,0));
         parameters.add(new DoubleP(MAX_RANGE,this,255));
 
@@ -172,6 +184,8 @@ public class SetDisplayRange extends Module {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
                 returnedParameters.add(parameters.getParameter(CLIP_FRACTION));
+                returnedParameters.add(parameters.getParameter(SET_MINIMUM_VALUE));
+                returnedParameters.add(parameters.getParameter(SET_MAXIMUM_VALUE));
                 break;
 
             case CalculationModes.MANUAL:

@@ -10,10 +10,12 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class HelpArea extends JTextPane {
     public HelpArea(Module module, ModuleCollection modules) {
         setContentType("text/html");
+
         if (module != null) {
             setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(module,modules)+"</font></body></html>");
         }
@@ -49,11 +51,11 @@ public class HelpArea extends JTextPane {
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
             for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
-                sb.append("<i>")
+                sb.append("<font face=\"sans-serif\" size=\"3\"><i>")
                         .append(measurementRef.getFinalName())
-                        .append("</i>:<br>")
+                        .append("</i></font>:<div style=\"margin-left:10px\"><font face=\"sans-serif\" size=\"3\">")
                         .append(measurementRef.getDescription())
-                        .append("<br><br>");
+                        .append("</font></div><br>");
             }
                     sb.append("<br>");
 
@@ -65,11 +67,11 @@ public class HelpArea extends JTextPane {
                     .append("The following measurements are currently calculated by this module.<br><br>");
 
             for (ImageMeasurementRef measurementRef : imageMeasRefs.values()) {
-                sb.append("<i>")
+                sb.append("<font face=\"sans-serif\" size=\"3\"><i>")
                         .append(measurementRef.getName())
-                        .append("</i>:<br>")
+                        .append("</i></font>:<div style=\"margin-left:10px\"><font face=\"sans-serif\" size=\"3\">")
                         .append(measurementRef.getDescription())
-                        .append("<br><br>");
+                        .append("</font></div><br>");
             }
         }
 
@@ -80,11 +82,11 @@ public class HelpArea extends JTextPane {
     private static String getParameterHelpText(Parameter parameter) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<i>")
+        sb.append("<font face=\"sans-serif\" size=\"3\"><i>")
                 .append(parameter.getName())
-                .append("</i>:<br>")
+                .append("</i></font>:<div style=\"margin-left:10px\"><font face=\"sans-serif\" size=\"3\">")
                 .append(parameter.getDescription())
-                .append("<br><br>");
+                .append("</font></div><br>");
 
         if  (parameter instanceof ParameterGroup) {
             for (Parameter currParameter:((ParameterGroup) parameter).getTemplateParameters().values()) {

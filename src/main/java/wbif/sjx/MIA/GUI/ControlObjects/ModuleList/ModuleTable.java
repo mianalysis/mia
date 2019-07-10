@@ -94,42 +94,10 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
                 GUIAnalysisHandler.removeModules();
                 break;
             case "Copy":
-                try {
-                    int[] selectedRows = getSelectedRows();
-                    if (selectedRows.length == 0) return;
-
-                    ModuleCollection copyModules = new ModuleCollection();
-                    for (int i=0;i<selectedRows.length;i++) {
-                        copyModules.add(((Module) getValueAt(selectedRows[i], 0)).duplicate());
-                    }
-
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
-                    clipboard.setContents(transfer,transfer);
-
-                } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
-                    e1.printStackTrace();
-                }
-
+                GUIAnalysisHandler.copyModules();
                 break;
             case "Paste":
-                try {
-                    GUI.addUndo();
-                    int[] selectedRows = getSelectedRows();
-                    if (selectedRows.length == 0) return;
-                    Module toModule = (Module) getValueAt(selectedRows[selectedRows.length-1],0);
-                    int toIdx = modules.indexOf(toModule);
-
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
-                    ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
-
-                    modules.insert(copyModules.duplicate(),toIdx);
-
-                } catch (ClassNotFoundException | IOException | UnsupportedFlavorException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
-                    e1.printStackTrace();
-                }
-
+                GUIAnalysisHandler.pasteModules();
                 break;
         }
 
