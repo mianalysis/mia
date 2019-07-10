@@ -35,6 +35,7 @@ public class ConsoleLog implements Log {
         ConsolePanel consolePanel = (ConsolePanel) tabbedPane.getComponent(0);
         consolePanel.setAutoscrolls(true);
         consoleTextPane = consolePanel.getTextPane();
+        consoleTextPane.setAutoscrolls(true);
 
         Style messageStyle = consoleTextPane.addStyle("Message style", null);
         StyleConstants.setForeground(messageStyle, Color.BLACK);
@@ -82,6 +83,8 @@ public class ConsoleLog implements Log {
             e.printStackTrace();
         }
 
+        // Moving the panel to the bottom
+        consoleTextPane.select(Integer.MAX_VALUE,Integer.MAX_VALUE);
 
     }
 
