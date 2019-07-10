@@ -322,31 +322,31 @@ public class ResolveObjectCoOccurrence extends Module {
         Obj firstObj = inputObjects1.getFirst();
         if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDistPerPxXY();
 
-        // Calculating linking costs
-        double[][] costs = null;
-        switch (overlapMode) {
-            case OverlapModes.CENTROID_SEPARATION:
-                costs = calculateCentroidSeparationCosts(inputObjects1,inputObjects2,maximumSeparation);
-                break;
-
-            case OverlapModes.SPATIAL_OVERLAP:
-
-                break;
-        }
-
-        // Assigning optimal links
-        ObjCollection outputObjects = assignLinks(inputObjects1,inputObjects2,costs,outputObjectsName);
-
-//        ObjCollection outputObjects = null;
+//        // Calculating linking costs
+//        double[][] costs = null;
 //        switch (overlapMode) {
 //            case OverlapModes.CENTROID_SEPARATION:
-//                outputObjects = calculateCentroidSeparation(inputObjects1, inputObjects2, outputObjectsName, maximumSeparation);
+//                costs = calculateCentroidSeparationCosts(inputObjects1,inputObjects2,maximumSeparation);
 //                break;
 //
 //            case OverlapModes.SPATIAL_OVERLAP:
-//                outputObjects = calculateSpatialOverlap(inputObjects1, inputObjects2, outputObjectsName, minOverlap1, minOverlap2);
+//
 //                break;
 //        }
+//
+//        // Assigning optimal links
+//        ObjCollection outputObjects = assignLinks(inputObjects1,inputObjects2,costs,outputObjectsName);
+
+        ObjCollection outputObjects = null;
+        switch (overlapMode) {
+            case OverlapModes.CENTROID_SEPARATION:
+                outputObjects = calculateCentroidSeparation(inputObjects1, inputObjects2, outputObjectsName, maximumSeparation);
+                break;
+
+            case OverlapModes.SPATIAL_OVERLAP:
+                outputObjects = calculateSpatialOverlap(inputObjects1, inputObjects2, outputObjectsName, minOverlap1, minOverlap2);
+                break;
+        }
 
         workspace.addObjects(outputObjects);
 

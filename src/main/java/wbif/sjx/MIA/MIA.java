@@ -4,6 +4,7 @@
 
 package wbif.sjx.MIA;
 
+import ij.Prefs;
 import net.imagej.ImageJ;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
