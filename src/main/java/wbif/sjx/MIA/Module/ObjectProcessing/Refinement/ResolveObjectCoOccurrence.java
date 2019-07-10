@@ -2,6 +2,7 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
+import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -9,6 +10,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -51,8 +53,85 @@ public class ResolveObjectCoOccurrence extends Module {
 
     }
 
-    private ObjCollection calculateSpatialOverlap(ObjCollection inputObjects1, ObjCollection inputObjects2,
-                                                  String outputObjectsName, double minOverlap1, double minOverlap2) {
+    double[][] calculateCentroidSeparationCosts(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
+        double[][] costs = new double[inputObjects1.size()][inputObjects2.size()];
+
+        // Calculating the separations
+        long totalPairs = inputObjects1.size()*inputObjects2.size();
+        long count = 0;
+        int i = 0;
+
+        for (Obj object1:inputObjects1.values()) {
+            int j = 0;
+            for (Obj object2:inputObjects2.values()) {
+                // Calculating the separation between the two objects
+                double overlap = object1.getCentroidSeparation(object2,true);
+
+                // Applying the linking limit
+                if (overlap > maxSeparation) overlap = Double.MAX_VALUE;
+                costs[i][j] = overlap;
+
+                count++;
+                j++;
+
+            }
+
+            i++;
+
+            writeMessage("Calculated cost for "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
+
+        }
+
+        return costs;
+
+    }
+
+    ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, double[][] costs, String outputObjectsName) {
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        double dppXY = inputObjects1.getFirst().getDistPerPxXY();
+        double dppZ = inputObjects1.getFirst().getDistPerPxZ();
+        String units = inputObjects1.getFirst().getCalibratedUnits();
+        boolean is2D = inputObjects1.getFirst().is2D();
+
+        // Determining links using Munkres (Hungarian) algorithm
+        HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(costs);
+        int[] assignment = hungarianAlgorithm.execute();
+
+        ArrayList<Obj> objects1 = new ArrayList<>(inputObjects1.values());
+        ArrayList<Obj> objects2 = new ArrayList<>(inputObjects2.values());
+
+        // Applying the calculated assignments as relationships
+        for (int curr = 0; curr < assignment.length; curr++) {
+            // Getting the object from the current frame
+            Obj object1 = objects1.get(curr);
+
+            // Checking if the two objects can be linked
+            if (assignment[curr] == -1 || costs[curr][assignment[curr]] == Double.MAX_VALUE) continue;
+
+            // Getting linked object
+            Obj object2 = objects2.get(assignment[curr]);
+
+            // Creating new object
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
+            outputObjects.add(outputObject);
+
+            // Adding coordinates to new object
+            outputObject.getPoints().addAll(object1.getPoints());
+            outputObject.getPoints().addAll(object2.getPoints());
+
+            // Removing objects from original ObjCollections
+            inputObjects1.remove(object1.getID());
+            inputObjects2.remove(object2.getID());
+
+        }
+
+        return outputObjects;
+
+    }
+
+    ObjCollection calculateSpatialOverlap(ObjCollection inputObjects1, ObjCollection inputObjects2,
+                                          String outputObjectsName, double minOverlap1, double minOverlap2) {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
@@ -94,8 +173,8 @@ public class ResolveObjectCoOccurrence extends Module {
 
     }
 
-    private ObjCollection calculateCentroidSeparation(ObjCollection inputObjects1, ObjCollection inputObjects2,
-                                                      String outputObjectsName, double maxSeparation) {
+    ObjCollection calculateCentroidSeparation(ObjCollection inputObjects1, ObjCollection inputObjects2,
+                                              String outputObjectsName, double maxSeparation) {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
@@ -135,7 +214,7 @@ public class ResolveObjectCoOccurrence extends Module {
 
     }
 
-    private HashMap<Integer,Double[]> initialiseOverlapStore(ObjCollection inputObjects, double defaultScore) {
+    HashMap<Integer,Double[]> initialiseOverlapStore(ObjCollection inputObjects, double defaultScore) {
         HashMap<Integer,Double[]> overlaps = new HashMap<>();
         for (Obj object:inputObjects.values()) {
             overlaps.put(object.getID(),new Double[]{defaultScore,Double.NaN});
@@ -145,8 +224,8 @@ public class ResolveObjectCoOccurrence extends Module {
 
     }
 
-    private void reassignObjects(ObjCollection objects1, ObjCollection objects2, ObjCollection outputObjects,
-                                 HashMap<Integer,Double[]> overlaps1, HashMap<Integer,Double[]> overlaps2) {
+    void reassignObjects(ObjCollection objects1, ObjCollection objects2, ObjCollection outputObjects,
+                         HashMap<Integer,Double[]> overlaps1, HashMap<Integer,Double[]> overlaps2) {
 
         // Creating a HashMap, which stores the correspondences between removed objects and the new objects
         HashMap<Integer,Obj> newObjects = new HashMap<>();
@@ -243,16 +322,31 @@ public class ResolveObjectCoOccurrence extends Module {
         Obj firstObj = inputObjects1.getFirst();
         if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDistPerPxXY();
 
-        ObjCollection outputObjects = null;
+        // Calculating linking costs
+        double[][] costs = null;
         switch (overlapMode) {
             case OverlapModes.CENTROID_SEPARATION:
-                outputObjects = calculateCentroidSeparation(inputObjects1, inputObjects2, outputObjectsName, maximumSeparation);
+                costs = calculateCentroidSeparationCosts(inputObjects1,inputObjects2,maximumSeparation);
                 break;
 
             case OverlapModes.SPATIAL_OVERLAP:
-                outputObjects = calculateSpatialOverlap(inputObjects1, inputObjects2, outputObjectsName, minOverlap1, minOverlap2);
+
                 break;
         }
+
+        // Assigning optimal links
+        ObjCollection outputObjects = assignLinks(inputObjects1,inputObjects2,costs,outputObjectsName);
+
+//        ObjCollection outputObjects = null;
+//        switch (overlapMode) {
+//            case OverlapModes.CENTROID_SEPARATION:
+//                outputObjects = calculateCentroidSeparation(inputObjects1, inputObjects2, outputObjectsName, maximumSeparation);
+//                break;
+//
+//            case OverlapModes.SPATIAL_OVERLAP:
+//                outputObjects = calculateSpatialOverlap(inputObjects1, inputObjects2, outputObjectsName, minOverlap1, minOverlap2);
+//                break;
+//        }
 
         workspace.addObjects(outputObjects);
 

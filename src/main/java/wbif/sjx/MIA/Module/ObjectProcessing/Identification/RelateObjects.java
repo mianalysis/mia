@@ -380,8 +380,7 @@ public class RelateObjects extends Module {
                 childObject.addParent(parentObject);
 
                 // Adding the overlap as a measurement
-                Measurement measurement = new Measurement(getFullName(Measurements.OVERLAP_PC,parentObject.getName()));
-                measurement.setValue(overlap);
+                Measurement measurement = new Measurement(overlapMeasurementName,overlap);
                 childObject.addMeasurement(measurement);
 
             }
@@ -389,6 +388,14 @@ public class RelateObjects extends Module {
             writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
+
+        // Ensuring every child object has a measurement
+        for (Obj childObj:childObjects.values()) {
+            if (childObj.getMeasurement(overlapMeasurementName) == null) {
+                childObj.addMeasurement(new Measurement(overlapMeasurementName,0));
+            }
+        }
+
     }
 
     public double applyInsideOutsidePolicy(double minDist) {
@@ -519,6 +526,8 @@ public class RelateObjects extends Module {
             if (relatedObjects != null) workspace.addObjects(relatedObjects);
 
         }
+
+        if (showOutput) workspace.getObjectSet(childObjectName).showMeasurements(this,modules);
 
         return true;
 
