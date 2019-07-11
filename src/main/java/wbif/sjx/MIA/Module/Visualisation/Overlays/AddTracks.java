@@ -179,7 +179,7 @@ public class AddTracks extends Overlay {
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputTrackObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));

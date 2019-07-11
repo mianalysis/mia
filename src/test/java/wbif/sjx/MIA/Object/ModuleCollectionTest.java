@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.TrackObjects;
-import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ObjectClusterer;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.SingleClassCluster;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
@@ -408,14 +408,14 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         trackObjects.updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID);
         modules.add(trackObjects);
 
-        ObjectClusterer objectClusterer = new ObjectClusterer(null);
-        objectClusterer.updateParameterValue(ObjectClusterer.INPUT_OBJECTS,spotsName);
-        objectClusterer.updateParameterValue(ObjectClusterer.CLUSTER_OBJECTS,clustersName);
-        objectClusterer.updateParameterValue(ObjectClusterer.CLUSTERING_ALGORITHM,ObjectClusterer.ClusteringAlgorithms.DBSCAN);
-        objectClusterer.updateParameterValue(ObjectClusterer.INPUT_OBJECTS,spotsName);
-        objectClusterer.updateParameterValue(ObjectClusterer.EPS,1d);
-        objectClusterer.updateParameterValue(ObjectClusterer.MIN_POINTS,3);
-        modules.add(objectClusterer);
+        SingleClassCluster singleClassCluster = new SingleClassCluster(null);
+        singleClassCluster.updateParameterValue(SingleClassCluster.INPUT_OBJECTS,spotsName);
+        singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTER_OBJECTS,clustersName);
+        singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTERING_ALGORITHM, SingleClassCluster.ClusteringAlgorithms.DBSCAN);
+        singleClassCluster.updateParameterValue(SingleClassCluster.INPUT_OBJECTS,spotsName);
+        singleClassCluster.updateParameterValue(SingleClassCluster.EPS,1d);
+        singleClassCluster.updateParameterValue(SingleClassCluster.MIN_POINTS,3);
+        modules.add(singleClassCluster);
 
         // Getting actual relationships
         RelationshipRefCollection actualRelationships = modules.getRelationshipRefs();
@@ -536,17 +536,17 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         trackObjects.updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID);
         modules.add(trackObjects);
 
-        ObjectClusterer objectClusterer = new ObjectClusterer(null);
-        objectClusterer.updateParameterValue(ObjectClusterer.INPUT_OBJECTS,spotsName);
-        objectClusterer.updateParameterValue(ObjectClusterer.CLUSTER_OBJECTS,clustersName);
-        objectClusterer.updateParameterValue(ObjectClusterer.CLUSTERING_ALGORITHM,ObjectClusterer.ClusteringAlgorithms.DBSCAN);
-        objectClusterer.updateParameterValue(ObjectClusterer.INPUT_OBJECTS,spotsName);
-        objectClusterer.updateParameterValue(ObjectClusterer.EPS,1d);
-        objectClusterer.updateParameterValue(ObjectClusterer.MIN_POINTS,3);
-        modules.add(objectClusterer);
+        SingleClassCluster singleClassCluster = new SingleClassCluster(null);
+        singleClassCluster.updateParameterValue(SingleClassCluster.INPUT_OBJECTS,spotsName);
+        singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTER_OBJECTS,clustersName);
+        singleClassCluster.updateParameterValue(SingleClassCluster.CLUSTERING_ALGORITHM, SingleClassCluster.ClusteringAlgorithms.DBSCAN);
+        singleClassCluster.updateParameterValue(SingleClassCluster.INPUT_OBJECTS,spotsName);
+        singleClassCluster.updateParameterValue(SingleClassCluster.EPS,1d);
+        singleClassCluster.updateParameterValue(SingleClassCluster.MIN_POINTS,3);
+        modules.add(singleClassCluster);
 
         // Getting actual relationships
-        RelationshipRefCollection actualRelationships = modules.getRelationshipRefs(objectClusterer);
+        RelationshipRefCollection actualRelationships = modules.getRelationshipRefs(singleClassCluster);
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);

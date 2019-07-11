@@ -356,7 +356,7 @@ public class RunTrackMate extends Module {
         parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0));
         parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0));
         parameters.add(new IntegerP(MAX_FRAME_GAP, this,3));
-        parameters.add(new OutputObjectsP(OUTPUT_TRACK_OBJECTS, this));
+        parameters.add(new OutputTrackObjectP(OUTPUT_TRACK_OBJECTS, this));
 
     }
 

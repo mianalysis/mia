@@ -62,6 +62,17 @@ public class VideoLoader extends Module {
     public static final String Z_CAL = "Z calibration (dist/px)";
 
 
+    public static void main(String[] args) {
+        String path = "C:\\Users\\sc13967\\Desktop\\20170129_012701A.mp4";
+
+        try {
+            Image im = new VideoLoader(null).getFFMPEGVideo(path, "output", "1-10", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public VideoLoader(ModuleCollection modules) {
         super("Load video",modules);
     }
@@ -165,13 +176,18 @@ public class VideoLoader extends Module {
         TreeSet<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toCollection(TreeSet::new));
 
         // Initialising the output ImagePlus using the first frame
+        loader.grab();
         Frame frame = loader.grabFrame();
+        System.err.println("frame (start) = "+frame);
+
         int left = 0;
         int top = 0;
         int origWidth = loader.getImageWidth();
         int origHeight = loader.getImageHeight();
         int width = origWidth;
         int height = origHeight;
+
+        System.err.println(origHeight+"_"+origWidth);
 
         if (crop != null) {
             left = crop[0];
@@ -204,6 +220,7 @@ public class VideoLoader extends Module {
             ipl.setPosition(count);
 
             writeMessage("Loading frame "+(count)+" of "+total);
+            System.err.println("frame = "+frame);
             ImageProcessor ipr = new ByteProcessor(origWidth,origHeight,frame.imageBytes.get(0));
             if (crop != null) {
                 ipr.setRoi(left,top,width,height);
@@ -382,7 +399,7 @@ public class VideoLoader extends Module {
 
             // If this has failed (outputImage is null) try FFMPEG loading
             if (outputImage == null) {
-                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).",Log.Level.MESSAGE);
+                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).",Log.Level.WARNING);
                 outputImage = getFFMPEGVideo(pathName,outputImageName,frameRange,crop);
             }
 

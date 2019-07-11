@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
+package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
@@ -80,7 +80,7 @@ public class MergeRelatedObjects extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
+        return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
     }
 
     @Override

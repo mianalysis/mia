@@ -203,7 +203,7 @@ public class CalculateMeasurementPeriodogram extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(TRACK_OBJECTS,this));
+        parameters.add(new InputTrackObjectsP(TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(SPOT_OBJECTS,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
         parameters.add(new ChoiceP(REPORTING_MODE,this,ReportingModes.KEY_FREQUENCIES,ReportingModes.ALL));

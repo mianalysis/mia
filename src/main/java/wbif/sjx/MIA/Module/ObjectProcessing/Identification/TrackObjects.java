@@ -586,7 +586,7 @@ public class TrackObjects extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new OutputObjectsP(TRACK_OBJECTS,this));
+        parameters.add(new OutputTrackObjectP(TRACK_OBJECTS,this));
 
         parameters.add(new ParamSeparatorP(TRACKING_SEPARATOR,this));
         parameters.add(new IntegerP(MAXIMUM_MISSING_FRAMES,this,0));

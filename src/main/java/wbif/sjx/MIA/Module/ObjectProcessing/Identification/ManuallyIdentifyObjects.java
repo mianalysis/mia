@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.*;
@@ -69,6 +70,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
+
 
     public ManuallyIdentifyObjects(ModuleCollection modules) {
         super("Manually identify objects",modules);
@@ -424,6 +426,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void addNewObject() {
         // Getting the ROI
         Roi roi = displayImagePlus.getRoi();
+
+        if (roi == null) {
+            frame.setAlwaysOnTop(false);
+            IJ.error("Select a ROI first using the ImageJ ROI tools.");
+            frame.setAlwaysOnTop(true);
+            return;
+        }
+
         int ID = ++maxID;
 
         // Adding the ROI to our current collection
@@ -446,6 +456,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void addToExistingObject() {
         // Getting points
         Roi roi = displayImagePlus.getRoi();
+
+        if (roi == null) {
+            frame.setAlwaysOnTop(false);
+            IJ.error("Select a ROI first using the ImageJ ROI tools.");
+            frame.setAlwaysOnTop(true);
+            return;
+        }
+
         Point[] points = roi.getContainedPoints();
         int ID = Integer.parseInt(objectNumberField.getText());
 

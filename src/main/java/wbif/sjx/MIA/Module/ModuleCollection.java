@@ -189,14 +189,14 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         return getParametersMatchingType(type,null);
     }
 
-    public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
+    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, Class<T> objectClass, boolean ignoreRemoved) {
         LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
 
         for (Module module:this) {
             if (module == cutoffModule) break;
 
             // Get the added and removed images
-            LinkedHashSet<OutputObjectsP> addedObjects = module.getParametersMatchingType(OutputObjectsP.class);
+            LinkedHashSet<T> addedObjects = module.getParametersMatchingType(objectClass);
             LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
 
             // Adding new images
@@ -215,8 +215,16 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
+    public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, Class<T> objectClass) {
+        return getAvailableObjects(cutoffModule,objectClass,true);
+    }
+
+    public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
+        return getAvailableObjects(cutoffModule,OutputObjectsP.class,ignoreRemoved);
+    }
+
     public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule) {
-        return getAvailableObjects(cutoffModule,true);
+        return getAvailableObjects(cutoffModule,OutputObjectsP.class,true);
     }
 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule) {
