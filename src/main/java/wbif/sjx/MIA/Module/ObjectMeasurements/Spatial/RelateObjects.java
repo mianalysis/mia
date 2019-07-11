@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
+package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -33,9 +33,6 @@ public class RelateObjects extends Module {
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-    public final static String OUTPUT_SEPARATOR = "Object output";
-    public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
-    public static final String RELATED_OBJECTS = "Output overlapping objects";
 
     public RelateObjects(ModuleCollection modules) {
         super("Relate objects",modules);
@@ -417,55 +414,10 @@ public class RelateObjects extends Module {
 
     }
 
-    public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName) {
-        Obj exampleParent = parentObjects.getFirst();
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
-
-        if (exampleParent == null) return relatedObjects;
-
-        double dppXY = exampleParent.getDistPerPxXY();
-        double dppZ = exampleParent.getDistPerPxZ();
-        String calibratedUnits = exampleParent.getCalibratedUnits();
-        boolean twoD = exampleParent.is2D();
-
-        Iterator<Obj> parentIterator = parentObjects.values().iterator();
-        while (parentIterator.hasNext()) {
-            Obj parentObj = parentIterator.next();
-
-            // Collecting all children for this parent.  If none are present, skip to the next parent
-            ObjCollection currChildObjects = parentObj.getChildren(childObjects.getName());
-            if (currChildObjects.size() == 0) continue;
-
-            // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,twoD);
-            relatedObject.setT(parentObj.getT());
-            relatedObjects.add(relatedObject);
-
-            for (Obj childObject:currChildObjects.values()) {
-                // Transferring points from the child object to the new object
-                relatedObject.getPoints().addAll(childObject.getPoints());
-
-                // Removing the child object from its original collection
-                childObjects.values().remove(childObject);
-                
-            }
-
-            // Transferring points from the parent object to the new object
-            relatedObject.getPoints().addAll(parentObj.getPoints());
-
-            // Removing the parent object from its original collection
-            parentIterator.remove();
-
-        }
-
-        return relatedObjects;
-
-    }
-
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
+        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override
@@ -491,8 +443,6 @@ public class RelateObjects extends Module {
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
         double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
-        boolean mergeRelatedObjects = parameters.getValue(MERGE_RELATED_OBJECTS);
-        String relatedObjectsName = parameters.getValue(RELATED_OBJECTS);
 
         // Removing previous relationships
         parentObjects.removeChildren(childObjectName);
@@ -521,12 +471,6 @@ public class RelateObjects extends Module {
 
         }
 
-        if (mergeRelatedObjects) {
-            ObjCollection relatedObjects = mergeRelatedObjects(parentObjects,childObjects,relatedObjectsName);
-            if (relatedObjects != null) workspace.addObjects(relatedObjects);
-
-        }
-
         if (showOutput) workspace.getObjectSet(childObjectName).showMeasurements(this,modules);
 
         return true;
@@ -549,10 +493,6 @@ public class RelateObjects extends Module {
         parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP,this,0d,"Percentage of total child volume overlapping with the parent object."));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP,this,true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
-
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(MERGE_RELATED_OBJECTS,this,false));
-        parameters.add(new OutputObjectsP(RELATED_OBJECTS,this));
 
     }
 
@@ -608,11 +548,11 @@ public class RelateObjects extends Module {
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(MERGE_RELATED_OBJECTS));
-        if (parameters.getValue(MERGE_RELATED_OBJECTS)) {
-            returnedParameters.add(parameters.getParameter(RELATED_OBJECTS));
-        }
+//        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+//        returnedParameters.add(parameters.getParameter(MERGE_RELATED_OBJECTS));
+//        if (parameters.getValue(MERGE_RELATED_OBJECTS)) {
+//            returnedParameters.add(parameters.getParameter(RELATED_OBJECTS));
+//        }
 
         return returnedParameters;
 

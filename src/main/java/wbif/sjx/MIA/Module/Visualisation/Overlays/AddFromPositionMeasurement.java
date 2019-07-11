@@ -3,11 +3,9 @@ package wbif.sjx.MIA.Module.Visualisation.Overlays;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.OvalRoi;
-import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -26,7 +24,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AddFromPositionMeasurement extends Module {
+public class AddFromPositionMeasurement extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -48,7 +46,6 @@ public class AddFromPositionMeasurement extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    private ColourServer colourServer;
 
     public AddFromPositionMeasurement(ModuleCollection modules) {
         super("Add from position measurement",modules);
@@ -56,7 +53,7 @@ public class AddFromPositionMeasurement extends Module {
 
 
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
         double yMean = object.getMeasurement(posMeasurements[1]).getValue();
@@ -133,6 +130,9 @@ public class AddFromPositionMeasurement extends Module {
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        // Only add output to workspace if not applying to input
+        if (applyToInput) addOutputToWorkspace = false;
+
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
@@ -141,7 +141,7 @@ public class AddFromPositionMeasurement extends Module {
         String[] posMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, measurementForRadius};
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues= colourServer.getHues(inputObjects);
+        HashMap<Integer,Float> hues = getHues(inputObjects);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -188,6 +188,8 @@ public class AddFromPositionMeasurement extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
@@ -208,9 +210,6 @@ public class AddFromPositionMeasurement extends Module {
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
-        parameters.addAll(colourServer.getParameters());
 
     }
 
@@ -250,7 +249,7 @@ public class AddFromPositionMeasurement extends Module {
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
         }
 
-        returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

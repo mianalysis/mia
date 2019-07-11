@@ -2,14 +2,12 @@ package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.gui.Overlay;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
@@ -32,7 +30,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AddLabels extends Module {
+public class AddLabels extends Overlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
@@ -57,7 +55,6 @@ public class AddLabels extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    private ColourServer colourServer;
 
     public AddLabels(ModuleCollection modules) {
         super("Add labels",modules);
@@ -158,7 +155,7 @@ public class AddLabels extends Module {
     }
 
     public static void addOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Adding text label
         TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label, new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
@@ -233,11 +230,14 @@ public class AddLabels extends Module {
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        // Only add output to workspace if not applying to input
+        if (applyToInput) addOutputToWorkspace = false;
+
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = colourServer.getHues(inputObjects);
+        HashMap<Integer,Float> hues = getHues(inputObjects);
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces,useScientific);
         HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,childObjectsForLabelName,parentObjectsForLabelName,measurementForLabel);
 
@@ -255,6 +255,8 @@ public class AddLabels extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
@@ -277,9 +279,6 @@ public class AddLabels extends Module {
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
-
-        colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
-        parameters.addAll(colourServer.getParameters());
 
     }
 
@@ -336,7 +335,7 @@ public class AddLabels extends Module {
         returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
         returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
-        returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(LABEL_POSITION));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 

@@ -1,22 +1,36 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import org.apache.bcel.generic.RETURN;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.util.HashMap;
 
-public class ColourServer {
+public abstract class Overlay extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
 
-    private ParameterCollection parameters = new ParameterCollection();
-    private InputObjectsP inputObjects;
+
+    public Overlay(String name, ModuleCollection modules) {
+        super(name, modules);
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
 
     public interface ColourModes {
         String CHILD_COUNT = "Child count";
@@ -33,13 +47,7 @@ public class ColourServer {
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
-
-    public ColourServer(InputObjectsP inputObjects, Module module) {
-        this.inputObjects = inputObjects;
-        initialiseParameters(module);
-    }
-
-
+    
     public HashMap<Integer,Float> getHues(ObjCollection inputObjects) {
         // Getting colour settings
         String colourMode = parameters.getValue(COLOUR_MODE);
@@ -68,17 +76,32 @@ public class ColourServer {
         }
     }
 
-    private void initialiseParameters(Module module) {
-        parameters.add(new ChoiceP(COLOUR_MODE, module, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
-        parameters.add(new ChoiceP(SINGLE_COLOUR,module,SingleColours.WHITE,SingleColours.ALL));
-        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,module));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, module));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, module));
+    @Override
+    protected void initialiseParameters() {
+        parameters.add(new ChoiceP(COLOUR_MODE,this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
+        parameters.add(new ChoiceP(SINGLE_COLOUR,this,SingleColours.WHITE,SingleColours.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR,this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR,this));
 
     }
 
+    @Override
+    public String getPackageName() {
+        return null;
+    }
+
+    @Override
+    protected boolean process(Workspace workspace) {
+        return false;
+    }
+
+    @Override
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = inputObjects.getValue();
+        return null;
+    }
+
+    public ParameterCollection updateAndGetParameters(String inputObjectsName) {
         String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
         ParameterCollection returnedParameters = new ParameterCollection();
@@ -122,7 +145,29 @@ public class ColourServer {
 
     }
 
-    public ParameterCollection getParameters() {
-        return parameters;
+    @Override
+    public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        return null;
     }
+
+    @Override
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        return null;
+    }
+
+    @Override
+    public MetadataRefCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
+    public RelationshipRefCollection updateAndGetRelationships() {
+        return null;
+    }
+
+    @Override
+    public boolean verify() {
+        return true;
+    }
+
 }

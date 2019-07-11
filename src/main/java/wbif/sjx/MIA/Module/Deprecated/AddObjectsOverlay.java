@@ -13,7 +13,7 @@ import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -96,7 +96,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public interface ColourModes extends ColourServer.ColourModes {}
+    public interface ColourModes extends Overlay.ColourModes {}
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
@@ -117,7 +117,7 @@ public class AddObjectsOverlay extends Module {
 
 
     public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Adding each point
         double[] xx = object.getX(true);
@@ -149,7 +149,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addArrowsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double oriRads = Math.toRadians(orientation);
 
@@ -181,7 +181,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
@@ -208,7 +208,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Still need to get mean coords for label
         double xMean = object.getXMean(true);
@@ -240,7 +240,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
         double yMean = object.getMeasurement(posMeasurements[1]).getValue();
@@ -283,8 +283,8 @@ public class AddObjectsOverlay extends Module {
     public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-        Overlay ovl = ipl.getOverlay();
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+        ij.gui.Overlay ovl = ipl.getOverlay();
 
         // Putting the current track points into a TreeMap stored by the frame
         TreeMap<Integer,Obj> points = new TreeMap<>();
@@ -328,7 +328,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Adding text label
         TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label);

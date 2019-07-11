@@ -15,7 +15,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import static org.junit.Assert.*;
 
-public class MergeObjectsTest extends ModuleTest {
+public class CombineObjectSetsTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
@@ -23,7 +23,7 @@ public class MergeObjectsTest extends ModuleTest {
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new MergeObjects(null).getDescription());
+        assertNotNull(new CombineObjectSets(null).getDescription());
     }
 
     @Test
@@ -43,13 +43,13 @@ public class MergeObjectsTest extends ModuleTest {
         workspace.addObjects(inputObj2);
 
         // Initialising FilterObjects module
-        MergeObjects mergeObjects = new MergeObjects(null);
-        mergeObjects.updateParameterValue(MergeObjects.INPUT_OBJECTS_1,"Input_obj_1");
-        mergeObjects.updateParameterValue(MergeObjects.INPUT_OBJECTS_2,"Input_obj_2");
-        mergeObjects.updateParameterValue(MergeObjects.OUTPUT_OBJECTS,"Output_obj");
+        CombineObjectSets combineObjectSets = new CombineObjectSets(null);
+        combineObjectSets.updateParameterValue(CombineObjectSets.INPUT_OBJECTS_1,"Input_obj_1");
+        combineObjectSets.updateParameterValue(CombineObjectSets.INPUT_OBJECTS_2,"Input_obj_2");
+        combineObjectSets.updateParameterValue(CombineObjectSets.OUTPUT_OBJECTS,"Output_obj");
 
         // Running the module
-        mergeObjects.execute(workspace);
+        combineObjectSets.execute(workspace);
 
         // Getting expected output objects
         ObjCollection expectedOutputObj= new MergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);

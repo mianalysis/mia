@@ -2,11 +2,9 @@ package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.gui.Overlay;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -25,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AddObjectOutline extends Module {
+public class AddObjectOutline extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -42,14 +40,14 @@ public class AddObjectOutline extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    private ColourServer colourServer;
+//    private ColourServer colourServer;
 
     public AddObjectOutline(ModuleCollection modules) {
         super("Add object outline",modules);
     }
 
 
-    public interface ColourModes extends ColourServer.ColourModes {}
+    public interface ColourModes extends Overlay.ColourModes {}
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
@@ -88,7 +86,7 @@ public class AddObjectOutline extends Module {
     }
 
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         int t = object.getT() + 1;
         if (renderInAllFrames) t = 0;
@@ -147,11 +145,14 @@ public class AddObjectOutline extends Module {
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        // Only add output to workspace if not applying to input
+        if (applyToInput) addOutputToWorkspace = false;
+
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues= colourServer.getHues(inputObjects);
+        HashMap<Integer,Float> hues = getHues(inputObjects);
 
         addOverlay(ipl,inputObjects,lineWidth,hues,renderInAllFrames,multithread);
 
@@ -167,6 +168,8 @@ public class AddObjectOutline extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
@@ -182,9 +185,6 @@ public class AddObjectOutline extends Module {
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
-        parameters.addAll(colourServer.getParameters());
 
     }
 
@@ -208,7 +208,7 @@ public class AddObjectOutline extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 

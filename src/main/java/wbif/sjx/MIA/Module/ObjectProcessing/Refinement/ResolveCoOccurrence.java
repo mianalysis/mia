@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class ResolveObjectCoOccurrence extends Module {
+public class ResolveCoOccurrence extends Module {
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS_NAME = "Output objects name";
@@ -24,8 +24,8 @@ public class ResolveObjectCoOccurrence extends Module {
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
 
-    public ResolveObjectCoOccurrence(ModuleCollection modules) {
-        super("Resolve object co-occurrence", modules);
+    public ResolveCoOccurrence(ModuleCollection modules) {
+        super("Resolve co-occurrence", modules);
     }
 
 

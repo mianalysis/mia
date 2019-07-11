@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -267,7 +267,7 @@ public class RidgeDetection extends Module {
             IntensityMinMax.run(dispIpl, true);
 
             // Creating the overlay
-            String colourMode = ColourServer.ColourModes.RANDOM_COLOUR;
+            String colourMode = Overlay.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             AddObjectOutline.addOverlay(dispIpl,outputObjects,0.2,hues,false,true);
 
