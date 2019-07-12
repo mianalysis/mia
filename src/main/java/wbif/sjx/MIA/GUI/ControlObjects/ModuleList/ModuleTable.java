@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
+import wbif.sjx.MIA.GUI.ControlObjects.RenameListMenu;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -20,7 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-public class ModuleTable extends JTable implements ActionListener, TableCellRenderer {
+public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
     private ModuleCollection modules;
 
     public ModuleTable(TableModel tableModel, ModuleCollection modules, HashMap<Module,Boolean> expandedStatus) {
@@ -45,6 +47,7 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
             }
         });
 
+        addMouseListener(this);
         setDefaultEditor(Object.class,null);
         getColumnModel().getColumn(0).setCellRenderer(this);
         setTableHeader(null);
@@ -130,5 +133,40 @@ public class ModuleTable extends JTable implements ActionListener, TableCellRend
         }
 
         return label;
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON3:
+                Module module = (Module) getValueAt(rowAtPoint(e.getPoint()),0);
+                RenameListMenu renameListMenu = new RenameListMenu(module);
+                renameListMenu.show(GUI.getFrame(), 0, 0);
+                renameListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
+                renameListMenu.setVisible(true);
+
+                break;
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

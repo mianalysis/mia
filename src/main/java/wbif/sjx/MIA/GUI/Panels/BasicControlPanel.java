@@ -18,6 +18,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class BasicControlPanel extends JScrollPane {
+    private static GUISeparator globalVariablesSeparator;
     private static GUISeparator loadSeparator;
     private JPanel panel;
 
@@ -28,6 +29,7 @@ public class BasicControlPanel extends JScrollPane {
         int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
+        globalVariablesSeparator = new GUISeparator(GUI.getModules());
         loadSeparator = new GUISeparator(GUI.getModules());
 
         // Initialising the scroll panel
@@ -45,6 +47,7 @@ public class BasicControlPanel extends JScrollPane {
         validate();
         repaint();
 
+        globalVariablesSeparator.setNickname("Global variables");
         loadSeparator.setNickname("File loading");
 
     }
@@ -65,8 +68,11 @@ public class BasicControlPanel extends JScrollPane {
 
         panel.removeAll();
 
-        // Only modules below an expanded GUISeparator should be displayed
-        BooleanP expanded = ((BooleanP) loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC));
+        // Check if there are no controls to be displayed
+        if (!analysis.hasVisibleParameters()) {
+            showUsageMessage();
+            return;
+        }
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -76,21 +82,23 @@ public class BasicControlPanel extends JScrollPane {
         c.insets = new Insets(0,5,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Check if there are no controls to be displayed
-        if (!analysis.hasVisibleParameters()) {
-            showUsageMessage();
-            return;
+        // Adding global variable options
+        if (MIA.getGlobalVariables().hasVisibleParameters()) {
+            panel.add(componentFactory.createBasicSeparator(globalVariablesSeparator,frameWidth-80),c);
+            c.gridy++;
+
+            if (((BooleanP) globalVariablesSeparator.getParameter(GUISeparator.EXPANDED_BASIC)).isSelected()) {
+                JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
+                if (globalVariablesPanel != null) panel.add(globalVariablesPanel, c);
+                c.gridy++;
+            }
         }
 
         // Adding a separator between the input and main modules
         panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
 
-        // Adding global variable options
-        if (expanded.isSelected()) {
-            c.gridy++;
-            JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
-            if (globalVariablesPanel != null) panel.add(globalVariablesPanel, c);
-        }
+        // Only modules below an expanded GUISeparator should be displayed
+        BooleanP expanded = ((BooleanP) loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC));
 
         // Adding input control options
         if (expanded.isSelected()) {

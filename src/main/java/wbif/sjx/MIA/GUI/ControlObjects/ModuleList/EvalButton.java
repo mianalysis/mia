@@ -137,8 +137,8 @@ public class EvalButton extends JButton implements ActionListener {
 
         Module.setVerbose(true);
         testWorkspace.setAnalysis(GUI.getAnalysis());
-        module.execute(testWorkspace);
-        GUI.setLastModuleEval(modules.indexOf(module));
+        boolean success = module.execute(testWorkspace);
+        if (success) GUI.setLastModuleEval(modules.indexOf(module));
         GUI.setModuleBeingEval(-1);
 
         GUI.updateModuleStates(false);
