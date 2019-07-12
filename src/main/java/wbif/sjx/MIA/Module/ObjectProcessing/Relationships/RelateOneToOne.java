@@ -15,9 +15,12 @@ import wbif.sjx.MIA.Object.Workspace;
 import java.util.ArrayList;
 
 public class RelateOneToOne extends Module {
+    public static final String INPUT_SEPARATOR = "Objects input/output";
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS_NAME = "Output cluster objects";
+
+    public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
     public static final String RELATIONSHIP_MODE = "Relationship mode";
     public static final String MAXIMUM_SEPARATION = "Maximum separation";
     public static final String CALIBRATED_UNITS = "Calibrated units";
@@ -259,9 +262,12 @@ public class RelateOneToOne extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
         parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME,this));
+
+        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
         parameters.add(new ChoiceP(RELATIONSHIP_MODE,this, RelationshipModes.SPATIAL_OVERLAP, RelationshipModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION,this,1.0));
         parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
@@ -274,11 +280,13 @@ public class RelateOneToOne extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_2));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
-        returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
 
+        returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
         switch ((String) parameters.getValue(RELATIONSHIP_MODE)){
             case RelationshipModes.CENTROID_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));

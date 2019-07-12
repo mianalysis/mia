@@ -26,6 +26,7 @@ public class CombineObjectSets extends Module {
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
+
     public CombineObjectSets(ModuleCollection modules) {
         super("Combine object sets",modules);
     }
