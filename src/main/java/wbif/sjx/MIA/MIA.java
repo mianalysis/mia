@@ -4,7 +4,6 @@
 
 package wbif.sjx.MIA;
 
-import ij.Prefs;
 import net.imagej.ImageJ;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
@@ -35,12 +34,11 @@ import java.util.ArrayList;
  */
 @Plugin(type = Command.class, menuPath = "Plugins>Bristol WBIF>MIA (Modular Image Analysis)")
 public class MIA implements Command {
-    private static final ErrorLog errorLog = new ErrorLog();
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
     private static GlobalVariables globalVariables = new GlobalVariables(null);
-    public static Log log = new BasicLog(); // This is effectively just for test methods
+    public static LogRenderer log = new BasicLogRenderer(); // This is effectively just for test methods
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
@@ -75,8 +73,17 @@ public class MIA implements Command {
 
     @Override
     public void run() {
-        log = new ConsoleLog(uiService);
-        log.setWriteEnabled(Log.Level.DEBUG,debug);
+        // Waiting for UIService to become available
+        while (uiService == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        log = new ConsoleRenderer(uiService);
+        log.setWriteEnabled(LogRenderer.Level.DEBUG,debug);
 
         // Determining the version number from the pom file
         try {
@@ -92,8 +99,8 @@ public class MIA implements Command {
         if (DependencyValidator.run()) return;
 
         // Redirecting the standard output and error streams, so they are formatted by for the console
-        System.setOut(new PrintStream(new MessageLog()));
-        System.setErr(new PrintStream(new ErrorLog()));
+        System.setOut(new PrintStream(MessageLog.getInstance()));
+        System.setErr(new PrintStream(ErrorLog.getInstance()));
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -102,10 +109,6 @@ public class MIA implements Command {
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
         }
-    }
-
-    public static ErrorLog getErrorLog() {
-        return errorLog;
     }
 
     public static boolean isImagePlusMode() {
@@ -150,8 +153,11 @@ public class MIA implements Command {
         return globalVariables;
     }
 
-    public static Log getLog() {
+    public static LogRenderer getLog() {
         return log;
     }
 
+    public static void setLog(LogRenderer log) {
+        MIA.log = log;
+    }
 }

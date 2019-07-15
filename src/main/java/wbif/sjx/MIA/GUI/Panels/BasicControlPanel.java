@@ -148,6 +148,7 @@ public class BasicControlPanel extends JScrollPane {
 
         c.gridy++;
         c.weighty = 1;
+        c.insets = new Insets(20,0,0,0);
         c.fill = GridBagConstraints.VERTICAL;
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(-1,1));

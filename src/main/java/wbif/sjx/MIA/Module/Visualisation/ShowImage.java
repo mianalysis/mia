@@ -4,10 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -17,7 +14,10 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
  * Created by sc13967 on 03/05/2017.
  */
 public class ShowImage extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
     public final static String DISPLAY_IMAGE = "Display image";
+
+    public static final String DISPLAY_SEPARATOR = "Display controls";
     public static final String TITLE_MODE = "Title mode";
     public static final String QUICK_NORMALISATION = "Quick normalisation";
     public static final String CHANNEL_MODE = "Channel mode";
@@ -57,7 +57,9 @@ public class ShowImage extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Display any image held in the current workspace.  " +
+                "Images are displayed using the standard ImageJ image window, so can be accessed/manipulated by any ImageJ/Fiji feature.  " +
+                "Displayed images are duplicates of the image stored in the workspace, so modification of a displayed image won't alter the original.";
     }
 
     @Override
@@ -91,10 +93,16 @@ public class ShowImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(DISPLAY_IMAGE, this));
-        parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL));
-        parameters.add(new BooleanP(QUICK_NORMALISATION,this,true));
-        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new InputImageP(DISPLAY_IMAGE, this, "", "Image to display."));
+
+        parameters.add(new ParamSeparatorP(DISPLAY_SEPARATOR,this));
+        parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL, "Select what title the image window should have.<br>" +
+                "<br>- \""+TitleModes.IMAGE_NAME+"\" Set the image window title to the name of the image.<br>" +
+                "<br>- \""+TitleModes.FILE_NAME+"\" Set the image window title to the filename of the root file for this workspace (i.e. the file set in \"Input control\".<br>" +
+                "<br>- \""+TitleModes.IMAGE_AND_FILE_NAME+"\" Set the image window title to a composite of the filename of the root file for this workspace and the name of the image."));
+        parameters.add(new BooleanP(QUICK_NORMALISATION,this,true,"Before displaying the image, apply quick normalisation to improve contrast.  The minimum and maximum displayed intensities are simply set to the minimum and maximum pixel intensities contained within the image stack."));
+        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL,"Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the \"C\" slider at the bottom of the image window)."));
 
     }
 

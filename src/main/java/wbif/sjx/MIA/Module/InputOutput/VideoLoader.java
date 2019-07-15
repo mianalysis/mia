@@ -10,11 +10,7 @@ import ij.plugin.ChannelSplitter;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import jogamp.opengl.util.av.impl.FFMPEGMediaPlayer;
 import org.apache.commons.io.FilenameUtils;
-import org.bytedeco.javacpp.BytePointer;
-import org.janelia.it.jacs.shared.ffmpeg.ByteGatherAcceptor;
-import org.janelia.it.jacs.shared.ffmpeg.FFMPGByteAcceptor;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.MIA.MIA;
@@ -29,10 +25,9 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Object.HCMetadata;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -451,7 +446,7 @@ public class VideoLoader extends Module {
 
             // If this has failed (outputImage is null) try old FFMPEG loading
             if (outputImage == null) {
-                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).",Log.Level.WARNING);
+                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).", LogRenderer.Level.WARNING);
                 outputImage = getFFMPEGVideoOld(pathName,outputImageName,frameRange,crop);
             }
 

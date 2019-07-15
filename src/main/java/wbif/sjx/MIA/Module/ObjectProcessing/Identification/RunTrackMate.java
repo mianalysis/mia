@@ -41,7 +41,6 @@ public class RunTrackMate extends Module {
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
     public static final String RADIUS = "Radius";
     public static final String THRESHOLD = "Threshold";
-    public static final String NORMALISE_INTENSITY = "Normalise intensity";
     public static final String ESTIMATE_SIZE = "Estimate spot size";
 
     public static final String TRACK_SEPARATOR = "Spot tracking";
@@ -258,7 +257,8 @@ public class RunTrackMate extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Uses the TrackMate plugin included with Fiji to detect and track spots in images." +
+                "<br><br>For more on TrackMate, go to https://imagej.net/TrackMate";
     }
 
     @Override
@@ -274,15 +274,8 @@ public class RunTrackMate extends Module {
 
         // Getting parameters
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        boolean normaliseIntensity = parameters.getValue(NORMALISE_INTENSITY);
         boolean doTracking = parameters.getValue(DO_TRACKING);
         boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
-
-        // If image should be normalised
-        if (normaliseIntensity) {
-            ipl = new Duplicator().run(ipl);
-            IntensityMinMax.run(ipl,true);
-        }
 
         // Initialising TrackMate model to store data
         Model model = new Model();
@@ -339,24 +332,23 @@ public class RunTrackMate extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image in which to detect spots."));
+        parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this, "", "Spot objects that will be added to the workspace.  If tracking is enabled, each spot will have a parent track object."));
 
         parameters.add(new ParamSeparatorP(SPOT_SEPARATOR, this));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this,false));
-        parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true));
-        parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false));
-        parameters.add(new DoubleP(RADIUS, this,2.0));
-        parameters.add(new DoubleP(THRESHOLD, this,5000.0));
-        parameters.add(new BooleanP(NORMALISE_INTENSITY, this,false));
-        parameters.add(new BooleanP(ESTIMATE_SIZE, this,false));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false, "Enable if spatial parameters (e.g. \""+RADIUS+"\" or \""+LINKING_MAX_DISTANCE+"\") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units."));
+        parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true, "Enable TrackMate's \"Subpixel localisation\" functionality."));
+        parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false, "Enable TrackMate's \"Median filtering\" functionality."));
+        parameters.add(new DoubleP(RADIUS, this,2.0, "Expected radius of spots in the input image.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
+        parameters.add(new DoubleP(THRESHOLD, this,5000.0,"Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified \""+RADIUS+"\" value.  Increase this value to make detection more selective (i.e. detect fewer spots)."));
+        parameters.add(new BooleanP(ESTIMATE_SIZE, this,false,"When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter."));
 
         parameters.add(new ParamSeparatorP(TRACK_SEPARATOR, this));
-        parameters.add(new BooleanP(DO_TRACKING, this,true));
-        parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0));
-        parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0));
-        parameters.add(new IntegerP(MAX_FRAME_GAP, this,3));
-        parameters.add(new OutputTrackObjectP(OUTPUT_TRACK_OBJECTS, this));
+        parameters.add(new BooleanP(DO_TRACKING, this,true, "Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information."));
+        parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0, "Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
+        parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0, "Maximum distance a spot can travel between \""+MAX_FRAME_GAP+"\" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
+        parameters.add(new IntegerP(MAX_FRAME_GAP, this,3, "Maximum number of frames a spot can go undetected before it will be classed as a new track upon reappearance."));
+        parameters.add(new OutputTrackObjectP(OUTPUT_TRACK_OBJECTS, this, "", "Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements."));
 
     }
 
@@ -374,7 +366,6 @@ public class RunTrackMate extends Module {
         returnedParameters.add(parameters.getParameter(DO_MEDIAN_FILTERING));
         returnedParameters.add(parameters.getParameter(RADIUS));
         returnedParameters.add(parameters.getParameter(THRESHOLD));
-        returnedParameters.add(parameters.getParameter(NORMALISE_INTENSITY));
         returnedParameters.add(parameters.getParameter(ESTIMATE_SIZE));
 
         returnedParameters.add(parameters.getParameter(TRACK_SEPARATOR));
@@ -402,18 +393,24 @@ public class RunTrackMate extends Module {
 
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setObjectsName(outputSpotObjectsName);
+        reference.setDescription("Radius used as size estimate for spot detection.  Measured in pixel units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
         reference.setObjectsName(outputSpotObjectsName);
+        reference.setDescription("Radius used as size estimate for spot detection.  Measured in calibrated " +
+                "("+Units.getOMEUnits().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
         reference.setObjectsName(outputSpotObjectsName);
+        reference.setDescription("Diameter of spot as estimated by TrackMate.  Measured in pixel units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
         reference.setObjectsName(outputSpotObjectsName);
+        reference.setDescription("Diameter of spots as estimated by TrackMate.  Measured in calibrated " +
+                "("+Units.getOMEUnits().getSymbol()+") units.");
         returnedRefs.add(reference);
 
         return returnedRefs;

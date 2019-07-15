@@ -4,7 +4,7 @@ import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.UndoRedoStore;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -80,19 +80,19 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.add(logMenu);
         logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
-        Log.Level level = Log.Level.MESSAGE;
+        LogRenderer.Level level = LogRenderer.Level.MESSAGE;
         MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = Log.Level.WARNING;
+        level = LogRenderer.Level.WARNING;
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = Log.Level.DEBUG;
+        level = LogRenderer.Level.DEBUG;
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = Log.Level.MEMORY;
+        level = LogRenderer.Level.MEMORY;
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 

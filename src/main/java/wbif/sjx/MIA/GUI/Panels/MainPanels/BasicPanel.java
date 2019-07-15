@@ -143,13 +143,12 @@ public class BasicPanel extends MainPanel {
         cc.gridx = 0;
         cc.gridy = 0;
         cc.weightx = 1;
-        cc.weighty = 2;
+        cc.weighty = 1;
         cc.insets = new Insets(0,0,5,0);
         helpNotesPanel.add(helpPanel,cc);
         helpPanel.setVisible(showHelp);
 
         cc.gridy++;
-        cc.weighty = 1;
         cc.insets = new Insets(0,0,0,0);
         helpNotesPanel.add(notesPanel,cc);
         notesPanel.setVisible(showNotes);

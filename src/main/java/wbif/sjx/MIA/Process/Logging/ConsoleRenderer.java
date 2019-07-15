@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Created by Stephen Cross on 14/06/2019.
  */
-public class ConsoleLog implements Log {
+public class ConsoleRenderer implements LogRenderer {
     private UIService uiService = null;
     private JTextPane consoleTextPane = null;
     private Level activeLevel = Level.MESSAGE;
@@ -26,7 +26,7 @@ public class ConsoleLog implements Log {
 
     // CONSTRUCTOR
 
-    public ConsoleLog(UIService uiService) {
+    public ConsoleRenderer(UIService uiService) {
         this.uiService = uiService;
 
         ConsolePane<?> consolePane = uiService.getDefaultUI().getConsolePane();
@@ -38,7 +38,7 @@ public class ConsoleLog implements Log {
         consoleTextPane.setAutoscrolls(true);
 
         Style messageStyle = consoleTextPane.addStyle("Message style", null);
-        StyleConstants.setForeground(messageStyle, Color.BLACK);
+        StyleConstants.setForeground(messageStyle, new Color(44, 38, 37));
         logStyles.put(Level.MESSAGE,messageStyle);
         writeToConsole.put(Level.MESSAGE,false);
 
@@ -48,7 +48,7 @@ public class ConsoleLog implements Log {
         writeToConsole.put(Level.WARNING,true);
 
         Style errorStyle = consoleTextPane.addStyle("Error style", null);
-        StyleConstants.setForeground(errorStyle, Color.RED);
+        StyleConstants.setForeground(errorStyle, new Color(234, 32, 50));
         logStyles.put(Level.ERROR,errorStyle);
         writeToConsole.put(Level.ERROR,true);
 
@@ -58,7 +58,7 @@ public class ConsoleLog implements Log {
         writeToConsole.put(Level.DEBUG,false);
 
         Style memoryStyle = consoleTextPane.addStyle("Memory style", null);
-        StyleConstants.setForeground(memoryStyle, new Color(57,142,27));
+        StyleConstants.setForeground(memoryStyle, new Color(63, 176, 22));
         logStyles.put(Level.MEMORY,memoryStyle);
         writeToConsole.put(Level.MEMORY,false);
 

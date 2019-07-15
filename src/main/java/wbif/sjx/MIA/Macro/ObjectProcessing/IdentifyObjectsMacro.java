@@ -5,7 +5,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 public class IdentifyObjectsMacro extends MacroOperation {
     public IdentifyObjectsMacro(MacroExtension theHandler) {
@@ -36,7 +36,7 @@ public class IdentifyObjectsMacro extends MacroOperation {
         } else if ((double) objects[4] == 26) {
             identifyObjects.updateParameterValue(IdentifyObjects.CONNECTIVITY,IdentifyObjects.Connectivity.TWENTYSIX);
         } else {
-            MIA.log.write("Connectivity must be set to either 6 or 26.",Log.Level.MESSAGE);
+            MIA.log.write("Connectivity must be set to either 6 or 26.", LogRenderer.Level.MESSAGE);
             return null;
         }
 

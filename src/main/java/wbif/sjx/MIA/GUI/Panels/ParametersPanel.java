@@ -122,7 +122,6 @@ public class ParametersPanel extends JScrollPane {
 
         }
 
-        // Creating the notes/help field at the bottom of the panel
         JSeparator separator = new JSeparator();
         separator.setOpaque(true);
         separator.setSize(new Dimension(0,0));

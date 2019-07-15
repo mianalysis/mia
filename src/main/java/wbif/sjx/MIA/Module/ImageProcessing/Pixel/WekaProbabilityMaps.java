@@ -24,12 +24,15 @@ import java.io.File;
  * Created by sc13967 on 22/03/2018.
  */
 public class WekaProbabilityMaps extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String CONVERT_TO_RGB = "Convert to RGB";
+    public static final String OUTPUT_SEPARATOR = "Probability image output";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
     public static final String OUTPUT_SINGLE_CLASS = "Output single class";
     public static final String OUTPUT_CLASS = "Output class";
+    public static final String CLASSIFIER_SEPARATOR = "Classifier settings";
     public static final String CLASSIFIER_FILE = "Classifier file path";
     public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
 
@@ -144,8 +147,9 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     public String getDescription() {
-        return "Loads a saved WEKA classifier model and applies it to the input image.  Returns the " +
-                "\nmulti-channel probability map";
+        return "Performs pixel classification using the WEKA Trainable Segmentation plugin." +
+                "<br><br>This module loads a previously-saved WEKA classifier model and applies it to the input image.  It then returns the multi-channel probability map." +
+                "<br><br>Image stacks are processed in 2D, one slice at a time.";
     }
 
     @Override
@@ -194,14 +198,19 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(CONVERT_TO_RGB,this,false));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL));
-        parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS,this,false));
-        parameters.add(new IntegerP(OUTPUT_CLASS,this,1));
-        parameters.add(new FilePathP(CLASSIFIER_FILE,this));
-        parameters.add(new IntegerP(BLOCK_SIZE,this,1));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image to apply pixel classification to."));
+        parameters.add(new BooleanP(CONVERT_TO_RGB,this,false,"Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model."));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this, "","Output probability map image."));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL,"By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module."));
+        parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS,this,false,"Allows a single class (image channel) to be output.  This is another feature for reducing memory usage."));
+        parameters.add(new IntegerP(OUTPUT_CLASS,this,1,"Class (image channel) to be output.  Channel numbering starts at 1."));
+
+        parameters.add(new ParamSeparatorP(CLASSIFIER_SEPARATOR,this));
+        parameters.add(new FilePathP(CLASSIFIER_FILE,this,"","Path to the classifier file (.model extension).  This file needs to be created manually using the WEKA Trainable Segmentation plugin included with Fiji."));
+        parameters.add(new IntegerP(BLOCK_SIZE,this,1,"Number of image slices to process at any given time.  This reduces the memory footprint of the module, but can slow down processing."));
 
     }
 
@@ -209,8 +218,11 @@ public class WekaProbabilityMaps extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(CONVERT_TO_RGB));
+
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
 
@@ -219,6 +231,7 @@ public class WekaProbabilityMaps extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
         }
 
+        returnedParameters.add(parameters.getParameter(CLASSIFIER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
         returnedParameters.add(parameters.getParameter(BLOCK_SIZE));
 

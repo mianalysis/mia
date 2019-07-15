@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -148,8 +148,8 @@ public class Exporter {
             FileOutputStream outputStream = new FileOutputStream(newOutPath);
             workbook.write(outputStream);
 
-            MIA.log.write("Target file ("+new File(outPath).getName()+") inaccessible",Log.Level.WARNING);
-            MIA.log.write("Saved to alternative file ("+new File(newOutPath).getName()+")",Log.Level.WARNING);
+            MIA.log.write("Target file ("+new File(outPath).getName()+") inaccessible", LogRenderer.Level.WARNING);
+            MIA.log.write("Saved to alternative file ("+new File(newOutPath).getName()+")", LogRenderer.Level.WARNING);
 
         }
 
@@ -249,7 +249,7 @@ public class Exporter {
 
     private void prepareErrorLog(SXSSFWorkbook workbook) {
         // Creating a sheet for parameters
-        Sheet errorSheet = workbook.createSheet("Log");
+        Sheet errorSheet = workbook.createSheet("LogRenderer");
 
         // Getting error write text and split by line returns
         String logText = MIA.log.getLogText();
