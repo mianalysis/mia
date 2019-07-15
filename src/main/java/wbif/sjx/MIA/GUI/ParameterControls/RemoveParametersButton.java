@@ -44,9 +44,9 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
+        GUI.updateModuleStates(true);
         GUI.updateModules();
         GUI.updateParameters();
-        GUI.updateModuleStates(true);
 
         updateControl();
 

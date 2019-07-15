@@ -151,7 +151,8 @@ public class GUI {
         int minimumHeight = mainPanel.getMinimumHeight();
         frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
 
-        menuBar.setHelpNotesSelected(showHelpNotes());
+        menuBar.setHelpSelected(showHelp());
+        menuBar.setNotesSelected(showNotes());
 
         frame.pack();
         frame.revalidate();
@@ -375,10 +376,6 @@ public class GUI {
         return analysis;
     }
 
-    public static void setShowEditingHelpNotes(boolean showEditingHelpNotes) {
-        mainPanel.setShowHelpNotes(showEditingHelpNotes);
-    }
-
     public static StatusTextField getTextField() {
         return textField;
     }
@@ -407,14 +404,24 @@ public class GUI {
 
     }
 
-    public static void setShowHelpNotes(boolean showHelpNotes) {
-        mainPanel.setShowHelpNotes(showHelpNotes);
+    public static void setShowHelp(boolean showHelp) {
+        mainPanel.setShowHelp(showHelp);
 
     }
 
-    public static boolean showHelpNotes() {
+    public static boolean showHelp() {
         if (mainPanel == null) return false;
-        return mainPanel.showHelpNotes();
+        return mainPanel.showHelp();
+    }
+
+    public static void setShowNotes(boolean showNotes) {
+        mainPanel.setShowNotes(showNotes);
+
+    }
+
+    public static boolean showNotes() {
+        if (mainPanel == null) return false;
+        return mainPanel.showNotes();
     }
 
     public static TreeMap<String, Module> getAvailableModules() {

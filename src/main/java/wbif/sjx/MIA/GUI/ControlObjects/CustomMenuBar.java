@@ -14,9 +14,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class CustomMenuBar extends JMenuBar implements ActionListener {
-    private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
     private static MenuItem undo = new MenuItem(MenuItem.UNDO);
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
+    private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);
+    private static MenuCheckbox notesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_NOTES);
 
 
     public CustomMenuBar() {
@@ -62,8 +63,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
             menu.add(new MenuItem(MenuItem.EDITING_VIEW));
         }
         menu.add(new MenuItem(MenuItem.SHOW_GLOBAL_VARIABLES));
-        helpNotesCheckbox.setSelected(GUI.showHelpNotes());
-        menu.add(helpNotesCheckbox);
+        helpCheckbox.setSelected(GUI.showHelp());
+        menu.add(helpCheckbox);
+        notesCheckbox.setSelected(GUI.showNotes());
+        menu.add(notesCheckbox);
 
         // Creating the help menu
         menu = new JMenu("Help");
@@ -112,8 +115,13 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
     }
 
-    public void setHelpNotesSelected(Boolean showHelpNotes) {
-        helpNotesCheckbox.setSelected(showHelpNotes);
+    public void setHelpSelected(Boolean showHelp) {
+        helpCheckbox.setSelected(showHelp);
+
+    }
+
+    public void setNotesSelected(Boolean showNotes) {
+        notesCheckbox.setSelected(showNotes);
 
     }
 

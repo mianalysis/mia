@@ -23,8 +23,9 @@ public class BasicPanel extends MainPanel {
     private static final HelpPanel helpPanel = new HelpPanel();
     private static final NotesPanel notesPanel = new NotesPanel();
 
-    private boolean showHelpNotes = Prefs.get("MIA.showBasicHelpNotes",false);
-    private Module lastHelpNotesModule = null;
+    private static boolean showHelp = Prefs.get("MIA.showBasicHelp",false);
+    private static boolean showNotes = Prefs.get("MIA.showBasicNotes",false);
+    private static Module lastHelpNotesModule = null;
 
 
     public BasicPanel() {
@@ -145,11 +146,13 @@ public class BasicPanel extends MainPanel {
         cc.weighty = 2;
         cc.insets = new Insets(0,0,5,0);
         helpNotesPanel.add(helpPanel,cc);
+        helpPanel.setVisible(showHelp);
 
         cc.gridy++;
         cc.weighty = 1;
         cc.insets = new Insets(0,0,0,0);
         helpNotesPanel.add(notesPanel,cc);
+        notesPanel.setVisible(showNotes);
 
     }
 
@@ -165,13 +168,13 @@ public class BasicPanel extends MainPanel {
         c.fill = GridBagConstraints.BOTH;
 
         statusPanel.add(GUI.getTextField(),c);
-        helpNotesPanel.setVisible(showHelpNotes);
+        helpNotesPanel.setVisible(showHelp || showNotes);
 
         GUI.updateTestFile();
         updateModules();
         updateParameters();
 
-        if (showHelpNotes) updateHelpNotes();
+        if (showHelp || showNotes) updateHelpNotes();
 
         revalidate();
         repaint();
@@ -195,29 +198,30 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public void updateHelpNotes() {
+        helpPanel.setVisible(showHelp);
+        notesPanel.setVisible(showNotes);
+        helpNotesPanel.setVisible(showHelp || showNotes);
+
         Module activeModule  = GUI.getFirstSelectedModule();
 
         // If null, show a special message
         if (activeModule == null) {
             helpPanel.showUsageMessage();
-            notesPanel.updatePanel();
+            notesPanel.showUsageMessage();
             return;
         }
 
         // Only update the help and notes if the module has changed
         if (activeModule != lastHelpNotesModule) {
             lastHelpNotesModule = activeModule;
-        } else {
-            return;
+            helpPanel.updatePanel();
+            notesPanel.updatePanel();
         }
-
-        helpPanel.updatePanel();
-        notesPanel.updatePanel();
     }
 
     @Override
     public int getPreferredWidth() {
-        if (showHelpNotes) {
+        if (showHelp || showNotes) {
             return frameWidth + 315;
         } else {
             return frameWidth;
@@ -226,7 +230,7 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public int getMinimumWidth() {
-        if (showHelpNotes) {
+        if (showHelp || showNotes) {
             return minimumFrameWidth + 315;
         } else {
             return minimumFrameWidth;
@@ -254,16 +258,31 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
-    public boolean showHelpNotes() {
-        return showHelpNotes;
+    public boolean showHelp() {
+        return showHelp;
     }
 
     @Override
-    public void setShowHelpNotes(boolean showHelpNotes) {
-        this.showHelpNotes = showHelpNotes;
-        Prefs.set("MIA.showBasicHelpNotes",showHelpNotes);
+    public void setShowHelp(boolean showHelp) {
+        this.showHelp = showHelp;
+        Prefs.set("MIA.showBasicHelp",showHelp);
 
-        helpNotesPanel.setVisible(showHelpNotes);
+        helpNotesPanel.setVisible(showHelp);
+        GUI.updatePanel();
+
+    }
+
+    @Override
+    public boolean showNotes() {
+        return showNotes;
+    }
+
+    @Override
+    public void setShowNotes(boolean showNotes) {
+        this.showNotes = showNotes;
+        Prefs.set("MIA.showBasicNotes",showNotes);
+
+        helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
 
     }

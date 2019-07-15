@@ -81,9 +81,9 @@ public class HelpPanel extends JPanel {
         usageMessage.setContentType("text/html");
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
-                "Click a module title to<br>see help and notes about it"+
+                "Click a module title to<br>see help about it"+
                 "<br><br>" +
-                "To hide this, go to<br>View > Toggle help and notes panel" +
+                "To hide this, go to<br>View > Toggle help panel" +
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);

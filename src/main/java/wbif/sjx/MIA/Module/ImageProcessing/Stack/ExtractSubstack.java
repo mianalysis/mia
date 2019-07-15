@@ -191,7 +191,8 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Extract a substack from the specified input image in terms of channels, slices and frames.  The output " +
+                "image is saved to the workspace for use later on in the workflow.";
     }
 
     @Override
@@ -256,17 +257,19 @@ public class ExtractSubstack extends Module implements ActionListener {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image from which the substack will be taken."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Output substack image."));
 
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
-        parameters.add(new ChoiceP(SELECTION_MODE,this, SelectionModes.FIXED, SelectionModes.ALL));
-        parameters.add(new StringP(CHANNELS,this,"1-end"));
-        parameters.add(new StringP(SLICES,this,"1-end"));
-        parameters.add(new StringP(FRAMES,this,"1-end"));
-        parameters.add(new BooleanP(ENABLE_CHANNELS_SELECTION,this,true));
-        parameters.add(new BooleanP(ENABLE_SLICES_SELECTION,this,true));
-        parameters.add(new BooleanP(ENABLE_FRAMES_SELECTION,this,true));
+        parameters.add(new ChoiceP(SELECTION_MODE,this, SelectionModes.FIXED, SelectionModes.ALL,"Method for selection of substack dimension ranges.<br>" +
+                "<br>- \""+SelectionModes.FIXED+"\" (default) will apply the pre-specified dimension ranges to the input image.<br>" +
+                "<br>- \""+SelectionModes.MANUAL+"\" will display a dialog asking the user to select the dimension ranges at runtime.  Each dimension (channel, slice or frame) can be fixed (i.e. not presented as an option to the user) using the \"enable\" toggles."));
+        parameters.add(new StringP(CHANNELS,this,"1-end","Channel range to be extracted from the input image.  If \""+SELECTION_MODE+"\" is set to \""+SelectionModes.FIXED+"\" this will be applied to each image.  If \""+SELECTION_MODE+"\" is set to \""+SelectionModes.MANUAL+"\" this will be the default value present to the user, but can be changed for the final extraction."));
+        parameters.add(new StringP(SLICES,this,"1-end","Slice range to be extracted from the input image.  If \""+SELECTION_MODE+"\" is set to \""+SelectionModes.FIXED+"\" this will be applied to each image.  If \""+SELECTION_MODE+"\" is set to \""+SelectionModes.MANUAL+"\" this will be the default value present to the user, but can be changed for the final extraction."));
+        parameters.add(new StringP(FRAMES,this,"1-end","Frame range to be extracted from the input image.  If \""+SELECTION_MODE+"\" is set to \""+SelectionModes.FIXED+"\" this will be applied to each image.  If \""+SELECTION_MODE+"\" is set to \""+SelectionModes.MANUAL+"\" this will be the default value present to the user, but can be changed for the final extraction."));
+        parameters.add(new BooleanP(ENABLE_CHANNELS_SELECTION,this,true,"If enabled, the user will be able to specify the final channel range to be used in the substack extraction."));
+        parameters.add(new BooleanP(ENABLE_SLICES_SELECTION,this,true,"If enabled, the user will be able to specify the final slice range to be used in the substack extraction."));
+        parameters.add(new BooleanP(ENABLE_FRAMES_SELECTION,this,true,"If enabled, the user will be able to specify the final frame range to be used in the substack extraction."));
 
     }
 

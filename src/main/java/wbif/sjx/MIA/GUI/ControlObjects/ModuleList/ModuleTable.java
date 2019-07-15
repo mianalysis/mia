@@ -112,8 +112,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel label = new JLabel();
 
-        Border margin = new EmptyBorder(2,5,0,0);
-        label.setBorder(margin);
+        label.setBorder(new EmptyBorder(2,5,0,0));
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setOpaque(true);
 

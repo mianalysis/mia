@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class HelpArea extends JTextPane {
@@ -23,6 +24,7 @@ public class HelpArea extends JTextPane {
         setBackground(null);
         setEditable(false);
         setCaretPosition(0);
+        setBorder(new EmptyBorder(2,5,5,5));
 
         revalidate();
         repaint();
