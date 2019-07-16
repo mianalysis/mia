@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Object.Parameters.Abstract;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ChoiceArrayParameter;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 public abstract class ChoiceType extends Parameter {

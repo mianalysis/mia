@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.CompositeImage;
 import ij.process.LUT;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -155,6 +156,12 @@ public class SetLookupTable extends Module {
         String channelMode = parameters.getValue(CHANNEL_MODE);
         int channel = parameters.getValue(CHANNEL);
         String displayMode = parameters.getValue(DISPLAY_MODE);
+
+        // If this image doesn't exist, skip this module.  This returns true, because this isn't terminal for the analysis.
+        if (inputImage == null) return true;
+
+        // If this image has fewer channels than the specified channel, skip the module (but return true)
+        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels()-1) return true;
 
         LUT lut = getLUT(lookupTableName);
 

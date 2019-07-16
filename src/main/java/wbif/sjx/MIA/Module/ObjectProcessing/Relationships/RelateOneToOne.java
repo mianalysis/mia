@@ -12,12 +12,14 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class RelateOneToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
+    public static final String CREATE_CLUSTER_OBJECTS = "Create cluster objects";
     public static final String OUTPUT_OBJECTS_NAME = "Output cluster objects";
 
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
@@ -130,13 +132,9 @@ public class RelateOneToOne extends Module {
 
     }
 
-    ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, double[][] costs, String outputObjectsName) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
-
-        double dppXY = inputObjects1.getFirst().getDistPerPxXY();
-        double dppZ = inputObjects1.getFirst().getDistPerPxZ();
-        String units = inputObjects1.getFirst().getCalibratedUnits();
-        boolean is2D = inputObjects1.getFirst().is2D();
+    ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, double[][] costs, @Nullable String outputObjectsName) {
+        ObjCollection outputObjects = null;
+        if (outputObjectsName != null) outputObjects = new ObjCollection(outputObjectsName);
 
         // Determining links using Munkres (Hungarian) algorithm
         HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(costs);
@@ -156,36 +154,15 @@ public class RelateOneToOne extends Module {
             // Getting linked object
             Obj object2 = objects2.get(assignment[curr]);
 
-            // Creating new object
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
-            outputObjects.add(outputObject);
-
-            // Adding relationships
-            outputObject.addChild(object1);
-            outputObject.addChild(object2);
-            object1.addParent(outputObject);
-            object2.addParent(outputObject);
-
             // Adding measurements
             object1.addMeasurement(new Measurement(getFullName(object2.getName(),Measurements.WAS_LINKED1),1));
             object2.addMeasurement(new Measurement(getFullName(object1.getName(),Measurements.WAS_LINKED1),1));
 
-            // Adding measurements
-            double nPoints1 = (double) object1.getNVoxels();
-            double nPoints2 = (double) object2.getNVoxels();
-            double nTotalPoints = nPoints1 + nPoints2;
-            double fraction1 = nPoints1/nTotalPoints;
-            double fraction2 = nPoints2/nTotalPoints;
-
-            String name = getFullName(object1.getName(), Measurements.FRACTION_1);
-            outputObject.addMeasurement(new Measurement(name,fraction1));
-            name = getFullName(object1.getName(), Measurements.N_VOXELS1);
-            outputObject.addMeasurement(new Measurement(name,nPoints1));
-            name = getFullName(object1.getName(), Measurements.FRACTION_2);
-            outputObject.addMeasurement(new Measurement(name,fraction2));
-            name = getFullName(object2.getName(), Measurements.N_VOXELS2);
-            outputObject.addMeasurement(new Measurement(name,nPoints2));
-
+            // Creating new object
+            if (outputObjectsName != null) {
+                int ID = outputObjects.getAndIncrementID();
+                outputObjects.add(createClusterObject(object1,object2,outputObjectsName,ID));
+            }
         }
 
         // Ensuring input objects have "WAS_LINKED" measurements
@@ -200,6 +177,40 @@ public class RelateOneToOne extends Module {
         }
 
         return outputObjects;
+
+    }
+
+    static Obj createClusterObject(Obj object1, Obj object2, String outputObjectsName, int ID) {
+        double dppXY = object1.getDistPerPxXY();
+        double dppZ = object1.getDistPerPxZ();
+        String units = object1.getCalibratedUnits();
+        boolean is2D = object1.is2D();
+
+        Obj outputObject = new Obj(outputObjectsName, ID, dppXY, dppZ, units, is2D);
+
+        // Adding relationships
+        outputObject.addChild(object1);
+        outputObject.addChild(object2);
+        object1.addParent(outputObject);
+        object2.addParent(outputObject);
+
+        // Adding measurements
+        double nPoints1 = (double) object1.getNVoxels();
+        double nPoints2 = (double) object2.getNVoxels();
+        double nTotalPoints = nPoints1 + nPoints2;
+        double fraction1 = nPoints1/nTotalPoints;
+        double fraction2 = nPoints2/nTotalPoints;
+
+        String name = getFullName(object1.getName(), Measurements.FRACTION_1);
+        outputObject.addMeasurement(new Measurement(name,fraction1));
+        name = getFullName(object1.getName(), Measurements.N_VOXELS1);
+        outputObject.addMeasurement(new Measurement(name,nPoints1));
+        name = getFullName(object1.getName(), Measurements.FRACTION_2);
+        outputObject.addMeasurement(new Measurement(name,fraction2));
+        name = getFullName(object2.getName(), Measurements.N_VOXELS2);
+        outputObject.addMeasurement(new Measurement(name,nPoints2));
+
+        return outputObject;
 
     }
 
@@ -223,6 +234,7 @@ public class RelateOneToOne extends Module {
         ObjCollection inputObjects2 = workspace.getObjects().get(inputObjects2Name);
 
         // Getting parameters
+        boolean createClusterObjects = parameters.getValue(CREATE_CLUSTER_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
         double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION);
@@ -235,6 +247,8 @@ public class RelateOneToOne extends Module {
             workspace.addObjects(new ObjCollection(outputObjectsName));
             return true;
         }
+
+        if (!createClusterObjects) outputObjectsName = null;
 
         Obj firstObj = inputObjects1.getFirst();
         if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDistPerPxXY();
@@ -254,7 +268,7 @@ public class RelateOneToOne extends Module {
         // Assigning optimal links
         ObjCollection outputObjects = assignLinks(inputObjects1,inputObjects2,costs,outputObjectsName);
 
-        workspace.addObjects(outputObjects);
+        if (createClusterObjects) workspace.addObjects(outputObjects);
 
         return true;
 
@@ -265,6 +279,7 @@ public class RelateOneToOne extends Module {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
+        parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS,this,true));
         parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME,this));
 
         parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
@@ -283,7 +298,10 @@ public class RelateOneToOne extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_2));
-        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
+        returnedParameters.add(parameters.getParameter(CREATE_CLUSTER_OBJECTS));
+        if (parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
+        }
 
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));

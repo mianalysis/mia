@@ -67,6 +67,7 @@ public class RelateManyToOne extends Module {
         String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${CAL})";
         String DIST_CENT_SURF_FRAC = "DIST_FROM_CENT_TO_${PARENT}_SURF_(FRAC)";
         String OVERLAP_PC = "OVERLAP_WITH_${PARENT}_PERCENTAGE";
+        String WAS_LINKED = "WAS_LINKED_${PARENT}";
 
     }
 
@@ -386,6 +387,27 @@ public class RelateManyToOne extends Module {
 
     }
 
+    static void applyLinkMeasurements(ObjCollection parentObjects, ObjCollection childObjects) {
+        String parentMeasurementName = getFullName(Measurements.WAS_LINKED,childObjects.getName());
+        String childMeasurementName = getFullName(Measurements.WAS_LINKED,parentObjects.getName());
+
+        for (Obj parentObject:parentObjects.values()) {
+            if (parentObject.getChildren(childObjects.getName()).size() == 0) {
+                parentObject.addMeasurement(new Measurement(parentMeasurementName,0));
+            } else {
+                parentObject.addMeasurement(new Measurement(parentMeasurementName,1));
+            }
+        }
+
+        for (Obj childObject:childObjects.values()) {
+            if (childObject.getChildren(parentObjects.getName()).size() == 0) {
+                childObject.addMeasurement(new Measurement(childMeasurementName,0));
+            } else {
+                childObject.addMeasurement(new Measurement(childMeasurementName,1));
+            }
+        }
+    }
+
 
     @Override
     public String getPackageName() {
@@ -620,6 +642,18 @@ public class RelateManyToOne extends Module {
                 returnedRefs.add(overlapPercentage);
                 break;
         }
+
+        String measurementName = getFullName(Measurements.WAS_LINKED,parentObjectName);
+        ObjMeasurementRef wasLinked = objectMeasurementRefs.getOrPut(measurementName);
+        wasLinked.setDescription("Was this \""+childObjectsName+"\" child object linked with a \""+parentObjectName+"\" parent object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+        wasLinked.setObjectsName(childObjectsName);
+        returnedRefs.add(wasLinked);
+
+        measurementName = getFullName(Measurements.WAS_LINKED,childObjectsName);
+        wasLinked = objectMeasurementRefs.getOrPut(measurementName);
+        wasLinked.setDescription("Was this \""+parentObjectName+"\" parent object linked with a \""+childObjectsName+"\" child object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+        wasLinked.setObjectsName(parentObjectName);
+        returnedRefs.add(wasLinked);
 
         return returnedRefs;
     }

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
@@ -82,8 +83,22 @@ public class EvalButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        ModuleCollection modules = GUI.getModules();
+        int idx = modules.indexOf(module);
 
-        int idx = GUI.getModules().indexOf(module);
+        // If this is the first (non-GUI separator) module, reset the workspace
+        int firstIdx = 0;
+        for (Module module:modules.values()) {
+            if (!(module instanceof GUISeparator)) break;
+            firstIdx++;
+        }
+
+        if (idx == firstIdx) {
+            GUI.getTestWorkspace().clearAllImages(false);
+            GUI.getTestWorkspace().clearAllObjects(false);
+            GUI.getTestWorkspace().clearMetadata();
+            GUI.getTestWorkspace().clearAnalysis();
+        }
 
         // If it's currently evaluating, this will kill the thread
         if (idx == GUI.getModuleBeingEval()) {

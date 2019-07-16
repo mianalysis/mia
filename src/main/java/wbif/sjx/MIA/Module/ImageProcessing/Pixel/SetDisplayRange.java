@@ -107,7 +107,6 @@ public class SetDisplayRange extends Module {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -117,6 +116,11 @@ public class SetDisplayRange extends Module {
         boolean setMaximumValue = parameters.getValue(SET_MAXIMUM_VALUE);
         double minRange = parameters.getValue(MIN_RANGE);
         double maxRange = parameters.getValue(MAX_RANGE);
+
+        // If this image doesn't exist, skip this module.  This returns true, because this isn't terminal for the analysis.
+        if (inputImage == null) return true;
+
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
