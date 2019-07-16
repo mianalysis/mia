@@ -249,7 +249,7 @@ public class Exporter {
 
     private void prepareErrorLog(SXSSFWorkbook workbook) {
         // Creating a sheet for parameters
-        Sheet errorSheet = workbook.createSheet("LogRenderer");
+        Sheet errorSheet = workbook.createSheet("Log");
 
         // Getting error write text and split by line returns
         String logText = MIA.log.getLogText();

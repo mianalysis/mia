@@ -116,15 +116,12 @@ public class RelateOneToOne extends Module {
                         costs[i][j] = Double.MAX_VALUE;
                     }
                 }
-
-                count++;
                 j++;
-
             }
 
             i++;
 
-            writeMessage("Calculated cost for "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
+            writeMessage("Calculated cost for "+Math.floorDiv(100*(count++),totalPairs)+"% of pairs");
 
         }
 
@@ -137,6 +134,7 @@ public class RelateOneToOne extends Module {
         if (outputObjectsName != null) outputObjects = new ObjCollection(outputObjectsName);
 
         // Determining links using Munkres (Hungarian) algorithm
+        writeMessage("Calculating links");
         HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(costs);
         int[] assignment = hungarianAlgorithm.execute();
 
@@ -144,6 +142,8 @@ public class RelateOneToOne extends Module {
         ArrayList<Obj> objects2 = new ArrayList<>(inputObjects2.values());
 
         // Applying the calculated assignments as relationships
+        long totalPairs = inputObjects1.size()*inputObjects2.size();
+        long count = 0;
         for (int curr = 0; curr < assignment.length; curr++) {
             // Getting the object from the current frame
             Obj object1 = objects1.get(curr);
@@ -163,6 +163,9 @@ public class RelateOneToOne extends Module {
                 int ID = outputObjects.getAndIncrementID();
                 outputObjects.add(createClusterObject(object1,object2,outputObjectsName,ID));
             }
+
+            writeMessage("Assigned links for "+Math.floorDiv(100*(count++),totalPairs)+"% of pairs");
+
         }
 
         // Ensuring input objects have "WAS_LINKED" measurements
@@ -382,13 +385,16 @@ public class RelateOneToOne extends Module {
     public RelationshipRefCollection updateAndGetRelationships() {
         RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
 
-        // Getting input objects
-        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
+        if (parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
+            // Getting input objects
+            String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
+            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 
-        returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName,inputObjects1Name));
-        returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName,inputObjects2Name));
+            returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects1Name));
+            returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects2Name));
+
+        }
 
         return returnedRefs;
 

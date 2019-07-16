@@ -143,6 +143,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
             if (!module.isEnabled() |! module.isRunnable()) continue;
 
             addRelationshipRefs(module,relationshipRefs);
+
         }
 
         return relationshipRefs;

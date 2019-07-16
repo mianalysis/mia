@@ -36,6 +36,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String CONCAT_SEPARATOR = "Stack concatenation";
@@ -298,12 +299,18 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     protected boolean process(Workspace workspace) {
         // Getting parameters
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String axisMode = parameters.getValue(AXIS_MODE);
 
         // Creating a collection of images
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
         ArrayList<Image<T>> inputImages = getAvailableImages(workspace,collections);
+
+        if (!allowMissingImages && collections.size() != inputImages.size()) {
+            MIA.log.writeError("Input images missing.");
+            return false;
+        }
 
         // If only one image was specified, simply create a duplicate of the input, otherwise do concatenation.
         Image outputImage;
@@ -328,6 +335,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         ParameterCollection collection = new ParameterCollection();
         collection.add(new CustomInputImageP(INPUT_IMAGE,this));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
+        parameters.add(new BooleanP(ALLOW_MISSING_IMAGES,this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
         parameters.add(new ParamSeparatorP(CONCAT_SEPARATOR,this));
@@ -337,6 +345,14 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
+
+        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        for (ParameterCollection collection:collections) {
+            CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
+            parameter.setAllowMissingImages(allowMissingImages);
+        }
+
         return parameters;
 
     }
@@ -369,6 +385,8 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     // Creating a custom class for this module, which always returns true.  This way channels can go missing and
     // this will still work.
     class CustomInputImageP extends InputImageP {
+        private boolean allowMissingImages = false;
+
         private CustomInputImageP(String name, Module module) {
             super(name, module);
 
@@ -384,12 +402,14 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         @Override
         public boolean verify() {
-            return true;
+            if (allowMissingImages) return true;
+            else return super.verify();
         }
 
         @Override
         public boolean isValid() {
-            return true;
+            if (allowMissingImages) return true;
+            else return super.isValid();
         }
 
         @Override
@@ -399,9 +419,18 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());
             newParameter.setExported(isExported());
+            newParameter.setAllowMissingImages(allowMissingImages);
 
             return (T) newParameter;
 
+        }
+
+        public boolean isAllowMissingImages() {
+            return allowMissingImages;
+        }
+
+        public void setAllowMissingImages(boolean allowMissingImages) {
+            this.allowMissingImages = allowMissingImages;
         }
     }
 }
