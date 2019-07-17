@@ -50,7 +50,7 @@ public class GUI {
 
     private static int minimumFrameHeight = 600;
     private static int minimumFrameWidth = 400;
-    private static int frameHeight = 800;
+    private static int frameHeight = 850;
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;

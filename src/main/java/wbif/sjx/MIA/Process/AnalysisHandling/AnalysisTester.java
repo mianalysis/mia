@@ -31,12 +31,16 @@ public class AnalysisTester {
             runnable = parameter.verify();
             parameter.setValid(runnable);
 
-            if (!runnable) return false;
+            if (!runnable) break;
 
         }
 
         // Running module-specific test
-        return module.verify();
+        if (runnable) runnable = module.verify();
+
+        module.setRunnable(runnable);
+
+        return runnable;
 
     }
 }

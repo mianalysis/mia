@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Object;
 
 import ij.CompositeImage;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
@@ -15,10 +16,12 @@ import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import javax.annotation.Nullable;
@@ -96,13 +99,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
                             if (imageID != 0) {
                                 IDlink.computeIfAbsent(imageID, k -> outputObjects.getAndIncrementID());
+
                                 int outID = IDlink.get(imageID);
+                                int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k ->
-                                        new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits,twoD));
-
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits,twoD).setT(finalT));
                                 outputObjects.get(outID).addCoord(x,y,z);
-                                outputObjects.get(outID).setT(t);
 
                             }
                         }

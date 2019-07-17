@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
@@ -54,7 +55,7 @@ public class ExpandShrinkObjects extends Module {
         objectCollection.add(inputObject);
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
         Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImage, hues, 8,false);
-        InvertIntensity.process(objectImage.getImagePlus());
+        InvertIntensity.process(objectImage);
 
         Prefs.blackBackground = false;
 
@@ -62,8 +63,7 @@ public class ExpandShrinkObjects extends Module {
         // from the converter has white objects on a black background.
         switch (method) {
             case Methods.EXPAND_2D:
-                BinaryOperations2D.process(objectImage.getImagePlus(),
-                        BinaryOperations2D.OperationModes.DILATE,radiusChangePx);
+                BinaryOperations2D.process(objectImage,BinaryOperations2D.OperationModes.DILATE,radiusChangePx);
                 break;
 
             case Methods.EXPAND_3D:
@@ -71,8 +71,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
 
             case Methods.SHRINK_2D:
-                BinaryOperations2D.process(objectImage.getImagePlus(),
-                        BinaryOperations2D.OperationModes.ERODE,radiusChangePx);
+                BinaryOperations2D.process(objectImage,BinaryOperations2D.OperationModes.ERODE,radiusChangePx);
                 break;
 
             case Methods.SHRINK_3D:
@@ -80,7 +79,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
         }
 
-        InvertIntensity.process(objectImage.getImagePlus());
+        InvertIntensity.process(objectImage);
 
         // Creating a new object collection (only contains one image) from the transformed image
         ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
@@ -161,6 +160,7 @@ public class ExpandShrinkObjects extends Module {
                 Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,twoD);
                 outputObject.setPoints(newObject.getPoints());
                 outputObjects.add(outputObject);
+                outputObject.setT(newObject.getT());
             }
         }
 
