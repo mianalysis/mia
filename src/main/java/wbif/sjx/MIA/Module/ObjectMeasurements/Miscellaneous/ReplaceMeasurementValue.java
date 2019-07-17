@@ -47,8 +47,7 @@ public class ReplaceMeasurementValue extends Module {
             if (measurement == null) continue;
 
             double currentValue = measurement.getValue();
-
-            if (currentValue == inputValue) measurement.setValue(outputValue);
+            if ((Double.isNaN(currentValue) && Double.isNaN(inputValue)) || currentValue == inputValue) measurement.setValue(outputValue);
 
         }
 

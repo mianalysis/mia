@@ -4,6 +4,7 @@ import ij.Prefs;
 import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.Panels.*;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class BasicPanel extends MainPanel {
 
     private static boolean showHelp = Prefs.get("MIA.showBasicHelp",false);
     private static boolean showNotes = Prefs.get("MIA.showBasicNotes",false);
+    private boolean showFileList = Prefs.get("MIA.showFileList",false);
     private static Module lastHelpNotesModule = null;
 
 
@@ -219,21 +221,28 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
+    public void updateFileList() {
+        MIA.log.writeDebug("ADD BASIC PANEL FILE LIST HANDLING");
+    }
+
+    @Override
     public int getPreferredWidth() {
-        if (showHelp || showNotes) {
-            return frameWidth + 315;
-        } else {
-            return frameWidth;
-        }
+        int currentWidth = frameWidth;
+
+        if (showHelp || showNotes) currentWidth+=315;
+        if (showFileList) currentWidth+=315;
+
+        return currentWidth;
     }
 
     @Override
     public int getMinimumWidth() {
-        if (showHelp || showNotes) {
-            return minimumFrameWidth + 315;
-        } else {
-            return minimumFrameWidth;
-        }
+        int currentWidth = frameWidth;
+
+        if (showHelp || showNotes) currentWidth+=315;
+        if (showFileList) currentWidth+=315;
+
+        return currentWidth;
     }
 
     @Override
@@ -284,6 +293,16 @@ public class BasicPanel extends MainPanel {
         helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
 
+    }
+
+    @Override
+    public boolean showFileList() {
+        return showFileList;
+    }
+
+    @Override
+    public void setShowFileList(boolean showFileList) {
+        this.showFileList = showFileList;
     }
 
     @Override

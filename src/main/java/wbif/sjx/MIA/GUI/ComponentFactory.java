@@ -55,8 +55,24 @@ public class ComponentFactory {
         if (parameter instanceof MessageP) {
             String value = parameter.getRawStringValue();
             parameterComponent.setToolTipText(value == null ? "" : value);
-            c.insets = new Insets(10,3,0,5);
+            c.insets = new Insets(10,3,5,5);
             paramPanel.add(parameterComponent,c);
+
+        } else if (parameter instanceof FileListP) {
+            String value = parameter.getRawStringValue();
+            parameterComponent.setToolTipText(value == null ? "" : value);
+            c.insets = new Insets(10,3,5,0);
+            paramPanel.add(parameterComponent,c);
+
+            if (editable) {
+                c.insets = new Insets(2, 5, 0, 5);
+                c.gridx++;
+                c.weightx = 0;
+                c.anchor = GridBagConstraints.EAST;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+                paramPanel.add(visibleCheck, c);
+            }
 
         } else if (parameter instanceof ParamSeparatorP) {
             if (module.updateAndGetParameters().values().iterator().next() == parameter) {

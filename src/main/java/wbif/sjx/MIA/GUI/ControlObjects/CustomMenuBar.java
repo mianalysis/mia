@@ -18,6 +18,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
     private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);
     private static MenuCheckbox notesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_NOTES);
+    private static MenuCheckbox fileListCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_FILE_LIST);
 
 
     public CustomMenuBar() {
@@ -67,6 +68,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.add(helpCheckbox);
         notesCheckbox.setSelected(GUI.showNotes());
         menu.add(notesCheckbox);
+//        fileListCheckbox.setSelected(GUI.showFileList());
+//        menu.add(fileListCheckbox);
 
         // Creating the help menu
         menu = new JMenu("Help");
@@ -118,6 +121,10 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
     public void setHelpSelected(Boolean showHelp) {
         helpCheckbox.setSelected(showHelp);
 
+    }
+
+    public void setFileListSelected(boolean showFileList) {
+        fileListCheckbox.setSelected(showFileList);
     }
 
     public void setNotesSelected(Boolean showNotes) {

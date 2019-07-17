@@ -39,6 +39,7 @@ import java.util.*;
 public class InputControl extends Module {
     public static final String IMPORT_SEPARATOR = "Core import controls";
     public static final String INPUT_PATH = "Input path";
+//    public static final String FILE_LIST = "File list";
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
     public static final String MACRO_WARNING = "Macro warning";
@@ -288,6 +289,7 @@ public class InputControl extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR,this));
         parameters.add(new FileFolderPathP(INPUT_PATH,this,"","The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
+//        parameters.add(new FileListP(FILE_LIST,this));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1,"The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
         parameters.add(new MessageP(MACRO_WARNING,this,"Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",Color.RED));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
@@ -313,6 +315,7 @@ public class InputControl extends Module {
 
         returnedParameters.add(parameters.getParameter(IMPORT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_PATH));
+//        returnedParameters.add(parameters.getParameter(FILE_LIST));
 
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
         returnedParameters.add(seriesMode);

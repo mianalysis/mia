@@ -36,9 +36,11 @@ public class EditingPanel extends MainPanel {
     private final NotesPanel notesPanel = new NotesPanel();
     private final HelpPanel helpPanel = new HelpPanel();
     private final StatusPanel statusPanel = new StatusPanel();
+    private final FileListPanel fileListPanel = new FileListPanel();
 
     private boolean showHelp = Prefs.get("MIA.showEditingHelp",false);
     private boolean showNotes = Prefs.get("MIA.showEditingNotes",false);
+    private boolean showFileList = Prefs.get("MIA.showFileList",false);
     private Module lastHelpNotesModule = null;
 
 
@@ -69,7 +71,7 @@ public class EditingPanel extends MainPanel {
         c.weighty = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 4;
+        c.gridwidth = 5;
         c.insets = new Insets(0,5,5,5);
         add(statusPanel, c);
 
@@ -110,11 +112,15 @@ public class EditingPanel extends MainPanel {
         c.insets = new Insets(5, 5, 5, 5);
         add(parametersPanel, c);
 
-        initialiseHelpNotesPanels();
-        updateHelpNotes();
+        updateFileList();
         c.gridx++;
         c.weightx = 0;
         c.insets = new Insets(5,0,5,5);
+        add(fileListPanel,c);
+
+        initialiseHelpNotesPanels();
+        updateHelpNotes();
+        c.gridx++;
         add(helpNotesPanel,c);
 
     }
@@ -274,6 +280,7 @@ public class EditingPanel extends MainPanel {
         updateParameters();
 
         if (showHelp || showNotes) updateHelpNotes();
+        if (showFileList) updateFileList();
 
         revalidate();
         repaint();
@@ -282,20 +289,28 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public int getPreferredWidth() {
+        int currentWidth = frameWidth;
+
         if (showHelp || showNotes) {
-            return frameWidth + 315;
-        } else {
-            return frameWidth;
+            currentWidth = currentWidth + 315;
         }
+        if (showFileList) {
+            currentWidth = currentWidth + 315;
+        }
+
+        return currentWidth;
+
     }
 
     @Override
     public int getMinimumWidth() {
-        if (showHelp || showNotes) {
-            return minimumFrameWidth + 315;
-        } else {
-            return minimumFrameWidth;
-        }
+        int currentWidth = frameWidth;
+
+        if (showHelp || showNotes) currentWidth = currentWidth + 315;
+        if (showFileList) currentWidth = currentWidth + 315;
+
+        return currentWidth;
+
     }
 
     @Override
@@ -376,6 +391,12 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
+    public void updateFileList() {
+        fileListPanel.setVisible(showFileList);
+        fileListPanel.updatePanel();
+    }
+
+    @Override
     public boolean showHelp() {
         return showHelp;
     }
@@ -403,6 +424,16 @@ public class EditingPanel extends MainPanel {
         helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
 
+    }
+
+    @Override
+    public boolean showFileList() {
+        return showFileList;
+    }
+
+    @Override
+    public void setShowFileList(boolean showFileList) {
+        this.showFileList = showFileList;
     }
 
     @Override

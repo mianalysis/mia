@@ -153,6 +153,7 @@ public class GUI {
 
         menuBar.setHelpSelected(showHelp());
         menuBar.setNotesSelected(showNotes());
+        menuBar.setFileListSelected(showFileList());
 
         frame.pack();
         frame.revalidate();
@@ -182,6 +183,10 @@ public class GUI {
 
     public static void updateHelpNotes() {
         mainPanel.updateHelpNotes();
+    }
+
+    public static void updateFileList(){
+        mainPanel.updateFileList();
     }
 
     public static void updateModuleStates(boolean verbose) {
@@ -422,6 +427,15 @@ public class GUI {
     public static boolean showNotes() {
         if (mainPanel == null) return false;
         return mainPanel.showNotes();
+    }
+
+    public static void setShowFileList(boolean showFileList) {
+        mainPanel.setShowFileList(showFileList);
+    }
+
+    public static boolean showFileList() {
+        if (mainPanel == null) return false;
+        return mainPanel.showFileList();
     }
 
     public static TreeMap<String, Module> getAvailableModules() {
