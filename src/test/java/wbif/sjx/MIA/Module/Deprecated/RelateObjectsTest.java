@@ -1,6 +1,6 @@
 // TODO: Add calibrated distances to proximity relations
 
-package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -8,7 +8,6 @@ import org.junit.Test;
 import wbif.sjx.MIA.ExpectedObjects.*;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.RelateObjects;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;

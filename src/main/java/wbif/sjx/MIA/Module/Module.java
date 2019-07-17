@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -103,7 +103,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         }
 
         // If enabled, write the current memory usage to the console
-        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
+        if (MIA.log.isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
             ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -116,7 +116,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
                     ", file \""+workspace.getMetadata().getFile() +
                     ", time "+dateTime;
 
-            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+            MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
 
         }
 

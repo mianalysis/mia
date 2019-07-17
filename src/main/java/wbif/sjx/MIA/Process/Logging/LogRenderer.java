@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Created by Stephen Cross on 14/06/2019.
  */
-public interface Log {
+public interface LogRenderer {
     public enum Level {
         MESSAGE, WARNING, ERROR, DEBUG, MEMORY;
     }

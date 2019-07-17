@@ -13,6 +13,8 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
@@ -37,7 +39,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RegisterImages extends Module implements Interactable {
+public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -277,7 +279,7 @@ public class RegisterImages extends Module implements Interactable {
         }
     }
 
-    public static InverseTransformMapping getFeatureTransformation(Image referenceImage, Image warpedImage, Param param) {
+    public InverseTransformMapping getFeatureTransformation(Image referenceImage, Image warpedImage, Param param) {
         ImagePlus referenceIpl = referenceImage.getImagePlus();
         ImagePlus warpedIpl = warpedImage.getImagePlus();
 
@@ -414,14 +416,17 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
-    static Image createOverlay(Image inputImage, Image referenceImage) {
+    static <T extends RealType<T> & NativeType<T>> Image createOverlay(Image<T> inputImage, Image<T> referenceImage) {
         // Only create the overlay if the two images have matching dimensions
         ImagePlus ipl1 = inputImage.getImagePlus();
         ImagePlus ipl2 = referenceImage.getImagePlus();
 
         if (ipl1.getNSlices() == ipl2.getNSlices() && ipl1.getNFrames() == ipl2.getNFrames()) {
             String axis = ConcatenateStacks.AxisModes.CHANNEL;
-            return ConcatenateStacks.concatenateImages(new Image[]{inputImage,referenceImage},axis,"Overlay");
+            ArrayList<Image<T>> images = new ArrayList<>();
+            images.add(inputImage);
+            images.add(referenceImage);
+            return ConcatenateStacks.concatenateImages(images,axis,"Overlay");
         }
 
         return inputImage;
@@ -443,7 +448,7 @@ public class RegisterImages extends Module implements Interactable {
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image dupImage = new Image("Registered",dupIpl);
+        Image<T> dupImage = new Image<T>("Registered",dupIpl);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs,transformationMode);
@@ -472,7 +477,10 @@ public class RegisterImages extends Module implements Interactable {
 
         }
 
-        ConcatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
+        ArrayList<Image<T>> images = new ArrayList<>();
+        images.add(reference);
+        images.add(dupImage);
+        ConcatenateStacks.concatenateImages(images,ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
 
     }
 
@@ -701,6 +709,5 @@ public class RegisterImages extends Module implements Interactable {
         float minInlierRatio = 0.05f;
 
     }
-
 }
 

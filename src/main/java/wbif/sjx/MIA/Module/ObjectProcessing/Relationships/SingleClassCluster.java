@@ -4,7 +4,7 @@
 // require the number of clusters to be known in advance.  Ricci, et al. (Cell, 2015) calculate a density map for the
 // image, then use the local maxima as starting points for the cluster centroids.
 
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
+package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Created by sc13967 on 21/06/2017.
  */
-public class ObjectClusterer extends Module {
+public class SingleClassCluster extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CLUSTER_OBJECTS = "Cluster (parent) objects";
     public static final String APPLY_VOLUME = "Apply volume";
@@ -48,8 +48,8 @@ public class ObjectClusterer extends Module {
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
-    public ObjectClusterer(ModuleCollection modules) {
-        super("Object clustering",modules);
+    public SingleClassCluster(ModuleCollection modules) {
+        super("Single class cluster",modules);
     }
 
     public interface ClusteringAlgorithms {
@@ -149,7 +149,7 @@ public class ObjectClusterer extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
+        return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
     }
 
     @Override
@@ -249,7 +249,7 @@ public class ObjectClusterer extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new OutputObjectsP(CLUSTER_OBJECTS, this));
+        parameters.add(new OutputClusterObjectsP(CLUSTER_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_VOLUME, this, false));
         parameters.add(new ChoiceP(CLUSTERING_ALGORITHM, this,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
         parameters.add(new IntegerP(K_CLUSTERS, this,100));

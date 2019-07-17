@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.*;
@@ -19,7 +20,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
@@ -69,6 +70,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
+
 
     public ManuallyIdentifyObjects(ModuleCollection modules) {
         super("Manually identify objects",modules);
@@ -267,7 +269,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process." +
+                "<br><br>This module will display a control panel and an image onto which selections are made.  " +
+                "<br><br>Following selection of a region to be included in the object, the user can either add this region to a new object (\""+ADD_NEW+"\" button), or add it to an existing object (\""+ADD_EXISTING+"\" button).  " +
+                "The target object for adding to an existing object is specified using the \"Existing object number\" control (a list of existing object IDs is shown directly below this control)." +
+                "<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections." +
+                "<br><br>Once all selections have been made, objects are added to the workspace with the \""+FINISH+"\" button.";
     }
 
     @Override
@@ -355,10 +362,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL));
-        parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image"));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
+        parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL,"Interpolation method used for reducing the number of selections that must be made"));
+        parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image", "Message to display in title of image."));
 
     }
 
@@ -424,6 +431,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void addNewObject() {
         // Getting the ROI
         Roi roi = displayImagePlus.getRoi();
+
+        if (roi == null) {
+            frame.setAlwaysOnTop(false);
+            IJ.error("Select a ROI first using the ImageJ ROI tools.");
+            frame.setAlwaysOnTop(true);
+            return;
+        }
+
         int ID = ++maxID;
 
         // Adding the ROI to our current collection
@@ -446,6 +461,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void addToExistingObject() {
         // Getting points
         Roi roi = displayImagePlus.getRoi();
+
+        if (roi == null) {
+            frame.setAlwaysOnTop(false);
+            IJ.error("Select a ROI first using the ImageJ ROI tools.");
+            frame.setAlwaysOnTop(true);
+            return;
+        }
+
         Point[] points = roi.getContainedPoints();
         int ID = Integer.parseInt(objectNumberField.getText());
 
@@ -604,7 +627,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 case Roi.POLYLINE:
                     polyRoi = (PolygonRoi) roi;
 
-                    if (polyRoi.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.",Log.Level.WARNING);
+                    if (polyRoi.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.", LogRenderer.Level.WARNING);
 
                     x = polyRoi.getXCoordinates();
                     xx = new int[x.length];
@@ -620,7 +643,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 case Roi.LINE:
                     Line line = (Line) roi;
 
-                    if (line.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.",Log.Level.WARNING);
+                    if (line.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.", LogRenderer.Level.WARNING);
 
                     newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
                     break;
@@ -640,7 +663,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     break;
 
                 default:
-                    MIA.log.write("ROI type unsupported.  Using bounding box for selection.",Log.Level.WARNING);
+                    MIA.log.write("ROI type unsupported.  Using bounding box for selection.", LogRenderer.Level.WARNING);
                     newRoi = new Roi(roi.getBounds());
                     break;
             }

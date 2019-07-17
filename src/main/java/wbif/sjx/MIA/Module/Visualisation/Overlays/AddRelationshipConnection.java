@@ -3,10 +3,8 @@ package wbif.sjx.MIA.Module.Visualisation.Overlays;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Line;
-import ij.gui.Overlay;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -25,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AddRelationshipConnection extends Module {
+public class AddRelationshipConnection extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String PARENT_OBJECTS = "Parent objects";
@@ -44,14 +42,12 @@ public class AddRelationshipConnection extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
-    private ColourServer colourServer;
-
     public AddRelationshipConnection(ModuleCollection modules) {
         super("Add relationship connection",modules);
     }
 
 
-    public interface ColourModes extends ColourServer.ColourModes {}
+    public interface ColourModes extends Overlay.ColourModes {}
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
@@ -89,7 +85,7 @@ public class AddRelationshipConnection extends Module {
     }
 
     public static void addOverlay(Obj object, String childObjectsName, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Still need to get mean coords for label
         double xMeanParent = object.getXMean(true);
@@ -155,11 +151,14 @@ public class AddRelationshipConnection extends Module {
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        // Only add output to workspace if not applying to input
+        if (applyToInput) addOutputToWorkspace = false;
+
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues= colourServer.getHues(parentObjects);
+        HashMap<Integer,Float> hues = getHues(parentObjects);
 
         addOverlay(ipl,parentObjects,childObjectsName,lineWidth,hues,renderInAllFrames,multithread);
 
@@ -175,6 +174,8 @@ public class AddRelationshipConnection extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
@@ -191,9 +192,6 @@ public class AddRelationshipConnection extends Module {
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        colourServer = new ColourServer(parameters.getParameter(PARENT_OBJECTS),this);
-        parameters.addAll(colourServer.getParameters());
 
     }
 
@@ -220,7 +218,7 @@ public class AddRelationshipConnection extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 

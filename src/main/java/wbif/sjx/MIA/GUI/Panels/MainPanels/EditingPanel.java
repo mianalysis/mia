@@ -36,8 +36,11 @@ public class EditingPanel extends MainPanel {
     private final NotesPanel notesPanel = new NotesPanel();
     private final HelpPanel helpPanel = new HelpPanel();
     private final StatusPanel statusPanel = new StatusPanel();
+    private final FileListPanel fileListPanel = new FileListPanel();
 
-    private boolean showHelpNotes = Prefs.get("MIA.showEditingHelpNotes",false);
+    private boolean showHelp = Prefs.get("MIA.showEditingHelp",false);
+    private boolean showNotes = Prefs.get("MIA.showEditingNotes",false);
+    private boolean showFileList = Prefs.get("MIA.showFileList",false);
     private Module lastHelpNotesModule = null;
 
 
@@ -68,7 +71,7 @@ public class EditingPanel extends MainPanel {
         c.weighty = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 4;
+        c.gridwidth = 5;
         c.insets = new Insets(0,5,5,5);
         add(statusPanel, c);
 
@@ -109,10 +112,15 @@ public class EditingPanel extends MainPanel {
         c.insets = new Insets(5, 5, 5, 5);
         add(parametersPanel, c);
 
-        initialiseHelpNotesPanels();
+        updateFileList();
         c.gridx++;
         c.weightx = 0;
         c.insets = new Insets(5,0,5,5);
+        add(fileListPanel,c);
+
+        initialiseHelpNotesPanels();
+        updateHelpNotes();
+        c.gridx++;
         add(helpNotesPanel,c);
 
     }
@@ -192,20 +200,18 @@ public class EditingPanel extends MainPanel {
     private void initialiseHelpNotesPanels() {
         // Adding panels to combined JPanel
         helpNotesPanel.setLayout(new GridBagLayout());
-        GridBagConstraints cc = new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints();
 
-        cc.fill = GridBagConstraints.BOTH;
-        cc.gridx = 0;
-        cc.gridy = 0;
-        cc.weightx = 1;
-        cc.weighty = 2;
-        cc.insets = new Insets(0,0,5,0);
-        helpNotesPanel.add(helpPanel,cc);
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 1;
+        c.insets = new Insets(0,0,5,0);
+        helpNotesPanel.add(helpPanel,c);
 
-        cc.gridy++;
-        cc.weighty = 1;
-        cc.insets = new Insets(0,0,0,0);
-        helpNotesPanel.add(notesPanel,cc);
+        c.gridy++;
+        c.insets = new Insets(0,0,0,0);
+        helpNotesPanel.add(notesPanel,c);
 
     }
 
@@ -268,13 +274,13 @@ public class EditingPanel extends MainPanel {
         c.fill = GridBagConstraints.BOTH;
 
         statusPanel.add(GUI.getTextField(),c);
-        helpNotesPanel.setVisible(showHelpNotes);
 
         GUI.updateTestFile();
         updateModules();
         updateParameters();
 
-        if (showHelpNotes) updateHelpNotes();
+        if (showHelp || showNotes) updateHelpNotes();
+        if (showFileList) updateFileList();
 
         revalidate();
         repaint();
@@ -283,20 +289,28 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public int getPreferredWidth() {
-        if (showHelpNotes) {
-            return frameWidth + 315;
-        } else {
-            return frameWidth;
+        int currentWidth = frameWidth;
+
+        if (showHelp || showNotes) {
+            currentWidth = currentWidth + 315;
         }
+        if (showFileList) {
+            currentWidth = currentWidth + 315;
+        }
+
+        return currentWidth;
+
     }
 
     @Override
     public int getMinimumWidth() {
-        if (showHelpNotes) {
-            return minimumFrameWidth + 315;
-        } else {
-            return minimumFrameWidth;
-        }
+        int currentWidth = frameWidth;
+
+        if (showHelp || showNotes) currentWidth = currentWidth + 315;
+        if (showFileList) currentWidth = currentWidth + 315;
+
+        return currentWidth;
+
     }
 
     @Override
@@ -355,33 +369,71 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void updateHelpNotes() {
+        helpPanel.setVisible(showHelp);
+        notesPanel.setVisible(showNotes);
+        helpNotesPanel.setVisible(showHelp || showNotes);
+
         // Only update the help and notes if the module has changed
         Module activeModule = GUI.getFirstSelectedModule();
 
-        if (activeModule != lastHelpNotesModule) {
-            lastHelpNotesModule = activeModule;
-        } else {
+        // If null, show a special message
+        if (activeModule == null) {
+            helpPanel.showUsageMessage();
+            notesPanel.showUsageMessage();
             return;
         }
 
-        helpPanel.updatePanel();
-        notesPanel.updatePanel();
-
+        if (activeModule != lastHelpNotesModule) {
+            lastHelpNotesModule = activeModule;
+            helpPanel.updatePanel();
+            notesPanel.updatePanel();
+        }
     }
 
     @Override
-    public boolean showHelpNotes() {
-        return showHelpNotes;
+    public void updateFileList() {
+        fileListPanel.setVisible(showFileList);
+        fileListPanel.updatePanel();
     }
 
     @Override
-    public void setShowHelpNotes(boolean showHelpNotes) {
-        this.showHelpNotes = showHelpNotes;
-        Prefs.set("MIA.showEditingHelpNotes",showHelpNotes);
+    public boolean showHelp() {
+        return showHelp;
+    }
 
-        helpNotesPanel.setVisible(showHelpNotes);
+    @Override
+    public void setShowHelp(boolean showHelp) {
+        this.showHelp = showHelp;
+        Prefs.set("MIA.showEditingHelp",showHelp);
+
+        helpNotesPanel.setVisible(showHelp);
         GUI.updatePanel();
 
+    }
+
+    @Override
+    public boolean showNotes() {
+        return showNotes;
+    }
+
+    @Override
+    public void setShowNotes(boolean showNotes) {
+        this.showNotes = showNotes;
+        Prefs.set("MIA.showEditingNotes",showNotes);
+
+        helpNotesPanel.setVisible(showNotes);
+        GUI.updatePanel();
+
+    }
+
+    @Override
+    public boolean showFileList() {
+        return showFileList;
+    }
+
+    @Override
+    public void setShowFileList(boolean showFileList) {
+        this.showFileList = showFileList;
     }
 
     @Override

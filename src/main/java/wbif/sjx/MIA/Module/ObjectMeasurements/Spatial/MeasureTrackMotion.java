@@ -415,7 +415,7 @@ public class MeasureTrackMotion extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
+        parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
 
         parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));

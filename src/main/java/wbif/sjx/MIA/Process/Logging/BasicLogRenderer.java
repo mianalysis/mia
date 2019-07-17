@@ -1,8 +1,6 @@
 package wbif.sjx.MIA.Process.Logging;
 
-import org.scijava.ui.UIService;
-
-public class BasicLog implements Log {
+public class BasicLogRenderer implements LogRenderer {
     // This could just be a text window
 
     @Override

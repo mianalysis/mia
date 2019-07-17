@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.MIA.Process.Exporting.Exporter;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.FileConditions.NameContainsString;
 
 import java.io.File;
@@ -68,13 +68,13 @@ public class AnalysisRunner {
     public static boolean checkInputFileValidity(String path) {
         // Checking if a file/folder had been selected
         if (path == null) {
-            MIA.log.write("Select an input file/folder first",Log.Level.WARNING);
+            MIA.log.write("Select an input file/folder first", LogRenderer.Level.WARNING);
             return false;
         }
 
         // Checking if the specified input file is present
         if (!new File(path).exists()) {
-            MIA.log.write("Selected input file/folder can't be found",Log.Level.WARNING);
+            MIA.log.write("Selected input file/folder can't be found", LogRenderer.Level.WARNING);
             return false;
         }
 
@@ -199,14 +199,14 @@ public class AnalysisRunner {
     }
 
     public static void stopAnalysis() {
-        MIA.log.write("STOPPING",Log.Level.WARNING);
+        MIA.log.write("STOPPING", LogRenderer.Level.WARNING);
         if (batchProcessor != null) {
             batchProcessor.stopAnalysis();
         } else {
             GUI.setModuleBeingEval(-1);
             GUI.updateModules();
             Thread.currentThread().getThreadGroup().stop();
-            MIA.log.write("Shutdown complete!",Log.Level.MESSAGE);
+            MIA.log.write("Shutdown complete!", LogRenderer.Level.MESSAGE);
         }
     }
 }

@@ -50,7 +50,7 @@ public class RenameListMenu extends JPopupMenu implements ActionListener {
         }
 
         GUI.updateModuleStates(false);
-        GUI.getModules();
+        GUI.updateModules();
         GUI.updateParameters();
 
     }

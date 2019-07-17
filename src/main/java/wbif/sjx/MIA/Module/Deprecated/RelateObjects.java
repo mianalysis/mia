@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -18,22 +18,22 @@ import java.util.Iterator;
  * Created by sc13967 on 04/05/2017.
  */
 public class RelateObjects extends Module {
-    public final static String INPUT_SEPARATOR = "Object input";
-    public final static String PARENT_OBJECTS = "Parent (larger) objects";
-    public final static String CHILD_OBJECTS = "Child (smaller) objects";
+    public static final String INPUT_SEPARATOR = "Object input";
+    public static final String PARENT_OBJECTS = "Parent (larger) objects";
+    public static final String CHILD_OBJECTS = "Child (smaller) objects";
 
-    public final static String RELATE_SEPARATOR = "Relation controls";
-    public final static String RELATE_MODE = "Method to relate objects";
-    public final static String REFERENCE_POINT = "Reference point";
-    public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
+    public static final String RELATE_SEPARATOR = "Relation controls";
+    public static final String RELATE_MODE = "Method to relate objects";
+    public static final String REFERENCE_POINT = "Reference point";
+    public static final String TEST_CHILD_OBJECTS = "Child objects to test against";
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
-    public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
+    public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
     public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
-    public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+    public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-    public final static String OUTPUT_SEPARATOR = "Object output";
+    public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String MERGE_RELATED_OBJECTS = "Merge related objects";
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
@@ -102,7 +102,7 @@ public class RelateObjects extends Module {
     }
 
     /*
-     * Iterates over each testOnEdge, calculating getting the smallest distance to a parentObject.  If this is smaller
+     * Iterates over each testObject, calculating getting the smallest distance to a parentObject.  If this is smaller
      * than linkingDistance the link is assigned.
      */
     public void proximity(ObjCollection parentObjects, ObjCollection childObjects) {
@@ -380,7 +380,8 @@ public class RelateObjects extends Module {
                 childObject.addParent(parentObject);
 
                 // Adding the overlap as a measurement
-                Measurement measurement = new Measurement(overlapMeasurementName,overlap);
+                Measurement measurement = new Measurement(getFullName(Measurements.OVERLAP_PC,parentObject.getName()));
+                measurement.setValue(overlap);
                 childObject.addMeasurement(measurement);
 
             }
@@ -388,14 +389,6 @@ public class RelateObjects extends Module {
             writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
-
-        // Ensuring every child object has a measurement
-        for (Obj childObj:childObjects.values()) {
-            if (childObj.getMeasurement(overlapMeasurementName) == null) {
-                childObj.addMeasurement(new Measurement(overlapMeasurementName,0));
-            }
-        }
-
     }
 
     public double applyInsideOutsidePolicy(double minDist) {
@@ -447,7 +440,7 @@ public class RelateObjects extends Module {
 
                 // Removing the child object from its original collection
                 childObjects.values().remove(childObject);
-                
+
             }
 
             // Transferring points from the parent object to the new object
@@ -465,7 +458,7 @@ public class RelateObjects extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
@@ -526,8 +519,6 @@ public class RelateObjects extends Module {
             if (relatedObjects != null) workspace.addObjects(relatedObjects);
 
         }
-
-        if (showOutput) workspace.getObjectSet(childObjectName).showMeasurements(this,modules);
 
         return true;
 

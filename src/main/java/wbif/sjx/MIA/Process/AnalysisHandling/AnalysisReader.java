@@ -16,13 +16,12 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -164,7 +163,7 @@ public class AnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.write("Module \""+moduleName+"\" not found (skipping)",Log.Level.WARNING);
+        MIA.log.write("Module \""+moduleName+"\" not found (skipping)", LogRenderer.Level.WARNING);
 
         return null;
 

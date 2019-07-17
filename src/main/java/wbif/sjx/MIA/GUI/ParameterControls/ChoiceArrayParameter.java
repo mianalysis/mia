@@ -44,9 +44,9 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateTestFile();
+        GUI.updateModuleStates(true);
         GUI.updateModules();
         GUI.updateParameters();
-        GUI.updateModuleStates(true);
 
         updateControl();
 

@@ -20,14 +20,15 @@ import java.util.HashMap;
 /**
  * Created by sc13967 on 31/01/2018.
  */
-public class MergeObjects extends Module {
+public class CombineObjectSets extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public MergeObjects(ModuleCollection modules) {
-        super("Merge objects",modules);
+
+    public CombineObjectSets(ModuleCollection modules) {
+        super("Combine object sets",modules);
     }
 
 

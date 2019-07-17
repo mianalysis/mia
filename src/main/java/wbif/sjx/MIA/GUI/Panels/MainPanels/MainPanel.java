@@ -10,6 +10,7 @@ public abstract class MainPanel extends JPanel {
     public abstract void updateModuleStates();
     public abstract void updateParameters();
     public abstract void updateHelpNotes();
+    public abstract void updateFileList();
 
     public abstract int getPreferredWidth();
     public abstract int getMinimumWidth();
@@ -19,8 +20,12 @@ public abstract class MainPanel extends JPanel {
     public abstract int getProgress();
     public abstract void setProgress(int progress);
 
-    public abstract boolean showHelpNotes();
-    public abstract void setShowHelpNotes(boolean showHelpNotes);
+    public abstract boolean showHelp();
+    public abstract void setShowHelp(boolean showHelp);
+    public abstract boolean showNotes();
+    public abstract void setShowNotes(boolean showNotes);
+    public abstract boolean showFileList();
+    public abstract void setShowFileList(boolean showFileList);
 
     public abstract Module getLastHelpNotesModule();
     public abstract void setLastHelpNotesModule(Module module);

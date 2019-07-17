@@ -107,6 +107,25 @@ public class Workspace {
         }
     }
 
+    public void clearMetadata() {
+        String filename = metadata.getFilename();
+        File file = metadata.getFile();
+        String seriesName = metadata.getSeriesName();
+        int seriesNumber = metadata.getSeriesNumber();
+
+        metadata.clear();
+
+        metadata.setFilename(filename);
+        metadata.setFile(file);
+        metadata.setSeriesName(seriesName);
+        metadata.setSeriesNumber(seriesNumber);
+
+    }
+
+    public void clearAnalysis() {
+        analysis = new Analysis();
+    }
+
     public Image<?> getImage(String name) {
         return images.get(name);
 

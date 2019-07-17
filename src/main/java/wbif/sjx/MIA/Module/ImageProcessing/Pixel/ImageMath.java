@@ -16,9 +16,12 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
  * Created by sc13967 on 19/09/2017.
  */
 public class ImageMath extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_TYPE = "Calculation";
     public static final String VALUE_SOURCE = "Value source";
     public static final String MEASUREMENT = "Measurement";
@@ -138,9 +141,12 @@ public class ImageMath extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_TYPE,this,CalculationTypes.ADD,CalculationTypes.ALL));
         parameters.add(new ChoiceP(VALUE_SOURCE,this, ValueSources.FIXED, ValueSources.ALL));
         parameters.add(new ImageMeasurementP(MEASUREMENT,this));
@@ -152,6 +158,7 @@ public class ImageMath extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -159,6 +166,7 @@ public class ImageMath extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
         returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
 

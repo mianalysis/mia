@@ -10,6 +10,8 @@ import ij.gui.PointRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -39,7 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class ManualUnwarp extends Module implements Interactable {
+public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String REFERENCE_IMAGE = "Reference image";
@@ -243,7 +245,7 @@ public class ManualUnwarp extends Module implements Interactable {
         }
     }
 
-    public Image createEmptyTarget(Image inputImage, Image referenceImage, String outputImageName) {
+    public Image<T> createEmptyTarget(Image<T> inputImage, Image<T> referenceImage, String outputImageName) {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
         int nChannels = inputIpl.getNChannels();
@@ -254,11 +256,11 @@ public class ManualUnwarp extends Module implements Interactable {
         int height = referenceImage.getImagePlus().getHeight();
 
         // Creating output image
-        return new Image(outputImageName,IJ.createHyperStack("Output", width, height, nChannels, nSlices, nFrames, bitDepth));
+        return new Image<T>(outputImageName,IJ.createHyperStack("Output", width, height, nChannels, nSlices, nFrames, bitDepth));
 
     }
 
-    public Image process(Image inputImage, String outputImageName, Image reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
+    public Image<T> process(Image<T> inputImage, String outputImageName, Image<T> reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
         // Converting point pairs into format for bUnwarpJ
         Stack<Point> points1 = new Stack<>();
         Stack<Point> points2 = new Stack<>();
@@ -277,7 +279,7 @@ public class ManualUnwarp extends Module implements Interactable {
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipr1, ipr2, points1, points2, param);
 
         // Creating an output image
-        Image outputImage = createEmptyTarget(inputImage,reference,outputImageName);
+        Image<T> outputImage = createEmptyTarget(inputImage,reference,outputImageName);
 
         // Applying transformation to entire stack
         // Applying the transformation to the whole stack.
@@ -316,7 +318,7 @@ public class ManualUnwarp extends Module implements Interactable {
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipr1, ipr2, points1, points2, param);
 
         // Creating an output image
-        Image outputImage = createEmptyTarget(inputImage,reference,"Test");
+        Image<T> outputImage = createEmptyTarget(inputImage,reference,"Test");
 
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -330,7 +332,10 @@ public class ManualUnwarp extends Module implements Interactable {
             e.printStackTrace();
         }
 
-        ConcatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
+        ArrayList<Image<T>> images = new ArrayList<>();
+        images.add(reference);
+        images.add(outputImage);
+        ConcatenateStacks.concatenateImages(images,ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
 
     }
 

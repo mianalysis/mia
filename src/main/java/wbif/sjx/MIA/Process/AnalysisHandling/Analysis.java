@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -54,7 +54,7 @@ public class Analysis {
                 if (!status) {
                     // The module failed or requested analysis termination.  Add this message to the write
                     MIA.log.write("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
-                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").",Log.Level.WARNING);
+                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").", LogRenderer.Level.WARNING);
 
                     // End the analysis generateModuleList
                     break;
@@ -74,7 +74,7 @@ public class Analysis {
         workspace.clearAllObjects(true);
 
         // If enabled, write the current memory usage to the console
-        if (MIA.log.isWriteEnabled(Log.Level.MEMORY)) {
+        if (MIA.log.isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
             ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -87,7 +87,7 @@ public class Analysis {
                     ", file \""+workspace.getMetadata().getFile() +
                     ", time "+dateTime;
 
-            MIA.log.write(memoryMessage,Log.Level.MEMORY);
+            MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
 
         }
 

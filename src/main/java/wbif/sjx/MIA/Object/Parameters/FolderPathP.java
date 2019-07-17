@@ -19,7 +19,7 @@ public class FolderPathP extends FileFolderType {
     }
 
     public FolderPathP(String name, Module module, @Nonnull String filePath, String description) {
-        super(name, module, filePath);
+        super(name, module, filePath, description);
     }
 
     @Override

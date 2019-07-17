@@ -50,7 +50,7 @@ public class GUI {
 
     private static int minimumFrameHeight = 600;
     private static int minimumFrameWidth = 400;
-    private static int frameHeight = 800;
+    private static int frameHeight = 850;
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;
@@ -151,7 +151,9 @@ public class GUI {
         int minimumHeight = mainPanel.getMinimumHeight();
         frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
 
-        menuBar.setHelpNotesSelected(showHelpNotes());
+        menuBar.setHelpSelected(showHelp());
+        menuBar.setNotesSelected(showNotes());
+        menuBar.setFileListSelected(showFileList());
 
         frame.pack();
         frame.revalidate();
@@ -181,6 +183,10 @@ public class GUI {
 
     public static void updateHelpNotes() {
         mainPanel.updateHelpNotes();
+    }
+
+    public static void updateFileList(){
+        mainPanel.updateFileList();
     }
 
     public static void updateModuleStates(boolean verbose) {
@@ -375,10 +381,6 @@ public class GUI {
         return analysis;
     }
 
-    public static void setShowEditingHelpNotes(boolean showEditingHelpNotes) {
-        mainPanel.setShowHelpNotes(showEditingHelpNotes);
-    }
-
     public static StatusTextField getTextField() {
         return textField;
     }
@@ -407,14 +409,33 @@ public class GUI {
 
     }
 
-    public static void setShowHelpNotes(boolean showHelpNotes) {
-        mainPanel.setShowHelpNotes(showHelpNotes);
+    public static void setShowHelp(boolean showHelp) {
+        mainPanel.setShowHelp(showHelp);
 
     }
 
-    public static boolean showHelpNotes() {
+    public static boolean showHelp() {
         if (mainPanel == null) return false;
-        return mainPanel.showHelpNotes();
+        return mainPanel.showHelp();
+    }
+
+    public static void setShowNotes(boolean showNotes) {
+        mainPanel.setShowNotes(showNotes);
+
+    }
+
+    public static boolean showNotes() {
+        if (mainPanel == null) return false;
+        return mainPanel.showNotes();
+    }
+
+    public static void setShowFileList(boolean showFileList) {
+        mainPanel.setShowFileList(showFileList);
+    }
+
+    public static boolean showFileList() {
+        if (mainPanel == null) return false;
+        return mainPanel.showFileList();
     }
 
     public static TreeMap<String, Module> getAvailableModules() {

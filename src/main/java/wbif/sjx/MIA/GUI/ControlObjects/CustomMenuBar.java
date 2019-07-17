@@ -4,7 +4,7 @@ import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.UndoRedoStore;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +14,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class CustomMenuBar extends JMenuBar implements ActionListener {
-    private static MenuCheckbox helpNotesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP_NOTES);
     private static MenuItem undo = new MenuItem(MenuItem.UNDO);
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
+    private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);
+    private static MenuCheckbox notesCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_NOTES);
+    private static MenuCheckbox fileListCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_FILE_LIST);
 
 
     public CustomMenuBar() {
@@ -62,8 +64,12 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
             menu.add(new MenuItem(MenuItem.EDITING_VIEW));
         }
         menu.add(new MenuItem(MenuItem.SHOW_GLOBAL_VARIABLES));
-        helpNotesCheckbox.setSelected(GUI.showHelpNotes());
-        menu.add(helpNotesCheckbox);
+        helpCheckbox.setSelected(GUI.showHelp());
+        menu.add(helpCheckbox);
+        notesCheckbox.setSelected(GUI.showNotes());
+        menu.add(notesCheckbox);
+//        fileListCheckbox.setSelected(GUI.showFileList());
+//        menu.add(fileListCheckbox);
 
         // Creating the help menu
         menu = new JMenu("Help");
@@ -77,19 +83,19 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.add(logMenu);
         logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
-        Log.Level level = Log.Level.MESSAGE;
+        LogRenderer.Level level = LogRenderer.Level.MESSAGE;
         MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = Log.Level.WARNING;
+        level = LogRenderer.Level.WARNING;
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = Log.Level.DEBUG;
+        level = LogRenderer.Level.DEBUG;
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = Log.Level.MEMORY;
+        level = LogRenderer.Level.MEMORY;
         menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
@@ -112,8 +118,17 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
 
     }
 
-    public void setHelpNotesSelected(Boolean showHelpNotes) {
-        helpNotesCheckbox.setSelected(showHelpNotes);
+    public void setHelpSelected(Boolean showHelp) {
+        helpCheckbox.setSelected(showHelp);
+
+    }
+
+    public void setFileListSelected(boolean showFileList) {
+        fileListCheckbox.setSelected(showFileList);
+    }
+
+    public void setNotesSelected(Boolean showNotes) {
+        notesCheckbox.setSelected(showNotes);
 
     }
 

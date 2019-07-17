@@ -25,7 +25,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.util.Arrays;
@@ -154,7 +154,7 @@ public class VideoLoader extends Module {
 
     }
 
-    public Image getFFMPEGVideo(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
+    public Image getFFMPEGVideoOld(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
         // Initialising the FFMPEG loader
         FFMpegLoader loader = new FFMpegLoader(path);
         loader.start();
@@ -166,6 +166,11 @@ public class VideoLoader extends Module {
 
         // Initialising the output ImagePlus using the first frame
         Frame frame = loader.grabFrame();
+
+        // Testing if this system works for the current video (changes to the FFMPEG included with Fiji from May 2019
+        // will cause this method to return null frames.
+        if (frame == null) return null;
+
         int left = 0;
         int top = 0;
         int origWidth = loader.getImageWidth();
@@ -213,6 +218,65 @@ public class VideoLoader extends Module {
 
             frame.release();
             frame = loader.grabFrame();
+
+        }
+
+        // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
+        if (((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {
+            ConvertStackToTimeseries.process(ipl);
+            ipl.getCalibration().pixelDepth = 1;
+        }
+
+        return new Image(outputImageName,ipl);
+
+    }
+
+    public Image getFFMPEGVideoNew(String path, String outputImageName, String frameRange, @Nullable int[] crop) throws Exception {
+        // Initialising the FFMPEG loader
+        FFMpegLoader loader = new FFMpegLoader(path);
+        loader.start();
+        loader.grab();
+
+        // Getting an ordered list of frames to be imported
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frameRange,true);
+        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,loader.getLengthInFrames());
+        TreeSet<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toCollection(TreeSet::new));
+
+        // Initialising the output ImagePlus
+        int left = 0;
+        int top = 0;
+        int origWidth = loader.getImageWidth();
+        int origHeight = loader.getImageHeight();
+        int width = origWidth;
+        int height = origHeight;
+
+        if (crop != null) {
+            left = crop[0];
+            top = crop[1];
+            width = crop[2];
+            height = crop[3];
+        }
+
+        ImagePlus ipl = IJ.createImage("Image",width, height,framesList.length,8);
+
+        int progressCount = 0;
+        int totalFrames = loader.getLengthInFrames();
+        int count = 1;
+        int total = frames.size();
+
+        for (int frame:frames) {
+            writeMessage("Loading frame "+(count)+" of "+total);
+
+            byte[] bytes = loader.getImage().frame(frame).imageBytes.get(0);
+
+            ImageProcessor ipr = new ByteProcessor(origWidth,origHeight,bytes);
+            if (crop != null) {
+                ipr.setRoi(left,top,width,height);
+                ipr = ipr.crop();
+            }
+
+            ipl.setPosition(count++);
+            ipl.setProcessor(ipr);
 
         }
 
@@ -380,14 +444,19 @@ public class VideoLoader extends Module {
             // First, trying to load via AVI Reader (since this can split channels)
             outputImage = getAviVideo(pathName,outputImageName,frameRange,channelRange,crop);
 
-            // If this has failed (outputImage is null) try FFMPEG loading
+            // If this has failed (outputImage is null) try old FFMPEG loading
             if (outputImage == null) {
-                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).",Log.Level.MESSAGE);
-                outputImage = getFFMPEGVideo(pathName,outputImageName,frameRange,crop);
+                MIA.log.write("Video reading with AVI_Reader failed.  Trying FFMPEG (this can only load first channel).", LogRenderer.Level.WARNING);
+                outputImage = getFFMPEGVideoOld(pathName,outputImageName,frameRange,crop);
+            }
+
+            // If this has failed (outputImage is null) try new FFMPEG loading
+            if (outputImage == null) {
+                outputImage = getFFMPEGVideoNew(pathName,outputImageName,frameRange,crop);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            MIA.log.writeError("Unable to read video.  Skipping this file.");
             return false;
         }
 
@@ -420,7 +489,7 @@ public class VideoLoader extends Module {
         return true;
 
     }
-    
+
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));

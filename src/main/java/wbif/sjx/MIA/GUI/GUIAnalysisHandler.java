@@ -226,6 +226,10 @@ public class GUIAnalysisHandler {
             DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
             ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
 
+            // Ensuring the copied modules are linked to the present ModuleCollection
+            for (Module module:copyModules.values()) module.setModules(modules);
+
+            // Adding the new modules
             modules.insert(copyModules.duplicate(),toIdx);
 
         } catch (ClassNotFoundException | IOException | UnsupportedFlavorException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {

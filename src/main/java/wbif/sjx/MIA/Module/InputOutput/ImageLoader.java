@@ -16,7 +16,6 @@ import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
-import loci.plugins.in.ImagePlusReader;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
@@ -35,7 +34,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
@@ -273,14 +272,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             if (meta.getPixelsPhysicalSizeX(seriesNumber - 1) != null) {
                 Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber - 1);
                 if (!unit.isConvertible(physicalSizeX.unit())) {
-                    MIA.log.write("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong", Log.Level.WARNING);
+                    MIA.log.write("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong", LogRenderer.Level.WARNING);
                     reader.close();
                     return ipl;
                 }
                 ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit);
                 ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
-                MIA.log.write("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatial calibration set to pixel units.", Log.Level.WARNING);
+                MIA.log.write("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatial calibration set to pixel units.", LogRenderer.Level.WARNING);
                 ipl.getCalibration().pixelWidth = 1.0;
                 ipl.getCalibration().setXUnit("px");
             }
@@ -303,7 +302,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 ipl.getCalibration().setZUnit("px");
             }
         } else if (!manualCal) {
-            MIA.log.write("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong", Log.Level.WARNING);
+            MIA.log.write("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong", LogRenderer.Level.WARNING);
         }
 
         reader.close();
@@ -605,12 +604,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
                     if (file == null) {
-                        MIA.log.write("No input file/folder selected.", Log.Level.WARNING);
+                        MIA.log.write("No input file/folder selected.", LogRenderer.Level.WARNING);
                         return false;
                     }
 
                     if (!file.exists()) {
-                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", Log.Level.WARNING);
+                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
                         return false;
                     }
 
@@ -624,7 +623,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 case ImportModes.IMAGEJ:
                     ipl = IJ.getImage().duplicate();
                     if (ipl == null) {
-                        MIA.log.write("No image open in ImageJ.  Skipping.", Log.Level.WARNING);
+                        MIA.log.write("No image open in ImageJ.  Skipping.", LogRenderer.Level.WARNING);
                         return false;
                     }
                     break;
@@ -633,7 +632,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     if (!limitFrames) finalIndex = Integer.MAX_VALUE;
                     file = workspace.getMetadata().getFile();
                     if (!file.exists()) {
-                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", Log.Level.WARNING);
+                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
                         return false;
                     }
 
@@ -681,7 +680,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     file = new File(path);
 
                     if (!file.exists()) {
-                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", Log.Level.WARNING);
+                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
                         return false;
                     }
 
@@ -695,7 +694,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.SPECIFIC_FILE:
                     if (!(new File(filePath)).exists()) {
-                        MIA.log.write("File \"" + filePath + "\" not found.  Skipping file.", Log.Level.WARNING);
+                        MIA.log.write("File \"" + filePath + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
                         return false;
                     }
 

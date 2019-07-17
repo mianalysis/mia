@@ -7,7 +7,6 @@ import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
@@ -27,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by sc13967 on 17/05/2017.
  */
-public class AddTracks extends Module {
+public class AddTracks extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -47,7 +46,6 @@ public class AddTracks extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    private ColourServer colourServer;
 
     public AddTracks(ModuleCollection modules) {
         super("Add tracks",modules);
@@ -57,8 +55,8 @@ public class AddTracks extends Module {
     public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-        Overlay ovl = ipl.getOverlay();
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+        ij.gui.Overlay ovl = ipl.getOverlay();
 
         // Putting the current track points into a TreeMap stored by the frame
         TreeMap<Integer,Obj> points = new TreeMap<>();
@@ -136,11 +134,14 @@ public class AddTracks extends Module {
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        // Only add output to workspace if not applying to input
+        if (applyToInput) addOutputToWorkspace = false;
+
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = colourServer.getHues(inputObjects);
+        HashMap<Integer,Float> hues = getHues(inputObjects);
 
         // Adding the overlay element
         if (!limitHistory) history = Integer.MAX_VALUE;
@@ -174,9 +175,11 @@ public class AddTracks extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputTrackObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
@@ -191,9 +194,6 @@ public class AddTracks extends Module {
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-
-        colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
-        parameters.addAll(colourServer.getParameters());
 
     }
 
@@ -224,7 +224,7 @@ public class AddTracks extends Module {
         if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
         ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
 
-        returnedParameters.addAll(colourServer.updateAndGetParameters());
+        returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

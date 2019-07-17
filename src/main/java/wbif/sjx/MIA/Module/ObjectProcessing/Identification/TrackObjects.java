@@ -11,7 +11,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -572,7 +572,7 @@ public class TrackObjects extends Module {
         if (identifyLeading) identifyLeading(inputObjects,orientationMode);
 
         // If selected, showing an overlay of the tracked objects
-        String colourMode = ColourServer.ColourModes.PARENT_ID;
+        String colourMode = Overlay.ColourModes.PARENT_ID;
         if (showOutput) showObjects(inputObjects,trackObjectsName,colourMode);
 
         // Adding track objects to the workspace
@@ -586,7 +586,7 @@ public class TrackObjects extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new OutputObjectsP(TRACK_OBJECTS,this));
+        parameters.add(new OutputTrackObjectP(TRACK_OBJECTS,this));
 
         parameters.add(new ParamSeparatorP(TRACKING_SEPARATOR,this));
         parameters.add(new IntegerP(MAXIMUM_MISSING_FRAMES,this,0));

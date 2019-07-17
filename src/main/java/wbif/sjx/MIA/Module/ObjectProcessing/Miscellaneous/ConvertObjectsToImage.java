@@ -7,7 +7,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.ColourServer;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
@@ -48,7 +48,7 @@ public class ConvertObjectsToImage extends Module {
 
     }
 
-    public interface ColourModes extends ColourServer.ColourModes  {}
+    public interface ColourModes extends Overlay.ColourModes  {}
 
 
     @Override

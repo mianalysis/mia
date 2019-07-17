@@ -5,6 +5,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -30,6 +31,7 @@ public class NotesArea extends JTextArea implements FocusListener {
         setWrapStyleWord(true);
         addFocusListener(this);
         setCaretPosition(0);
+        setBorder(new EmptyBorder(2,5,5,5));
 
     }
 

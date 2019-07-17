@@ -14,24 +14,29 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.SetLookupTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String ALLOW_MISSING_IMAGES = "Allow missing images";
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String CONCAT_SEPARATOR = "Stack concatenation";
@@ -54,6 +59,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
+
     private int getAxesIndex(ImgPlus<T> img, String axis) {
         switch (axis) {
             case AxisModes.X:
@@ -68,6 +74,18 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             case AxisModes.TIME:
                 return img.dimensionIndex(Axes.TIME);
         }
+    }
+
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace, LinkedHashSet<ParameterCollection> collections) {
+        ArrayList<Image<T>> available = new ArrayList<>();
+
+        for (ParameterCollection collection:collections) {
+            Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
+            if (image != null) available.add(image);
+        }
+
+        return available;
+
     }
 
     static <T extends RealType<T> & NativeType<T>> long getCombinedAxisLength(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
@@ -203,13 +221,13 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public static <T extends RealType<T> & NativeType<T>> Image<T> concatenateImages(Image<T>[] inputImages, String axis, String outputImageName) {
+    public static <T extends RealType<T> & NativeType<T>> Image<T> concatenateImages(ArrayList<Image<T>> inputImages, String axis, String outputImageName) {
         // Processing first two images
-        ImgPlus<T> imgOut = concatenateImages(inputImages[0].getImgPlus(),inputImages[1].getImgPlus(),axis);
+        ImgPlus<T> imgOut = concatenateImages(inputImages.get(0).getImgPlus(),inputImages.get(1).getImgPlus(),axis);
 
         // Appending any additional images
-        for (int i=2;i<inputImages.length;i++) {
-            imgOut = concatenateImages(imgOut,inputImages[i].getImgPlus(),axis);
+        for (int i=2;i<inputImages.size();i++) {
+            imgOut = concatenateImages(imgOut,inputImages.get(i).getImgPlus(),axis);
         }
 
         // If concatenation failed (for example, if the dimensions were inconsistent) it returns null
@@ -218,7 +236,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
         ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut,outputImageName).duplicate();
-        outputImagePlus.setCalibration(inputImages[0].getImagePlus().getCalibration());
+        outputImagePlus.setCalibration(inputImages.get(0).getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(imgOut,outputImagePlus);
 
         return new Image<T>(outputImageName,outputImagePlus);
@@ -245,7 +263,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public static void convertToColour(Image image, Image[] inputImages) {
+    public static <T extends RealType<T> & NativeType<T>> void convertToColour(Image image, ArrayList<Image<T>> inputImages) {
         ImagePlus ipl = image.getImagePlus();
 
         int nChannels = ipl.getNChannels();
@@ -257,8 +275,8 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // Set LUTs
         int count = 1;
-        for (int i=0;i<inputImages.length;i++) {
-            ImagePlus currIpl = inputImages[i].getImagePlus();
+        for (int i=0;i<inputImages.size();i++) {
+            ImagePlus currIpl = inputImages.get(i).getImagePlus();
             for (int c=0;c<currIpl.getNChannels();c++) {
                 currIpl.setPosition(c+1,1,1);
                 LUT lut = currIpl.getProcessor().getLut();
@@ -281,21 +299,23 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     protected boolean process(Workspace workspace) {
         // Getting parameters
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String axisMode = parameters.getValue(AXIS_MODE);
 
         // Creating a collection of images
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        Image[] inputImages = new Image[collections.size()];
-        int i=0;
-        for (ParameterCollection collection:collections) {
-            inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
+        ArrayList<Image<T>> inputImages = getAvailableImages(workspace,collections);
+
+        if (!allowMissingImages && collections.size() != inputImages.size()) {
+            MIA.log.writeError("Input images missing.");
+            return false;
         }
 
         // If only one image was specified, simply create a duplicate of the input, otherwise do concatenation.
         Image outputImage;
-        if (inputImages.length == 1) {
-            outputImage = new Image(outputImageName,inputImages[0].getImagePlus());
+        if (inputImages.size() == 1) {
+            outputImage = new Image(outputImageName,inputImages.get(0).getImagePlus());
         } else {
             outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         }
@@ -311,12 +331,11 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     protected void initialiseParameters() {
-        ParameterCollection collection = new ParameterCollection();
-
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        collection.add(new InputImageP(INPUT_IMAGE,this));
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new CustomInputImageP(INPUT_IMAGE,this));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
-
+        parameters.add(new BooleanP(ALLOW_MISSING_IMAGES,this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
         parameters.add(new ParamSeparatorP(CONCAT_SEPARATOR,this));
@@ -326,6 +345,14 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
+
+        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        for (ParameterCollection collection:collections) {
+            CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
+            parameter.setAllowMissingImages(allowMissingImages);
+        }
+
         return parameters;
 
     }
@@ -353,5 +380,57 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     @Override
     public boolean verify() {
         return true;
+    }
+
+    // Creating a custom class for this module, which always returns true.  This way channels can go missing and
+    // this will still work.
+    class CustomInputImageP extends InputImageP {
+        private boolean allowMissingImages = false;
+
+        private CustomInputImageP(String name, Module module) {
+            super(name, module);
+
+        }
+
+        public CustomInputImageP(String name, Module module, @Nonnull String imageName) {
+            super(name, module, imageName);
+        }
+
+        public CustomInputImageP(String name, Module module, @Nonnull String imageName, String description) {
+            super(name, module, imageName, description);
+        }
+
+        @Override
+        public boolean verify() {
+            if (allowMissingImages) return true;
+            else return super.verify();
+        }
+
+        @Override
+        public boolean isValid() {
+            if (allowMissingImages) return true;
+            else return super.isValid();
+        }
+
+        @Override
+        public <T extends Parameter> T duplicate() {
+            CustomInputImageP newParameter = new CustomInputImageP(name,module,getImageName(),getDescription());
+
+            newParameter.setNickname(getNickname());
+            newParameter.setVisible(isVisible());
+            newParameter.setExported(isExported());
+            newParameter.setAllowMissingImages(allowMissingImages);
+
+            return (T) newParameter;
+
+        }
+
+        public boolean isAllowMissingImages() {
+            return allowMissingImages;
+        }
+
+        public void setAllowMissingImages(boolean allowMissingImages) {
+            this.allowMissingImages = allowMissingImages;
+        }
     }
 }

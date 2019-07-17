@@ -24,6 +24,7 @@ public class ImageCalculator extends Module {
     public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_32BIT = "Output 32-bit image";
+
     public static final String CALCULATION_SEPARATOR = "Image calculation";
     public static final String CALCULATION_METHOD = "Calculation method";
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";

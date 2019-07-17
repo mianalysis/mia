@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
+package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -144,7 +144,7 @@ public class MergeTracks extends Module implements ActionListener {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
+        return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
     }
 
     @Override
@@ -194,7 +194,7 @@ public class MergeTracks extends Module implements ActionListener {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
+        parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
 
         parameters.add(new ParamSeparatorP(DISPLAY_SEPARATOR,this));

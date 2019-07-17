@@ -156,7 +156,7 @@ public class ImageSaver extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Save an image from the workspace to file.";
     }
 
     @Override
@@ -262,22 +262,28 @@ public class ImageSaver extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
-        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
-        parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to be saved to file."));
+        parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL, "Select where the image should be saved.<br>" +
+                "<br>- \""+SaveLocations.MIRRORED_DIRECTORY+"\" Save the image to a new directory structure which has the same layout as the input.  This is useful when batch processing from a multi-layer folder structure.  The subdirectory layout will match that of the input structure, but will have its root at the folder specified in \""+MIRROR_DIRECTORY_ROOT+"\".<br>" +
+                "<br>- \""+SaveLocations.MATCH_OUTPUT_CONTROL+"\" Save the image to the folder specified by the \"Save location\" parameter in \"Output control\".<br>" +
+                "<br>- \""+SaveLocations.SAVE_WITH_INPUT+"\" Save the image in the same file as the root file for this workspace (i.e. the image specified in \"Input control\".<br>" +
+                "<br>- \""+SaveLocations.SPECIFIC_LOCATION+"\" Save the image to a specific folder."));
+        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this,"","The root path for the mirrored directory structure.  This path is the equivalent of the folder specified in \"Input control\".  All subfolders will be in the same relative locations to their input counterparts."));
+        parameters.add(new FolderPathP(SAVE_FILE_PATH,this,"","Path to folder where images will be saved."));
 
         parameters.add(new ParamSeparatorP(NAME_SEPARATOR,this));
-        parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL));
-        parameters.add(new StringP(SAVE_FILE_NAME,this));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new StringP(SAVE_SUFFIX, this));
+        parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL,"Control how saved image names will be generated.<br>" +
+                "<br>- \""+SaveNameModes.MATCH_INPUT+"\" Use the same name as the root file for this workspace (i.e. the input file in \"Input control\".<br>" +
+                "<br>- \""+SaveNameModes.SPECIFIC_NAME+"\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images."));
+        parameters.add(new StringP(SAVE_FILE_NAME,this,"","Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images."));
+        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL, "Add the series number as a suffix to each filename.  Series numbers are prepended by \"S\"."));
+        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL, "Add a timestamp suffix to each filename.  Timestamps are in the format \"yyyy-MM-dd_HH-mm-ss\"."));
+        parameters.add(new StringP(SAVE_SUFFIX, this, "", "A custom suffix to be added to each filename."));
 
         parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR,this));
-        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL));
-        parameters.add(new BooleanP(SAVE_AS_RGB, this,false));
-        parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
+        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL,"Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode."));
+        parameters.add(new BooleanP(SAVE_AS_RGB, this,false,"Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ."));
+        parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false,"Flatten any overlay elements onto the image prior to saving."));
 
     }
 

@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class HelpArea extends JTextPane {
@@ -23,6 +24,7 @@ public class HelpArea extends JTextPane {
         setBackground(null);
         setEditable(false);
         setCaretPosition(0);
+        setBorder(new EmptyBorder(2,5,5,5));
 
         revalidate();
         repaint();
@@ -47,8 +49,8 @@ public class HelpArea extends JTextPane {
 
         ObjMeasurementRefCollection objectMeasRefs = module.updateAndGetObjectMeasurementRefs();
         if (objectMeasRefs != null && objectMeasRefs.hasExportedMeasurements()) {
-            sb.append("<b>OBJECT MEASUREMENTS</b><br>")
-                    .append("The following measurements are currently calculated by this module.<br><br>");
+            sb.append("<font face=\"sans-serif\" size=\"3\"><b>OBJECT MEASUREMENTS</b><br>")
+                    .append("The following measurements are currently calculated by this module.<br><br></font>");
 
             for (ObjMeasurementRef measurementRef : objectMeasRefs.values()) {
                 sb.append("<font face=\"sans-serif\" size=\"3\"><i>")
@@ -63,8 +65,8 @@ public class HelpArea extends JTextPane {
 
         ImageMeasurementRefCollection imageMeasRefs = module.updateAndGetImageMeasurementRefs();
         if (imageMeasRefs != null && imageMeasRefs.hasExportedMeasurements()) {
-            sb.append("<b>IMAGE MEASUREMENTS</b><br>")
-                    .append("The following measurements are currently calculated by this module.<br><br>");
+            sb.append("<font face=\"sans-serif\" size=\"3\"><b>IMAGE MEASUREMENTS</b><br>")
+                    .append("The following measurements are currently calculated by this module.<br><br></font>");
 
             for (ImageMeasurementRef measurementRef : imageMeasRefs.values()) {
                 sb.append("<font face=\"sans-serif\" size=\"3\"><i>")

@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.10.6</version>
+    <version>0.10.7</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -260,7 +260,7 @@
         <dependency>
             <groupId>org.janelia</groupId>
             <artifactId>H5J_Loader_Plugin</artifactId>
-            <version>1.0.7</version>
+            <version>1.1.0</version>
             <scope>${myscope}</scope>
         </dependency>
 
