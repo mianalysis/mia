@@ -3,9 +3,11 @@ package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.macro.CustomInterpreter;
 import ij.macro.Interpreter;
 import ij.measure.ResultsTable;
 import ij.text.TextWindow;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -140,7 +142,20 @@ public class RunMacroOnObjects extends CoreMacroRunner {
             String arg = inputObjectsName + "," +inputObject.getID();
 
             // Running the macro
-            inputImagePlus = new Interpreter().runBatchMacro(finalMacroText,inputImagePlus);
+            CustomInterpreter interpreter = new CustomInterpreter();
+            inputImagePlus = interpreter.runBatchMacro(finalMacroText,inputImagePlus);
+
+            // Checking if the macro execution failed.  If so, displaying the error and terminating this run.
+            if (interpreter.wasError()) {
+                MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
+
+                // Closing the results table
+                TextWindow window = ResultsTable.getResultsWindow();
+                if (window != null) window.close(false);
+
+                return false;
+
+            }
 
             // Intercepting measurements
             ResultsTable table = ResultsTable.getResultsTable();
