@@ -113,10 +113,10 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         // Running the macro
         CustomInterpreter interpreter = new CustomInterpreter();
-        inputImagePlus = interpreter.runBatchMacro(finalMacroText,inputImagePlus);
-
-        // Checking if the macro execution failed.  If so, displaying the error and terminating this run.
-        if (interpreter.wasError()) {
+        try {
+            inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
+            if (interpreter.wasError()) throw new RuntimeException();
+        } catch (RuntimeException e) {
             MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
 
             // Closing the results table
@@ -124,7 +124,6 @@ public class RunMacroOnImage extends CoreMacroRunner {
             if (window != null) window.close(false);
 
             return false;
-
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows

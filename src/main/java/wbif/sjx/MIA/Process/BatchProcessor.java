@@ -170,6 +170,10 @@ public class BatchProcessor extends FileCrawler {
                         System.err.println("Failed for file " + finalNext.getName());
                         t.printStackTrace(System.err);
 
+                        // We're only interested in the measurements now, so clearing images and object coordinates
+                        workspace.clearAllImages(true);
+                        workspace.clearAllObjects(true);
+
                         pool.shutdownNow();
 
                     }

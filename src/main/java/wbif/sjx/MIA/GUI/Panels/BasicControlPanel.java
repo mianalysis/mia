@@ -84,8 +84,10 @@ public class BasicControlPanel extends JScrollPane {
 
         // Adding global variable options
         if (MIA.getGlobalVariables().hasVisibleParameters()) {
+            c.insets = new Insets(5,5,0,5);
             panel.add(componentFactory.createBasicSeparator(globalVariablesSeparator,frameWidth-80),c);
             c.gridy++;
+            c.insets = new Insets(0,5,0,5);
 
             if (((BooleanP) globalVariablesSeparator.getParameter(GUISeparator.EXPANDED_BASIC)).isSelected()) {
                 JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
@@ -95,7 +97,9 @@ public class BasicControlPanel extends JScrollPane {
         }
 
         // Adding a separator between the input and main modules
+        c.insets = new Insets(5,5,0,5);
         panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
+        c.insets = new Insets(0,5,0,5);
 
         // Only modules below an expanded GUISeparator should be displayed
         BooleanP expanded = ((BooleanP) loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC));
@@ -134,7 +138,12 @@ public class BasicControlPanel extends JScrollPane {
                 }
             }
 
-            if (modulePanel!=null && (expanded.isSelected() || module instanceof GUISeparator)) {
+            if (modulePanel!=null && (expanded.isSelected())) {
+                c.gridy++;
+                panel.add(modulePanel,c);
+            }
+
+            if (module instanceof GUISeparator) {
                 c.gridy++;
                 panel.add(modulePanel,c);
             }
