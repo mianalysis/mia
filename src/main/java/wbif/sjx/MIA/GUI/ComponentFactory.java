@@ -415,7 +415,7 @@ public class ComponentFactory {
         if (!module.isEnabled()) return modulePanel;
         if (!module.isRunnable() &! module.invalidParameterIsVisible()) return modulePanel;
 
-        c.insets = new Insets(0,35,0,0);
+        c.insets = new Insets(0,40,0,0);
         addParameters(module,module.updateAndGetParameters(),modulePanel,c,false);
 
         return modulePanel;
