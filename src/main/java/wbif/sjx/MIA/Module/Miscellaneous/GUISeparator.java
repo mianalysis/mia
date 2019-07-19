@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -15,7 +17,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 /**
  * Created by sc13967 on 14/03/2018.
  */
-public class GUISeparator extends Module{
+public class GUISeparator extends Module {
     private static boolean verbose = false;
 
     public static final String VISIBILITY_SEPARATOR = "Separator visibility";
@@ -27,6 +29,65 @@ public class GUISeparator extends Module{
         super("GUI separator",modules);
     }
 
+
+    public ModuleCollection getBasicModules() {
+        ModuleCollection basicModules = new ModuleCollection();
+
+        // If this separator isn't visible on the basic GUI it contains no modules
+        if (!((boolean) parameters.getValue(SHOW_BASIC))) return basicModules;
+
+        boolean record = false;
+        for (Module module:modules.values()) {
+            // Start recording until another visible GUI Separator is found
+            if (module == this) {
+                record = true;
+                continue;
+            }
+
+            // If not yet recording we can skip to the next round
+            if (!record) continue;
+
+            // If this module is a visible GUISeparator, stop recording and return the available modules
+            if (module instanceof GUISeparator) {
+                if (module.getParameterValue(GUISeparator.SHOW_BASIC)) {
+                    return basicModules;
+                }
+            }
+
+            // If currently recording and the module is visible, add it
+            if (module.isRunnable() || module.invalidParameterIsVisible()) basicModules.add(module);
+
+        }
+
+        return basicModules;
+
+    }
+
+    public ModuleCollection getEditingModules() {
+        ModuleCollection editingModules = new ModuleCollection();
+
+        boolean record = false;
+        for (Module module:modules.values()) {
+            // Start recording until another GUI Separator is found
+            if (module == this) {
+                record = true;
+                continue;
+            }
+
+            // If this module is a visible GUISeparator, stop recording and return the available modules
+            if (module instanceof GUISeparator) {
+                record = false;
+                return editingModules;
+            }
+
+            // If currently recording, add the module
+            if (record) editingModules.add(module);
+
+        }
+
+        return editingModules;
+
+    }
 
     @Override
     public String getPackageName() {

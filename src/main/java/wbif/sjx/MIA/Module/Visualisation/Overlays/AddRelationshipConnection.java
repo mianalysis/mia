@@ -26,8 +26,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AddRelationshipConnection extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String LINE_MODE = "Line mode";
     public static final String PARENT_OBJECTS = "Parent objects";
-    public static final String CHILD_OBJECTS = "Child objects";
+    public static final String CHILD_OBJECTS_1 = "Child objects 1";
+    public static final String CHILD_OBJECTS_2 = "Child objects 2";
 
     public static final String OUTPUT_SEPARATOR = "Image output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -41,17 +43,19 @@ public class AddRelationshipConnection extends Overlay {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public interface LineModes {
+        String BETWEEN_CHILDREN = "Between children";
+        String PARENT_TO_CHILD = "Parent to child";
+
+        String[] ALL = new String[]{BETWEEN_CHILDREN,PARENT_TO_CHILD};
+
+    }
 
     public AddRelationshipConnection(ModuleCollection modules) {
         super("Add relationship connection",modules);
     }
 
-
-    public interface ColourModes extends Overlay.ColourModes {}
-
-    public interface SingleColours extends ColourFactory.SingleColours {}
-
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjectsName, double lineWidth, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+    public static void addParentChildOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjectsName, double lineWidth, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -71,7 +75,7 @@ public class AddRelationshipConnection extends Overlay {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addOverlay(object, childObjectsName, finalIpl, colour, lineWidth, renderInAllFrames);
+                    addParentChildOverlay(object, childObjectsName, finalIpl, colour, lineWidth, renderInAllFrames);
 
                 };
                 pool.submit(task);
@@ -84,38 +88,86 @@ public class AddRelationshipConnection extends Overlay {
         }
     }
 
-    public static void addOverlay(Obj object, String childObjectsName, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
+    public static void addParentChildOverlay(Obj object, String childObjectsName, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
-        // Still need to get mean coords for label
-        double xMeanParent = object.getXMean(true);
-        double yMeanParent = object.getYMean(true);
-        int t = object.getT() + 1;
-        int nSlices = ipl.getNSlices();
-
-        if (renderInAllFrames) t = 0;
+        int t = renderInAllFrames? 0 : object.getT() + 1;
 
         // Running through each slice of this object
         for (Obj childObj:object.getChildren(childObjectsName).values()) {
-            double xMeanChild = childObj.getXMean(true);
-            double yMeanChild = childObj.getYMean(true);
+            drawLine(ipl,object,childObj,t,colour,lineWidth);
+        }
+    }
 
-            for (int z = 0; z < nSlices; z++) {
-                Line line = new Line(xMeanChild,yMeanChild,xMeanParent,yMeanParent);
-                if (ipl.isHyperStack()) {
-                    ipl.setPosition(1, z+1, t);
-                    line.setPosition(1, z + 1, t);
-                } else {
-                    int pos = Math.max(Math.max(1, z + 1), t);
-                    ipl.setPosition(pos);
-                    line.setPosition(pos);
-                }
-
-                line.setStrokeColor(colour);
-                line.setStrokeWidth(lineWidth);
-                ipl.getOverlay().addElement(line);
-
+    public static void addSiblingOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjects1Name, String childObjects2Name, double lineWidth, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+        // Adding the overlay element
+        try {
+            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
             }
+
+            int nThreads = multithread ? Prefs.getThreads() : 1;
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object:inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
+
+                Runnable task = () -> {
+                    float hue = hues.get(object.getID());
+                    Color colour = ColourFactory.getColour(hue);
+
+                    addSiblingOverlay(object, childObjects1Name, childObjects2Name, finalIpl, colour, lineWidth, renderInAllFrames);
+
+                };
+                pool.submit(task);
+            }
+
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
+
+    public static void addSiblingOverlay(Obj object, String childObjects1Name, String childObjects2Name, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+
+        int t = renderInAllFrames? 0 : object.getT() + 1;
+
+        // Running through each slice of this object
+        for (Obj childObj1:object.getChildren(childObjects1Name).values()) {
+            for (Obj childObj2:object.getChildren(childObjects2Name).values()) {
+                drawLine(ipl, childObj1, childObj2, t, colour, lineWidth);
+            }
+        }
+    }
+
+    public static void drawLine(ImagePlus ipl, Obj object1, Obj object2, int t, Color colour, double lineWidth) {
+        int nSlices = ipl.getNSlices();
+
+        double x1 = object1.getXMean(true)+0.5;
+        double y1 = object1.getYMean(true)+0.5;
+        double x2 = object2.getXMean(true)+0.5;
+        double y2 = object2.getYMean(true)+0.5;
+
+        for (int z = 0; z < nSlices; z++) {
+            Line line = new Line(x1,y1,x2,y2);
+            if (ipl.isHyperStack()) {
+                ipl.setPosition(1, z+1, t);
+                line.setPosition(1, z + 1, t);
+            } else {
+                int pos = Math.max(Math.max(1, z + 1), t);
+                ipl.setPosition(pos);
+                line.setPosition(pos);
+            }
+
+            line.setStrokeColor(colour);
+            line.setStrokeWidth(lineWidth);
+            ipl.getOverlay().addElement(line);
+
         }
     }
 
@@ -138,9 +190,11 @@ public class AddRelationshipConnection extends Overlay {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Getting input objects
+        String lineMode = parameters.getValue(LINE_MODE);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectsName);
-        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String childObjects1Name = parameters.getValue(CHILD_OBJECTS_1);
+        String childObjects2Name = parameters.getValue(CHILD_OBJECTS_2);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -160,7 +214,15 @@ public class AddRelationshipConnection extends Overlay {
         // Generating colours for each object
         HashMap<Integer,Float> hues = getHues(parentObjects);
 
-        addOverlay(ipl,parentObjects,childObjectsName,lineWidth,hues,renderInAllFrames,multithread);
+        switch (lineMode) {
+            case LineModes.BETWEEN_CHILDREN:
+                addSiblingOverlay(ipl,parentObjects,childObjects1Name,childObjects2Name,lineWidth,hues,renderInAllFrames,multithread);
+                break;
+
+            case LineModes.PARENT_TO_CHILD:
+                addParentChildOverlay(ipl,parentObjects,childObjects1Name,lineWidth,hues,renderInAllFrames,multithread);
+                break;
+        }
 
         Image outputImage = new Image(outputImageName,ipl);
 
@@ -178,8 +240,10 @@ public class AddRelationshipConnection extends Overlay {
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ChoiceP(LINE_MODE,this,LineModes.PARENT_TO_CHILD,LineModes.ALL));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
-        parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_1, this));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_2, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
@@ -203,10 +267,16 @@ public class AddRelationshipConnection extends Overlay {
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(LINE_MODE));
         returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
-        ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS);
+        ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
         childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
         returnedParameters.add(childObjectsP);
+        if (parameters.getValue(LINE_MODE).equals(LineModes.BETWEEN_CHILDREN)) {
+            childObjectsP = parameters.getParameter(CHILD_OBJECTS_2);
+            childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
+            returnedParameters.add(childObjectsP);
+        }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));

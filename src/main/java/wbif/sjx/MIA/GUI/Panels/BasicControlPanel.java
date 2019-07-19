@@ -121,6 +121,9 @@ public class BasicControlPanel extends JScrollPane {
                 BooleanP showBasic = (BooleanP) module.getParameter(GUISeparator.SHOW_BASIC);
                 if (!showBasic.isSelected()) continue;
 
+                // If this separator doesn't control any visible modules, skip it
+                if (((GUISeparator) module).getBasicModules().size() == 0) continue;
+
                 // Adding a blank space before the next separator
                 if (expanded.isSelected()) {
                     JPanel blankPanel = new JPanel();
