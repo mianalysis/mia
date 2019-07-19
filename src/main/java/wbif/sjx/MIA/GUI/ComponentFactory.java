@@ -268,13 +268,17 @@ public class ComponentFactory {
         ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         moduleEnabledButton.setEnabled(module.canBeDisabled());
+        moduleEnabledButton.setBorderPainted(false);
+        moduleEnabledButton.setOpaque(false);
+        moduleEnabledButton.setContentAreaFilled(false);
+        c.insets = new Insets(0, 19, 0, 0);
         modulePanel.add(moduleEnabledButton,c);
 
         ModuleTitle title = new ModuleTitle(module);
         if (module.isRunnable()) title.setForeground(Color.BLACK);
         else title.setForeground(Color.RED);
         title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
-        c.insets = new Insets(0, 5, 0, 0);
+        c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
@@ -298,7 +302,9 @@ public class ComponentFactory {
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         moduleEnabledButton.setMinimumSize(new Dimension(elementHeight,elementHeight));
         moduleEnabledButton.setEnabled(module.canBeDisabled());
-        c.insets = new Insets(0,0,0,5);
+        moduleEnabledButton.setBorderPainted(false);
+        moduleEnabledButton.setOpaque(false);
+        moduleEnabledButton.setContentAreaFilled(false);
         panel.add(moduleEnabledButton,c);
 
         JLabel leftArrowLabel = new JLabel();

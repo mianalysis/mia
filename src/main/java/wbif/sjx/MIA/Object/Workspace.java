@@ -57,7 +57,6 @@ public class Workspace {
         } else {
             objects.remove(name);
         }
-
     }
 
     public void addImage(Image<?> image) {
