@@ -3,9 +3,11 @@ package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.macro.CustomInterpreter;
 import ij.macro.Interpreter;
 import ij.measure.ResultsTable;
 import ij.text.TextWindow;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -110,7 +112,19 @@ public class RunMacroOnImage extends CoreMacroRunner {
         }
 
         // Running the macro
-        inputImagePlus = new Interpreter().runBatchMacro(finalMacroText,inputImagePlus);
+        CustomInterpreter interpreter = new CustomInterpreter();
+        try {
+            inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
+            if (interpreter.wasError()) throw new RuntimeException();
+        } catch (RuntimeException e) {
+            MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
+
+            // Closing the results table
+            TextWindow window = ResultsTable.getResultsWindow();
+            if (window != null) window.close(false);
+
+            return false;
+        }
 
         // If providing the input image direct from the workspace, re-opening all open windows
         if (provideInputImage) {

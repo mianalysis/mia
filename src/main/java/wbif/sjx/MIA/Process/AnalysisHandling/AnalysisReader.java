@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import fiji.plugin.trackmate.util.Version;
+import ij.IJ;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
@@ -9,6 +10,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
@@ -63,6 +65,9 @@ public class AnalysisReader {
 
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        System.out.println("Loading analysis");
+        GUI.setProgress(0);
+
         if (xml.startsWith("\uFEFF")) {
             xml = xml.substring(1);
         }
@@ -109,6 +114,10 @@ public class AnalysisReader {
             } else {
                 modules.add(module);
             }
+
+            System.out.println("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
+            GUI.setProgress(100*Math.floorDiv(i,moduleNodes.getLength()));
+
         }
 
         return analysis;

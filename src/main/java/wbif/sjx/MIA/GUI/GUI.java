@@ -461,6 +461,7 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
+        updateModuleStates(false);
         updateParameters();
         updateModules();
 
@@ -478,6 +479,7 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
+        updateModuleStates(false);
         updateParameters();
         updateModules();
 

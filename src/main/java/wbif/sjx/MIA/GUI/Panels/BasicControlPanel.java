@@ -79,13 +79,15 @@ public class BasicControlPanel extends JScrollPane {
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0;
-        c.insets = new Insets(0,5,0,5);
+        c.insets = new Insets(0,0,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
 
         // Adding global variable options
         if (MIA.getGlobalVariables().hasVisibleParameters()) {
+            c.insets = new Insets(5,0,0,5);
             panel.add(componentFactory.createBasicSeparator(globalVariablesSeparator,frameWidth-80),c);
             c.gridy++;
+            c.insets = new Insets(0,0,0,5);
 
             if (((BooleanP) globalVariablesSeparator.getParameter(GUISeparator.EXPANDED_BASIC)).isSelected()) {
                 JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
@@ -95,7 +97,9 @@ public class BasicControlPanel extends JScrollPane {
         }
 
         // Adding a separator between the input and main modules
+        c.insets = new Insets(5,0,0,5);
         panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
+        c.insets = new Insets(0,0,0,5);
 
         // Only modules below an expanded GUISeparator should be displayed
         BooleanP expanded = ((BooleanP) loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC));
@@ -117,6 +121,9 @@ public class BasicControlPanel extends JScrollPane {
                 BooleanP showBasic = (BooleanP) module.getParameter(GUISeparator.SHOW_BASIC);
                 if (!showBasic.isSelected()) continue;
 
+                // If this separator doesn't control any visible modules, skip it
+                if (((GUISeparator) module).getBasicModules().size() == 0) continue;
+
                 // Adding a blank space before the next separator
                 if (expanded.isSelected()) {
                     JPanel blankPanel = new JPanel();
@@ -134,7 +141,12 @@ public class BasicControlPanel extends JScrollPane {
                 }
             }
 
-            if (modulePanel!=null && (expanded.isSelected() || module instanceof GUISeparator)) {
+            if (modulePanel!=null && (expanded.isSelected())) {
+                c.gridy++;
+                panel.add(modulePanel,c);
+            }
+
+            if (module instanceof GUISeparator) {
                 c.gridy++;
                 panel.add(modulePanel,c);
             }

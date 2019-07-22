@@ -237,12 +237,15 @@ public class RunTrackMate extends Module {
             hues = ColourFactory.getSingleColourHues(spotObjects,ColourFactory.SingleColours.ORANGE);
         }
 
+        String pointSize = AddObjectCentroid.PointSizes.SMALL;
+        String pointType = AddObjectCentroid.PointTypes.CIRCLE;
+
         // Creating a duplicate of the input image
         ipl = new Duplicator().run(ipl);
         IntensityMinMax.run(ipl,true);
 
         // Adding the overlay
-        AddObjectCentroid.addOverlay(ipl,spotObjects,hues,false,true);
+        AddObjectCentroid.addOverlay(ipl,spotObjects,hues,pointSize,pointType,false,true);
 
         // Displaying the overlay
         ipl.show();

@@ -34,17 +34,41 @@ public class AddObjectCentroid extends Overlay {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
+    public static final String POINT_SIZE = "Point size";
+    public static final String POINT_TYPE = "Point type";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
+    public interface PointSizes {
+        public String TINY = "Tiny";
+        public String SMALL = "Small";
+        public String MEDIUM = "Medium";
+        public String LARGE = "Large";
+        public String EXTRA_LARGE = "Extra large";
+
+        public String[] ALL = new String[]{TINY,SMALL,MEDIUM,LARGE,EXTRA_LARGE};
+
+    }
+
+    public interface PointTypes {
+        public String CIRCLE = "Circle";
+        public String CROSS = "Cross";
+        public String DOT = "Dot";
+        public String HYBRID = "Hybrid";
+
+        public String[] ALL = new String[]{CIRCLE,CROSS,DOT,HYBRID};
+
+    }
+
+
     public AddObjectCentroid(ModuleCollection modules) {
         super("Add object centroid",modules);
     }
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, String size, String type, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -64,7 +88,7 @@ public class AddObjectCentroid extends Overlay {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue);
 
-                    addOverlay(object, finalIpl, colour, renderInAllFrames);
+                    addOverlay(object, finalIpl, colour, size, type, renderInAllFrames);
 
                 };
                 pool.submit(task);
@@ -78,12 +102,15 @@ public class AddObjectCentroid extends Overlay {
         }
     }
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
         double zMean = object.getZMean(true,false);
+
+        int sizeVal = getSize(size);
+        int typeVal = getType(type);
 
         // Getting coordinates to plot
         int z = (int) Math.round(zMean+1);
@@ -93,7 +120,9 @@ public class AddObjectCentroid extends Overlay {
 
         // Adding circles where the object centroids are
         PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
-        pointRoi.setPointType(PointRoi.NORMAL);
+        pointRoi.setPointType(typeVal);
+        pointRoi.setSize(sizeVal);
+
         if (ipl.isHyperStack()) {
             pointRoi.setPosition(1, z, t);
         } else {
@@ -103,6 +132,36 @@ public class AddObjectCentroid extends Overlay {
         pointRoi.setStrokeColor(colour);
         ipl.getOverlay().addElement(pointRoi);
 
+    }
+
+    static int getSize(String size) {
+        switch (size) {
+            case PointSizes.TINY:
+                return 0;
+            case PointSizes.SMALL:
+            default:
+                return 1;
+            case PointSizes.MEDIUM:
+                return 2;
+            case PointSizes.LARGE:
+                return 3;
+            case PointSizes.EXTRA_LARGE:
+                return 4;
+        }
+    }
+
+    static int getType(String type) {
+        switch (type) {
+            case PointTypes.HYBRID:
+                return 0;
+            case PointTypes.CROSS:
+                return 1;
+            case PointTypes.DOT:
+                return 2;
+            case PointTypes.CIRCLE:
+            default:
+                return 3;
+        }
     }
 
 
@@ -132,6 +191,8 @@ public class AddObjectCentroid extends Overlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        String pointSize = parameters.getValue(POINT_SIZE);
+        String pointType = parameters.getValue(POINT_TYPE);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -144,7 +205,7 @@ public class AddObjectCentroid extends Overlay {
         // Generating colours for each object
         HashMap<Integer,Float> hues= getHues(inputObjects);
 
-        addOverlay(ipl,inputObjects,hues,renderInAllFrames,multithread);
+        addOverlay(ipl,inputObjects,hues,pointSize,pointType,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 
@@ -170,6 +231,8 @@ public class AddObjectCentroid extends Overlay {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
+        parameters.add(new ChoiceP(POINT_SIZE,this,PointSizes.SMALL,PointSizes.ALL));
+        parameters.add(new ChoiceP(POINT_TYPE,this,PointTypes.CIRCLE,PointTypes.ALL));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
@@ -199,6 +262,8 @@ public class AddObjectCentroid extends Overlay {
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
+        returnedParameters.add(parameters.getParameter(POINT_SIZE));
+        returnedParameters.add(parameters.getParameter(POINT_TYPE));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

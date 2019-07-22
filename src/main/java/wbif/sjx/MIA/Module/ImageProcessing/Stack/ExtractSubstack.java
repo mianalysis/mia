@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import javax.annotation.Nullable;import ij.ImagePlus;
 import ij.plugin.SubHyperstackMaker;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -176,6 +177,8 @@ public class ExtractSubstack extends Module implements ActionListener {
         List<Integer> zList = java.util.Arrays.stream(slicesList).boxed().collect(Collectors.toList());
         List<Integer> tList = java.util.Arrays.stream(framesList).boxed().collect(Collectors.toList());
 
+        if (!checkLimits(inputImage,cList,zList,tList)) return null;
+
         // Generating the substack and adding to the workspace
         ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
@@ -183,6 +186,29 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
+    static boolean checkLimits(Image inputImage, List<Integer> cList, List<Integer> zList, List<Integer> tList) {
+        int nChannels = inputImage.getImagePlus().getNChannels();
+        int nSlices = inputImage.getImagePlus().getNSlices();
+        int nFrames = inputImage.getImagePlus().getNFrames();
+
+        for (int c:cList) if (c>nChannels) {
+            MIA.log.writeError("Channel index ("+c+") outside range (1-"+nChannels+").  Skipping image.");
+            return false;
+        }
+
+        for (int z:zList) if (z>nSlices) {
+            MIA.log.writeError("Slice index ("+z+") outside range (1-"+nSlices+").  Skipping image.");
+            return false;
+        }
+
+        for (int t:tList) if (t>nFrames) {
+            MIA.log.writeError("Frame index ("+t+") outside range (1-"+nFrames+").  Skipping image.");
+            return false;
+        }
+
+        return true;
+
+    }
 
     @Override
     public String getPackageName() {
@@ -244,6 +270,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         }
 
         Image outputImage = extractSubstack(inputImage,outputImageName,channels,slices,frames);
+        if (outputImage == null) return false;
 
         workspace.addImage(outputImage);
 

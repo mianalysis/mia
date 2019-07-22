@@ -1,6 +1,8 @@
-// Variables have been pre-defined for the input object name ("objectName") and its ID number ("ID").
+////// PARAMETERS //////
+//Correction for the chromatic shift in green channel relative to red.
+gCHx =0.021;
+gCHy =0.042;	
+gCHz =0.148;
 
-newImage("Untitled", "8-bit noise", 100, 100, 1);
-run("Measure");
-//waitForUser("");
-
+setResult("2", 0,32);
+setResult("4", 0, 4);

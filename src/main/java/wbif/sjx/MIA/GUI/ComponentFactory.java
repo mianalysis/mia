@@ -242,7 +242,7 @@ public class ComponentFactory {
 
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
         disableableCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
+        if (activeModule.getClass() == InputControl.class) {
             disableableCheck.setEnabled(false);
             disableableCheck.setOpaque(false);
         }
@@ -262,19 +262,23 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(0, 5, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
         ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         moduleEnabledButton.setEnabled(module.canBeDisabled());
+        moduleEnabledButton.setBorderPainted(false);
+        moduleEnabledButton.setOpaque(false);
+        moduleEnabledButton.setContentAreaFilled(false);
+        c.insets = new Insets(0, 19, 0, 0);
         modulePanel.add(moduleEnabledButton,c);
 
         ModuleTitle title = new ModuleTitle(module);
         if (module.isRunnable()) title.setForeground(Color.BLACK);
         else title.setForeground(Color.RED);
         title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
+        c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
@@ -294,6 +298,15 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.EAST;
 
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
+        moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        moduleEnabledButton.setMinimumSize(new Dimension(elementHeight,elementHeight));
+        moduleEnabledButton.setEnabled(module.canBeDisabled());
+        moduleEnabledButton.setBorderPainted(false);
+        moduleEnabledButton.setOpaque(false);
+        moduleEnabledButton.setContentAreaFilled(false);
+        panel.add(moduleEnabledButton,c);
+
         JLabel leftArrowLabel = new JLabel();
         BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
         if (expandedBasic.isSelected()) {
@@ -302,6 +315,7 @@ public class ComponentFactory {
             leftArrowLabel.setIcon(rightArrow);
         }
         c.insets = new Insets(0,0,0,5);
+        c.gridx++;
         panel.add(leftArrowLabel,c);
 
         JSeparator separatorLeft = new JSeparator();
@@ -401,7 +415,7 @@ public class ComponentFactory {
         if (!module.isEnabled()) return modulePanel;
         if (!module.isRunnable() &! module.invalidParameterIsVisible()) return modulePanel;
 
-        c.insets = new Insets(0,35,0,0);
+        c.insets = new Insets(0,40,0,17);
         addParameters(module,module.updateAndGetParameters(),modulePanel,c,false);
 
         return modulePanel;

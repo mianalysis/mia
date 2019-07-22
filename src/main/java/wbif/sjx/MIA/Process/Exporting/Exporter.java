@@ -7,6 +7,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
@@ -724,6 +725,8 @@ public class Exporter {
         if (availableObjects == null) return;
 
         for (OutputObjectsP availableObject:availableObjects) {
+            if (!availableObject.isExported()) return;
+
             String objectName = availableObject.getObjectsName();
 
             // Creating relevant sheet prefixed with "OBJ"

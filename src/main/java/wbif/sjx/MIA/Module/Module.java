@@ -299,11 +299,11 @@ public abstract class Module extends Ref implements Comparable, Serializable {
     // PROTECTED METHODS
 
     protected void writeMessage(String message) {
-        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
+        System.out.println("[" + name + "] "+message);
     }
 
     protected static void writeMessage(String message, String name) {
-        if (verbose) new Thread(() -> System.out.println("[" + name + "] "+message)).start();
+        System.out.println("[" + name + "] "+message);
     }
 
 
