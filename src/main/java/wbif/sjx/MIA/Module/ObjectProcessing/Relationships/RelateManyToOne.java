@@ -272,7 +272,6 @@ public class RelateManyToOne extends Module {
         String measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObject.getName());
         childObject.addMeasurement(new Measurement(measurementName, frac));
 
-
     }
 
     public void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects) {
@@ -434,7 +433,7 @@ public class RelateManyToOne extends Module {
         double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
 
-        if (limitLinking) linkingDistance = Double.MAX_VALUE;
+        if (!limitLinking) linkingDistance = Double.MAX_VALUE;
 
         // Removing previous relationships
         parentObjects.removeChildren(childObjectName);
