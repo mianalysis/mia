@@ -21,7 +21,7 @@ import java.util.TreeSet;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends PointVolume {
+public class Obj extends QuadTreeVolume {
     private String name;
 
     /**

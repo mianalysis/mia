@@ -113,6 +113,10 @@ public class Image < T extends RealType< T > & NativeType< T >> {
             }
         }
 
+        for (Obj obj:outputObjects.values()) {
+            obj.finalise();
+        }
+
         return outputObjects;
 
     }
