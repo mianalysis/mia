@@ -36,40 +36,40 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(20,22,32);
-        object2_2.addCoord(20,21,32);
-        object2_2.addCoord(20,22,33);
-        object2_2.addCoord(19,22,32);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(20,22,32);
+        object2_2.add(20,21,32);
+        object2_2.add(20,22,33);
+        object2_2.add(19,22,32);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(10,22,32);
-        object2_3.addCoord(10,21,32);
-        object2_3.addCoord(10,22,33);
-        object2_3.addCoord(9,22,32);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(10,22,32);
+        object2_3.add(10,21,32);
+        object2_3.add(10,22,33);
+        object2_3.add(9,22,32);
         objects2.add(object2_3);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
@@ -91,43 +91,43 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(10,22,32);
-        object2_3.addCoord(10,21,32);
-        object2_3.addCoord(10,22,33);
-        object2_3.addCoord(9,22,32);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(10,22,32);
+        object2_3.add(10,21,32);
+        object2_3.add(10,22,33);
+        object2_3.add(9,22,32);
         objects2.add(object2_3);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
@@ -149,44 +149,44 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(9,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
@@ -213,45 +213,45 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(10,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(9,13,33);
+        object2_3.add(10,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
@@ -273,48 +273,48 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(10,12,32);
-        object2_2.addCoord(11,12,32);
-        object2_2.addCoord(10,13,32);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(10,12,32);
+        object2_2.add(11,12,32);
+        object2_2.add(10,13,32);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(10,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(9,13,33);
+        object2_3.add(10,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         int actual = MeasureObjectOverlap.getNOverlappingPoints(object1_1,objects1,objects2,false);
@@ -338,40 +338,40 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(20,22,32);
-        object2_2.addCoord(20,21,32);
-        object2_2.addCoord(20,22,33);
-        object2_2.addCoord(19,22,32);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(20,22,32);
+        object2_2.add(20,21,32);
+        object2_2.add(20,22,33);
+        object2_2.add(19,22,32);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(10,22,32);
-        object2_3.addCoord(10,21,32);
-        object2_3.addCoord(10,22,33);
-        object2_3.addCoord(9,22,32);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(10,22,32);
+        object2_3.add(10,21,32);
+        object2_3.add(10,22,33);
+        object2_3.add(9,22,32);
         objects2.add(object2_3);
 
         workspace.addObjects(objects1);
@@ -443,43 +443,43 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(10,22,32);
-        object2_3.addCoord(10,21,32);
-        object2_3.addCoord(10,22,33);
-        object2_3.addCoord(9,22,32);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(10,22,32);
+        object2_3.add(10,21,32);
+        object2_3.add(10,22,33);
+        object2_3.add(9,22,32);
         objects2.add(object2_3);
 
         workspace.addObjects(objects1);
@@ -551,44 +551,44 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(9,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         workspace.addObjects(objects1);
@@ -660,45 +660,45 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(10,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(9,13,33);
+        object2_3.add(10,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         workspace.addObjects(objects1);
@@ -770,48 +770,48 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
-        object2_2.addCoord(10,12,32);
-        object2_2.addCoord(11,12,32);
-        object2_2.addCoord(10,13,32);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_2.add(10,12,32);
+        object2_2.add(11,12,32);
+        object2_2.add(10,13,32);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(10,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
+        object2_3.add(9,13,33);
+        object2_3.add(10,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         workspace.addObjects(objects1);
@@ -883,48 +883,48 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
         // Creating a single test object
         ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(objectsName1,1,dppXY,dppZ,calibratedUnits,false);
+        Obj object1_1 = new Obj(objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
         object1_1.setT(2);
-        object1_1.addCoord(10,12,32);
-        object1_1.addCoord(11,12,32);
-        object1_1.addCoord(10,13,32);
-        object1_1.addCoord(10,14,32);
-        object1_1.addCoord(11,13,32);
-        object1_1.addCoord(10,12,33);
-        object1_1.addCoord(10,13,33);
-        object1_1.addCoord(11,12,33);
-        object1_1.addCoord(11,13,34);
-        object1_1.addCoord(10,12,34);
+        object1_1.add(10,12,32);
+        object1_1.add(11,12,32);
+        object1_1.add(10,13,32);
+        object1_1.add(10,14,32);
+        object1_1.add(11,13,32);
+        object1_1.add(10,12,33);
+        object1_1.add(10,13,33);
+        object1_1.add(11,12,33);
+        object1_1.add(11,13,34);
+        object1_1.add(10,12,34);
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
         ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(objectsName2,1,dppXY,dppZ,calibratedUnits,false);
+        Obj object2_1 = new Obj(objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
         object2_1.setT(2);
-        object2_1.addCoord(20,12,32);
-        object2_1.addCoord(20,11,32);
-        object2_1.addCoord(20,12,33);
-        object2_1.addCoord(19,12,32);
+        object2_1.add(20,12,32);
+        object2_1.add(20,11,32);
+        object2_1.add(20,12,33);
+        object2_1.add(19,12,32);
         objects2.add(object2_1);
 
-        Obj object2_2 = new Obj(objectsName2,2,dppXY,dppZ,calibratedUnits,false);
+        Obj object2_2 = new Obj(objectsName2,2,30,30,50,dppXY,dppZ,calibratedUnits);
         object2_2.setT(3);
-        object2_2.addCoord(9,13,32);
-        object2_2.addCoord(9,14,32);
-        object2_2.addCoord(10,14,32);
-        object2_2.addCoord(11,13,32);
-        object2_2.addCoord(10,12,33);
-        object2_2.addCoord(10,13,33);
-        object2_2.addCoord(9,13,33);
+        object2_2.add(9,13,32);
+        object2_2.add(9,14,32);
+        object2_2.add(10,14,32);
+        object2_2.add(11,13,32);
+        object2_2.add(10,12,33);
+        object2_2.add(10,13,33);
+        object2_2.add(9,13,33);
         objects2.add(object2_2);
 
-        Obj object2_3 = new Obj(objectsName2,3,dppXY,dppZ,calibratedUnits,false);
+        Obj object2_3 = new Obj(objectsName2,3,30,30,50,dppXY,dppZ,calibratedUnits);
         object2_3.setT(2);
-        object2_3.addCoord(9,13,33);
-        object2_3.addCoord(11,12,33);
-        object2_3.addCoord(11,13,34);
-        object2_3.addCoord(10,12,34);
-        object2_3.addCoord(10,12,35);
+        object2_3.add(9,13,33);
+        object2_3.add(11,12,33);
+        object2_3.add(11,13,34);
+        object2_3.add(10,12,34);
+        object2_3.add(10,12,35);
         objects2.add(object2_3);
 
         workspace.addObjects(objects1);

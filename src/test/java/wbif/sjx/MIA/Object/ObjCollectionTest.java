@@ -58,18 +58,18 @@ public class ObjCollectionTest {
 
         // Adding objects
         Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(3,1,6);
-        obj.addCoord(2,2,8);
+        obj.add(3,1,6);
+        obj.add(2,2,8);
         collection.add(obj);
 
         obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(3,2,2);
-        obj.addCoord(2,2,9);
+        obj.add(3,2,2);
+        obj.add(2,2,9);
         collection.add(obj);
 
         obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(4,1,2);
-        obj.addCoord(6,2,10);
+        obj.add(4,1,2);
+        obj.add(6,2,10);
         collection.add(obj);
 
         // Getting expected spatial limits
@@ -173,35 +173,35 @@ public class ObjCollectionTest {
 
         // Adding objects
         Obj obj1 = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj1.addCoord(3,2,2);
-        obj1.addCoord(2,2,9);
+        obj1.add(3,2,2);
+        obj1.add(2,2,9);
         collection.add(obj1);
 
         Obj obj2 = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj2.addCoord(3,2,2);
-        obj2.addCoord(2,2,9);
-        obj2.addCoord(3,1,6);
-        obj2.addCoord(2,2,8);
+        obj2.add(3,2,2);
+        obj2.add(2,2,9);
+        obj2.add(3,1,6);
+        obj2.add(2,2,8);
         collection.add(obj2);
 
         Obj obj3 = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        obj3.addCoord(4,1,2);
-        obj3.addCoord(6,2,10);
+        obj3.add(4,1,2);
+        obj3.add(6,2,10);
         collection.add(obj3);
 
         Obj oj4 = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        oj4.addCoord(4,1,2);
-        oj4.addCoord(6,2,10);
-        oj4.addCoord(3,2,2);
-        oj4.addCoord(2,2,9);
+        oj4.add(4,1,2);
+        oj4.add(6,2,10);
+        oj4.add(3,2,2);
+        oj4.add(2,2,9);
         collection.add(oj4);
 
         // Creating a test object with the same coordinates as one of the other objects
         Obj testObj = new Obj("Obj",5,dppXY,dppZ,calibratedUnits,false);
-        testObj.addCoord(3,1,6);
-        testObj.addCoord(2,2,8);
-        testObj.addCoord(3,2,2);
-        testObj.addCoord(2,2,9);
+        testObj.add(3,1,6);
+        testObj.add(2,2,8);
+        testObj.add(3,2,2);
+        testObj.add(2,2,9);
         collection.add(testObj);
 
         Obj actual = collection.getByEquals(testObj);

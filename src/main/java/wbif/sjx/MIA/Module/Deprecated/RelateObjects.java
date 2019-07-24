@@ -119,7 +119,7 @@ public class RelateObjects extends Module {
         for (Obj childObject:childObjects.values()) {
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
-            double dpp = childObject.getDistPerPxXY();
+            double dpp = childObject.getDppXY();
 
             for (Obj parentObject : parentObjects.values()) {
                 if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
@@ -232,7 +232,7 @@ public class RelateObjects extends Module {
         String referencePoint = parameters.getValue(REFERENCE_POINT);
 
         if (minLink != null) {
-            double dpp = childObject.getDistPerPxXY();
+            double dpp = childObject.getDppXY();
             childObject.addParent(minLink);
             minLink.addChild(childObject);
 
@@ -351,12 +351,12 @@ public class RelateObjects extends Module {
                     Point<Integer> centroid = new Point<>(xCent, yCent, zCent);
 
                     // If the centroid doesn't overlap, skip this link
-                    if (!parentObject.containsPoint(centroid)) continue;
+                    if (!parentObject.contains(centroid)) continue;
 
                 }
 
                 // Calculates the percentage overlap
-                double nTotal = (double) childObject.getNVoxels();
+                double nTotal = (double) childObject.size();
                 double nOverlap = (double) parentObject.getOverlap(childObject);
                 double overlap  = (nOverlap/nTotal)*100;
 
@@ -416,11 +416,6 @@ public class RelateObjects extends Module {
 
         if (exampleParent == null) return relatedObjects;
 
-        double dppXY = exampleParent.getDistPerPxXY();
-        double dppZ = exampleParent.getDistPerPxZ();
-        String calibratedUnits = exampleParent.getCalibratedUnits();
-        boolean twoD = exampleParent.is2D();
-
         Iterator<Obj> parentIterator = parentObjects.values().iterator();
         while (parentIterator.hasNext()) {
             Obj parentObj = parentIterator.next();
@@ -430,7 +425,7 @@ public class RelateObjects extends Module {
             if (currChildObjects.size() == 0) continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
-            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,twoD);
+            Obj relatedObject = new Obj(relatedObjectsName,relatedObjects.getAndIncrementID(),exampleParent);
             relatedObject.setT(parentObj.getT());
             relatedObjects.add(relatedObject);
 

@@ -53,10 +53,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private String outputObjectsName;
     private ObjCollection outputObjects;
 
+    private int width;
+    private int height;
+    private int nSlices;
     private double dppXY;
     private double dppZ;
     private String calibrationUnits;
-    private boolean twoD;
     private boolean overflow = false;
 
     private int elementHeight = 40;
@@ -291,15 +293,15 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
+        width = inputImagePlus.getWidth();
+        height = inputImagePlus.getHeight();
+        nSlices = inputImagePlus.getNSlices();
         dppXY = inputImagePlus.getCalibration().pixelWidth;
         dppZ = inputImagePlus.getCalibration().pixelDepth;
 
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle(messageOnImage);
-
-        // Checking if we have a 2D or 3D image
-        twoD = displayImagePlus.getNSlices() == 1;
 
         overlay = displayImagePlus.getOverlay();
         if (overlay == null) {
@@ -515,7 +517,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             if (currentRois.size() == 0) continue;
 
             // Creating the new object
-            Obj outputObject = new Obj(outputObjectsName, ID, dppXY, dppZ, calibrationUnits, twoD);
+            Obj outputObject = new Obj(outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
             outputObjects.add(outputObject);
 
             for (ObjRoi objRoi:currentRois) {
@@ -530,7 +532,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
-                        outputObject.addCoord(x, y, z - 1);
+                        outputObject.add(x, y, z - 1);
                     }
                 }
             }

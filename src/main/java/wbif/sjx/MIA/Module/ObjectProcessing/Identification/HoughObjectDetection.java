@@ -91,10 +91,12 @@ public class HoughObjectDetection extends Module {
 
         // Storing the image calibration
         Calibration calibration = ipl.getCalibration();
+        int width = ipl.getWidth();
+        int height = ipl.getHeight();
+        int nSlices = ipl.getNSlices();
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
-        boolean twoD = ipl.getNSlices()==1;
 
         // Iterating over all images in the ImagePlus
         int count = 1;
@@ -133,8 +135,8 @@ public class HoughObjectDetection extends Module {
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object
-                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), dppXY, dppZ,
-                                calibrationUnits,twoD);
+                        int ID = outputObjects.getAndIncrementID();
+                        Obj outputObject = new Obj(outputObjectsName,ID,width,height,nSlices,dppXY, dppZ,calibrationUnits);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0]);
@@ -152,7 +154,7 @@ public class HoughObjectDetection extends Module {
                             if (idx == -1) continue;
 
                             try {
-                                outputObject.addCoord(xx[i] + x, yy[i] + y, z);
+                                outputObject.add(xx[i] + x, yy[i] + y, z);
                             } catch (IntegerOverflowException e) {
                                 return false;
                             }

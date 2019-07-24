@@ -110,33 +110,33 @@ public class WorkspaceTest {
         Workspace workspace = new Workspace(0,null,0);
 
         Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         obj.calculateSurface();
         workspace.addObject(obj);
 
         obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
         obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
         obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
@@ -175,33 +175,33 @@ public class WorkspaceTest {
         Workspace workspace = new Workspace(0,null,0);
 
         Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         obj.calculateSurface();
         workspace.addObject(obj);
 
         obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
         obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
         obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);

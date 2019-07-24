@@ -52,15 +52,12 @@ public class ProjectObjects extends Module {
         }
 
         // Creating the new HCObject and assigning the parent-child relationship
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String calibratedUnits = inputObject.getCalibratedUnits();
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,is2D);
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),inputObject);
 
         // Adding coordinates to the projected object
         for (Double key : projCoords.keySet()) {
             int i = projCoords.get(key);
-            outputObject.addCoord(x.get(i),y.get(i),0);
+            outputObject.add(x.get(i),y.get(i),0);
         }
         outputObject.setT(inputObject.getT());
 

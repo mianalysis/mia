@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume2.Volume2;
 
 import java.util.HashSet;
 
@@ -43,20 +44,18 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2, boolean linkInSameFrame) {
-        HashSet<Point<Integer>> overlap = new HashSet<>();
+        int overlap = 0;
 
         // Running through each object, getting a list of overlapping pixels
         for (Obj obj2:inputObjects2.values()) {
             // If only linking objects in the same frame, we may just skip this object
             if (linkInSameFrame && inputObject1.getT() != obj2.getT()) continue;
 
-            HashSet<Point<Integer>> currentOverlap = inputObject1.getOverlappingPoints(obj2);
-
-            overlap.addAll(currentOverlap);
+            overlap = overlap + inputObject1.getOverlap(obj2);
 
         }
 
-        return overlap.size();
+        return overlap;
 
     }
 
@@ -87,11 +86,11 @@ public class MeasureObjectOverlap extends Module {
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj1:inputObjects1.values()) {
-            double dppXY = obj1.getDistPerPxXY();
-            double dppZ = obj1.getDistPerPxZ();
+            double dppXY = obj1.getDppXY();
+            double dppZ = obj1.getDppZ();
 
             // Calculating volume
-            double objVolume = (double) obj1.getNVoxels();
+            double objVolume = (double) obj1.size();
             double overlap = (double) getNOverlappingPoints(obj1,inputObjects1,inputObjects2,linkInSameFrame);
             double overlapVolPx = overlap*dppZ/dppXY;
             double overlapVolCal = overlap*dppXY*dppXY*dppZ;
@@ -109,11 +108,11 @@ public class MeasureObjectOverlap extends Module {
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj2:inputObjects2.values()) {
-            double dppXY = obj2.getDistPerPxXY();
-            double dppZ = obj2.getDistPerPxZ();
+            double dppXY = obj2.getDppXY();
+            double dppZ = obj2.getDppZ();
 
             // Calculating volume
-            double objVolume = (double) obj2.getNVoxels();
+            double objVolume = (double) obj2.size();
             double overlap = (double) getNOverlappingPoints(obj2,inputObjects2,inputObjects1,linkInSameFrame);
             double overlapVolPx = overlap*dppZ/dppXY;
             double overlapVolCal = overlap*dppXY*dppXY*dppZ;

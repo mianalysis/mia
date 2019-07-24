@@ -63,7 +63,7 @@ public class ReassignEnclosedObjects extends Module {
                 if (expanded == null) expanded = testObject;
 
                 for (Point<Integer> point : expanded.getPoints()) {
-                    object.addCoord(point.getX(), point.getY(), point.getZ());
+                    object.add(point.getX(), point.getY(), point.getZ());
                 }
 
                 // Removing the test object

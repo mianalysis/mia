@@ -66,7 +66,7 @@ public class CalculateNearestNeighbour extends Module {
     public void addMeasurements(Obj inputObject, Obj nearestNeighbour, String nearestNeighbourName) {
         // Adding details of the nearest neighbour to the input object's measurements
         if (nearestNeighbour != null) {
-            double dppXY = inputObject.getDistPerPxXY();
+            double dppXY = inputObject.getDppXY();
             double minDist = inputObject.getCentroidSeparation(nearestNeighbour,true);
 
             String name = getFullName(Measurements.NN_ID,nearestNeighbourName);
@@ -122,7 +122,7 @@ public class CalculateNearestNeighbour extends Module {
         if (firstObj == null) return true;
 
         // If the maximum linking distance was specified in calibrated units convert it to pixels
-        if (limitLinkingDistance && calibratedDistance) maxLinkingDist = maxLinkingDist/firstObj.getDistPerPxXY();
+        if (limitLinkingDistance && calibratedDistance) maxLinkingDist = maxLinkingDist/firstObj.getDppXY();
 
         // If the linking distance limit isn't to be used, use Double.MAX_VALUE instead
         if (!limitLinkingDistance) maxLinkingDist = Double.MAX_VALUE;

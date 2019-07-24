@@ -49,7 +49,7 @@ public class MeasureSkeleton extends Module {
     }
 
     static void addMeasurements(Obj inputObject, SkeletonResult skeletonResult) {
-        double dppXY = inputObject.getDistPerPxXY();
+        double dppXY = inputObject.getDppXY();
 
         inputObject.addMeasurement(new Measurement(Measurements.nBranches,skeletonResult.getBranches()[0]));
         inputObject.addMeasurement(new Measurement(Measurements.nJunctions,skeletonResult.getJunctions()[0]));

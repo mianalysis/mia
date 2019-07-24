@@ -55,30 +55,18 @@ public class CombineObjectSets extends Module {
         // Doing object merging
         for (Obj obj1:inputObjects1.values()) {
             int ID = outputObjects.getAndIncrementID();
-            double distXY = obj1.getDistPerPxXY();
-            double distZ = obj1.getDistPerPxZ();
-            String units = obj1.getCalibratedUnits();
-            boolean twoD = obj1.is2D();
-
-            Obj newObj = new Obj(outputObjectsName,ID,distXY,distZ,units,twoD);
+            Obj newObj = new Obj(outputObjectsName,ID,obj1);
             newObj.setPoints(obj1.getPoints());
             newObj.setT(obj1.getT());
             outputObjects.add(obj1);
-
         }
 
         for (Obj obj2:inputObjects2.values()) {
             int ID = outputObjects.getAndIncrementID();
-            double distXY = obj2.getDistPerPxXY();
-            double distZ = obj2.getDistPerPxZ();
-            String units = obj2.getCalibratedUnits();
-            boolean twoD = obj2.is2D();
-
-            Obj newObj = new Obj(outputObjectsName,ID,distXY,distZ,units,twoD);
+            Obj newObj = new Obj(outputObjectsName,ID,obj2);
             newObj.setPoints(obj2.getPoints());
             newObj.setT(obj2.getT());
             outputObjects.add(obj2);
-
         }
 
         // Adding the combined objects to the workspace

@@ -17,9 +17,4 @@ public class ProxSquares1 extends ExpectedObjects {
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/ProxSquares1.csv");
     }
-
-    @Override
-    public boolean is2D() {
-        return true;
-    }
 }

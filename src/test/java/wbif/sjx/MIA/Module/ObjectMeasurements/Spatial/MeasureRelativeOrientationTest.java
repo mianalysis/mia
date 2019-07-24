@@ -30,7 +30,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -46,7 +46,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -62,7 +62,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -78,7 +78,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -94,7 +94,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation30ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -110,7 +110,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation0ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -126,7 +126,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientationMinus30ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = -30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -142,7 +142,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientationMinus45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -163,7 +163,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -179,7 +179,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -195,7 +195,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -213,7 +213,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
 
 
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -229,7 +229,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation0ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -245,7 +245,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -261,7 +261,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -277,7 +277,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -293,7 +293,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -312,7 +312,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -328,7 +328,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -344,7 +344,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -360,7 +360,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -376,7 +376,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation0ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -392,7 +392,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -408,7 +408,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -424,7 +424,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -440,7 +440,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -459,7 +459,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -475,7 +475,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -491,7 +491,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -507,7 +507,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -523,7 +523,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation0ZeroNinety()throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -539,7 +539,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -555,7 +555,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -571,7 +571,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -587,7 +587,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -606,7 +606,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -622,7 +622,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -638,7 +638,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -654,7 +654,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -670,7 +670,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation0ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -686,7 +686,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus45ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -702,7 +702,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus90ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -718,7 +718,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus135ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -734,7 +734,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus180ZeroNinety() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_NINETY;
 
@@ -755,7 +755,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -771,7 +771,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -787,7 +787,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -803,7 +803,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -819,7 +819,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation30ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -835,7 +835,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientation0ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -851,7 +851,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientationMinus30ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = -30;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -867,7 +867,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAnglePosXOrientationMinus45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,10,0);
+        object.add(15,10,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -886,7 +886,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -902,7 +902,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -918,7 +918,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -934,7 +934,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -950,7 +950,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientation0ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -966,7 +966,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -982,7 +982,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -998,7 +998,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1014,7 +1014,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopRightOrientationMinus180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,15,0);
+        object.add(15,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1033,7 +1033,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1049,7 +1049,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1065,7 +1065,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1081,7 +1081,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1097,7 +1097,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientation0ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1113,7 +1113,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1129,7 +1129,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1145,7 +1145,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1161,7 +1161,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomRightOrientationMinus180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(15,5,0);
+        object.add(15,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1180,7 +1180,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1196,7 +1196,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1212,7 +1212,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1228,7 +1228,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1244,7 +1244,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientation0ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1260,7 +1260,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1276,7 +1276,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1292,7 +1292,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1308,7 +1308,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,5,0);
+        object.add(5,5,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1327,7 +1327,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1343,7 +1343,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1359,7 +1359,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1375,7 +1375,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1391,7 +1391,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientation0ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = 0;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1407,7 +1407,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus45ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -45;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1423,7 +1423,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus90ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -90;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1439,7 +1439,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus135ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -135;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 
@@ -1455,7 +1455,7 @@ public class MeasureRelativeOrientationTest extends ModuleTest {
     @Test
     public void testGetXYAngleTopLeftOrientationMinus180ZeroOneEighty() throws IntegerOverflowException {
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
-        object.addCoord(5,15,0);
+        object.add(5,15,0);
         double xyOrientation = -180;
         String measurementRange = MeasureRelativeOrientation.MeasurementRanges.ZERO_ONE_EIGHTY;
 

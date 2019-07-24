@@ -37,7 +37,7 @@ public class ListObjectsInWorkspaceMacro extends MacroOperation {
 
             boolean measTest = false;
             Obj firstObj = allObj.get(objName).getFirst();
-            if (firstObj != null) measTest = firstObj.getNVoxels() == 0;
+            if (firstObj != null) measTest = firstObj.size() == 0;
             String measurementsOnly = Boolean.toString(measTest);
 
             rt.setValue("Objects name",row,objName);

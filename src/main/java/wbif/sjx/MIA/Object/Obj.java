@@ -9,6 +9,9 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
+import wbif.sjx.common.Object.Volume2.PointVolume;
+import wbif.sjx.common.Object.Volume2.QuadTreeVolume;
+import wbif.sjx.common.Object.Volume2.Volume2;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -18,7 +21,7 @@ import java.util.TreeSet;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends Volume {
+public class Obj extends PointVolume {
     private String name;
 
     /**
@@ -39,8 +42,16 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
-    public Obj(String name, int ID, double dppXY, double dppZ, String calibratedUnits, boolean twoD) {
-        super(dppXY,dppZ,calibratedUnits,twoD);
+    public Obj(String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+        super(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+
+        this.name = name;
+        this.ID = ID;
+
+    }
+
+    public Obj(String name, int ID, Volume2 exampleVolume) {
+        super(exampleVolume);
 
         this.name = name;
         this.ID = ID;
@@ -49,24 +60,6 @@ public class Obj extends Volume {
 
 
     // PUBLIC METHODS
-
-//    public int[][] getCoordinateRange() {
-//        int[][] dimSize = new int[3][2];
-//
-//        ArrayList<Integer> x = getXCoords();
-//        ArrayList<Integer> y = getYCoords();
-//        ArrayList<Integer> z = getZCoords();
-//
-//        dimSize[0][0] = Collections.min(x);
-//        dimSize[0][1] = Collections.max(x);
-//        dimSize[1][0] = Collections.min(y);
-//        dimSize[1][1] = Collections.max(y);
-//        dimSize[2][0] = Collections.min(z);
-//        dimSize[2][1] = Collections.max(z);
-//
-//        return dimSize;
-//
-//    }
 
     public void addMeasurement(Measurement measurement) {
         if (measurement == null) return;
@@ -273,13 +266,13 @@ public class Obj extends Volume {
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
-        Obj sliceObj = new Obj("Slice",ID,dppXY,dppZ,calibratedUnits,twoD);
+        Obj sliceObj = new Obj("Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         sliceObj.setPoints(slicePoints);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(sliceObj);
 
-        double[][] extents = getExtents2D(true);
+        double[][] extents = getExtents(true,false);
         ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
@@ -296,7 +289,7 @@ public class Obj extends Volume {
 
     public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
         for (java.awt.Point point:roi.getContainedPoints()) {
-            addCoord((int) point.getX(),(int) point.getY(),z);
+            add((int) point.getX(),(int) point.getY(),z);
         }
     }
 
@@ -325,7 +318,7 @@ public class Obj extends Volume {
     public TreeSet<Point<Integer>> getSlicePoints(int slice) {
         TreeSet<Point<Integer>> slicePoints = new TreeSet<>();
 
-        for (Point<Integer> point:points) {
+        for (Point<Integer> point:getPoints()) {
             if (point.getZ()==slice) slicePoints.add(point);
         }
 
@@ -360,7 +353,7 @@ public class Obj extends Volume {
         int height = templateImage.getImagePlus().getHeight();
         int nSlices = templateImage.getImagePlus().getNSlices();
 
-        points.removeIf(point -> point.getX() < 0 || point.getX() >= width
+        getPoints().removeIf(point -> point.getX() < 0 || point.getX() >= width
                 || point.getY() < 0 || point.getY() >= height
                 || point.getZ() < 0 || point.getZ() >= nSlices);
 

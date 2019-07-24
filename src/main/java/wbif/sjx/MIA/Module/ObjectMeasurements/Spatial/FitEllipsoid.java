@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume;
+import wbif.sjx.common.Object.Volume2.Volume2;
 
 /**
  * Created by sc13967 on 19/06/2018.
@@ -100,8 +101,8 @@ public class FitEllipsoid extends Module {
 
         addMeasurements(inputObject,calculator);
 
-        Volume ellipsoid = calculator.getContainedPoints();
-        if (ellipsoid.getNVoxels() == 0) return;
+        Volume2 ellipsoid = calculator.getContainedPoints();
+        if (ellipsoid.size() == 0) return;
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -118,15 +119,10 @@ public class FitEllipsoid extends Module {
         }
     }
 
-    public Obj createNewObject (Obj inputObject, Volume ellipsoid, ObjCollection outputObjects) {
+    public Obj createNewObject (Obj inputObject, Volume2 ellipsoid, ObjCollection outputObjects) {
         if (ellipsoid == null) return null;
 
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String units = inputObject.getCalibratedUnits();
-        boolean is2D = inputObject.is2D();
-
-        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
+        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
         ellipsoidObject.setPoints(ellipsoid.getPoints());
         ellipsoidObject.setT(inputObject.getT());
 
@@ -138,13 +134,13 @@ public class FitEllipsoid extends Module {
 
     }
 
-    public void updateInputObject(Obj inputObject, Volume ellipsoid) {
+    public void updateInputObject(Obj inputObject, Volume2 ellipsoid) {
         inputObject.setPoints(ellipsoid.getPoints());
     }
 
     public void addMeasurements(Obj inputObject, EllipsoidCalculator calculator) {
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
+        double dppXY = inputObject.getDppXY();
+        double dppZ = inputObject.getDppZ();
 
         double[] centres = calculator.getCentroid();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0]));

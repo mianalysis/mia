@@ -105,8 +105,8 @@ public class RelateOneToOne extends Module {
                 if (overlap == 0) {
                     costs[i][j] = Double.MAX_VALUE;
                 } else {
-                    double overlapPercentage1 = 100*overlap/object1.getNVoxels();
-                    double overlapPercentage2 = 100*overlap/object2.getNVoxels();
+                    double overlapPercentage1 = 100*overlap/object1.size();
+                    double overlapPercentage2 = 100*overlap/object2.size();
 
                     // Checking the minimum overlaps have been met
                     if (overlapPercentage1> minOverlap1 && overlapPercentage2> minOverlap2) {
@@ -184,12 +184,7 @@ public class RelateOneToOne extends Module {
     }
 
     static Obj createClusterObject(Obj object1, Obj object2, String outputObjectsName, int ID) {
-        double dppXY = object1.getDistPerPxXY();
-        double dppZ = object1.getDistPerPxZ();
-        String units = object1.getCalibratedUnits();
-        boolean is2D = object1.is2D();
-
-        Obj outputObject = new Obj(outputObjectsName, ID, dppXY, dppZ, units, is2D);
+        Obj outputObject = new Obj(outputObjectsName,ID,object1);
 
         // Adding relationships
         outputObject.addChild(object1);
@@ -198,8 +193,8 @@ public class RelateOneToOne extends Module {
         object2.addParent(outputObject);
 
         // Adding measurements
-        double nPoints1 = (double) object1.getNVoxels();
-        double nPoints2 = (double) object2.getNVoxels();
+        double nPoints1 = (double) object1.size();
+        double nPoints2 = (double) object2.size();
         double nTotalPoints = nPoints1 + nPoints2;
         double fraction1 = nPoints1/nTotalPoints;
         double fraction2 = nPoints2/nTotalPoints;
@@ -254,7 +249,7 @@ public class RelateOneToOne extends Module {
         if (!createClusterObjects) outputObjectsName = null;
 
         Obj firstObj = inputObjects1.getFirst();
-        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDistPerPxXY();
+        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDppXY();
 
         // Calculating linking costs
         double[][] costs = null;

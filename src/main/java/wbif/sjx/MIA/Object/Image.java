@@ -103,8 +103,8 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                                 int outID = IDlink.get(imageID);
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits,twoD).setT(finalT));
-                                outputObjects.get(outID).addCoord(x,y,z);
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
+                                outputObjects.get(outID).add(x,y,z);
 
                             }
                         }

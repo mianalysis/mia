@@ -161,7 +161,7 @@ public class MeasureObjectIntensity extends Module {
         collection.add(object);
         CumStat cs = MeasureIntensityDistribution.measureIntensityWeightedProximity(collection,image,edgeDistanceMode);
 
-        double distPerPxXY = object.getDistPerPxXY();
+        double distPerPxXY = object.getDppXY();
 
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX), cs.getMean()));
         object.addMeasurement(new Measurement(Units.replace(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL)), cs.getMean()*distPerPxXY));
@@ -177,7 +177,7 @@ public class MeasureObjectIntensity extends Module {
         double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
         boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
         int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
-        double distPerPxXY = object.getDistPerPxXY();
+        double distPerPxXY = object.getDppXY();
 
         // Setting up CumStats to hold results
         LinkedHashMap<Double,CumStat> cumStats = new LinkedHashMap<>();

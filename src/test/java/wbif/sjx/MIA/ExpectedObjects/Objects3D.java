@@ -1,5 +1,8 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +20,10 @@ public class Objects3D extends ExpectedObjects {
         EXP_SPOT_PROX_CENT_20PX_X, EXP_SPOT_PROX_CENT_20PX_Y, EXP_SPOT_PROX_CENT_20PX_Z, EXP_SPOT_PROX_CENT_20PX_DIST,
         EXP_PROJ_DIA_PX, EXP_PROJ_DIA_CAL, EXP_BIN_N_VOXELS_4BINS_INRANGE, EXP_BIN_N_VOXELS_4BINS_SHORTRANGE,
         EXP_BIN_N_VOXELS_4BINS_HIGHRANGE
+    }
+
+    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+        return super.getObjects(objectName, mode, 64, 76, 12, dppXY, dppZ, calibratedUnits, includeMeasurements);
     }
 
     public HashMap<Integer,HashMap<String,Double>> getMeasurements() {
@@ -476,11 +483,6 @@ public class Objects3D extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/Objects3D.csv");
-    }
-
-    @Override
-    public boolean is2D() {
-        return false;
     }
 }
 

@@ -125,11 +125,6 @@ public class ExpandShrinkObjects extends Module {
         Obj firstObject = inputObjects.getFirst();
         if (firstObject == null) return true;
 
-        double dppXY = firstObject.getDistPerPxXY();
-        double dppZ = firstObject.getDistPerPxZ();
-        String calibrationUnits = firstObject.getCalibratedUnits();
-        boolean twoD = firstObject.is2D();
-
         // Iterating over all objects
         int count = 1;
         int total = inputObjects.size();
@@ -157,7 +152,7 @@ public class ExpandShrinkObjects extends Module {
             if (updateInputObjects) {
                 inputObject.setPoints(newObject.getPoints());
             } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,twoD);
+                Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),firstObject);
                 outputObject.setPoints(newObject.getPoints());
                 outputObjects.add(outputObject);
                 outputObject.setT(newObject.getT());

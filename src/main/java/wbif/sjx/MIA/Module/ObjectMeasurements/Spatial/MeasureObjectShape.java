@@ -105,7 +105,7 @@ public class MeasureObjectShape extends Module {
         for (Obj inputObject:inputObjects.values()) {
             // Adding the volume measurements
             if (measureVolume) {
-                int nVoxels = inputObject.getNVoxels();
+                int nVoxels = inputObject.size();
                 inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,nVoxels,this));
 
                 double containedVolumePx = inputObject.getContainedVolume(true);
@@ -127,8 +127,8 @@ public class MeasureObjectShape extends Module {
 
             // Adding the projected-object area measurements
             if (measureProjectedArea) {
-                double areaPx = projectedObject.getNVoxels();
-                double areaCal = areaPx*projectedObject.getDistPerPxXY()*projectedObject.getDistPerPxXY();
+                double areaPx = projectedObject.size();
+                double areaCal = areaPx*projectedObject.getDppXY()*projectedObject.getDppXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx, this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_AREA_CAL), areaCal, this));
             }
@@ -136,16 +136,16 @@ public class MeasureObjectShape extends Module {
             // Adding the projected-object diameter measurements
             if (measureProjectedDiameter) {
                 double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
-                double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDistPerPxXY();
+                double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDppXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
             }
 
             // Adding the projected-object perimeter measurements
             if (measureProjectedPerimeter) {
-                double areaPx = projectedObject.getNVoxels();
+                double areaPx = projectedObject.size();
                 double perimeterPx = projectedObject.getRoi(0).getLength();
-                double perimeterCal = perimeterPx*inputObject.getDistPerPxXY();
+                double perimeterCal = perimeterPx*inputObject.getDppXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX,perimeterPx,this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_PERIM_CAL),perimeterCal,this));
 

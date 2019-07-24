@@ -13,11 +13,6 @@ public class HorizontalCylinderR22 extends ExpectedObjects {
     }
 
     @Override
-    public boolean is2D() {
-        return false;
-    }
-
-    @Override
     public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
         HashMap<Integer, HashMap<String, Double>> expectedValues = new HashMap<>();
 

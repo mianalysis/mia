@@ -93,12 +93,6 @@ public class ActiveContourObjectDetection extends Module {
         int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS);
         boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME);
 
-        // Storing the image calibration
-        Calibration calibration = inputImagePlus.getCalibration();
-        double dppXY = calibration.getX(1);
-        double dppZ = calibration.getZ(1);
-        String calibrationUnits = calibration.getUnits();
-
         // Initialising the viewer
         GridOverlay gridOverlay = new GridOverlay();
         gridOverlay.setNodeRadius(2);
@@ -174,7 +168,7 @@ public class ActiveContourObjectDetection extends Module {
                     inputObject.clearPoints();
                     inputObject.addPointsFromRoi(newRoi,z);
                 } else {
-                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
+                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),inputObject);
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi,z);
                     outputObjects.add(outputObject);

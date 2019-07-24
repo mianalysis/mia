@@ -19,19 +19,13 @@ import static wbif.sjx.MIA.ExpectedObjects.ExpectedObjects.Mode.SIXTEEN_BIT;
  * Created by sc13967 on 12/02/2018.
  */
 public abstract class ExpectedObjects {
-    private boolean is2D;
     public abstract List<Integer[]> getCoordinates5D();
-    public abstract boolean is2D();
 
     public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
 
-    public ExpectedObjects() {
-        this.is2D = is2D();
-    }
-
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
-    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+    public ObjCollection getObjects(String objectName, Mode mode, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
         // Initialising object store
         ObjCollection testObjects = new ObjCollection(objectName);
 
@@ -59,10 +53,10 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits,is2D));
+            testObjects.putIfAbsent(ID,new Obj(objectName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits));
 
             Obj testObject = testObjects.get(ID);
-            testObject.addCoord(x,y,z);
+            testObject.add(x,y,z);
             testObject.setT(t);
 
         }

@@ -327,13 +327,13 @@ public class ObjTest {
     public void testHashCodeSameObject() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertEquals(obj1.hashCode(),obj2.hashCode());
 
@@ -343,13 +343,13 @@ public class ObjTest {
     public void testHashCodeDifferentOrder() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(3,5,1);
-        obj2.addCoord(1,3,4);
+        obj2.add(3,5,1);
+        obj2.add(1,3,4);
 
         assertEquals(obj1.hashCode(),obj2.hashCode());
 
@@ -359,13 +359,13 @@ public class ObjTest {
     public void testHashCodeDifferentNames() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertEquals(obj1.hashCode(),obj2.hashCode());
 
@@ -375,13 +375,13 @@ public class ObjTest {
     public void testHashCodeDifferentTimepoint() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,1,1);
-        obj1.addCoord(2,1,1);
+        obj1.add(1,1,1);
+        obj1.add(2,1,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(2);
-        obj2.addCoord(1,1,1);
-        obj2.addCoord(1,2,1);
+        obj2.add(1,1,1);
+        obj2.add(1,2,1);
 
         assertNotEquals(obj1.hashCode(),obj2.hashCode());
 
@@ -391,13 +391,13 @@ public class ObjTest {
     public void testHashCodeDifferentCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,3);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,3);
+        obj2.add(3,5,1);
 
         assertNotEquals(obj1.hashCode(),obj2.hashCode());
 
@@ -407,12 +407,12 @@ public class ObjTest {
     public void testHashCodeMissingCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
+        obj2.add(1,3,4);
 
         assertNotEquals(obj1.hashCode(),obj2.hashCode());
 
@@ -422,13 +422,13 @@ public class ObjTest {
     public void testEqualsSameObject() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -439,13 +439,13 @@ public class ObjTest {
     public void testEqualsDifferentOrder() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(3,5,1);
-        obj2.addCoord(1,3,4);
+        obj2.add(3,5,1);
+        obj2.add(1,3,4);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -456,13 +456,13 @@ public class ObjTest {
     public void testEqualsDifferentNames() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
@@ -473,13 +473,13 @@ public class ObjTest {
     public void testEqualsDifferentTimepoint() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,1,1);
-        obj1.addCoord(2,1,1);
+        obj1.add(1,1,1);
+        obj1.add(2,1,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(2);
-        obj2.addCoord(1,1,1);
-        obj2.addCoord(1,2,1);
+        obj2.add(1,1,1);
+        obj2.add(1,2,1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
@@ -490,13 +490,13 @@ public class ObjTest {
     public void testEqualsDifferentCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,3);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,3);
+        obj2.add(3,5,1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
@@ -507,12 +507,12 @@ public class ObjTest {
     public void testEqualsMissingCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
         Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
+        obj2.add(1,3,4);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));

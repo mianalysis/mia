@@ -17,11 +17,6 @@ public class Objects2D extends ExpectedObjects {
     }
 
     @Override
-    public boolean is2D() {
-        return true;
-    }
-
-    @Override
     public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
         HashMap<Integer,HashMap<String,Double>> expectedValues = new HashMap<>();
 
