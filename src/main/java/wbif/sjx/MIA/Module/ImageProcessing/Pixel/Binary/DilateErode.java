@@ -48,7 +48,7 @@ public class DilateErode extends Module {
         double dppZ = ipl.getCalibration().pixelDepth;
         double ratio = dppXY/dppZ;
 
-        Strel3D ballStrel = Strel3D.Shape.BALL.fromRadiusList(numIterations,(int) (numIterations*ratio),2);
+        Strel3D ballStrel = Strel3D.Shape.BALL.fromRadiusList(numIterations,numIterations,(int) (numIterations*ratio));
 
         // MorphoLibJ takes objects as being white
         InvertIntensity.process(ipl);
