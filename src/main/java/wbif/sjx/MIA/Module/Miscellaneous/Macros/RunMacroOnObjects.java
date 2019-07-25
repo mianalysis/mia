@@ -5,7 +5,6 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import ij.macro.CustomInterpreter;
 import ij.macro.Interpreter;
-import ij.measure.ResultsTable;
 import ij.text.TextWindow;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
@@ -149,11 +148,6 @@ public class RunMacroOnObjects extends CoreMacroRunner {
                 if (interpreter.wasError()) throw new RuntimeException();
             } catch (RuntimeException e) {
                 MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
-
-                // Closing the results table
-                TextWindow window = ResultsTable.getResultsWindow();
-                if (window != null) window.close(false);
-
                 return false;
             }
 
@@ -166,9 +160,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows
-        if (provideInputImage) {
-            for (ImagePlus openImage:openImages) openImage.show();
-        }
+        if (provideInputImage) for (ImagePlus openImage:openImages) openImage.show();
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 

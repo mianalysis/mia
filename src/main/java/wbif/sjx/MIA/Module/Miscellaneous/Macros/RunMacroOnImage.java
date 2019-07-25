@@ -5,7 +5,6 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import ij.macro.CustomInterpreter;
 import ij.macro.Interpreter;
-import ij.measure.ResultsTable;
 import ij.text.TextWindow;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
@@ -41,7 +40,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_SEPARATOR = "Measurement output";
-    public static final String ADD_INTERCEPTED_MEASUREMENT = "Add intercepted measurement";
+    public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
     public static final String MEASUREMENT_HEADING = "Measurement heading";
 
     public interface MacroModes {
@@ -84,7 +83,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
         LinkedHashMap<String,String> inputVariables = inputVariables(variableGroup,VARIABLE_NAME,VARIABLE_VALUE);
 
         // Getting a list of measurement headings
-        ParameterGroup measurementGroup = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        ParameterGroup measurementGroup = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(measurementGroup,MEASUREMENT_HEADING);
 
         // Setting the MacroHandler to the current workspace
@@ -118,18 +117,11 @@ public class RunMacroOnImage extends CoreMacroRunner {
             if (interpreter.wasError()) throw new RuntimeException();
         } catch (RuntimeException e) {
             MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
-
-            // Closing the results table
-            TextWindow window = ResultsTable.getResultsWindow();
-            if (window != null) window.close(false);
-
             return false;
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows
-        if (provideInputImage) {
-            for (ImagePlus openImage:openImages) openImage.show();
-        }
+        if (provideInputImage) for (ImagePlus openImage:openImages) openImage.show();
 
         if (interceptOutputImage && inputImagePlus != null) {
             if (applyToInput && inputImage != null) {
@@ -144,16 +136,12 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         // Intercepting measurements
         if (provideInputImage) {
-            ResultsTable table = ResultsTable.getResultsTable();
             for (String expectedMeasurement : expectedMeasurements) {
-                Measurement measurement = interceptMeasurement(table, expectedMeasurement);
+                double value = interpreter.getVariable(expectedMeasurement);
+                Measurement measurement = new Measurement(getFullName(expectedMeasurement), value);
                 inputImage.addMeasurement(measurement);
             }
         }
-
-        // Closing the results table
-        TextWindow window = ResultsTable.getResultsWindow();
-        if (window != null) window.close(false);
 
         return true;
 
@@ -185,7 +173,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection measurementCollection = new ParameterCollection();
         measurementCollection.add(new StringP(MEASUREMENT_HEADING,this));
-        parameters.add(new ParameterGroup(ADD_INTERCEPTED_MEASUREMENT,this,measurementCollection));
+        parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE,this,measurementCollection));
 
     }
 
@@ -229,7 +217,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
-            returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_VARIABLE));
         }
 
         return returnedParameters;
@@ -242,7 +230,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         String inputImage = parameters.getValue(INPUT_IMAGE);
 
-        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
 
         for (String expectedMeasurement:expectedMeasurements) {
