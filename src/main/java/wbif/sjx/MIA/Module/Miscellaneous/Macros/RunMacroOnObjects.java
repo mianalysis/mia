@@ -38,7 +38,8 @@ public class RunMacroOnObjects extends CoreMacroRunner {
     public static final String MACRO_FILE = "Macro file";
     public static final String REFRESH_BUTTON = "Refresh parameters";
     public static final String OUTPUT_SEPARATOR = "Measurement output";
-    public static final String ADD_INTERCEPTED_MEASUREMENT = "Add intercepted measurement";
+    public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
+//    public static final String VARIABLE_TYPE = "Variable type";
     public static final String MEASUREMENT_HEADING = "Measurement heading";
 
 
@@ -102,7 +103,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         LinkedHashMap<String,String> inputVariables = inputVariables(variableGroup,VARIABLE_NAME,VARIABLE_VALUE);
 
         // Getting a list of measurement headings
-        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
 
         // If the macro is stored as a file, load this to the macroText string
@@ -157,16 +158,11 @@ public class RunMacroOnObjects extends CoreMacroRunner {
             }
 
             // Intercepting measurements
-            ResultsTable table = ResultsTable.getResultsTable();
             for (String expectedMeasurement:expectedMeasurements) {
-                Measurement measurement = interceptMeasurement(table,expectedMeasurement);
+                double value = interpreter.getVariable(expectedMeasurement);
+                Measurement measurement = new Measurement(getFullName(expectedMeasurement),value);
                 inputObject.addMeasurement(measurement);
             }
-
-            // Closing the results table
-            TextWindow window = ResultsTable.getResultsWindow();
-            if (window != null) window.close(false);
-
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows
@@ -203,7 +199,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();
         collection.add(new StringP(MEASUREMENT_HEADING,this));
-        parameters.add(new ParameterGroup(ADD_INTERCEPTED_MEASUREMENT,this,collection));
+        parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE,this,collection));
 
     }
 
@@ -235,7 +231,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT));
+        returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_VARIABLE));
 
         return returnedParameters;
 
@@ -252,7 +248,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_MEASUREMENT);
+        ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
         LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
 
         for (String expectedMeasurement:expectedMeasurements) {
