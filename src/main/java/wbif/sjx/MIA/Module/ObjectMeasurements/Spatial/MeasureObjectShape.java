@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
@@ -113,6 +114,9 @@ public class MeasureObjectShape extends Module {
 
                 double containedVolumeCal = inputObject.getContainedVolume(false);
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL), containedVolumeCal, this));
+                MIA.log.writeDebug("NVox "+nVoxels);
+                MIA.log.writeDebug("VolPX "+containedVolumePx);
+                MIA.log.writeDebug("VolCal "+containedVolumeCal);
             }
 
             // If necessary analyses are included

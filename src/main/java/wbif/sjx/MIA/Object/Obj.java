@@ -53,7 +53,7 @@ public class Obj extends Volume2 {
     // CONSTRUCTORS
 
     public Obj(ObjectType objectType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
-        super(0,0,0,0,0,"");
+        super(width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
         switch (objectType) {
             case OCTREE:
@@ -61,6 +61,7 @@ public class Obj extends Volume2 {
                 break;
             case OPTIMISED:
                 MIA.log.writeError("Need to implement optimised volume creation.  Using PointVolume by default.");
+                objectType = ObjectType.POINTLIST;
                 volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
                 break;
             case POINTLIST:
@@ -77,11 +78,24 @@ public class Obj extends Volume2 {
 
     }
 
-    public Obj(String name, int ID, Volume2 exampleVolume) {
-        super(exampleVolume);
+    public Obj(String name, int ID, Obj exampleVolume) {
+        super(exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
 
+        this.objectType = exampleVolume.getObjectType();
         this.name = name;
         this.ID = ID;
+
+        switch (objectType) {
+            case OCTREE:
+                volume2 = new OcTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                break;
+            case POINTLIST:
+                volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                break;
+            case QUADTREE:
+                volume2 = new QuadTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                break;
+        }
 
     }
 
@@ -438,13 +452,18 @@ public class Obj extends Volume2 {
     }
 
     @Override
-    public void calculateSurface() {
-        volume2.calculateSurface();
+    public TreeSet<Point<Integer>> getSurface() {
+        return volume2.getSurface();
     }
 
     @Override
-    public void calculateMeanCentroid() {
-        volume2.calculateMeanCentroid();
+    public void clearSurface() {
+        volume2.clearSurface();
+    }
+
+    @Override
+    public Point<Double> getMeanCentroid() {
+        return volume2.getMeanCentroid();
     }
 
     @Override

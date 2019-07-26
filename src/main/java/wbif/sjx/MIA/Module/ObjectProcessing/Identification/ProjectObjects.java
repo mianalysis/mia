@@ -52,7 +52,15 @@ public class ProjectObjects extends Module {
         }
 
         // Creating the new HCObject and assigning the parent-child relationship
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),inputObject);
+        Obj.ObjectType type = inputObject.getObjectType();
+        int width = inputObject.getWidth();
+        int height = inputObject.getHeight();
+        int nSlices = inputObject.getnSlices();
+        double dppXY = inputObject.getDppXY();
+        double dppZ = inputObject.getDppZ();
+        String units = inputObject.getCalibratedUnits();
+
+        Obj outputObject = new Obj(type,outputObjectsName,inputObject.getID(),width,height,nSlices,dppXY,dppZ,units);
 
         // Adding coordinates to the projected object
         for (Double key : projCoords.keySet()) {
