@@ -17,6 +17,7 @@ import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
@@ -39,6 +40,7 @@ public class MIA implements Command {
     private static boolean debug = false;
     private static GlobalVariables globalVariables = new GlobalVariables(null);
     public static LogRenderer log = new BasicLogRenderer(); // This is effectively just for test methods
+    public static Obj.Type volumeType = Obj.Type.POINTLIST;
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.

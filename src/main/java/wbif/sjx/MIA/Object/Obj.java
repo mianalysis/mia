@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -15,14 +16,21 @@ import wbif.sjx.common.Object.Volume2.Volume2;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;
 
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends QuadTreeVolume {
+public class Obj extends Volume2 {
+    public enum Type {
+        OPTIMISED,POINTLIST,QUADTREE;
+    }
+
     private String name;
+    private Type type;
+    private Volume2 volume2;
 
     /**
      * Unique instance ID for this object
@@ -43,8 +51,25 @@ public class Obj extends QuadTreeVolume {
     // CONSTRUCTORS
 
     public Obj(String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
-        super(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        this(MIA.volumeType,name,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+    }
 
+    public Obj(Type type, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+        super(0,0,0,0,0,"");
+
+        switch (type) {
+            case OPTIMISED:
+                MIA.log.writeError("Need to implement optimised volume creation");
+                break;
+            case POINTLIST:
+                volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                break;
+            case QUADTREE:
+                volume2 = new QuadTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                break;
+        }
+
+        this.type = type;
         this.name = name;
         this.ID = ID;
 
@@ -109,6 +134,10 @@ public class Obj extends QuadTreeVolume {
     public Obj setT(int t) {
         T = t;
         return this;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -266,7 +295,7 @@ public class Obj extends QuadTreeVolume {
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
-        Obj sliceObj = new Obj("Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        Obj sliceObj = new Obj(type,"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         sliceObj.setPoints(slicePoints);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
@@ -374,5 +403,70 @@ public class Obj extends QuadTreeVolume {
 
         return (T == ((Obj) obj).T);
 
+    }
+
+    @Override
+    public Volume2 add(int x, int y, int z) {
+        return volume2.add(x,y,z);
+    }
+
+    @Override
+    public Volume2 add(Point<Integer> point) {
+        return volume2.add(point);
+    }
+
+    @Override
+    public void finalise() {
+        volume2.finalise();
+    }
+
+    @Override
+    public TreeSet<Point<Integer>> getPoints() {
+        return volume2.getPoints();
+    }
+
+    @Override
+    public Volume2 setPoints(TreeSet<Point<Integer>> points) {
+        return volume2.setPoints(points);
+    }
+
+    @Override
+    public void clearPoints() {
+        volume2.clearPoints();
+    }
+
+    @Override
+    public void calculateSurface() {
+        volume2.calculateSurface();
+    }
+
+    @Override
+    public void calculateMeanCentroid() {
+        volume2.calculateMeanCentroid();
+    }
+
+    @Override
+    public int size() {
+        return volume2.size();
+    }
+
+    @Override
+    public double getProjectedArea(boolean pixelDistances) {
+        return volume2.getProjectedArea(pixelDistances);
+    }
+
+    @Override
+    public boolean contains(Point<Integer> point1) {
+        return volume2.contains(point1);
+    }
+
+    @Override
+    public Volume2 createNewObject() {
+        return volume2.createNewObject();
+    }
+
+    @Override
+    public Iterator<Point<Integer>> iterator() {
+        return volume2.iterator();
     }
 }
