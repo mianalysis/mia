@@ -40,7 +40,7 @@ public class StringP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) MIA.getGlobalVariables().convertString(value);
+        return (T) module.getModules().getWorkflowParameters().convertString(value);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class StringP extends TextType {
     @Override
     public boolean verify() {
         // The only thing to check is that any global variables and metadata values have been defined
-        return MIA.getGlobalVariables().variablesPresent(value);
+        return module.getModules().getWorkflowParameters().variablesPresent(value);
 
     }
 }

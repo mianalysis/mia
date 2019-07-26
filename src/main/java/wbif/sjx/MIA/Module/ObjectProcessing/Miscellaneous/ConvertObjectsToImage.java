@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -73,7 +74,8 @@ public class ConvertObjectsToImage extends Module {
 
             ObjCollection objects = null;
             try {
-                objects = inputImage.convertImageToObjects(outputObjectsName);
+                Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+                objects = inputImage.convertImageToObjects(type,outputObjectsName);
             } catch (IntegerOverflowException e) {
                 return false;
             }

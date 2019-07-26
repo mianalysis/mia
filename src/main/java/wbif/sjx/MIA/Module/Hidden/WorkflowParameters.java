@@ -2,9 +2,7 @@ package wbif.sjx.MIA.Module.Hidden;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.StringP;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -15,12 +13,24 @@ import java.util.LinkedHashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GlobalVariables extends Module {
+public class WorkflowParameters extends Module {
+    public static final String CONFIGURATION_SEPARATOR = "Configuration";
+    public static final String OBJECT_TYPE = "Default object type";
+    public static final String GLOBAL_VARIABLES_SEPARATOR = "Global variables";
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_VALUE = "Variable value";
 
-    public GlobalVariables(ModuleCollection modules) {
+    public interface ObjectTypes {
+        String OPTIMISED = "Optimised";
+        String POINTLIST = "Point list";
+        String QUADTREE = "Quadtree";
+
+        String[] ALL = new String[]{OPTIMISED,POINTLIST,QUADTREE};
+
+    }
+
+    public WorkflowParameters(ModuleCollection modules) {
         super("Global variables",modules);
     }
 
@@ -105,10 +115,13 @@ public class GlobalVariables extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(CONFIGURATION_SEPARATOR,this));
+        parameters.add(new ChoiceP(OBJECT_TYPE,this,ObjectTypes.OPTIMISED,ObjectTypes.ALL));
+
         ParameterCollection parameterCollection = new ParameterCollection();
         parameterCollection.add(new StringP(VARIABLE_NAME,this));
         parameterCollection.add(new StringP(VARIABLE_VALUE,this));
-
+        parameters.add(new ParamSeparatorP(GLOBAL_VARIABLES_SEPARATOR,this));
         parameters.add(new ParameterGroup(ADD_NEW_VARIABLE,this,parameterCollection));
 
     }
@@ -142,4 +155,5 @@ public class GlobalVariables extends Module {
     public boolean verify() {
         return true;
     }
+
 }

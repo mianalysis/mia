@@ -6,6 +6,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -79,7 +80,8 @@ public class IdentifyObjects extends Module {
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            ObjCollection currOutputObjects = tempImage.convertImageToObjects(outputObjectsName,singleObject);
+            Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+            ObjCollection currOutputObjects = tempImage.convertImageToObjects(type,outputObjectsName,singleObject);
 
             // Updating the current objects (setting the real frame number and offsetting the ID)
             int maxID = 0;

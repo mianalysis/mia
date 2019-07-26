@@ -7,6 +7,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -139,7 +140,8 @@ public class RidgeDetection extends Module {
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
                         int ID = outputObjects.getAndIncrementID();
-                        Obj outputObject = new Obj(outputObjectsName,ID,imWidth,imHeight,nSlices,dppXY, dppZ,
+                        Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+                        Obj outputObject = new Obj(type,outputObjectsName,ID,imWidth,imHeight,nSlices,dppXY, dppZ,
                                 calibrationUnits);
 
                         double estimatedLength = 0;

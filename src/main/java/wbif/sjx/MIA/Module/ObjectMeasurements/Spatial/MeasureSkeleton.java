@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -125,7 +126,8 @@ public class MeasureSkeleton extends Module {
                 // Adding the skeleton to the input object
                 if (addToWorkspace) {
                     try {
-                        Obj outputObject = projectedImage.convertImageToObjects(outputObjectsName).getFirst();
+                        Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+                        Obj outputObject = projectedImage.convertImageToObjects(type,outputObjectsName).getFirst();
                         outputObject.setID(finalOutputObjects.getAndIncrementID());
                         inputObject.addChild(outputObject);
                         outputObject.addParent(inputObject);

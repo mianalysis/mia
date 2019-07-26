@@ -8,7 +8,6 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 
 public class TextAreaP extends TextType {
     private String value = "";
@@ -52,7 +51,7 @@ public class TextAreaP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) MIA.getGlobalVariables().convertString(value);
+        return (T) module.getModules().getWorkflowParameters().convertString(value);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class TextAreaP extends TextType {
     public boolean verify() {
         if (value.equals("")) return false;
 
-        return MIA.getGlobalVariables().variablesPresent(value);
+        return module.getModules().getWorkflowParameters().variablesPresent(value);
 
     }
 

@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import fiji.plugin.trackmate.util.Version;
-import ij.IJ;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
@@ -11,7 +10,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
@@ -103,14 +102,12 @@ public class AnalysisReader {
             module.setAttributesFromXML(moduleNode);
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new GlobalVariables(modules))) {
-                MIA.setGlobalVariables((GlobalVariables) module);
+            if (module.getClass().isInstance(new WorkflowParameters(modules))) {
+                analysis.getModules().setWorkflowParameters((WorkflowParameters) module);
             } else if (module.getClass().isInstance(new InputControl(modules))) {
                 analysis.getModules().setInputControl((InputControl) module);
-
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
                 analysis.getModules().setOutputControl((OutputControl) module);
-
             } else {
                 modules.add(module);
             }

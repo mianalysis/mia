@@ -9,6 +9,7 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -214,7 +215,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         // Converting binary image back to objects
-        return binaryImage.convertImageToObjects(outputObjects.getName(),false);
+        Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+        return binaryImage.convertImageToObjects(type,outputObjects.getName(),false);
 
     }
 
@@ -517,7 +519,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             if (currentRois.size() == 0) continue;
 
             // Creating the new object
-            Obj outputObject = new Obj(outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
+            Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+            Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
             outputObjects.add(outputObject);
 
             for (ObjRoi objRoi:currentRois) {

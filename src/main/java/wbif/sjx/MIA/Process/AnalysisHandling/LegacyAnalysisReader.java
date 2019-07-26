@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
@@ -92,9 +92,9 @@ public class LegacyAnalysisReader {
             if (module == null) continue;
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new GlobalVariables(modules))) {
+            if (module.getClass().isInstance(new WorkflowParameters(modules))) {
                 addSingleInstanceSpecificComponents(module,moduleNode);
-                MIA.setGlobalVariables((GlobalVariables) module);
+                analysis.getModules().setWorkflowParameters((WorkflowParameters) module);
             } else if (module.getClass().isInstance(new InputControl(modules))) {
                 addSingleInstanceSpecificComponents(module,moduleNode);
                 analysis.getModules().setInputControl((InputControl) module);

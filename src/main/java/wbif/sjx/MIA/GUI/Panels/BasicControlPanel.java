@@ -3,7 +3,7 @@ package wbif.sjx.MIA.GUI.Panels;
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
@@ -53,11 +53,11 @@ public class BasicControlPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        GlobalVariables globalVariables = MIA.getGlobalVariables();
+        WorkflowParameters workflowParameters = GUI.getModules().getWorkflowParameters();
         InputControl inputControl = GUI.getModules().getInputControl();
         OutputControl outputControl = GUI.getModules().getOutputControl();
 
-        AnalysisTester.testModule(globalVariables,GUI.getModules());
+        AnalysisTester.testModule(workflowParameters,GUI.getModules());
         AnalysisTester.testModule(inputControl,GUI.getModules());
         AnalysisTester.testModule(outputControl,GUI.getModules());
         AnalysisTester.testModules(GUI.getModules());
@@ -82,15 +82,15 @@ public class BasicControlPanel extends JScrollPane {
         c.insets = new Insets(0,0,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Adding global variable options
-        if (MIA.getGlobalVariables().hasVisibleParameters()) {
+        // Adding workflow parameters
+        if (GUI.getModules().getWorkflowParameters().hasVisibleParameters()) {
             c.insets = new Insets(5,0,0,5);
             panel.add(componentFactory.createBasicSeparator(globalVariablesSeparator,frameWidth-80),c);
             c.gridy++;
             c.insets = new Insets(0,0,0,5);
 
             if (((BooleanP) globalVariablesSeparator.getParameter(GUISeparator.EXPANDED_BASIC)).isSelected()) {
-                JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(globalVariables, frameWidth - 80);
+                JPanel globalVariablesPanel = componentFactory.createBasicModuleControl(workflowParameters, frameWidth - 80);
                 if (globalVariablesPanel != null) panel.add(globalVariablesPanel, c);
                 c.gridy++;
             }

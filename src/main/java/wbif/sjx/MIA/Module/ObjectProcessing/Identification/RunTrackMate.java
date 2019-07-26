@@ -121,7 +121,8 @@ public class RunTrackMate extends Module {
         ObjCollection spotObjects = new ObjCollection(spotObjectsName);
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
-            Obj spotObject = new Obj(spotObjectsName,spot.ID(),width,height,nSlices,dppXY,dppZ,calibrationUnits);
+            Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+            Obj spotObject = new Obj(type,spotObjectsName,spot.ID(),width,height,nSlices,dppXY,dppZ,calibrationUnits);
             spotObject.add((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
@@ -160,7 +161,8 @@ public class RunTrackMate extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = new Obj(trackObjectsName, trackID, width,height,nSlices,dppXY, dppZ, calibrationUnits);
+            Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+            Obj trackObject = new Obj(type,trackObjectsName, trackID, width,height,nSlices,dppXY, dppZ, calibrationUnits);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number

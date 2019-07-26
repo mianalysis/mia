@@ -6,10 +6,11 @@ import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume;
 import wbif.sjx.common.Object.Volume2.PointVolume;
 import wbif.sjx.common.Object.Volume2.QuadTreeVolume;
 import wbif.sjx.common.Object.Volume2.Volume2;
@@ -24,12 +25,12 @@ import java.util.TreeSet;
  * Created by Stephen on 30/04/2017.
  */
 public class Obj extends Volume2 {
-    public enum Type {
+    public enum ObjectType {
         OPTIMISED,POINTLIST,QUADTREE;
     }
 
     private String name;
-    private Type type;
+    private ObjectType objectType;
     private Volume2 volume2;
 
     /**
@@ -50,14 +51,10 @@ public class Obj extends Volume2 {
 
     // CONSTRUCTORS
 
-    public Obj(String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
-        this(MIA.volumeType,name,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
-    }
-
-    public Obj(Type type, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+    public Obj(ObjectType objectType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
         super(0,0,0,0,0,"");
 
-        switch (type) {
+        switch (objectType) {
             case OPTIMISED:
                 MIA.log.writeError("Need to implement optimised volume creation");
                 break;
@@ -69,7 +66,7 @@ public class Obj extends Volume2 {
                 break;
         }
 
-        this.type = type;
+        this.objectType = objectType;
         this.name = name;
         this.ID = ID;
 
@@ -136,8 +133,8 @@ public class Obj extends Volume2 {
         return this;
     }
 
-    public Type getType() {
-        return type;
+    public ObjectType getObjectType() {
+        return objectType;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -295,7 +292,7 @@ public class Obj extends Volume2 {
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
-        Obj sliceObj = new Obj(type,"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        Obj sliceObj = new Obj(objectType,"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         sliceObj.setPoints(slicePoints);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");

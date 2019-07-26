@@ -70,7 +70,8 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+            Obj outputObject = new Obj(type,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -96,7 +97,9 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (Cluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            int ID = outputObjects.getAndIncrementID();
+            Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+            Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();

@@ -82,7 +82,7 @@ public class ExpandShrinkObjects extends Module {
         InvertIntensity.process(objectImage);
 
         // Creating a new object collection (only contains one image) from the transformed image
-        ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
+        ObjCollection newObjects = objectImage.convertImageToObjects(inputObject.getObjectType(),"NewObjects");
 
         // During object shrinking it's possible the object will disappear entirely
         if (newObjects.size() == 0) return null;

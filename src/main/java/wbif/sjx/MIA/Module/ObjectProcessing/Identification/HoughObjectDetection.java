@@ -136,7 +136,8 @@ public class HoughObjectDetection extends Module {
                     for (double[] circle : circles) {
                         // Initialising the object
                         int ID = outputObjects.getAndIncrementID();
-                        Obj outputObject = new Obj(outputObjectsName,ID,width,height,nSlices,dppXY, dppZ,calibrationUnits);
+                        Obj.ObjectType type = Obj.ObjectType.QUADTREE;
+                        Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY, dppZ,calibrationUnits);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0]);

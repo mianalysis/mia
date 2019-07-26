@@ -59,12 +59,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         }
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName) throws IntegerOverflowException {
-        return convertImageToObjects(outputObjectsName,false);
+    public ObjCollection convertImageToObjects(Obj.ObjectType type, String outputObjectsName) throws IntegerOverflowException {
+        return convertImageToObjects(type,outputObjectsName,false);
 
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) throws IntegerOverflowException {
+    public ObjCollection convertImageToObjects(Obj.ObjectType type, String outputObjectsName, boolean singleObject) throws IntegerOverflowException {
         // Need to get coordinates and convert to a HCObject
         ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 
@@ -103,7 +103,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                                 int outID = IDlink.get(imageID);
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(type,outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
                                 outputObjects.get(outID).add(x,y,z);
 
                             }
