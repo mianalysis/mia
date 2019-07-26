@@ -80,7 +80,7 @@ public class IdentifyObjects extends Module {
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+            Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
             ObjCollection currOutputObjects = tempImage.convertImageToObjects(type,outputObjectsName,singleObject);
 
             // Updating the current objects (setting the real frame number and offsetting the ID)

@@ -215,7 +215,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         // Converting binary image back to objects
-        Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+        Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
         return binaryImage.convertImageToObjects(type,outputObjects.getName(),false);
 
     }
@@ -519,7 +519,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             if (currentRois.size() == 0) continue;
 
             // Creating the new object
-            Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+            Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
             Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
             outputObjects.add(outputObject);
 

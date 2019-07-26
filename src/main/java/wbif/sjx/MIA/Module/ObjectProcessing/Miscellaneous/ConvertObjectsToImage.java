@@ -74,7 +74,7 @@ public class ConvertObjectsToImage extends Module {
 
             ObjCollection objects = null;
             try {
-                Obj.ObjectType type = modules.getWorkflowParameters().getParameterValue(WorkflowParameters.OBJECT_TYPE);
+                Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
                 objects = inputImage.convertImageToObjects(type,outputObjectsName);
             } catch (IntegerOverflowException e) {
                 return false;

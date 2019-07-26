@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.Hidden;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -22,16 +23,31 @@ public class WorkflowParameters extends Module {
     public static final String VARIABLE_VALUE = "Variable value";
 
     public interface ObjectTypes {
+        String OCTREE = "Octree";
         String OPTIMISED = "Optimised";
         String POINTLIST = "Point list";
         String QUADTREE = "Quadtree";
 
-        String[] ALL = new String[]{OPTIMISED,POINTLIST,QUADTREE};
+        String[] ALL = new String[]{OCTREE,OPTIMISED,POINTLIST,QUADTREE};
 
     }
 
     public WorkflowParameters(ModuleCollection modules) {
         super("Global variables",modules);
+    }
+
+    public Obj.ObjectType getObjectType() {
+        switch ((String) parameters.getValue(OBJECT_TYPE)) {
+            case ObjectTypes.OCTREE:
+                return Obj.ObjectType.OCTREE;
+            case ObjectTypes.OPTIMISED:
+                return Obj.ObjectType.OPTIMISED;
+            case ObjectTypes.POINTLIST:
+            default:
+                return Obj.ObjectType.POINTLIST;
+            case ObjectTypes.QUADTREE:
+                return Obj.ObjectType.QUADTREE;
+        }
     }
 
     public String convertString(String string) {

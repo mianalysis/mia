@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume2.OcTreeVolume;
 import wbif.sjx.common.Object.Volume2.PointVolume;
 import wbif.sjx.common.Object.Volume2.QuadTreeVolume;
 import wbif.sjx.common.Object.Volume2.Volume2;
@@ -26,7 +27,7 @@ import java.util.TreeSet;
  */
 public class Obj extends Volume2 {
     public enum ObjectType {
-        OPTIMISED,POINTLIST,QUADTREE;
+        OCTREE,OPTIMISED,POINTLIST,QUADTREE;
     }
 
     private String name;
@@ -55,8 +56,12 @@ public class Obj extends Volume2 {
         super(0,0,0,0,0,"");
 
         switch (objectType) {
+            case OCTREE:
+                volume2 = new OcTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                break;
             case OPTIMISED:
-                MIA.log.writeError("Need to implement optimised volume creation");
+                MIA.log.writeError("Need to implement optimised volume creation.  Using PointVolume by default.");
+                volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
                 break;
             case POINTLIST:
                 volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);

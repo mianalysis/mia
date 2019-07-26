@@ -135,7 +135,6 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         // Labelling pixels in image
         for (Obj object:values()) {
-            MIA.log.writeDebug("Object "+object.getID());
             int tPos = object.getT();
             for (Point<Integer> point:object) {
                 int xPos = point.x;
