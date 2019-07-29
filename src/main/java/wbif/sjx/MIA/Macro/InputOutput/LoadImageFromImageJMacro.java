@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Macro.InputOutput;
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class LoadImageFromImageJMacro extends MacroOperation {
@@ -21,9 +22,9 @@ public class LoadImageFromImageJMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         // Create Module
-        ImageLoader imageLoader = new ImageLoader(workspace.getAnalysis().getModules());
+        ImageLoader imageLoader = new ImageLoader(modules);
 
         // Updating parameters
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,(String) objects[0]);

@@ -97,7 +97,7 @@ public class EvalButton extends JButton implements ActionListener {
             GUI.getTestWorkspace().clearAllImages(false);
             GUI.getTestWorkspace().clearAllObjects(false);
             GUI.getTestWorkspace().clearMetadata();
-            GUI.getTestWorkspace().clearAnalysis();
+
         }
 
         // If it's currently evaluating, this will kill the thread
@@ -151,7 +151,6 @@ public class EvalButton extends JButton implements ActionListener {
         GUI.updateModuleStates(false);
 
         Module.setVerbose(true);
-        testWorkspace.setAnalysis(GUI.getAnalysis());
         boolean success = module.execute(testWorkspace);
         if (success) GUI.setLastModuleEval(modules.indexOf(module));
         GUI.setModuleBeingEval(-1);

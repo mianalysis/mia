@@ -219,7 +219,6 @@ public class BatchProcessor extends FileCrawler {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
 
             // Setting a reference to the analysis (this may be wanted by certain modules to check input/output options)
-            workspace.setAnalysis(analysis);
             String seriesName = seriesNumbers.get(seriesNumber);
             if (seriesName.equals("")) seriesName = "FILE: "+rootFolder.getFolderAsFile().getName();
             workspace.getMetadata().setSeriesName(seriesName);

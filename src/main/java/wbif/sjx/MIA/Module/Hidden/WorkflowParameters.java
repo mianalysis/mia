@@ -50,6 +50,23 @@ public class WorkflowParameters extends Module {
         }
     }
 
+    public void setObjectType(Obj.ObjectType type) {
+        switch (type) {
+            case OCTREE:
+                parameters.updateValue(OBJECT_TYPE,ObjectTypes.OCTREE);
+                break;
+            case OPTIMISED:
+                parameters.updateValue(OBJECT_TYPE,ObjectTypes.OPTIMISED);
+                break;
+            case POINTLIST:
+                parameters.updateValue(OBJECT_TYPE,ObjectTypes.POINTLIST);
+                break;
+            case QUADTREE:
+                parameters.updateValue(OBJECT_TYPE,ObjectTypes.QUADTREE);
+                break;
+        }
+    }
+
     public String convertString(String string) {
         Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
         Matcher matcher = pattern.matcher(string);

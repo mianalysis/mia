@@ -128,8 +128,8 @@ public class MeasureObjectOverlap extends Module {
 
         }
 
-        if (showOutput) inputObjects1.showMeasurements(this,workspace.getAnalysis().getModules());
-        if (showOutput) inputObjects2.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects1.showMeasurements(this,modules);
+        if (showOutput) inputObjects2.showMeasurements(this,modules);
 
         return true;
 

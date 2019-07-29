@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Macro.ObjectMeasurements.Spatial;
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.Units;
@@ -24,7 +25,7 @@ public class MeasureSingleObjectCentroidMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         String inputObjectsName = (String) objects[0];
         int inputObjectsID = (int) Math.round((Double) objects[1]);
 

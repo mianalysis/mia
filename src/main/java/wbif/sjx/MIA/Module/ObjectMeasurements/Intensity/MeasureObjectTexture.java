@@ -171,7 +171,7 @@ public class MeasureObjectTexture extends Module {
             processObject(object,inputImage,textureCalculator,centroidMeasurement,offs,calibratedOffset);
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

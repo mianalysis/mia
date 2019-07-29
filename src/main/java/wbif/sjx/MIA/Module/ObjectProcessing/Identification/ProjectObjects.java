@@ -52,7 +52,7 @@ public class ProjectObjects extends Module {
         }
 
         // Creating the new HCObject and assigning the parent-child relationship
-        Obj.ObjectType type = inputObject.getObjectType();
+        Obj.ObjectType type = inputObject.getVolumeType();
         int width = inputObject.getWidth();
         int height = inputObject.getHeight();
         int nSlices = inputObject.getnSlices();

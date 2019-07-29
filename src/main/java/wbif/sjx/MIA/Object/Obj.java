@@ -6,15 +6,10 @@ import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume2.OcTreeVolume;
-import wbif.sjx.common.Object.Volume2.PointVolume;
-import wbif.sjx.common.Object.Volume2.QuadTreeVolume;
-import wbif.sjx.common.Object.Volume2.Volume2;
+import wbif.sjx.common.Object.Volume.Volume;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -25,14 +20,8 @@ import java.util.TreeSet;
 /**
  * Created by Stephen on 30/04/2017.
  */
-public class Obj extends Volume2 {
-    public enum ObjectType {
-        OCTREE,OPTIMISED,POINTLIST,QUADTREE;
-    }
-
+public class Obj extends Volume {
     private String name;
-    private ObjectType objectType;
-    private Volume2 volume2;
 
     /**
      * Unique instance ID for this object
@@ -52,50 +41,19 @@ public class Obj extends Volume2 {
 
     // CONSTRUCTORS
 
-    public Obj(ObjectType objectType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
-        super(width,height,nSlices,dppXY,dppZ,calibratedUnits);
+    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+        super(volumeType,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
-        switch (objectType) {
-            case OCTREE:
-                volume2 = new OcTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-            case OPTIMISED:
-                MIA.log.writeError("Need to implement optimised volume creation.  Using PointVolume by default.");
-                objectType = ObjectType.POINTLIST;
-                volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-            case POINTLIST:
-                volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-            case QUADTREE:
-                volume2 = new QuadTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-        }
-
-        this.objectType = objectType;
         this.name = name;
         this.ID = ID;
 
     }
 
     public Obj(String name, int ID, Obj exampleVolume) {
-        super(exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
+        super(exampleVolume.getVolumeType(),exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
 
-        this.objectType = exampleVolume.getObjectType();
         this.name = name;
         this.ID = ID;
-
-        switch (objectType) {
-            case OCTREE:
-                volume2 = new OcTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-            case POINTLIST:
-                volume2 = new PointVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-            case QUADTREE:
-                volume2 = new QuadTreeVolume(width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
-        }
 
     }
 
@@ -150,10 +108,6 @@ public class Obj extends Volume2 {
     public Obj setT(int t) {
         T = t;
         return this;
-    }
-
-    public ObjectType getObjectType() {
-        return objectType;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -311,7 +265,7 @@ public class Obj extends Volume2 {
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
-        Obj sliceObj = new Obj(objectType,"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        Obj sliceObj = new Obj(volumeType,"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         sliceObj.setPoints(slicePoints);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
@@ -442,7 +396,7 @@ public class Obj extends Volume2 {
     }
 
     @Override
-    public Volume2 setPoints(TreeSet<Point<Integer>> points) {
+    public Volume setPoints(TreeSet<Point<Integer>> points) {
         return volume2.setPoints(points);
     }
 
@@ -484,6 +438,11 @@ public class Obj extends Volume2 {
     @Override
     public Volume2 createNewObject() {
         return volume2.createNewObject();
+    }
+
+    @Override
+    public long getNumberOfElements() {
+        return volume2.getNumberOfElements();
     }
 
     @Override

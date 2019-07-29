@@ -405,8 +405,8 @@ public class MeasureTrackMotion extends Module {
 
         }
 
-        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,workspace.getAnalysis().getModules());
-        if (showOutput) trackObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,modules);
+        if (showOutput) trackObjects.showMeasurements(this,modules);
 
         return true;
 

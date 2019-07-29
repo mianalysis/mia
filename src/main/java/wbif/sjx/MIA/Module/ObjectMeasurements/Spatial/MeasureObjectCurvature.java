@@ -400,7 +400,7 @@ public class MeasureObjectCurvature extends Module {
             new Image("Spline",referenceImageImagePlus).showImage();
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

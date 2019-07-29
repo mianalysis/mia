@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.ObjectMeasurements.Spatial;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectOverlap;
 import wbif.sjx.MIA.Object.Workspace;
 
@@ -21,8 +22,8 @@ public class MeasureObjectOverlapMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        MeasureObjectOverlap measureObjectOverlap = new MeasureObjectOverlap(modules);
 
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_1,objects[0]);
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objects[1]);

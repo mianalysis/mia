@@ -70,7 +70,7 @@ public class MeasureObjectCentroid extends Module {
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

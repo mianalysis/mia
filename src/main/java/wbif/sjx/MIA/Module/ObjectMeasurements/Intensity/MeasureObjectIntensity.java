@@ -290,7 +290,7 @@ public class MeasureObjectIntensity extends Module {
             for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl);
         }
 
-        if (showOutput) objects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) objects.showMeasurements(this,modules);
 
         return true;
 

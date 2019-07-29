@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
 public abstract class MacroOperation extends ExtensionDescriptor {
@@ -20,7 +21,7 @@ public abstract class MacroOperation extends ExtensionDescriptor {
 
     public abstract String getName();
     public abstract int[] getArgumentTypes();
-    public abstract String action(Object[] objects, Workspace workspace);
+    public abstract String action(Object[] objects, Workspace workspace, ModuleCollection modules);
     public abstract String getArgumentsDescription();
     public abstract String getDescription();
 
