@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.Calendar;
@@ -140,9 +141,7 @@ public class RidgeDetection extends Module {
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
                         int ID = outputObjects.getAndIncrementID();
-                        Obj.ObjectType type = Obj.ObjectType.POINTLIST;
-                        Obj outputObject = new Obj(type,outputObjectsName,ID,imWidth,imHeight,nSlices,dppXY, dppZ,
-                                calibrationUnits);
+                        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,ID,imWidth,imHeight,nSlices,dppXY, dppZ,calibrationUnits);
 
                         double estimatedLength = 0;
                         CumStat width = new CumStat();

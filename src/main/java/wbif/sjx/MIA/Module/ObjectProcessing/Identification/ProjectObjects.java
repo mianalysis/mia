@@ -16,6 +16,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.Object.Volume.Volume;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,41 +33,10 @@ public class ProjectObjects extends Module {
     }
 
     public static Obj process(Obj inputObject, String outputObjectsName, boolean is2D, boolean addRelationship) throws IntegerOverflowException {
-        ArrayList<Integer> x = inputObject.getXCoords();
-        ArrayList<Integer> y = inputObject.getYCoords();
+        Volume projected = inputObject.getProjected();
 
-        // All coordinate pairs will be stored in a HashMap, which will prevent coordinate duplication.  The keys
-        // will correspond to the 2D index, for which we need to know the maximum x coordinate.
-        double maxX = -Double.MAX_VALUE;
-        for (double currX : x) {
-            if (currX > maxX) {
-                maxX = currX;
-            }
-        }
-
-        // Running through all coordinates, adding them to the HashMap
-        HashMap<Double, Integer> projCoords = new HashMap<>();
-        for (int i = 0; i < x.size(); i++) {
-            Double key = y.get(i) * maxX + x.get(i);
-            projCoords.put(key, i);
-        }
-
-        // Creating the new HCObject and assigning the parent-child relationship
-        Obj.ObjectType type = inputObject.getVolumeType();
-        int width = inputObject.getWidth();
-        int height = inputObject.getHeight();
-        int nSlices = inputObject.getnSlices();
-        double dppXY = inputObject.getDppXY();
-        double dppZ = inputObject.getDppZ();
-        String units = inputObject.getCalibratedUnits();
-
-        Obj outputObject = new Obj(type,outputObjectsName,inputObject.getID(),width,height,nSlices,dppXY,dppZ,units);
-
-        // Adding coordinates to the projected object
-        for (Double key : projCoords.keySet()) {
-            int i = projCoords.get(key);
-            outputObject.add(x.get(i),y.get(i),0);
-        }
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),projected);
+        outputObject.setCoordinateStore(projected.getCoordinateStore());
         outputObject.setT(inputObject.getT());
 
         // If adding relationship

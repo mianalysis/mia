@@ -11,8 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume;
-import wbif.sjx.common.Object.Volume2.Volume2;
+import wbif.sjx.common.Object.Volume.Volume;
 
 /**
  * Created by sc13967 on 19/06/2018.
@@ -101,7 +100,7 @@ public class FitEllipsoid extends Module {
 
         addMeasurements(inputObject,calculator);
 
-        Volume2 ellipsoid = calculator.getContainedPoints();
+        Volume ellipsoid = calculator.getContainedPoints();
         if (ellipsoid.size() == 0) return;
 
         switch (objectOutputMode) {
@@ -119,7 +118,7 @@ public class FitEllipsoid extends Module {
         }
     }
 
-    public Obj createNewObject (Obj inputObject, Volume2 ellipsoid, ObjCollection outputObjects) {
+    public Obj createNewObject (Obj inputObject, Volume ellipsoid, ObjCollection outputObjects) {
         if (ellipsoid == null) return null;
 
         Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
@@ -134,7 +133,7 @@ public class FitEllipsoid extends Module {
 
     }
 
-    public void updateInputObject(Obj inputObject, Volume2 ellipsoid) {
+    public void updateInputObject(Obj inputObject, Volume ellipsoid) {
         inputObject.setPoints(ellipsoid.getPoints());
     }
 

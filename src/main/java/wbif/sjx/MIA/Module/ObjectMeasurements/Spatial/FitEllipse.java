@@ -9,8 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume;
-import wbif.sjx.common.Object.Volume2.Volume2;
+import wbif.sjx.common.Object.Volume.Volume;
 
 /**
  * Created by sc13967 on 19/06/2018.
@@ -80,7 +79,7 @@ public class FitEllipse extends Module {
 
         if (calculator == null || Double.isNaN(calculator.getXCentre())) return;
 
-        Volume2 ellipse = calculator.getContainedPoints();
+        Volume ellipse = calculator.getContainedPoints();
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -97,7 +96,7 @@ public class FitEllipse extends Module {
         }
     }
 
-    public Obj createNewObject (Obj inputObject, Volume2 ellipse, ObjCollection outputObjects) {
+    public Obj createNewObject (Obj inputObject, Volume ellipse, ObjCollection outputObjects) {
         if (ellipse == null) return null;
 
         Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
@@ -112,7 +111,7 @@ public class FitEllipse extends Module {
 
     }
 
-    public void updateInputObject(Obj inputObject, Volume2 ellipsoid) {
+    public void updateInputObject(Obj inputObject, Volume ellipsoid) {
         inputObject.setPoints(ellipsoid.getPoints());
     }
 

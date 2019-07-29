@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -24,30 +25,29 @@ public class PerformanceTest {
 
     @Test
     public static void main(String[] args) throws UnsupportedEncodingException {
-        String path = URLDecoder.decode(PerformanceTest.class.getResource("/performance/Spot1.tif").getPath(),"UTF-8");
+        String path = URLDecoder.decode(PerformanceTest.class.getResource("/performance/BigFilled.tif").getPath(),"UTF-8");
         runImage(path);
     }
 
     public static void runImage(String path) {
         // Testing PointVolume
         System.out.println("PointVolume");
-        runTest(path,Obj.ObjectType.POINTLIST);
+        runTest(path, Image.VolumeTypes.POINTLIST);
 
         // Testing Quadtree
         System.out.println("QuadTreeVolume");
-        runTest(path,Obj.ObjectType.QUADTREE);
+        runTest(path,Image.VolumeTypes.QUADTREE);
 
         // Testing Octree
         System.out.println("OctreeVolulme");
-        runTest(path,Obj.ObjectType.OCTREE);
+        runTest(path,Image.VolumeTypes.OCTREE);
 
     }
 
-    public static void runTest(String path, Obj.ObjectType type) {
+    public static void runTest(String path, String type) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
         ModuleCollection modules = new ModuleCollection();
-        modules.getWorkflowParameters().setObjectType(type);
 
         // Loading the test image and adding to workspace
         ImagePlus ipl = IJ.openImage(path);
@@ -55,7 +55,7 @@ public class PerformanceTest {
         workspace.addImage(image);
 
         // Creating the object
-        Obj obj = getObject(workspace,modules);
+        Obj obj = getObject(workspace,modules,type);
 
         // Testing object memory properties
         evaluateObjectMemory(obj);
@@ -68,12 +68,13 @@ public class PerformanceTest {
 
     }
 
-    public static Obj getObject(Workspace workspace, ModuleCollection modules) {
+    public static Obj getObject(Workspace workspace, ModuleCollection modules, String type) {
         // Initialising IdentifyObjects
         IdentifyObjects identifyObjects = new IdentifyObjects(modules);
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,INPUT_IMAGE);
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,OUTPUT_OBJECTS);
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,true);
+        identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE,type);
 
         // Running IdentifyObjects
         long startTime = System.nanoTime();
@@ -83,7 +84,7 @@ public class PerformanceTest {
         Obj obj = workspace.getObjectSet(OUTPUT_OBJECTS).getFirst();
 
         // Reporting creation time
-        System.out.println("    Load objects time = "+((endTime-startTime)*1E6)+" ms");
+        System.out.println("    Load objects time = "+((endTime-startTime)/1E6)+" ms");
 
         return obj;
 
@@ -100,11 +101,11 @@ public class PerformanceTest {
 
     public static void evaluateFullAccessTime(Obj obj) {
         long startTime = System.nanoTime();
-        for (Point<Integer> point:obj);
+        for (Point<Integer> point:obj.getCoordinateStore());
         long endTime = System.nanoTime();
 
         // Reporting full volume access time
-        System.out.println("    Full access time = "+((endTime-startTime)*1E6)+" ms");
+        System.out.println("    Full access time = "+((endTime-startTime)/1E6)+" ms");
 
     }
 
@@ -122,7 +123,7 @@ public class PerformanceTest {
         long startTime = System.nanoTime();
         long endTime = System.nanoTime();
 
-        System.out.println("    Full access time = "+((endTime-startTime)*1E6)+" ms");
+        System.out.println("    Full access time = "+((endTime-startTime)/1E6)+" ms");
 
     }
 }

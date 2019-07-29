@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.Volume;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class Obj extends Volume {
 
     }
 
-    public Obj(String name, int ID, Obj exampleVolume) {
+    public Obj(String name, int ID, Volume exampleVolume) {
         super(exampleVolume.getVolumeType(),exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
 
         this.name = name;
@@ -74,12 +75,6 @@ public class Obj extends Volume {
 
     public void removeMeasurement(String name) {
         measurements.remove(name);
-
-    }
-
-    @Override
-    public String toString() {
-        return "Object " + name + ", ID = "+ID + ", frame = "+ T ;
 
     }
 
@@ -265,7 +260,7 @@ public class Obj extends Volume {
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
-        Obj sliceObj = new Obj(volumeType,"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         sliceObj.setPoints(slicePoints);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
@@ -373,80 +368,5 @@ public class Obj extends Volume {
 
         return (T == ((Obj) obj).T);
 
-    }
-
-    @Override
-    public Volume2 add(int x, int y, int z) {
-        return volume2.add(x,y,z);
-    }
-
-    @Override
-    public Volume2 add(Point<Integer> point) {
-        return volume2.add(point);
-    }
-
-    @Override
-    public void finalise() {
-        volume2.finalise();
-    }
-
-    @Override
-    public TreeSet<Point<Integer>> getPoints() {
-        return volume2.getPoints();
-    }
-
-    @Override
-    public Volume setPoints(TreeSet<Point<Integer>> points) {
-        return volume2.setPoints(points);
-    }
-
-    @Override
-    public void clearPoints() {
-        volume2.clearPoints();
-    }
-
-    @Override
-    public TreeSet<Point<Integer>> getSurface() {
-        return volume2.getSurface();
-    }
-
-    @Override
-    public void clearSurface() {
-        volume2.clearSurface();
-    }
-
-    @Override
-    public Point<Double> getMeanCentroid() {
-        return volume2.getMeanCentroid();
-    }
-
-    @Override
-    public int size() {
-        return volume2.size();
-    }
-
-    @Override
-    public double getProjectedArea(boolean pixelDistances) {
-        return volume2.getProjectedArea(pixelDistances);
-    }
-
-    @Override
-    public boolean contains(Point<Integer> point1) {
-        return volume2.contains(point1);
-    }
-
-    @Override
-    public Volume2 createNewObject() {
-        return volume2.createNewObject();
-    }
-
-    @Override
-    public long getNumberOfElements() {
-        return volume2.getNumberOfElements();
-    }
-
-    @Override
-    public Iterator<Point<Integer>> iterator() {
-        return volume2.iterator();
     }
 }

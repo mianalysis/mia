@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import javax.annotation.Nullable;
@@ -39,6 +40,15 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     private ImagePlus imagePlus;
     private LinkedHashMap<String,Measurement> measurements = new LinkedHashMap<>();
 
+    public interface VolumeTypes {
+        String OCTREE = "Octree";
+        String OPTIMISED = "Optimised";
+        String POINTLIST = "Pointlist";
+        String QUADTREE = "Quadtree";
+
+        String[] ALL = new String[]{OCTREE,OPTIMISED,POINTLIST,QUADTREE};
+
+    }
 
     // CONSTRUCTORS
 
@@ -59,12 +69,22 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         }
     }
 
-    public ObjCollection convertImageToObjects(Obj.ObjectType type, String outputObjectsName) throws IntegerOverflowException {
+    public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
+        String type = getVolumeType(volumeType);
+        return convertImageToObjects(type,outputObjectsName);
+    }
+
+    public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
+        String type = getVolumeType(volumeType);
+        return convertImageToObjects(type,outputObjectsName,singleObject);
+    }
+
+    public ObjCollection convertImageToObjects(String type, String outputObjectsName) {
         return convertImageToObjects(type,outputObjectsName,false);
 
     }
 
-    public ObjCollection convertImageToObjects(Obj.ObjectType type, String outputObjectsName, boolean singleObject) throws IntegerOverflowException {
+    public ObjCollection convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
         // Need to get coordinates and convert to a HCObject
         ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 
@@ -80,6 +100,8 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         int nSlices = imagePlus.getNSlices();
         int nFrames = imagePlus.getNFrames();
         int nChannels = imagePlus.getNChannels();
+
+        VolumeType volumeType = getVolumeType(type);
 
         for (int c=0;c<nChannels;c++) {
             for (int t = 0; t < nFrames; t++) {
@@ -103,7 +125,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                                 int outID = IDlink.get(imageID);
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(type,outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(volumeType,outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
                                 outputObjects.get(outID).add(x,y,z);
 
                             }
@@ -119,6 +141,33 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         return outputObjects;
 
+    }
+
+    VolumeType getVolumeType(String volumeType) {
+        switch (volumeType) {
+            case VolumeTypes.OCTREE:
+                return VolumeType.OCTREE;
+            case VolumeTypes.OPTIMISED:
+                System.out.println("Need to implement optimised");
+                return VolumeType.POINTLIST;
+            case VolumeTypes.POINTLIST:
+            default:
+                return VolumeType.POINTLIST;
+            case VolumeTypes.QUADTREE:
+                return VolumeType.QUADTREE;
+        }
+    }
+
+    String getVolumeType(VolumeType volumeType) {
+        switch (volumeType) {
+            case OCTREE:
+                return VolumeTypes.OCTREE;
+            case POINTLIST:
+            default:
+                return VolumeTypes.POINTLIST;
+            case QUADTREE:
+                return VolumeTypes.QUADTREE;
+        }
     }
 
 

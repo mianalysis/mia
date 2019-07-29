@@ -35,6 +35,7 @@ public class IdentifyObjects extends Module {
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
+    public static final String VOLUME_TYPE = "Volume type";
 
     public IdentifyObjects(ModuleCollection modules) {
         super("Identify objects",modules);
@@ -48,9 +49,11 @@ public class IdentifyObjects extends Module {
 
     }
 
+    public interface VolumeTypes extends Image.VolumeTypes {}
+
 
     private ObjCollection importFromImage(Image inputImage, String outputObjectsName, boolean whiteBackground,
-                                          boolean singleObject, int connectivity, int labelBitDepth)
+                                          boolean singleObject, int connectivity, String type)
             throws IntegerOverflowException, RuntimeException {
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
@@ -75,12 +78,16 @@ public class IdentifyObjects extends Module {
             if (whiteBackground) InvertIntensity.process(currStack);
 
             // Applying connected components labelling
-            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, labelBitDepth);
-            currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+            try {
+                FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+            } catch (RuntimeException e2) {
+                FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+            }
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
             ObjCollection currOutputObjects = tempImage.convertImageToObjects(type,outputObjectsName,singleObject);
 
             // Updating the current objects (setting the real frame number and offsetting the ID)
@@ -135,22 +142,12 @@ public class IdentifyObjects extends Module {
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         String connectivityName = parameters.getValue(CONNECTIVITY);
+        String type = parameters.getValue(VOLUME_TYPE);
 
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
-        ObjCollection outputObjects = null;
-        try {
-            try {
-                outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 16);
-            } catch (RuntimeException e2) {
-                outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 32);
-            }
-        } catch (IntegerOverflowException e3) {
-            return false;
-        }
-
-        writeMessage(outputObjects.size()+" objects detected");
+        ObjCollection outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, type);
 
         // Adding objects to workspace
         writeMessage("Adding objects ("+outputObjectsName+") to workspace");
@@ -180,6 +177,7 @@ public class IdentifyObjects extends Module {
         parameters.add(new BooleanP(WHITE_BACKGROUND,this,true));
         parameters.add(new BooleanP(SINGLE_OBJECT,this,false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.OPTIMISED, VolumeTypes.ALL));
 
     }
 

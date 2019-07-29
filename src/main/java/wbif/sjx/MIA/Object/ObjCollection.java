@@ -136,7 +136,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Labelling pixels in image
         for (Obj object:values()) {
             int tPos = object.getT();
-            for (Point<Integer> point:object) {
+            for (Point<Integer> point:object.getCoordinateStore()) {
                 int xPos = point.x;
                 int yPos = point.y;
                 int zPos = point.z;

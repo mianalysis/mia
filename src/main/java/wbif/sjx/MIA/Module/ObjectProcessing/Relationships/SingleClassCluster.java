@@ -29,6 +29,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,8 +71,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj.ObjectType type = Obj.ObjectType.POINTLIST;
-            Obj outputObject = new Obj(type,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -98,7 +98,7 @@ public class SingleClassCluster extends Module {
         // Assigning relationships between points and clusters
         for (Cluster<LocationWrapper> cluster:clusters) {
             int ID = outputObjects.getAndIncrementID();
-            Obj.ObjectType type = Obj.ObjectType.POINTLIST;
+            VolumeType type = VolumeType.POINTLIST;
             Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
             for (LocationWrapper point:cluster.getPoints()) {

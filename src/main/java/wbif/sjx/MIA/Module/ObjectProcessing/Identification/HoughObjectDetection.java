@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
+import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -136,8 +137,7 @@ public class HoughObjectDetection extends Module {
                     for (double[] circle : circles) {
                         // Initialising the object
                         int ID = outputObjects.getAndIncrementID();
-                        Obj.ObjectType type = Obj.ObjectType.QUADTREE;
-                        Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY, dppZ,calibrationUnits);
+                        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,ID,width,height,nSlices,dppXY, dppZ,calibrationUnits);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0]);

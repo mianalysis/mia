@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -72,6 +73,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
+    public static final String VOLUME_TYPE = "Volume type";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
 
@@ -90,6 +92,22 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
+    public interface VolumeTypes extends Image.VolumeTypes {}
+
+    VolumeType getVolumeType(String volumeType) {
+        switch (volumeType) {
+            case Image.VolumeTypes.OCTREE:
+                return VolumeType.OCTREE;
+            case Image.VolumeTypes.OPTIMISED:
+            default:
+                System.out.println("Need to implement optimised - look into number of slices and sort of ROI tool used");
+                return VolumeType.POINTLIST;
+            case Image.VolumeTypes.POINTLIST:
+                return VolumeType.POINTLIST;
+            case Image.VolumeTypes.QUADTREE:
+                return VolumeType.QUADTREE;
+        }
+    }
 
     private void showOptionsPanel() {
         rois = new HashMap<>();
@@ -193,7 +211,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) throws IntegerOverflowException {
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode, String type) throws IntegerOverflowException {
         // Create a binary image of the objects
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
         Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,hues,8,false);
@@ -215,7 +233,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         // Converting binary image back to objects
-        Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
+        VolumeType volumeType = getVolumeType(type);
         return binaryImage.convertImageToObjects(type,outputObjects.getName(),false);
 
     }
@@ -289,6 +307,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
+        String type = parameters.getValue(VOLUME_TYPE);
         String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
 
         // Getting input image
@@ -341,7 +360,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             case InterpolationModes.TEMPORAL:
             case InterpolationModes.SPATIAL_AND_TEMPORAL:
                 try {
-                    outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                    outputObjects = applyInterpolation(outputObjects,inputImage,interpolationMode,type);
                 } catch (IntegerOverflowException e) {
                     return false;
                 }
@@ -369,6 +388,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
         parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL,"Interpolation method used for reducing the number of selections that must be made"));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.OPTIMISED, VolumeTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image", "Message to display in title of image."));
 
     }
@@ -519,8 +539,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             if (currentRois.size() == 0) continue;
 
             // Creating the new object
-            Obj.ObjectType type = modules.getWorkflowParameters().getObjectType();
-            Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
+            String type = parameters.getValue(VOLUME_TYPE);
+            VolumeType volumeType = getVolumeType(type);
+            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
             outputObjects.add(outputObject);
 
             for (ObjRoi objRoi:currentRois) {

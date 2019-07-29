@@ -15,57 +15,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WorkflowParameters extends Module {
-    public static final String CONFIGURATION_SEPARATOR = "Configuration";
-    public static final String OBJECT_TYPE = "Default object type";
     public static final String GLOBAL_VARIABLES_SEPARATOR = "Global variables";
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_VALUE = "Variable value";
 
-    public interface ObjectTypes {
-        String OCTREE = "Octree";
-        String OPTIMISED = "Optimised";
-        String POINTLIST = "Point list";
-        String QUADTREE = "Quadtree";
-
-        String[] ALL = new String[]{OCTREE,OPTIMISED,POINTLIST,QUADTREE};
-
-    }
 
     public WorkflowParameters(ModuleCollection modules) {
-        super("Global variables",modules);
+        super("Workflow parameters",modules);
     }
 
-    public Obj.ObjectType getObjectType() {
-        switch ((String) parameters.getValue(OBJECT_TYPE)) {
-            case ObjectTypes.OCTREE:
-                return Obj.ObjectType.OCTREE;
-            case ObjectTypes.OPTIMISED:
-                return Obj.ObjectType.OPTIMISED;
-            case ObjectTypes.POINTLIST:
-            default:
-                return Obj.ObjectType.POINTLIST;
-            case ObjectTypes.QUADTREE:
-                return Obj.ObjectType.QUADTREE;
-        }
-    }
-
-    public void setObjectType(Obj.ObjectType type) {
-        switch (type) {
-            case OCTREE:
-                parameters.updateValue(OBJECT_TYPE,ObjectTypes.OCTREE);
-                break;
-            case OPTIMISED:
-                parameters.updateValue(OBJECT_TYPE,ObjectTypes.OPTIMISED);
-                break;
-            case POINTLIST:
-                parameters.updateValue(OBJECT_TYPE,ObjectTypes.POINTLIST);
-                break;
-            case QUADTREE:
-                parameters.updateValue(OBJECT_TYPE,ObjectTypes.QUADTREE);
-                break;
-        }
-    }
 
     public String convertString(String string) {
         Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
@@ -148,9 +107,6 @@ public class WorkflowParameters extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(CONFIGURATION_SEPARATOR,this));
-        parameters.add(new ChoiceP(OBJECT_TYPE,this,ObjectTypes.OPTIMISED,ObjectTypes.ALL));
-
         ParameterCollection parameterCollection = new ParameterCollection();
         parameterCollection.add(new StringP(VARIABLE_NAME,this));
         parameterCollection.add(new StringP(VARIABLE_VALUE,this));

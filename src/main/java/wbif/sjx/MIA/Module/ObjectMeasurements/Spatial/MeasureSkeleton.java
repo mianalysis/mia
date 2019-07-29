@@ -126,8 +126,7 @@ public class MeasureSkeleton extends Module {
                 // Adding the skeleton to the input object
                 if (addToWorkspace) {
                     try {
-                        Obj.ObjectType type = Obj.ObjectType.POINTLIST;
-                        Obj outputObject = projectedImage.convertImageToObjects(type,outputObjectsName).getFirst();
+                        Obj outputObject = projectedImage.convertImageToObjects(Image.VolumeTypes.POINTLIST,outputObjectsName).getFirst();
                         outputObject.setID(finalOutputObjects.getAndIncrementID());
                         inputObject.addChild(outputObject);
                         outputObject.addParent(inputObject);

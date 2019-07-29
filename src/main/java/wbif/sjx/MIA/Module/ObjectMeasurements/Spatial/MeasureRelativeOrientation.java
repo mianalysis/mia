@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume;
 
 import java.util.HashMap;
 

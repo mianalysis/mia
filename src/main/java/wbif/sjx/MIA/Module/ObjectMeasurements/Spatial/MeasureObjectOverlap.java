@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume2.Volume2;
 
 import java.util.HashSet;
 
