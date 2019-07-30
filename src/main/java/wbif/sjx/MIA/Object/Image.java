@@ -21,6 +21,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -105,9 +106,8 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         for (int c=0;c<nChannels;c++) {
             for (int t = 0; t < nFrames; t++) {
-                // HashMap linking the ID numbers in the present frame to those used to store the object (this means
-                // each frame instance has different ID numbers)
-                HashMap<Integer,Integer> IDlink = new HashMap<>();
+                // If using optimised type, prepare a linkmap, otherwise use a blank map
+                HashMap<Integer,IDLink> links = (type.equals(VolumeTypes.OPTIMISED)) ? getOptimisedLinks() : new HashMap<>();
 
                 for (int z = 0; z < nSlices; z++) {
                     imagePlus.setPosition(c+1,z+1,t+1);
@@ -120,9 +120,9 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                             if (singleObject && imageID != 0) imageID = 1;
 
                             if (imageID != 0) {
-                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getAndIncrementID());
+                                links.putIfAbsent(imageID,new IDLink(imageID,outputObjects.getAndIncrementID()));
 
-                                int outID = IDlink.get(imageID);
+                                int outID = links.get(imageID).ID;
                                 int finalT = t;
 
                                 outputObjects.computeIfAbsent(outID, k -> new Obj(volumeType,outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
@@ -143,32 +143,68 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    VolumeType getVolumeType(String volumeType) {
-        switch (volumeType) {
-            case VolumeTypes.OCTREE:
-                return VolumeType.OCTREE;
-            case VolumeTypes.OPTIMISED:
-                System.out.println("Need to implement optimised");
-                return VolumeType.POINTLIST;
-            case VolumeTypes.POINTLIST:
-            default:
-                return VolumeType.POINTLIST;
-            case VolumeTypes.QUADTREE:
-                return VolumeType.QUADTREE;
-        }
+    HashMap<Integer,IDLink> getOptimisedLinks() {
+        return null;
     }
 
-    String getVolumeType(VolumeType volumeType) {
-        switch (volumeType) {
-            case OCTREE:
-                return VolumeTypes.OCTREE;
-            case POINTLIST:
-            default:
-                return VolumeTypes.POINTLIST;
-            case QUADTREE:
-                return VolumeTypes.QUADTREE;
-        }
-    }
+//    public ObjCollection convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
+//        // Need to get coordinates and convert to a HCObject
+//        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
+//
+//        // Getting spatial calibration
+//        double dppXY = imagePlus.getCalibration().getX(1);
+//        double dppZ = imagePlus.getCalibration().getZ(1);
+//        String calibratedUnits = imagePlus.getCalibration().getUnits();
+//        boolean twoD = getImagePlus().getNSlices()==1;
+//        ImageProcessor ipr = imagePlus.getProcessor();
+//
+//        int h = imagePlus.getHeight();
+//        int w = imagePlus.getWidth();
+//        int nSlices = imagePlus.getNSlices();
+//        int nFrames = imagePlus.getNFrames();
+//        int nChannels = imagePlus.getNChannels();
+//
+//        VolumeType volumeType = getVolumeType(type);
+//
+//        for (int c=0;c<nChannels;c++) {
+//            for (int t = 0; t < nFrames; t++) {
+//                // HashMap linking the ID numbers in the present frame to those used to store the object (this means
+//                // each frame instance has different ID numbers)
+//                HashMap<Integer,Integer> IDlink = new HashMap<>();
+//
+//                for (int z = 0; z < nSlices; z++) {
+//                    imagePlus.setPosition(c+1,z+1,t+1);
+//                    for (int x = 0; x < w; x++) {
+//                        for (int y = 0; y < h; y++) {
+//                            // Getting the ID of this object in the current stack.
+//                            int imageID = (int) ipr.getPixelValue(x, y);
+//
+//                            // If assigning a single object ID, this is the same value for all objects
+//                            if (singleObject && imageID != 0) imageID = 1;
+//
+//                            if (imageID != 0) {
+//                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getAndIncrementID());
+//
+//                                int outID = IDlink.get(imageID);
+//                                int finalT = t;
+//
+//                                outputObjects.computeIfAbsent(outID, k -> new Obj(volumeType,outputObjectsName,outID,w,h,nSlices,dppXY,dppZ,calibratedUnits).setT(finalT));
+//                                outputObjects.get(outID).add(x,y,z);
+//
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        for (Obj obj:outputObjects.values()) {
+//            obj.finalise();
+//        }
+//
+//        return outputObjects;
+//
+//    }
 
 
     // PUBLIC METHODS
@@ -267,6 +303,36 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         // Displaying the results table
         rt.show("All measurements for \""+name+"\"");
 
+    }
+
+
+    // PACKAGE PRIVATE METHODS
+
+    VolumeType getVolumeType(String volumeType) {
+        switch (volumeType) {
+            case VolumeTypes.OCTREE:
+                return VolumeType.OCTREE;
+            case VolumeTypes.OPTIMISED:
+                System.out.println("Need to implement optimised");
+                return VolumeType.POINTLIST;
+            case VolumeTypes.POINTLIST:
+            default:
+                return VolumeType.POINTLIST;
+            case VolumeTypes.QUADTREE:
+                return VolumeType.QUADTREE;
+        }
+    }
+
+    String getVolumeType(VolumeType volumeType) {
+        switch (volumeType) {
+            case OCTREE:
+                return VolumeTypes.OCTREE;
+            case POINTLIST:
+            default:
+                return VolumeTypes.POINTLIST;
+            case QUADTREE:
+                return VolumeTypes.QUADTREE;
+        }
     }
 
 
@@ -373,5 +439,38 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         return true;
 
+    }
+
+    class IDLink {
+        private final int ID;
+        private final int pixelIntensity;
+        private final CumStat csX;
+        private final CumStat csY;
+        private final CumStat csZ;
+        private VolumeType volumeType = null;
+
+        IDLink(int pixelIntensity,int ID) {
+            this.pixelIntensity = pixelIntensity;
+            this.ID = ID;
+            this.csX = new CumStat();
+            this.csY = new CumStat();
+            this.csZ = new CumStat();
+        }
+
+        void addMeasurement(int x, int y, int z) {
+            csX.addMeasure(x);
+            csY.addMeasure(y);
+            csZ.addMeasure(z);
+        }
+
+        VolumeType getVolumeType() {
+            if (volumeType == null) volumeType = calculateVolumeType();
+            return volumeType;
+        }
+
+        VolumeType calculateVolumeType() {
+            // Use CumStat to determine VolumeType
+            return null;
+        }
     }
 }
