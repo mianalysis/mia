@@ -1,8 +1,11 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -35,10 +38,10 @@ public class HoughObjectDetection extends Module {
     public static final String DETECTION_SEPARATOR = "Hough-based circle detection";
     public static final String MIN_RADIUS = "Minimum radius (px)";
     public static final String MAX_RADIUS = "Maximum radius (px)";
-    public static final String SAMPLE_FRACTION = "Sample fraction (0 = none, 1 = all)";
     public static final String DETECTION_THRESHOLD = "Detection threshold";
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
-    public static final String RANDOM_SAMPLING = "Random sampling (faster, but less accurate)";
+    public static final String SAMPLING_RATE = "Sampling rate";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public static final String VISUALISATION_SEPARATOR = "Visualisation controls";
     public static final String SHOW_DETECTION_IMAGE = "Show detection image";
@@ -80,8 +83,8 @@ public class HoughObjectDetection extends Module {
         // Getting parameters
         int minR = parameters.getValue(MIN_RADIUS);
         int maxR = parameters.getValue(MAX_RADIUS);
-        boolean randomSampling = parameters.getValue(RANDOM_SAMPLING);
-        double sampleFraction = parameters.getValue(SAMPLE_FRACTION);
+        int samplingRate = parameters.getValue(SAMPLING_RATE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
@@ -96,6 +99,11 @@ public class HoughObjectDetection extends Module {
         String calibrationUnits = calibration.getUnits();
         boolean twoD = ipl.getNSlices()==1;
 
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+
+        minR = (int) ((double) minR/(double) samplingRate);
+        maxR = (int) ((double) maxR/(double) samplingRate);
+
         // Iterating over all images in the ImagePlus
         int count = 1;
         int total = ipl.getNChannels()*ipl.getNSlices()*ipl.getNFrames();
@@ -105,11 +113,14 @@ public class HoughObjectDetection extends Module {
                 for (int t = 0; t < ipl.getNFrames(); t++) {
                     ipl.setPosition(c + 1, z + 1, t + 1);
 
+                    // Applying scaling
+                    ImageProcessor ipr = ipl.getProcessor();
+                    if (samplingRate != 1) ipr = ipr.resize(ipr.getWidth()/samplingRate);
+
                     // Initialising the Hough transform
-                    int[][] paramRanges = new int[][]{{0,ipl.getWidth() - 1}, {0,ipl.getHeight() - 1}, {minR,maxR}};
-                    CircleHoughTransform circleHoughTransform = new CircleHoughTransform(ipl.getProcessor(),paramRanges);
-                    circleHoughTransform.setRandomSampling(randomSampling);
-                    circleHoughTransform.setSampleFraction(sampleFraction);
+                    int[][] paramRanges = new int[][]{{0,ipr.getWidth() - 1}, {0,ipr.getHeight() - 1}, {minR,maxR}};
+                    CircleHoughTransform circleHoughTransform = new CircleHoughTransform(ipr,paramRanges);
+                    circleHoughTransform.setnThreads(nThreads);
 
                     // Running the transforms
                     writeMessage("Running transform (image " + (count) + " of " + total+")");
@@ -137,9 +148,9 @@ public class HoughObjectDetection extends Module {
                                 calibrationUnits,twoD);
 
                         // Getting circle parameters
-                        int x = (int) Math.round(circle[0]);
-                        int y = (int) Math.round(circle[1]);
-                        int r = (int) Math.round(circle[2]);
+                        int x = (int) Math.round(circle[0])*samplingRate;
+                        int y = (int) Math.round(circle[1])*samplingRate;
+                        int r = (int) Math.round(circle[2])*samplingRate;
                         double score = circle[3];
 
                         // Getting coordinates corresponding to circle
@@ -212,10 +223,10 @@ public class HoughObjectDetection extends Module {
         parameters.add(new ParamSeparatorP(DETECTION_SEPARATOR,this));
         parameters.add(new IntegerP(MIN_RADIUS,this,10));
         parameters.add(new IntegerP(MAX_RADIUS,this,20));
-        parameters.add(new BooleanP(RANDOM_SAMPLING,this,false));
-        parameters.add(new DoubleP(SAMPLE_FRACTION,this,0.5));
+        parameters.add(new IntegerP(SAMPLING_RATE,this,1));
         parameters.add(new DoubleP(DETECTION_THRESHOLD,this,1.0));
         parameters.add(new IntegerP(EXCLUSION_RADIUS,this,10));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         parameters.add(new ParamSeparatorP(VISUALISATION_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,true));
@@ -238,11 +249,8 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(MAX_RADIUS));
         returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
         returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
-
-        returnedParameters.add(parameters.getParameter(RANDOM_SAMPLING));
-        if (parameters.getValue(RANDOM_SAMPLING)) {
-            returnedParameters.add(parameters.getParameter(SAMPLE_FRACTION));
-        }
+        returnedParameters.add(parameters.getParameter(SAMPLING_RATE));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         returnedParameters.add(parameters.getParameter(VISUALISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
