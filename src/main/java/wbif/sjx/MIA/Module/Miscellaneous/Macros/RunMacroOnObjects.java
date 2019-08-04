@@ -147,8 +147,10 @@ public class RunMacroOnObjects extends CoreMacroRunner {
                 inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
                 if (interpreter.wasError()) throw new RuntimeException();
             } catch (RuntimeException e) {
-                MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
-                return false;
+                String errorMessage = interpreter.getErrorMessage();
+                if (errorMessage == null || errorMessage.equals("") || errorMessage.equals(" ")) continue; // Don't display blank errors
+                MIA.log.writeWarning("Macro failed with error \""+errorMessage+"\" for object ID = "+inputObject.getID()+".  Skipping object.");
+                continue;
             }
 
             // Intercepting measurements
