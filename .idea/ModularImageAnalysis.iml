@@ -6,6 +6,8 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -301,7 +303,7 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.kevinstern:software-and-algorithms:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.commonmark:commonmark:0.12.1" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.4.36-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.5.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: ome:bio-formats_plugins:6.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.openmicroscopy:ome-common:6.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.minio:minio:5.0.2" level="project" />

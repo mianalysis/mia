@@ -70,6 +70,11 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         }
     }
 
+    public ObjCollection convertImageToObjects(String outputObjectsName) {
+        String type = getVolumeType(VolumeType.POINTLIST);
+        return convertImageToObjects(type, outputObjectsName);
+    }
+
     public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
         String type = getVolumeType(volumeType);
         return convertImageToObjects(type, outputObjectsName);

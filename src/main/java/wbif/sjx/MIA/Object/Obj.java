@@ -42,6 +42,14 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
+    public Obj(String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+        super(VolumeType.POINTLIST,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+
+        this.name = name;
+        this.ID = ID;
+
+    }
+
     public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
         super(volumeType,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
