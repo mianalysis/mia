@@ -377,4 +377,9 @@ public class Obj extends Volume {
         return (T == ((Obj) obj).T);
 
     }
+
+    @Override
+    public String toString() {
+        return "Object "+name+", ID = "+ID+", frame = "+T;
+    }
 }
