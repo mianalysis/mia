@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.10.11</version>
+    <version>0.10.12</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -297,10 +297,10 @@
         <dependency>
 <!--            <groupId>wbif.sjx</groupId>-->
 <!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.4.36-SNAPSHOT</version>-->
+<!--            <version>1.4.39</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.38</version>
+            <version>1.4.39</version>
         </dependency>
     </dependencies>
 
