@@ -6,6 +6,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.*;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;

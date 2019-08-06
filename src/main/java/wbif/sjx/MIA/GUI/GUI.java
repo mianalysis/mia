@@ -456,15 +456,16 @@ public class GUI {
         int[] selectedIndices = getSelectedModuleIndices();
 
         ModuleCollection newModules = undoRedoStore.getNextUndo(analysis.getModules());
+
         if (newModules == null) return;
         analysis.setModules(newModules);
 
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModuleStates(false);
         updateParameters();
         updateModules();
+        updateModuleStates(false);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 
@@ -480,9 +481,9 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModuleStates(false);
         updateParameters();
         updateModules();
+        updateModuleStates(false);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 
