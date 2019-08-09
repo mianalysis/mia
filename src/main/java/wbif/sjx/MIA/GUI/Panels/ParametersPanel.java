@@ -74,9 +74,6 @@ public class ParametersPanel extends JScrollPane {
             return;
         }
 
-        boolean isInput = module.getClass().isInstance(new InputControl(modules));
-        boolean isOutput = module.getClass().isInstance(new OutputControl(modules));
-
         JPanel topPanel = componentFactory.createParametersTopRow(module);
         c.gridwidth = 2;
         panel.add(topPanel,c);

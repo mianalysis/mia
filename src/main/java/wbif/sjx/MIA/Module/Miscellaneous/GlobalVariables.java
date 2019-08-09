@@ -1,7 +1,9 @@
-package wbif.sjx.MIA.Module.Hidden;
+package wbif.sjx.MIA.Module.Miscellaneous;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.StringP;
@@ -20,20 +22,24 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_VALUE = "Variable value";
 
+    private static ParameterCollection globalParameters = new ParameterCollection();
+
     public GlobalVariables(ModuleCollection modules) {
         super("Global variables",modules);
     }
 
-    public String convertString(String string) {
-        Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
+    public static String convertString(String string) {
+        Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
+
 
         while (matcher.find()) {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
 
             // Iterating over all parameters, finding the one with the matching name
-            ParameterGroup group = getParameter(ADD_NEW_VARIABLE);
+            ParameterGroup group = globalParameters.getParameter(ADD_NEW_VARIABLE);
+            if (group == null) return string;
             LinkedHashSet<ParameterCollection> collections = group.getCollections();
 
             for (ParameterCollection collection:collections) {
@@ -50,15 +56,16 @@ public class GlobalVariables extends Module {
 
     }
 
-    public boolean variablesPresent(String string) {
-        Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
+    public static boolean variablesPresent(String string) {
+        Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
             String metadataName = matcher.group(1);
 
             // Iterating over all parameters, finding the one with the matching name
-            ParameterGroup group = getParameter(ADD_NEW_VARIABLE);
+            ParameterGroup group = globalParameters.getParameter(ADD_NEW_VARIABLE);
+            if (group == null) return false;
             LinkedHashSet<ParameterCollection> collections = group.getCollections();
 
             boolean found = false;
@@ -80,17 +87,24 @@ public class GlobalVariables extends Module {
     }
 
     public static boolean containsMetadata(String string) {
-        Pattern pattern = Pattern.compile("\\£\\{([^£{}]+)}");
+        Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
         return matcher.find();
 
     }
 
+    public static void resetCollection() {
+        globalParameters = new ParameterCollection();
+    }
+
+    public static int count() {
+        return globalParameters.size();
+    }
 
     @Override
     public String getPackageName() {
-        return "Hidden";
+        return PackageNames.MISCELLANEOUS;
     }
 
     @Override
@@ -100,7 +114,7 @@ public class GlobalVariables extends Module {
 
     @Override
     protected boolean process(Workspace workspace) {
-        return false;
+        return true;
     }
 
     @Override
@@ -115,6 +129,7 @@ public class GlobalVariables extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        globalParameters.addAll(parameters);
         return parameters;
     }
 

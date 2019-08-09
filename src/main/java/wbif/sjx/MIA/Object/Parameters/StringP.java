@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
@@ -40,7 +40,7 @@ public class StringP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) MIA.getGlobalVariables().convertString(value);
+        return (T) GlobalVariables.convertString(value);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class StringP extends TextType {
     @Override
     public boolean verify() {
         // The only thing to check is that any global variables and metadata values have been defined
-        return MIA.getGlobalVariables().variablesPresent(value);
+        return GlobalVariables.variablesPresent(value);
 
     }
 }

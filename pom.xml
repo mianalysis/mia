@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.10.12</version>
+    <version>0.10.13-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>

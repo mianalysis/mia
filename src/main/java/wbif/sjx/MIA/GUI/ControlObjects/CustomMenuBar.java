@@ -63,7 +63,6 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         } else {
             menu.add(new MenuItem(MenuItem.EDITING_VIEW));
         }
-        menu.add(new MenuItem(MenuItem.SHOW_GLOBAL_VARIABLES));
         helpCheckbox.setSelected(GUI.showHelp());
         menu.add(helpCheckbox);
         notesCheckbox.setSelected(GUI.showNotes());
