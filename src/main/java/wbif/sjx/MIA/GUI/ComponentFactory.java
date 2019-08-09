@@ -276,7 +276,7 @@ public class ComponentFactory {
         modulePanel.add(moduleEnabledButton,c);
 
         ModuleTitle title = new ModuleTitle(module);
-        if (module.isRunnable()) title.setForeground(Color.BLACK);
+        if (module.isRunnable() |! module.isEnabled()) title.setForeground(Color.BLACK);
         else title.setForeground(Color.RED);
         title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
         c.insets = new Insets(0, 0, 0, 0);
