@@ -43,7 +43,7 @@ public class DoubleP extends TextType {
                 Double.parseDouble(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                MIA.log.write("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or metadata handle (e.g. ${name})", LogRenderer.Level.WARNING);
+                MIA.log.write("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or global variable handle (e.g. V{name})", LogRenderer.Level.WARNING);
             }
         }
     }

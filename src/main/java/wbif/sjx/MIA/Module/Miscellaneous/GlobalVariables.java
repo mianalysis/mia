@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -28,7 +29,7 @@ public class GlobalVariables extends Module {
     }
 
     public static String convertString(String string) {
-        Pattern pattern = Pattern.compile("\\V\\{([^V{}]+)}");
+        Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
 
@@ -56,7 +57,7 @@ public class GlobalVariables extends Module {
     }
 
     public static boolean variablesPresent(String string) {
-        Pattern pattern = Pattern.compile("\\V\\{([^V{}]+)}");
+        Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
@@ -86,7 +87,7 @@ public class GlobalVariables extends Module {
     }
 
     public static boolean containsMetadata(String string) {
-        Pattern pattern = Pattern.compile("\\V\\{([^V{}]+)}");
+        Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
         return matcher.find();

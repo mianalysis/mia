@@ -499,7 +499,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String outputName = genericFormat;
 
         // Use regex to find instances of "M{ }" and replace the contents with the appropriate metadata value
-        Pattern pattern = Pattern.compile("\\M\\{([M{}]+)}");
+        Pattern pattern = Pattern.compile("M\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(genericFormat);
         while (matcher.find()) {
             String fullName = matcher.group(0);
