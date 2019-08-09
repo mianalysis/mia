@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -27,6 +27,7 @@ public class AnalysisTester {
         if (module == null) return false;
 
         // Iterating over each parameter, checking if it's currently available
+        GlobalVariables.resetCollection();
         for (Parameter parameter:module.updateAndGetParameters().values()) {
             runnable = parameter.verify();
             parameter.setValid(runnable);

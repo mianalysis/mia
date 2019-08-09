@@ -123,7 +123,6 @@ public class Analysis {
     }
 
     public boolean hasVisibleParameters() {
-        if (MIA.getGlobalVariables().hasVisibleParameters()) return true;
         return (modules.hasVisibleParameters());
     }
 }
