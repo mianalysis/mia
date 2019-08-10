@@ -60,7 +60,7 @@ public class GlobalVariables extends Module {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 
-        while (matcher.find()) {
+        if (matcher.find()) {
             String metadataName = matcher.group(1);
 
             // Iterating over all parameters, finding the one with the matching name

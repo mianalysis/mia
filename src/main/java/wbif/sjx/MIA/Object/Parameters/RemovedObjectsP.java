@@ -22,8 +22,8 @@ public class RemovedObjectsP extends ObjectNamesType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        RemovedObjectsP newParameter = new RemovedObjectsP(name,module,choice,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        RemovedObjectsP newParameter = new RemovedObjectsP(name,newModule,choice,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

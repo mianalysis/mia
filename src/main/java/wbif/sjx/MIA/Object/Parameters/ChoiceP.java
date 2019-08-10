@@ -36,8 +36,8 @@ public class ChoiceP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        ChoiceP newParameter = new ChoiceP(name,module,getChoice(),getChoices(),getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        ChoiceP newParameter = new ChoiceP(name,newModule,getChoice(),getChoices(),getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());

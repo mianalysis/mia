@@ -87,8 +87,8 @@ public class TextAreaP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        TextAreaP newParameter = new TextAreaP(name,module,value,editable,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        TextAreaP newParameter = new TextAreaP(name,newModule,value,editable,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -37,8 +37,8 @@ public class FilePathP extends FileFolderType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        FilePathP newParameter = new FilePathP(name,module,getPath(),getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        FilePathP newParameter = new FilePathP(name,newModule,getPath(),getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

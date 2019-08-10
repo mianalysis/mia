@@ -274,8 +274,8 @@ public abstract class Module extends Ref implements Comparable, Serializable {
     }
 
     public Module duplicate(ModuleCollection newModules) {
-        Constructor constructor = null;
-        Module newModule = null;
+        Constructor constructor;
+        Module newModule;
         try {
             constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
             newModule = (Module) constructor.newInstance(newModules);
@@ -292,7 +292,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
 
         ParameterCollection newParameters = newModule.getAllParameters();
         for (Parameter parameter:parameters.values()) {
-            Parameter newParameter = parameter.duplicate();
+            Parameter newParameter = parameter.duplicate(newModule);
             if (newParameter == null) continue;
             newParameter.setModule(newModule);
             newParameters.add(newParameter);

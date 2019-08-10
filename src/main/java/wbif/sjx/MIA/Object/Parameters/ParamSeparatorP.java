@@ -44,8 +44,8 @@ public class ParamSeparatorP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        ParamSeparatorP newParameter = new ParamSeparatorP(name,module);
+    public <T extends Parameter> T duplicate(Module newModule) {
+        ParamSeparatorP newParameter = new ParamSeparatorP(name,newModule);
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

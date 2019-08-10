@@ -348,7 +348,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         addAll(newModules);
     }
 
-    public ModuleCollection duplicate() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public ModuleCollection duplicate() {
         ModuleCollection copyModules = new ModuleCollection();
 
         copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules));

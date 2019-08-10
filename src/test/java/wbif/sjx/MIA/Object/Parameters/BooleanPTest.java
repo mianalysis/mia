@@ -19,7 +19,7 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
-        BooleanP duplicated = booleanP.duplicate();
+        BooleanP duplicated = booleanP.duplicate(paramTest);
 
         assertEquals("TestBoo",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());

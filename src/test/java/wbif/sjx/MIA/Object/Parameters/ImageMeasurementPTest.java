@@ -23,7 +23,7 @@ public class ImageMeasurementPTest {
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
         imageMeasurementP.setImageName("My im");
-        ImageMeasurementP duplicated = imageMeasurementP.duplicate();
+        ImageMeasurementP duplicated = imageMeasurementP.duplicate(paramTest);
 
         assertEquals("Test meas",duplicated.getName());
         assertEquals("My im",duplicated.getImageName());
@@ -37,7 +37,7 @@ public class ImageMeasurementPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
-        ImageMeasurementP duplicated = imageMeasurementP.duplicate();
+        ImageMeasurementP duplicated = imageMeasurementP.duplicate(paramTest);
 
         assertEquals("Test meas",duplicated.getName());
         assertEquals("",duplicated.getImageName());

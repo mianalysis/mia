@@ -69,8 +69,8 @@ public class IntegerP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        IntegerP newParameter = new IntegerP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        IntegerP newParameter = new IntegerP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

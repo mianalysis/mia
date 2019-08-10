@@ -28,8 +28,8 @@ public class SeriesSingleSelectorP extends IntegerP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        SeriesSingleSelectorP newParameter = new SeriesSingleSelectorP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

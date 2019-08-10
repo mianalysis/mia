@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -28,8 +27,8 @@ public class MetadataItemP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        MetadataItemP newParameter = new MetadataItemP(name,module,choice,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        MetadataItemP newParameter = new MetadataItemP(name,newModule,choice,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

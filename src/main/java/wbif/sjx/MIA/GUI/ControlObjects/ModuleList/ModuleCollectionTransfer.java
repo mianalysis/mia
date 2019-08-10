@@ -30,7 +30,7 @@ public class ModuleCollectionTransfer implements Transferable, ClipboardOwner {
     }
 
     @Override
-    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(DataFlavor flavor) {
         return modules;
     }
 

@@ -28,8 +28,8 @@ public class FolderPathP extends FileFolderType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        FolderPathP newParameter = new FolderPathP(name,module,getPath(),getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        FolderPathP newParameter = new FolderPathP(name,newModule,getPath(),getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

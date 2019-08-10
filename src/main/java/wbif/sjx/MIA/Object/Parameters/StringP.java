@@ -49,21 +49,14 @@ public class StringP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        StringP newParameter = new StringP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        StringP newParameter = new StringP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());
 
         return (T) newParameter;
-
-    }
-
-    @Override
-    public boolean verify() {
-        // The only thing to check is that any global variables and metadata values have been defined
-        return GlobalVariables.variablesPresent(value);
 
     }
 }

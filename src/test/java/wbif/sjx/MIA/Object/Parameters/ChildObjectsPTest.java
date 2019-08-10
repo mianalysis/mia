@@ -23,7 +23,7 @@ public class ChildObjectsPTest {
 
         ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Par_name");
-        ChildObjectsP duplicated = childObjectsP.duplicate();
+        ChildObjectsP duplicated = childObjectsP.duplicate(paramTest);
 
         assertEquals("Test param",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());
