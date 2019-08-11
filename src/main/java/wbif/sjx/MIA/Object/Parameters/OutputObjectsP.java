@@ -52,8 +52,8 @@ public class OutputObjectsP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        OutputObjectsP newParameter = new OutputObjectsP(name,module,objectsName,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        OutputObjectsP newParameter = new OutputObjectsP(name,newModule,objectsName,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

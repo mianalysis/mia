@@ -44,7 +44,9 @@ public class ActiveContourObjectDetection extends Module {
     public static final String BENDING_ENERGY = "Bending energy contribution";
     public static final String IMAGE_PATH_ENERGY = "Image path energy contribution";
     public static final String SEARCH_RADIUS = "Search radius (px)";
-    public static final String NUMBER_OF_ITERATIONS = "Maximum nmber of iterations";
+    public static final String NUMBER_OF_ITERATIONS = "Maximum number of iterations";
+    public static final String USE_MOTION_THRESHOLD = "Use motion threshold";
+    public static final String MOTION_THRESHOLD_PX = "Motion threshold (px)";
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
 
     public ActiveContourObjectDetection(ModuleCollection modules) {
@@ -91,7 +93,17 @@ public class ActiveContourObjectDetection extends Module {
         double pathEnergy = parameters.getValue(IMAGE_PATH_ENERGY);
         int searchRadius = parameters.getValue(SEARCH_RADIUS);
         int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS);
+        boolean useMotionThreshold = parameters.getValue(USE_MOTION_THRESHOLD);
+        double motionThreshold = parameters.getValue(MOTION_THRESHOLD_PX);
         boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME);
+
+        // Storing the image calibration
+        Calibration calibration = inputImagePlus.getCalibration();
+        double dppXY = calibration.getX(1);
+        double dppZ = calibration.getZ(1);
+        String calibrationUnits = calibration.getUnits();
+
+        if (!useMotionThreshold) motionThreshold = 0;
 
         // Initialising the viewer
         GridOverlay gridOverlay = new GridOverlay();
@@ -149,7 +161,8 @@ public class ActiveContourObjectDetection extends Module {
                     gridOverlay.drawOverlay(nodes, dispIpl);
                 }
 
-                if (!nodes.anyNodesMoved()) break;
+                if (nodes.getAverageDistanceMoved() <= motionThreshold) break;
+
             }
 
             // Getting the new ROI
@@ -216,6 +229,8 @@ public class ActiveContourObjectDetection extends Module {
         parameters.add(new DoubleP(IMAGE_PATH_ENERGY,this,1.0));
         parameters.add(new IntegerP(SEARCH_RADIUS,this,1));
         parameters.add(new IntegerP(NUMBER_OF_ITERATIONS,this,1000));
+        parameters.add(new BooleanP(USE_MOTION_THRESHOLD,this,true));
+        parameters.add(new DoubleP(MOTION_THRESHOLD_PX,this,0.1d));
         parameters.add(new BooleanP(SHOW_CONTOURS_REALTIME,this,false));
 
     }
@@ -238,6 +253,11 @@ public class ActiveContourObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(IMAGE_PATH_ENERGY));
         returnedParameters.add(parameters.getParameter(SEARCH_RADIUS));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_ITERATIONS));
+
+        returnedParameters.add(parameters.getParameter(USE_MOTION_THRESHOLD));
+        if (parameters.getValue(USE_MOTION_THRESHOLD)) {
+            returnedParameters.add(parameters.getParameter(MOTION_THRESHOLD_PX));
+        }
         returnedParameters.add(parameters.getParameter(SHOW_CONTOURS_REALTIME));
 
         return returnedParameters;

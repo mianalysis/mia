@@ -65,4 +65,20 @@ public class RelationshipRef extends SummaryRef {
         this.description = description;
     }
 
+    public RelationshipRef duplicate() {
+        RelationshipRef ref = new RelationshipRef(parentName,childName);
+
+        ref.setDescription(description);
+        ref.setNickname(getNickname());
+
+        ref.setExportGlobal(isExportGlobal());
+        ref.setExportIndividual(isExportIndividual());
+        ref.setExportMean(isExportMean());
+        ref.setExportMax(isExportMax());
+        ref.setExportMin(isExportMin());
+        ref.setExportStd(isExportStd());
+        ref.setExportSum(isExportSum());
+
+        return ref;
+    }
 }

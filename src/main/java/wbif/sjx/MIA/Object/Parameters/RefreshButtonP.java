@@ -52,8 +52,8 @@ public class RefreshButtonP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        RefreshButtonP newParameter = new RefreshButtonP(name,module,buttonLabel,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        RefreshButtonP newParameter = new RefreshButtonP(name,newModule,buttonLabel,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -75,6 +75,7 @@ public class GUI {
         initialised = true;
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frameHeight = Math.min(frameHeight,screenSize.height-50);
 
         Splash splash = new Splash();
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
@@ -455,15 +456,16 @@ public class GUI {
         int[] selectedIndices = getSelectedModuleIndices();
 
         ModuleCollection newModules = undoRedoStore.getNextUndo(analysis.getModules());
+
         if (newModules == null) return;
         analysis.setModules(newModules);
 
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModuleStates(false);
         updateParameters();
         updateModules();
+        updateModuleStates(false);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 
@@ -479,9 +481,9 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModuleStates(false);
         updateParameters();
         updateModules();
+        updateModuleStates(false);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 

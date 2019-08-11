@@ -27,8 +27,8 @@ public class SeriesListSelectorP extends StringP {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        SeriesListSelectorP newParameter = new SeriesListSelectorP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        SeriesListSelectorP newParameter = new SeriesListSelectorP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -120,7 +120,6 @@ public class Analysis {
     }
 
     public boolean hasVisibleParameters() {
-        if (modules.getWorkflowParameters().hasVisibleParameters()) return true;
         return (modules.hasVisibleParameters());
     }
 }

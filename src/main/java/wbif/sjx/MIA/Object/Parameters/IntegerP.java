@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
@@ -60,7 +60,7 @@ public class IntegerP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) (Integer) Integer.parseInt(module.getModules().getWorkflowParameters().convertString(value));
+        return (T) (Integer) Integer.parseInt(GlobalVariables.convertString(value));
     }
 
     @Override
@@ -69,8 +69,8 @@ public class IntegerP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        IntegerP newParameter = new IntegerP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        IntegerP newParameter = new IntegerP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

@@ -6,6 +6,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.*;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
@@ -275,7 +276,7 @@ public class ComponentFactory {
         modulePanel.add(moduleEnabledButton,c);
 
         ModuleTitle title = new ModuleTitle(module);
-        if (module.isRunnable()) title.setForeground(Color.BLACK);
+        if (module.isRunnable() |! module.isEnabled()) title.setForeground(Color.BLACK);
         else title.setForeground(Color.RED);
         title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
         c.insets = new Insets(0, 0, 0, 0);

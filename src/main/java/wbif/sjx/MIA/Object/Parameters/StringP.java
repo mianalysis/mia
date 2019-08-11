@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
@@ -40,7 +40,7 @@ public class StringP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) module.getModules().getWorkflowParameters().convertString(value);
+        return (T) GlobalVariables.convertString(value);
     }
 
     @Override
@@ -49,21 +49,14 @@ public class StringP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        StringP newParameter = new StringP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        StringP newParameter = new StringP(name,newModule,value,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());
 
         return (T) newParameter;
-
-    }
-
-    @Override
-    public boolean verify() {
-        // The only thing to check is that any global variables and metadata values have been defined
-        return module.getModules().getWorkflowParameters().variablesPresent(value);
 
     }
 }

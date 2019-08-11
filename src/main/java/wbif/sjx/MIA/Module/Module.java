@@ -273,9 +273,17 @@ public abstract class Module extends Ref implements Comparable, Serializable {
 
     }
 
-    public Module duplicate() throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        Constructor constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
-        Module newModule = (Module) constructor.newInstance(modules);
+    public Module duplicate(ModuleCollection newModules) {
+        Constructor constructor;
+        Module newModule;
+        try {
+            constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
+            newModule = (Module) constructor.newInstance(newModules);
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         newModule.setNickname(getNickname());
         newModule.setEnabled(enabled);
         newModule.setShowOutput(showOutput);
@@ -283,12 +291,39 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         newModule.setCanBeDisabled(canBeDisabled);
 
         ParameterCollection newParameters = newModule.getAllParameters();
-
         for (Parameter parameter:parameters.values()) {
-            Parameter newParameter = parameter.duplicate();
+            Parameter newParameter = parameter.duplicate(newModule);
             if (newParameter == null) continue;
             newParameter.setModule(newModule);
             newParameters.add(newParameter);
+        }
+
+        ObjMeasurementRefCollection newObjMeasurementRefs = newModule.objectMeasurementRefs;
+        for (ObjMeasurementRef ref:objectMeasurementRefs.values()) {
+            ObjMeasurementRef newRef = ref.duplicate();
+            if (newRef == null) continue;
+            newObjMeasurementRefs.add(newRef);
+        }
+
+        ImageMeasurementRefCollection newImageMeasurementRefs = newModule.imageMeasurementRefs;
+        for (ImageMeasurementRef ref:imageMeasurementRefs.values()) {
+            ImageMeasurementRef newRef = ref.duplicate();
+            if (newRef == null) continue;
+            newImageMeasurementRefs.add(newRef);
+        }
+
+        MetadataRefCollection newMetadataRefs = newModule.metadataRefs;
+        for (MetadataRef ref:metadataRefs.values()) {
+            MetadataRef newRef = ref.duplicate();
+            if (newRef == null) continue;
+            newMetadataRefs.add(newRef);
+        }
+
+        RelationshipRefCollection newRelationshipRefs = newModule.relationshipRefs;
+        for (RelationshipRef ref:relationshipRefs.values()) {
+            RelationshipRef newRef = ref.duplicate();
+            if (newRef == null) continue;
+            newRelationshipRefs.add(newRef);
         }
 
         return newModule;

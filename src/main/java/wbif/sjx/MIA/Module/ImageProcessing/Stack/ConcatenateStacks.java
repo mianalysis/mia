@@ -413,7 +413,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
 
         @Override
-        public <T extends Parameter> T duplicate() {
+        public <T extends Parameter> T duplicate(Module newModule) {
             CustomInputImageP newParameter = new CustomInputImageP(name,module,getImageName(),getDescription());
 
             newParameter.setNickname(getNickname());

@@ -44,7 +44,7 @@ public abstract class Parameter extends Ref {
 
     public abstract boolean verify();
 
-    public abstract <T extends Parameter> T duplicate();
+    public abstract <T extends Parameter> T duplicate(Module newModule);
 
 
     // PUBLIC METHODS

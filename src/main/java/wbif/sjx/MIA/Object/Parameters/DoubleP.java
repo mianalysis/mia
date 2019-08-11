@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
@@ -43,7 +43,7 @@ public class DoubleP extends TextType {
                 Double.parseDouble(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                MIA.log.write("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or metadata handle (e.g. ${name})", LogRenderer.Level.WARNING);
+                MIA.log.write("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or global variable handle (e.g. V{name})", LogRenderer.Level.WARNING);
             }
         }
     }
@@ -55,8 +55,8 @@ public class DoubleP extends TextType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        DoubleP newParameter = new DoubleP(name,module,value,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        DoubleP newParameter = new DoubleP(name,newModule,value,getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());
@@ -72,7 +72,7 @@ public class DoubleP extends TextType {
 
     @Override
     public <T> T getValue() throws NumberFormatException {
-        return (T) (Double) Double.parseDouble(module.getModules().getWorkflowParameters().convertString(value));
+        return (T) (Double) Double.parseDouble(GlobalVariables.convertString(value));
     }
 
     @Override

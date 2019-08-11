@@ -8,3 +8,9 @@ target/site/*
 \.idea/libraries/
 
 
+
+\.idea/
+
+ModularImageAnalysis\.iml
+
+MIA_\.iml

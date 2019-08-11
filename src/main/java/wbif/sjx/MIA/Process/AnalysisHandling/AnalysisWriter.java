@@ -43,7 +43,6 @@ public class AnalysisWriter {
 
         // Creating a module collection holding the single-instance modules (input, output and global variables)
         ModuleCollection singleModules = new ModuleCollection();
-        singleModules.add(analysis.getModules().getWorkflowParameters());
         singleModules.add(analysis.getModules().getInputControl());
         singleModules.add(analysis.getModules().getOutputControl());
 

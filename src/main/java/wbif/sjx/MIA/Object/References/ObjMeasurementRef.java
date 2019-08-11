@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Object.References;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 public class ObjMeasurementRef extends SummaryRef {
@@ -42,6 +43,25 @@ public class ObjMeasurementRef extends SummaryRef {
         } else {
             this.objectsName = map.getNamedItem("OBJECT_NAME").getNodeValue();
         }
+    }
+
+    public ObjMeasurementRef duplicate() {
+        ObjMeasurementRef ref = new ObjMeasurementRef(name);
+
+        ref.setDescription(description);
+        ref.setObjectsName(objectsName);
+        ref.setNickname(getNickname());
+
+        ref.setExportGlobal(isExportGlobal());
+        ref.setExportIndividual(isExportIndividual());
+        ref.setExportMean(isExportMean());
+        ref.setExportMax(isExportMax());
+        ref.setExportMin(isExportMin());
+        ref.setExportStd(isExportStd());
+        ref.setExportSum(isExportSum());
+
+        return ref;
+
     }
 
     public String getFinalName() {

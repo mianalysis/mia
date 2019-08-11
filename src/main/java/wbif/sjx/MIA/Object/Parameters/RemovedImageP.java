@@ -22,8 +22,8 @@ public class RemovedImageP extends ImageNamesType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        RemovedImageP newParameter = new RemovedImageP(name,module,choice,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        RemovedImageP newParameter = new RemovedImageP(name,newModule,choice,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

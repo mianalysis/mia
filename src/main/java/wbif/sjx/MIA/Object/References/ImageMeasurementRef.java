@@ -98,4 +98,23 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public ImageMeasurementRef duplicate() {
+        ImageMeasurementRef ref = new ImageMeasurementRef(name);
+
+        ref.setDescription(description);
+        ref.setImageName(imageName);
+        ref.setNickname(getNickname());
+
+        ref.setExportGlobal(isExportGlobal());
+        ref.setExportIndividual(isExportIndividual());
+        ref.setExportMean(isExportMean());
+        ref.setExportMax(isExportMax());
+        ref.setExportMin(isExportMin());
+        ref.setExportStd(isExportStd());
+        ref.setExportSum(isExportSum());
+
+        return ref;
+
+    }
 }

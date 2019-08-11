@@ -6,7 +6,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisJob;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class FileListP extends Parameter {
@@ -52,7 +51,7 @@ public class FileListP extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
+    public <T extends Parameter> T duplicate(Module newModule) {
         return null;
     }
 }

@@ -131,7 +131,7 @@ public class DoublePTest {
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,42.54);
-        DoubleP duplicated = doubleP.duplicate();
+        DoubleP duplicated = doubleP.duplicate(paramTest);
 
         assertEquals("Test val",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());

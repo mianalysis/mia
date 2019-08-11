@@ -34,8 +34,8 @@ public class ChildObjectsP extends ChoiceType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        ChildObjectsP newParameter = new ChildObjectsP(name,module,getChoice(),parentObjectsName,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        ChildObjectsP newParameter = new ChildObjectsP(name,newModule,getChoice(),parentObjectsName,getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());

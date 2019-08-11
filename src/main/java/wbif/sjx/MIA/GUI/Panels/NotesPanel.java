@@ -40,7 +40,7 @@ public class NotesPanel extends JPanel {
         // Adding title to help window
         JLabel notesLabel = new JLabel();
         notesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        notesLabel.setText("Notes for \""+activeModule.getName()+"\"");
+        notesLabel.setText("Notes for \""+activeModule.getNickname()+"\"");
         add(notesLabel,c);
 
         // Adding separator
