@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.Volume;
 
 import java.util.HashSet;
 
@@ -43,18 +44,20 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2, boolean linkInSameFrame) {
-        int overlap = 0;
+        Volume overlap = new Volume(inputObject1);
 
         // Running through each object, getting a list of overlapping pixels
         for (Obj obj2:inputObjects2.values()) {
             // If only linking objects in the same frame, we may just skip this object
             if (linkInSameFrame && inputObject1.getT() != obj2.getT()) continue;
 
-            overlap = overlap + inputObject1.getOverlappingPoints(obj2).size();
+            Volume currentOverlap = inputObject1.getOverlappingPoints(obj2);
+
+            overlap.getCoordinateSet().addAll(currentOverlap.getCoordinateSet());
 
         }
 
-        return overlap;
+        return overlap.size();
 
     }
 

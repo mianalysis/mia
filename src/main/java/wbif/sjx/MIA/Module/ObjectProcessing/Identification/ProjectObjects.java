@@ -36,7 +36,7 @@ public class ProjectObjects extends Module {
         Volume projected = inputObject.getProjected();
 
         Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),projected);
-        outputObject.setCoordinateStore(projected.getCoordinateStore());
+        outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 
         // If adding relationship
