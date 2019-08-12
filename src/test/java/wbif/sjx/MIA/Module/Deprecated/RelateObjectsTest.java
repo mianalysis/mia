@@ -319,6 +319,47 @@ public class RelateObjectsTest extends ModuleTest {
     }
 
     @Test
+    public void trial() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting object parameters
+        String proxObj1Name = "Prox_obj_1";
+        String proxObj2Name = "Prox_obj_2";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+//        // Creating objects and adding to workspace
+//        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//        workspace.addObjects(proxObj1);
+//        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//        workspace.addObjects(proxObj2);
+
+        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection c1 = new ObjCollection(proxObj1Name);
+        c1.add(proxObj1.get(20));
+        workspace.addObjects(c1);
+        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection c2 = new ObjCollection(proxObj2Name);
+        c2.add(proxObj2.get(12));
+        workspace.addObjects(c2);
+
+        // Initialising RelateObjects
+        RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
+
+        relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
+        relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
+        relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
+
+        relateObjects.execute(workspace);
+
+    }
+
+    @Test
     public void testProximitySurfaceLink() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -335,6 +376,8 @@ public class RelateObjectsTest extends ModuleTest {
         workspace.addObjects(proxObj1);
         ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
+
+        ObjCollection c1 = new ObjCollection(proxObj1Name);
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
@@ -371,6 +414,8 @@ public class RelateObjectsTest extends ModuleTest {
             name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
             double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
+
+            System.out.println("Success");
 
         }
     }

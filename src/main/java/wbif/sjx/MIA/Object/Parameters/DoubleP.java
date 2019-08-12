@@ -36,7 +36,7 @@ public class DoubleP extends TextType {
 
     public void setValue(String value) throws NumberFormatException {
         // Checking this is valid
-        if (WorkflowParameters.containsMetadata(value)) {
+        if (GlobalVariables.containsMetadata(value)) {
             this.value = value;
         } else {
             try {

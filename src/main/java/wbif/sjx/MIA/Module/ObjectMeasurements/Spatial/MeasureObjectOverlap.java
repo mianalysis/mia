@@ -50,7 +50,7 @@ public class MeasureObjectOverlap extends Module {
             // If only linking objects in the same frame, we may just skip this object
             if (linkInSameFrame && inputObject1.getT() != obj2.getT()) continue;
 
-            overlap = overlap + inputObject1.getOverlap(obj2);
+            overlap = overlap + inputObject1.getOverlappingPoints(obj2).size();
 
         }
 

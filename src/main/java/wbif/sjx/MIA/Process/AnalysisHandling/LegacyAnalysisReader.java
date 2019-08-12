@@ -92,7 +92,7 @@ public class LegacyAnalysisReader {
             if (module == null) continue;
 
             // If the module is an input, treat it differently
-            if (module.getClass().isInstance(new WorkflowParameters(modules))) {
+            if (module.getClass().isInstance(new GlobalVariables(modules))) {
                 addSingleInstanceSpecificComponents(module,moduleNode);
             } else if (module.getClass().isInstance(new InputControl(modules))) {
                 addSingleInstanceSpecificComponents(module,moduleNode);

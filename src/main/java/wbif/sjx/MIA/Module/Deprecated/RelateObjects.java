@@ -138,12 +138,15 @@ public class RelateObjects extends Module {
                         break;
 
                     case ReferencePoints.SURFACE:
+                        System.out.println("New test");
                         dist = childObject.getSurfaceSeparation(parentObject,true);
+                        System.out.println("Dist  "+dist);
 
                         if (Math.abs(dist) < Math.abs(minDist)) {
                             if (limitLinking && Math.abs(dist) > linkingDistance) continue;
                             minDist = dist;
                             minLink = parentObject;
+                            System.out.println("Shortest "+minDist);
                         }
 
                         break;
