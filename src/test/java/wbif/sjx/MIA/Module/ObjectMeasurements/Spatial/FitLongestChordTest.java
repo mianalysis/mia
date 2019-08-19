@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.HorizontalCylinderR22;
 import wbif.sjx.MIA.ExpectedObjects.VerticalCylinderR5;
@@ -14,13 +14,12 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.Arrays;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FitLongestChordTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }

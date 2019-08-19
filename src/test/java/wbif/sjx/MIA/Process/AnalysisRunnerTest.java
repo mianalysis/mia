@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Process;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
@@ -11,17 +11,17 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 22/06/2018.
  */
 public class AnalysisRunnerTest {
-    @Test @Ignore
+    @Test @Disabled
     public void startAnalysis() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void stopAnalysis() throws Exception {
     }
 
@@ -232,11 +232,11 @@ public class AnalysisRunnerTest {
 
     // TESTS FOR SETTING FILENAME FILTERS
 
-    @Test @Ignore
+    @Test @Disabled
     public void addFilenameFilters() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void initialiseExporter() throws Exception {
     }
 

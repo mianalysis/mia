@@ -1,9 +1,9 @@
 package wbif.sjx.MIA.Macro.ImageProcessing;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Macro.MacroOperationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RemoveImageFromWorkspaceMacroTest extends MacroOperationTest {
 

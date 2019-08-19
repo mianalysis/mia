@@ -2,15 +2,15 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 07/03/2019.
@@ -574,27 +574,27 @@ public class FlipStackTest extends ModuleTest{
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip4DZT8bitZ() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip4DCZ8bitZ() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip4DCT8bitZ() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip4DZT8bitT() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip4DCZ8bitT() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip4DCT8bitT() throws Exception {
     }
 
@@ -718,11 +718,11 @@ public class FlipStackTest extends ModuleTest{
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip5D8bitZ() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyFlip5D8bitT() throws Exception {
     }
 

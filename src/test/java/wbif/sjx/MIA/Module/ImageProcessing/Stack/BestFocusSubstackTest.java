@@ -5,7 +5,7 @@ import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 28/02/2019.

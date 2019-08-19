@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Process;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LabelFactoryTest {
     @Test

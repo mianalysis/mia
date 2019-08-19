@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 10/09/2017.
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 public class MeasureObjectCentroidTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }

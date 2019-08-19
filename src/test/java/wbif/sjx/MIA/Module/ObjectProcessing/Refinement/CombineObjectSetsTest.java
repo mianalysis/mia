@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.MergedObjects3D;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
@@ -13,10 +13,10 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CombineObjectSetsTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }

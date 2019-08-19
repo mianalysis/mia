@@ -2,8 +2,8 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -13,7 +13,7 @@ import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConcatenateStacksTest extends ModuleTest {
 
@@ -268,7 +268,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     // TESTING 3D STACKS
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate3D8bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -316,7 +316,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate3D8bitY() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -511,7 +511,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     // TESTING 4D STACKS
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate4D8bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -559,7 +559,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate4D8bitY() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1042,7 +1042,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     // TESTING 5D STACKS
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1090,7 +1090,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitY() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1186,7 +1186,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitZ() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1285,7 +1285,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     // TESTING 5D UNEQUAL STACKS
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitXUnequal() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1333,7 +1333,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitYUnequal() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1381,7 +1381,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitCUnequal() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1429,7 +1429,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitZUnequal() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1477,7 +1477,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8bitTUnequal() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1528,7 +1528,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     // TESTING OTHER BIT DEPTHS
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D16bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1576,7 +1576,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D32bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -1624,7 +1624,7 @@ public class ConcatenateStacksTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunApplyConcatenate5D8and32bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);

@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoublePTest {
     private static double tolerance = 1E-10;

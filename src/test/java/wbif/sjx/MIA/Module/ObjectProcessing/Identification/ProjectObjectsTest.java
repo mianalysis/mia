@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
@@ -14,7 +14,7 @@ import wbif.sjx.common.Object.Point;
 
 import java.util.TreeSet;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 03/09/2017.
@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 public class ProjectObjectsTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }

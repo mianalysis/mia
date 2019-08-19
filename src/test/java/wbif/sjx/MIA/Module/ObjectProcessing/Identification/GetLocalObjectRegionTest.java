@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Spots3D;
 import wbif.sjx.MIA.Module.Module;
@@ -11,10 +11,10 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GetLocalObjectRegionTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -24,7 +24,7 @@ public class GetLocalObjectRegionTest extends ModuleTest {
         assertNotNull(new GetLocalObjectRegion(null).getDescription());
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRun() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);

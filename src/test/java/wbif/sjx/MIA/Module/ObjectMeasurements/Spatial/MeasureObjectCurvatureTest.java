@@ -2,9 +2,9 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Rings2D;
 import wbif.sjx.MIA.Module.Module;
@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Object.*;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 public class MeasureObjectCurvatureTest extends ModuleTest {
     private double tolerance = 1E-1; // As these are fit values, the tolerance is larger than usual
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -209,7 +209,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         }
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunCircle10PxRadius2DStandard() throws Exception {
     }
 }

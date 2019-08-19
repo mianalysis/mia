@@ -2,9 +2,9 @@ package wbif.sjx.MIA.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -15,13 +15,13 @@ import wbif.sjx.MIA.Object.Workspace;
 import java.io.File;
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 13/11/2017.
  */
 public class ImageSaverTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -117,12 +117,12 @@ public class ImageSaverTest extends ModuleTest {
         assertTrue(contains);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunSaveInMirroredDirectory() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunSaveWithFlattenedOverlay() throws Exception {
     }
 }

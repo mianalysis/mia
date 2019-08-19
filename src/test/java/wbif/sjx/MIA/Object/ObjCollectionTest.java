@@ -1,11 +1,11 @@
 package wbif.sjx.MIA.Object;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjCollectionTest {
     private double tolerance = 1E-2;
@@ -138,27 +138,27 @@ public class ObjCollectionTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjectsToImageSingleColour() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjectsToImageSingleColourNoTemplateImage() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjectsToImageRandomColour() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjectsToImageMeasurementColour() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjectsToImageIDColour() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjectsToImageParentIDColour() {
     }
 

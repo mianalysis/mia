@@ -5,8 +5,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.ExpectedObjects.Sphere3D;
@@ -19,13 +19,13 @@ import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 09/09/2017.
  */
 public class MeasureObjectIntensityTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -69,7 +69,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.execute(workspace);
 
         // Checking the workspace contains a single object set
-        assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
+        assertEquals(1,workspace.getObjects().size());
 
         // Checking the number of objects in the set
         assertNotNull(workspace.getObjectSet(inputObjectsName));
@@ -79,23 +79,23 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_8BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MIN_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MAX_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_STD_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_SUM_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
         }
     }
@@ -133,7 +133,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.execute(workspace);
 
         // Checking the workspace contains a single object set
-        assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
+        assertEquals(1,workspace.getObjects().size());
 
         // Checking the number of objects in the set
         assertNotNull(workspace.getObjectSet(inputObjectsName));
@@ -143,23 +143,23 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_16BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MIN_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MAX_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_STD_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_SUM_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
-            assertEquals("Measurement value", expected, actual, 1E-2);
+            assertEquals(expected, actual, 1E-2);
 
         }
     }
@@ -197,7 +197,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.execute(workspace);
 
         // Checking the workspace contains a single object set
-        assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
+        assertEquals(1,workspace.getObjects().size());
 
         // Checking the number of objects in the set
         assertNotNull(workspace.getObjectSet(inputObjectsName));
@@ -207,23 +207,23 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_32BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals(expected, actual,1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MIN_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals(expected, actual,1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MAX_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals(expected, actual,1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_STD_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals(expected, actual,1E-2);
 
             expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_SUM_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals(expected, actual,1E-2);
 
         }
     }

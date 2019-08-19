@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
@@ -11,12 +11,12 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BinObjectsByMeasurementTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -59,7 +59,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
-            assertEquals("Measurement value", expected, actual, tolerance);
+            assertEquals(expected, actual, tolerance);
 
         }
     }
@@ -97,7 +97,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
-            assertEquals("Measurement value", expected, actual, tolerance);
+            assertEquals(expected, actual, tolerance);
 
         }
     }
@@ -135,7 +135,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
-            assertEquals("Measurement value", expected, actual, tolerance);
+            assertEquals(expected, actual, tolerance);
 
         }
     }

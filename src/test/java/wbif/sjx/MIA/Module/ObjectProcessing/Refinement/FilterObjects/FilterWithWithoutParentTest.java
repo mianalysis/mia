@@ -1,13 +1,13 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterWithWithoutParentTest extends ModuleTest {
 

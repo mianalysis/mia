@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CalculateNearestNeighbourTest extends ModuleTest {
     private double tolerance = 1E-2;

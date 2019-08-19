@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MeasureObjectColocalisationTest extends ModuleTest {
     private double tolerance  = 1E-2;

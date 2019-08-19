@@ -2,9 +2,9 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -13,14 +13,14 @@ import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 13/11/2017.
  */
 public class FilterImageTest extends ModuleTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -36,15 +36,15 @@ public class FilterImageTest extends ModuleTest {
 
     // TESTING DIFFERENCE OF GAUSSIAN FILTER
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunDoG2DFilter2DStack() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunDoG2DFilter5DStack() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunDoG2DFilter2DStackCalibrated() throws Exception {
 
     }
@@ -1492,7 +1492,7 @@ public class FilterImageTest extends ModuleTest {
      * Tests the rolling frame filter (designed for image stacks with more than 1 timepoint)
      * @throws Exception
      */
-    @Test @Ignore
+    @Test @Disabled
     public void testRunRollingFrameFilter5DStack() throws Exception {
     }
 
@@ -1501,11 +1501,11 @@ public class FilterImageTest extends ModuleTest {
      * over Z)
      * @throws Exception
      */
-    @Test @Ignore
+    @Test @Disabled
     public void testRunRollingFrameFilterOneTimepoint() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunRollingFrameFilter5DStackCalibrated() throws Exception {
     }
 

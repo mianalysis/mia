@@ -1,13 +1,13 @@
 package wbif.sjx.MIA.Object;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.LinkedHashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjTest {
     private double tolerance = 1E-2;
@@ -279,47 +279,47 @@ public class ObjTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testAddChild() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRemoveChild() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRemoveRelationships() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetRoi() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testAddPointsFromRoi() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetAsImage() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetSlicePoints() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjToImage() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testCropToImageSize() {
 
     }

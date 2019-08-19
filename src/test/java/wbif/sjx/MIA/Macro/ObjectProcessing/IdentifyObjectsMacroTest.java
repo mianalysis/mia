@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Macro.ObjectProcessing;
 
 import wbif.sjx.MIA.Macro.MacroOperationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IdentifyObjectsMacroTest extends MacroOperationTest {
 

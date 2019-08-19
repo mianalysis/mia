@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.Tracks3D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
@@ -11,7 +11,7 @@ import wbif.sjx.common.Object.Track;
 
 import java.util.TreeMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 09/08/2018.
@@ -105,7 +105,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
 
     // SPECIFIC MEASUREMENT TESTS (Currently disabled due to negative coordinates - no longer supported)
 
-//    @Test @Ignore
+//    @Test @Disabled
 //    public void testCalculateTemporalMeasurements() {
 //        // Setting calibration parameters
 //        double dppXY = 0.02;
@@ -138,7 +138,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
 //
 //    }
 //
-//    @Test @Ignore
+//    @Test @Disabled
 //    public void testCalculateTemporalMeasurementsMissingFrame() {
 //        // Setting calibration parameters
 //        double dppXY = 0.02;

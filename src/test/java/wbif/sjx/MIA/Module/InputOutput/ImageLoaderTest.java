@@ -1,9 +1,9 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 import ij.IJ;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -15,18 +15,18 @@ import wbif.sjx.MIA.Object.Workspace;
 import java.io.File;
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen on 29/08/2017.
  */
 public class ImageLoaderTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Before
+    @BeforeEach
     public void setupTest() {
         Units.setUnits(Units.SpatialUnits.MICROMETRE);
     }

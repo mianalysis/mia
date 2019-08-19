@@ -2,8 +2,8 @@ package wbif.sjx.MIA.Module.Deprecated;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
@@ -17,13 +17,13 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 07/12/2017.
  */
 public class FilterObjectsTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }

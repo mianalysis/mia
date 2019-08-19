@@ -1,12 +1,12 @@
 package wbif.sjx.MIA.Object;
 
 import ij.ImagePlus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WorkspaceTest {
     @Test

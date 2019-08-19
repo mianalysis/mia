@@ -3,9 +3,9 @@ package wbif.sjx.MIA.Module.Visualisation;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
@@ -19,43 +19,43 @@ import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AddObjectsOverlayTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void getColours() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void getLabels() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void getPositionMeasurements() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addAllPointsOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addCentroidOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addOutlineOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addPositionMeasurementsOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testCreateTrackOverlay() throws Exception {
 
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
@@ -114,7 +114,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addLabelsOverlay() {
     }
 

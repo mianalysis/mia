@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Process;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -9,7 +9,7 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import java.awt.*;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ColourFactoryTest {
     private double tolerance = 1E-2;

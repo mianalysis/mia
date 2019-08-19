@@ -2,9 +2,9 @@
 
 package wbif.sjx.MIA.Module.Deprecated;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.*;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 10/09/2017.
@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 public class RelateObjectsTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -64,7 +64,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.execute(workspace);
 
         // Checking the workspace contains two object sets
-        assertEquals("Number of ObjSets in Workspace",2,workspace.getObjects().size());
+        assertEquals(2,workspace.getObjects().size());
 
         // Checking the number of objects in the set
         assertNotNull(workspace.getObjectSet(inputObjectsName));
@@ -77,12 +77,12 @@ public class RelateObjectsTest extends ModuleTest {
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
 
             // Testing the number of children
-            assertNotNull("Object has spot children",childSpots);
-            assertEquals("One child per parent",1,childSpots.size());
+            assertNotNull(childSpots);
+            assertEquals(1,childSpots.size());
 
             // Testing spot for parent
             Obj childSpot = childSpots.values().iterator().next();
-            assertNotNull("Child spot has parent",childSpot.getParent(inputObjectsName));
+            assertNotNull(childSpot.getParent(inputObjectsName));
 
             // Testing spot is at expected location
             int nPoints = testObject.getPoints().size();
@@ -149,7 +149,7 @@ public class RelateObjectsTest extends ModuleTest {
             if (childSpots == null) continue;
 
             // Testing the number of children
-            assertEquals("Number of children",expectedX.length,childSpots.size());
+            assertEquals(expectedX.length,childSpots.size());
 
             // Putting actual values into arrays
             int[] actualX = new int[childSpots.size()];
@@ -236,7 +236,7 @@ public class RelateObjectsTest extends ModuleTest {
             if (childSpots == null) continue;
 
             // Testing the number of children
-            assertEquals("Number of children",expectedX.length,childSpots.size());
+            assertEquals(expectedX.length,childSpots.size());
 
             // Putting actual values into arrays
             int[] actualX = new int[childSpots.size()];
@@ -877,11 +877,11 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testProximityToChildren() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testSpatialLinking() throws Exception {
     }
 

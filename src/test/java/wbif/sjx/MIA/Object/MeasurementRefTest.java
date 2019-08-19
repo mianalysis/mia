@@ -1,9 +1,9 @@
 package wbif.sjx.MIA.Object;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MeasurementRefTest {
     @Test

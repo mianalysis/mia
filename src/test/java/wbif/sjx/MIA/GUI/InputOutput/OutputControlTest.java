@@ -3,7 +3,7 @@ package wbif.sjx.MIA.GUI.InputOutput;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.ModuleTest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 26/06/2018.

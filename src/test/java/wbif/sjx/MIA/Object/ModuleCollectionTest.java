@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Object;
 
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageTexture;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.util.LinkedHashSet;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
     @Test

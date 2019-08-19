@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AnalysisTesterTest {
     @Test

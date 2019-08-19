@@ -2,9 +2,9 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
@@ -18,7 +18,7 @@ import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 29/08/2017.
@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class IdentifyObjectsTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -178,7 +178,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         }
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunBlackBackground8bit5D() throws Exception  {
 
     }
