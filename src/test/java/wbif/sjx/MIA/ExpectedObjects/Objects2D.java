@@ -9,8 +9,8 @@ import java.util.List;
  * Created by sc13967 on 21/02/2018.
  */
 public class Objects2D extends ExpectedObjects {
-    public Objects2D() {
-        super(VolumeType.POINTLIST, 64, 76, 1);
+    public Objects2D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 1);
     }
 
     public enum Measures {

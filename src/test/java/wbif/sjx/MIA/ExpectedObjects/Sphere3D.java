@@ -9,8 +9,8 @@ import java.util.List;
  * Created by sc13967 on 23/03/2018.
  */
 public class Sphere3D extends ExpectedObjects {
-    public Sphere3D() {
-        super(VolumeType.POINTLIST, 64,76,12);
+    public Sphere3D(VolumeType volumeType) {
+        super(volumeType, 64,76,12);
     }
 
     @Override

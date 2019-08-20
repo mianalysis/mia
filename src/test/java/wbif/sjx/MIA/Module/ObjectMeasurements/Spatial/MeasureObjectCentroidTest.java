@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
@@ -9,6 +11,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,8 +32,9 @@ public class MeasureObjectCentroidTest extends ModuleTest {
 
     }
 
-    @Test
-    public void calculateCentroidMean() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void calculateCentroidMean(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -41,7 +45,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectCentroid

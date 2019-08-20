@@ -35,7 +35,7 @@ public class Tracks3D {
      * @param calibratedUnits
      * @return
      */
-    public ObjCollection getObjects(String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
+    public ObjCollection getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
         // Initialising object store
         ObjCollection trackObjects = new ObjCollection(tracksName);
 
@@ -50,11 +50,11 @@ public class Tracks3D {
             int t = coordinate[6];
 
             spotID = spotID+(t*65536);
-            Obj spotObject = new Obj(VolumeType.POINTLIST,spotsName,spotID,127,90,13,dppXY,dppZ,calibratedUnits);
+            Obj spotObject = new Obj(volumeType,spotsName,spotID,127,90,13,dppXY,dppZ,calibratedUnits);
             spotObject.add(x,y,z);
             spotObject.setT(t);
 
-            trackObjects.putIfAbsent(trackID,new Obj(VolumeType.POINTLIST,tracksName,trackID,127,90,13,dppXY,dppZ,calibratedUnits));
+            trackObjects.putIfAbsent(trackID,new Obj(volumeType,tracksName,trackID,127,90,13,dppXY,dppZ,calibratedUnits));
             Obj track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);

@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MergedObjects3D extends ExpectedObjects {
-    public MergedObjects3D() {
-        super(VolumeType.POINTLIST, 64, 76, 12);
+    public MergedObjects3D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 12);
     }
 
     @Override

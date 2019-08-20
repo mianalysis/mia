@@ -9,8 +9,8 @@ import java.util.List;
  * Created by sc13967 on 12/02/2018.
  */
 public class ProxCubes1 extends ExpectedObjects {
-    public ProxCubes1() {
-        super(VolumeType.POINTLIST, 64, 76, 12);
+    public ProxCubes1(VolumeType volumeType) {
+        super(volumeType, 64, 76, 12);
     }
 
     public enum Measures {N_VOXELS,ID_8BIT,SURF_PROX_ID,SURF_PROX_DIST_PX,SURF_PROX_DIST_CAL,

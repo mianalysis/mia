@@ -9,8 +9,8 @@ import java.util.List;
  * Created by Stephen Cross on 10/09/2017.
  */
 public class Spots3D extends ExpectedObjects {
-    public Spots3D() {
-        super(VolumeType.POINTLIST, 64,76,12);
+    public Spots3D(VolumeType volumeType) {
+        super(volumeType, 64,76,12);
     }
 
     @Override

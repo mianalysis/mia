@@ -2,12 +2,15 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.Tracks3D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.TreeMap;
 
@@ -27,8 +30,9 @@ public class MeasureTrackMotionTest extends ModuleTest {
         assertNotNull(new MeasureTrackMotion(null).getDescription());
     }
 
-    @Test
-    public void testCreateTrack() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testCreateTrack(VolumeType volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -39,7 +43,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
         String spotObjectsName = "Spots";
 
         // Getting input objects and expected values
-        ObjCollection trackObjects = new Tracks3D().getObjects(trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
+        ObjCollection trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
         TreeMap<Integer,Track> expectedObjects = new Tracks3D().getRawTracks(zScaling);
 
         // Comparing actual values
@@ -52,8 +56,9 @@ public class MeasureTrackMotionTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testCreateAverageTrack() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testCreateAverageTrack(VolumeType volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -64,7 +69,7 @@ public class MeasureTrackMotionTest extends ModuleTest {
         String spotObjectsName = "Spots";
 
         // Getting input objects and expected values
-        ObjCollection trackObjects = new Tracks3D().getObjects(trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
+        ObjCollection trackObjects = new Tracks3D().getObjects(volumeType,trackObjectsName,spotObjectsName,dppXY,dppZ,calibratedUnits);
         TreeMap<Integer,Track> expectedObjects = new Tracks3D().getAverageTrack(zScaling);
 
         Track expected = expectedObjects.get(0);

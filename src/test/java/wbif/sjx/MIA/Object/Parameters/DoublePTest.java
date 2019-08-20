@@ -113,7 +113,7 @@ public class DoublePTest {
 
     }
 
-    @Test (expected = NumberFormatException.class)
+    @Test
     public void getValueProvidedBlank() {
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -121,7 +121,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
 
         // The following should throw the NumberFormatException
-        doubleP.getValue();
+        assertThrows(NumberFormatException.class,() -> doubleP.getValue());
 
     }
 

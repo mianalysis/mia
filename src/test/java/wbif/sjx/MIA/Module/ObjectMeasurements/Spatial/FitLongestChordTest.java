@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.HorizontalCylinderR22;
 import wbif.sjx.MIA.ExpectedObjects.VerticalCylinderR5;
@@ -11,6 +13,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.Arrays;
 
@@ -24,15 +27,16 @@ public class FitLongestChordTest extends ModuleTest {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testProcessObjectHorizontalCylinderR22() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProcessObjectHorizontalCylinderR22(VolumeType volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObjs = new HorizontalCylinderR22().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObjs = new HorizontalCylinderR22(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Obj inputObj = inputObjs.getFirst();
 
         // Processing object
@@ -92,15 +96,16 @@ public class FitLongestChordTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testProcessObjectVerticalCylinderR5() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProcessObjectVerticalCylinderR5(VolumeType volumeType) throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObjs = new VerticalCylinderR5().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObjs = new VerticalCylinderR5(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         Obj inputObj = inputObjs.getFirst();
 
         // Processing object

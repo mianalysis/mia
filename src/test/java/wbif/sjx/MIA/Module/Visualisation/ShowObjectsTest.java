@@ -4,6 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
@@ -12,6 +14,7 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -39,8 +42,9 @@ public class ShowObjectsTest extends ModuleTest {
      * Takes provided objects and converts to an image using another image as a reference
      * @throws Exception
      */
-    @Test
-    public void testConvertObjectsToImagebit3DWithRefImage() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testConvertObjectsToImagebit3DWithRefImage(VolumeType volumeType) throws Exception {
         // Initialising parameters
         String colourMode = ConvertObjectsToImage.ColourModes.ID;
 
@@ -51,7 +55,7 @@ public class ShowObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        ObjCollection testObjects = new Objects3D().getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");
@@ -91,8 +95,9 @@ public class ShowObjectsTest extends ModuleTest {
      * Takes provided objects and converts to an image using another image as a reference
      * @throws Exception
      */
-    @Test
-    public void testConvertObjectsToImagebit3DWithNoRefImage() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testConvertObjectsToImagebit3DWithNoRefImage(VolumeType volumeType) throws Exception {
         // Initialising parameters
         String colourMode = ConvertObjectsToImage.ColourModes.ID;
 
@@ -103,7 +108,7 @@ public class ShowObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        ObjCollection testObjects = new Objects3D().getObjects(objectName,ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(objectName,ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_32bit_NoRef.tif").getPath(),"UTF-8");

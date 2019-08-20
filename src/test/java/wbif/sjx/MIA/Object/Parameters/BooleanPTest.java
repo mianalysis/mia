@@ -23,7 +23,7 @@ public class BooleanPTest {
 
         assertEquals("TestBoo",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());
-        assertTrue(duplicated.getValue());
+        assertTrue((Boolean) duplicated.getValue());
 
     }
 
@@ -33,13 +33,13 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
-        assertTrue(booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue());
 
         booleanP.flipBoolean();
-        assertFalse(booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue());
 
         booleanP.flipBoolean();
-        assertTrue(booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue());
 
     }
 
@@ -71,10 +71,10 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,false);
-        assertFalse(booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue());
 
         booleanP.setValueFromString("true");
-        assertTrue(booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue());
 
     }
 
@@ -84,10 +84,10 @@ public class BooleanPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         BooleanP booleanP = new BooleanP("TestBoo",paramTest,true);
-        assertTrue(booleanP.getValue());
+        assertTrue((Boolean) booleanP.getValue());
 
         booleanP.setValueFromString("false");
-        assertFalse(booleanP.getValue());
+        assertFalse((Boolean) booleanP.getValue());
 
     }
 
@@ -157,8 +157,8 @@ public class BooleanPTest {
 
         assertEquals("TestBoo",booleanP.getName());
         assertEquals("New nick",booleanP.getNickname());
-        assertFalse(booleanP.getValue());
-        assertFalse(booleanP.isVisible());
+        assertFalse((Boolean) booleanP.getValue());
+        assertFalse((Boolean) booleanP.isVisible());
 
     }
 }

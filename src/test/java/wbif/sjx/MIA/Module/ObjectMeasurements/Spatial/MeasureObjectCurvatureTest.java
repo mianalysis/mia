@@ -5,12 +5,15 @@ import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Rings2D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
@@ -32,8 +35,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         assertNotNull(new MeasureObjectCurvature(null).getDescription());
     }
 
-    @Test
-    public void testRunCircleNoRelate10PxRadius2DLOESS() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunCircleNoRelate10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -43,7 +47,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -85,8 +89,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -96,7 +101,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -147,8 +152,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testRunCircleRelateClockwise10PxRadius2DLOESS() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunCircleRelateClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -158,7 +164,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace

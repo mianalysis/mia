@@ -11,8 +11,8 @@ import java.util.List;
  * Created by Stephen Cross on 29/08/2017.
  */
 public class Objects3D extends ExpectedObjects {
-    public Objects3D() {
-        super(VolumeType.POINTLIST, 64, 76, 12);
+    public Objects3D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 12);
     }
 
     public enum Measures {

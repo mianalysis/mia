@@ -4,6 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
@@ -33,8 +35,9 @@ public class FilterObjectsTest extends ModuleTest {
         assertNotNull(new FilterObjects(null).getDescription());
     }
 
-    @Test
-    public void testRunMeasurementsLargerThan() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMeasurementsLargerThan(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -44,7 +47,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -63,8 +66,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMeasurementsSmallerThan() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMeasurementsSmallerThan(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -74,7 +78,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -93,8 +97,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMissingMeasurement() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMissingMeasurement(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -104,7 +109,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -123,8 +128,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunObjectsOnImageEdge() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunObjectsOnImageEdge(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -134,7 +140,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -158,8 +164,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunObjectsOnImageEdgeIgnoreZ() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunObjectsOnImageEdgeIgnoreZ(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -169,7 +176,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -194,8 +201,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunObjectsOnImageEdgeIncludeZ() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunObjectsOnImageEdgeIncludeZ(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -205,7 +213,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -230,8 +238,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMinimumNumberOfChildren() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMinimumNumberOfChildren(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -241,7 +250,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
@@ -253,7 +262,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(VolumeType.POINTLIST,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -279,8 +288,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMaximumNumberOfChildren() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMaximumNumberOfChildren(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -290,7 +300,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
@@ -302,7 +312,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(VolumeType.POINTLIST,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -329,8 +339,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMissingParent() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMissingParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -340,7 +351,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -350,7 +361,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(VolumeType.POINTLIST,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -374,8 +385,9 @@ public class FilterObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithParent() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -385,7 +397,7 @@ public class FilterObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -395,7 +407,7 @@ public class FilterObjectsTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(VolumeType.POINTLIST,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

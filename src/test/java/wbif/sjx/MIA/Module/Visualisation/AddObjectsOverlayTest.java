@@ -6,6 +6,8 @@ import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
@@ -16,6 +18,7 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.TrackObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
@@ -55,8 +58,10 @@ public class AddObjectsOverlayTest extends ModuleTest {
     public void addPositionMeasurementsOverlay() {
     }
 
-    @Test @Disabled
-    public void testCreateTrackOverlay() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    @Disabled
+    public void testCreateTrackOverlay(VolumeType volumeType) throws Exception {
 
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
 
@@ -72,7 +77,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new DenseTracks2D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new DenseTracks2D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Tracking objects

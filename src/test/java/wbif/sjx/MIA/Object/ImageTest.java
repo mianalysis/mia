@@ -6,12 +6,16 @@ import net.imagej.ImgPlus;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 
 import java.net.URLDecoder;
 
 import org.junit.jupiter.api.Test;
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImageTest < T extends RealType< T > & NativeType< T >> {
@@ -68,8 +72,9 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
      * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
      * @throws Exception
      */
-    @Test
-    public void testConvertImageToObjects8bit3D() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testConvertImageToObjects8bit3D(VolumeType volumeType) throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -91,7 +96,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
@@ -104,8 +109,9 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
      * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
      * @throws Exception
      */
-    @Test
-    public void testConvertImageToObjects16bit3D() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testConvertImageToObjects16bit3D(VolumeType volumeType) throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -127,7 +133,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found

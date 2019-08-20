@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.MergedObjects3D;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
@@ -12,6 +14,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,8 +29,9 @@ public class CombineObjectSetsTest extends ModuleTest {
         assertNotNull(new CombineObjectSets(null).getDescription());
     }
 
-    @Test
-    public void testRunWithoutObjectDeletion() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithoutObjectDeletion(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -37,9 +41,9 @@ public class CombineObjectSetsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj1 = new Objects3D().getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj1 = new Objects3D(volumeType).getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj1);
-        ObjCollection inputObj2 = new Spots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj2 = new Spots3D(volumeType).getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
         // Initialising FilterObjects module
@@ -52,7 +56,7 @@ public class CombineObjectSetsTest extends ModuleTest {
         combineObjectSets.execute(workspace);
 
         // Getting expected output objects
-        ObjCollection expectedOutputObj= new MergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedOutputObj= new MergedObjects3D(volumeType).getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(expectedOutputObj);
 
         // Getting actual output objects

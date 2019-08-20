@@ -5,6 +5,8 @@ package wbif.sjx.MIA.Module.Deprecated;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.*;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -12,6 +14,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,8 +39,9 @@ public class RelateObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testLinkMatchingIDsOneChild() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testLinkMatchingIDsOneChild(VolumeType volumeType){
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -49,9 +53,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new Spots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new Spots3D(volumeType).getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -101,8 +105,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidLink() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidLink(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -114,9 +119,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new Spots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new Spots3D(volumeType).getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -131,7 +136,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.execute(workspace);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D().getOtherValues();
+        HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D(volumeType).getOtherValues();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -186,8 +191,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidLink20px() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidLink20px(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -199,9 +205,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new Spots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new Spots3D(volumeType).getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -218,7 +224,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.execute(workspace);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D().getOtherValues();
+        HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D(volumeType).getOtherValues();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -273,8 +279,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidResponse2D() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidResponse2D(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -286,9 +293,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -318,8 +325,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void trial() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void trial(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -331,16 +339,16 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
 //        // Creating objects and adding to workspace
-//        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 //        workspace.addObjects(proxObj1);
-//        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+//        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 //        workspace.addObjects(proxObj2);
 
-        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         ObjCollection c1 = new ObjCollection(proxObj1Name);
         c1.add(proxObj1.get(20));
         workspace.addObjects(c1);
-        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         ObjCollection c2 = new ObjCollection(proxObj2Name);
         c2.add(proxObj2.get(12));
         workspace.addObjects(c2);
@@ -359,8 +367,9 @@ public class RelateObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testProximitySurfaceLink() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximitySurfaceLink(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -372,9 +381,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         ObjCollection c1 = new ObjCollection(proxObj1Name);
@@ -415,13 +424,12 @@ public class RelateObjectsTest extends ModuleTest {
             double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
-            System.out.println("Success");
-
         }
     }
 
-    @Test
-    public void testProximitySurfaceLink5px() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximitySurfaceLink5px(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -433,9 +441,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -482,8 +490,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximitySurfaceResponse2DInOut() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximitySurfaceResponse2DInOut(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -495,9 +504,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -528,8 +537,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximitySurfaceResponse2DIn() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximitySurfaceResponse2DIn(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -541,9 +551,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -574,8 +584,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximitySurfaceResponse2DOut() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximitySurfaceResponse2DOut(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -587,9 +598,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -620,8 +631,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidSurfaceLink() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidSurfaceLink(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -633,9 +645,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -677,8 +689,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidSurfaceLink5px() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidSurfaceLink5px(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -690,9 +703,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -739,8 +752,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidSurfaceResponse2DInOut() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidSurfaceResponse2DInOut(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -752,10 +766,17 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
+
+//        ObjCollection o1 = new ObjCollection(proxObj1Name);
+//        o1.add(proxObj1.getFirst());
+//        workspace.addObjects(o1);
+//        ObjCollection o2 = new ObjCollection(proxObj2Name);
+//        o2.add(proxObj2.getFirst());
+//        workspace.addObjects(o2);
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects(new ModuleCollection());
@@ -785,8 +806,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidSurfaceResponse2DIn() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidSurfaceResponse2DIn(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -798,9 +820,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -831,8 +853,9 @@ public class RelateObjectsTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProximityCentroidSurfaceResponse2DOut() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProximityCentroidSurfaceResponse2DOut(VolumeType volumeType) {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -844,9 +867,9 @@ public class RelateObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -878,11 +901,11 @@ public class RelateObjectsTest extends ModuleTest {
     }
 
     @Test @Disabled
-    public void testProximityToChildren() throws Exception {
+    public void testProximityToChildren() {
     }
 
     @Test @Disabled
-    public void testSpatialLinking() throws Exception {
+    public void testSpatialLinking() {
     }
 
 }

@@ -9,8 +9,8 @@ import java.util.List;
  * Created by sc13967 on 21/02/2018.
  */
 public class Objects4D extends ExpectedObjects {
-    public Objects4D() {
-        super(VolumeType.POINTLIST, 64, 76, 12);
+    public Objects4D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 12);
     }
 
     @Override

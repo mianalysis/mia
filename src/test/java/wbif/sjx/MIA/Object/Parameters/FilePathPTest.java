@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -11,16 +11,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilePathPTest {
     @Test
-    public void isDirectoryFile() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void isDirectoryFile(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -38,16 +37,14 @@ public class FilePathPTest {
      * @throws IOException
      */
     @Test
-    public void isDirectoryDirectory() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
+    public void isDirectoryDirectory(@TempDir Path tempPath) throws IOException {
+        File temporaryFolder = tempPath.toFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
 
         FilePathP filePathP = new FilePathP("Demo file",paramTest);
-        filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
+        filePathP.setPath(temporaryFolder.getAbsolutePath());
 
         assertTrue(filePathP.isDirectory());
 
@@ -78,11 +75,9 @@ public class FilePathPTest {
     }
 
     @Test
-    public void setPathFile() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void setPathFile(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -95,28 +90,25 @@ public class FilePathPTest {
     }
 
     @Test
-    public void setPathDirectory() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void setPathDirectory(@TempDir Path tempPath) throws IOException {
+        File temporaryFolder = tempPath.toFile();
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
 
         FilePathP filePathP = new FilePathP("Demo file",paramTest);
-        filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
+        filePathP.setPath(temporaryFolder.getAbsolutePath());
 
-        assertEquals(temporaryFolder.getRoot().getAbsolutePath(),filePathP.getPath());
+        assertEquals(temporaryFolder.getAbsolutePath(),filePathP.getPath());
 
     }
 
     @Test
-    public void getRawStringValueFile() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void getRawStringValueFile(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -129,27 +121,23 @@ public class FilePathPTest {
     }
 
     @Test
-    public void getRawStringValueDirectory() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
+    public void getRawStringValueDirectory(@TempDir Path tempPath) throws IOException {
+        File temporaryFolder = tempPath.toFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
 
         FilePathP filePathP = new FilePathP("Demo file",paramTest);
-        filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
+        filePathP.setPath(temporaryFolder.getAbsolutePath());
 
-        assertEquals(temporaryFolder.getRoot().getAbsolutePath(),filePathP.getRawStringValue());
+        assertEquals(temporaryFolder.getAbsolutePath(),filePathP.getRawStringValue());
 
     }
 
     @Test
-    public void setValueFromStringFile() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void setValueFromStringFile(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -162,27 +150,23 @@ public class FilePathPTest {
     }
 
     @Test
-    public void setValueFromStringDirectory() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
+    public void setValueFromStringDirectory(@TempDir Path tempPath) throws IOException {
+        File temporaryFolder = tempPath.toFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
 
         FilePathP filePathP = new FilePathP("Demo file",paramTest);
-        filePathP.setValueFromString(temporaryFolder.getRoot().getAbsolutePath());
+        filePathP.setValueFromString(temporaryFolder.getAbsolutePath());
 
-        assertEquals(temporaryFolder.getRoot().getAbsolutePath(),filePathP.getRawStringValue());
+        assertEquals(temporaryFolder.getAbsolutePath(),filePathP.getRawStringValue());
 
     }
 
     @Test
-    public void verifyFile() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void verifyFile(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -195,27 +179,23 @@ public class FilePathPTest {
     }
 
     @Test
-    public void verifyDirectory() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
+    public void verifyDirectory(@TempDir Path tempPath) throws IOException {
+        File temporaryFolder = tempPath.toFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
 
         FilePathP filePathP = new FilePathP("Demo file",paramTest);
-        filePathP.setPath(temporaryFolder.getRoot().getAbsolutePath());
+        filePathP.setPath(temporaryFolder.getAbsolutePath());
 
         assertFalse(filePathP.verify());
 
     }
 
     @Test
-    public void verifyMissingFile() throws IOException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void verifyMissingFile(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -254,11 +234,9 @@ public class FilePathPTest {
     }
 
     @Test
-    public void appendXMLAttributes() throws IOException, ParserConfigurationException {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void appendXMLAttributes(@TempDir Path tempPath) throws IOException, ParserConfigurationException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);

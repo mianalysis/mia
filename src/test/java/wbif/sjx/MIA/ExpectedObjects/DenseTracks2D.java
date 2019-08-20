@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DenseTracks2D extends ExpectedObjects {
-    public DenseTracks2D() {
-        super(VolumeType.POINTLIST, 600, 600, 1);
+    public DenseTracks2D(VolumeType volumeType) {
+        super(volumeType, 600, 600, 1);
     }
 
     @Override
