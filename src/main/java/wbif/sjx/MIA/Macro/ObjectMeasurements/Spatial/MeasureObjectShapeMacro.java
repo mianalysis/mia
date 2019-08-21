@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.ObjectMeasurements.Spatial;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
 import wbif.sjx.MIA.Object.Workspace;
 
@@ -21,8 +22,8 @@ public class MeasureObjectShapeMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        MeasureObjectShape measureObjectShape = new MeasureObjectShape(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        MeasureObjectShape measureObjectShape = new MeasureObjectShape(modules);
 
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,objects[0]);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,(double) objects[1] == 1);

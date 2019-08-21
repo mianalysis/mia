@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Macro.InputOutput;
 
 import wbif.sjx.MIA.Macro.MacroOperationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LoadImageFromImageJMacroTest extends MacroOperationTest {
     @Override

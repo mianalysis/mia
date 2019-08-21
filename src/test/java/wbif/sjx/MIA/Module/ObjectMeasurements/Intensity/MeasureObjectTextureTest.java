@@ -2,8 +2,10 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -11,10 +13,11 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Analysis.TextureCalculator;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MeasureObjectTextureTest extends ModuleTest {
     private double tolerance = 1E-4;
@@ -42,22 +45,23 @@ public class MeasureObjectTextureTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertCalibratedOffsets() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetLocalObjectRegion() {
     }
 
-    @Test
-    public void testProcessObject1Px() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProcessObject1Px(VolumeType volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -91,13 +95,14 @@ public class MeasureObjectTextureTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testProcessObject3Px() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testProcessObject3Px(VolumeType volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");

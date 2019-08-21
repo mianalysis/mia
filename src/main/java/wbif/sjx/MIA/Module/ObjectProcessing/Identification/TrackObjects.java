@@ -250,8 +250,8 @@ public class TrackObjects extends Module {
 
     public static double getVolumeCost(Obj prevObj, Obj currObj) {
         // Calculating volume weighting
-        double prevVol = prevObj.getNVoxels();
-        double currVol = currObj.getNVoxels();
+        double prevVol = prevObj.size();
+        double currVol = currObj.size();
 
 //        if (currObj.is2D()) {
 //            prevVol = Math.sqrt(prevVol);
@@ -369,12 +369,9 @@ public class TrackObjects extends Module {
 
     public static void createNewTrack(Obj currObj, ObjCollection trackObjects) {
         String trackObjectsName = trackObjects.getName();
-        double dppXY = currObj.getDistPerPxXY();
-        double dppZ = currObj.getDistPerPxZ();
-        String units = currObj.getCalibratedUnits();
 
         // Creating a new track object
-        Obj track = new Obj(trackObjectsName, trackObjects.getAndIncrementID(), dppXY, dppZ, units, currObj.is2D());
+        Obj track = new Obj(trackObjectsName, trackObjects.getAndIncrementID(),currObj);
 
         // Setting relationship between the current object and track
         track.addChild(currObj);

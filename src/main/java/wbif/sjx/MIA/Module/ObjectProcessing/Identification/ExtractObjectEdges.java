@@ -44,13 +44,8 @@ public class ExtractObjectEdges extends Module {
     }
 
     public static Obj getObjectEdge(Obj inputObject, ObjCollection edgeObjects, String edgeMode, double edgeDistance, double edgePercentage) throws IntegerOverflowException {
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String calibratedUnits = inputObject.getCalibratedUnits();
-        boolean is2D = inputObject.is2D();
-
         // Creating new edge object
-        Obj edgeObject = new Obj(edgeObjects.getName(), edgeObjects.getAndIncrementID() ,dppXY,dppZ,calibratedUnits,is2D);
+        Obj edgeObject = new Obj(edgeObjects.getName(), edgeObjects.getAndIncrementID(),inputObject);
 
         // Getting parent coordinates
         ArrayList<Integer> parentX = inputObject.getXCoords();
@@ -91,7 +86,7 @@ public class ExtractObjectEdges extends Module {
             double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
 
             if (pixelVal <= edgeDistance) {
-                edgeObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
+                edgeObject.add(parentX.get(i),parentY.get(i),parentZ.get(i));
                 edgeObject.setT(inputObject.getT());
             }
         }
@@ -104,13 +99,8 @@ public class ExtractObjectEdges extends Module {
     }
 
     public static Obj getInterior(Obj inputObject, ObjCollection interiorObjects, String edgeMode, double edgeDistance, double edgePercentage) throws IntegerOverflowException {
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String calibratedUnits = inputObject.getCalibratedUnits();
-        boolean is2D = inputObject.is2D();
-
         // Creating new edge object
-        Obj interiorObject = new Obj(interiorObjects.getName(),interiorObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,is2D);
+        Obj interiorObject = new Obj(interiorObjects.getName(),interiorObjects.getAndIncrementID(),inputObject);
 
         // Getting parent coordinates
         ArrayList<Integer> parentX = inputObject.getXCoords();
@@ -152,7 +142,7 @@ public class ExtractObjectEdges extends Module {
             double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
 
             if (pixelVal > edgeDistance ) {
-                interiorObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
+                interiorObject.add(parentX.get(i),parentY.get(i),parentZ.get(i));
                 interiorObject.setT(inputObject.getT());
 
             }

@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -49,7 +50,7 @@ public class MeasureSkeleton extends Module {
     }
 
     static void addMeasurements(Obj inputObject, SkeletonResult skeletonResult) {
-        double dppXY = inputObject.getDistPerPxXY();
+        double dppXY = inputObject.getDppXY();
 
         inputObject.addMeasurement(new Measurement(Measurements.nBranches,skeletonResult.getBranches()[0]));
         inputObject.addMeasurement(new Measurement(Measurements.nJunctions,skeletonResult.getJunctions()[0]));
@@ -125,7 +126,7 @@ public class MeasureSkeleton extends Module {
                 // Adding the skeleton to the input object
                 if (addToWorkspace) {
                     try {
-                        Obj outputObject = projectedImage.convertImageToObjects(outputObjectsName).getFirst();
+                        Obj outputObject = projectedImage.convertImageToObjects(Image.VolumeTypes.POINTLIST,outputObjectsName).getFirst();
                         outputObject.setID(finalOutputObjects.getAndIncrementID());
                         inputObject.addChild(outputObject);
                         outputObject.addParent(inputObject);

@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -23,10 +24,6 @@ public class Tracks3D {
         return ExpectedObjects.getCoordinates5D("/coordinates/Tracks3D.csv");
     }
 
-    public boolean is2D() {
-        return false;
-    }
-
     public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
         return null;
     }
@@ -38,7 +35,7 @@ public class Tracks3D {
      * @param calibratedUnits
      * @return
      */
-    public ObjCollection getObjects(String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
+    public ObjCollection getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
         // Initialising object store
         ObjCollection trackObjects = new ObjCollection(tracksName);
 
@@ -53,11 +50,11 @@ public class Tracks3D {
             int t = coordinate[6];
 
             spotID = spotID+(t*65536);
-            Obj spotObject = new Obj(spotsName,spotID,dppXY,dppZ,calibratedUnits,is2D());
-            spotObject.addCoord(x,y,z);
+            Obj spotObject = new Obj(volumeType,spotsName,spotID,127,90,13,dppXY,dppZ,calibratedUnits);
+            spotObject.add(x,y,z);
             spotObject.setT(t);
 
-            trackObjects.putIfAbsent(trackID,new Obj(tracksName,trackID,dppXY,dppZ,calibratedUnits,is2D()));
+            trackObjects.putIfAbsent(trackID,new Obj(volumeType,tracksName,trackID,127,90,13,dppXY,dppZ,calibratedUnits));
             Obj track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);

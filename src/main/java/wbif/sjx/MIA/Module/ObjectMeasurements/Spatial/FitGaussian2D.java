@@ -312,7 +312,7 @@ public class FitGaussian2D extends Module {
 
         inputImagePlus.setPosition(1,1,1);
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

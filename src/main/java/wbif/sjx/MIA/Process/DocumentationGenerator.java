@@ -99,20 +99,20 @@ public class DocumentationGenerator {
     }
 
     private static void generateMacroPages() throws IOException {
-        ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
-        for (MacroOperation macro:macros) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
-            String macroList = getMacroSummary(macro);
-            template = template.replace("${INSERT}",macroList);
-
-            new File("docs/html/macros/").mkdirs();
-
-            FileWriter writer = new FileWriter("docs/html/"+getSimpleMacroPath(macro));
-            writer.write(template);
-            writer.flush();
-            writer.close();
-
-        }
+//        ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
+//        for (MacroOperation macro:macros) {
+//            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
+//            String macroList = getMacroSummary(macro);
+//            template = template.replace("${INSERT}",macroList);
+//
+//            new File("docs/html/macros/").mkdirs();
+//
+//            FileWriter writer = new FileWriter("docs/html/"+getSimpleMacroPath(macro));
+//            writer.write(template);
+//            writer.flush();
+//            writer.close();
+//
+//        }
     }
 
     private static String getIndexContent() {

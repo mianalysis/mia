@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
@@ -11,10 +13,11 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.TreeSet;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 03/09/2017.
@@ -22,7 +25,7 @@ import static org.junit.Assert.*;
 public class ProjectObjectsTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -33,8 +36,9 @@ public class ProjectObjectsTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRun() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRun(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -46,7 +50,7 @@ public class ProjectObjectsTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection inputObjects = new Objects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection inputObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -67,7 +71,7 @@ public class ProjectObjectsTest extends ModuleTest {
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
         // Getting expected and actual objects
-        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         ObjCollection actualObjects = workspace.getObjectSet(outputObjectsName);
 
         TreeSet<Point<Integer>> expPoints = expectedObjects.get(3).getPoints();

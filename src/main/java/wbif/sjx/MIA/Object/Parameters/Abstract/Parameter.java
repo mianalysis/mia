@@ -123,4 +123,9 @@ public abstract class Parameter extends Ref {
         setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));
 
     }
+
+    @Override
+    public String toString() {
+        return "Name: "+name+", value: "+getRawStringValue()+", module: "+module.getName();
+    }
 }

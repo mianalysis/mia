@@ -1,12 +1,9 @@
 package wbif.sjx.MIA.Macro.General;
 
 import ij.macro.MacroExtension;
-import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.common.Object.HCMetadata;
-
-import java.util.HashMap;
 
 public class GetObjectMeasurementMacro extends MacroOperation {
     public GetObjectMeasurementMacro(MacroExtension theHandler) {
@@ -24,7 +21,7 @@ public class GetObjectMeasurementMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         String objectName = (String) objects[0];
         int objectID = (int) Math.round((Double) objects[1]);
         String measurementName = (String) objects[2];

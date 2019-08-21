@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -28,6 +29,7 @@ public class ConvertObjectsToImage extends Module {
     public static final String CONVERSION_MODE = "Conversion mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String VOLUME_TYPE = "Volume type";
     public static final String TEMPLATE_IMAGE = "Template image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -50,6 +52,8 @@ public class ConvertObjectsToImage extends Module {
 
     public interface ColourModes extends Overlay.ColourModes  {}
 
+    public interface VolumeTypes extends Image.VolumeTypes {}
+
 
     @Override
     public String getPackageName() {
@@ -70,10 +74,11 @@ public class ConvertObjectsToImage extends Module {
             Image inputImage = workspace.getImages().get(inputImageName);
 
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+            String volumeType = parameters.getValue(VOLUME_TYPE);
 
             ObjCollection objects = null;
             try {
-                objects = inputImage.convertImageToObjects(outputObjectsName);
+                objects = inputImage.convertImageToObjects(volumeType,outputObjectsName);
             } catch (IntegerOverflowException e) {
                 return false;
             }
@@ -174,6 +179,7 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new ChoiceP(CONVERSION_MODE, this,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this,VolumeTypes.POINTLIST,VolumeTypes.ALL));
         parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
@@ -195,6 +201,7 @@ public class ConvertObjectsToImage extends Module {
         if (parameters.getValue(CONVERSION_MODE).equals(ConversionModes.IMAGE_TO_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(VOLUME_TYPE));
 
         } else if(parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
             returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));

@@ -74,7 +74,7 @@ public class ResolveCoOccurrence extends Module {
                 double overlap = object1.getOverlap(object2);
 
                 // Comparing the overlap to previously-maximum overlaps
-                double overlapPercentage1 = 100*overlap/object1.getNVoxels();
+                double overlapPercentage1 = 100*overlap/object1.size();
                 if (overlapPercentage1>overlap1[0] &&  overlapPercentage1> minOverlap1) {
                     overlap1[0] = overlapPercentage1;
                     overlap1[1] = (double) object2.getID();
@@ -82,7 +82,7 @@ public class ResolveCoOccurrence extends Module {
 
                 // Comparing the overlap to previously-maximum overlaps
                 Double[] overlap2 = overlaps2.get(object2.getID());
-                double overlapPercentage2 = 100*overlap/object2.getNVoxels();
+                double overlapPercentage2 = 100*overlap/object2.size();
                 if (overlapPercentage2>overlap2[0] &&  overlapPercentage2> minOverlap2) {
                     overlap2[0] = overlapPercentage2;
                     overlap2[1] = (double) object1.getID();
@@ -173,12 +173,11 @@ public class ResolveCoOccurrence extends Module {
             if (overlap2[1] != object1.getID()) continue;
 
             // Merge objects and adding to output objects
-            Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(),
-                    object1.getDistPerPxXY(), object1.getDistPerPxZ(), object1.getCalibratedUnits(), object1.is2D());
+            Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(),object1);
 
             // Adding measurements
-            double nPoints1 = (double) object1.getNVoxels();
-            double nPoints2 = (double) object2.getNVoxels();
+            double nPoints1 = (double) object1.size();
+            double nPoints2 = (double) object2.size();
             double nTotalPoints = nPoints1 + nPoints2;
             double fraction1 = nPoints1/nTotalPoints;
             double fraction2 = nPoints2/nTotalPoints;
@@ -244,7 +243,7 @@ public class ResolveCoOccurrence extends Module {
         }
 
         Obj firstObj = inputObjects1.getFirst();
-        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDistPerPxXY();
+        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDppXY();
 
         ObjCollection outputObjects = null;
         switch (overlapMode) {

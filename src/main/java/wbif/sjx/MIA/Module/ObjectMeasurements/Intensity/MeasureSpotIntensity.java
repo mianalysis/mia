@@ -150,7 +150,7 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
-        if (showOutput) spotObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) spotObjects.showMeasurements(this,modules);
 
         return true;
 

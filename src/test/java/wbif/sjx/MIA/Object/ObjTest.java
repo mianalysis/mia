@@ -1,19 +1,23 @@
 package wbif.sjx.MIA.Object;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.LinkedHashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjTest {
     private double tolerance = 1E-2;
 
-    @Test
-    public void testAddMeasurementNormal() {
-        Obj obj = new Obj("Test object",1,0.02,0.1,"µm",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testAddMeasurementNormal(VolumeType volumeType) {
+        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,0.02,0.1,"µm");
         assertEquals(0,obj.getMeasurements().size());
 
         obj.addMeasurement(new Measurement("Meas",-12.4));
@@ -25,9 +29,10 @@ public class ObjTest {
 
     }
 
-    @Test
-    public void testAddMeasurementOverwrite() {
-        Obj obj = new Obj("Test object",1,0.02,0.1,"µm",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testAddMeasurementOverwrite(VolumeType volumeType) {
+        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,0.02,0.1,"µm");
         assertEquals(0,obj.getMeasurements().size());
 
         obj.addMeasurement(new Measurement("Meas",-12.4));
@@ -40,9 +45,10 @@ public class ObjTest {
 
     }
 
-    @Test
-    public void testAddMeasurementNull() {
-        Obj obj = new Obj("Test object",1,0.02,0.1,"µm",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testAddMeasurementNull(VolumeType volumeType) {
+        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,0.02,0.1,"µm");
         assertEquals(0,obj.getMeasurements().size());
 
         obj.addMeasurement(null);
@@ -53,9 +59,10 @@ public class ObjTest {
 
     }
 
-    @Test
-    public void testToString() {
-        Obj obj = new Obj("Test object",1,0.02,0.1,"µm",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testToString(VolumeType volumeType) {
+        Obj obj = new Obj(volumeType,"Test object",1,1,1,1,0.02,0.1,"µm");
         obj.setT(12);
 
         String expected = "Object Test object, ID = 1, frame = 12";
@@ -65,8 +72,9 @@ public class ObjTest {
 
     }
 
-    @Test
-    public void testGetParentsLocalNone() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetParentsLocalNone(VolumeType volumeType) {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
@@ -74,17 +82,18 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(childObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(parentObjectsName1,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(parentObjectsName2,3,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,0.02,0.1,"µm");
 
         LinkedHashMap<String,Obj> parents = obj1.getParents(false);
         assertEquals(0,parents.size());
 
     }
 
-    @Test
-    public void testGetParentsLocal() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetParentsLocal(VolumeType volumeType) {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
@@ -92,9 +101,9 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(childObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(parentObjectsName1,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(parentObjectsName2,3,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,0.02,0.1,"µm");
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -108,8 +117,9 @@ public class ObjTest {
 
     }
 
-    @Test
-    public void testGetParentsLocalOverwrite() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetParentsLocalOverwrite(VolumeType volumeType) {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents1";
@@ -117,9 +127,9 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(childObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(parentObjectsName1,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(parentObjectsName2,3,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,0.02,0.1,"µm");
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -136,8 +146,9 @@ public class ObjTest {
      * Testing getting multiple parents from the relationship hierarchy.  In this case the relationships further away
      * are added last.
      */
-    @Test
-    public void testGetParentsFullHierarchyClosestFirst() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetParentsFullHierarchyClosestFirst(VolumeType volumeType) {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
@@ -146,10 +157,10 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(childObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(parentObjectsName1,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(parentObjectsName2,3,0.02,0.1,"µm",false);
-        Obj obj4 = new Obj(parentObjectsName3,42,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,0.02,0.1,"µm");
+        Obj obj4 = new Obj(volumeType,parentObjectsName3,42,1,1,1,0.02,0.1,"µm");
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -172,8 +183,9 @@ public class ObjTest {
      * Testing getting multiple parents from the relationship hierarchy.  In this case the relationships further away
      * are added first.
      */
-    @Test
-    public void testGetParentsFullHierarchyFurthestFirst() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetParentsFullHierarchyFurthestFirst(VolumeType volumeType) {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
@@ -182,10 +194,10 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(childObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(parentObjectsName1,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(parentObjectsName2,3,0.02,0.1,"µm",false);
-        Obj obj4 = new Obj(parentObjectsName3,42,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,0.02,0.1,"µm");
+        Obj obj4 = new Obj(volumeType,parentObjectsName3,42,1,1,1,0.02,0.1,"µm");
 
         obj3.addParent(obj4);
         obj4.addChild(obj3);
@@ -209,8 +221,9 @@ public class ObjTest {
      * are different.  As parents are returned as a LinkedHashMap with String key it's not possible to have more than
      * one parent from a single collection.  This should preferentially return the direct parent of the target object.
      */
-    @Test
-    public void testGetParentsFullHierarchyCyclicClosestFirst() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetParentsFullHierarchyCyclicClosestFirst(VolumeType volumeType) {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
@@ -219,11 +232,11 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(childObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(parentObjectsName1,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(parentObjectsName2,3,0.02,0.1,"µm",false);
-        Obj obj4 = new Obj(parentObjectsName3,42,0.02,0.1,"µm",false);
-        Obj obj5 = new Obj(parentObjectsName1,14,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,parentObjectsName2,3,1,1,1,0.02,0.1,"µm");
+        Obj obj4 = new Obj(volumeType,parentObjectsName3,42,1,1,1,0.02,0.1,"µm");
+        Obj obj5 = new Obj(volumeType,parentObjectsName1,14,1,1,1,0.02,0.1,"µm");
 
         obj1.addParent(obj2);
         obj2.addChild(obj1);
@@ -246,18 +259,19 @@ public class ObjTest {
 
     }
 
-    @Test
-    public void testAddChildren() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testAddChildren(VolumeType volumeType) {
         String parentObjectsName = "Parent";
         String childObjectsName = "Children";
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(parentObjectsName,1,0.02,0.1,"µm",false);
-        Obj obj2 = new Obj(childObjectsName,12,0.02,0.1,"µm",false);
-        Obj obj3 = new Obj(childObjectsName,2,0.02,0.1,"µm",false);
-        Obj obj4 = new Obj(childObjectsName,32,0.02,0.1,"µm",false);
+        Obj obj1 = new Obj(volumeType,parentObjectsName,1,1,1,1,0.02,0.1,"µm");
+        Obj obj2 = new Obj(volumeType,childObjectsName,12,1,1,1,0.02,0.1,"µm");
+        Obj obj3 = new Obj(volumeType,childObjectsName,2,1,1,1,0.02,0.1,"µm");
+        Obj obj4 = new Obj(volumeType,childObjectsName,32,1,1,1,0.02,0.1,"µm");
 
         assertEquals(0,obj1.getChildren().size());
 
@@ -278,241 +292,253 @@ public class ObjTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testAddChild() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRemoveChild() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRemoveRelationships() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetRoi() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testAddPointsFromRoi() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetAsImage() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testGetSlicePoints() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testConvertObjToImage() {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testCropToImageSize() {
 
     }
 
-    @Test
-    public void testHashCodeSameObject() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeSameObject(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertEquals(obj1.hashCode(),obj2.hashCode());
 
     }
 
-    @Test
-    public void testHashCodeDifferentOrder() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeDifferentOrder(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(3,5,1);
-        obj2.addCoord(1,3,4);
+        obj2.add(3,5,1);
+        obj2.add(1,3,4);
 
         assertEquals(obj1.hashCode(),obj2.hashCode());
 
     }
 
-    @Test
-    public void testHashCodeDifferentNames() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeDifferentNames(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertEquals(obj1.hashCode(),obj2.hashCode());
 
     }
 
-    @Test
-    public void testHashCodeDifferentTimepoint() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,1,1);
-        obj1.addCoord(2,1,1);
+        obj1.add(1,1,1);
+        obj1.add(2,1,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(2);
-        obj2.addCoord(1,1,1);
-        obj2.addCoord(1,2,1);
+        obj2.add(1,1,1);
+        obj2.add(1,2,1);
 
         assertNotEquals(obj1.hashCode(),obj2.hashCode());
 
     }
 
-    @Test
-    public void testHashCodeDifferentCoordinates() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,3);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,3);
+        obj2.add(3,5,1);
 
         assertNotEquals(obj1.hashCode(),obj2.hashCode());
 
     }
 
-    @Test
-    public void testHashCodeMissingCoordinates() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testHashCodeMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
+        obj2.add(1,3,4);
 
         assertNotEquals(obj1.hashCode(),obj2.hashCode());
 
     }
 
-    @Test
-    public void testEqualsSameObject() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testEqualsSameObject(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
 
     }
 
-    @Test
-    public void testEqualsDifferentOrder() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testEqualsDifferentOrder(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(3,5,1);
-        obj2.addCoord(1,3,4);
+        obj2.add(3,5,1);
+        obj2.add(1,3,4);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
 
     }
 
-    @Test
-    public void testEqualsDifferentNames() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testEqualsDifferentNames(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,4);
+        obj2.add(3,5,1);
 
         assertTrue(obj1.equals(obj2));
         assertTrue(obj2.equals(obj1));
 
     }
 
-    @Test
-    public void testEqualsDifferentTimepoint() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testEqualsDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,1,1);
-        obj1.addCoord(2,1,1);
+        obj1.add(1,1,1);
+        obj1.add(2,1,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(2);
-        obj2.addCoord(1,1,1);
-        obj2.addCoord(1,2,1);
+        obj2.add(1,1,1);
+        obj2.add(1,2,1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
 
     }
 
-    @Test
-    public void testEqualsDifferentCoordinates() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testEqualsDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,3);
-        obj2.addCoord(3,5,1);
+        obj2.add(1,3,3);
+        obj2.add(3,5,1);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));
 
     }
 
-    @Test
-    public void testEqualsMissingCoordinates() throws IntegerOverflowException {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testEqualsMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+        Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
-        obj1.addCoord(1,3,4);
-        obj1.addCoord(3,5,1);
+        obj1.add(1,3,4);
+        obj1.add(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
+        Obj obj2 = new Obj(volumeType,"Obj2",1,5,7,5,2.0,1.0,"PX");
         obj2.setT(1);
-        obj2.addCoord(1,3,4);
+        obj2.add(1,3,4);
 
         assertFalse(obj1.equals(obj2));
         assertFalse(obj2.equals(obj1));

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.ObjectMeasurements.Intensity;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.MIA.Object.Workspace;
 
@@ -22,8 +23,8 @@ public class MeasureObjectTextureMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture(modules);
 
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS,objects[0]);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE,objects[1]);

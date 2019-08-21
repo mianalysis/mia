@@ -1,12 +1,12 @@
 package wbif.sjx.MIA.Object;
 
 import ij.ImagePlus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WorkspaceTest {
     @Test
@@ -21,7 +21,7 @@ public class WorkspaceTest {
         assertEquals(0,workspace.getObjects().size());
 
         // Creating and adding the new object
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("New obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
         workspace.addObject(obj);
 
         // Checking the workspace behaved as expected
@@ -109,35 +109,31 @@ public class WorkspaceTest {
         // Creating a new workspace and populating it with a set of objects
         Workspace workspace = new Workspace(0,null,0);
 
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.addMeasurement(new Measurement("Test meas",1.5));
-        obj.calculateSurface();
-        workspace.addObject(obj);
-
-        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.calculateSurface();
+        Obj obj = new Obj("New obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
-        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.calculateSurface();
+        obj = new Obj("New obj",1,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
-        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.calculateSurface();
+        obj = new Obj("Other obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
+        obj.addMeasurement(new Measurement("Test meas",1.5));
+        workspace.addObject(obj);
+
+        obj = new Obj("Other obj",1,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
@@ -174,35 +170,31 @@ public class WorkspaceTest {
         // Creating a new workspace and populating it with a set of objects
         Workspace workspace = new Workspace(0,null,0);
 
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.addMeasurement(new Measurement("Test meas",1.5));
-        obj.calculateSurface();
-        workspace.addObject(obj);
-
-        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.calculateSurface();
+        Obj obj = new Obj("New obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
-        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.calculateSurface();
+        obj = new Obj("New obj",1,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
-        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
-        obj.addCoord(12,5,2);
-        obj.addCoord(12,5,3);
-        obj.addCoord(12,6,2);
-        obj.calculateSurface();
+        obj = new Obj("Other obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
+        obj.addMeasurement(new Measurement("Test meas",1.5));
+        workspace.addObject(obj);
+
+        obj = new Obj("Other obj",1,20,10,5,dppXY,dppZ,calibratedUnits);
+        obj.add(12,5,2);
+        obj.add(12,5,3);
+        obj.add(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         workspace.addObject(obj);
 
@@ -235,19 +227,19 @@ public class WorkspaceTest {
         // Creating a new workspace and populating it with a set of objects
         Workspace workspace = new Workspace(0,null,0);
 
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("New obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
         obj.setT(0);
         workspace.addObject(obj);
 
-        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("New obj",1,20,10,5,dppXY,dppZ,calibratedUnits);
         obj.setT(1);
         workspace.addObject(obj);
 
-        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Other obj",0,20,10,5,dppXY,dppZ,calibratedUnits);
         obj.setT(0);
         workspace.addObject(obj);
 
-        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Other obj",1,20,10,5,dppXY,dppZ,calibratedUnits);
         obj.setT(2);
         workspace.addObject(obj);
 

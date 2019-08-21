@@ -1,21 +1,25 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BinObjectsByMeasurementTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -25,8 +29,9 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         assertNotNull(new BinObjectsByMeasurement(null).getDescription());
     }
 
-    @Test
-    public void testRunAllInRange() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunAllInRange(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -39,11 +44,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(null);
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new ModuleCollection());
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -58,13 +63,14 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
-            assertEquals("Measurement value", expected, actual, tolerance);
+            assertEquals(expected, actual, tolerance);
 
         }
     }
 
-    @Test
-    public void testRunSomeBelowRange() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunSomeBelowRange(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -77,11 +83,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(null);
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new ModuleCollection());
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -96,13 +102,14 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
-            assertEquals("Measurement value", expected, actual, tolerance);
+            assertEquals(expected, actual, tolerance);
 
         }
     }
 
-    @Test
-    public void testRunSomeAboveRange() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunSomeAboveRange(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -115,11 +122,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
-        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(null);
+        BinObjectsByMeasurement binObjectsByMeasurement = new BinObjectsByMeasurement(new ModuleCollection());
         binObjectsByMeasurement.initialiseParameters();
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.INPUT_OBJECTS, inputObjectsName);
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.MEASUREMENT,measurement);
@@ -134,7 +141,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
-            assertEquals("Measurement value", expected, actual, tolerance);
+            assertEquals(expected, actual, tolerance);
 
         }
     }

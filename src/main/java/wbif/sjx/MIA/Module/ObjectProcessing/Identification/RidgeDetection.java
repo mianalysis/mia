@@ -7,6 +7,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -18,6 +19,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.Calendar;
@@ -138,8 +140,8 @@ public class RidgeDetection extends Module {
                     // Getting the unique LineGroups
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
-                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), dppXY, dppZ,
-                                calibrationUnits,twoD);
+                        int ID = outputObjects.getAndIncrementID();
+                        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,ID,imWidth,imHeight,nSlices,dppXY, dppZ,calibrationUnits);
 
                         double estimatedLength = 0;
                         CumStat width = new CumStat();
@@ -155,7 +157,7 @@ public class RidgeDetection extends Module {
 
                                 // Adding central point
                                 if (x[i]>=0 && x[i]<imWidth && y[i]>=0 && y[i]<imHeight) {
-                                    outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), z);
+                                    outputObject.add(Math.round(x[i]), Math.round(y[i]), z);
                                 }
 
                                 // If selected, adding other points within the width of that point
@@ -169,7 +171,7 @@ public class RidgeDetection extends Module {
                                         for (int yy=yMin;yy<=yMax;yy++) {
                                             if (Math.sqrt((xx-x[i])*(xx-x[i])+(yy-y[i])*(yy-y[i])) > halfWidth) continue;
                                             if (xx<0 || xx>=imWidth || yy<0 || yy>=imHeight) continue;
-                                            outputObject.addCoord(xx, yy, z);
+                                            outputObject.add(xx, yy, z);
                                         }
                                     }
                                 }

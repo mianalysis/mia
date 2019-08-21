@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume;
+import wbif.sjx.common.Object.Volume.Volume;
 
 /**
  * Created by sc13967 on 19/06/2018.
@@ -99,12 +99,7 @@ public class FitEllipse extends Module {
     public Obj createNewObject (Obj inputObject, Volume ellipse, ObjCollection outputObjects) {
         if (ellipse == null) return null;
 
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String units = inputObject.getCalibratedUnits();
-        boolean is2D = inputObject.is2D();
-
-        Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
+        Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
         ellipseObject.setPoints(ellipse.getPoints());
         ellipseObject.setT(inputObject.getT());
 
@@ -136,8 +131,8 @@ public class FitEllipse extends Module {
             return;
         }
 
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
+        double dppXY = inputObject.getDppXY();
+        double dppZ = inputObject.getDppZ();
 
          double xCent = calculator.getXCentre();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent,this));
@@ -213,7 +208,7 @@ public class FitEllipse extends Module {
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

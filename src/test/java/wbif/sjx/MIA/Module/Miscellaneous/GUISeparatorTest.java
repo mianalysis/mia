@@ -1,13 +1,13 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GUISeparatorTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }

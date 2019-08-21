@@ -51,7 +51,7 @@ public class FitLongestChord extends Module {
 
 
     public void processObject(Obj object) {
-        double dppXY = object.getDistPerPxXY();
+        double dppXY = object.getDppXY();
 
         LongestChordCalculator calculator = new LongestChordCalculator(object);
 
@@ -148,7 +148,7 @@ public class FitLongestChord extends Module {
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

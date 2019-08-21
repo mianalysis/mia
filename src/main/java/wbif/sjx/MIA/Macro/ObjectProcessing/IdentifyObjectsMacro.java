@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Macro.ObjectProcessing;
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
@@ -23,8 +24,8 @@ public class IdentifyObjectsMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        IdentifyObjects identifyObjects = new IdentifyObjects(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        IdentifyObjects identifyObjects = new IdentifyObjects(modules);
 
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,objects[0]);
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,objects[1]);

@@ -1,20 +1,21 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
 public class VerticalCylinderR5 extends ExpectedObjects {
+    public VerticalCylinderR5(VolumeType volumeType) {
+        super(volumeType, 21, 41, 15);
+    }
+
     public enum Measures {ID_8BIT,LC_LENGTH_PX,LC_LENGTH_CAL,LC_X1_PX,LC_Y1_PX,LC_Z1_SLICE,LC_X2_PX,LC_Y2_PX,
         LC_Z2_SLICE,MEAN_DIST_PX,MEAN_DIST_CAL,MAX_DIST_PX,MAX_DIST_CAL};
 
     @Override
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/VerticalBinaryCylinder3D_R5.csv");
-    }
-
-    @Override
-    public boolean is2D() {
-        return false;
     }
 
     @Override

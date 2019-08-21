@@ -4,22 +4,23 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThresholdImageTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -48,7 +49,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -92,7 +93,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -136,7 +137,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -180,7 +181,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -224,7 +225,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -251,7 +252,7 @@ public class ThresholdImageTest extends ModuleTest {
 
     // Temporarily removed.  The applied threshold is very close to the expected value; however, an update to the
     // normalisation/thresholding means it's not exactly the same.
-    @Test @Ignore
+    @Test @Disabled
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D32bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -270,7 +271,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -314,7 +315,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -358,7 +359,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -402,7 +403,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -446,7 +447,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -491,7 +492,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -517,27 +518,27 @@ public class ThresholdImageTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunLocal3DBernsenNoLimsNoMultWhiteBG3D8bit() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunLocal3DContrastNoLimsNoMultWhiteBG3D8bit() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunLocal3DMeanNoLimsNoMultWhiteBG3D8bit() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunLocal3DMedianNoLimsNoMultWhiteBG3D8bit() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunLocal3DPhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
 
     }
@@ -561,7 +562,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -606,7 +607,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -651,7 +652,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -697,7 +698,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -741,7 +742,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -785,7 +786,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -829,7 +830,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -873,7 +874,7 @@ public class ThresholdImageTest extends ModuleTest {
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -913,7 +914,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
@@ -951,7 +952,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -985,7 +986,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -1019,7 +1020,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -1050,7 +1051,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
@@ -1081,7 +1082,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(null);
+        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
         thresholdImage.initialiseParameters();
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);

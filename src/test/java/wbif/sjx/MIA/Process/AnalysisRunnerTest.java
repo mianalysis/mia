@@ -1,38 +1,38 @@
 package wbif.sjx.MIA.Process;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 
 import java.io.File;
+import java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 22/06/2018.
  */
 public class AnalysisRunnerTest {
-    @Test @Ignore
-    public void startAnalysis() throws Exception {
+    @Test @Disabled
+    public void startAnalysis() {
     }
 
-    @Test @Ignore
-    public void stopAnalysis() throws Exception {
+    @Test @Disabled
+    public void stopAnalysis() {
     }
 
 
     // TESTS FOR GETTING THE INPUT FILE
 
     @Test
-    public void testGetInputFileSingleFilePresent() throws Exception {
-        // Creating a fake file
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File file = temporaryFolder.newFile("fake file.tif");
+    public void testGetInputFileSingleFilePresent(@TempDir Path tempPath) throws Exception {
+        File file = new File(tempPath+File.separator+"fake file.tif");
+        file.createNewFile();
         String path = file.getAbsolutePath();
 
         InputControl inputControl = new InputControl(null);
@@ -48,7 +48,7 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testGetInputFileSingleFileMissing() throws Exception {
+    public void testGetInputFileSingleFileMissing() {
         InputControl inputControl = new InputControl(null);
         inputControl.updateParameterValue(InputControl.INPUT_PATH,"");
 
@@ -59,22 +59,16 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testGetInputFileBatchPresent() throws Exception {
-        // Creating a fake folder
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File folder = temporaryFolder.newFolder("test folder");
-        String path = folder.getAbsolutePath();
+    public void testGetInputFileBatchPresent(@TempDir Path tempPath) {
+        File file = new File(tempPath.toString());
 
         InputControl inputControl = new InputControl(null);
-        inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
+        inputControl.updateParameterValue(InputControl.INPUT_PATH,file.getPath());
 
         File actual = AnalysisRunner.getInputFile(inputControl);
 
         assertNotNull(actual);
         assert(actual.isDirectory());
-        assertEquals("test folder",actual.getName());
-        assertEquals(path,actual.getAbsolutePath());
 
     }
 
@@ -82,7 +76,7 @@ public class AnalysisRunnerTest {
     // TESTS FOR FILE VALIDITY
 
     @Test
-    public void testCheckInputFileValidityNoFileFolderSet() throws Exception {
+    public void testCheckInputFileValidityNoFileFolderSet() {
         boolean actual = AnalysisRunner.checkInputFileValidity(null);
 
         assertFalse(actual);
@@ -90,11 +84,9 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testCheckInputFileValidityMissingFile() throws Exception {
-        // Creating a fake folder, but checking a file which doesn't exist
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File folder = temporaryFolder.newFolder("test folder");
+    public void testCheckInputFileValidityMissingFile(@TempDir Path tempPath) throws Exception {
+        File folder = new File(tempPath+File.separator+"test folder\\");
+        folder.createNewFile();
         String path = folder.getAbsolutePath() + MIA.getSlashes() + "fake file.tif";
 
         boolean actual = AnalysisRunner.checkInputFileValidity(path);
@@ -104,11 +96,9 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testCheckInputFileValidityMissingFolder() throws Exception {
-        // Creating a fake folder, but checking a folder which doesn't exist
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File folder = temporaryFolder.newFolder("test folder");
+    public void testCheckInputFileValidityMissingFolder(@TempDir Path tempPath) throws Exception {
+        File folder = new File(tempPath+File.separator+"test folder\\");
+        folder.createNewFile();
         String path = folder.getParent() + MIA.getSlashes() + "test fake folder" + MIA.getSlashes();
 
         boolean actual = AnalysisRunner.checkInputFileValidity(path);
@@ -118,11 +108,10 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testCheckInputFileValidityCorrectFile() throws Exception {
+    public void testCheckInputFileValidityCorrectFile(@TempDir Path tempPath) throws Exception {
         // Creating a fake file
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File file = temporaryFolder.newFile("fake file.tif");
+        File file = new File(tempPath+File.separator+"fake file.tif");
+        file.createNewFile();
         String path = file.getAbsolutePath();
 
         boolean actual = AnalysisRunner.checkInputFileValidity(path);
@@ -132,11 +121,10 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testCheckInputFileValidityCorrectFolder() throws Exception {
+    public void testCheckInputFileValidityCorrectFolder(@TempDir Path tempPath) throws Exception {
         // Creating a fake folder
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File folder = temporaryFolder.newFolder("test folder");
+        File folder = new File(tempPath+File.separator+"test folder\\");
+        folder.createNewFile();
         String path = folder.getAbsolutePath();
 
         boolean actual = AnalysisRunner.checkInputFileValidity(path);
@@ -149,16 +137,16 @@ public class AnalysisRunnerTest {
     // TESTS FOR GENERATION OF EXCEL FILE FILENAMES
 
     @Test
-    public void testGetExportNameSingleFileSingleSeries() throws Exception {
-        InputControl inputControl = new InputControl(null);
-        OutputControl outputControl = new OutputControl(null);
+    public void testGetExportNameSingleFileSingleSeries(@TempDir Path tempPath) throws Exception {
+        ModuleCollection modules = new ModuleCollection();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
 
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
         inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
 
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File file = temporaryFolder.newFile("fake file.tif");
+        File file = new File(tempPath+File.separator+"fake file.tif");
+        file.createNewFile();
 
         String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
         String expected = file.getParent()+ MIA.getSlashes() + "fake file_S3";
@@ -168,15 +156,15 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testGetExportNameSingleFileAllSeries() throws Exception {
-        InputControl inputControl = new InputControl(null);
-        OutputControl outputControl = new OutputControl(null);
+    public void testGetExportNameSingleFileAllSeries(@TempDir Path tempPath) throws Exception {
+        ModuleCollection modules = new ModuleCollection();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File file = temporaryFolder.newFile("fake file.tif");
+        File file = new File(tempPath+File.separator+"fake file.tif");
+        file.createNewFile();
 
         String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
         String expected = file.getParent()+ MIA.getSlashes() + "fake file";
@@ -186,17 +174,18 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testGetExportNameBatchSingleSeries() throws Exception {
-        InputControl inputControl = new InputControl(null);
-        OutputControl outputControl = new OutputControl(null);
+    public void testGetExportNameBatchSingleSeries(@TempDir Path tempPath) throws Exception {
+        ModuleCollection modules = new ModuleCollection();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
 
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
         inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
 
         // Creating a fake folder
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File folder = temporaryFolder.newFolder("test folder");
+        File folder = new File(tempPath+File.separator+"test folder\\");
+        folder.mkdirs();
+        folder.createNewFile();
 
         String actual = AnalysisRunner.getExportName(inputControl,outputControl,folder);
         String expected = folder+MIA.getSlashes()+folder.getName()+"_S3";
@@ -206,16 +195,17 @@ public class AnalysisRunnerTest {
     }
 
     @Test
-    public void testGetExportNameBatchAllSeries() throws Exception {
-        InputControl inputControl = new InputControl(null);
-        OutputControl outputControl = new OutputControl(null);
+    public void testGetExportNameBatchAllSeries(@TempDir Path tempPath) throws Exception {
+        ModuleCollection modules = new ModuleCollection();
+        InputControl inputControl = modules.getInputControl();
+        OutputControl outputControl = modules.getOutputControl();
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
 
         // Creating a fake folder
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File folder = temporaryFolder.newFolder("test folder");
+        File folder = new File(tempPath+File.separator+"test folder\\");
+        folder.mkdirs();
+        folder.createNewFile();
 
         String actual = AnalysisRunner.getExportName(inputControl,outputControl,folder);
         String expected = folder+MIA.getSlashes()+folder.getName();
@@ -227,11 +217,11 @@ public class AnalysisRunnerTest {
 
     // TESTS FOR SETTING FILENAME FILTERS
 
-    @Test @Ignore
+    @Test @Disabled
     public void addFilenameFilters() throws Exception {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void initialiseExporter() throws Exception {
     }
 

@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Macro.ImageProcessing;
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.RemoveImage;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class RemoveImageFromWorkspaceMacro extends MacroOperation {
@@ -21,8 +22,8 @@ public class RemoveImageFromWorkspaceMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        RemoveImage removeImage = new RemoveImage(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        RemoveImage removeImage = new RemoveImage(modules);
 
         removeImage.updateParameterValue(RemoveImage.INPUT_IMAGE,objects[0]);
         removeImage.updateParameterValue(RemoveImage.RETAIN_MEASUREMENTS,(double) objects[1] == 1);

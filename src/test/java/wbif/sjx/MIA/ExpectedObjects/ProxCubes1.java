@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +9,10 @@ import java.util.List;
  * Created by sc13967 on 12/02/2018.
  */
 public class ProxCubes1 extends ExpectedObjects {
+    public ProxCubes1(VolumeType volumeType) {
+        super(volumeType, 64, 76, 12);
+    }
+
     public enum Measures {N_VOXELS,ID_8BIT,SURF_PROX_ID,SURF_PROX_DIST_PX,SURF_PROX_DIST_CAL,
         SURF_PROX_ID_5PX, SURF_PROX_DIST_PX_5PX, SURF_PROX_DIST_CAL_5PX, CENT_SURF_PROX_ID, CENT_SURF_PROX_DIST_PX,
         CENT_SURF_PROX_DIST_CAL, CENT_SURF_PROX_ID_5PX, CENT_SURF_PROX_DIST_PX_5PX, CENT_SURF_PROX_DIST_CAL_5PX};
@@ -72,10 +78,5 @@ public class ProxCubes1 extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/ProxCubes1.csv");
-    }
-
-    @Override
-    public boolean is2D() {
-        return false;
     }
 }

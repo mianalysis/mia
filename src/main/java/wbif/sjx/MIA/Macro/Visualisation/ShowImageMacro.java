@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.Visualisation;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Visualisation.ShowImage;
 import wbif.sjx.MIA.Object.Workspace;
 
@@ -21,9 +22,9 @@ public class ShowImageMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         // Create Module
-        ShowImage showImage = new ShowImage(workspace.getAnalysis().getModules());
+        ShowImage showImage = new ShowImage(modules);
 
         // Updating parameters
         showImage.updateParameterValue(ShowImage.DISPLAY_IMAGE,(String) objects[0]);

@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Process;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LabelFactoryTest {
     @Test
@@ -22,13 +22,13 @@ public class LabelFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,true);
@@ -52,13 +52,13 @@ public class LabelFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(0,false);
@@ -81,13 +81,13 @@ public class LabelFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(1,false);
@@ -111,13 +111,13 @@ public class LabelFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,false);
@@ -141,16 +141,16 @@ public class LabelFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj("Parent",6,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
+        parent = new Obj("Parent",5,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
@@ -174,17 +174,17 @@ public class LabelFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj("Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj("Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);

@@ -146,7 +146,7 @@ public class MeasureObjectCurvature extends Module {
 
     public static void measureCurvature(Obj inputObject, TreeMap<Double,Double> curvature, boolean absoluteCurvature,
                                         boolean signedCurvature) {
-        double dppXY = inputObject.getDistPerPxXY();
+        double dppXY = inputObject.getDppXY();
 
         CumStat cumStatSigned = new CumStat();
         CumStat cumStatAbsolute = new CumStat();
@@ -188,7 +188,7 @@ public class MeasureObjectCurvature extends Module {
         double minCurvature = Double.MAX_VALUE;
         double maxCurvature = -Double.MAX_VALUE;
 
-        double dppXY = inputObject.getDistPerPxXY();
+        double dppXY = inputObject.getDppXY();
 
         Iterator<Double> iterator = curvature.keySet().iterator();
         while (iterator.hasNext()) {
@@ -400,7 +400,7 @@ public class MeasureObjectCurvature extends Module {
             new Image("Spline",referenceImageImagePlus).showImage();
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 
