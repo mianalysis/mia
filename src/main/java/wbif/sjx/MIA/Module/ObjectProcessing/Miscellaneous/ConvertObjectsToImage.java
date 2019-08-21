@@ -179,7 +179,7 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new ChoiceP(CONVERSION_MODE, this,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this,VolumeTypes.OPTIMISED,VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this,VolumeTypes.POINTLIST,VolumeTypes.ALL));
         parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));

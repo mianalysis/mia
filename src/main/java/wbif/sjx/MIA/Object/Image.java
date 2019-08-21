@@ -43,11 +43,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     public interface VolumeTypes {
         String OCTREE = "Octree";
-        String OPTIMISED = "Optimised";
+//        String OPTIMISED = "Optimised";
         String POINTLIST = "Pointlist";
         String QUADTREE = "Quadtree";
 
-        String[] ALL = new String[]{OCTREE, OPTIMISED, POINTLIST, QUADTREE};
+//        String[] ALL = new String[]{OCTREE, OPTIMISED, POINTLIST, QUADTREE};
+        String[] ALL = new String[]{OCTREE, POINTLIST, QUADTREE};
 
     }
 
@@ -289,8 +290,8 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         switch (volumeType) {
             case VolumeTypes.OCTREE:
                 return VolumeType.OCTREE;
-            case VolumeTypes.OPTIMISED:
-                return null;
+//            case VolumeTypes.OPTIMISED:
+//                return null;
             case VolumeTypes.POINTLIST:
             default:
                 return VolumeType.POINTLIST;

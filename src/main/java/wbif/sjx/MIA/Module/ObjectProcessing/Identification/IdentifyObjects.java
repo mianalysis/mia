@@ -177,7 +177,7 @@ public class IdentifyObjects extends Module {
         parameters.add(new BooleanP(WHITE_BACKGROUND,this,true));
         parameters.add(new BooleanP(SINGLE_OBJECT,this,false));
         parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.OPTIMISED, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
 
     }
 

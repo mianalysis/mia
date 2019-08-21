@@ -98,10 +98,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         switch (volumeType) {
             case Image.VolumeTypes.OCTREE:
                 return VolumeType.OCTREE;
-            case Image.VolumeTypes.OPTIMISED:
+//            case Image.VolumeTypes.OPTIMISED:
             default:
-                System.out.println("Need to implement optimised - look into number of slices and sort of ROI tool used");
-                return VolumeType.POINTLIST;
+//                System.out.println("Need to implement optimised - look into number of slices and sort of ROI tool used");
+//                return VolumeType.POINTLIST;
             case Image.VolumeTypes.POINTLIST:
                 return VolumeType.POINTLIST;
             case Image.VolumeTypes.QUADTREE:
@@ -388,7 +388,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
         parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL,"Interpolation method used for reducing the number of selections that must be made"));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.OPTIMISED, VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image", "Message to display in title of image."));
 
     }
