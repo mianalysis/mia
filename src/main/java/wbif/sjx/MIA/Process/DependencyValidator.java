@@ -76,11 +76,21 @@ public class DependencyValidator {
             Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
             if (toInstall[0]) {
                 UpdateSite updateSite = sites.get("http://sites.imagej.net/Biomedgroup/");
+                if (updateSite == null) updateSite = sites.get("https://sites.imagej.net/Biomedgroup/");
+                if (updateSite == null) {
+                    MIA.log.writeError("Can't load Biomedgroup dependency.  Please install manually using Fiji Updater.");
+                    return;
+                }
                 files.addUpdateSite(updateSite);
                 files.activateUpdateSite(updateSite, null);
             }
             if (toInstall[1]) {
                 UpdateSite updateSite = sites.get("http://sites.imagej.net/IJPB-plugins/");
+                if (updateSite == null) updateSite = sites.get("https://sites.imagej.net/IJPB-plugins/");
+                if (updateSite == null) {
+                    MIA.log.writeError("Can't load IJPB-plugins dependency.  Please install manually using Fiji Updater.");
+                    return;
+                }
                 files.addUpdateSite(updateSite);
                 files.activateUpdateSite(updateSite, null);
             }

@@ -245,7 +245,7 @@ public class MeasureRelativeOrientation extends Module {
                     e.printStackTrace();
                 }
 
-                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidObj,referenceObject,true);
+                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidObj,referenceObject);
                 Point<Integer> p2 = calculator.getP2();
                 Point<Double> referencePoint = new Point<>((double) p2.getX(), (double) p2.getY(), (double) p2.getZ());
 

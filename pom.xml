@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>26.0.0</version>
+        <version>27.0.1</version>
         <relativePath />
     </parent>
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.11.0</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -316,7 +316,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.0</version>
             <!--<groupId>com.github.SJCross</groupId>-->
             <!--<artifactId>Common</artifactId>-->
             <!--<version>1.5.0-SNAPSHOT</version>-->
