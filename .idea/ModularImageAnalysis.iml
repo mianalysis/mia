@@ -12,6 +12,27 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: net.imagej:ij:1.52o" level="project" />
+    <orderEntry type="library" name="Maven: net.imglib2:imglib2-realtransform:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: jitk:jitk-tps:3.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.SJCross:Common:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: ome:bio-formats_plugins:6.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-common:6.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-xml:6.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:specification:6.0.1" level="project" />
+    <orderEntry type="library" name="Maven: ome:formats-api:6.1.1" level="project" />
+    <orderEntry type="library" name="Maven: ome:formats-bsd:6.1.1" level="project" />
+    <orderEntry type="library" name="Maven: ome:turbojpeg:6.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:native-lib-loader:2.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.perf4j:perf4j:0.9.16" level="project" />
+    <orderEntry type="library" name="Maven: com.drewnoakes:metadata-extractor:2.11.0" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.xmp:xmpcore:5.1.3" level="project" />
+    <orderEntry type="library" name="Maven: ome:formats-gpl:6.1.1" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:cdm:4.6.13" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:httpservices:4.6.13" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.5.1" level="project" />
+    <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.3" level="project" />
+    <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.15" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.5.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.5.0" level="project" />
