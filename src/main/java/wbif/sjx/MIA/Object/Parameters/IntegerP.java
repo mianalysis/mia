@@ -60,7 +60,7 @@ public class IntegerP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) (Integer) Integer.parseInt(GlobalVariables.convertString(value));
+        return (T) (Integer) Integer.parseInt(GlobalVariables.convertString(value,module.getModules()));
     }
 
     @Override

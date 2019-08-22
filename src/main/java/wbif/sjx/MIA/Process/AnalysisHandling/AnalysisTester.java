@@ -27,7 +27,6 @@ public class AnalysisTester {
         if (module == null) return false;
 
         // Iterating over each parameter, checking if it's currently available
-        GlobalVariables.resetCollection();
         for (Parameter parameter:module.updateAndGetParameters().values()) {
             runnable = parameter.verify();
             parameter.setValid(runnable);

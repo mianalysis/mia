@@ -51,7 +51,7 @@ public class TextAreaP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) GlobalVariables.convertString(value);
+        return (T) GlobalVariables.convertString(value,module.getModules());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TextAreaP extends TextType {
     public boolean verify() {
         if (value.equals("")) return false;
 
-        return GlobalVariables.variablesPresent(value);
+        return GlobalVariables.variablesPresent(value,module.getModules());
 
     }
 

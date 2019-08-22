@@ -308,7 +308,7 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.kevinstern:software-and-algorithms:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.commonmark:commonmark:0.12.1" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.SJCross:Common:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: ome:bio-formats_plugins:6.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.openmicroscopy:ome-common:6.0.3" level="project" />
     <orderEntry type="library" name="Maven: io.minio:minio:5.0.2" level="project" />

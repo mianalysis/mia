@@ -153,8 +153,6 @@ public class RelateObjects extends Module {
                         Point<Double> currentPoint = new Point<>(childXCent, childYCent, childZCentSlice);
                         dist = parentObject.getPointSurfaceSeparation(currentPoint,true);
 
-                        System.out.println(dist);
-
                         if (Math.abs(dist) < Math.abs(minDist)) {
                             if (limitLinking && Math.abs(dist) > linkingDistance) continue;
                             minDist = dist;
