@@ -162,6 +162,20 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
 
+    protected static int checkBitDepth(int bitDepth) {
+        // Ensure bit depth is 8, 16 or 32
+        if (bitDepth < 8) bitDepth = 8;
+        else if (bitDepth > 8 && bitDepth < 16) bitDepth = 16;
+        else if (bitDepth > 16 && bitDepth < 32) bitDepth = 32;
+        else if (bitDepth > 32) {
+            MIA.log.writeError("Input image bit depth exceeds maximum supported (32 bit).");
+            return -1;
+        }
+
+        return bitDepth;
+
+    }
+
     public ImagePlus getBFImage(String path, int seriesNumber, @Nonnull String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean manualCal, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
@@ -192,6 +206,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (intRange != null) {
             bitDepth = (int) intRange[0];
         }
+
+        bitDepth = checkBitDepth(bitDepth);
+        if (bitDepth == -1) return null;
 
         if (crop != null) {
             left = crop[0];
@@ -229,7 +246,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     try {
                         idx = reader.getIndex(z - 1, c - 1, t - 1);
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Indices out of range for image \"" + path + "\" at c=" + (c - 1) + ", z=" + (z - 1) + ", t=" + (t - 1));
+                        MIA.log.writeError("Indices out of range for image \"" + path + "\" at c=" + (c - 1) + ", z=" + (z - 1) + ", t=" + (t - 1));
                         return null;
                     }
 
@@ -321,7 +338,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Getting fragments of the filepath
         String rootPath = rootFile.getParent() + MIA.getSlashes();
         String rootName = rootFile.getName();
-        String startingNumber = df.format(startingIndex);
         int numStart = FilenameUtils.removeExtension(rootName).length() - numberOfZeroes;
         rootName = rootFile.getName().substring(0, numStart);
         String extension = FilenameUtils.getExtension(rootFile.getName());

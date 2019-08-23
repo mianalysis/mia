@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
+package wbif.sjx.MIA.Module.Visualisation.ImageRendering;
 
 import wbif.sjx.MIA.Module.ModuleTest;
 

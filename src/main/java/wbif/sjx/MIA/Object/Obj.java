@@ -66,6 +66,13 @@ public class Obj extends Volume {
 
     }
 
+    public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume) {
+        super(volumeType,exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
+
+        this.name = name;
+        this.ID = ID;
+
+    }
 
     // PUBLIC METHODS
 
