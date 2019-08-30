@@ -1,8 +1,7 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
+package wbif.sjx.MIA.Module.Visualisation.ImageRendering;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -94,7 +93,7 @@ public class SetDisplayRange extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+        return PackageNames.VISUALISATION_IMAGE_RENDERING;
     }
 
     @Override

@@ -38,6 +38,56 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Test
+    public void testCheckBitDepthLessThan8() {
+        assertEquals(8,ImageLoader.checkBitDepth(1));
+        assertEquals(8,ImageLoader.checkBitDepth(6));
+        assertEquals(8,ImageLoader.checkBitDepth(7));
+
+    }
+
+    @Test
+    public void testCheckBitDepthEqualTo8() {
+        assertEquals(8,ImageLoader.checkBitDepth(8));
+
+    }
+
+    @Test
+    public void testCheckBitDepthBetween8And16() {
+        assertEquals(16,ImageLoader.checkBitDepth(9));
+        assertEquals(16,ImageLoader.checkBitDepth(12));
+        assertEquals(16,ImageLoader.checkBitDepth(14));
+        assertEquals(16,ImageLoader.checkBitDepth(15));
+
+    }
+
+    @Test
+    public void testCheckBitDepthEqualTo16() {
+        assertEquals(16,ImageLoader.checkBitDepth(16));
+
+    }
+
+    @Test
+    public void testCheckBitDepthBetween16And32() {
+        assertEquals(32,ImageLoader.checkBitDepth(17));
+        assertEquals(32,ImageLoader.checkBitDepth(21));
+        assertEquals(32,ImageLoader.checkBitDepth(24));
+        assertEquals(32,ImageLoader.checkBitDepth(31));
+
+    }
+
+    @Test
+    public void testCheckBitDepthEqualTo32() {
+        assertEquals(32,ImageLoader.checkBitDepth(32));
+
+    }
+
+    @Test
+    public void testCheckBitDepthGreaterThan32() {
+        assertEquals(-1,ImageLoader.checkBitDepth(33));
+
+    }
+
+    @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,null,1);

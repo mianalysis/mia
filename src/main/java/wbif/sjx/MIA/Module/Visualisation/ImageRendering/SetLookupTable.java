@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
+package wbif.sjx.MIA.Module.Visualisation.ImageRendering;
 
 import ij.CompositeImage;
 import ij.process.LUT;
@@ -137,7 +137,7 @@ public class SetLookupTable extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+        return PackageNames.VISUALISATION_IMAGE_RENDERING;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class SetLookupTable extends Module {
         if (inputImage == null) return true;
 
         // If this image has fewer channels than the specified channel, skip the module (but return true)
-        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels()-1) return true;
+        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels()) return true;
 
         LUT lut = getLUT(lookupTableName);
 
@@ -172,7 +172,6 @@ public class SetLookupTable extends Module {
         }
 
         setLUT(inputImage,lut,channelMode,channel);
-
         inputImage.getImagePlus().updateChannelAndDraw();
 
         if (showOutput) inputImage.showImage(inputImageName,null,false,true);

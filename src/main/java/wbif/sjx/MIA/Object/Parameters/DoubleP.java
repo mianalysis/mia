@@ -72,7 +72,7 @@ public class DoubleP extends TextType {
 
     @Override
     public <T> T getValue() throws NumberFormatException {
-        return (T) (Double) Double.parseDouble(GlobalVariables.convertString(value));
+        return (T) (Double) Double.parseDouble(GlobalVariables.convertString(value,module.getModules()));
     }
 
     @Override

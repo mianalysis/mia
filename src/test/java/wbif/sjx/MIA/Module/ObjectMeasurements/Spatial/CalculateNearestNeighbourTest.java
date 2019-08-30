@@ -176,16 +176,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -245,19 +245,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
 
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -334,19 +334,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
 
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -423,19 +423,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
 
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -512,16 +512,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -600,16 +600,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -688,29 +688,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = (Obj) new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = (Obj) new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = (Obj) new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -770,29 +770,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = (Obj) new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = (Obj) new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = (Obj) new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -853,29 +853,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = (Obj) new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = (Obj) new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = (Obj) new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -960,29 +960,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = (Obj) new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = (Obj) new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = (Obj) new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = (Obj) new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = (Obj) new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = (Obj) new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = (Obj) new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 

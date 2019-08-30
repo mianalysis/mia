@@ -40,7 +40,7 @@ public class StringP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) GlobalVariables.convertString(value);
+        return (T) GlobalVariables.convertString(value,module.getModules());
     }
 
     @Override
