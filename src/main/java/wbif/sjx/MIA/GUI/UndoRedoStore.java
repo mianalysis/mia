@@ -12,12 +12,7 @@ public class UndoRedoStore {
     private LinkedList<ModuleCollection> redoStore = new LinkedList<>();
 
     public void addUndo(ModuleCollection modules) {
-        try {
-            undoStore.addFirst(modules.duplicate());
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
+        undoStore.addFirst(modules.duplicate());
         checkLimit();
 
         // Clear the redo store
@@ -28,25 +23,17 @@ public class UndoRedoStore {
     public ModuleCollection getNextUndo(ModuleCollection modules) {
         if (undoStore.size() == 0) return null;
 
-        try {
-            if (modules != null) redoStore.addFirst(modules);
-            return undoStore.pop().duplicate();
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
+        if (modules != null) redoStore.addFirst(modules);
+        return undoStore.pop().duplicate();
+
     }
 
     public ModuleCollection getNextRedo(ModuleCollection modules) {
         if (redoStore.size() == 0) return null;
 
-        try {
-            if (modules != null) undoStore.addFirst(modules);
-            return redoStore.pop().duplicate();
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        }
+        if (modules != null) undoStore.addFirst(modules);
+        return redoStore.pop().duplicate();
+
     }
 
     public void reset() {

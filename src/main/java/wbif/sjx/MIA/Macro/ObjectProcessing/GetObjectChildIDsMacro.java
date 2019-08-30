@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.ObjectProcessing;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
@@ -22,7 +23,7 @@ public class GetObjectChildIDsMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         String inputObjectsName = (String) objects[0];
         int objectID = (int) Math.round((Double) objects[1]);
         String childObjectsName = (String) objects[2];

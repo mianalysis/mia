@@ -49,7 +49,7 @@ public class RemoveParameters extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
+    public <T extends Parameter> T duplicate(Module newModule) {
         return null;
     }
 

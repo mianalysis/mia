@@ -53,4 +53,16 @@ public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public MetadataRef duplicate() {
+        MetadataRef ref = new MetadataRef(name);
+
+        ref.setDescription(description);
+        ref.setNickname(getNickname());
+
+        ref.setExportGlobal(isExportGlobal());
+        ref.setExportIndividual(isExportIndividual());
+
+        return ref;
+    }
 }

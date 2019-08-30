@@ -183,8 +183,8 @@ public class MeasureTrackMotion extends Module {
 
         } else {
             // Calculating track motion
-            double distPerPxXY = trackObject.getDistPerPxXY();
-            double distPerPxZ = trackObject.getDistPerPxZ();
+            double distPerPxXY = trackObject.getDppXY();
+            double distPerPxZ = trackObject.getDppZ();
             double ratio = distPerPxZ/distPerPxXY;
 
             TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
@@ -259,7 +259,7 @@ public class MeasureTrackMotion extends Module {
 
         } else {
             // If the track has a single time-point there's no velocity to measure
-            double distPerPxXY = trackObject.getDistPerPxXY();
+            double distPerPxXY = trackObject.getDppXY();
             double euclideanDistance = track.getEuclideanDistance();
             double totalPathLength = track.getTotalPathLength();
 
@@ -278,8 +278,8 @@ public class MeasureTrackMotion extends Module {
     }
 
     public static void calculateInstantaneousVelocity(Obj trackObject, Track track, String inputSpotObjectsName, boolean averageSubtracted) {
-        double distPerPxXY = trackObject.getDistPerPxXY();
-        double distPerPxZ = trackObject.getDistPerPxZ();
+        double distPerPxXY = trackObject.getDppXY();
+        double distPerPxZ = trackObject.getDppZ();
 
         TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
         TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();
@@ -337,7 +337,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     public static void calculateInstantaneousSpatialMeasurements(Obj trackObject, Track track, String inputSpotObjectsName, boolean averageSubtracted) {
-        double distPerPxXY = trackObject.getDistPerPxXY();
+        double distPerPxXY = trackObject.getDppXY();
 
         // Calculating rolling values
         TreeMap<Integer, Double> pathLength = track.getRollingTotalPathLength();
@@ -405,8 +405,8 @@ public class MeasureTrackMotion extends Module {
 
         }
 
-        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,workspace.getAnalysis().getModules());
-        if (showOutput) trackObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,modules);
+        if (showOutput) trackObjects.showMeasurements(this,modules);
 
         return true;
 

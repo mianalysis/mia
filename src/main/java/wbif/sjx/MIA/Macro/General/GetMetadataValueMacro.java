@@ -1,13 +1,9 @@
 package wbif.sjx.MIA.Macro.General;
 
 import ij.macro.MacroExtension;
-import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
-import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.common.Object.HCMetadata;
-
-import java.util.HashMap;
 
 public class GetMetadataValueMacro extends MacroOperation {
     public GetMetadataValueMacro(MacroExtension theHandler) {
@@ -25,7 +21,7 @@ public class GetMetadataValueMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         String metadataName = (String) objects[0];
 
         // Returning metadata value

@@ -1,9 +1,17 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
 public class Rings2D extends ExpectedObjects {
+    public Rings2D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 1);
+    }
+
     public enum Measures {
         EXP_MEAN_CURVATURE_ABS_PX, EXP_MIN_CURVATURE_ABS_PX, EXP_MAX_CURVATURE_ABS_PX, EXP_STD_CURVATURE_ABS_PX,
         EXP_MEAN_CURVATURE_ABS_CAL, EXP_MIN_CURVATURE_ABS_CAL, EXP_MAX_CURVATURE_ABS_CAL, EXP_STD_CURVATURE_ABS_CAL,
@@ -16,14 +24,13 @@ public class Rings2D extends ExpectedObjects {
         EXP_REF_Y_CW
     }
 
-    @Override
-    public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/Rings2D.csv");
+    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+        return super.getObjects(objectName, mode, dppXY, dppZ, calibratedUnits, includeMeasurements);
     }
 
     @Override
-    public boolean is2D() {
-        return false;
+    public List<Integer[]> getCoordinates5D() {
+        return getCoordinates5D("/coordinates/Rings2D.csv");
     }
 
     @Override

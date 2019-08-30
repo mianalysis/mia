@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume;
 
 import java.util.HashMap;
 
@@ -141,14 +140,14 @@ public class MeasureRelativeOrientation extends Module {
 
             switch (choiceMode) {
                 case ObjectChoiceModes.LARGEST_OBJECT:
-                    if (currReferenceObject.getNVoxels() > objSize) {
-                        objSize = currReferenceObject.getNVoxels();
+                    if (currReferenceObject.size() > objSize) {
+                        objSize = currReferenceObject.size();
                         referenceObject = currReferenceObject;
                     }
                     break;
                 case ObjectChoiceModes.SMALLEST_OBJECT:
-                    if (currReferenceObject.getNVoxels() < objSize) {
-                        objSize = currReferenceObject.getNVoxels();
+                    if (currReferenceObject.size() < objSize) {
+                        objSize = currReferenceObject.size();
                         referenceObject = currReferenceObject;
                     }
                     break;
@@ -234,24 +233,19 @@ public class MeasureRelativeOrientation extends Module {
             Obj referenceObject = getReferenceObject(referenceObjects,t,choiceMode);
 
             if (referenceObject != null) {
-                double dppXY = inputObject.getDistPerPxXY();
-                double dppZ = inputObject.getDistPerPxZ();
-                String calibratedUnits = inputObject.getCalibratedUnits();
-                boolean twoD = inputObject.is2D();
-
                 // Get the centroid of the current object
                 int x1 = (int) inputObject.getXMean(true);
                 int y1 = (int) inputObject.getYMean(true);
                 int z1 = (int) inputObject.getZMean(true,false);
 
-                Volume centroidVolume = new Volume(dppXY,dppZ,calibratedUnits,twoD);
+                Obj centroidObj = new Obj("Temp",0,inputObject);
                 try {
-                    centroidVolume.addCoord(x1,y1,z1);
+                    centroidObj.add(x1,y1,z1);
                 } catch (IntegerOverflowException e) {
                     e.printStackTrace();
                 }
 
-                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidVolume,referenceObject,true);
+                SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidObj,referenceObject);
                 Point<Integer> p2 = calculator.getP2();
                 Point<Double> referencePoint = new Point<>((double) p2.getX(), (double) p2.getY(), (double) p2.getZ());
 
@@ -390,7 +384,7 @@ public class MeasureRelativeOrientation extends Module {
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

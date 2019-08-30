@@ -1,17 +1,18 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
 public class DenseTracks2D extends ExpectedObjects {
-    @Override
-    public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/DenseTracks2D.csv");
+    public DenseTracks2D(VolumeType volumeType) {
+        super(volumeType, 600, 600, 1);
     }
 
     @Override
-    public boolean is2D() {
-        return false;
+    public List<Integer[]> getCoordinates5D() {
+        return getCoordinates5D("/coordinates/DenseTracks2D.csv");
     }
 
     @Override

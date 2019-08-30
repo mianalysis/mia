@@ -15,9 +15,6 @@ import java.util.Date;
 
 /**
  * Created by sc13967 on 21/10/2016.
- *
- * Abstract Analysis-type class, which will be extended by particular analyses
- *
  */
 public class Analysis {
     private ModuleCollection modules = new ModuleCollection();
@@ -123,7 +120,6 @@ public class Analysis {
     }
 
     public boolean hasVisibleParameters() {
-        if (MIA.getGlobalVariables().hasVisibleParameters()) return true;
         return (modules.hasVisibleParameters());
     }
 }

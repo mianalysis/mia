@@ -194,21 +194,17 @@ public class GUIAnalysisHandler {
     }
 
     public static void copyModules() {
-        try {
-            Module[] selectedModules = GUI.getSelectedModules();
-            if (selectedModules == null) return;
-            if (selectedModules.length == 0) return;
+        Module[] selectedModules = GUI.getSelectedModules();
+        if (selectedModules == null) return;
+        if (selectedModules.length == 0) return;
 
-            ModuleCollection copyModules = new ModuleCollection();
-            for (Module selectedModule:selectedModules) copyModules.add(selectedModule.duplicate());
+        ModuleCollection copyModules = new ModuleCollection();
+        for (Module selectedModule:selectedModules) copyModules.add(selectedModule.duplicate(selectedModule.getModules()));
 
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
-            clipboard.setContents(transfer,transfer);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
+        clipboard.setContents(transfer,transfer);
 
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e1) {
-            e1.printStackTrace();
-        }
     }
 
     public static void pasteModules() {
@@ -226,14 +222,17 @@ public class GUIAnalysisHandler {
             DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
             ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
 
+            // Creating a new copy of the copyModules to paste in
+            ModuleCollection pasteModules = copyModules.duplicate();
+
             // Ensuring the copied modules are linked to the present ModuleCollection
-            for (Module module:copyModules.values()) module.setModules(modules);
+            for (Module module:pasteModules.values()) module.setModules(modules);
 
             // Adding the new modules
-            modules.insert(copyModules.duplicate(),toIdx);
+            modules.insert(pasteModules,toIdx);
 
-        } catch (ClassNotFoundException | IOException | UnsupportedFlavorException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e1) {
-            e1.printStackTrace();
+        } catch (ClassNotFoundException | IOException | UnsupportedFlavorException e) {
+            e.printStackTrace();
         }
     }
 }

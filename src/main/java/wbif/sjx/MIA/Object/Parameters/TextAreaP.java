@@ -2,13 +2,12 @@ package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.TextAreaParameter;
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 
 public class TextAreaP extends TextType {
     private String value = "";
@@ -52,7 +51,7 @@ public class TextAreaP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) MIA.getGlobalVariables().convertString(value);
+        return (T) GlobalVariables.convertString(value,module.getModules());
     }
 
     @Override
@@ -83,13 +82,13 @@ public class TextAreaP extends TextType {
     public boolean verify() {
         if (value.equals("")) return false;
 
-        return MIA.getGlobalVariables().variablesPresent(value);
+        return GlobalVariables.variablesPresent(value,module.getModules());
 
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        TextAreaP newParameter = new TextAreaP(name,module,value,editable,getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        TextAreaP newParameter = new TextAreaP(name,newModule,value,editable,getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

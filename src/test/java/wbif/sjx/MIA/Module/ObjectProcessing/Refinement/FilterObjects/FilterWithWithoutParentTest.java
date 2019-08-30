@@ -1,12 +1,15 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterWithWithoutParentTest extends ModuleTest {
 
@@ -15,8 +18,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         assertNotNull(new FilterWithWithoutParent(null).getDescription());
     }
 
-    @Test
-    public void testRunPresentParentDoNothing() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunPresentParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -26,7 +30,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -37,7 +41,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -70,8 +74,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunPresentParentMove() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunPresentParentMove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -81,7 +86,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -93,7 +98,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -128,8 +133,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunPresentParentRemove() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunPresentParentRemove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -139,7 +145,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -150,7 +156,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -179,8 +185,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMissingParentDoNothing() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMissingParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -190,7 +197,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -201,7 +208,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -230,8 +237,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMissingParentMove() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMissingParentMove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -241,7 +249,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -253,7 +261,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -288,8 +296,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunMissingParentRemove() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunMissingParentRemove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -299,7 +308,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -310,7 +319,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -338,8 +347,9 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithParent() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -349,7 +359,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -359,7 +369,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getAndIncrementID(), dppXY, dppZ, calibratedUnits,false);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

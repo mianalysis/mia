@@ -43,23 +43,23 @@ public class AddObjectCentroid extends Overlay {
 
 
     public interface PointSizes {
-        public String TINY = "Tiny";
-        public String SMALL = "Small";
-        public String MEDIUM = "Medium";
-        public String LARGE = "Large";
-        public String EXTRA_LARGE = "Extra large";
+        String TINY = "Tiny";
+        String SMALL = "Small";
+        String MEDIUM = "Medium";
+        String LARGE = "Large";
+        String EXTRA_LARGE = "Extra large";
 
-        public String[] ALL = new String[]{TINY,SMALL,MEDIUM,LARGE,EXTRA_LARGE};
+        String[] ALL = new String[]{TINY,SMALL,MEDIUM,LARGE,EXTRA_LARGE};
 
     }
 
     public interface PointTypes {
-        public String CIRCLE = "Circle";
-        public String CROSS = "Cross";
-        public String DOT = "Dot";
-        public String HYBRID = "Hybrid";
+        String CIRCLE = "Circle";
+        String CROSS = "Cross";
+        String DOT = "Dot";
+        String HYBRID = "Hybrid";
 
-        public String[] ALL = new String[]{CIRCLE,CROSS,DOT,HYBRID};
+        String[] ALL = new String[]{CIRCLE,CROSS,DOT,HYBRID};
 
     }
 
@@ -80,7 +80,6 @@ public class AddObjectCentroid extends Overlay {
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            AtomicInteger count = new AtomicInteger();
             for (Obj object:inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 

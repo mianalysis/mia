@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.ComponentFactory;
 import wbif.sjx.MIA.GUI.ParameterControls.RemoveParametersButton;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
@@ -72,9 +73,6 @@ public class ParametersPanel extends JScrollPane {
             showUsageMessage();
             return;
         }
-
-        boolean isInput = module.getClass().isInstance(new InputControl(modules));
-        boolean isOutput = module.getClass().isInstance(new OutputControl(modules));
 
         JPanel topPanel = componentFactory.createParametersTopRow(module);
         c.gridwidth = 2;

@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Macro;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class MacroOperationTest {
     @Test

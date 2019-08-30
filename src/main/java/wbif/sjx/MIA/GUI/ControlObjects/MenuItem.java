@@ -8,7 +8,6 @@ import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,7 +32,6 @@ public class MenuItem extends JMenuItem implements ActionListener {
     public static final String SILENCE_ALL = "Hide output for all modules";
     public static final String BASIC_VIEW = "Switch to basic view";
     public static final String EDITING_VIEW = "Switch to editing view";
-    public static final String SHOW_GLOBAL_VARIABLES = "Show global variables";
     public static final String SHOW_ABOUT = "About";
     public static final String SHOW_GETTING_STARTED = "Getting started";
     public static final String SHOW_PONY = "Pony?";
@@ -125,11 +123,6 @@ public class MenuItem extends JMenuItem implements ActionListener {
                 GUI.enableEditingMode();
                 GUI.setSelectedModules(null);
                 setText(MenuItem.BASIC_VIEW);
-                break;
-
-            case SHOW_GLOBAL_VARIABLES:
-                GUI.setSelectedModules(new Module[]{MIA.getGlobalVariables()});
-                GUI.updateParameters();
                 break;
 
             case SHOW_ABOUT:

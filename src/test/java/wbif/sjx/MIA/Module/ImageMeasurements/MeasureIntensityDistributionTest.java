@@ -1,19 +1,19 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen on 17/11/2017.
  */
 public class MeasureIntensityDistributionTest extends ModuleTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -23,12 +23,12 @@ public class MeasureIntensityDistributionTest extends ModuleTest {
         assertNotNull(new MeasureIntensityDistribution(null).getDescription());
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testMeasureIntensityWeightedProximity() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void run() throws Exception {
 
     }

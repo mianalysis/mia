@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChildObjectsPTest {
     @Test
@@ -23,7 +23,7 @@ public class ChildObjectsPTest {
 
         ChildObjectsP childObjectsP = new ChildObjectsP("Test param",paramTest);
         childObjectsP.setParentObjectsName("Par_name");
-        ChildObjectsP duplicated = childObjectsP.duplicate();
+        ChildObjectsP duplicated = childObjectsP.duplicate(paramTest);
 
         assertEquals("Test param",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());

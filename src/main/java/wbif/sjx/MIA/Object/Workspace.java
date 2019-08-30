@@ -14,13 +14,13 @@ public class Workspace {
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
-    private Analysis analysis = null;
     private int ID;
 
     // CONSTRUCTOR
 
     public Workspace(int ID, File file, int series) {
         this.ID = ID;
+
         metadata.put(HCMetadata.FILE,file);
         metadata.put(HCMetadata.SERIES_NUMBER,series);
 
@@ -121,10 +121,6 @@ public class Workspace {
 
     }
 
-    public void clearAnalysis() {
-        analysis = new Analysis();
-    }
-
     public Image<?> getImage(String name) {
         return images.get(name);
 
@@ -165,14 +161,6 @@ public class Workspace {
 
 
     // GETTERS AND SETTERS
-
-    public Analysis getAnalysis() {
-        return analysis;
-    }
-
-    public void setAnalysis(Analysis analysis) {
-        this.analysis = analysis;
-    }
 
     public LinkedHashMap<String, ObjCollection> getObjects() {
         return objects;

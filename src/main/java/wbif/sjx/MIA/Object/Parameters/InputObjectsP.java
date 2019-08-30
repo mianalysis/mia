@@ -24,8 +24,8 @@ public class InputObjectsP extends ObjectNamesType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        InputObjectsP newParameter = new InputObjectsP(name,module,getChoice(),getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        InputObjectsP newParameter = new InputObjectsP(name,newModule,getChoice(),getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

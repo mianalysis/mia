@@ -1,19 +1,21 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MetadataExtractorTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -24,11 +26,9 @@ public class MetadataExtractorTest extends ModuleTest {
     }
 
     @Test
-    public void testRunKeywordMatching() throws IOException {
-        // Creating the fake file to processAutomatic
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("Test filename with k2 keyword.tif");
+    public void testRunKeywordMatching(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"Test filename with k2 keyword.tif");
+        testFile.createNewFile();
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,testFile,1);
@@ -37,7 +37,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor(null);
+        MetadataExtractor extractor = new MetadataExtractor(new ModuleCollection());
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
@@ -51,11 +51,9 @@ public class MetadataExtractorTest extends ModuleTest {
     }
 
     @Test
-    public void testRunKeywordMatchingWithGaps() throws IOException {
-        // Creating the fake file to processAutomatic
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("Test filename with gaps keyword.tif");
+    public void testRunKeywordMatchingWithGaps(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"Test filename with gaps keyword.tif");
+        testFile.createNewFile();
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,testFile,1);
@@ -64,7 +62,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor(null);
+        MetadataExtractor extractor = new MetadataExtractor(new ModuleCollection());
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
@@ -78,11 +76,9 @@ public class MetadataExtractorTest extends ModuleTest {
     }
 
     @Test
-    public void testRunKeywordMatchingWithSymbols() throws IOException {
-        // Creating the fake file to processAutomatic
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("Test filename with %$ keyword.tif");
+    public void testRunKeywordMatchingWithSymbols(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"Test filename with %$ keyword.tif");
+        testFile.createNewFile();
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,testFile,1);
@@ -91,7 +87,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, %$, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor(null);
+        MetadataExtractor extractor = new MetadataExtractor(new ModuleCollection());
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
@@ -105,11 +101,9 @@ public class MetadataExtractorTest extends ModuleTest {
     }
 
     @Test
-    public void testRunKeywordMissing() throws IOException {
-        // Creating the fake file to processAutomatic
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("Test filename without keyword.tif");
+    public void testRunKeywordMissing(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"Test filename without keyword.tif");
+        testFile.createNewFile();
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,testFile,1);
@@ -118,7 +112,7 @@ public class MetadataExtractorTest extends ModuleTest {
         String keywords = "Keyword1, k2, with gaps";
 
         // Setting up the module
-        MetadataExtractor extractor = new MetadataExtractor(null);
+        MetadataExtractor extractor = new MetadataExtractor(new ModuleCollection());
         extractor.initialiseParameters();
         extractor.updateParameterValue(MetadataExtractor.EXTRACTOR_MODE,MetadataExtractor.ExtractorModes.KEYWORD_MODE);
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);

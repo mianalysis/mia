@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +9,10 @@ import java.util.List;
  * Created by sc13967 on 12/02/2018.
  */
 public class ProxSquares2 extends ExpectedObjects {
+    public ProxSquares2(VolumeType volumeType) {
+        super(volumeType, 64, 76, 1);
+    }
+
     public enum Measures {
         CENT_PROX_DIST_PX, SURF_PROX_DIST_PX_INOUT, CENT_SURF_PROX_DIST_PX_INOUT, SURF_PROX_DIST_PX_IN,
         CENT_SURF_PROX_DIST_PX_IN, SURF_PROX_DIST_PX_OUT, CENT_SURF_PROX_DIST_PX_OUT};
@@ -57,11 +63,11 @@ public class ProxSquares2 extends ExpectedObjects {
         obj = new HashMap<>();
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 5.52d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), 0.5d);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), -0.5d);
         obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), -0.5d);
         obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0.5d);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0d);
         expectedValues.put(144, obj);
 
         obj = new HashMap<>();
@@ -111,10 +117,5 @@ public class ProxSquares2 extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/ProxSquares2.csv");
-    }
-
-    @Override
-    public boolean is2D() {
-        return true;
     }
 }

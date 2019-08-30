@@ -97,12 +97,6 @@ public class ActiveContourObjectDetection extends Module {
         double motionThreshold = parameters.getValue(MOTION_THRESHOLD_PX);
         boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME);
 
-        // Storing the image calibration
-        Calibration calibration = inputImagePlus.getCalibration();
-        double dppXY = calibration.getX(1);
-        double dppZ = calibration.getZ(1);
-        String calibrationUnits = calibration.getUnits();
-
         if (!useMotionThreshold) motionThreshold = 0;
 
         // Initialising the viewer
@@ -181,7 +175,7 @@ public class ActiveContourObjectDetection extends Module {
                     inputObject.clearPoints();
                     inputObject.addPointsFromRoi(newRoi,z);
                 } else {
-                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
+                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),inputObject);
                     outputObject.setT(inputObject.getT());
                     outputObject.addPointsFromRoi(newRoi,z);
                     outputObjects.add(outputObject);

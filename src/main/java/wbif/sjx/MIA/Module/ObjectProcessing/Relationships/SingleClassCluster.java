@@ -29,6 +29,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
+    public ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         int kClusters = parameters.getValue(K_CLUSTERS);
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
@@ -70,7 +71,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,is2D);
+            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -86,7 +87,7 @@ public class SingleClassCluster extends Module {
 
     }
 
-    public ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
+    public ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
@@ -96,7 +97,9 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (Cluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibratedUnits,is2D);
+            int ID = outputObjects.getAndIncrementID();
+            VolumeType type = VolumeType.POINTLIST;
+            Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -121,7 +124,7 @@ public class SingleClassCluster extends Module {
             Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",null,eps,false);
 
             // Adding coordinates from region to the cluster object
-            for (Point<Integer> point:region.getPoints()) outputObject.addCoord(point.getX(),point.getY(),point.getZ());
+            for (Point<Integer> point:region.getPoints()) outputObject.add(point.getX(),point.getY(),point.getZ());
             outputObject.setT(0);
         }
 
@@ -132,7 +135,7 @@ public class SingleClassCluster extends Module {
 
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
         Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
-        double conv = outputObject.getDistPerPxZ()/outputObject.getDistPerPxXY();
+        double conv = outputObject.getDppZ()/outputObject.getDppXY();
         while (iterator.hasNext()) {
             Point<Integer> point = iterator.next();
 
@@ -185,8 +188,11 @@ public class SingleClassCluster extends Module {
         }
 
         // Getting object parameters
-        double dppXY = firstObject.getDistPerPxXY();
-        double dppZ = firstObject.getDistPerPxZ();
+        int width = firstObject.getWidth();
+        int height = firstObject.getHeight();
+        int nSlices = firstObject.getnSlices();
+        double dppXY = firstObject.getDppXY();
+        double dppZ = firstObject.getDppZ();
         String calibratedUnits = firstObject.getCalibratedUnits();
         boolean twoD = firstObject.is2D();
 
@@ -201,11 +207,11 @@ public class SingleClassCluster extends Module {
         writeMessage("Running clustering algorithm");
         switch (clusteringAlgorithm) {
             case ClusteringAlgorithms.KMEANSPLUSPLUS:
-                runKMeansPlusPlus(outputObjects, locations, dppXY, dppZ, calibratedUnits, twoD);
+                runKMeansPlusPlus(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
                 break;
 
             case ClusteringAlgorithms.DBSCAN:
-                runDBSCAN(outputObjects, locations, dppXY, dppZ, calibratedUnits,twoD);
+                runDBSCAN(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
                 break;
         }
 

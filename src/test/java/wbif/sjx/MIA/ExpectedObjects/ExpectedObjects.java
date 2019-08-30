@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -19,14 +20,19 @@ import static wbif.sjx.MIA.ExpectedObjects.ExpectedObjects.Mode.SIXTEEN_BIT;
  * Created by sc13967 on 12/02/2018.
  */
 public abstract class ExpectedObjects {
-    private boolean is2D;
     public abstract List<Integer[]> getCoordinates5D();
-    public abstract boolean is2D();
+    private final VolumeType volumeType;
+    private final int width;
+    private final int height;
+    private final int nSlices;
 
     public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
 
-    public ExpectedObjects() {
-        this.is2D = is2D();
+    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices) {
+        this.volumeType = volumeType;
+        this.width = width;
+        this.height = height;
+        this.nSlices = nSlices;
     }
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
@@ -59,10 +65,10 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits,is2D));
+            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits));
 
             Obj testObject = testObjects.get(ID);
-            testObject.addCoord(x,y,z);
+            testObject.add(x,y,z);
             testObject.setT(t);
 
         }

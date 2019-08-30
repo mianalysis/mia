@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Macro.ImageMeasurements;
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageIntensity;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class MeasureImageIntensityMacro extends MacroOperation {
@@ -21,8 +22,8 @@ public class MeasureImageIntensityMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity(modules);
 
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,objects[0]);
         measureImageIntensity.setShowOutput((double) objects[1] == 1);

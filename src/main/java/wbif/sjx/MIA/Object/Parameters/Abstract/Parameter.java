@@ -44,7 +44,7 @@ public abstract class Parameter extends Ref {
 
     public abstract boolean verify();
 
-    public abstract <T extends Parameter> T duplicate();
+    public abstract <T extends Parameter> T duplicate(Module newModule);
 
 
     // PUBLIC METHODS
@@ -122,5 +122,10 @@ public abstract class Parameter extends Ref {
         setValueFromString(map.getNamedItem("VALUE").getNodeValue());
         setVisible(Boolean.parseBoolean(map.getNamedItem("VISIBLE").getNodeValue()));
 
+    }
+
+    @Override
+    public String toString() {
+        return "Name: "+name+", value: "+getRawStringValue()+", module: "+module.getName();
     }
 }

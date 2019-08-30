@@ -16,7 +16,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Hidden.GlobalVariables;
 import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
@@ -37,7 +36,6 @@ public class MIA implements Command {
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
-    private static GlobalVariables globalVariables = new GlobalVariables(null);
     public static LogRenderer log = new BasicLogRenderer(); // This is effectively just for test methods
 
     /*
@@ -143,14 +141,6 @@ public class MIA implements Command {
 
         return "\\";
 
-    }
-
-    public static void setGlobalVariables(GlobalVariables globalVariables) {
-        MIA.globalVariables = globalVariables;
-    }
-
-    public static GlobalVariables getGlobalVariables() {
-        return globalVariables;
     }
 
     public static LogRenderer getLog() {

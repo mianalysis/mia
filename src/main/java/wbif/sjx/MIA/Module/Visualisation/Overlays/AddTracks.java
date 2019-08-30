@@ -41,7 +41,6 @@ public class AddTracks extends Overlay {
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
     public static final String LINE_WIDTH = "Line width";
-    public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
@@ -131,7 +130,6 @@ public class AddTracks extends Overlay {
         int history = parameters.getValue(TRACK_HISTORY);
 
         double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Only add output to workspace if not applying to input

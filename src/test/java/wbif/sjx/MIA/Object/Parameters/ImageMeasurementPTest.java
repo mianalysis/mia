@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ImageMeasurementPTest {
     @Test
@@ -23,7 +23,7 @@ public class ImageMeasurementPTest {
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
         imageMeasurementP.setImageName("My im");
-        ImageMeasurementP duplicated = imageMeasurementP.duplicate();
+        ImageMeasurementP duplicated = imageMeasurementP.duplicate(paramTest);
 
         assertEquals("Test meas",duplicated.getName());
         assertEquals("My im",duplicated.getImageName());
@@ -37,7 +37,7 @@ public class ImageMeasurementPTest {
         ParamTest paramTest = new ParamTest(modules);
 
         ImageMeasurementP imageMeasurementP = new ImageMeasurementP("Test meas",paramTest);
-        ImageMeasurementP duplicated = imageMeasurementP.duplicate();
+        ImageMeasurementP duplicated = imageMeasurementP.duplicate(paramTest);
 
         assertEquals("Test meas",duplicated.getName());
         assertEquals("",duplicated.getImageName());

@@ -3,9 +3,11 @@ package wbif.sjx.MIA.Module.Visualisation;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
@@ -16,47 +18,50 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.TrackObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AddObjectsOverlayTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void getColours() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void getLabels() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void getPositionMeasurements() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addAllPointsOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addCentroidOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addOutlineOverlay() {
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addPositionMeasurementsOverlay() {
     }
 
-    @Test @Ignore
-    public void testCreateTrackOverlay() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    @Disabled
+    public void testCreateTrackOverlay(VolumeType volumeType) throws Exception {
 
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
 
@@ -72,7 +77,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new DenseTracks2D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new DenseTracks2D(volumeType).getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Tracking objects
@@ -114,7 +119,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void addLabelsOverlay() {
     }
 

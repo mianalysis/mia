@@ -21,7 +21,9 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import javax.annotation.Nullable;
@@ -37,8 +39,18 @@ import java.util.Set;
 public class Image < T extends RealType< T > & NativeType< T >> {
     private String name;
     private ImagePlus imagePlus;
-    private LinkedHashMap<String,Measurement> measurements = new LinkedHashMap<>();
+    private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
+    public interface VolumeTypes {
+        String OCTREE = "Octree";
+//        String OPTIMISED = "Optimised";
+        String POINTLIST = "Pointlist";
+        String QUADTREE = "Quadtree";
+
+//        String[] ALL = new String[]{OCTREE, OPTIMISED, POINTLIST, QUADTREE};
+        String[] ALL = new String[]{OCTREE, POINTLIST, QUADTREE};
+
+    }
 
     // CONSTRUCTORS
 
@@ -50,7 +62,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     public Image(String name, ImgPlus<T> img) {
         this.name = name;
-        this.imagePlus = ImageJFunctions.wrap(img,name);
+        this.imagePlus = ImageJFunctions.wrap(img, name);
 
         // Calibrations don't always appear to transfer over, so doing this explicitly
         Calibration calibration = imagePlus.getCalibration();
@@ -59,12 +71,27 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         }
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName) throws IntegerOverflowException {
-        return convertImageToObjects(outputObjectsName,false);
+    public ObjCollection convertImageToObjects(String outputObjectsName) {
+        String type = getVolumeType(VolumeType.POINTLIST);
+        return convertImageToObjects(type, outputObjectsName);
+    }
+
+    public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName) {
+        String type = getVolumeType(volumeType);
+        return convertImageToObjects(type, outputObjectsName);
+    }
+
+    public ObjCollection convertImageToObjects(VolumeType volumeType, String outputObjectsName, boolean singleObject) {
+        String type = getVolumeType(volumeType);
+        return convertImageToObjects(type, outputObjectsName, singleObject);
+    }
+
+    public ObjCollection convertImageToObjects(String type, String outputObjectsName) {
+        return convertImageToObjects(type, outputObjectsName, false);
 
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) throws IntegerOverflowException {
+    public ObjCollection convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
         // Need to get coordinates and convert to a HCObject
         ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 
@@ -72,7 +99,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         double dppXY = imagePlus.getCalibration().getX(1);
         double dppZ = imagePlus.getCalibration().getZ(1);
         String calibratedUnits = imagePlus.getCalibration().getUnits();
-        boolean twoD = getImagePlus().getNSlices()==1;
+        boolean twoD = getImagePlus().getNSlices() == 1;
         ImageProcessor ipr = imagePlus.getProcessor();
 
         int h = imagePlus.getHeight();
@@ -81,14 +108,16 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         int nFrames = imagePlus.getNFrames();
         int nChannels = imagePlus.getNChannels();
 
-        for (int c=0;c<nChannels;c++) {
+        // Will return null if optimised
+        VolumeType volumeType = getVolumeType(type);
+
+        for (int c = 0; c < nChannels; c++) {
             for (int t = 0; t < nFrames; t++) {
-                // HashMap linking the ID numbers in the present frame to those used to store the object (this means
-                // each frame instance has different ID numbers)
-                HashMap<Integer,Integer> IDlink = new HashMap<>();
+                // If using optimised type, determine types for each object, otherwise use a blank map
+                HashMap<Integer, IDLink> links = volumeType == null ? getOptimisedLinks(c, t, outputObjects, singleObject) : new HashMap<>();
 
                 for (int z = 0; z < nSlices; z++) {
-                    imagePlus.setPosition(c+1,z+1,t+1);
+                    imagePlus.setPosition(c + 1, z + 1, t + 1);
                     for (int x = 0; x < w; x++) {
                         for (int y = 0; y < h; y++) {
                             // Getting the ID of this object in the current stack.
@@ -98,13 +127,16 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                             if (singleObject && imageID != 0) imageID = 1;
 
                             if (imageID != 0) {
-                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getAndIncrementID());
+                                // If not using optimised type, each link needs to be added here
+                                links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
 
-                                int outID = IDlink.get(imageID);
+                                IDLink link = links.get(imageID);
+                                int outID = link.getID();
+                                VolumeType outType = link.getVolumeType();
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits,twoD).setT(finalT));
-                                outputObjects.get(outID).addCoord(x,y,z);
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, w, h, nSlices, dppXY, dppZ, calibratedUnits).setT(finalT));
+                                outputObjects.get(outID).add(x, y, z);
 
                             }
                         }
@@ -113,7 +145,41 @@ public class Image < T extends RealType< T > & NativeType< T >> {
             }
         }
 
+        for (Obj obj : outputObjects.values()) {
+            obj.finalise();
+        }
+
         return outputObjects;
+
+    }
+
+    HashMap<Integer, IDLink> getOptimisedLinks(int c, int t, ObjCollection outputObjects, boolean singleObject) {
+        int h = imagePlus.getHeight();
+        int w = imagePlus.getWidth();
+        int nSlices = imagePlus.getNSlices();
+
+        // Looping over all pixels in this stack and adding to the relevant CumStat
+        HashMap<Integer, IDLink> links = new HashMap<>();
+        for (int z = 0; z < nSlices; z++) {
+            imagePlus.setPosition(c, z + 1, t);
+            ImageProcessor ipr = imagePlus.getProcessor();
+            for (int x = 0; x < w; x++) {
+                for (int y = 0; y < h; y++) {
+                    // Getting the ID of this object in the current stack.
+                    int imageID = (int) ipr.getPixelValue(x, y);
+
+                    // If assigning a single object ID, this is the same value for all objects
+                    if (singleObject && imageID != 0) imageID = 1;
+
+                    if (imageID == 0) continue;
+                    links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), null));
+                    links.get(imageID).addMeasurement(x, y, z);
+
+                }
+            }
+        }
+
+        return links;
 
     }
 
@@ -133,8 +199,8 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     public void showImage(String title, @Nullable LUT lut, boolean normalise, boolean composite) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
         dispIpl.setTitle(title);
-        if (normalise) IntensityMinMax.run(dispIpl,true);
-        dispIpl.setPosition(1,1,1);
+        if (normalise) IntensityMinMax.run(dispIpl, true);
+        dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
         if (lut != null && dispIpl.getBitDepth() != 24) dispIpl.setLut(lut);
         if (composite) dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
@@ -143,23 +209,24 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public void showImage(String title, LUT lut) {
-        showImage(title,lut,true,false);
+        showImage(title, lut, true, false);
     }
 
     public void showImage(String title) {
-        showImage(title,LUT.createLutFromColor(Color.WHITE));
+        showImage(title, LUT.createLutFromColor(Color.WHITE));
     }
 
     public void showImage(LUT lut) {
-        showImage(name,lut);
+        showImage(name, lut);
     }
 
     public void showImage() {
-        showImage(name,LUT.createLutFromColor(Color.WHITE));
+        showImage(name, LUT.createLutFromColor(Color.WHITE));
     }
 
     /**
      * Displays measurement values from a specific Module
+     *
      * @param module
      */
     public void showMeasurements(Module module) {
@@ -171,7 +238,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
-        for (ImageMeasurementRef measRef:measRefs.values()) {
+        for (ImageMeasurementRef measRef : measRefs.values()) {
             if (measRef.getImageName().equals(name)) measNames.add(measRef.getName());
         }
 
@@ -184,12 +251,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             // Setting value
-            rt.setValue(measName,row,value);
+            rt.setValue(measName, row, value);
 
         }
 
         // Displaying the results table
-        rt.show("\""+module.getName()+" \"measurements for \""+name+"\"");
+        rt.show("\"" + module.getName() + " \"measurements for \"" + name + "\"");
 
     }
 
@@ -207,13 +274,42 @@ public class Image < T extends RealType< T > & NativeType< T >> {
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             // Setting value
-            rt.setValue(measName,row,value);
+            rt.setValue(measName, row, value);
 
         }
 
         // Displaying the results table
-        rt.show("All measurements for \""+name+"\"");
+        rt.show("All measurements for \"" + name + "\"");
 
+    }
+
+
+    // PACKAGE PRIVATE METHODS
+
+    VolumeType getVolumeType(String volumeType) {
+        switch (volumeType) {
+            case VolumeTypes.OCTREE:
+                return VolumeType.OCTREE;
+//            case VolumeTypes.OPTIMISED:
+//                return null;
+            case VolumeTypes.POINTLIST:
+            default:
+                return VolumeType.POINTLIST;
+            case VolumeTypes.QUADTREE:
+                return VolumeType.QUADTREE;
+        }
+    }
+
+    String getVolumeType(VolumeType volumeType) {
+        switch (volumeType) {
+            case OCTREE:
+                return VolumeTypes.OCTREE;
+            case POINTLIST:
+            default:
+                return VolumeTypes.POINTLIST;
+            case QUADTREE:
+                return VolumeTypes.QUADTREE;
+        }
     }
 
 
@@ -237,7 +333,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public void setImgPlus(ImgPlus<T> img) {
-        imagePlus = ImageJFunctions.wrap(img,name);
+        imagePlus = ImageJFunctions.wrap(img, name);
     }
 
     public HashMap<String, Measurement> getMeasurements() {
@@ -254,18 +350,18 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         Calibration calibration = imagePlus.getCalibration();
 
-        hash = 31*hash + ((Number) calibration.pixelWidth).hashCode();
-        hash = 31*hash + ((Number) calibration.pixelDepth).hashCode();
-        hash = 31*hash + calibration.getUnits().toUpperCase().hashCode();
+        hash = 31 * hash + ((Number) calibration.pixelWidth).hashCode();
+        hash = 31 * hash + ((Number) calibration.pixelDepth).hashCode();
+        hash = 31 * hash + calibration.getUnits().toUpperCase().hashCode();
 
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c,z,t);
+                    imagePlus.setPosition(c, z, t);
                     ImageProcessor imageProcessor = imagePlus.getProcessor();
-                    for (int x=0;x<imagePlus.getWidth();x++) {
-                        for (int y=0;y<imagePlus.getHeight();y++) {
-                            hash = 31*hash + ((Number) imageProcessor.getf(x,y)).hashCode();
+                    for (int x = 0; x < imagePlus.getWidth(); x++) {
+                        for (int y = 0; y < imagePlus.getHeight(); y++) {
+                            hash = 31 * hash + ((Number) imageProcessor.getf(x, y)).hashCode();
                         }
                     }
                 }
@@ -301,17 +397,17 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         if (imagePlus.getBitDepth() != imagePlus2.getBitDepth()) return false;
 
         // Checking the individual image pixel values
-        for (int c=0;c<imagePlus.getNChannels();c++) {
+        for (int c = 0; c < imagePlus.getNChannels(); c++) {
             for (int z = 0; z < imagePlus.getNSlices(); z++) {
                 for (int t = 0; t < imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c+1, z + 1, t + 1);
-                    imagePlus2.setPosition(c+1, z + 1, t + 1);
+                    imagePlus.setPosition(c + 1, z + 1, t + 1);
+                    imagePlus2.setPosition(c + 1, z + 1, t + 1);
 
                     ImageProcessor imageProcessor1 = imagePlus.getProcessor();
                     ImageProcessor imageProcessor2 = imagePlus2.getProcessor();
-                    for (int x=0;x<imagePlus.getWidth();x++) {
+                    for (int x = 0; x < imagePlus.getWidth(); x++) {
                         for (int y = 0; y < imagePlus.getHeight(); y++) {
-                            if (imageProcessor1.getf(x,y) != imageProcessor2.getf(x,y)) return false;
+                            if (imageProcessor1.getf(x, y) != imageProcessor2.getf(x, y)) return false;
                         }
                     }
                 }
@@ -320,5 +416,91 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         return true;
 
+    }
+
+    class IDLink {
+        private final int ID;
+        private final CumStat csX;
+        private final CumStat csY;
+        private final CumStat csZ;
+        private VolumeType volumeType = null;
+
+        IDLink(int ID, @Nullable VolumeType volumeType) {
+            this.ID = ID;
+            this.volumeType = volumeType;
+
+            this.csX = new CumStat();
+            this.csY = new CumStat();
+            this.csZ = new CumStat();
+
+        }
+
+        void addMeasurement(int x, int y, int z) {
+            csX.addMeasure(x);
+            csY.addMeasure(y);
+            csZ.addMeasure(z);
+        }
+
+        VolumeType getVolumeType() {
+            if (volumeType == null) volumeType = calculateVolumeType();
+            return volumeType;
+        }
+
+        private VolumeType calculateVolumeType() {
+            double N = csX.getN();
+
+            // If this point is less than 50 voxels, use PointList
+            if (N < 50) return VolumeType.POINTLIST;
+
+            // Ratio of xy to z
+            double xyToZ = imagePlus.getCalibration().pixelDepth/imagePlus.getCalibration().pixelWidth;
+            System.out.println("        XY to Z "+xyToZ);
+
+            // If distribution of points indicates a sparse object, use PointList.  This is calculated differently for 2D/3D
+            if (csZ.getMax() - csZ.getMin() == 0) {
+                // Assuming a circle of volume equal the number of coordinates, the expected radius is
+                double expectedRadius = Math.sqrt(N / Math.PI);
+                double expectedStdev = 4.24 * expectedRadius;
+                System.out.println("        2D, Exp stdev = "+expectedStdev+", actual stdev = "+((csX.getStd() + csY.getStd()) / 2));
+                if ((csX.getStd() + csY.getStd()) / 2 < expectedStdev * 2) return VolumeType.QUADTREE;
+
+            } else {
+                // Assuming a sphere of volume equal the number of coordinates (corrected for different XY and Z
+                // sampling), the expected radius is
+                double expectedRadius = Math.cbrt(N*xyToZ * 3d / (4d * Math.PI));
+                double expectedStdev = 5.16 * expectedRadius;
+                System.out.println("        3D, Exp stdev = "+expectedStdev+", actual stdev = "+((csX.getStd() + csY.getStd() + csZ.getStd()*xyToZ) / 3));
+                if ((csX.getStd() + csY.getStd() + csZ.getStd()*xyToZ) / 3 < expectedStdev * 2) {
+                    if (xyToZ > 3) return VolumeType.QUADTREE;
+                    else return VolumeType.OCTREE;
+                }
+            }
+
+            // If distribution of points indicates an elongated object, use PointList
+            if (csZ.getMax() - csZ.getMin() == 0) {
+                CumStat cs = new CumStat();
+                cs.addMeasure(csX.getStd());
+                cs.addMeasure(csY.getStd());
+                System.out.println("        2D, Ratio "+(cs.getStd() / cs.getMean()));
+                if (cs.getStd() / cs.getMean() < 2) return VolumeType.QUADTREE;
+            } else {
+                CumStat cs = new CumStat();
+                cs.addMeasure(csX.getStd());
+                cs.addMeasure(csY.getStd());
+                cs.addMeasure(csZ.getStd());
+                System.out.println("        3D, Ratio "+(cs.getStd() / cs.getMean()));
+                if (cs.getStd() / cs.getMean() < 2) {
+                    if (xyToZ > 3) return VolumeType.QUADTREE;
+                    else return VolumeType.OCTREE;
+                }
+            }
+
+            return VolumeType.POINTLIST;
+
+        }
+
+        int getID() {
+            return ID;
+        }
     }
 }

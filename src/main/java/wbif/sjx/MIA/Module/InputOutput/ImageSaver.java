@@ -198,13 +198,13 @@ public class ImageSaver extends Module {
 
         // If using the same settings as OutputControl, update saveLocation and filePath (if necessary)
         if (saveLocation.equals(SaveLocations.MATCH_OUTPUT_CONTROL)) {
-            Analysis analysis = workspace.getAnalysis();
-            if (analysis == null) {
-                System.err.println("No analysis found attached to workspace.  Can't get output path.");
-                return false;
-            }
+//            Analysis analysis = workspace.getAnalysis();
+//            if (analysis == null) {
+//                System.err.println("No analysis found attached to workspace.  Can't get output path.");
+//                return false;
+//            }
 
-            OutputControl outputControl = analysis.getModules().getOutputControl();
+            OutputControl outputControl = modules.getOutputControl();
             String outputSaveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
             switch (outputSaveLocation) {
                 case OutputControl.SaveLocations.SAVE_WITH_INPUT:

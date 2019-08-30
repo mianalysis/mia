@@ -1,20 +1,24 @@
 package wbif.sjx.MIA.Process;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.awt.*;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ColourFactoryTest {
     private double tolerance = 1E-2;
 
-    @Test
-    public void testGetHuesSingleColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesSingleColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -24,13 +28,13 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         HashMap<Integer, Float> actual = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
@@ -42,8 +46,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesRandomColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesRandomColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -53,13 +58,13 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         HashMap<Integer, Float> actual = ColourFactory.getRandomHues(collection);
@@ -72,8 +77,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesMeasurementColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesMeasurementColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -83,17 +89,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -108,8 +114,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesMeasurementColourNormalised() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesMeasurementColourNormalised(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -119,17 +126,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -144,8 +151,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesIDColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesIDColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -155,17 +163,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -180,8 +188,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesIDColourNormalised() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesIDColourNormalised(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -191,17 +200,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -216,8 +225,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesParentIDColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesParentIDColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -227,16 +237,16 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj(volumeType,"Parent",6,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
+        parent = new Obj(volumeType,"Parent",5,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
@@ -250,8 +260,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetHuesParentIDColourNormalised() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetHuesParentIDColourNormalised(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -261,16 +272,16 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj(volumeType,"Parent",6,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
+        parent = new Obj(volumeType,"Parent",5,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
@@ -284,8 +295,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursSingleColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursSingleColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -295,13 +307,13 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
@@ -314,8 +326,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursRandomColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursRandomColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -325,13 +338,13 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(collection);
@@ -345,8 +358,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursMeasurementColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursMeasurementColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -356,17 +370,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -382,8 +396,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursMeasurementColourNormalised() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursMeasurementColourNormalised(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -393,17 +408,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -419,8 +434,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursIDColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursIDColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -430,17 +446,17 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);
@@ -456,8 +472,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursIDColourNormalised() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursIDColourNormalised(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -467,13 +484,13 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(collection,true);
@@ -487,8 +504,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursParentIDColour() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursParentIDColour(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -498,16 +516,16 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj(volumeType,"Parent",6,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
+        parent = new Obj(volumeType,"Parent",5,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
@@ -522,8 +540,9 @@ public class ColourFactoryTest {
 
     }
 
-    @Test
-    public void testGetColoursParentIDColourNormalised() {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetColoursParentIDColourNormalised(VolumeType volumeType) {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -533,16 +552,16 @@ public class ColourFactoryTest {
         ObjCollection collection = new ObjCollection("Obj");
 
         // Adding objects
-        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits,false);
-        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits,false);
+        Obj obj = new Obj(volumeType,"Obj",0,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj(volumeType,"Parent",6,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",1,1,1,1,dppXY,dppZ,calibratedUnits);
         collection.add(obj);
 
-        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
-        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits,false);
+        obj = new Obj(volumeType,"Obj",2,1,1,1,dppXY,dppZ,calibratedUnits);
+        parent = new Obj(volumeType,"Parent",5,1,1,1,dppXY,dppZ,calibratedUnits);
         obj.addParent(parent);
         collection.add(obj);
 

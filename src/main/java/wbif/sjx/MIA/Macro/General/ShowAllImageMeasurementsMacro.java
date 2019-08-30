@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.General;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class ShowAllImageMeasurementsMacro extends MacroOperation {
@@ -20,7 +21,7 @@ public class ShowAllImageMeasurementsMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         workspace.getImage((String) objects[0]).showAllMeasurements();
         return null;
     }

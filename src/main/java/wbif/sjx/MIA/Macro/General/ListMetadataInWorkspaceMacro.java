@@ -3,11 +3,9 @@ package wbif.sjx.MIA.Macro.General;
 import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
-import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.HCMetadata;
-
-import java.util.HashMap;
 
 public class ListMetadataInWorkspaceMacro extends MacroOperation {
     public ListMetadataInWorkspaceMacro(MacroExtension theHandler) {
@@ -25,7 +23,7 @@ public class ListMetadataInWorkspaceMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
         // Creating a new ResultsTable to hold the Image names
         ResultsTable rt = new ResultsTable();
         int row = 0;

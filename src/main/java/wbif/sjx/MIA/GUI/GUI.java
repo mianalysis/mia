@@ -45,7 +45,7 @@ public class GUI {
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
-    private static Workspace testWorkspace = new Workspace(1, null,1);
+    private static Workspace testWorkspace = new Workspace(1,null,1);
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
@@ -271,7 +271,7 @@ public class GUI {
         // If the input path isn't the same assign this new file
         if (!testWorkspace.getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
             lastModuleEval = -1;
-            testWorkspace = new Workspace(1, new File(inputFile),1);
+            testWorkspace = new Workspace(1,new File(inputFile),1);
 
         }
 
@@ -456,15 +456,16 @@ public class GUI {
         int[] selectedIndices = getSelectedModuleIndices();
 
         ModuleCollection newModules = undoRedoStore.getNextUndo(analysis.getModules());
+
         if (newModules == null) return;
         analysis.setModules(newModules);
 
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModuleStates(false);
         updateParameters();
         updateModules();
+        updateModuleStates(false);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 
@@ -480,9 +481,9 @@ public class GUI {
         // Updating the selected modules
         setSelectedModulesByIndex(selectedIndices);
 
-        updateModuleStates(false);
         updateParameters();
         updateModules();
+        updateModuleStates(false);
 
         menuBar.setUndoRedoStatus(undoRedoStore);
 

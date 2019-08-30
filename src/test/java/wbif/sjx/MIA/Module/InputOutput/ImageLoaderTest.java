@@ -1,11 +1,12 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 import ij.IJ;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Units;
@@ -14,18 +15,18 @@ import wbif.sjx.MIA.Object.Workspace;
 import java.io.File;
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen on 29/08/2017.
  */
 public class ImageLoaderTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Before
+    @BeforeEach
     public void setupTest() {
         Units.setUnits(Units.SpatialUnits.MICROMETRE);
     }
@@ -37,12 +38,62 @@ public class ImageLoaderTest extends ModuleTest {
     }
 
     @Test
+    public void testCheckBitDepthLessThan8() {
+        assertEquals(8,ImageLoader.checkBitDepth(1));
+        assertEquals(8,ImageLoader.checkBitDepth(6));
+        assertEquals(8,ImageLoader.checkBitDepth(7));
+
+    }
+
+    @Test
+    public void testCheckBitDepthEqualTo8() {
+        assertEquals(8,ImageLoader.checkBitDepth(8));
+
+    }
+
+    @Test
+    public void testCheckBitDepthBetween8And16() {
+        assertEquals(16,ImageLoader.checkBitDepth(9));
+        assertEquals(16,ImageLoader.checkBitDepth(12));
+        assertEquals(16,ImageLoader.checkBitDepth(14));
+        assertEquals(16,ImageLoader.checkBitDepth(15));
+
+    }
+
+    @Test
+    public void testCheckBitDepthEqualTo16() {
+        assertEquals(16,ImageLoader.checkBitDepth(16));
+
+    }
+
+    @Test
+    public void testCheckBitDepthBetween16And32() {
+        assertEquals(32,ImageLoader.checkBitDepth(17));
+        assertEquals(32,ImageLoader.checkBitDepth(21));
+        assertEquals(32,ImageLoader.checkBitDepth(24));
+        assertEquals(32,ImageLoader.checkBitDepth(31));
+
+    }
+
+    @Test
+    public void testCheckBitDepthEqualTo32() {
+        assertEquals(32,ImageLoader.checkBitDepth(32));
+
+    }
+
+    @Test
+    public void testCheckBitDepthGreaterThan32() {
+        assertEquals(-1,ImageLoader.checkBitDepth(33));
+
+    }
+
+    @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,null,1);
 
         // Initialising ImageFileLoader
-        ImageLoader imageLoader = new ImageLoader(null);
+        ImageLoader imageLoader = new ImageLoader(new ModuleCollection());
         imageLoader.initialiseParameters();
 
         // Setting parameters
@@ -89,7 +140,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -134,7 +185,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -179,7 +230,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -230,7 +281,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -279,7 +330,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -306,7 +357,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -333,7 +384,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -382,7 +433,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -409,7 +460,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -436,7 +487,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -485,7 +536,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -512,7 +563,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -539,7 +590,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -588,7 +639,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -633,7 +684,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -674,7 +725,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -720,7 +771,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -773,7 +824,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -823,7 +874,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -868,7 +919,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -913,7 +964,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -958,7 +1009,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -1003,7 +1054,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -1043,7 +1094,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
@@ -1083,7 +1134,7 @@ public class ImageLoaderTest extends ModuleTest {
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(null);
+        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
 
         // Setting parameters

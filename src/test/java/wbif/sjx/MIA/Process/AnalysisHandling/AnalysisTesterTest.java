@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
@@ -11,19 +11,18 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AnalysisTesterTest {
     @Test
-    public void testModulesAllCorrect() throws IOException {
+    public void testModulesAllCorrect(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -48,14 +47,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModulesOneIncorrect() throws IOException {
+    public void testModulesOneIncorrect(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -83,14 +80,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModulesOneIncorrectAnotherOneDisabled() throws IOException {
+    public void testModulesOneIncorrectAnotherOneDisabled(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -119,14 +114,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModulesOneIncorrectAndDisabled() throws IOException {
+    public void testModulesOneIncorrectAndDisabled(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -155,14 +148,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModulesAllDisabled() throws IOException {
+    public void testModulesAllDisabled(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -227,10 +218,9 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModulesErrorInOutput() throws IOException {
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void testModulesErrorInOutput(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
@@ -267,10 +257,9 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModulesEmptyCollection() throws IOException {
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void testModulesEmptyCollection(@TempDir Path tempPath) throws IOException {
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
@@ -285,14 +274,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModuleAllCorrect() throws IOException {
+    public void testModuleAllCorrect(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -323,14 +310,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModuleOneIncorrect() throws IOException {
+    public void testModuleOneIncorrect(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 
@@ -361,14 +346,12 @@ public class AnalysisTesterTest {
     }
 
     @Test
-    public void testModuleNull() throws IOException {
+    public void testModuleNull(@TempDir Path tempPath) throws IOException {
         // Initialising ModuleCollection
         ModuleCollection modules = new ModuleCollection();
 
-        // Assigning a fake input image
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         modules.getInputControl().updateParameterValue(InputControl.INPUT_PATH,testFile.getAbsolutePath());
 

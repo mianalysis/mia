@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ClassHunter;
 
@@ -15,6 +16,7 @@ public class MacroHandler implements MacroExtension {
     private static MacroHandler macroHandler = null;
     private static ArrayList<MacroOperation> macroOperations = null;
     private static Workspace workspace;
+    private static ModuleCollection modules;
 
     // Constructor is private to prevent instantiation
     public MacroHandler(){};
@@ -42,7 +44,7 @@ public class MacroHandler implements MacroExtension {
         for (MacroOperation macroOperation:macroOperations) {
             if (macroOperation.name.equals(s)) {
                 // Perform operation
-                return macroOperation.action(objects,workspace);
+                return macroOperation.action(objects,workspace,modules);
 
             }
         }

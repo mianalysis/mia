@@ -15,10 +15,10 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.SetLookupTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Visualisation.ImageRendering.SetLookupTable;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -413,7 +413,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
 
         @Override
-        public <T extends Parameter> T duplicate() {
+        public <T extends Parameter> T duplicate(Module newModule) {
             CustomInputImageP newParameter = new CustomInputImageP(name,module,getImageName(),getDescription());
 
             newParameter.setNickname(getNickname());

@@ -2,17 +2,20 @@ package wbif.sjx.MIA.Module.ImageMeasurements;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MeasureImageColocalisationTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -28,13 +31,14 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         assertEquals(expected,actual);
     }
 
-    @Test
-    public void testGetMaskImageNone() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetMaskImageNone(VolumeType volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -47,13 +51,14 @@ public class MeasureImageColocalisationTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testGetMaskImageInsideObjects() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetMaskImageInsideObjects(VolumeType volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -70,13 +75,14 @@ public class MeasureImageColocalisationTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testGetMaskImageOutsideObjects() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetMaskImageOutsideObjects(VolumeType volumeType) throws Exception {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");

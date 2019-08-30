@@ -5,14 +5,15 @@ import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 28/02/2019.
@@ -426,7 +427,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C1_belowabove.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -468,7 +469,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C2_belowabove.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -510,7 +511,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_bothC_belowabove.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -551,7 +552,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C1_bothbelow.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -593,7 +594,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C1_singleplane.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -635,7 +636,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C1_belowabove.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -677,7 +678,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C1_belowabove_C1.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -719,7 +720,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit_C1_belowabove_T1.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);
@@ -761,7 +762,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus3D_8bit_C1_belowabove.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(null);
+        BestFocusSubstack bestFocusSubstack = new BestFocusSubstack(new ModuleCollection());
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.INPUT_IMAGE,"Test_image");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.OUTPUT_IMAGE,"Test_output");
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.BEST_FOCUS_CALCULATION, BestFocusSubstack.BestFocusCalculations.MAX_STDEV);

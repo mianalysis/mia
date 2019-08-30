@@ -1,5 +1,9 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +11,10 @@ import java.util.List;
  * Created by Stephen Cross on 29/08/2017.
  */
 public class Objects3D extends ExpectedObjects {
+    public Objects3D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 12);
+    }
+
     public enum Measures {
         EXP_ID_8BIT, EXP_ID_16BIT, EXP_X_MIN, EXP_X_MEAN, EXP_X_MEDIAN, EXP_X_MAX, EXP_Y_MIN, EXP_Y_MEAN, EXP_Y_MEDIAN, 
         EXP_Y_MAX, EXP_Z_MIN, EXP_Z_MEAN, EXP_Z_MEDIAN, EXP_Z_MAX, EXP_C, EXP_F, EXP_N_VOXELS, EXP_N_VOXELS_PROJ,
@@ -17,6 +25,10 @@ public class Objects3D extends ExpectedObjects {
         EXP_SPOT_PROX_CENT_20PX_X, EXP_SPOT_PROX_CENT_20PX_Y, EXP_SPOT_PROX_CENT_20PX_Z, EXP_SPOT_PROX_CENT_20PX_DIST,
         EXP_PROJ_DIA_PX, EXP_PROJ_DIA_CAL, EXP_BIN_N_VOXELS_4BINS_INRANGE, EXP_BIN_N_VOXELS_4BINS_SHORTRANGE,
         EXP_BIN_N_VOXELS_4BINS_HIGHRANGE
+    }
+
+    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+        return super.getObjects(objectName, mode, dppXY, dppZ, calibratedUnits, includeMeasurements);
     }
 
     public HashMap<Integer,HashMap<String,Double>> getMeasurements() {
@@ -476,11 +488,6 @@ public class Objects3D extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/Objects3D.csv");
-    }
-
-    @Override
-    public boolean is2D() {
-        return false;
     }
 }
 

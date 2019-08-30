@@ -21,7 +21,7 @@ import static wbif.sjx.MIA.Process.AnalysisHandling.AnalysisWriter.prepareRefsXM
  */
 public class ParameterGroup extends Parameter {
     private LinkedHashSet<ParameterCollection> collections = new LinkedHashSet<>();
-    private ParameterCollection templateParameters = new ParameterCollection();
+    private ParameterCollection templateParameters;
 
 
     // CONSTRUCTORS
@@ -63,7 +63,7 @@ public class ParameterGroup extends Parameter {
         // Create new copy of template collections
         ParameterCollection newParameters = new ParameterCollection();
         for (Parameter templateParameter:templateParameters.values()) {
-            Parameter newParameter = templateParameter.duplicate();
+            Parameter newParameter = templateParameter.duplicate(templateParameter.getModule());
 
             // New parameters should inherit the visibility of the addRef button
             newParameter.setVisible(isVisible());
@@ -127,8 +127,8 @@ public class ParameterGroup extends Parameter {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        ParameterGroup newParameter = new ParameterGroup(name,module,templateParameters.duplicate(),getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        ParameterGroup newParameter = new ParameterGroup(name,newModule,templateParameters.duplicate(),getDescription());
 
         LinkedHashSet<ParameterCollection> newCollections = new LinkedHashSet<>();
         for (ParameterCollection collection:collections) newCollections.add(collection.duplicate());

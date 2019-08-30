@@ -6,6 +6,7 @@ package wbif.sjx.MIA.Module;
 
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -21,6 +22,7 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module>, Serializable {
+    private WorkflowParameters workflowParameters = new WorkflowParameters(this);
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
 
@@ -270,6 +272,14 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
+    public WorkflowParameters getWorkflowParameters() {
+        return workflowParameters;
+    }
+
+    public void setWorkflowParameters(WorkflowParameters workflowParameters) {
+        this.workflowParameters = workflowParameters;
+    }
+
     public InputControl getInputControl() {
         return inputControl;
     }
@@ -348,13 +358,13 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         addAll(newModules);
     }
 
-    public ModuleCollection duplicate() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public ModuleCollection duplicate() {
         ModuleCollection copyModules = new ModuleCollection();
 
-        copyModules.setInputControl((InputControl) inputControl.duplicate());
-        copyModules.setOutputControl((OutputControl) outputControl.duplicate());
+        copyModules.setInputControl((InputControl) inputControl.duplicate(copyModules));
+        copyModules.setOutputControl((OutputControl) outputControl.duplicate(copyModules));
 
-        for (Module module:values()) copyModules.add(module.duplicate());
+        for (Module module:values()) copyModules.add(module.duplicate(copyModules));
 
         return copyModules;
 

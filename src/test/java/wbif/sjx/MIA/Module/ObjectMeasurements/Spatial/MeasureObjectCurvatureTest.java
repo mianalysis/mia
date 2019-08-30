@@ -2,18 +2,22 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Rings2D;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -21,7 +25,7 @@ import static org.junit.Assert.*;
 public class MeasureObjectCurvatureTest extends ModuleTest {
     private double tolerance = 1E-1; // As these are fit values, the tolerance is larger than usual
 
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -31,8 +35,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         assertNotNull(new MeasureObjectCurvature(null).getDescription());
     }
 
-    @Test
-    public void testRunCircleNoRelate10PxRadius2DLOESS() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunCircleNoRelate10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -42,7 +47,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -52,7 +57,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(null);
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -84,8 +89,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -95,7 +101,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -105,7 +111,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(null);
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -146,8 +152,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         }
     }
 
-    @Test
-    public void testRunCircleRelateClockwise10PxRadius2DLOESS() throws Exception {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunCircleRelateClockwise10PxRadius2DLOESS(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -157,7 +164,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new Rings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -167,7 +174,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(null);
+        MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
@@ -208,7 +215,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         }
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunCircle10PxRadius2DStandard() throws Exception {
     }
 }

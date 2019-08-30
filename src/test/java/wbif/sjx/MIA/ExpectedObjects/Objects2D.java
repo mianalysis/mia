@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
+import wbif.sjx.common.Object.Volume.VolumeType;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,6 +9,10 @@ import java.util.List;
  * Created by sc13967 on 21/02/2018.
  */
 public class Objects2D extends ExpectedObjects {
+    public Objects2D(VolumeType volumeType) {
+        super(volumeType, 64, 76, 1);
+    }
+
     public enum Measures {
         PCC, ASM_1PX, CONTRAST_1PX, CORRELATION_1PX, ENTROPY_1PX, ASM_3PX, CONTRAST_3PX, CORRELATION_3PX, ENTROPY_3PX
     }
@@ -14,11 +20,6 @@ public class Objects2D extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/Objects2D.csv");
-    }
-
-    @Override
-    public boolean is2D() {
-        return true;
     }
 
     @Override

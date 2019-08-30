@@ -2,25 +2,27 @@ package wbif.sjx.MIA.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 
 import java.io.File;
 import java.net.URLDecoder;
+import java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 13/11/2017.
  */
 public class ImageSaverTest extends ModuleTest {
-    @BeforeClass
+    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -31,11 +33,10 @@ public class ImageSaverTest extends ModuleTest {
     }
 
     @Test
-    public void testRunSaveWithInputFileWithSeriesNumber() throws Exception {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
-        File testFile = temporaryFolder.newFile("TestFile.tif");
+    public void testRunSaveWithInputFileWithSeriesNumber(@TempDir Path tempPath) throws Exception {
+        File temporaryFolder = tempPath.toFile();
+        File testFile = new File(tempPath+File.separator+"TestFile.tif");
+        testFile.createNewFile();
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,testFile,1);
@@ -47,7 +48,7 @@ public class ImageSaverTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        ImageSaver imageSaver = new ImageSaver(null);
+        ImageSaver imageSaver = new ImageSaver(new ModuleCollection());
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SAVE_WITH_INPUT);
@@ -62,7 +63,7 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.execute(workspace);
 
         // Checking the new file exists in the temporary folder
-        String[] tempFileContents = temporaryFolder.getRoot().list();
+        String[] tempFileContents = temporaryFolder.list();
         boolean contains = false;
         for (String name:tempFileContents) {
             if (name.equals("TestFile_S1_test.tif")) {
@@ -74,10 +75,8 @@ public class ImageSaverTest extends ModuleTest {
     }
 
     @Test
-    public void testRunSaveAtSpecificLocationWithSeriesNumber() throws Exception {
-        // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
-        TemporaryFolder temporaryFolder = new TemporaryFolder();
-        temporaryFolder.create();
+    public void testRunSaveAtSpecificLocationWithSeriesNumber(@TempDir Path tempPath) throws Exception {
+        File temporaryFolder = tempPath.toFile();
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -89,14 +88,14 @@ public class ImageSaverTest extends ModuleTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        ImageSaver imageSaver = new ImageSaver(null);
+        ImageSaver imageSaver = new ImageSaver(new ModuleCollection());
         imageSaver.initialiseParameters();
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);
         imageSaver.updateParameterValue(ImageSaver.MIRROR_DIRECTORY_ROOT,"");
         imageSaver.updateParameterValue(ImageSaver.SAVE_NAME_MODE,ImageSaver.SaveNameModes.SPECIFIC_NAME);
         imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_NAME,"TestFile.tif");
-        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getRoot().getAbsolutePath());
+        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getAbsolutePath());
         imageSaver.updateParameterValue(ImageSaver.APPEND_SERIES_MODE,ImageSaver.AppendSeriesModes.SERIES_NUMBER);
         imageSaver.updateParameterValue(ImageSaver.APPEND_DATETIME_MODE,ImageSaver.AppendDateTimeModes.NEVER);
         imageSaver.updateParameterValue(ImageSaver.SAVE_SUFFIX,"_test2");
@@ -106,7 +105,7 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.execute(workspace);
 
         // Checking the new file exists in the temporary folder
-        String[] tempFileContents = temporaryFolder.getRoot().list();
+        String[] tempFileContents = temporaryFolder.list();
         boolean contains = false;
         for (String name:tempFileContents) {
             if (name.equals("TestFile_S1_test2.tif")) {
@@ -116,12 +115,12 @@ public class ImageSaverTest extends ModuleTest {
         assertTrue(contains);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunSaveInMirroredDirectory() throws Exception {
 
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testRunSaveWithFlattenedOverlay() throws Exception {
     }
 }

@@ -162,6 +162,20 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
 
+    protected static int checkBitDepth(int bitDepth) {
+        // Ensure bit depth is 8, 16 or 32
+        if (bitDepth < 8) bitDepth = 8;
+        else if (bitDepth > 8 && bitDepth < 16) bitDepth = 16;
+        else if (bitDepth > 16 && bitDepth < 32) bitDepth = 32;
+        else if (bitDepth > 32) {
+            MIA.log.writeError("Input image bit depth exceeds maximum supported (32 bit).");
+            return -1;
+        }
+
+        return bitDepth;
+
+    }
+
     public ImagePlus getBFImage(String path, int seriesNumber, @Nonnull String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean manualCal, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
@@ -192,6 +206,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (intRange != null) {
             bitDepth = (int) intRange[0];
         }
+
+        bitDepth = checkBitDepth(bitDepth);
+        if (bitDepth == -1) return null;
 
         if (crop != null) {
             left = crop[0];
@@ -229,7 +246,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     try {
                         idx = reader.getIndex(z - 1, c - 1, t - 1);
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Indices out of range for image \"" + path + "\" at c=" + (c - 1) + ", z=" + (z - 1) + ", t=" + (t - 1));
+                        MIA.log.writeError("Indices out of range for image \"" + path + "\" at c=" + (c - 1) + ", z=" + (z - 1) + ", t=" + (t - 1));
                         return null;
                     }
 
@@ -321,7 +338,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Getting fragments of the filepath
         String rootPath = rootFile.getParent() + MIA.getSlashes();
         String rootName = rootFile.getName();
-        String startingNumber = df.format(startingIndex);
         int numStart = FilenameUtils.removeExtension(rootName).length() - numberOfZeroes;
         rootName = rootFile.getName().substring(0, numStart);
         String extension = FilenameUtils.getExtension(rootFile.getName());
@@ -482,10 +498,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         StringBuilder sb = new StringBuilder();
 
         sb.append("The following metadata values are available to use for generation of a filename string.  " +
-                "Each metadata reference should include the \"${\" and \"}\".\r\n\r\n");
+                "Each metadata reference should include the \"M{\" and \"}\".\r\n\r\n");
 
         for (MetadataRef ref : metadataRefs.values()) {
-            sb.append("${");
+            sb.append("M{");
             sb.append(ref.getName());
             sb.append("}");
             sb.append("\r\n");
@@ -498,8 +514,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static String compileGenericFilename(String genericFormat, HCMetadata metadata) {
         String outputName = genericFormat;
 
-        // Use regex to find instances of "${ }" and replace the contents with the appropriate metadata value
-        Pattern pattern = Pattern.compile("\\$\\{([^${}]+)}");
+        // Use regex to find instances of "M{ }" and replace the contents with the appropriate metadata value
+        Pattern pattern = Pattern.compile("M\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(genericFormat);
         while (matcher.find()) {
             String fullName = matcher.group(0);
@@ -781,7 +797,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new StringP(PREFIX, this, "", "Text to append to the start of the root filename for this workspace.  For example, if the current root file is \"image.tif\" and a prefix of \"test_\" is specified, the generated filename will be \"test_image.tif\"."));
         parameters.add(new StringP(SUFFIX, this, "", "Text to append to the end of the root filename for this workspace.  For example, if the current root file is \"image.tif\" and a prefix of \"_test\" is specified, the generated filename will be \"image_test.tif\"."));
         parameters.add(new StringP(EXTENSION, this, "", "Extension for the generated filename."));
-        parameters.add(new StringP(GENERIC_FORMAT, this, "", "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"£{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"${name}\" notation."));
+        parameters.add(new StringP(GENERIC_FORMAT, this, "", "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false, "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true, "Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file."));
         parameters.add(new FilePathP(FILE_PATH, this, "", "Path to file to be loaded."));

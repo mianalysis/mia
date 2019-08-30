@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro.ObjectProcessing;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.RemoveObjects;
 import wbif.sjx.MIA.Object.Workspace;
 
@@ -21,8 +22,8 @@ public class RemoveObjectsFromWorkspaceMacro extends MacroOperation {
     }
 
     @Override
-    public String action(Object[] objects, Workspace workspace) {
-        RemoveObjects removeObjects = new RemoveObjects(workspace.getAnalysis().getModules());
+    public String action(Object[] objects, Workspace workspace, ModuleCollection modules) {
+        RemoveObjects removeObjects = new RemoveObjects(modules);
 
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,objects[0]);
         removeObjects.updateParameterValue(RemoveObjects.RETAIN_MEASUREMENTS,(double) objects[1] == 1);

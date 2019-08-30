@@ -106,7 +106,7 @@ public class RelateManyToOne extends Module {
         for (Obj childObject:childObjects.values()) {
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
-            double dpp = childObject.getDistPerPxXY();
+            double dpp = childObject.getDppXY();
 
             for (Obj parentObject : parentObjects.values()) {
                 if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
@@ -147,7 +147,7 @@ public class RelateManyToOne extends Module {
         for (Obj childObject:childObjects.values()) {
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
-            double dpp = childObject.getDistPerPxXY();
+            double dpp = childObject.getDppXY();
 
             for (Obj parentObject : parentObjects.values()) {
                 if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
@@ -191,7 +191,7 @@ public class RelateManyToOne extends Module {
         for (Obj childObject:childObjects.values()) {
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
-            double dpp = childObject.getDistPerPxXY();
+            double dpp = childObject.getDppXY();
 
             for (Obj parentObject : parentObjects.values()) {
                 if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
@@ -332,12 +332,12 @@ public class RelateManyToOne extends Module {
                     Point<Integer> centroid = new Point<>(xCent, yCent, zCent);
 
                     // If the centroid doesn't overlap, skip this link
-                    if (!parentObject.containsPoint(centroid)) continue;
+                    if (!parentObject.contains(centroid)) continue;
 
                 }
 
                 // Calculates the percentage overlap
-                double nTotal = (double) childObject.getNVoxels();
+                double nTotal = (double) childObject.size();
                 double nOverlap = (double) parentObject.getOverlap(childObject);
                 double overlap  = (nOverlap/nTotal)*100;
 

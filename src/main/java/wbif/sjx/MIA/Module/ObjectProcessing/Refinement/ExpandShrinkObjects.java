@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
@@ -82,7 +81,7 @@ public class ExpandShrinkObjects extends Module {
         InvertIntensity.process(objectImage);
 
         // Creating a new object collection (only contains one image) from the transformed image
-        ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
+        ObjCollection newObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(),"NewObjects");
 
         // During object shrinking it's possible the object will disappear entirely
         if (newObjects.size() == 0) return null;
@@ -125,11 +124,6 @@ public class ExpandShrinkObjects extends Module {
         Obj firstObject = inputObjects.getFirst();
         if (firstObject == null) return true;
 
-        double dppXY = firstObject.getDistPerPxXY();
-        double dppZ = firstObject.getDistPerPxZ();
-        String calibrationUnits = firstObject.getCalibratedUnits();
-        boolean twoD = firstObject.is2D();
-
         // Iterating over all objects
         int count = 1;
         int total = inputObjects.size();
@@ -157,7 +151,7 @@ public class ExpandShrinkObjects extends Module {
             if (updateInputObjects) {
                 inputObject.setPoints(newObject.getPoints());
             } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),dppXY,dppZ,calibrationUnits,twoD);
+                Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),firstObject);
                 outputObject.setPoints(newObject.getPoints());
                 outputObjects.add(outputObject);
                 outputObject.setT(newObject.getT());

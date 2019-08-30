@@ -7,7 +7,6 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 
 public class FileFolderPathP extends FileFolderType {
     public FileFolderPathP(String name, Module module) {
@@ -28,8 +27,8 @@ public class FileFolderPathP extends FileFolderType {
     }
 
     @Override
-    public <T extends Parameter> T duplicate() {
-        FileFolderPathP newParameter = new FileFolderPathP(name,module,getPath(),getDescription());
+    public <T extends Parameter> T duplicate(Module newModule) {
+        FileFolderPathP newParameter = new FileFolderPathP(name,newModule,getPath(),getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());

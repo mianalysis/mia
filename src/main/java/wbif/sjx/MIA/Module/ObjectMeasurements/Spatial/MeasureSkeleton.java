@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -25,6 +26,9 @@ public class MeasureSkeleton extends Module {
     public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String ADD_SKELETONS_TO_WORKSPACE = "Add skeletons to workspace";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String ANALYSIS_SEPARATOR = "Analysis settings";
+    public static final String MINIMUM_BRANCH_LENGTH = "Minimum branch length";
+    public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
@@ -49,7 +53,7 @@ public class MeasureSkeleton extends Module {
     }
 
     static void addMeasurements(Obj inputObject, SkeletonResult skeletonResult) {
-        double dppXY = inputObject.getDistPerPxXY();
+        double dppXY = inputObject.getDppXY();
 
         inputObject.addMeasurement(new Measurement(Measurements.nBranches,skeletonResult.getBranches()[0]));
         inputObject.addMeasurement(new Measurement(Measurements.nJunctions,skeletonResult.getJunctions()[0]));
@@ -96,7 +100,12 @@ public class MeasureSkeleton extends Module {
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
         boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+
+        // If necessary, converting to pixel units
+        if (calibratedUnits) minLength = minLength/inputObjects.getFirst().getDppXY();
 
         ObjCollection outputObjects = null;
         if (addToWorkspace) {
@@ -115,17 +124,19 @@ public class MeasureSkeleton extends Module {
         // plugin.
         for (Obj inputObject:inputObjects.values()) {
             ObjCollection finalOutputObjects = outputObjects;
+            double finalMinLength = minLength;
             Runnable task = () -> {
                 Image projectedImage = getProjectedImage(inputObject);
 
                 AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
                 analyzeSkeleton.setup("",projectedImage.getImagePlus());
                 SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE,false,false,projectedImage.getImagePlus(),true,false);
+                analyzeSkeleton.run(AnalyzeSkeleton_.NONE, finalMinLength,false,projectedImage.getImagePlus(),true,false);
 
                 // Adding the skeleton to the input object
                 if (addToWorkspace) {
                     try {
-                        Obj outputObject = projectedImage.convertImageToObjects(outputObjectsName).getFirst();
+                        Obj outputObject = projectedImage.convertImageToObjects(Image.VolumeTypes.POINTLIST,outputObjectsName).getFirst();
                         outputObject.setID(finalOutputObjects.getAndIncrementID());
                         inputObject.addChild(outputObject);
                         outputObject.addParent(inputObject);
@@ -168,6 +179,9 @@ public class MeasureSkeleton extends Module {
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(ADD_SKELETONS_TO_WORKSPACE,this,false));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new ParamSeparatorP(ANALYSIS_SEPARATOR,this));
+        parameters.add(new DoubleP(MINIMUM_BRANCH_LENGTH,this,0d));
+        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
@@ -186,6 +200,9 @@ public class MeasureSkeleton extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         }
 
+        returnedParameters.add(parameters.getParameter(ANALYSIS_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MINIMUM_BRANCH_LENGTH));
+        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;

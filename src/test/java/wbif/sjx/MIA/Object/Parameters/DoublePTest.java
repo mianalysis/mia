@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoublePTest {
     private static double tolerance = 1E-10;
@@ -113,7 +113,7 @@ public class DoublePTest {
 
     }
 
-    @Test (expected = NumberFormatException.class)
+    @Test
     public void getValueProvidedBlank() {
         ModuleCollection modules = new ModuleCollection();
         ParamTest paramTest = new ParamTest(modules);
@@ -121,7 +121,7 @@ public class DoublePTest {
         DoubleP doubleP = new DoubleP("Test val",paramTest,"");
 
         // The following should throw the NumberFormatException
-        doubleP.getValue();
+        assertThrows(NumberFormatException.class,() -> doubleP.getValue());
 
     }
 
@@ -131,7 +131,7 @@ public class DoublePTest {
         ParamTest paramTest = new ParamTest(modules);
 
         DoubleP doubleP = new DoubleP("Test val",paramTest,42.54);
-        DoubleP duplicated = doubleP.duplicate();
+        DoubleP duplicated = doubleP.duplicate(paramTest);
 
         assertEquals("Test val",duplicated.getName());
         assertEquals(paramTest,duplicated.getModule());

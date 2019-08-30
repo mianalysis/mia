@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume;
+import wbif.sjx.common.Object.Volume.Volume;
 
 /**
  * Created by sc13967 on 19/06/2018.
@@ -101,7 +101,7 @@ public class FitEllipsoid extends Module {
         addMeasurements(inputObject,calculator);
 
         Volume ellipsoid = calculator.getContainedPoints();
-        if (ellipsoid.getNVoxels() == 0) return;
+        if (ellipsoid.size() == 0) return;
 
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
@@ -121,12 +121,7 @@ public class FitEllipsoid extends Module {
     public Obj createNewObject (Obj inputObject, Volume ellipsoid, ObjCollection outputObjects) {
         if (ellipsoid == null) return null;
 
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String units = inputObject.getCalibratedUnits();
-        boolean is2D = inputObject.is2D();
-
-        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),dppXY,dppZ,units,is2D);
+        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
         ellipsoidObject.setPoints(ellipsoid.getPoints());
         ellipsoidObject.setT(inputObject.getT());
 
@@ -143,8 +138,8 @@ public class FitEllipsoid extends Module {
     }
 
     public void addMeasurements(Obj inputObject, EllipsoidCalculator calculator) {
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
+        double dppXY = inputObject.getDppXY();
+        double dppZ = inputObject.getDppZ();
 
         double[] centres = calculator.getCentroid();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0]));
@@ -227,7 +222,7 @@ public class FitEllipsoid extends Module {
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,workspace.getAnalysis().getModules());
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

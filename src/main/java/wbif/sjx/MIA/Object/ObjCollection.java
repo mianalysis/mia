@@ -3,10 +3,12 @@ package wbif.sjx.MIA.Object;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.common.Object.Point;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -133,13 +135,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         // Labelling pixels in image
         for (Obj object:values()) {
-            ArrayList<Integer> x = object.getXCoords();
-            ArrayList<Integer> y = object.getYCoords();
-            ArrayList<Integer> z = object.getZCoords();
-            Integer tPos = object.getT();
-
-            for (int i=0;i<x.size();i++) {
-                int zPos = z==null ? 0 : z.get(i);
+            int tPos = object.getT();
+            for (Point<Integer> point:object.getCoordinateSet()) {
+                int xPos = point.x;
+                int yPos = point.y;
+                int zPos = point.z;
 
                 ipl.setPosition(1,zPos+1,tPos+1);
 
@@ -147,10 +147,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 switch (bitDepth) {
                     case 8:
                     case 16:
-                        ipl.getProcessor().putPixel(x.get(i), y.get(i), Math.round(hue*255));
+                        ipl.getProcessor().putPixel(xPos, yPos, Math.round(hue*255));
                         break;
                     case 32:
-                        ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hue);
+                        ipl.getProcessor().putPixelValue(xPos, yPos, hue);
                         break;
                 }
             }
@@ -164,9 +164,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             ipl.getCalibration().setUnit(templateIpl.getCalibration().getUnit());
         } else if (getFirst() != null) {
             Obj first = getFirst();
-            ipl.getCalibration().pixelWidth = first.getDistPerPxXY();
-            ipl.getCalibration().pixelHeight = first.getDistPerPxXY();
-            ipl.getCalibration().pixelDepth = first.getDistPerPxZ();
+            ipl.getCalibration().pixelWidth = first.getDppXY();
+            ipl.getCalibration().pixelHeight = first.getDppXY();
+            ipl.getCalibration().pixelDepth = first.getDppZ();
             ipl.getCalibration().setUnit(first.getCalibratedUnits());
         }
 

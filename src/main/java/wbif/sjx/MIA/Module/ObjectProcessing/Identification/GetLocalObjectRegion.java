@@ -50,13 +50,12 @@ public class GetLocalObjectRegion extends Module {
         }
 
         // Getting spatial calibration
-        double dppXY = inputObject.getDistPerPxXY();
-        double dppZ = inputObject.getDistPerPxZ();
-        String calibratedUnits = inputObject.getCalibratedUnits();
+        double dppXY = inputObject.getDppXY();
+        double dppZ = inputObject.getDppZ();
         double xy_z_ratio = dppXY/dppZ;
 
         // Creating new object and assigning relationship to input objects
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),inputObject);
 
         // Getting centroid coordinates
         double xCent = inputObject.getXMean(true);
@@ -78,12 +77,12 @@ public class GetLocalObjectRegion extends Module {
                     double yy = (yCent - y) * dppXY;
 
                     if (inputObject.is2D()) {
-                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
+                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
 
                     } else {
                         for (int z = zMin; z <= zMin; z++) {
                             double zz = (zCent - z) * dppZ;
-                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
+                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
                     }
                 }
@@ -104,13 +103,13 @@ public class GetLocalObjectRegion extends Module {
                     double yy = yCent - y;
 
                     if (inputObject.is2D()) {
-                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
+                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
 
                     } else {
                         for (int z = zMin; z <= zMax; z++) {
                             double zz = (zCent - z) / xy_z_ratio;
 
-                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
+                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
                     }
                 }

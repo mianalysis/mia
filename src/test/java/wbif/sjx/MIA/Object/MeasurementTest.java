@@ -1,9 +1,9 @@
 package wbif.sjx.MIA.Object;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MeasurementTest {
     @Test
