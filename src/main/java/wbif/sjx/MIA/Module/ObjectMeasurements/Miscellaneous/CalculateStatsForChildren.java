@@ -42,6 +42,9 @@ public class CalculateStatsForChildren extends Module {
         CumStat cs = new CumStat();
         if (childObjects != null) {
             for (Obj childObject : childObjects.values()) {
+                // Check the measurement exists
+                if (childObject.getMeasurement(measurement) == null) continue;
+
                 if (childObject.getMeasurement(measurement).getValue() != Double.NaN) {
                     cs.addMeasure(childObject.getMeasurement(measurement).getValue());
                 }
