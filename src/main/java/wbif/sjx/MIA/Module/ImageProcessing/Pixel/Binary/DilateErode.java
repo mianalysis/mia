@@ -135,7 +135,7 @@ public class DilateErode extends Module {
     protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputObjectsP(OUTPUT_IMAGE, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(OPERATION_MODE, this,OperationModes.DILATE_3D,OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS, this,1));
 
