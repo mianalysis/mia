@@ -34,7 +34,8 @@ public class NormaliseIntensity extends Module {
 
     public static final String NORMALISATION_SEPARATOR = "Intensity normalisation";
     public static final String CALCULATION_MODE = "Calculation mode";
-    public static final String CLIP_FRACTION = "Clipping fraction";
+    public static final String CLIP_FRACTION_MIN = "Clipping fraction (min)";
+    public static final String CLIP_FRACTION_MAX = "Clipping fraction (max)";
     public static final String MIN_RANGE = "Minimum range value";
     public static final String MAX_RANGE = "Maximum range value";
 
@@ -61,11 +62,11 @@ public class NormaliseIntensity extends Module {
     }
 
 
-    public static void applyNormalisation(ImagePlus ipl, String calculationMode, double clipFraction, @Nullable double[] intRange) {
+    public static void applyNormalisation(ImagePlus ipl, String calculationMode, double[] clipFraction, @Nullable double[] intRange) {
         applyNormalisation(ipl,calculationMode,clipFraction,intRange,null);
     }
 
-    public static void applyNormalisation(ImagePlus ipl, String calculationMode, double clipFraction, @Nullable double[] intRange, @Nullable Obj maskObject) {
+    public static void applyNormalisation(ImagePlus ipl, String calculationMode, double[] clipFraction, @Nullable double[] intRange, @Nullable Obj maskObject) {
         int bitDepth = ipl.getProcessor().getBitDepth();
 
         // Get min max values for whole stack
@@ -73,11 +74,11 @@ public class NormaliseIntensity extends Module {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 switch (calculationMode) {
                     case CalculationModes.FAST:
-                        intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction);
+                        intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl,c-1,clipFraction[0],clipFraction[1]);
                         break;
 
                     case CalculationModes.PRECISE:
-                        intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction);
+                        intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl,c-1,clipFraction[0],clipFraction[1]);
                         break;
                 }
 
@@ -104,11 +105,11 @@ public class NormaliseIntensity extends Module {
                 int frame = maskObject.getT();
                 switch (calculationMode) {
                     case CalculationModes.FAST:
-                        intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, maskObject, c - 1, frame, clipFraction);
+                        intRange = IntensityMinMax.getWeightedChannelRangeFast(ipl,maskObject,c-1,frame,clipFraction[0],clipFraction[1]);
                         break;
 
                     case CalculationModes.PRECISE:
-                        intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, maskObject, c - 1, frame, clipFraction);
+                        intRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl,maskObject,c-1,frame,clipFraction[0],clipFraction[1]);
                         break;
                 }
 
@@ -166,7 +167,8 @@ public class NormaliseIntensity extends Module {
         String regionMode = parameters.getValue(REGION_MODE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String calculationMode = parameters.getValue(CALCULATION_MODE);
-        double clipFraction = parameters.getValue(CLIP_FRACTION);
+        double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN);
+        double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX);
         double minRange = parameters.getValue(MIN_RANGE);
         double maxRange = parameters.getValue(MAX_RANGE);
 
@@ -174,6 +176,7 @@ public class NormaliseIntensity extends Module {
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Setting ranges
+        double[] clipFraction = new double[]{clipFractionMin,clipFractionMax};
         double[] intRange = new double[]{minRange,maxRange};
 
         // Running intensity normalisation
@@ -223,7 +226,8 @@ public class NormaliseIntensity extends Module {
 
         parameters.add(new ParamSeparatorP(NORMALISATION_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
-        parameters.add(new DoubleP(CLIP_FRACTION,this,0d));
+        parameters.add(new DoubleP(CLIP_FRACTION_MIN,this,0d));
+        parameters.add(new DoubleP(CLIP_FRACTION_MAX,this,0d));
         parameters.add(new DoubleP(MIN_RANGE,this,0));
         parameters.add(new DoubleP(MAX_RANGE,this,255));
 
@@ -254,7 +258,8 @@ public class NormaliseIntensity extends Module {
         switch ((String) parameters.getValue(CALCULATION_MODE)) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
-                returnedParameters.add(parameters.getParameter(CLIP_FRACTION));
+                returnedParameters.add(parameters.getParameter(CLIP_FRACTION_MIN));
+                returnedParameters.add(parameters.getParameter(CLIP_FRACTION_MAX));
                 break;
 
             case CalculationModes.MANUAL:

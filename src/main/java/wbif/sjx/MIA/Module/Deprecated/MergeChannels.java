@@ -152,7 +152,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
         ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
 
         // Updating the display range to help show all the colours
-        IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
+        IntensityMinMax.run(ipl,true,0.001,0.001,IntensityMinMax.PROCESS_FAST);
 
         // Spatial calibration has to be reapplied, as it's lost in the translation between ImagePlus and ImgPlus
         ipl.setCalibration(inputImage1.getImagePlus().getCalibration());

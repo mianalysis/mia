@@ -25,7 +25,8 @@ public class SetDisplayRange extends Module {
 
     public static final String RANGE_SEPARATOR = "Intensity range";
     public static final String CALCULATION_MODE = "Calculation mode";
-    public static final String CLIP_FRACTION = "Clipping fraction";
+    public static final String CLIP_FRACTION_MIN = "Clipping fraction (min)";
+    public static final String CLIP_FRACTION_MAX = "Clipping fraction (max)";
     public static final String SET_MINIMUM_VALUE = "Set minimum value";
     public static final String SET_MAXIMUM_VALUE = "Set maximum value";
     public static final String MIN_RANGE = "Minimum range value";
@@ -61,7 +62,7 @@ public class SetDisplayRange extends Module {
 
     }
 
-    public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double clipFraction, boolean setMinimum, boolean setMaximum) {
+    public static void setDisplayRangeAuto(ImagePlus ipl, String calculationMode, double[] clipFraction, boolean[] setRange) {
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             // Get min max values for whole stack
             double[] intRange = new double[]{ipl.getDisplayRangeMin(),ipl.getDisplayRangeMax()};
@@ -70,16 +71,16 @@ public class SetDisplayRange extends Module {
             switch (calculationMode) {
                 case CalculationModes.FAST:
                 default:
-                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction);
+                    newIntRange = IntensityMinMax.getWeightedChannelRangeFast(ipl,c-1,clipFraction[0],clipFraction[1]);
                     break;
 
                 case CalculationModes.PRECISE:
-                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction);
+                    newIntRange = IntensityMinMax.getWeightedChannelRangePrecise(ipl,c-1,clipFraction[0],clipFraction[1]);
                     break;
             }
 
-            if (setMinimum) intRange[0] = newIntRange[0];
-            if (setMaximum) intRange[1] = newIntRange[1];
+            if (setRange[0]) intRange[0] = newIntRange[0];
+            if (setRange[1]) intRange[1] = newIntRange[1];
 
             ipl.setDisplayRange(intRange[0],intRange[1]);
 
@@ -110,7 +111,8 @@ public class SetDisplayRange extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String calculationMode = parameters.getValue(CALCULATION_MODE);
-        double clipFraction = parameters.getValue(CLIP_FRACTION);
+        double clipFractionMin = parameters.getValue(CLIP_FRACTION_MIN);
+        double clipFractionMax = parameters.getValue(CLIP_FRACTION_MAX);
         boolean setMinimumValue = parameters.getValue(SET_MINIMUM_VALUE);
         boolean setMaximumValue = parameters.getValue(SET_MAXIMUM_VALUE);
         double minRange = parameters.getValue(MIN_RANGE);
@@ -124,15 +126,20 @@ public class SetDisplayRange extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
+        // Setting ranges
+        double[] clipFraction = new double[]{clipFractionMin,clipFractionMax};
+        boolean[] setRange = new boolean[]{setMinimumValue,setMaximumValue};
+        double[] manualRange = new double[]{minRange,maxRange};
+
         // Adjusting display range
         writeMessage("Adjusting display range");
         switch (calculationMode) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
-                setDisplayRangeAuto(inputImagePlus,calculationMode,clipFraction,setMinimumValue,setMaximumValue);
+                setDisplayRangeAuto(inputImagePlus,calculationMode,clipFraction,setRange);
                 break;
             case CalculationModes.MANUAL:
-                setDisplayRangeManual(inputImagePlus,calculationMode,new double[]{minRange,maxRange});
+                setDisplayRangeManual(inputImagePlus,calculationMode,manualRange);
                 break;
         }
 
@@ -161,7 +168,8 @@ public class SetDisplayRange extends Module {
 
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
-        parameters.add(new DoubleP(CLIP_FRACTION,this,0d));
+        parameters.add(new DoubleP(CLIP_FRACTION_MIN,this,0d));
+        parameters.add(new DoubleP(CLIP_FRACTION_MAX,this,0d));
         parameters.add(new BooleanP(SET_MINIMUM_VALUE,this,true));
         parameters.add(new BooleanP(SET_MAXIMUM_VALUE,this,true));
         parameters.add(new DoubleP(MIN_RANGE,this,0));
@@ -186,7 +194,8 @@ public class SetDisplayRange extends Module {
         switch ((String) parameters.getValue(CALCULATION_MODE)) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:
-                returnedParameters.add(parameters.getParameter(CLIP_FRACTION));
+                returnedParameters.add(parameters.getParameter(CLIP_FRACTION_MIN));
+                returnedParameters.add(parameters.getParameter(CLIP_FRACTION_MAX));
                 returnedParameters.add(parameters.getParameter(SET_MINIMUM_VALUE));
                 returnedParameters.add(parameters.getParameter(SET_MAXIMUM_VALUE));
                 break;
