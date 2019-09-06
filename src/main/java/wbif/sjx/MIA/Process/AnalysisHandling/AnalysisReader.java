@@ -42,7 +42,11 @@ public class AnalysisReader {
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
+        MIA.log.writeDebug("Number of files selected: "+fileDialog.getFiles().length);
+
         if (fileDialog.getFiles().length==0) return null;
+
+        MIA.log.writeDebug("File selected: "+fileDialog.getFiles()[0]);
 
         Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
@@ -77,6 +81,7 @@ public class AnalysisReader {
 
         Version thisVersion = new Version("0.10.0");
         Version loadedVersion = new Version(doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION").getNodeValue());
+        MIA.log.writeDebug("Loaded version: "+loadedVersion);
 
         // If the loaded version is older than version 0.10.0 use the legacy analysis reader
         if(thisVersion.compareTo(loadedVersion) > 0) {

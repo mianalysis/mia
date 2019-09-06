@@ -353,7 +353,8 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.CALCULATION_MODE,NormaliseIntensity.CalculationModes.PRECISE);
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.CLIP_FRACTION,0.01);
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.CLIP_FRACTION_MIN,0.01);
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.CLIP_FRACTION_MAX,0.01);
 
         // Running NormaliseIntensity
         normaliseIntensity.execute(workspace);
