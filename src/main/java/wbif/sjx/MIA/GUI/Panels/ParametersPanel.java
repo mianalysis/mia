@@ -238,7 +238,7 @@ public class ParametersPanel extends JScrollPane {
                 "<br><br>" +
                 "Modules can be added, removed and re-ordered using the +, -, ▲ and ▼ buttons." +
                 "<br><br>" +
-                "Modules can also be disabled using the power icons to the right of each module name.  " +
+                "Modules can also be disabled using the power icons to the left of each module name.  " +
                 "<br><br>Any modules highlighted in red are currently mis-configured " +
                 "<br>(possibly missing outputs from previous modules) and won't run." +
                 "<br><br>" +
