@@ -321,6 +321,13 @@
             <!--<artifactId>Common</artifactId>-->
             <!--<version>1.5.1</version>-->
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.spark</groupId>-->
+<!--            <artifactId>spark-core_2.12</artifactId>-->
+<!--            <version>2.4.3</version>-->
+<!--            <scope>${myscope}</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

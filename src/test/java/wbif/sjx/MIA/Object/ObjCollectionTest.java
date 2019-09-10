@@ -78,7 +78,7 @@ public class ObjCollectionTest {
         collection.add(obj);
 
         // Getting expected spatial limits
-        int[][] expected = new int[][]{{2,6},{1,2},{2,10}};
+        int[][] expected = new int[][]{{0,10},{0,3},{0,12}};
 
         // Checking actual values
         int[][] actual = collection.getSpatialLimits();
