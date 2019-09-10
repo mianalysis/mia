@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
 
@@ -85,6 +86,7 @@ public class MeasureSpotIntensity extends Module {
         String radiusSource = parameters.getValue(RADIUS_SOURCE);
         double fixedValue = parameters.getValue(FIXED_VALUE);
         String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
+        boolean useMeasurement = radiusSource.equals(RadiusSources.MEASUREMENT);
 
         // Checking if there are any objects to measure
         if (inputObjects.size() == 0) {
@@ -106,51 +108,33 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
-        boolean useMeasurement = radiusSource.equals(RadiusSources.MEASUREMENT);
+        for (Obj inputObject:inputObjects.values()) {
+            if (useMeasurement) radius = inputObject.getMeasurement(radiusMeasurement).getValue();
+            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject,inputObjectsName,ipl,radius,calibrated,false);
 
-        // Getting local object region
-        ObjCollection spotObjects = null;
-        try {
-            spotObjects = GetLocalObjectRegion.getLocalRegions(inputObjects,inputObjectsName,ipl,useMeasurement,radiusMeasurement,radius,calibrated);
-        } catch (IntegerOverflowException e) {
-            return false;
-        }
-
-        // Running through each object's timepoints, getting intensity measurements
-        for (Obj spotObject:spotObjects.values()) {
-            // Getting pixel coordinates
-            ArrayList<Integer> x = spotObject.getXCoords();
-            ArrayList<Integer> y = spotObject.getYCoords();
-            ArrayList<Integer> z = spotObject.getZCoords();
-            Integer t = spotObject.getT();
-
-            // Initialising the cumulative statistics object to store pixel intensities.  Unlike MeasureObjectIntensity,
-            // this uses a multi-element MultiCumStat where each element corresponds to a different frame
             CumStat cs = new CumStat();
 
             // Running through all pixels in this object and adding the intensity to the MultiCumStat object
-            for (int i=0;i<x.size();i++) {
-                ipl.setPosition(1,z.get(i)+1,t+1);
-                cs.addMeasure(ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
-
+            Integer t = spotObject.getT();
+            for (Point<Integer> point:spotObject.getCoordinateSet()) {
+                ipl.setPosition(1,point.z+1,t+1);
+                cs.addMeasure(ipl.getProcessor().getPixelValue(point.x,point.y));
             }
 
-            // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
-            // objects after this module has generateModuleList)
             if (parameters.getValue(MEASURE_MEAN))
-                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
+                inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
             if (parameters.getValue(MEASURE_MIN))
-                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
+                inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
             if (parameters.getValue(MEASURE_MAX))
-                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
+                inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
             if (parameters.getValue(MEASURE_STDEV))
-                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
+                inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
             if (parameters.getValue(MEASURE_SUM))
-                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
+                inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
 
         }
 
-        if (showOutput) spotObjects.showMeasurements(this,modules);
+        if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return true;
 

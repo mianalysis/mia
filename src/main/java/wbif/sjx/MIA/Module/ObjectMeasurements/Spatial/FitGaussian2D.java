@@ -295,16 +295,14 @@ public class FitGaussian2D extends Module {
         startingNumber = inputObjects.size();
         if (applyVolume) {
             try {
-                GetLocalObjectRegion.getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
+                GetLocalObjectRegion.getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,Measurements.SIGMA_X_PX,0,false,false);
             } catch (IntegerOverflowException e) {
                 return false;
             }
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {
-                Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
-
-                spotObject.setPoints(spotVolumeObject.getPoints());
+                spotObject.setCoordinateSet(spotObject.getChildren("SpotVolume").getFirst().getCoordinateSet());
             }
         }
 

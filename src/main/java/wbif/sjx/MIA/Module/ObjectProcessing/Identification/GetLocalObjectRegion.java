@@ -30,7 +30,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
 
-    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated) throws IntegerOverflowException {
+    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
         // If no reference image is supplied, it's possible to have negative coordinates
         int xMin, xMax, yMin, yMax, zMin, zMax;
         if (referenceImage == null) {
@@ -119,15 +119,17 @@ public class GetLocalObjectRegion extends Module {
         // Copying timepoint of input object
         outputObject.setT(inputObject.getT());
 
-        // Adding relationships
-        outputObject.addParent(inputObject);
-        inputObject.addChild(outputObject);
+        // If adding relationships
+        if (addRelationship) {
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
+        }
 
         return outputObject;
 
     }
 
-    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) throws IntegerOverflowException {
+    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, @Nullable String measurementName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -137,8 +139,8 @@ public class GetLocalObjectRegion extends Module {
         int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
-            if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
-            Obj outputObject = getLocalRegion(inputObject,outputObjectsName,referenceImage,radius,calibrated);
+            if (measurementName != null) radius = inputObject.getMeasurement(measurementName).getValue();
+            Obj outputObject = getLocalRegion(inputObject,outputObjectsName,referenceImage,radius,calibrated,addRelationship);
 
             // Adding object to HashMap
             outputObjects.put(outputObject.getID(),outputObject);
@@ -173,10 +175,12 @@ public class GetLocalObjectRegion extends Module {
 
         ImagePlus referenceImage = workspace.getImage(inputImageName).getImagePlus();
 
+        if (!useMeasurement) measurementName = null;
+
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
         ObjCollection outputObjects = null;
         try {
-            outputObjects = getLocalRegions(inputObjects,outputObjectsName,referenceImage,useMeasurement,measurementName,radius,calibrated);
+            outputObjects = getLocalRegions(inputObjects,outputObjectsName,referenceImage,measurementName,radius,calibrated,true);
         } catch (IntegerOverflowException e) {
             return false;
         }
