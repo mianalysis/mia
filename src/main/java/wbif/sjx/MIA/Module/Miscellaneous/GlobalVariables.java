@@ -64,9 +64,15 @@ public class GlobalVariables extends Module {
         if (pattern.matcher(string).matches()) {
             // Reset global variables
             globalParameters.clear();
-            for (Module module:modules.values()) module.updateAndGetParameters();
+            for (Module module:modules.values()) {
+                if (module instanceof GlobalVariables && module.isEnabled() && module.isRunnable()) {
+                    module.updateAndGetParameters();
+                }
+            }
         }
 
+        // Re-compiling the matcher
+        matcher = pattern.matcher(string);
         if (matcher.find()) {
             String metadataName = matcher.group(1);
 
@@ -79,7 +85,7 @@ public class GlobalVariables extends Module {
             }
 
             // If the current parameter wasn't found, return false
-            if (!found) return false;
+            return found;
 
         }
 

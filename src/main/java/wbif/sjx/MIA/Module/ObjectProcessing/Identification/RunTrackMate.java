@@ -215,14 +215,11 @@ public class RunTrackMate extends Module {
     }
 
     public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) throws IntegerOverflowException {
-        ObjCollection volumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects, "SpotVolume",ipl,true,Measurements.RADIUS_PX,0,false);
-
         // Replacing spot volumes with explicit volume
         for (Obj spotObject:spotObjects.values()) {
-            Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
-
-            spotObject.setPoints(spotVolumeObject.getPoints());
-
+            double radius = spotObject.getMeasurement(Measurements.RADIUS_PX).getValue();
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
+            spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
         }
     }
 

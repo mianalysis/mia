@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;

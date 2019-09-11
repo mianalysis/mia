@@ -13,6 +13,7 @@ import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
+import org.scijava.minimaven.Coordinate;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -29,6 +30,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.ArrayList;
@@ -118,13 +120,15 @@ public class SingleClassCluster extends Module {
     public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) throws IntegerOverflowException {
         ObjCollection children = outputObject.getChildren(childObjects.getName());
 
+        CoordinateSet coordinateSet = outputObject.getCoordinateSet();
+
         // Initial pass, adding all coordinates to cluster object
         for (Obj child:children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",null,eps,false);
+            Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",eps,false,false);
 
             // Adding coordinates from region to the cluster object
-            for (Point<Integer> point:region.getPoints()) outputObject.add(point.getX(),point.getY(),point.getZ());
+            coordinateSet.addAll(region.getCoordinateSet());
             outputObject.setT(0);
         }
 

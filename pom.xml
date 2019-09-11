@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.2</version>
+    <version>0.11.3</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -316,11 +316,18 @@
         <dependency>
 <!--            <groupId>wbif.sjx</groupId>-->
 <!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.5.1</version>-->
+<!--            <version>1.5.2-SNAPSHOT</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.2</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.spark</groupId>-->
+<!--            <artifactId>spark-core_2.12</artifactId>-->
+<!--            <version>2.4.3</version>-->
+<!--            <scope>${myscope}</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

@@ -47,28 +47,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     public int[][] getSpatialLimits() {
-        int[][] limits = new int[][]{
-                {Integer.MAX_VALUE,-Integer.MAX_VALUE},
-                {Integer.MAX_VALUE,-Integer.MAX_VALUE},
-                {Integer.MAX_VALUE,Integer.MIN_VALUE}};
+        // Taking limits from the first object, otherwise returning null
+        if (size() == 0) return null;
 
-        for (Obj object:values()) {
-            ArrayList<Integer> x = object.getXCoords();
-            ArrayList<Integer> y = object.getYCoords();
-            ArrayList<Integer> z = object.getZCoords();
-
-            for (int i=0;i<x.size();i++) {
-                limits[0][0] = Math.min(limits[0][0],x.get(i));
-                limits[0][1] = Math.max(limits[0][1],x.get(i));
-                limits[1][0] = Math.min(limits[1][0],y.get(i));
-                limits[1][1] = Math.max(limits[1][1],y.get(i));
-                limits[2][0] = Math.min(limits[2][0],z.get(i));
-                limits[2][1] = Math.max(limits[2][1],z.get(i));
-
-            }
-        }
-
-        return limits;
+        return new int[][]{{0,getFirst().getWidth()-1},{0,getFirst().getHeight()-1},{0,getFirst().getnSlices()-1}};
 
     }
 
@@ -106,12 +88,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             if (size() == 0) return null;
 
             // Getting range of object pixels
-            int[][] spatialLimits = getSpatialLimits();
-            int[] temporalLimits = getTemporalLimits();
+            int[][] sLim = getSpatialLimits();
+            int[] tLim = getTemporalLimits();
 
             // Creating a new image
-            ipl = IJ.createHyperStack(outputName, spatialLimits[0][1] + 1,spatialLimits[1][1] + 1,
-                    1, spatialLimits[2][1] + 1, temporalLimits[1] + 1,bitDepth);
+            ipl = IJ.createHyperStack(outputName,sLim[0][1]+1,sLim[1][1]+1,1,sLim[2][1]+1,tLim[1]+1,bitDepth);
         } else {
             ipl = IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),
                     templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
@@ -147,10 +128,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 switch (bitDepth) {
                     case 8:
                     case 16:
-                        ipl.getProcessor().putPixel(xPos, yPos, Math.round(hue*255));
+                        ipl.getProcessor().putPixel(xPos,yPos,Math.round(hue*255));
                         break;
                     case 32:
-                        ipl.getProcessor().putPixelValue(xPos, yPos, hue);
+                        ipl.getProcessor().putPixelValue(xPos,yPos,hue);
                         break;
                 }
             }

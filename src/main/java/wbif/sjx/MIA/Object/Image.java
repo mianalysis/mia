@@ -16,6 +16,7 @@ import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+//import org.apache.spark.util.SizeEstimator;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
@@ -147,6 +148,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         for (Obj obj : outputObjects.values()) {
             obj.finalise();
+//            MIA.log.writeDebug("Object Memory usage = "+(((double) SizeEstimator.estimate(obj)/Math.pow(2,20)))+" MB");
         }
 
         return outputObjects;

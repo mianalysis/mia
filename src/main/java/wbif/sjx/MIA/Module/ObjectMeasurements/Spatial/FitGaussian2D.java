@@ -1,11 +1,14 @@
 // TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the processAutomatic is working correctly
 
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
@@ -73,6 +76,118 @@ public class FitGaussian2D extends Module {
     }
 
 
+    static double[][] getLimits(int r, double minSigma, double maxSigma) {
+        return new double[][]{
+                {0, 2 * r + 1},
+                {0, 2 * r + 1},
+                {minSigma, maxSigma}, // Sigma can't go to zero
+                {minSigma, maxSigma},
+                {-Double.MAX_VALUE, Double.MAX_VALUE},
+                {-Double.MAX_VALUE, Double.MAX_VALUE},
+                {0, 2 * Math.PI}
+        };
+    }
+
+    static double[] estimateParameters(ImageProcessor iprCrop, int r) {
+        double x0 = iprCrop.getWidth() / 2; // centroid x
+        double y0 = iprCrop.getHeight() / 2; // centroid y
+        double A0 = iprCrop.getStatistics().max; // peak amplitude
+        double ABG = iprCrop.getStatistics().min; // background amplitude
+        double th = Math.PI; // theta
+
+        return new double[]{x0, y0, r, r, A0, ABG, th};
+
+    }
+
+    static double calculateResidual(ImageProcessor iprCrop, double[] p) {
+        GaussianDistribution2D fitDistribution2D = new GaussianDistribution2D(p[0],p[1],p[2],p[3],p[4],p[5],p[6]);
+        GaussianDistribution2D offsetDistribution2D = new GaussianDistribution2D(p[0],p[1],p[2],p[3],p[4]-p[5],0,p[6]);
+
+        double residual = 0;
+        double totalReal = 0;
+        for (int xPos=0;xPos<iprCrop.getWidth();xPos++) {
+            for (int yPos=0;yPos<iprCrop.getHeight();yPos++) {
+                double realVal = iprCrop.get(xPos,yPos);
+                double fitVal = fitDistribution2D.getValues(xPos,yPos)[0];
+                double offsetVal = offsetDistribution2D.getValues(xPos,yPos)[0];
+
+                residual = residual + Math.abs(realVal-fitVal);
+                totalReal = totalReal + offsetVal;
+
+            }
+        }
+
+        return residual/totalReal;
+
+    }
+
+    static void assignVolume(ObjCollection objects) {
+        // Replacing spot volumes with explicit volume
+        for (Obj spotObject:objects.values()) {
+            double radius = spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue();
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
+            spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
+        }
+    }
+
+    static void assignMissingMeasurements(Obj obj) {
+        obj.addMeasurement(new Measurement(Measurements.X0_PX, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.Y0_PX, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.Z0_SLICE, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, Double.NaN));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.X0_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.Y0_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.Z0_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_X_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_Y_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_MEAN_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.A_0, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.A_BG, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.THETA, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.ELLIPTICITY, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.RESIDUAL, Double.NaN));
+
+    }
+
+    static void assignMeasurements(Obj obj, ImageProcessor iprCrop, double[] p, int x, int y, int r) {
+        double distPerPxXY = obj.getDppXY();
+        double distPerPxZ = obj.getDppZ();
+
+        double x0 = p[0] + x - r;
+        double y0 = p[1] + y - r;
+        double z0 = obj.getZMean(true, false);
+        double sx = p[2];
+        double sy = p[3];
+        double A0 = p[4];
+        double ABG = p[5];
+        double th = p[6];
+        double residual = calculateResidual(iprCrop,p);
+        double ellipticity = sx > sy ? (sx - sy) / sx : (sy - sx) / sy;
+        double sm = (sx+sy)/2;
+
+        // Storing the results as measurements
+        obj.addMeasurement(new Measurement(Measurements.X0_PX, x0));
+        obj.addMeasurement(new Measurement(Measurements.Y0_PX, y0));
+        obj.addMeasurement(new Measurement(Measurements.Z0_SLICE, z0));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, sx));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, sy));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, sm));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.X0_CAL), x0*distPerPxXY));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.Y0_CAL), y0*distPerPxXY));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.Z0_CAL), z0*distPerPxZ));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_X_CAL), sx*distPerPxXY));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_Y_CAL), sy*distPerPxXY));
+        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_MEAN_CAL), sm*distPerPxXY));
+        obj.addMeasurement(new Measurement(Measurements.A_0, A0));
+        obj.addMeasurement(new Measurement(Measurements.A_BG, ABG));
+        obj.addMeasurement(new Measurement(Measurements.THETA, th));
+        obj.addMeasurement(new Measurement(Measurements.ELLIPTICITY, ellipticity));
+        obj.addMeasurement(new Measurement(Measurements.RESIDUAL, residual));
+
+    }
+
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
@@ -93,10 +208,6 @@ public class FitGaussian2D extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = new Duplicator().run(inputImagePlus);
 
-        // Getting calibration
-        double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
-        double distPerPxZ = inputImagePlus.getCalibration().pixelDepth;
-
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -114,7 +225,7 @@ public class FitGaussian2D extends Module {
 
         // Setting the desired values to limit sigma
         if (!limitSigma) {
-            minSigma = 1E-50;
+            minSigma = -Double.MAX_VALUE;
             maxSigma = Double.MAX_VALUE;
         }
 
@@ -124,15 +235,12 @@ public class FitGaussian2D extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeMessage("Fitting object " + (count + 1) + " of " + startingNumber);
-            count++;
+            writeMessage("Fitting object " + (count++ + 1) + " of " + startingNumber);
 
             // Getting the centroid of the current object (should be single points anyway)
             int x = (int) Math.round(inputObject.getXMean(true));
             int y = (int) Math.round(inputObject.getYMean(true));
             int z = (int) Math.round(inputObject.getZMean(true, false));
-
-            // Getting time and channel coordinates
             int t = inputObject.getT();
 
             // Getting the radius of the object
@@ -142,146 +250,45 @@ public class FitGaussian2D extends Module {
             } else {
                 double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER);
                 r = (int) Math.ceil(inputObject.getMeasurement(parameters.getValue(RADIUS_MEASUREMENT)).getValue() * multiplier);
-
             }
 
-            double x0 = Double.NaN;
-            double y0 = Double.NaN;
-            double z0 = Double.NaN;
-            double sx = Double.NaN;
-            double sy = Double.NaN;
-            double A0 = Double.NaN;
-            double ABG = Double.NaN;
-            double th = Double.NaN;
-            double ellipticity = Double.NaN;
-            double residual = Double.NaN;
-            double[] pOut = null;
-
             // Setting limits
-            double[][] limits = new double[][]{
-                    {0, 2 * r + 1},
-                    {0, 2 * r + 1},
-                    {minSigma, maxSigma}, // Sigma can't go to zero
-                    {minSigma, maxSigma},
-                    {-Double.MAX_VALUE, Double.MAX_VALUE},
-                    {-Double.MAX_VALUE, Double.MAX_VALUE},
-                    {0, 2 * Math.PI}
-            };
+            double[][] limits = getLimits(r,minSigma,maxSigma);
 
             // Ensuring the window width is odd, then getting the half width
             if (windowWidth%2!=0) windowWidth--;
             int halfW = fixedFittingWindow ? windowWidth/2 : r;
 
             // Getting the local image region
-            if (x - halfW > 0 & x + halfW + 1 < inputImagePlus.getWidth() & y - halfW > 0 & y + halfW + 1 < inputImagePlus.getHeight()) {
-                inputImagePlus.setPosition(1, z + 1, t + 1);
-                ImageProcessor ipr = inputImagePlus.getProcessor();
-
-                int[] xx = new int[]{x - halfW, x - halfW, x + halfW + 1, x + halfW + 1, x - halfW};
-                int[] yy = new int[]{y - halfW, y + halfW + 1, y + halfW + 1, y - halfW, y - halfW};
-
-                Roi roi = new PolygonRoi(xx, yy, 5, Roi.POLYGON);
-                ipr.setRoi(roi);
-                ImageProcessor iprCrop = ipr.crop();
-
-                // Estimating parameters
-                x0 = iprCrop.getWidth() / 2; // centroid x
-                y0 = iprCrop.getHeight() / 2; // centroid y
-                sx = r; // sigma x
-                sy = r; // sigma y
-                A0 = iprCrop.getStatistics().max; // peak amplitude
-                ABG = iprCrop.getStatistics().min; // background amplitude
-                th = 0; // theta
-
-                double[] pIn = new double[]{x0, y0, sx, sy, A0, ABG, th};
-
-                // Fitting the Gaussian and checking it reached convergence
-                pOut = fitGaussian2D(iprCrop, pIn, limits, maxEvaluations);
-
-                if (pOut != null) {
-                    x0 = pOut[0] + x - r;
-                    y0 = pOut[1] + y - r;
-                    z0 = inputObject.getZMean(true, false);
-                    sx = pOut[2];
-                    sy = pOut[3];
-                    A0 = pOut[4];
-                    ABG = pOut[5];
-                    th = pOut[6];
-                    ellipticity = sx > sy ? (sx - sy) / sx : (sy - sx) / sy;
-
-                    GaussianDistribution2D fitDistribution2D = new GaussianDistribution2D(pOut[0],pOut[1],sx,sy,A0,ABG,th);
-                    GaussianDistribution2D offsetDistribution2D = new GaussianDistribution2D(pOut[0],pOut[1],sx,sy,A0-ABG,0,th);
-                    residual = 0;
-                    double totalReal = 0;
-                    for (int xPos=0;xPos<iprCrop.getWidth();xPos++) {
-                        for (int yPos=0;yPos<iprCrop.getHeight();yPos++) {
-                            double realVal = iprCrop.get(xPos,yPos);
-                            double fitVal = fitDistribution2D.getValues(xPos,yPos)[0];
-                            double offsetVal = offsetDistribution2D.getValues(xPos,yPos)[0];
-
-                            residual = residual + Math.abs(realVal-fitVal);
-                            totalReal = totalReal + offsetVal;
-
-                        }
-                    }
-
-                    residual = residual/totalReal;
-
-//                    iprCrop = iprCrop.convertToFloatProcessor();
-//                    ImageProcessor iprOut = iprCrop.duplicate();
-//                    for (int xPx=0;xPx<iprOut.getWidth();xPx++) {
-//                        for (int yPx = 0; yPx < iprOut.getHeight(); yPx++) {
-//                            double aa = (Math.cos(th) * Math.cos(th)) / (2 * sx * sx) + (Math.sin(th) * Math.sin(th)) / (2 * sy * sy);
-//                            double bb = Math.sin(2 * th) / (4 * sy * sy) - Math.sin(2 * th) / (4 * sx * sx);
-//                            double cc = (Math.cos(th) * Math.cos(th)) / (2 * sy * sy) + (Math.sin(th) * Math.sin(th)) / (2 * sx * sx);
-//                            double val = ABG + A0 * Math.exp(-(aa * ((xPx - pOut[0]) * (xPx - pOut[0])) - 2 * bb * (xPx - pOut[0]) * (yPx - pOut[1]) + cc * ((yPx - pOut[1]) * (yPx - pOut[1]))));
-//                            iprOut.putPixelValue(xPx, yPx, val);
-//                        }
-//                    }
-//                    ImagePlus iplStack = IJ.createImage("Stack",iprOut.getWidth(),iprOut.getHeight(),2,32);
-//                    iplStack.setPosition(1);
-//                    iplStack.setProcessor(iprCrop);
-//                    iplStack.setPosition(2);
-//                    iplStack.setProcessor(iprOut);
-//                    iplStack.setPosition(1);
-//                    iplStack.show();
-//                    IJ.runMacro("waitForUser");
-
-                }
-
-                if (pOut != null) {
-                    // If the centroid has moved more than the width of the window, removing this localisation
-                    if (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2 || pOut[2] < 0.1 || pOut[3] < 0.1) {
-                        pOut = null;
-                    }
-
-                    // If the width is outside the permitted range
-                    if (limitSigma && ((sx+sy)/2 < r*minSigma || (sx+sy)/2 > r*maxSigma)) {
-                        pOut = null;
-                    }
-                }
+            if (x-halfW < 0 || x+halfW+1 > inputImagePlus.getWidth() || y-halfW < 0 || y+halfW + 1 > inputImagePlus.getHeight()) {
+                assignMissingMeasurements(inputObject);
+                continue;
             }
 
-            double sm = (sx+sy)/2;
+            // Cropping image
+            inputImagePlus.setPosition(1, z + 1, t + 1);
+            Image preCropImage = new Image("PreCrop",new ImagePlus("Slice",inputImagePlus.getProcessor()));
+            ImageProcessor iprCrop = CropImage.cropImage(preCropImage,"Crop",y-halfW,x-halfW,halfW*2+1,halfW*2+1).getImagePlus().getProcessor();
 
-            // Storing the results as measurements
-            inputObject.addMeasurement(new Measurement(Measurements.X0_PX, x0));
-            inputObject.addMeasurement(new Measurement(Measurements.Y0_PX, y0));
-            inputObject.addMeasurement(new Measurement(Measurements.Z0_SLICE, z0));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, sx));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, sy));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, sm));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X0_CAL), x0*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y0_CAL), y0*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Z0_CAL), z0*distPerPxZ));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_X_CAL), sx*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_Y_CAL), sy*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_MEAN_CAL), sm*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Measurements.A_0, A0));
-            inputObject.addMeasurement(new Measurement(Measurements.A_BG, ABG));
-            inputObject.addMeasurement(new Measurement(Measurements.THETA, th));
-            inputObject.addMeasurement(new Measurement(Measurements.ELLIPTICITY, ellipticity));
-            inputObject.addMeasurement(new Measurement(Measurements.RESIDUAL, residual));
+            // Estimating parameters
+            double[] pIn = estimateParameters(iprCrop,r);
+
+            // Fitting the Gaussian and checking it reached convergence
+            double[] pOut = fitGaussian2D(iprCrop,pIn,limits,maxEvaluations);
+
+            // If the centroid has moved more than the width of the window, removing this localisation
+            if (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2) {
+                pOut = null;
+            }
+
+            // If the width is outside the permitted range
+            if ((pOut != null && limitSigma) && ((pOut[2]+pOut[3])/2 < r*minSigma || (pOut[2]+pOut[3])/2 > r*maxSigma)) {
+                pOut = null;
+            }
+
+            // Calculating residual
+            if (pOut == null) assignMissingMeasurements(inputObject);
+            else assignMeasurements(inputObject,iprCrop,pOut,x,y,z);
 
             // If selected, any objects that weren't fit are removed
             if (removeUnfit & pOut == null) {
@@ -291,24 +298,7 @@ public class FitGaussian2D extends Module {
         }
 
         // Adding explicit volume to spots
-        count = 0;
-        startingNumber = inputObjects.size();
-        if (applyVolume) {
-            try {
-                GetLocalObjectRegion.getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
-            } catch (IntegerOverflowException e) {
-                return false;
-            }
-
-            // Replacing spot volumes with explicit volume
-            for (Obj spotObject:inputObjects.values()) {
-                Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
-
-                spotObject.setPoints(spotVolumeObject.getPoints());
-            }
-        }
-
-        writeMessage("Fit "+inputObjects.size()+" objects");
+        if (applyVolume) assignVolume(inputObjects);
 
         inputImagePlus.setPosition(1,1,1);
 

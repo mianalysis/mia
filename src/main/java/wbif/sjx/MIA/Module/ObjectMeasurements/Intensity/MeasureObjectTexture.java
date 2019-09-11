@@ -63,54 +63,27 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) throws IntegerOverflowException {
-        // Getting local object region
-        objects = GetLocalObjectRegion.getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
-
-        return objects;
-
-    }
-
-    public static void processObject(Obj object, Image image, TextureCalculator textureCalculator, boolean centroidMeasurement, double[] rawOffs, boolean calibratedOffset) {
+    public static void processObject(Obj object, Obj regionObject, Image image, TextureCalculator textureCalculator, double[] rawOffs, boolean calibratedOffset) {
         ImagePlus ipl = image.getImagePlus();
 
         int t = object.getT()+1;
         int nSlices = ipl.getNSlices();
         ImageStack timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-"+nSlices, t+"-"+t).getStack();
-        textureCalculator.calculate(timeStack,object);
+        textureCalculator.calculate(timeStack,regionObject);
 
         // Acquiring measurements
         String name = getFullName(image.getName(), Measurements.ASM,rawOffs,calibratedOffset);
-        Measurement measurement = new Measurement(name,textureCalculator.getASM());
-        if (centroidMeasurement) {
-            object.getParent(object.getName()).addMeasurement(measurement);
-        } else {
-            object.addMeasurement(measurement);
-        }
+        object.addMeasurement(new Measurement(name,textureCalculator.getASM()));
 
         name = getFullName(image.getName(), Measurements.CONTRAST,rawOffs,calibratedOffset);
-        measurement = new Measurement(name,textureCalculator.getContrast());
-        if (centroidMeasurement) {
-            object.getParent(object.getName()).addMeasurement(measurement);
-        } else {
-            object.addMeasurement(measurement);
-        }
+        object.addMeasurement(new Measurement(name,textureCalculator.getContrast()));
 
         name = getFullName(image.getName(), Measurements.CORRELATION,rawOffs,calibratedOffset);
-        measurement = new Measurement(name,textureCalculator.getCorrelation());
-        if (centroidMeasurement) {
-            object.getParent(object.getName()).addMeasurement(measurement);
-        } else {
-            object.addMeasurement(measurement);
-        }
+        object.addMeasurement(new Measurement(name,textureCalculator.getCorrelation()));
 
         name = getFullName(image.getName(), Measurements.ENTROPY,rawOffs,calibratedOffset);
-        measurement = new Measurement(name,textureCalculator.getEntropy());
-        if (centroidMeasurement) {
-            object.getParent(object.getName()).addMeasurement(measurement);
-        } else {
-            object.addMeasurement(measurement);
-        }
+        object.addMeasurement(new Measurement(name,textureCalculator.getEntropy()));
+
     }
 
 
@@ -152,15 +125,6 @@ public class MeasureObjectTexture extends Module {
         // If using calibrated offset values, determining the closest pixel offset
         if (calibratedOffset) convertCalibratedOffsets(offs,inputObjects.getFirst());
 
-        // If a centroid region is being used calculate the local region and reassign that to inputObjects reference
-        if (centroidMeasurement) {
-            try {
-                inputObjects = getLocalObjectRegion(inputObjects,radius,calibrated,inputImagePlus);
-            } catch (IntegerOverflowException e) {
-                return false;
-            }
-        }
-
         // Initialising the texture calculator
         TextureCalculator textureCalculator = new TextureCalculator((int) offs[0], (int) offs[1], (int) offs[2]);
 
@@ -168,7 +132,11 @@ public class MeasureObjectTexture extends Module {
         int iter = 1;
         for (Obj object:inputObjects.values()) {
             writeMessage("Processed "+(++iter)+" of "+nObjects);
-            processObject(object,inputImage,textureCalculator,centroidMeasurement,offs,calibratedOffset);
+            Obj regionObject = object;
+            if (centroidMeasurement)  regionObject = GetLocalObjectRegion.getLocalRegion(object,"Centroid",radius,calibrated,false);
+
+            processObject(object,regionObject,inputImage,textureCalculator,offs,calibratedOffset);
+
         }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
