@@ -218,7 +218,7 @@ public class RunTrackMate extends Module {
         // Replacing spot volumes with explicit volume
         for (Obj spotObject:spotObjects.values()) {
             double radius = spotObject.getMeasurement(Measurements.RADIUS_PX).getValue();
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",ipl,radius,false,false);
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
             spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
         }
     }

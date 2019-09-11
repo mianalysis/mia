@@ -125,7 +125,7 @@ public class SingleClassCluster extends Module {
         // Initial pass, adding all coordinates to cluster object
         for (Obj child:children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",null,eps,false,false);
+            Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",eps,false,false);
 
             // Adding coordinates from region to the cluster object
             coordinateSet.addAll(region.getCoordinateSet());

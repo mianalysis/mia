@@ -110,7 +110,7 @@ public class MeasureSpotIntensity extends Module {
 
         for (Obj inputObject:inputObjects.values()) {
             if (useMeasurement) radius = inputObject.getMeasurement(radiusMeasurement).getValue();
-            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject,inputObjectsName,ipl,radius,calibrated,false);
+            Obj spotObject = GetLocalObjectRegion.getLocalRegion(inputObject,inputObjectsName,radius,calibrated,false);
 
             CumStat cs = new CumStat();
 

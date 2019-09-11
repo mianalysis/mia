@@ -1,12 +1,15 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,8 +21,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         assertNotNull(new CalculateNearestNeighbour(new ModuleCollection()).getDescription());
     }
 
-    @Test
-    public void testGetNearestNeighbour() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetNearestNeighbour(VolumeType volumeType) throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -29,19 +33,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1");
 
-        Obj obj1 = new Obj("Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj("Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj("Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj("Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -53,8 +57,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testGetNearestNeighbourOverlapping() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetNearestNeighbourOverlapping(VolumeType volumeType) throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -64,23 +69,23 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1");
 
-        Obj obj1 = new Obj("Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj("Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj("Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj("Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
-        Obj obj5 = new Obj("Objects 1",5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(volumeType,"Objects 1",5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(10,20,40);
         objects1.add(obj5);
 
@@ -92,8 +97,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testGetNearestNeighbourLinkingDistanceNNFound() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetNearestNeighbourLinkingDistanceNNFound(VolumeType volumeType) throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -103,19 +109,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1");
 
-        Obj obj1 = new Obj("Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj("Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj("Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj("Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -127,8 +133,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testGetNearestNeighbourLinkingDistanceNNNotFound() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testGetNearestNeighbourLinkingDistanceNNNotFound(VolumeType volumeType) throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -138,19 +145,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1");
 
-        Obj obj1 = new Obj("Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj("Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj("Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj("Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -162,8 +169,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithinSameSet() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithinSameSet(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -176,16 +184,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -230,8 +238,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithinSameSetMaxDistAllPass() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithinSameSetMaxDistAllPass(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -245,19 +254,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
 
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -279,15 +288,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //        // Creating second object set
 //        ObjCollection objects2 = new ObjCollection("Objects 2");
 //
-//        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj5 = new Obj(volumeType,"Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.add(12,25,40);
 //        objects2.addRef(obj5);
 //
-//        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj6 = new Obj(volumeType,"Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.add(20,35,10);
 //        objects2.addRef(obj6);
 //
-//        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj7 = new Obj(volumeType,"Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.add(35,20,20);
 //        objects2.addRef(obj7);
 
@@ -319,8 +328,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithinSameSetMaxDistSomeFail() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithinSameSetMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -334,19 +344,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
 
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -368,15 +378,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //        // Creating second object set
 //        ObjCollection objects2 = new ObjCollection("Objects 2");
 //
-//        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj5 = new Obj(volumeType,"Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.add(12,25,40);
 //        objects2.addRef(obj5);
 //
-//        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj6 = new Obj(volumeType,"Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.add(20,35,10);
 //        objects2.addRef(obj6);
 //
-//        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj7 = new Obj(volumeType,"Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.add(35,20,20);
 //        objects2.addRef(obj7);
 
@@ -408,8 +418,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithinSameSetMaxDistCalibratedSomeFail() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -423,19 +434,19 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
 
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -457,15 +468,15 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 //        // Creating second object set
 //        ObjCollection objects2 = new ObjCollection("Objects 2");
 //
-//        Obj obj5 = new Obj("Objects 2",1,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj5 = new Obj(volumeType,"Objects 2",1,dppXY,dppZ,calibratedUnits,false);
 //        obj5.add(12,25,40);
 //        objects2.addRef(obj5);
 //
-//        Obj obj6 = new Obj("Objects 2",2,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj6 = new Obj(volumeType,"Objects 2",2,dppXY,dppZ,calibratedUnits,false);
 //        obj6.add(20,35,10);
 //        objects2.addRef(obj6);
 //
-//        Obj obj7 = new Obj("Objects 2",3,dppXY,dppZ,calibratedUnits,false);
+//        Obj obj7 = new Obj(volumeType,"Objects 2",3,dppXY,dppZ,calibratedUnits,false);
 //        obj7.add(35,20,20);
 //        objects2.addRef(obj7);
 
@@ -497,8 +508,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithinSameSetWithinParent() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithinSameSetWithinParent(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -512,16 +524,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -529,7 +541,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection parents = new ObjCollection(parentObjectsName);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -538,7 +550,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = new Obj(parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -585,8 +597,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunWithinSameSetWithinParentMaxDistSomeFail() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -600,16 +613,16 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -617,7 +630,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection parents = new ObjCollection(parentObjectsName);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -626,7 +639,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = new Obj(parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -673,8 +686,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunDifferentSets() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunDifferentSets(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -688,29 +702,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -755,8 +769,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunDifferentSetsMaxDistSomePass() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunDifferentSetsMaxDistSomePass(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -770,29 +785,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -837,8 +852,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunDifferentSetsWithinParent() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunDifferentSetsWithinParent(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -853,29 +869,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -883,7 +899,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection parents = new ObjCollection(parentObjectsName);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -892,7 +908,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = new Obj(parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -944,8 +960,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunDifferentSetsWithinParentMaxDistSomeFail() throws IntegerOverflowException {
+    @ParameterizedTest
+    @EnumSource(VolumeType.class)
+    public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -960,29 +977,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,60,50,50,dppXY,dppZ,calibratedUnits);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,60,50,50,dppXY,dppZ,calibratedUnits);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,60,50,50,dppXY,dppZ,calibratedUnits);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,60,50,50,dppXY,dppZ,calibratedUnits);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
         ObjCollection objects2 = new ObjCollection(secondObjectsName);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,60,50,50,dppXY,dppZ,calibratedUnits);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,60,50,50,dppXY,dppZ,calibratedUnits);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,60,50,50,dppXY,dppZ,calibratedUnits);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -990,7 +1007,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         ObjCollection parents = new ObjCollection(parentObjectsName);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -999,7 +1016,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = new Obj(parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,1,1,1,dppXY,dppZ,calibratedUnits);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);

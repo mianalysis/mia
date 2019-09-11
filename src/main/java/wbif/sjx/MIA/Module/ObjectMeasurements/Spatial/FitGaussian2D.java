@@ -6,6 +6,7 @@ import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
@@ -297,7 +298,7 @@ public class FitGaussian2D extends Module {
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {
                 double radius = spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue();
-                Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",inputImagePlus,radius,false,false);
+                Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
                 spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
             }
         }

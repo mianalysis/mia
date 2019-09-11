@@ -133,7 +133,7 @@ public class MeasureObjectTexture extends Module {
         for (Obj object:inputObjects.values()) {
             writeMessage("Processed "+(++iter)+" of "+nObjects);
             Obj regionObject = object;
-            if (centroidMeasurement)  regionObject = GetLocalObjectRegion.getLocalRegion(object,"Centroid",inputImagePlus,radius,calibrated,false);
+            if (centroidMeasurement)  regionObject = GetLocalObjectRegion.getLocalRegion(object,"Centroid",radius,calibrated,false);
 
             processObject(object,regionObject,inputImage,textureCalculator,offs,calibratedOffset);
 

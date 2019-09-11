@@ -19,7 +19,6 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 public class GetLocalObjectRegion extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
     public static final String USE_MEASUREMENT = "Use measurement for radius";
@@ -30,24 +29,14 @@ public class GetLocalObjectRegion extends Module {
     }
 
 
-    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
+    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
         // If no reference image is supplied, it's possible to have negative coordinates
-        int xMin, xMax, yMin, yMax, zMin, zMax;
-        if (referenceImage == null) {
-            xMin = -Integer.MAX_VALUE;
-            xMax = Integer.MAX_VALUE;
-            yMin = -Integer.MAX_VALUE;
-            yMax = Integer.MAX_VALUE;
-            zMin = -Integer.MAX_VALUE;
-            zMax = Integer.MAX_VALUE;
-        } else {
-            xMin = 0;
-            xMax = referenceImage.getWidth()-1;
-            yMin = 0;
-            yMax = referenceImage.getHeight()-1;
-            zMin = 0;
-            zMax = referenceImage.getNSlices()-1;
-        }
+        int xMin = 0;
+        int xMax = Integer.MAX_VALUE;
+        int yMin = 0;
+        int yMax = Integer.MAX_VALUE;
+        int zMin = 0;
+        int zMax = Integer.MAX_VALUE;
 
         // Getting spatial calibration
         double dppXY = inputObject.getDppXY();
@@ -80,14 +69,13 @@ public class GetLocalObjectRegion extends Module {
                         if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
 
                     } else {
-                        for (int z = zMin; z <= zMin; z++) {
+                        for (int z = zMin; z <= zMax; z++) {
                             double zz = (zCent - z) * dppZ;
                             if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
                     }
                 }
             }
-
         } else {
             xMin = Math.max((int) Math.floor(xCent - radius), xMin);
             xMax = Math.min((int) Math.ceil(xCent + radius), xMax);
@@ -129,7 +117,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, @Nullable String measurementName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
+    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, @Nullable String measurementName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -140,7 +128,7 @@ public class GetLocalObjectRegion extends Module {
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
             if (measurementName != null) radius = inputObject.getMeasurement(measurementName).getValue();
-            Obj outputObject = getLocalRegion(inputObject,outputObjectsName,referenceImage,radius,calibrated,addRelationship);
+            Obj outputObject = getLocalRegion(inputObject,outputObjectsName,radius,calibrated,addRelationship);
 
             // Adding object to HashMap
             outputObjects.put(outputObject.getID(),outputObject);
@@ -166,21 +154,18 @@ public class GetLocalObjectRegion extends Module {
     public boolean process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String inputImageName = parameters.getValue(REFERENCE_IMAGE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
         String measurementName = parameters.getValue(MEASUREMENT_NAME);
         boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
         double radius = parameters.getValue(LOCAL_RADIUS);
 
-        ImagePlus referenceImage = workspace.getImage(inputImageName).getImagePlus();
-
         if (!useMeasurement) measurementName = null;
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
         ObjCollection outputObjects = null;
         try {
-            outputObjects = getLocalRegions(inputObjects,outputObjectsName,referenceImage,measurementName,radius,calibrated,true);
+            outputObjects = getLocalRegions(inputObjects,outputObjectsName,measurementName,radius,calibrated,true);
         } catch (IntegerOverflowException e) {
             return false;
         }
@@ -197,7 +182,6 @@ public class GetLocalObjectRegion extends Module {
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new DoubleP(LOCAL_RADIUS, this,10.0));
         parameters.add(new BooleanP(CALIBRATED_RADIUS, this,false));
         parameters.add(new BooleanP(USE_MEASUREMENT, this,false));
@@ -213,7 +197,6 @@ public class GetLocalObjectRegion extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
         returnedParameters.add(parameters.getParameter(USE_MEASUREMENT));
 
         if (parameters.getValue(USE_MEASUREMENT)) {
