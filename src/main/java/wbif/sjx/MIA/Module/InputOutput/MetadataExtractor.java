@@ -77,21 +77,20 @@ public class MetadataExtractor extends Module {
     }
 
     public interface FoldernameExtractors {
-        String NONE = "None";
+        String GENERIC = "Generic";
         String CELLVOYAGER_FOLDERNAME_EXTRACTOR = "Cell Voyager foldername";
         String OPERA_FOLDERNAME_EXTRACTOR = "Opera measurement foldername";
         String OPERA_BARCODE_EXTRACTOR = "Opera barcode";
 
-        String[] ALL = new String[]{NONE, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR,
+        String[] ALL = new String[]{GENERIC, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR,
                 OPERA_BARCODE_EXTRACTOR};
     }
 
     public interface MetadataFileExtractors {
-        String NONE = "None";
         String CSV_FILE = "CSV file";
         String OPERA_METADATA_FILE_EXTRACTOR = "Opera file (.flex)";
 
-        String[] ALL = new String[]{NONE, CSV_FILE, OPERA_METADATA_FILE_EXTRACTOR};
+        String[] ALL = new String[]{CSV_FILE, OPERA_METADATA_FILE_EXTRACTOR};
 
     }
 
@@ -297,7 +296,11 @@ public class MetadataExtractor extends Module {
                 break;
 
             case ExtractorModes.FOLDERNAME_MODE:
-                extractFoldername(metadata,foldernameExtractorName);
+                if (foldernameExtractorName.equals(FoldernameExtractors.GENERIC)) {
+                    extractGeneric(metadata,metadata.getFile().getAbsolutePath(),pattern,groups);
+                } else {
+                    extractFilename(metadata, foldernameExtractorName);
+                }
                 break;
 
             case ExtractorModes.KEYWORD_MODE:
@@ -344,12 +347,12 @@ public class MetadataExtractor extends Module {
         parameters.add(new ChoiceP(EXTRACTOR_MODE,this,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
 
         parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
-        parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
+        parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.GENERIC,FoldernameExtractors.ALL));
         parameters.add(new StringP(KEYWORD_LIST,this));
 
         parameters.add(new ParamSeparatorP(SOURCE_SEPARATOR,this));
         parameters.add(new ChoiceP(KEYWORD_SOURCE, this,KeywordSources.FILENAME,KeywordSources.ALL));
-        parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR,this,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
+        parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR,this,MetadataFileExtractors.CSV_FILE,MetadataFileExtractors.ALL));
         parameters.add(new ChoiceP(INPUT_SOURCE,this,InputSources.FILE_IN_INPUT_FOLDER,InputSources.ALL));
         parameters.add(new FilePathP(METADATA_FILE,this));
         parameters.add(new StringP(METADATA_FILE_NAME,this));
@@ -403,6 +406,29 @@ public class MetadataExtractor extends Module {
 
             case ExtractorModes.FOLDERNAME_MODE:
                 returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
+                switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
+                    case FoldernameExtractors.GENERIC:
+                        returnedParameters.add(parameters.getParameter(REGEX_SEPARATOR));
+                        returnedParameters.add(parameters.getParameter(PATTERN));
+                        returnedParameters.add(parameters.getParameter(GROUPS));
+
+                        returnedParameters.add(parameters.getParameter(SHOW_TEST));
+                        if (parameters.getValue(SHOW_TEST)) {
+                            returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
+                            returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
+
+                            String pattern = parameters.getValue(PATTERN);
+                            String groups = parameters.getValue(GROUPS);
+                            String exampleString = parameters.getValue(EXAMPLE_STRING);
+                            String groupsString = getTestString(pattern,groups,exampleString);
+                            TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
+                            identifiedGroups.setValue(groupsString);
+
+                            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
+
+                        }
+                        break;
+                }
                 break;
 
             case ExtractorModes.KEYWORD_MODE:
@@ -539,6 +565,12 @@ public class MetadataExtractor extends Module {
 
             case ExtractorModes.FOLDERNAME_MODE:
                 switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
+                    case FoldernameExtractors.GENERIC:
+                        String groupString = parameters.getValue(GROUPS);
+                        String[] groups = getGroups(groupString);
+                        for (String group:groups) returnedRefs.add(metadataRefs.getOrPut((group)));
+                        break;
+
                     case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
                         returnedRefs.add(metadataRefs.getOrPut((HCMetadata.YEAR)));
                         returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MONTH)));
