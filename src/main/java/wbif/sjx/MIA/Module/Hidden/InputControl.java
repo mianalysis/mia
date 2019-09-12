@@ -115,6 +115,10 @@ public class InputControl extends Module {
                     break;
             }
         }
+
+        // Adding a filter to specifically remove OSX temp files
+        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.EXC_PARTIAL));
+
     }
 
     private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {

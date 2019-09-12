@@ -59,17 +59,17 @@ public class GetLocalObjectRegion extends Module {
             zMin = Math.max((int) Math.floor(zCent - radius/dppZ),zMin);
             zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), zMax);
 
-            for (int x = xMin; x <= xMax; x++) {
+            for (int x=xMin; x<xMax; x++) {
                 double xx = (xCent - x) * dppXY;
 
-                for (int y = yMin; y <= yMax; y++) {
+                for (int y=yMin; y<yMax; y++) {
                     double yy = (yCent - y) * dppXY;
 
                     if (inputObject.is2D()) {
                         if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
 
                     } else {
-                        for (int z = zMin; z <= zMax; z++) {
+                        for (int z=zMin; z<zMax; z++) {
                             double zz = (zCent - z) * dppZ;
                             if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
@@ -84,19 +84,18 @@ public class GetLocalObjectRegion extends Module {
             zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),zMin);
             zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), zMax);
 
-            for (int x = xMin; x <= xMax; x++) {
+            for (int x=xMin; x<xMax; x++) {
                 double xx = xCent - x;
 
-                for (int y = yMin; y <= yMax; y++) {
+                for (int y=yMin; y<yMax; y++) {
                     double yy = yCent - y;
 
                     if (inputObject.is2D()) {
                         if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
 
                     } else {
-                        for (int z = zMin; z <= zMax; z++) {
+                        for (int z=zMin; z<zMax; z++) {
                             double zz = (zCent - z) / xy_z_ratio;
-
                             if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
                     }

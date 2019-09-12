@@ -41,31 +41,13 @@ public class AnalysisWriter {
         // Updating the analysis filename
         analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 
-        // Creating a module collection holding the single-instance modules (input, output and global variables)
-        ModuleCollection singleModules = new ModuleCollection();
-        singleModules.add(analysis.getModules().getInputControl());
-        singleModules.add(analysis.getModules().getOutputControl());
-
-        // Adding an XML formatted summary of the modules and their values
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        Element root = doc.createElement("ROOT");
-
-        // Adding MIA version number as an attribute
-        Attr version = doc.createAttribute("MIA_VERSION");
-        version.appendChild(doc.createTextNode(MIA.getVersion()));
-        root.setAttributeNode(version);
-
-        root.appendChild(prepareModulesXML(doc,singleModules));
-        root.appendChild(prepareModulesXML(doc,analysis.getModules()));
-        doc.appendChild(root);
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
+        // Creating the document to save
+        Document doc = prepareAnalysisDocument(analysis);
 
         // Preparing the target file for
-        DOMSource source = new DOMSource(doc);
         FileOutputStream outputStream = new FileOutputStream(outputFileName);
-        StreamResult result = new StreamResult(outputStream);
-        transformer.transform(source, result);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
         outputStream.close();
 
         System.out.println("File saved ("+ FilenameUtils.getName(outputFileName)+")");
@@ -92,12 +74,36 @@ public class AnalysisWriter {
 
     }
 
-    public static Element prepareModulesXML(Document doc, ModuleCollection modules) {
-        Element modulesElement =  doc.createElement("MODULES");
+    public static Document prepareAnalysisDocument(Analysis analysis) throws ParserConfigurationException {
+        // Adding an XML formatted summary of the modules and their values
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element root = doc.createElement("ROOT");
 
-        // Running through each parameter set (one for each module
+        // Adding MIA version number as an attribute
+        Attr version = doc.createAttribute("MIA_VERSION");
+        version.appendChild(doc.createTextNode(MIA.getVersion()));
+        root.setAttributeNode(version);
+
+        // Creating a module collection holding the single-instance modules (input, output and global variables)
+        ModuleCollection singleModules = new ModuleCollection();
+        singleModules.add(analysis.getModules().getInputControl());
+        singleModules.add(analysis.getModules().getOutputControl());
+
+        // Adding module elements
+        root.appendChild(prepareModulesXML(doc,singleModules));
+        root.appendChild(prepareModulesXML(doc,analysis.getModules()));
+        doc.appendChild(root);
+
+        return doc;
+
+    }
+
+    public static Element prepareModulesXML(Document doc, ModuleCollection modules) {
+        Element modulesElement = doc.createElement("MODULES");
+
+        // Running through each parameter set (one for each module)
         for (Module module:modules) {
-            Element moduleElement =  doc.createElement("MODULE");
+            Element moduleElement = doc.createElement("MODULE");
 
             // Adding module details
             module.appendXMLAttributes(moduleElement);

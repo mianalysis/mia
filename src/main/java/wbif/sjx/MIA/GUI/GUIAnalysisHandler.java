@@ -1,8 +1,11 @@
 package wbif.sjx.MIA.GUI;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleCollectionDataFlavor;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleCollectionTransfer;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -12,14 +15,21 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisWriter;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.*;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 public class GUIAnalysisHandler {
     public static void newAnalysis() {
@@ -62,7 +72,7 @@ public class GUIAnalysisHandler {
         GUI.updateParameters();
         GUI.updateHelpNotes();
         GUI.setLastModuleEval(-1);
-        GUI.updateTestFile();
+        GUI.updateTestFile(true);
         GUI.updateModules();
         GUI.updateModuleStates(true);
         GUI.getUndoRedoStore().reset();
@@ -199,12 +209,23 @@ public class GUIAnalysisHandler {
         if (selectedModules.length == 0) return;
 
         ModuleCollection copyModules = new ModuleCollection();
-        for (Module selectedModule:selectedModules) copyModules.add(selectedModule.duplicate(selectedModule.getModules()));
+        copyModules.addAll(Arrays.asList(selectedModules));
 
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        ModuleCollectionTransfer transfer = new ModuleCollectionTransfer(copyModules);
-        clipboard.setContents(transfer,transfer);
+        try {
+            Analysis analysis = new Analysis();
+            analysis.setModules(copyModules);
+            Document doc = AnalysisWriter.prepareAnalysisDocument(analysis);
+            StringWriter stringWriter = new StringWriter();
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.transform(new DOMSource(doc),new StreamResult(stringWriter));
+            stringWriter.close();
 
+            StringSelection stringSelection = new StringSelection(stringWriter.getBuffer().toString());
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection,null);
+
+        } catch (ParserConfigurationException | TransformerException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void pasteModules() {
@@ -219,11 +240,18 @@ public class GUIAnalysisHandler {
             int toIdx = modules.indexOf(toModule);
 
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
-            ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
-
-            // Creating a new copy of the copyModules to paste in
-            ModuleCollection pasteModules = copyModules.duplicate();
+//            DataFlavor dataFlavor = new ModuleCollectionDataFlavor();
+            Transferable contents = clipboard.getContents(null);
+            String copyString = (String) contents.getTransferData(DataFlavor.stringFlavor);
+            ModuleCollection pasteModules = AnalysisReader.loadAnalysis(copyString).getModules();
+//            MIA.log.writeDebug("Target flavour "+dataFlavor);
+//            MIA.log.writeDebug("Present flavours:");
+//            Arrays.stream(clipboard.getAvailableDataFlavors()).forEach(MIA.log::writeDebug);
+//            MIA.log.writeDebug("End flavours");
+//            ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
+//
+//            // Creating a new copy of the copyModules to paste in
+//            ModuleCollection pasteModules = copyModules.duplicate();
 
             // Ensuring the copied modules are linked to the present ModuleCollection
             for (Module module:pasteModules.values()) module.setModules(modules);
@@ -231,7 +259,9 @@ public class GUIAnalysisHandler {
             // Adding the new modules
             modules.insert(pasteModules,toIdx);
 
-        } catch (ClassNotFoundException | IOException | UnsupportedFlavorException e) {
+        } catch (IOException | UnsupportedFlavorException | IllegalAccessException | InstantiationException
+                | InvocationTargetException | ClassNotFoundException | ParserConfigurationException | SAXException
+                | NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
