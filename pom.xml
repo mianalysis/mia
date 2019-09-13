@@ -401,16 +401,9 @@
             </plugin>
                  
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <!-- Auto generated code -->
-                        <exclude>**/*Protos.class</exclude>
-                        <exclude>**/*Protos$*.class</exclude>
-                        <!-- Add plugins with no testable code -->
-                    </excludes>
-                </configuration>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.1.0</version>
             </plugin>
         </plugins>
     </build>
