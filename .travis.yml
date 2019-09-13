@@ -14,3 +14,6 @@ branches:
   - master
   - Develop
   - TravisCI
+
+after_success:
+- mvn clean test -P coveralls,jacoco jacoco:report coveralls:report
