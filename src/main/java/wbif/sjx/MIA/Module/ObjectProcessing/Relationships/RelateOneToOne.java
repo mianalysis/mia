@@ -1,6 +1,102 @@
+//package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
+//
+//import fiji.plugin.trackmate.tracking.oldlap.hungarian.JonkerVolgenantAlgorithm;
+//import fiji.plugin.trackmate.tracking.sparselap.linker.LAPJV;
+//import fiji.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
+//
+//import java.lang.reflect.Array;
+//import java.util.Arrays;
+//import java.util.Random;
+//
+//public class RelateOneToOne {
+//
+//    private int seed;
+//
+//    private int pseudoRandom() {
+//        return seed = 3170425 * seed + 132102;
+//    }
+//
+//    private double pseudoRandom( final double min, final double max ) {
+//        final int random = pseudoRandom() & 0x7fffffff;
+//        return min + random * ( ( max - min ) / Integer.MAX_VALUE );
+//    }
+//
+//    private double[][] generateMatrix( final int n, final int m) {
+//        final double[][] ma = new double[ n ][ m ];
+//        for ( int j = 0; j < n; j++ )
+//        {
+//            for ( int i = 0; i < m; i++ )
+//            {
+//                ma[ j ][ i ] = Math.floor( pseudoRandom( 1, 100 ) );
+//            }
+//        }
+//        return ma;
+//    }
+//
+//    private SparseCostMatrix generateSparseMatrix( final double[][] weights ) {
+//        final int n = weights.length;
+//        final int m = weights[0].length;
+//        final int[] number = new int[ n ];
+//        final int[] kk = new int[ n * m ];
+//        final double[] cc = new double[ n * m ];
+//
+//        int index = 0;
+//        for ( int i = 0; i < n; i++ )
+//        {
+//            number[ i ] = m;
+//            for ( int j = 0; j < m; j++ )
+//            {
+//                kk[ index ] = j;
+//                cc[ index ] = weights[ i ][ j ];
+//                index++;
+//            }
+//        }
+//        return new SparseCostMatrix( cc, kk, number, m );
+//    }
+//
+//    public static void main(String[] args) {
+//        new RelateOneToOne().testSparseIsNonSparse();
+//
+//    }
+//
+//    public final void testSparseIsNonSparse() {
+//        final int n = 4;
+//        final int m = 6;
+//        seed = new Random().nextInt();
+//        final double[][] weights = generateMatrix( n , m );
+//
+//        System.out.println("Full");
+//        System.out.println(Arrays.deepToString(weights).replace("],","]\n"));
+//
+//        final SparseCostMatrix CM = generateSparseMatrix( weights );
+//
+//        System.out.println("Sparse");
+//        System.out.println(Arrays.deepToString(CM.toFullMatrix()).replace("],","]\n"));
+//
+//        // Sparse with non-sparse entries
+//        System.out.println("Initialising");
+//        final LAPJV jvs = new LAPJV(CM);
+//        System.out.println("Processing");
+//        jvs.process();
+//        System.out.println("Processing complete");
+//        final int[] jvSparseResult = jvs.getResult();
+//        System.out.println(Arrays.toString(jvSparseResult));
+//
+//        double jvsSparse = 0, jonkerVolgenantCost = 0;
+//        for ( int i = 0; i < jvSparseResult.length; i++ ) {
+//            jvsSparse += weights[ i ][ jvSparseResult[ i ] ];
+//        }
+//    }
+//}
+
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
+import fiji.plugin.trackmate.tracking.oldlap.hungarian.HungarianAlgorithm;
+import fiji.plugin.trackmate.tracking.oldlap.hungarian.JonkerVolgenantAlgorithm;
+import fiji.plugin.trackmate.tracking.oldlap.hungarian.MunkresKuhnAlgorithm;
+import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTracker;
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.LAPJV;
 import fiji.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
 import net.imglib2.ops.parse.token.Int;
@@ -36,6 +132,43 @@ public class RelateOneToOne extends Module {
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
 
+    public static void main(String[] args) {
+        List<Integer> rows = new ArrayList<Integer>(Arrays.asList(0,0,0,1,2,2));
+        List<Integer> cols = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4,5));
+        double[] costs = new double[]{33,93,49,85,79,106};
+
+        DefaultCostMatrixCreator creator = new DefaultCostMatrixCreator<Integer,Integer>(rows,cols,costs,1.09,0.5);
+        if (!creator.checkInput()) {
+            System.err.println(creator.getErrorMessage());
+            return;
+        }
+        if (!creator.process()) {
+            System.err.println(creator.getErrorMessage());
+            return;
+        }
+
+        SparseCostMatrix matrix = creator.getResult();
+        System.out.println( "For cost matrix:\n" + creator.getResult().toString( creator.getSourceList(), creator.getTargetList()));
+
+        LAPJV lapjv = new LAPJV(matrix);
+        if (!lapjv.checkInput()) {
+            System.err.println(lapjv.getErrorMessage());
+            return;
+        }
+        if (!lapjv.process()) {
+            System.err.println(lapjv.getErrorMessage());
+            return;
+        }
+
+        int[] result = lapjv.getResult();
+        if (result == null) {
+            System.err.println(lapjv.getErrorMessage());
+            return;
+        }
+        System.out.println("Assignment result: "+result);
+        Arrays.stream(result).forEach(System.out::println);
+
+    }
 
     public interface RelationshipModes {
         String CENTROID_SEPARATION = "Centroid separation";
@@ -89,6 +222,13 @@ public class RelateOneToOne extends Module {
         List<Integer> cols = linkables.stream().mapToInt(Linkable::getCol).boxed().collect(Collectors.toList());
         double[] costs = linkables.stream().mapToDouble(Linkable::getCost).toArray();
 
+        MIA.log.writeDebug("ROWS");
+        rows.stream().forEach(MIA.log::writeDebug);
+        MIA.log.writeDebug("COLS");
+        cols.stream().forEach(MIA.log::writeDebug);
+        MIA.log.writeDebug("COSTS");
+        Arrays.stream(costs).forEach(MIA.log::writeDebug);
+
         DefaultCostMatrixCreator creator = new DefaultCostMatrixCreator<Integer,Integer>(rows,cols,costs,Double.MAX_VALUE,0);
 
         if (!creator.checkInput()) {
@@ -101,6 +241,8 @@ public class RelateOneToOne extends Module {
             return null;
         }
 
+        MIA.log.writeDebug("RESULT");
+        MIA.log.writeDebug(Arrays.deepToString(creator.getResult().toFullMatrix()));
         return creator.getResult();
 
     }
