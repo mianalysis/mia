@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
-import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.LAPJV;
 import fiji.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
 import wbif.sjx.MIA.MIA;
@@ -58,94 +58,119 @@ public class RelateOneToOne extends Module {
     }
 
     SparseCostMatrix calculateCentroidSeparationCosts(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
-        TreeSet<Cost> tempCosts = new TreeSet<>();
-        HashMap<Integer,Integer> rowCounts = new HashMap<>();
-        HashMap<Integer,Integer> colIdxs = new HashMap<>();
-        HashMap<Integer,Integer> rowIdxs = new HashMap<>();
+        ArrayList<Integer> rows = new ArrayList<>();
+        ArrayList<Integer> cols = new ArrayList<>();
+        ArrayList<Double> costs = new ArrayList<>();
 
-        // Calculating the separations
-        long totalPairs = inputObjects1.size()*inputObjects2.size();
-        int maxColIdx = 0;
-        int maxRowIdx = 0;
-
+        // Getting linkable objects
+        int row = 0;
         for (Obj object1:inputObjects1.values()) {
+            int col = 0;
             for (Obj object2:inputObjects2.values()) {
                 // Calculating the separation between the two objects
                 double overlap = object1.getCentroidSeparation(object2,true);
 
                 // Only add if within the linking limit
                 if (overlap <= maxSeparation) {
-                    // Get cost matrix row
-                    rowIdxs.putIfAbsent(object1.getID(),maxRowIdx++);
-                    int rowIdx = rowIdxs.get(object1.getID());
+                    rows.add(row);
+                    cols.add(col);
+                    costs.add(overlap);
+                }
+                col++;
+            }
+            row++;
+        }
 
-                    // Get cost matrix column
-                    colIdxs.putIfAbsent(object2.getID(),maxColIdx++);
-                    int colIdx = colIdxs.get(object2.getID());
+        double[] costsArray = costs.stream().mapToDouble(Double::doubleValue).toArray();
 
-                    tempCosts.add(new Cost(overlap,rowIdx,colIdx));
+        DefaultCostMatrixCreator creator = new DefaultCostMatrixCreator<Integer,Integer>(rows,cols,costsArray,Double.MAX_VALUE,0);
+        MIA.log.writeDebug(creator.checkInput());
+        MIA.log.writeDebug(creator.process());
 
-                    rowCounts.putIfAbsent(rowIdx,0);
-                    rowCounts.put(rowIdx,rowCounts.get(rowIdx)+1);
+        return creator.getResult();
 
+    }
+
+    double[][] calculateCentroidSeparationCostsFull(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
+        double[][] costs = new double[inputObjects1.size()][inputObjects2.size()];
+
+        // Calculating the separations
+        long totalPairs = inputObjects1.size()*inputObjects2.size();
+        long count = 0;
+        int i = 0;
+
+        for (Obj object1:inputObjects1.values()) {
+            int j = 0;
+            for (Obj object2:inputObjects2.values()) {
+                // Calculating the separation between the two objects
+                double overlap = object1.getCentroidSeparation(object2,true);
+
+                // Applying the linking limit
+                if (overlap > maxSeparation) overlap = Double.MAX_VALUE;
+                costs[i][j] = overlap;
+
+                count++;
+                j++;
+
+            }
+
+            i++;
+
+            writeMessage("Calculated cost for "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
+
+        }
+
+        return costs;
+
+    }
+
+    SparseCostMatrix calculateCentroidSeparationCostsManualSparse(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
+        HashMap<Obj,TreeSet<Linkable>> linkables = new HashMap<>();
+        HashMap<Obj,Integer> colIDs = new HashMap<>();
+
+        // Getting linkable objects
+        int maxCol = 0;
+        for (Obj object1:inputObjects1.values()) {
+            boolean hasMatch = false;
+            for (Obj object2:inputObjects2.values()) {
+                // Calculating the separation between the two objects
+                double overlap = object1.getCentroidSeparation(object2,true);
+
+                // Only add if within the linking limit
+                if (overlap <= maxSeparation) {
+                    linkables.putIfAbsent(object1,new TreeSet<>());
+                    if (!colIDs.containsKey(object2)) colIDs.put(object2,maxCol++);
+                    Linkable linkable = new Linkable(overlap,object2,colIDs.get(object2));
+                    linkables.get(object1).add(linkable);
                 }
             }
         }
 
-        MIA.log.writeDebug("SHOWING COSTS");
-        for (Cost cost:tempCosts) {
-            MIA.log.writeDebug(cost.cost+"_"+cost.row+"_"+cost.col);
+                // Counting number of linkables
+        int count = 0;
+        for (TreeSet<Linkable> list:linkables.values()) count = count + list.size();
+
+        // Initialising arrays
+        double[] cc = new double[count];
+        int[] kk = new int[count];
+        int[] number = new int[linkables.size()];
+
+        // Populating arrays
+        int count1 = 0;
+        int row = 0;
+        for (TreeSet<Linkable> list:linkables.values()) {
+            for (Linkable linkable:list) {
+                cc[count1] = linkable.cost;
+                kk[count1] = linkable.colID;
+                count1++;
+            }
+            number[row++] = list.size();
         }
 
-        // Converting costs (and other required values) to arrays
-        double[] cc = tempCosts.stream().mapToDouble(Cost::getCost).toArray();
-        int[] kk = tempCosts.stream().mapToInt(Cost::getCol).toArray();
-        int[] number = rowCounts.values().stream().mapToInt(Integer::intValue).toArray();
-
-        MIA.log.writeDebug("COSTS");
-        Arrays.stream(cc).forEach(MIA.log::writeDebug);
-        MIA.log.writeDebug("COLS");
-        Arrays.stream(kk).forEach(MIA.log::writeDebug);
-        MIA.log.writeDebug("ROWS");
-        Arrays.stream(number).forEach(MIA.log::writeDebug);
-
         // Creating sparse cost matrix
-        return new SparseCostMatrix(cc,kk,number,maxColIdx);
+        return new SparseCostMatrix(cc,kk,number,maxCol);
 
     }
-
-//    double[][] calculateCentroidSeparationCosts(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
-//        double[][] costs = new double[inputObjects1.size()][inputObjects2.size()];
-//
-//        // Calculating the separations
-//        long totalPairs = inputObjects1.size()*inputObjects2.size();
-//        long count = 0;
-//        int i = 0;
-//
-//        for (Obj object1:inputObjects1.values()) {
-//            int j = 0;
-//            for (Obj object2:inputObjects2.values()) {
-//                // Calculating the separation between the two objects
-//                double overlap = object1.getCentroidSeparation(object2,true);
-//
-//                // Applying the linking limit
-//                if (overlap > maxSeparation) overlap = Double.MAX_VALUE;
-//                costs[i][j] = overlap;
-//
-//                count++;
-//                j++;
-//
-//            }
-//
-//            i++;
-//
-//            writeMessage("Calculated cost for "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
-//
-//        }
-//
-//        return costs;
-//
-//    }
 
     double[][] calculateSpatialOverlapCosts(ObjCollection inputObjects1, ObjCollection inputObjects2, double minOverlap1, double minOverlap2) {
         double[][] costs = new double[inputObjects1.size()][inputObjects2.size()];
@@ -170,7 +195,7 @@ public class RelateOneToOne extends Module {
 
                     // Checking the minimum overlaps have been met
                     if (overlapPercentage1> minOverlap1 && overlapPercentage2> minOverlap2) {
-                        // Cost is calculated using the raw pixel overlap to prevent small objects being weighted too highly
+                        // Linkable is calculated using the raw pixel overlap to prevent small objects being weighted too highly
                         costs[i][j] = 1 / overlap;
                     } else {
                         costs[i][j] = Double.MAX_VALUE;
@@ -196,21 +221,12 @@ public class RelateOneToOne extends Module {
         // Determining links using TrackMate implementation of Jonker-Volgenant algorithm for linear assignment problems
         writeMessage("Calculating links");
         LAPJV lapjv = new LAPJV(costs);
-        MIA.log.writeDebug("Starting tests");
         if (!lapjv.checkInput()) return null;
-        MIA.log.writeDebug("Passed first");
         if (!lapjv.process()) return null;
 
-        MIA.log.writeDebug("Passed second");
         int[] assignment = lapjv.getResult();
         MIA.log.writeDebug("Processing time: "+lapjv.getProcessingTime());
 
-        lapjv.process();
-        MIA.log.writeDebug(lapjv.resultToString());
-
-        MIA.log.writeDebug("Full cost matrix");
-        double[][] cost2 = costs.toFullMatrix();
-        MIA.log.writeDebug(Arrays.deepToString(cost2));
         MIA.log.writeDebug("Assignment: "+assignment);
 
         MIA.log.writeDebug("Assignment length "+assignment.length);
@@ -335,6 +351,13 @@ public class RelateOneToOne extends Module {
         switch (relationshipMode) {
             case ResolveCoOccurrence.OverlapModes.CENTROID_SEPARATION:
                 costs = calculateCentroidSeparationCosts(inputObjects1,inputObjects2,maximumSeparation);
+                MIA.log.writeDebug("Sparse");
+                MIA.log.writeDebug(Arrays.deepToString(costs.toFullMatrix()));
+                MIA.log.writeDebug("Full");
+                MIA.log.writeDebug(Arrays.deepToString(calculateCentroidSeparationCostsFull(inputObjects1,inputObjects2,maximumSeparation)));
+                MIA.log.writeDebug("Sparse manual");
+                MIA.log.writeDebug(Arrays.deepToString(calculateCentroidSeparationCostsManualSparse(inputObjects1,inputObjects2,maximumSeparation).toFullMatrix()));
+
                 break;
 
             case ResolveCoOccurrence.OverlapModes.SPATIAL_OVERLAP:
@@ -484,33 +507,32 @@ public class RelateOneToOne extends Module {
         return "";
     }
 
-    class Cost implements Comparable<Cost> {
+    class Linkable implements Comparable<Linkable> {
         final double cost;
-        final int row;
-        final int col;
+        final Obj obj;
+        final int colID;
 
-        public Cost(double cost, int row, int col) {
+        public Linkable(double cost, Obj obj, int colID) {
             this.cost = cost;
-            this.row = row;
-            this.col = col;
-
+            this.obj = obj;
+            this.colID = colID;
         }
 
         public double getCost() {
             return cost;
         }
 
-        public int getCol() {
-            return col;
+        public Obj getObj() {
+            return obj;
         }
 
-        public int getRow() {
-            return row;
+        public int getColID() {
+            return colID;
         }
 
         @Override
-        public int compareTo(Cost o) {
-            return Integer.compare(col,o.col);
+        public int compareTo(Linkable o) {
+            return Integer.compare(colID,o.colID);
         }
     }
 }
