@@ -302,12 +302,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.kevinstern</groupId>
-            <artifactId>software-and-algorithms</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
             <version>0.12.1</version>

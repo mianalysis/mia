@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.TrackObjects;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;

@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.TrackObjects;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.SingleClassCluster;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;

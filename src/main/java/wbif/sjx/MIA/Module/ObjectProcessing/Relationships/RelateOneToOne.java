@@ -1,6 +1,101 @@
+//package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
+//
+//import fiji.plugin.trackmate.tracking.oldlap.hungarian.JonkerVolgenantAlgorithm;
+//import fiji.plugin.trackmate.tracking.sparselap.linker.LAPJV;
+//import fiji.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
+//
+//import java.lang.reflect.Array;
+//import java.util.Arrays;
+//import java.util.Random;
+//
+//public class RelateOneToOne {
+//
+//    private int seed;
+//
+//    private int pseudoRandom() {
+//        return seed = 3170425 * seed + 132102;
+//    }
+//
+//    private double pseudoRandom( final double min, final double max ) {
+//        final int random = pseudoRandom() & 0x7fffffff;
+//        return min + random * ( ( max - min ) / Integer.MAX_VALUE );
+//    }
+//
+//    private double[][] generateMatrix( final int n, final int m) {
+//        final double[][] ma = new double[ n ][ m ];
+//        for ( int j = 0; j < n; j++ )
+//        {
+//            for ( int i = 0; i < m; i++ )
+//            {
+//                ma[ j ][ i ] = Math.floor( pseudoRandom( 1, 100 ) );
+//            }
+//        }
+//        return ma;
+//    }
+//
+//    private SparseCostMatrix generateSparseMatrix( final double[][] weights ) {
+//        final int n = weights.length;
+//        final int m = weights[0].length;
+//        final int[] number = new int[ n ];
+//        final int[] kk = new int[ n * m ];
+//        final double[] cc = new double[ n * m ];
+//
+//        int index = 0;
+//        for ( int i = 0; i < n; i++ )
+//        {
+//            number[ i ] = m;
+//            for ( int j = 0; j < m; j++ )
+//            {
+//                kk[ index ] = j;
+//                cc[ index ] = weights[ i ][ j ];
+//                index++;
+//            }
+//        }
+//        return new SparseCostMatrix( cc, kk, number, m );
+//    }
+//
+//    public static void main(String[] args) {
+//        new RelateOneToOne().testSparseIsNonSparse();
+//
+//    }
+//
+//    public final void testSparseIsNonSparse() {
+//        final int n = 4;
+//        final int m = 6;
+//        seed = new Random().nextInt();
+//        final double[][] weights = generateMatrix( n , m );
+//
+//        System.out.println("Full");
+//        System.out.println(Arrays.deepToString(weights).replace("],","]\n"));
+//
+//        final SparseCostMatrix CM = generateSparseMatrix( weights );
+//
+//        System.out.println("Sparse");
+//        System.out.println(Arrays.deepToString(CM.toFullMatrix()).replace("],","]\n"));
+//
+//        // Sparse with non-sparse entries
+//        System.out.println("Initialising");
+//        final LAPJV jvs = new LAPJV(CM);
+//        System.out.println("Processing");
+//        jvs.process();
+//        System.out.println("Processing complete");
+//        final int[] jvSparseResult = jvs.getResult();
+//        System.out.println(Arrays.toString(jvSparseResult));
+//
+//        double jvsSparse = 0, jonkerVolgenantCost = 0;
+//        for ( int i = 0; i < jvSparseResult.length; i++ ) {
+//            jvsSparse += weights[ i ][ jvSparseResult[ i ] ];
+//        }
+//    }
+//}
+
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
-import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
+import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import fiji.plugin.trackmate.tracking.sparselap.linker.LAPJV;
+import fiji.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
@@ -13,7 +108,8 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RelateOneToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
@@ -54,105 +150,80 @@ public class RelateOneToOne extends Module {
 
     }
 
-    double[][] calculateCentroidSeparationCosts(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
-        double[][] costs = new double[inputObjects1.size()][inputObjects2.size()];
+    static ArrayList<Linkable> getCentroidSeparationLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
+        ArrayList<Linkable> linkables = new ArrayList<>();
 
-        // Calculating the separations
-        long totalPairs = inputObjects1.size()*inputObjects2.size();
-        long count = 0;
-        int i = 0;
-
+        // Getting linkable objects
         for (Obj object1:inputObjects1.values()) {
-            int j = 0;
             for (Obj object2:inputObjects2.values()) {
                 // Calculating the separation between the two objects
                 double overlap = object1.getCentroidSeparation(object2,true);
 
-                // Applying the linking limit
-                if (overlap > maxSeparation) overlap = Double.MAX_VALUE;
-                costs[i][j] = overlap;
-
-                count++;
-                j++;
+                // Only add if within the linking limit
+                if (overlap <= maxSeparation) linkables.add(new Linkable(overlap,object1.getID(),object2.getID()));
 
             }
-
-            i++;
-
-            writeMessage("Calculated cost for "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
-
         }
 
-        return costs;
+        return linkables;
 
     }
 
-    double[][] calculateSpatialOverlapCosts(ObjCollection inputObjects1, ObjCollection inputObjects2, double minOverlap1, double minOverlap2) {
-        double[][] costs = new double[inputObjects1.size()][inputObjects2.size()];
+    static ArrayList<Linkable> getSpatialOverlapLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2, double minOverlap1, double minOverlap2) {
+        ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Calculating the overlaps
-        long totalPairs = inputObjects1.size()*inputObjects2.size();
-        long count = 0;
-        int i = 0;
-
         for (Obj object1:inputObjects1.values()) {
-            int j = 0;
             for (Obj object2:inputObjects2.values()) {
                 // Calculate the overlap between the two objects
                 double overlap = object1.getOverlap(object2);
 
                 // We want large overlaps to be large when they're bad, so taking the inverse
-                if (overlap == 0) {
-                    costs[i][j] = Double.MAX_VALUE;
-                } else {
+                if (overlap >= 0) {
                     double overlapPercentage1 = 100*overlap/object1.size();
                     double overlapPercentage2 = 100*overlap/object2.size();
 
                     // Checking the minimum overlaps have been met
                     if (overlapPercentage1> minOverlap1 && overlapPercentage2> minOverlap2) {
-                        // Cost is calculated using the raw pixel overlap to prevent small objects being weighted too highly
-                        costs[i][j] = 1 / overlap;
-                    } else {
-                        costs[i][j] = Double.MAX_VALUE;
+                        // Calculated using the raw pixel overlap to prevent small objects being weighted too highly
+                        linkables.add(new Linkable(1/overlap,object1.getID(),object2.getID()));
                     }
                 }
-                j++;
             }
-
-            i++;
-
-            writeMessage("Calculated cost for "+Math.floorDiv(100*(count++),totalPairs)+"% of pairs");
-
         }
 
-        return costs;
+        return linkables;
 
     }
 
-    ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, double[][] costs, @Nullable String outputObjectsName) {
+    static DefaultCostMatrixCreator<Integer,Integer> getCostMatrixCreator(ArrayList<Linkable> linkables) {
+        List<Integer> IDs1 = linkables.stream().mapToInt(Linkable::getID1).boxed().collect(Collectors.toCollection(ArrayList::new));
+        List<Integer> IDs2 = linkables.stream().mapToInt(Linkable::getID2).boxed().collect(Collectors.toCollection(ArrayList::new));
+        double[] costs = linkables.stream().mapToDouble(Linkable::getCost).toArray();
+
+        // Determining links using TrackMate implementation of Jonker-Volgenant algorithm for linear assignment problems
+        DefaultCostMatrixCreator<Integer,Integer> creator = new DefaultCostMatrixCreator<>(IDs1,IDs2,costs,1,1);
+        if (!creator.checkInput() || !creator.process()) {
+            System.err.println(creator.getErrorMessage());
+            return null;
+        }
+
+        return creator;
+
+    }
+
+    static ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, DefaultCostMatrixCreator<Integer,Integer> creator, @Nullable String outputObjectsName) {
         ObjCollection outputObjects = null;
         if (outputObjectsName != null) outputObjects = new ObjCollection(outputObjectsName);
 
-        // Determining links using Munkres (Hungarian) algorithm
-        writeMessage("Calculating links");
-        HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(costs);
-        int[] assignment = hungarianAlgorithm.execute();
+        JaqamanLinker<Integer,Integer> linker = new JaqamanLinker<>(creator);
+        if (!linker.checkInput() || !linker.process()) return null;
+        Map<Integer,Integer> assignment = linker.getResult();
 
-        ArrayList<Obj> objects1 = new ArrayList<>(inputObjects1.values());
-        ArrayList<Obj> objects2 = new ArrayList<>(inputObjects2.values());
-
-        // Applying the calculated assignments as relationships
-        long totalPairs = inputObjects1.size()*inputObjects2.size();
-        long count = 0;
-        for (int curr = 0; curr < assignment.length; curr++) {
-            // Getting the object from the current frame
-            Obj object1 = objects1.get(curr);
-
-            // Checking if the two objects can be linked
-            if (assignment[curr] == -1 || costs[curr][assignment[curr]] == Double.MAX_VALUE) continue;
-
-            // Getting linked object
-            Obj object2 = objects2.get(assignment[curr]);
+        for (Integer ID1:assignment.keySet()) {
+            int ID2 = assignment.get(ID1);
+            Obj object1 = inputObjects1.get(ID1);
+            Obj object2 = inputObjects2.get(ID2);
 
             // Adding measurements
             object1.addMeasurement(new Measurement(getFullName(object2.getName(),Measurements.WAS_LINKED1),1));
@@ -163,11 +234,13 @@ public class RelateOneToOne extends Module {
                 int ID = outputObjects.getAndIncrementID();
                 outputObjects.add(createClusterObject(object1,object2,outputObjectsName,ID));
             }
-
-            writeMessage("Assigned links for "+Math.floorDiv(100*(count++),totalPairs)+"% of pairs");
-
         }
 
+        return outputObjects;
+
+    }
+
+    static void addMissingLinks(ObjCollection inputObjects1, ObjCollection inputObjects2) {
         // Ensuring input objects have "WAS_LINKED" measurements
         String name = getFullName(inputObjects2.getName(),Measurements.WAS_LINKED1);
         for (Obj object1:inputObjects1.values()) {
@@ -178,9 +251,6 @@ public class RelateOneToOne extends Module {
         for (Obj object2:inputObjects2.values()) {
             if (object2.getMeasurement(name) == null) object2.addMeasurement(new Measurement(name,0));
         }
-
-        return outputObjects;
-
     }
 
     static Obj createClusterObject(Obj object1, Obj object2, String outputObjectsName, int ID) {
@@ -252,19 +322,30 @@ public class RelateOneToOne extends Module {
         if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDppXY();
 
         // Calculating linking costs
-        double[][] costs = null;
+        ArrayList<Linkable> linkables = null;
         switch (relationshipMode) {
             case ResolveCoOccurrence.OverlapModes.CENTROID_SEPARATION:
-                costs = calculateCentroidSeparationCosts(inputObjects1,inputObjects2,maximumSeparation);
+            default:
+                linkables = getCentroidSeparationLinkables(inputObjects1,inputObjects2,maximumSeparation);
                 break;
 
             case ResolveCoOccurrence.OverlapModes.SPATIAL_OVERLAP:
-                costs = calculateSpatialOverlapCosts(inputObjects1,inputObjects2,minOverlap1,minOverlap2);
+                linkables = getSpatialOverlapLinkables(inputObjects1,inputObjects2,minOverlap1,minOverlap2);
                 break;
         }
 
-        // Assigning optimal links
-        ObjCollection outputObjects = assignLinks(inputObjects1,inputObjects2,costs,outputObjectsName);
+        ObjCollection outputObjects = null;
+        if (linkables.size() != 0) {
+            // Creating cost matrix and checking creator was created
+            DefaultCostMatrixCreator<Integer,Integer> creator = getCostMatrixCreator(linkables);
+            if (creator != null) outputObjects = assignLinks(inputObjects1, inputObjects2, creator, outputObjectsName);
+        }
+
+        // Assigning missing links
+        addMissingLinks(inputObjects1,inputObjects2);
+
+        // Creating an empty output objects collection if one hasn't already been created
+        if (outputObjects == null) outputObjects = new ObjCollection(outputObjectsName);
 
         if (createClusterObjects) workspace.addObjects(outputObjects);
 
