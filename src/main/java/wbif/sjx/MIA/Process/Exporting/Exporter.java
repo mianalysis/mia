@@ -3,13 +3,11 @@
 
 package wbif.sjx.MIA.Process.Exporting;
 
-import loci.poi.hssf.usermodel.HSSFFont;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
@@ -830,6 +828,9 @@ public class Exporter {
 
             String objectName = availableObject.getObjectsName();
 
+            // Check if this object has any associated measurements; if not, skip it
+            if (!modules.objectsExportMeasurements(objectName)) continue;
+
             // Creating relevant sheet prefixed with "OBJ"
             objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 
@@ -896,12 +897,8 @@ public class Exporter {
                 }
             }
 
-            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
-
-            // If the current object hasn't got any assigned measurements, skip it
-            if (objectMeasurementRefs == null) continue;
-
             // Running through all the object measurement values, adding them as new columns
+            ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
@@ -920,6 +917,8 @@ public class Exporter {
         for (Workspace workspace : workspaces) {
             for (String objectName : workspace.getObjects().keySet()) {
                 ObjCollection objects = workspace.getObjects().get(objectName);
+
+                if (!modules.objectsExportMeasurements(objectName)) continue;
 
                 if (objects.values().iterator().hasNext()) {
                     for (Obj object : objects.values()) {

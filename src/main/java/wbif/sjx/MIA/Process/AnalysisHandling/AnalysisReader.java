@@ -23,6 +23,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -66,9 +67,7 @@ public class AnalysisReader {
         System.out.println("Loading analysis");
         GUI.setProgress(0);
 
-        if (xml.startsWith("\uFEFF")) {
-            xml = xml.substring(1);
-        }
+        if (xml.startsWith("\uFEFF")) xml = xml.substring(1);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -82,7 +81,15 @@ public class AnalysisReader {
         if(thisVersion.compareTo(loadedVersion) > 0) return LegacyAnalysisReader.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
-        ModuleCollection modules = analysis.getModules();
+        ModuleCollection modules = loadModules(doc);
+        analysis.setModules(modules);
+
+        return analysis;
+
+    }
+
+    public static ModuleCollection loadModules(Document doc) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        ModuleCollection modules = new ModuleCollection();
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
@@ -100,19 +107,15 @@ public class AnalysisReader {
 
             // If the module is an input, treat it differently
             if (module.getClass().isInstance(new InputControl(modules))) {
-                analysis.getModules().setInputControl((InputControl) module);
+                modules.setInputControl((InputControl) module);
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
-                analysis.getModules().setOutputControl((OutputControl) module);
+                modules.setOutputControl((OutputControl) module);
             } else {
                 modules.add(module);
             }
-
-            System.out.println("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
-            GUI.setProgress(100*Math.floorDiv(i,moduleNodes.getLength()));
-
         }
 
-        return analysis;
+        return modules;
 
     }
 

@@ -42,9 +42,6 @@ public class AnalysisRunner {
         batchProcessor.setnThreads(nThreads);
         inputControl.addFilenameFilters(batchProcessor);
 
-        // Adding a filter to specifically remove OSX temp files
-        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.EXC_PARTIAL));
-
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
         GUI.setProgress(0);

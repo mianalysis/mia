@@ -86,6 +86,17 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
+    public boolean objectsExportMeasurements(String objectName) {
+        ObjMeasurementRefCollection refCollection = getObjectMeasurementRefs(objectName);
+
+        for (ObjMeasurementRef ref:refCollection.values()) {
+            if (ref.isExportIndividual() && ref.isExportGlobal()) return true;
+        }
+
+        return false;
+
+    }
+
     void addObjectMeasurementRefs(Module module, ObjMeasurementRefCollection measurementRefs, String objectName) {
         if (!module.isEnabled()) return;
         ObjMeasurementRefCollection currentMeasurementRefs = module.updateAndGetObjectMeasurementRefs();

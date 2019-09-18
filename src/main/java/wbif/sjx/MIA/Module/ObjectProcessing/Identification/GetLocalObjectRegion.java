@@ -30,14 +30,6 @@ public class GetLocalObjectRegion extends Module {
 
 
     public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
-        // If no reference image is supplied, it's possible to have negative coordinates
-        int xMin = 0;
-        int xMax = Integer.MAX_VALUE;
-        int yMin = 0;
-        int yMax = Integer.MAX_VALUE;
-        int zMin = 0;
-        int zMax = Integer.MAX_VALUE;
-
         // Getting spatial calibration
         double dppXY = inputObject.getDppXY();
         double dppZ = inputObject.getDppZ();
@@ -52,24 +44,23 @@ public class GetLocalObjectRegion extends Module {
         double zCent = inputObject.getZMean(true,false);
 
         if (calibrated) {
-            xMin = Math.max((int) Math.floor(xCent - radius/dppXY), xMin);
-            xMax = Math.min((int) Math.ceil(xCent + radius/dppXY), xMax);
-            yMin = Math.max((int) Math.floor(yCent - radius/dppXY), yMin);
-            yMax = Math.min((int) Math.ceil(yCent + radius/dppXY), yMax);
-            zMin = Math.max((int) Math.floor(zCent - radius/dppZ),zMin);
-            zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), zMax);
+            int xMin = Math.max((int) Math.floor(xCent - radius/dppXY),0);
+            int xMax = Math.min((int) Math.ceil(xCent + radius/dppXY),inputObject.getWidth()-1);
+            int yMin = Math.max((int) Math.floor(yCent - radius/dppXY),0);
+            int yMax = Math.min((int) Math.ceil(yCent + radius/dppXY),inputObject.getHeight()-1);
+            int zMin = Math.max((int) Math.floor(zCent - radius/dppZ),0);
+            int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ),inputObject.getnSlices()-1);
 
-            for (int x = xMin; x <= xMax; x++) {
+            for (int x=xMin; x<xMax; x++) {
                 double xx = (xCent - x) * dppXY;
 
-                for (int y = yMin; y <= yMax; y++) {
+                for (int y=yMin; y<yMax; y++) {
                     double yy = (yCent - y) * dppXY;
 
                     if (inputObject.is2D()) {
                         if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
-
                     } else {
-                        for (int z = zMin; z <= zMax; z++) {
+                        for (int z=zMin; z<zMax; z++) {
                             double zz = (zCent - z) * dppZ;
                             if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
@@ -77,26 +68,24 @@ public class GetLocalObjectRegion extends Module {
                 }
             }
         } else {
-            xMin = Math.max((int) Math.floor(xCent - radius), xMin);
-            xMax = Math.min((int) Math.ceil(xCent + radius), xMax);
-            yMin = Math.max((int) Math.floor(yCent - radius), yMin);
-            yMax = Math.min((int) Math.ceil(yCent + radius), yMax);
-            zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),zMin);
-            zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), zMax);
+            int xMin = Math.max((int) Math.floor(xCent - radius), 0);
+            int xMax = Math.min((int) Math.ceil(xCent + radius), inputObject.getWidth()-1);
+            int yMin = Math.max((int) Math.floor(yCent - radius), 0);
+            int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight()-1);
+            int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),0);
+            int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getnSlices()-1);
 
-            for (int x = xMin; x <= xMax; x++) {
+            for (int x=xMin; x<xMax; x++) {
                 double xx = xCent - x;
 
-                for (int y = yMin; y <= yMax; y++) {
+                for (int y=yMin; y<yMax; y++) {
                     double yy = yCent - y;
 
                     if (inputObject.is2D()) {
                         if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
-
                     } else {
-                        for (int z = zMin; z <= zMax; z++) {
+                        for (int z=zMin; z<zMax; z++) {
                             double zz = (zCent - z) / xy_z_ratio;
-
                             if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
                         }
                     }

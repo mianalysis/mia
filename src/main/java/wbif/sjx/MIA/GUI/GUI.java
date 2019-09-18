@@ -235,45 +235,33 @@ public class GUI {
         mainPanel.updateParameters();
     }
 
-    public static void updateTestFile() {
+    public static void updateTestFile(boolean verbose) {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
-        if (inputPath == null) return;
-
-        String inputFile = "";
-        if (new File(inputPath).isFile()) {
-            inputFile = inputPath;
-        } else {
-            BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
-            batchProcessor.setnThreads(nThreads);
-            inputControl.addFilenameFilters(batchProcessor);
-
-            // Running the analysis
-            File nextFile = batchProcessor.getNextValidFileInStructure();
-            if (nextFile == null) {
-                inputFile = null;
+        File nextFile = null;
+        if (inputPath != null) {
+            if (new File(inputPath).isFile()) {
+                nextFile = new File(inputPath);
             } else {
-                inputFile = nextFile.getAbsolutePath();
+                BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
+                inputControl.addFilenameFilters(batchProcessor);
+                nextFile = batchProcessor.getNextValidFileInStructure();
             }
         }
 
-        if (inputFile == null) return;
+        // If the new file is null, warn that no valid images were found
+        if (nextFile == null && verbose) MIA.log.writeWarning("No valid images found at specified path");
 
-        if (testWorkspace.getMetadata().getFile() == null) {
-            lastModuleEval = -1;
-            testWorkspace = new Workspace(1, new File(inputFile),1);
-        }
+        // If the new file is the same as the old, skip this
+        File previousFile = testWorkspace.getMetadata().getFile();
+        if (previousFile == null && nextFile == null) return;
+        if (previousFile != null && nextFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath())) return;
 
-        // If the input path isn't the same assign this new file
-        if (!testWorkspace.getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
-            lastModuleEval = -1;
-            testWorkspace = new Workspace(1,new File(inputFile),1);
-
-        }
+        lastModuleEval = -1;
+        testWorkspace = new Workspace(1,nextFile,1);
 
         ChoiceP seriesMode = (ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE);
         switch (seriesMode.getChoice()) {
