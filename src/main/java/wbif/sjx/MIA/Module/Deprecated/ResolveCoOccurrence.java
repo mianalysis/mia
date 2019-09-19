@@ -2,7 +2,6 @@
 
 package wbif.sjx.MIA.Module.Deprecated;
 
-import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;

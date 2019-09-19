@@ -47,18 +47,15 @@ public class Analysis {
         // Running through modules
         int total = modules.size();
         int count = 0;
+        boolean status = true;
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
-            if (module.isEnabled() && module.isRunnable()) {
-                boolean status = module.execute(workspace);
+            if (status && module.isEnabled() && module.isRunnable()) {
+                status = module.execute(workspace);
                 if (!status) {
-                    // The module failed or requested analysis termination.  Add this message to the write
+                    // The module failed or requested analysis termination.  Add this message to the log
                     MIA.log.write("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
                             "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").", LogRenderer.Level.WARNING);
-
-                    // End the analysis generateModuleList
-                    break;
-
                 }
             }
 
@@ -67,6 +64,7 @@ public class Analysis {
             ProgressMonitor.setWorkspaceProgress(workspace,percentageComplete);
             double overallPercentageComplete = ProgressMonitor.getOverallProgress();
             GUI.setProgress((int) Math.round(overallPercentageComplete));
+
         }
 
         // We're only interested in the measurements now, so clearing images and object coordinates

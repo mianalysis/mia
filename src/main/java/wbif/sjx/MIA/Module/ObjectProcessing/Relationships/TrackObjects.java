@@ -1,13 +1,18 @@
 // TODO: Could do with spinning the core element of this into a series of Track classes in the Common library
 // TODO: Get direction costs working in 3D
 
-package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
+package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
-import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
-import javax.annotation.Nullable;import ij.ImagePlus;
+import javax.annotation.Nullable;
+
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
+import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import ij.ImagePlus;
+import jogamp.graph.font.typecast.ot.table.ID;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -20,10 +25,7 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by sc13967 on 20/09/2017.
@@ -99,8 +101,8 @@ public class TrackObjects extends Module {
     public ArrayList<Obj>[] getCandidateObjects(ObjCollection inputObjects, int t1, int t2) {
         // Creating a pair of ArrayLists to store the current and previous objects
         ArrayList<Obj>[] objects = new ArrayList[2];
-        objects[0] = new ArrayList<>();
-        objects[1] = new ArrayList<>();
+        objects[0] = new ArrayList<>(); // Previous objects
+        objects[1] = new ArrayList<>(); // Current objects
 
         // Include objects from the previous and current frames that haven't been linked
         for (Obj inputObject:inputObjects.values()) {
@@ -117,7 +119,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public double[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
+    public ArrayList<Linkable> calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         double maxVolumeChange = parameters.getValue(MAXIMUM_VOLUME_CHANGE);
@@ -134,11 +136,11 @@ public class TrackObjects extends Module {
 
         String linkingMethod = parameters.getValue(LINKING_METHOD);
 
-        // Creating the cost matrix
-        double[][] cost = new double[currObjects.size()][prevObjects.size()];
+        // Creating the ArrayList containing linkables
+        ArrayList<Linkable> linkables = new ArrayList<>();
 
-        for (int curr = 0; curr < cost.length; curr++) {
-            for (int prev = 0; prev < cost[curr].length; prev++) {
+        for (int curr = 0; curr < currObjects.size(); curr++) {
+            for (int prev = 0; prev < prevObjects.size(); prev++) {
                 Obj prevObj = prevObjects.get(prev);
                 Obj currObj = currObjects.get(curr);
 
@@ -146,7 +148,7 @@ public class TrackObjects extends Module {
                 double spatialCost = 0;
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        double separation = getCentroidSeparationCost(prevObj, currObj);
+                        double separation = prevObj.getCentroidSeparation(currObj,true);
                         spatialCost = separation > maxDist ? Double.MAX_VALUE : separation;
                         break;
                     case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -196,28 +198,15 @@ public class TrackObjects extends Module {
                 }
 
                 // Assigning costs if the link is valid (set to Double.NaN otherwise)
-                cost[curr][prev] = linkValid ? (spatialCost + volumeCost*volumeWeighting +
-                        directionCost*directionWeighting + measurementCost*measurementWeighting) : Double.MAX_VALUE;
-
+                if (linkValid) {
+                    double cost = spatialCost + volumeCost*volumeWeighting + directionCost*directionWeighting +
+                            measurementCost*measurementWeighting;
+                    linkables.add(new Linkable(cost,currObj.getID(),prevObj.getID()));
+                }
             }
         }
 
-        return cost;
-
-    }
-
-    public static double getCentroidSeparationCost(Obj prevObj, Obj currObj) {
-        double prevXCent = prevObj.getXMean(true);
-        double prevYCent = prevObj.getYMean(true);
-        double prevZCent = prevObj.getZMean(true,true);
-
-        double currXCent = currObj.getXMean(true);
-        double currYCent = currObj.getYMean(true);
-        double currZCent = currObj.getZMean(true,true);
-
-        return Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
-                (prevYCent - currYCent) * (prevYCent - currYCent) +
-                (prevZCent - currZCent) * (prevZCent - currZCent));
+        return linkables;
 
     }
 
@@ -253,20 +242,11 @@ public class TrackObjects extends Module {
         double prevVol = prevObj.size();
         double currVol = currObj.size();
 
-//        if (currObj.is2D()) {
-//            prevVol = Math.sqrt(prevVol);
-//            currVol = Math.sqrt(currVol);
-//        } else {
-//            prevVol = Math.cbrt(prevVol);
-//            currVol = Math.cbrt(currVol);
-//        }
-
         return Math.abs(prevVol-currVol);
 
     }
 
     public static double getMeasurementCost(Obj prevObj, Obj currObj, String measurementName) {
-
         Measurement currMeasurement = currObj.getMeasurement(measurementName);
         Measurement prevMeasurement = prevObj.getMeasurement(measurementName);
 
@@ -333,7 +313,7 @@ public class TrackObjects extends Module {
     }
 
     public static boolean testSeparationValidity(Obj prevObj, Obj currObj, double maxDist) {
-        double dist = getCentroidSeparationCost(prevObj,currObj);
+        double dist = prevObj.getCentroidSeparation(currObj,true);
         return dist <= maxDist;
     }
 
@@ -475,13 +455,20 @@ public class TrackObjects extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
+        return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
     }
 
     @Override
     public String getDescription() {
-        return "Uses Munkres Assignment Algorithm implementation from Apache HBase library" +
-                "\nLeading point currently only works in 2D";
+        return "Track objects between frames.  Tracks are produced as separate \"parent\" objects to the \"child\" " +
+                "spots.  Track objects only serve to link different timepoint instances of objects together.  As such, " +
+                "track objects store no coordinate information." +
+                "<br><br>" +
+                "Uses the TrackMate implementation of the Jaqaman linear assignment problem solving algorithm " +
+                "(Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating " +
+                "costs in order to minimise memory overhead." +
+                "<br><br>" +
+                "Note: Leading point determination currently only works in 2D";
     }
 
     @Override
@@ -545,22 +532,25 @@ public class TrackObjects extends Module {
                 }
 
                 // Calculating distances between objects and populating the cost matrix
-                double[][] costs = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
-                HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(costs);
-                int[] assignment = hungarianAlgorithm.execute();
-
+                ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
+                DefaultCostMatrixCreator<Integer,Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
+                JaqamanLinker<Integer,Integer> linker = new JaqamanLinker<>(creator);
+                if (!linker.checkInput() || !linker.process()) {
+                    MIA.log.writeError(linker.getErrorMessage());
+                    return false;
+                }
+                Map<Integer,Integer> assignment = linker.getResult();
                 // Applying the calculated assignments as relationships
-                for (int curr = 0; curr < assignment.length; curr++) {
-                    // Getting the object from the current frame
-                    Obj currObj = nPObjects[1].get(curr);
+                for (int ID1:assignment.keySet()) {
+                    int ID2 = assignment.get(ID1);
+                    Obj currObj = inputObjects.get(ID1);
+                    Obj prevObj = inputObjects.get(ID2);
+                    linkObjects(prevObj, currObj, trackObjectsName);
+                }
 
-                    // Checking if the previous and current objects can be linked
-                    if (assignment[curr] != -1 && costs[curr][assignment[curr]] != Double.MAX_VALUE) {
-                        Obj prevObj = nPObjects[0].get(assignment[curr]);
-                        linkObjects(prevObj, currObj, trackObjectsName);
-                    } else if (t1 == t2 - 1 - maxMissingFrames) {
-                        createNewTrack(currObj, trackObjects);
-                    }
+                // Assigning any objects in the current frame without a track as new tracks
+                for (Obj currObj:nPObjects[1]) {
+                    if (currObj.getParent(trackObjectsName) == null) createNewTrack(currObj, trackObjects);
                 }
             }
         }

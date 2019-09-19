@@ -163,9 +163,6 @@ public class BatchProcessor extends FileCrawler {
                         if (continuousExport && nComplete % saveNFiles == 0) exporter.exportResults(workspaces, analysis);
                         if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) exporter.exportResults(workspace, analysis);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-
                     } catch (Throwable t) {
                         System.err.println("Failed for file " + finalNext.getName());
                         t.printStackTrace(System.err);
@@ -244,10 +241,6 @@ public class BatchProcessor extends FileCrawler {
                 String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
                         + " (" + dfDec.format(percentageComplete) + "%)";
                 System.out.println(string);
-
-                // Clearing images from the workspace to prevent memory leak
-                workspace.clearAllImages(true);
-                workspace.clearAllObjects(true);
 
             };
 
