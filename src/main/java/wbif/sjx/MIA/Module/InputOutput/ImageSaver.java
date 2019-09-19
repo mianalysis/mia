@@ -42,6 +42,7 @@ public class ImageSaver extends Module {
     public static final String SAVE_SUFFIX = "Add filename suffix";
 
     public static final String FORMAT_SEPARATOR = "Output image format";
+    public static final String FILE_FORMAT = "File format";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
@@ -84,6 +85,22 @@ public class ImageSaver extends Module {
         String NEVER = "Never";
 
         String[] ALL = new String[]{ALWAYS,IF_FILE_EXISTS, NEVER};
+
+    }
+
+    public interface FileFormats {
+        //        String AVI = "AVI"; // avi
+//        String BITMAP = "Bitmap"; // bmp
+//        String FITS = "FITS"; // fits
+//        String JPEG = "JPEG"; // jpeg
+//        String PGM = "PGM"; // pgm
+//        String PNG = "PNG"; // png
+        String RAW = "Raw"; // raw
+        //        String TEXT_IMAGE = "Text image"; // text image
+        String TIF = "TIF"; // tif
+        String ZIP = "ZIP"; // zip
+
+        String[] ALL = new String[]{RAW,TIF,ZIP};
 
     }
 
@@ -148,6 +165,20 @@ public class ImageSaver extends Module {
 
     }
 
+    public static void saveImage(ImagePlus inputImagePlus, String fileFormat, String path) {
+        switch (fileFormat) {
+            case FileFormats.RAW:
+                IJ.saveAs(inputImagePlus,"raw",path);
+                break;
+            case FileFormats.TIF:
+                IJ.saveAs(inputImagePlus,"tif",path);
+                break;
+            case FileFormats.ZIP:
+                IJ.saveAs(inputImagePlus,"zip",path);
+                break;
+        }
+    }
+
 
     @Override
     public String getPackageName() {
@@ -171,6 +202,7 @@ public class ImageSaver extends Module {
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
         String suffix = parameters.getValue(SAVE_SUFFIX);
+        String fileFormat = parameters.getValue(FILE_FORMAT);
         boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
         String channelMode = parameters.getValue(CHANNEL_MODE);
@@ -238,7 +270,7 @@ public class ImageSaver extends Module {
         String name;
         switch (saveNameMode) {
             case SaveNameModes.MATCH_INPUT:
-                default:
+            default:
                 File rootFile = workspace.getMetadata().getFile();
                 name = FilenameUtils.removeExtension(rootFile.getName());
                 break;
@@ -253,7 +285,7 @@ public class ImageSaver extends Module {
         path = appendSeries(path,workspace,appendSeriesMode);
         path = path + suffix + ".tif";
         path = appendDateTime(path,appendDateTimeMode);
-        IJ.save(inputImagePlus,path);
+        saveImage(inputImagePlus,fileFormat,path);
 
         return true;
 
@@ -281,6 +313,7 @@ public class ImageSaver extends Module {
         parameters.add(new StringP(SAVE_SUFFIX, this, "", "A custom suffix to be added to each filename."));
 
         parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR,this));
+        parameters.add(new ChoiceP(FILE_FORMAT,this,FileFormats.TIF,FileFormats.ALL));
         parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL,"Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode."));
         parameters.add(new BooleanP(SAVE_AS_RGB, this,false,"Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ."));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false,"Flatten any overlay elements onto the image prior to saving."));
@@ -319,6 +352,7 @@ public class ImageSaver extends Module {
         returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
 
         returnedParameters.add(parameters.getParameter(FORMAT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(FILE_FORMAT));
         returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
         returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
         if (parameters.getValue(SAVE_AS_RGB)) {

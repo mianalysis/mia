@@ -129,7 +129,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
                             if (imageID != 0) {
                                 // If not using optimised type, each link needs to be added here
-                                links.putIfAbsent(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
+                                if (!links.containsKey(imageID)) links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
 
                                 IDLink link = links.get(imageID);
                                 int outID = link.getID();
@@ -146,10 +146,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
             }
         }
 
-        for (Obj obj : outputObjects.values()) {
-            obj.finalise();
-//            MIA.log.writeDebug("Object Memory usage = "+(((double) SizeEstimator.estimate(obj)/Math.pow(2,20)))+" MB");
-        }
+        for (Obj obj : outputObjects.values()) obj.finalise();
 
         return outputObjects;
 
