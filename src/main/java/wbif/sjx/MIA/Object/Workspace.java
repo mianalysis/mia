@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -15,6 +16,7 @@ public class Workspace {
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
     private int ID;
+
 
     // CONSTRUCTOR
 
@@ -51,8 +53,7 @@ public class Workspace {
     public void removeObject(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
             for (Obj obj:objects.get(name).values()) {
-                obj.clearPoints();
-                obj.clearSurface();
+                obj.clearAllCoordinates();
             }
         } else {
             objects.remove(name);
@@ -80,9 +81,7 @@ public class Workspace {
             // Sets the ImagePlus to null, but leaves measurements
             for (Image image:images.values()) {
                 image.setImagePlus(null);
-
             }
-
         } else {
             // Removes all the data
             images = new LinkedHashMap<>();
@@ -94,12 +93,9 @@ public class Workspace {
             // Sets the ImagePlus to null, but leaves measurements
             for (ObjCollection objCollection :objects.values()) {
                 for (Obj obj: objCollection.values()) {
-                    obj.clearPoints();
-                    obj.clearSurface();
-
+                    obj.clearAllCoordinates();
                 }
             }
-
         } else {
             // Removes all the data
             objects = new LinkedHashMap<>();

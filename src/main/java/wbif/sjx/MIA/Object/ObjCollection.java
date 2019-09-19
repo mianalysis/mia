@@ -20,7 +20,6 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
 
-
     public ObjCollection(String name) {
         this.name = name;
     }

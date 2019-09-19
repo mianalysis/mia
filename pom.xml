@@ -51,6 +51,11 @@
             <properties><id>sjcross</id></properties>
         </contributor>
         <contributor>
+            <name>Jordan Fisher</name>
+            <roles><role>developer</role></roles>
+            <properties><id>jdjfisher</id></properties>
+        </contributor>
+        <contributor>
             <name>Gemma Fisher</name>
             <roles><role>support</role></roles>
             <properties><id>glmfisher</id></properties>
@@ -283,11 +288,11 @@
             <scope>${myscope}</scope>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.bytedeco</groupId>-->
-        <!--            <artifactId>javacv-platform</artifactId>-->
-        <!--            <version>1.5</version>-->
-        <!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.bytedeco</groupId>-->
+<!--            <artifactId>javacv-platform</artifactId>-->
+<!--            <version>1.5</version>-->
+<!--        </dependency>-->
 
         <!--        <dependency>-->
         <!--            <groupId>io.github.joheras</groupId>-->
@@ -310,18 +315,11 @@
         <dependency>
 <!--            <groupId>wbif.sjx</groupId>-->
 <!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.5.2-SNAPSHOT</version>-->
+<!--            <version>1.5.3-SNAPSHOT</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.5.2</version>
+            <version>1.5.3</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-core_2.12</artifactId>-->
-<!--            <version>2.4.3</version>-->
-<!--            <scope>${myscope}</scope>-->
-<!--        </dependency>-->
     </dependencies>
 
     <build>
