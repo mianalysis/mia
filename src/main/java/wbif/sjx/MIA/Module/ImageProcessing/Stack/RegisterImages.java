@@ -40,10 +40,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String ALIGNMENT_MODE = "Alignment mode";
+    public static final String TRANSFORMATION_MODE = "Transformation mode";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+    public static final String FILL_MODE = "Fill mode";
+
+    public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String RELATIVE_MODE = "Relative mode";
     public static final String ROLLING_CORRECTION = "Rolling correction";
     public static final String CORRECTION_INTERVAL = "Correction interval";
@@ -51,7 +59,8 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
-    public static final String TRANSFORMATION_MODE = "Transformation mode";
+
+    public static final String FEATURE_SEPARATOR = "Feature detection (SIFT)";
     public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
     public static final String STEPS = "Steps per scale";
     public static final String MINIMUM_IMAGE_SIZE = "Minimum image size (px)";
@@ -61,8 +70,6 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
     public static final String ROD = "Closest/next closest ratio";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
-    public static final String FILL_MODE = "Fill mode";
-    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     private Image inputImage;
     private Image reference;
@@ -544,7 +551,11 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
                 param.maxEpsilon = (float) maxEpsilon;
                 param.minInlierRatio = (float) minInlierRatio;
 
-                Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
+                // Getting external source image
+                Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
+                        ? new Image(externalSourceName,workspace.getImage(externalSourceName).getImagePlus().duplicate())
+                        : null;
+
                 processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference, externalSource);
 
                 if (showOutput) {
@@ -575,10 +586,18 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+
+        parameters.add(new ParamSeparatorP(REGISTRATION_SEPARATOR,this));
+        parameters.add(new ChoiceP(TRANSFORMATION_MODE,this,TransformationModes.RIGID,TransformationModes.ALL));
         parameters.add(new ChoiceP(ALIGNMENT_MODE,this,AlignmentModes.AUTOMATIC,AlignmentModes.ALL));
+        parameters.add(new ChoiceP(FILL_MODE,this,FillModes.BLACK,FillModes.ALL));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
+
+        parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR,this));
         parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
         parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
         parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
@@ -586,7 +605,8 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
-        parameters.add(new ChoiceP(TRANSFORMATION_MODE,this,TransformationModes.RIGID,TransformationModes.ALL));
+
+        parameters.add(new ParamSeparatorP(FEATURE_SEPARATOR,this));
         parameters.add(new DoubleP(INITIAL_SIGMA,this,1.6));
         parameters.add(new IntegerP(STEPS,this,3));
         parameters.add(new IntegerP(MINIMUM_IMAGE_SIZE,this,64));
@@ -596,23 +616,29 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         parameters.add(new DoubleP(ROD,this,0.92));
         parameters.add(new DoubleP(MAX_EPSILON,this,25.0));
         parameters.add(new DoubleP(MIN_INLIER_RATIO,this,0.05));
-        parameters.add(new ChoiceP(FILL_MODE,this,FillModes.BLACK,FillModes.ALL));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
         returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
+        returnedParameters.add(parameters.getParameter(FILL_MODE));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
+
         switch ((String) parameters.getValue(ALIGNMENT_MODE)) {
             case AlignmentModes.AUTOMATIC:
+                returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
                 switch ((String) parameters.getValue(RELATIVE_MODE)) {
                     case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
@@ -637,7 +663,8 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
                 }
 
                 returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
-                returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
+
+                returnedParameters.add(parameters.getParameter(FEATURE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(INITIAL_SIGMA));
                 returnedParameters.add(parameters.getParameter(STEPS));
                 returnedParameters.add(parameters.getParameter(MINIMUM_IMAGE_SIZE));
@@ -650,13 +677,10 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
                 break;
 
             case AlignmentModes.MANUAL:
+                returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-                returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(FILL_MODE));
-        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 

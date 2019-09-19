@@ -148,7 +148,7 @@ public class TrackObjects extends Module {
                 double spatialCost = 0;
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        double separation = getCentroidSeparationCost(prevObj, currObj);
+                        double separation = prevObj.getCentroidSeparation(currObj,true);
                         spatialCost = separation > maxDist ? Double.MAX_VALUE : separation;
                         break;
                     case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -210,21 +210,6 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getCentroidSeparationCost(Obj prevObj, Obj currObj) {
-        double prevXCent = prevObj.getXMean(true);
-        double prevYCent = prevObj.getYMean(true);
-        double prevZCent = prevObj.getZMean(true,true);
-
-        double currXCent = currObj.getXMean(true);
-        double currYCent = currObj.getYMean(true);
-        double currZCent = currObj.getZMean(true,true);
-
-        return Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
-                (prevYCent - currYCent) * (prevYCent - currYCent) +
-                (prevZCent - currZCent) * (prevZCent - currZCent));
-
-    }
-
     public static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
         // Getting coordinates for each object
         TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
@@ -257,20 +242,11 @@ public class TrackObjects extends Module {
         double prevVol = prevObj.size();
         double currVol = currObj.size();
 
-//        if (currObj.is2D()) {
-//            prevVol = Math.sqrt(prevVol);
-//            currVol = Math.sqrt(currVol);
-//        } else {
-//            prevVol = Math.cbrt(prevVol);
-//            currVol = Math.cbrt(currVol);
-//        }
-
         return Math.abs(prevVol-currVol);
 
     }
 
     public static double getMeasurementCost(Obj prevObj, Obj currObj, String measurementName) {
-
         Measurement currMeasurement = currObj.getMeasurement(measurementName);
         Measurement prevMeasurement = prevObj.getMeasurement(measurementName);
 
@@ -337,7 +313,7 @@ public class TrackObjects extends Module {
     }
 
     public static boolean testSeparationValidity(Obj prevObj, Obj currObj, double maxDist) {
-        double dist = getCentroidSeparationCost(prevObj,currObj);
+        double dist = prevObj.getCentroidSeparation(currObj,true);
         return dist <= maxDist;
     }
 
@@ -484,8 +460,15 @@ public class TrackObjects extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses Munkres Assignment Algorithm implementation from Apache HBase library" +
-                "\nLeading point currently only works in 2D";
+        return "Track objects between frames.  Tracks are produced as separate \"parent\" objects to the \"child\" " +
+                "spots.  Track objects only serve to link different timepoint instances of objects together.  As such, " +
+                "track objects store no coordinate information." +
+                "<br><br>" +
+                "Uses the TrackMate implementation of the Jaqaman linear assignment problem solving algorithm " +
+                "(Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating " +
+                "costs in order to minimise memory overhead." +
+                "<br><br>" +
+                "Note: Leading point determination currently only works in 2D";
     }
 
     @Override
