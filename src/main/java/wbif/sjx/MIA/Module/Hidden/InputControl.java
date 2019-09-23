@@ -7,6 +7,7 @@ import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
 import loci.formats.MissingLibraryException;
+import loci.formats.UnknownFormatException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.ome.OMEXMLMetadata;
 import loci.formats.services.OMEXMLService;
@@ -14,6 +15,7 @@ import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
@@ -117,25 +119,25 @@ public class InputControl extends Module {
         }
 
         // Adding a filter to specifically remove OSX temp files
-        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.EXC_PARTIAL));
+        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.Mode.EXC_PARTIAL));
 
     }
 
     private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {
-        int fileCondition;
+        FileCondition.Mode fileCondition;
         switch (filterType) {
             case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
             default:
-                fileCondition = FileCondition.INC_PARTIAL;
+                fileCondition = FileCondition.Mode.INC_PARTIAL;
                 break;
             case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                fileCondition = FileCondition.INC_COMPLETE;
+                fileCondition = FileCondition.Mode.INC_COMPLETE;
                 break;
             case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                fileCondition = FileCondition.EXC_PARTIAL;
+                fileCondition = FileCondition.Mode.EXC_PARTIAL;
                 break;
             case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                fileCondition = FileCondition.EXC_COMPLETE;
+                fileCondition = FileCondition.Mode.EXC_COMPLETE;
                 break;
         }
 
@@ -191,7 +193,7 @@ public class InputControl extends Module {
         reader.setGroupFiles(false);
         try {
             reader.setId(inputFile.getAbsolutePath());
-        } catch (IllegalArgumentException | MissingLibraryException e) {
+        } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
             namesAndNumbers.put(0,inputFile.getAbsolutePath());
             return namesAndNumbers;
         }
@@ -305,7 +307,7 @@ public class InputControl extends Module {
         collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.EXTENSION,FilterSources.ALL,"Type of filter to add."));
         collection.add(new StringP(FILTER_VALUE,this,"","Value to filter filenames against."));
         collection.add(new ChoiceP(FILTER_TYPE,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL,"Control how the present filter operates.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source (e.g. filename or extension).  \"Matches completely (include)\" will process an image if the filter value is exactly the same as the source.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source.  \"Matches completely (exclude)\" will not process an image if the filter value is exactly the same as the source."));
-        parameters.add(new ParameterGroup(ADD_FILTER,this,collection,1,"Add another filename filter.  All images to be processed will pass all filters."));
+        parameters.add(new ParameterGroup(ADD_FILTER,this,collection,0,"Add another filename filter.  All images to be processed will pass all filters."));
 
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 

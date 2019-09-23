@@ -113,6 +113,7 @@ public class MeasureSkeleton extends Module {
             workspace.addObjects(outputObjects);
         }
 
+        // Configuring multithreading
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 

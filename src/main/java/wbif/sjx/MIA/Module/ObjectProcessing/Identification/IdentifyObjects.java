@@ -2,6 +2,7 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;

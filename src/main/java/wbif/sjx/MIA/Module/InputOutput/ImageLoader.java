@@ -2,12 +2,14 @@
 
 package wbif.sjx.MIA.Module.InputOutput;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.process.ImageProcessor;
+import ij.process.LUT;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -16,6 +18,7 @@ import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
+import loci.plugins.in.ImporterOptions;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
@@ -23,6 +26,7 @@ import net.imglib2.type.numeric.RealType;
 import ome.units.quantity.Length;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
+import ome.xml.model.primitives.Color;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
@@ -47,6 +51,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -176,6 +181,27 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public HashMap<Integer, LUT> getLUTs(IMetadata meta, int series) {
+        HashMap<Integer,LUT> luts = new HashMap<>();
+
+        for (int c=0;c<meta.getChannelCount(series);c++) {
+            Color color = meta.getChannelColor(series,c);
+
+            if (color == null) {
+                luts.put(c,null);
+            } else {
+                int red = color.getRed();
+                int green = color.getGreen();
+                int blue = color.getBlue();
+                LUT lut = LUT.createLutFromColor(new java.awt.Color(red,green,blue));
+                luts.put(c,lut);
+            }
+        }
+
+        return luts;
+
+    }
+
     public ImagePlus getBFImage(String path, int seriesNumber, @Nonnull String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean manualCal, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
@@ -185,9 +211,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         IMetadata meta = service.createOMEXMLMetadata();
+
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
-
         reader.setGroupFiles(false);
         reader.setId(path);
         reader.setSeries(seriesNumber - 1);
@@ -280,6 +306,17 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             countZ++;
         }
 
+        // Applying LUTs
+        HashMap<Integer,LUT> luts = getLUTs(meta,seriesNumber-1);
+        for (int c : channelsList) {
+            LUT lut = luts.get(c-1);
+            if (lut == null) continue;
+            if (ipl.isComposite()) {
+                ((CompositeImage) ipl).setChannelLut(lut, c);
+            } else {
+                ipl.setLut(lut);
+            }
+        }
         ipl.setPosition(1, 1, 1);
 
         Unit<Length> unit = Units.getOMEUnits();
