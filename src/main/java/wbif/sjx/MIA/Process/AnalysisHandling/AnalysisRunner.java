@@ -24,6 +24,10 @@ public class AnalysisRunner {
     private static BatchProcessor batchProcessor;
 
     public static void startAnalysis(Analysis analysis) throws IOException, InterruptedException {
+        // Resetting progress monitor
+        ProgressMonitor.resetProgress();
+        GUI.setProgress(0);
+
         // Getting input/output controls
         InputControl inputControl = analysis.getModules().getInputControl();
         OutputControl outputControl = analysis.getModules().getOutputControl();
@@ -41,10 +45,6 @@ public class AnalysisRunner {
         batchProcessor = new BatchProcessor(inputFile);
         batchProcessor.setnThreads(nThreads);
         inputControl.addFilenameFilters(batchProcessor);
-
-        // Resetting progress monitor
-        ProgressMonitor.resetProgress();
-        GUI.setProgress(0);
 
         // Running the analysis
         batchProcessor.run(analysis,exporter,exportName);

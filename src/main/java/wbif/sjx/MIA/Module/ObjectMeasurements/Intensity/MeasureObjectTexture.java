@@ -1,8 +1,12 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
@@ -11,7 +15,11 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.TextureCalculator;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
@@ -66,9 +74,16 @@ public class MeasureObjectTexture extends Module {
     public static void processObject(Obj object, Obj regionObject, Image image, TextureCalculator textureCalculator, double[] rawOffs, boolean calibratedOffset) {
         ImagePlus ipl = image.getImagePlus();
 
-        int t = object.getT()+1;
-        int nSlices = ipl.getNSlices();
-        ImageStack timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-"+nSlices, t+"-"+t).getStack();
+        // If the input stack is a single timepoint and channel, there's no need to create a new ImageStack
+        ImageStack timeStack = null;
+        if (ipl.getNChannels() == 1 && ipl.getNFrames() == 1) {
+            timeStack = ipl.getStack();
+        } else {
+            int t = object.getT() + 1;
+            int nSlices = ipl.getNSlices();
+            timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-" + nSlices, t + "-" + t).getStack();
+        }
+
         textureCalculator.calculate(timeStack,regionObject);
 
         // Acquiring measurements
@@ -94,7 +109,8 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Texture measures, largely from  Robert M. Haralick, K. Shanmugam, and Its'hak Dinstein, " +
+                "\"Textural Features for Image Classification\", IEEE Transactions on Systems, Man, and Cybernetics, 1973, SMC-3 (6): 610–621";
     }
 
     @Override
@@ -103,6 +119,14 @@ public class MeasureObjectTexture extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+
+        // This requires an 8-bit image.  If the provided image isn't 8-bit, convert it
+        if (inputImagePlus.getBitDepth() != 8) {
+            MIA.log.writeWarning("Texture analysis requires an 8-bit image.  Converting to 8-bit with scaling enabled.");
+            inputImagePlus = inputImagePlus.duplicate();
+            ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.SCALE);
+            inputImage = new Image(inputImage.getName(),inputImagePlus);
+        }
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -129,15 +153,15 @@ public class MeasureObjectTexture extends Module {
         TextureCalculator textureCalculator = new TextureCalculator((int) offs[0], (int) offs[1], (int) offs[2]);
 
         int nObjects = inputObjects.size();
-        int iter = 1;
+        AtomicInteger iter = new AtomicInteger(0);
         for (Obj object:inputObjects.values()) {
-            writeMessage("Processed "+(++iter)+" of "+nObjects);
-            Obj regionObject = object;
-            if (centroidMeasurement)  regionObject = GetLocalObjectRegion.getLocalRegion(object,"Centroid",radius,calibrated,false);
-
-            processObject(object,regionObject,inputImage,textureCalculator,offs,calibratedOffset);
-
-        }
+                Obj regionObject = object;
+                if (centroidMeasurement) {
+                    regionObject = GetLocalObjectRegion.getLocalRegion(object, "Centroid", radius, calibrated, false);
+                }
+                processObject(object, regionObject, inputImage, textureCalculator, offs, calibratedOffset);
+                writeMessage("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
+            }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 

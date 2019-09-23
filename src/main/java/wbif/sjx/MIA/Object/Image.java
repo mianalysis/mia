@@ -220,7 +220,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public void showImage() {
-        showImage(name, LUT.createLutFromColor(Color.WHITE));
+        showImage(name,null);
     }
 
     /**
