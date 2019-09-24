@@ -122,7 +122,9 @@ public class BatchProcessor extends FileCrawler {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
+
+                    workspace.clearAllObjects(false);
+                    workspace.clearAllImages(false);}
             };
 
             // Submit the jobs for this file, then tell the pool not to accept any more jobs and to wait until all
@@ -207,12 +209,14 @@ public class BatchProcessor extends FileCrawler {
                         incrementCounter();
                         String nComplete = dfInt.format(getCounter());
                         String nTotal = dfInt.format(pool.getTaskCount());
-                        String percentageComplete = dfDec.format((getCounter() / pool.getTaskCount()) * 100);
+                        String percentageComplete = dfDec.format(((double) getCounter() / (double) pool.getTaskCount()) * 100);
                         System.out.println("Completed "+nComplete+"/"+nTotal+" ("+percentageComplete+"%), "+finalNext.getName());
 
                         if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) {
                             String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
                             exporter.exportResults(workspace, analysis, name);
+                            workspace.clearAllObjects(false);
+                            workspace.clearAllImages(false);
                         }else if (continuousExport && getCounter() % saveNFiles == 0) {
                             String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
                             exporter.exportResults(workspaces, analysis, name);
