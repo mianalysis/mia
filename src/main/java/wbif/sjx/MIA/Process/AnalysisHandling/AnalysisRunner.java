@@ -37,8 +37,8 @@ public class AnalysisRunner {
         if (inputFile == null) return;
 
         // Initialising Exporter
-        String exportName = getExportName(inputControl,outputControl,inputFile);
-        Exporter exporter = initialiseExporter(outputControl,exportName);
+//        String exportName = getExportName(inputControl,outputControl,inputFile);
+        Exporter exporter = initialiseExporter(outputControl);
 
         // Initialising BatchProcessor
         int nThreads = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
@@ -47,7 +47,7 @@ public class AnalysisRunner {
         inputControl.addFilenameFilters(batchProcessor);
 
         // Running the analysis
-        batchProcessor.run(analysis,exporter,exportName);
+        batchProcessor.run(analysis,exporter);
 
         // Cleaning up
         System.out.println("Complete!");
@@ -79,57 +79,43 @@ public class AnalysisRunner {
 
     }
 
-    public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
-        String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
-        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
-        String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
-        String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
-        String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);
-        String saveFileName = outputControl.getParameterValue(OutputControl.SAVE_FILE_NAME);
+//    public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
+//        String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
+//        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
+//        String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
+//        String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
+//        String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);
+//        String saveFileName = outputControl.getParameterValue(OutputControl.SAVE_FILE_NAME);
+//
+//        String outputPath = outputControl.getIndividualOutputPath(inputFile);
+//
+//        // Determining the file name
+//        String name = "";
+//        switch (saveNameMode) {
+//            case OutputControl.SaveNameModes.MATCH_INPUT:
+//                if (inputFile.isFile()) {
+//                    name = FilenameUtils.removeExtension(inputFile.getName());
+//                } else {
+//                    name = inputFile.getName();
+//                }
+//                break;
+//
+//            case OutputControl.SaveNameModes.SPECIFIC_NAME:
+//                name = saveFileName;
+//                break;
+//        }
+//
+//        // Determining the suffix
+//        String suffix = "";
+//        if (seriesMode.equals(InputControl.SeriesModes.SERIES_LIST)) {
+//            suffix = "_S" + seriesList.replace(" ", "");
+//        }
+//
+//        return path + name + suffix;
+//
+//    }
 
-        // Determining the file path
-        String path = "";
-        switch (saveLocation) {
-            case OutputControl.SaveLocations.SAVE_WITH_INPUT:
-                if (inputFile.isFile()) {
-                    path = inputFile.getParent() + MIA.getSlashes();
-                } else {
-                    path = inputFile.getAbsolutePath() + MIA.getSlashes();
-                }
-                break;
-
-            case OutputControl.SaveLocations.SPECIFIC_LOCATION:
-                path = saveFilePath + MIA.getSlashes();
-                break;
-        }
-
-        // Determining the file name
-        String name = "";
-        switch (saveNameMode) {
-            case OutputControl.SaveNameModes.MATCH_INPUT:
-                if (inputFile.isFile()) {
-                    name = FilenameUtils.removeExtension(inputFile.getName());
-                } else {
-                    name = inputFile.getName();
-                }
-                break;
-
-            case OutputControl.SaveNameModes.SPECIFIC_NAME:
-                name = saveFileName;
-                break;
-        }
-
-        // Determining the suffix
-        String suffix = "";
-        if (seriesMode.equals(InputControl.SeriesModes.SERIES_LIST)) {
-            suffix = "_S" + seriesList.replace(" ", "");
-        }
-
-        return path + name + suffix;
-
-    }
-
-    public static Exporter initialiseExporter(OutputControl outputControl, String exportName) {
+    public static Exporter initialiseExporter(OutputControl outputControl) {
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
         String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING);
         boolean exportXLS = outputControl.isEnabled();
@@ -140,7 +126,7 @@ public class AnalysisRunner {
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
 
         // Initialising the exporter (if one was requested)
-        Exporter exporter = exportXLS ? new Exporter(exportName) : null;
+        Exporter exporter = exportXLS ? new Exporter() : null;
         if (exporter != null) {
             exporter.setMetadataItemForGrouping(metadataItemForGrouping);
             exporter.setExportSummary(exportSummary);

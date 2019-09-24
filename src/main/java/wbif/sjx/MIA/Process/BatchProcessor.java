@@ -8,9 +8,7 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
@@ -54,7 +52,7 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public void run(Analysis analysis, Exporter exporter, String exportName) throws IOException, InterruptedException {
+    public void run(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
         MIA.log.clearLog();
 
         shutdownEarly = false;
@@ -63,27 +61,9 @@ public class BatchProcessor extends FileCrawler {
         String exportMode = ((ChoiceP) outputControl.getParameter(OutputControl.EXPORT_MODE)).getChoice();
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
-        // The protocol to generateModuleList will depend on if a single file or a folder was selected
-        if (rootFolder.getFolderAsFile().isFile()) {
-            runSingle(workspaces, analysis);
-
-            if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
-                System.out.println("Exporting results to spreadsheet");
-                if (exporter != null) exporter.exportResults(workspaces, analysis);
-            }
-
-        } else {
-            // The system can generateModuleList multiple files in parallel or one at a time
-            runParallel(workspaces, analysis, exporter);
-
-            switch (exportMode) {
-                case OutputControl.ExportModes.ALL_TOGETHER:
-                case OutputControl.ExportModes.GROUP_BY_METADATA:
-                    System.out.println("Exporting results to spreadsheet");
-                    if (exporter != null) exporter.exportResults(workspaces,analysis);
-                    break;
-            }
-        }
+        // Running the analysis based on whether it's a single file or a folder
+        if (rootFolder.getFolderAsFile().isFile()) runSingleFile(workspaces, analysis, exporter);
+        else runFolder(workspaces, analysis, exporter);
 
         // Saving the results
         if (shutdownEarly || exporter == null) return;
@@ -92,19 +72,93 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private void runParallel(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException {
+    private void runSingleFile(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException, IOException {
+        // Setting up the ExecutorService, which will manage the threads
+        pool = new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // For the current file, determining how many series to processAutomatic (and which ones)
+        InputControl inputControl = analysis.getModules().getInputControl();
+        OutputControl outputControl = analysis.getModules().getOutputControl();
+        TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder.getFolderAsFile());
+
+        // Only set verbose if a single series is being processed
+        Module.setVerbose(seriesNumbers.size() == 1);
+
+        // Iterating over all series to analyse, adding each one as a new workspace
+        for (int seriesNumber:seriesNumbers.keySet()) {
+            Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
+
+            // Setting a reference to the analysis (this may be wanted by certain modules to check input/output options)
+            String seriesName = seriesNumbers.get(seriesNumber);
+            if (seriesName.equals("")) seriesName = "FILE: "+rootFolder.getFolderAsFile().getName();
+            workspace.getMetadata().setSeriesName(seriesName);
+
+            // Adding this Workspace to the Progress monitor
+            ProgressMonitor.setWorkspaceProgress(workspace,0d);
+
+            Runnable task = () -> {
+                try {
+                    analysis.execute(workspace);
+                } catch (Throwable t) {
+                    t.printStackTrace(System.err);
+                }
+
+                // Getting the number of completed and total tasks
+                incrementCounter();
+                int nComplete = getCounter();
+                double nTotal = pool.getTaskCount();
+                double percentageComplete = (nComplete / nTotal) * 100;
+
+                // Displaying the current progress
+                String string = "Completed "+ dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
+                        + " (" + dfDec.format(percentageComplete) + "%)";
+                System.out.println(string);
+
+                // Exporting to Excel for this file
+                if (outputControl.isExportIndividual() && exporter != null) {
+                    String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
+                    try {
+                        exporter.exportResults(workspace,analysis,name);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            // Submit the jobs for this file, then tell the pool not to accept any more jobs and to wait until all
+            // queued jobs have completed
+            pool.submit(task);
+
+            // Displaying the current progress
+            double nTotal = pool.getTaskCount();
+            String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+            System.out.println(string);
+
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        // Exporting to Excel for WorkspaceCollection
+        if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
+            String name = outputControl.getGroupOutputPath(inputControl.getParameterValue(InputControl.INPUT_PATH));
+            exporter.export(workspaces,analysis,name);
+        }
+    }
+
+    private void runFolder(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException, IOException {
         File next = getNextValidFileInStructure();
         InputControl inputControl = analysis.getModules().getInputControl();
         OutputControl outputControl = analysis.getModules().getOutputControl();
 
-        boolean continuousExport = ((BooleanP) outputControl.getParameter(OutputControl.CONTINUOUS_DATA_EXPORT)).isSelected();
-        int saveNFiles = ((IntegerP) outputControl.getParameter(OutputControl.SAVE_EVERY_N)).getValue();
-        String exportMode = ((ChoiceP) outputControl.getParameter(OutputControl.EXPORT_MODE)).getChoice();
+        boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
+        int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N);
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
 
         Module.setVerbose(false);
 
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
-        int nSimultaneousJobs = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
+        int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
         if (nSimultaneousJobs != 1) {
             int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
             Prefs.setThreads(nThreads);
@@ -124,7 +178,7 @@ public class BatchProcessor extends FileCrawler {
             // Adding a parameter to the metadata structure indicating the depth of the current file
             int fileDepth = 0;
             File parent = next.getParentFile();
-            while (parent != rootFolder.getFolderAsFile() && parent != null) {
+            while (parent != null && !parent.getAbsolutePath().equals(rootFolder.getFolderAsFile().getAbsolutePath())) {
                 parent = parent.getParentFile();
                 fileDepth++;
             }
@@ -151,17 +205,18 @@ public class BatchProcessor extends FileCrawler {
 
                         // Getting the number of completed and total tasks
                         incrementCounter();
-                        int nComplete = getCounter();
-                        double nTotal = pool.getTaskCount();
-                        double percentageComplete = (nComplete / nTotal) * 100;
+                        String nComplete = dfInt.format(getCounter());
+                        String nTotal = dfInt.format(pool.getTaskCount());
+                        String percentageComplete = dfDec.format((getCounter() / pool.getTaskCount()) * 100);
+                        System.out.println("Completed "+nComplete+"/"+nTotal+" ("+percentageComplete+"%), "+finalNext.getName());
 
-                        // Displaying the current progress
-                        String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
-                                + " (" + dfDec.format(percentageComplete) + "%), " + finalNext.getName();
-                        System.out.println(string);
-
-                        if (continuousExport && nComplete % saveNFiles == 0) exporter.exportResults(workspaces, analysis);
-                        if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) exporter.exportResults(workspace, analysis);
+                        if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) {
+                            String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
+                            exporter.exportResults(workspace, analysis, name);
+                        }else if (continuousExport && getCounter() % saveNFiles == 0) {
+                            String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
+                            exporter.exportResults(workspaces, analysis, name);
+                        }
 
                     } catch (Throwable t) {
                         System.err.println("Failed for file " + finalNext.getName());
@@ -198,66 +253,11 @@ public class BatchProcessor extends FileCrawler {
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         Prefs.setThreads(origThreads);
 
-    }
-
-    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
-        // Setting up the ExecutorService, which will manage the threads
-        pool = new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
-
-        // For the current file, determining how many series to processAutomatic (and which ones)
-        InputControl inputControl = analysis.getModules().getInputControl();
-        TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder.getFolderAsFile());
-
-        // Only set verbose if a single series is being processed
-        Module.setVerbose(seriesNumbers.size() == 1);
-
-        // Iterating over all series to analyse, adding each one as a new workspace
-        for (int seriesNumber:seriesNumbers.keySet()) {
-            Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
-
-            // Setting a reference to the analysis (this may be wanted by certain modules to check input/output options)
-            String seriesName = seriesNumbers.get(seriesNumber);
-            if (seriesName.equals("")) seriesName = "FILE: "+rootFolder.getFolderAsFile().getName();
-            workspace.getMetadata().setSeriesName(seriesName);
-
-            // Adding this Workspace to the Progress monitor
-            ProgressMonitor.setWorkspaceProgress(workspace,0d);
-
-            Runnable task = () -> {
-                try {
-                    analysis.execute(workspace);
-
-                } catch (Throwable t) {
-                    t.printStackTrace(System.err);
-                }
-
-                // Getting the number of completed and total tasks
-                incrementCounter();
-                int nComplete = getCounter();
-                double nTotal = pool.getTaskCount();
-                double percentageComplete = (nComplete / nTotal) * 100;
-
-                // Displaying the current progress
-                String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
-                        + " (" + dfDec.format(percentageComplete) + "%)";
-                System.out.println(string);
-
-            };
-
-            // Submit the jobs for this file, then tell the pool not to accept any more jobs and to wait until all
-            // queued jobs have completed
-            pool.submit(task);
-
-            // Displaying the current progress
-            double nTotal = pool.getTaskCount();
-            String string = "Started processing "+dfInt.format(nTotal)+" jobs";
-            System.out.println(string);
-
+        // Exporting to Excel for WorkspaceCollection
+        if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
+            String name = outputControl.getGroupOutputPath(inputControl.getParameterValue(InputControl.INPUT_PATH));
+            exporter.export(workspaces,analysis,name);
         }
-
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
     }
 
     public void stopAnalysis() {

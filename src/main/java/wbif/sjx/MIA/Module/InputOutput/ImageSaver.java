@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.common.Object.HCMetadata;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -143,28 +144,6 @@ public class ImageSaver extends Module {
         }
     }
 
-    private static String getMirroredDirectory(Workspace workspace, String mirroredDirectoryRoot) {
-        File rootFile = workspace.getMetadata().getFile();
-        int fileDepth;
-        if (workspace.getMetadata().get("FILE_DEPTH") == null) {
-            fileDepth = 0;
-        } else {
-            fileDepth = (int) workspace.getMetadata().get("FILE_DEPTH");
-        }
-
-        StringBuilder sb = new StringBuilder();
-        File parentFile = rootFile.getParentFile();
-        for (int i=0;i<fileDepth;i++) {
-            sb.insert(0,parentFile.getName()+MIA.getSlashes());
-            parentFile = parentFile.getParentFile();
-        }
-
-        new File(mirroredDirectoryRoot + MIA.getSlashes() +sb).mkdirs();
-
-        return mirroredDirectoryRoot + MIA.getSlashes() +sb;
-
-    }
-
     public static void saveImage(ImagePlus inputImagePlus, String fileFormat, String path) {
         switch (fileFormat) {
             case FileFormats.RAW:
@@ -230,22 +209,41 @@ public class ImageSaver extends Module {
 
         // If using the same settings as OutputControl, update saveLocation and filePath (if necessary)
         if (saveLocation.equals(SaveLocations.MATCH_OUTPUT_CONTROL)) {
-//            Analysis analysis = workspace.getAnalysis();
-//            if (analysis == null) {
-//                System.err.println("No analysis found attached to workspace.  Can't get output path.");
-//                return false;
-//            }
-
             OutputControl outputControl = modules.getOutputControl();
-            String outputSaveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
-            switch (outputSaveLocation) {
-                case OutputControl.SaveLocations.SAVE_WITH_INPUT:
-                    saveLocation = SaveLocations.SAVE_WITH_INPUT;
+            String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
+            switch (exportMode) {
+                case OutputControl.ExportModes.INDIVIDUAL_FILES:
+                    String outputSaveLocation = outputControl.getParameterValue(OutputControl.INDIVIDUAL_SAVE_LOCATION);
+                    switch (outputSaveLocation) {
+                        case OutputControl.IndividualSaveLocations.MIRRORED_DIRECTORY:
+                            saveLocation = SaveLocations.MIRRORED_DIRECTORY;
+                            mirroredDirectoryRoot = outputControl.getParameterValue(OutputControl.MIRRORED_DIRECTORY_ROOT);
+                            break;
+
+                        case OutputControl.IndividualSaveLocations.SAVE_WITH_INPUT:
+                            saveLocation = SaveLocations.SAVE_WITH_INPUT;
+                            break;
+
+                        case OutputControl.IndividualSaveLocations.SPECIFIC_LOCATION:
+                            saveLocation = SaveLocations.SPECIFIC_LOCATION;
+                            filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
+                            break;
+                    }
                     break;
 
-                case OutputControl.SaveLocations.SPECIFIC_LOCATION:
-                    saveLocation = SaveLocations.SPECIFIC_LOCATION;
-                    filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
+                case OutputControl.ExportModes.ALL_TOGETHER:
+                case OutputControl.ExportModes.GROUP_BY_METADATA:
+                    outputSaveLocation = outputControl.getParameterValue(OutputControl.GROUP_SAVE_LOCATION);
+                    switch (outputSaveLocation) {
+                        case OutputControl.GroupSaveLocations.SAVE_WITH_INPUT:
+                            saveLocation = SaveLocations.SAVE_WITH_INPUT;
+                            break;
+
+                        case OutputControl.GroupSaveLocations.SPECIFIC_LOCATION:
+                            saveLocation = SaveLocations.SPECIFIC_LOCATION;
+                            filePath = outputControl.getParameterValue(SAVE_FILE_PATH);
+                            break;
+                    }
                     break;
             }
         }
@@ -253,7 +251,7 @@ public class ImageSaver extends Module {
         String path;
         switch (saveLocation) {
             case SaveLocations.MIRRORED_DIRECTORY:
-                path = getMirroredDirectory(workspace,mirroredDirectoryRoot);
+                path = OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),workspace.getMetadata(),mirroredDirectoryRoot);
                 break;
 
             case SaveLocations.SAVE_WITH_INPUT:

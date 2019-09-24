@@ -98,6 +98,10 @@ public class InputControl extends Module {
     public static interface SpatialUnits extends Units.SpatialUnits{}
 
 
+    public File getRootFile() {
+        return new File((String) parameters.getValue(INPUT_PATH));
+    }
+
     public void addFilenameFilters(BatchProcessor batchProcessor) {
         // Getting filters
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);

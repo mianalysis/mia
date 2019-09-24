@@ -45,7 +45,6 @@ public class Exporter {
         ALWAYS, IF_FILE_EXISTS, NEVER;
     }
 
-    private String exportFilePath;
     private boolean verbose = false;
     private ExportMode exportMode = ExportMode.ALL_TOGETHER;
     private String metadataItemForGrouping = null;
@@ -57,17 +56,9 @@ public class Exporter {
     private AppendDateTimeMode appendDateTimeMode = AppendDateTimeMode.NEVER;
 
 
-    // CONSTRUCTOR
-
-    public Exporter(String exportFilePath) {
-        this.exportFilePath = exportFilePath;
-
-    }
-
-
     // PUBLIC METHODS
 
-    public void exportResults(WorkspaceCollection workspaces, Analysis analysis) throws IOException {
+    public void exportResults(WorkspaceCollection workspaces, Analysis analysis, String exportFilePath) throws IOException {
         switch (exportMode) {
             case ALL_TOGETHER:
                 export(workspaces,analysis,exportFilePath);
@@ -104,13 +95,9 @@ public class Exporter {
         }
     }
 
-    public void exportResults(Workspace workspace, Analysis analysis) throws IOException {
+    public void exportResults(Workspace workspace, Analysis analysis, String name) throws IOException {
         WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
         currentWorkspaces.add(workspace);
-
-        HCMetadata metadata = workspace.getMetadata();
-        String name = FilenameUtils.removeExtension(metadata.getFile().getAbsolutePath());
-        name = name +"_S"+metadata.getSeriesNumber();
 
         export(currentWorkspaces,analysis,name);
 

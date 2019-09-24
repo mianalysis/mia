@@ -41,9 +41,6 @@ public class Analysis {
      * @param workspace Workspace containing stores for images and objects
      */
     public boolean execute(Workspace workspace) {
-        // Displaying the image being processed
-        MIA.log.writeDebug("Processing file \""+workspace.getMetadata().getFile().getAbsolutePath()+"\"");
-
         // Running through modules
         int total = modules.size();
         int count = 0;
