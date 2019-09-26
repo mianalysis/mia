@@ -39,7 +39,7 @@ public class MessageLog extends OutputStream {
             }
 
             stringBuilder = new StringBuilder();
-            
+
         }
     }
 }

@@ -174,7 +174,7 @@ public class GUI {
         PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
-//        System.setOut(new PrintStream(teeOutputStream));
+        System.setOut(new PrintStream(teeOutputStream));
 
     }
 
@@ -251,9 +251,6 @@ public class GUI {
                 nextFile = fileCrawler.getNextValidFileInStructure();
             }
         }
-
-        // If the new file is null, warn that no valid images were found
-        if (nextFile == null && verbose) MIA.log.writeWarning("No valid images found at specified path");
 
         // If the new file is the same as the old, skip this
         File previousFile = testWorkspace.getMetadata().getFile();

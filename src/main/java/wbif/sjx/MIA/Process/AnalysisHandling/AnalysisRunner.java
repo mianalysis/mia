@@ -45,8 +45,12 @@ public class AnalysisRunner {
         ProgressMonitor.resetProgress();
         GUI.setProgress(0);
 
-        // Get jobs
+        // Get jobs and exit if no images found
         HashSet<Job> jobs = getJobs(analysis);
+        if (jobs.size() == 0) {
+            MIA.log.writeWarning("No valid images found at specified path");
+            return;
+        }
 
         InputControl inputControl = analysis.getModules().getInputControl();
         OutputControl outputControl = analysis.getModules().getOutputControl();
@@ -120,18 +124,18 @@ public class AnalysisRunner {
         } else {
             File next = fileCrawler.getNextValidFileInStructure();
             int loadTotal = 0;
-
             while (next != null) {
                 TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(next);
                 for (int seriesNumber:seriesNumbers.keySet()) {
-                    int fileDepth = calculateFileDepth(next,rootFolder);
-                    jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileDepth));
+                    jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));
+
+                    // Displaying the current progress
+                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
+
                 }
 
-                // Displaying the current progress
-                System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
-
                 next = fileCrawler.getNextValidFileInStructure();
+
             }
         }
 
@@ -161,18 +165,6 @@ public class AnalysisRunner {
         }
 
         return true;
-
-    }
-
-    public static int calculateFileDepth(File jobFile, File rootFile) {
-        int fileDepth = 0;
-        File parent = jobFile.getParentFile();
-        while (parent != null && !parent.getAbsolutePath().equals(rootFile.getAbsolutePath())) {
-            parent = parent.getParentFile();
-            fileDepth++;
-        }
-
-        return fileDepth;
 
     }
 
@@ -307,7 +299,6 @@ public class AnalysisRunner {
         counter++;
 
     }
-
 }
 
 class Job {
