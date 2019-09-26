@@ -174,7 +174,7 @@ public class GUI {
         PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
-        System.setOut(new PrintStream(teeOutputStream));
+//        System.setOut(new PrintStream(teeOutputStream));
 
     }
 

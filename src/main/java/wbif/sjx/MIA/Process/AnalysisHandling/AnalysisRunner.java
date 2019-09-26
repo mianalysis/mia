@@ -100,7 +100,7 @@ public class AnalysisRunner {
 
     }
 
-    static HashSet<Job> getJobs(Analysis analysis) {
+    public static HashSet<Job> getJobs(Analysis analysis) {
         HashSet<Job> jobs = new HashSet<>();
 
         InputControl inputControl = analysis.getModules().getInputControl();
@@ -164,7 +164,7 @@ public class AnalysisRunner {
 
     }
 
-    static int calculateFileDepth(File jobFile, File rootFile) {
+    public static int calculateFileDepth(File jobFile, File rootFile) {
         int fileDepth = 0;
         File parent = jobFile.getParentFile();
         while (parent != null && !parent.getAbsolutePath().equals(rootFile.getAbsolutePath())) {
