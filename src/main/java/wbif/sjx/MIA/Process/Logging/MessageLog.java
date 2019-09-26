@@ -37,6 +37,9 @@ public class MessageLog extends OutputStream {
             } else {
                 MIA.log.write(message, LogRenderer.Level.MESSAGE);
             }
+
+            stringBuilder = new StringBuilder();
+
         }
     }
 }

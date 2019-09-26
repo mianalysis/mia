@@ -78,7 +78,6 @@ public class ConsoleRenderer implements LogRenderer {
 
         try {
             document.insertString(document.getLength(), "["+level.toString()+"] "+message+"\n", logStyles.get(level));
-
         } catch (BadLocationException e) {
             e.printStackTrace();
         }

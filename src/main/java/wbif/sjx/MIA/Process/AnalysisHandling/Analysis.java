@@ -37,13 +37,10 @@ public class Analysis {
     public void initialise() {}
 
     /*
-     * The method that gets called by the BatchProcessor.  This shouldn't have any user interaction elements
+     * The method that gets called by the AnalysisRunner.  This shouldn't have any user interaction elements
      * @param workspace Workspace containing stores for images and objects
      */
     public boolean execute(Workspace workspace) {
-        // Displaying the image being processed
-        MIA.log.writeDebug("Processing file \""+workspace.getMetadata().getFile().getAbsolutePath()+"\"");
-
         // Running through modules
         int total = modules.size();
         int count = 0;

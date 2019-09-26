@@ -18,12 +18,12 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
-import wbif.sjx.MIA.Process.BatchProcessor;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.common.System.FileCrawler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -246,14 +246,11 @@ public class GUI {
             if (new File(inputPath).isFile()) {
                 nextFile = new File(inputPath);
             } else {
-                BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
-                inputControl.addFilenameFilters(batchProcessor);
-                nextFile = batchProcessor.getNextValidFileInStructure();
+                FileCrawler fileCrawler = new FileCrawler(new File(inputPath));
+                inputControl.addFilenameFilters(fileCrawler);
+                nextFile = fileCrawler.getNextValidFileInStructure();
             }
         }
-
-        // If the new file is null, warn that no valid images were found
-        if (nextFile == null && verbose) MIA.log.writeWarning("No valid images found at specified path");
 
         // If the new file is the same as the old, skip this
         File previousFile = testWorkspace.getMetadata().getFile();

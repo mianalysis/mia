@@ -1,56 +1,145 @@
+// TODO: Add methods for XLS and JSON data export
+
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+
+import ij.Prefs;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.ProgressMonitor;
-import wbif.sjx.MIA.Process.BatchProcessor;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.Exporting.Exporter;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
-import wbif.sjx.common.FileConditions.NameContainsString;
+import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Created by sc13967 on 22/06/2018.
+ * Created by sc13967 on 21/10/2016.
  */
 public class AnalysisRunner {
-    private static BatchProcessor batchProcessor;
+    private final static DecimalFormat dfInt = new DecimalFormat("0");
+    private final static DecimalFormat dfDec = new DecimalFormat("0.00");
 
-    public static void startAnalysis(Analysis analysis) throws IOException, InterruptedException {
+    private static ThreadPoolExecutor pool;
+    private static int counter = 0;
+    private static int origThreads = Prefs.getThreads();
+
+
+    // PUBLIC METHODS
+
+    public static void run(Analysis analysis) throws InterruptedException, IOException {
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
         GUI.setProgress(0);
 
-        // Getting input/output controls
+        // Get jobs and exit if no images found
+        HashSet<Job> jobs = getJobs(analysis);
+        if (jobs.size() == 0) {
+            MIA.log.writeWarning("No valid images found at specified path");
+            return;
+        }
+
         InputControl inputControl = analysis.getModules().getInputControl();
         OutputControl outputControl = analysis.getModules().getOutputControl();
 
-        // Getting input file
-        File inputFile = getInputFile(inputControl);
-        if (inputFile == null) return;
-
         // Initialising Exporter
-        String exportName = getExportName(inputControl,outputControl,inputFile);
-        Exporter exporter = initialiseExporter(outputControl,exportName);
+        Exporter exporter = initialiseExporter(outputControl);
 
-        // Initialising BatchProcessor
-        int nThreads = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
-        batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.setnThreads(nThreads);
-        inputControl.addFilenameFilters(batchProcessor);
+        // Set verbose
+        Module.setVerbose(jobs.size() == 1);
 
-        // Running the analysis
-        batchProcessor.run(analysis,exporter,exportName);
+        // Setting up the pool
+        // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
+        int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
+        nSimultaneousJobs = Math.min(jobs.size(),nSimultaneousJobs);
+        int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
+        Prefs.setThreads(nThreads);
+        Prefs.savePreferences();
+
+        pool = new ThreadPoolExecutor(nSimultaneousJobs,nSimultaneousJobs,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Runnables are first stored in a HashSet, then loaded all at once to the ThreadPoolExecutor.  This means the
+        // system isn't scanning files and reading for the analysis simultaneously.
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        for (Job job:jobs) {
+            // Iterating over all seriesNumber to analyse, adding each one as a new workspace
+            Workspace workspace = workspaces.getNewWorkspace(job.getFile(),job.getSeriesNumber());
+            workspace.getMetadata().setSeriesName(job.getSeriesName());
+            workspace.getMetadata().put("FILE_DEPTH", job.getFileDepth());
+
+            // Adding this Workspace to the Progress monitor
+            ProgressMonitor.setWorkspaceProgress(workspace,0d);
+
+            pool.submit(createRunnable(analysis,workspaces,workspace,exporter));
+
+        }
+
+        // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        Prefs.setThreads(origThreads);
+
+        // Exporting to Excel for WorkspaceCollection
+        if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
+            File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH));
+            String name = outputControl.getGroupOutputPath(outputFile);
+            exporter.export(workspaces,analysis,name);
+        }
 
         // Cleaning up
         System.out.println("Complete!");
+
+    }
+
+    public static HashSet<Job> getJobs(Analysis analysis) {
+        HashSet<Job> jobs = new HashSet<>();
+
+        InputControl inputControl = analysis.getModules().getInputControl();
+
+        File inputFile = getInputFile(inputControl);
+        if (inputFile == null) return new HashSet<>();
+
+        FileCrawler fileCrawler = new FileCrawler(inputFile);
+        inputControl.addFilenameFilters(fileCrawler);
+
+        File rootFolder = fileCrawler.getRootFolderAsFile();
+        if (rootFolder.isFile()) {
+            TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder);
+            for (int seriesNumber:seriesNumbers.keySet()) {
+                jobs.add(new Job(rootFolder,seriesNumber,seriesNumbers.get(seriesNumber),0));
+            }
+        } else {
+            File next = fileCrawler.getNextValidFileInStructure();
+            int loadTotal = 0;
+            while (next != null) {
+                TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(next);
+                for (int seriesNumber:seriesNumbers.keySet()) {
+                    jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));
+
+                    // Displaying the current progress
+                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
+
+                }
+
+                next = fileCrawler.getNextValidFileInStructure();
+
+            }
+        }
+
+        return jobs;
 
     }
 
@@ -79,57 +168,7 @@ public class AnalysisRunner {
 
     }
 
-    public static String getExportName(InputControl inputControl, OutputControl outputControl, File inputFile) {
-        String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
-        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
-        String saveLocation = outputControl.getParameterValue(OutputControl.SAVE_LOCATION);
-        String saveFilePath = outputControl.getParameterValue(OutputControl.SAVE_FILE_PATH);
-        String saveNameMode = outputControl.getParameterValue(OutputControl.SAVE_NAME_MODE);
-        String saveFileName = outputControl.getParameterValue(OutputControl.SAVE_FILE_NAME);
-
-        // Determining the file path
-        String path = "";
-        switch (saveLocation) {
-            case OutputControl.SaveLocations.SAVE_WITH_INPUT:
-                if (inputFile.isFile()) {
-                    path = inputFile.getParent() + MIA.getSlashes();
-                } else {
-                    path = inputFile.getAbsolutePath() + MIA.getSlashes();
-                }
-                break;
-
-            case OutputControl.SaveLocations.SPECIFIC_LOCATION:
-                path = saveFilePath + MIA.getSlashes();
-                break;
-        }
-
-        // Determining the file name
-        String name = "";
-        switch (saveNameMode) {
-            case OutputControl.SaveNameModes.MATCH_INPUT:
-                if (inputFile.isFile()) {
-                    name = FilenameUtils.removeExtension(inputFile.getName());
-                } else {
-                    name = inputFile.getName();
-                }
-                break;
-
-            case OutputControl.SaveNameModes.SPECIFIC_NAME:
-                name = saveFileName;
-                break;
-        }
-
-        // Determining the suffix
-        String suffix = "";
-        if (seriesMode.equals(InputControl.SeriesModes.SERIES_LIST)) {
-            suffix = "_S" + seriesList.replace(" ", "");
-        }
-
-        return path + name + suffix;
-
-    }
-
-    public static Exporter initialiseExporter(OutputControl outputControl, String exportName) {
+    static Exporter initialiseExporter(OutputControl outputControl) {
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
         String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING);
         boolean exportXLS = outputControl.isEnabled();
@@ -140,7 +179,7 @@ public class AnalysisRunner {
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
 
         // Initialising the exporter (if one was requested)
-        Exporter exporter = exportXLS ? new Exporter(exportName) : null;
+        Exporter exporter = exportXLS ? new Exporter() : null;
         if (exporter != null) {
             exporter.setMetadataItemForGrouping(metadataItemForGrouping);
             exporter.setExportSummary(exportSummary);
@@ -195,15 +234,99 @@ public class AnalysisRunner {
 
     }
 
-    public static void stopAnalysis() {
+    static Runnable createRunnable(Analysis analysis, WorkspaceCollection workspaces, Workspace workspace, Exporter exporter) {
+        return () -> {
+            File file = workspace.getMetadata().getFile();
+
+            try {
+                InputControl inputControl = analysis.getModules().getInputControl();
+                OutputControl outputControl = analysis.getModules().getOutputControl();
+                boolean continuousExport = outputControl.getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
+                int saveNFiles = outputControl.getParameterValue(OutputControl.SAVE_EVERY_N);
+
+                // Running the current analysis
+                analysis.execute(workspace);
+
+                // Getting the number of completed and total tasks
+                incrementCounter();
+                String nComplete = dfInt.format(getCounter());
+                String nTotal = dfInt.format(pool.getTaskCount());
+                String percentageComplete = dfDec.format(((double) getCounter() / (double) pool.getTaskCount()) * 100);
+                System.out.println("Completed " + nComplete + "/" + nTotal + " (" + percentageComplete + "%), " + file.getName());
+
+                if (outputControl.isExportIndividual()) {
+                    String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
+                    exporter.exportResults(workspace, analysis, name);
+                    workspace.clearAllObjects(false);
+                    workspace.clearAllImages(false);
+                } else if (continuousExport && getCounter() % saveNFiles == 0) {
+                    String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
+                    exporter.exportResults(workspaces, analysis, name);
+                }
+
+            } catch (Throwable t) {
+                System.err.println("Failed for file " + file.getName());
+                t.printStackTrace(System.err);
+
+                workspace.clearAllImages(true);
+                workspace.clearAllObjects(true);
+
+                pool.shutdownNow();
+
+            }
+        };
+    }
+
+    static public void stopAnalysis() {
         MIA.log.write("STOPPING", LogRenderer.Level.WARNING);
-        if (batchProcessor != null) {
-            batchProcessor.stopAnalysis();
-        } else {
-            GUI.setModuleBeingEval(-1);
-            GUI.updateModules();
-            Thread.currentThread().getThreadGroup().stop();
-            MIA.log.write("Shutdown complete!", LogRenderer.Level.MESSAGE);
-        }
+        Prefs.setThreads(origThreads);
+        GUI.setModuleBeingEval(-1);
+        GUI.updateModules();
+        Thread.currentThread().getThreadGroup().stop();
+        MIA.log.write("Shutdown complete!", LogRenderer.Level.MESSAGE);
+
+    }
+
+
+    // GETTERS AND SETTERS
+
+    static synchronized int getCounter() {
+        return counter;
+
+    }
+
+    static synchronized void incrementCounter() {
+        counter++;
+
+    }
+}
+
+class Job {
+    private final File file;
+    private final int seriesNumber;
+    private final String seriesName;
+    private final int fileDepth;
+
+    Job(File file, int seriesNumber, String seriesName, int fileDepth) {
+        this.file = file;
+        this.seriesNumber = seriesNumber;
+        this.seriesName = seriesName;
+        this.fileDepth = fileDepth;
+    }
+
+    File getFile() {
+        return file;
+    }
+
+    int getSeriesNumber() {
+        return seriesNumber;
+    }
+
+    String getSeriesName() {
+        return seriesName;
+    }
+
+    int getFileDepth() {
+        return fileDepth;
     }
 }

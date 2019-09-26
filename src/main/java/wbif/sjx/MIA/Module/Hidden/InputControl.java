@@ -15,7 +15,6 @@ import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
@@ -23,12 +22,12 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
 import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.System.FileCrawler;
 
 import java.awt.*;
 import java.io.File;
@@ -98,13 +97,17 @@ public class InputControl extends Module {
     public static interface SpatialUnits extends Units.SpatialUnits{}
 
 
-    public void addFilenameFilters(BatchProcessor batchProcessor) {
+    public File getRootFile() {
+        return new File((String) parameters.getValue(INPUT_PATH));
+    }
+
+    public void addFilenameFilters(FileCrawler fileCrawler) {
         // Getting filters
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
 
         // Iterating over each filter
         for (ParameterCollection collection:collections) {
-            // If this filter is a filename filter type, addRef it to the BatchProcessor
+            // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
             String filterType = collection.getValue(FILTER_TYPE);
@@ -113,13 +116,13 @@ public class InputControl extends Module {
                 case FilterSources.EXTENSION:
                 case FilterSources.FILENAME:
                 case FilterSources.FILEPATH:
-                    batchProcessor.addFileCondition(getFilenameFilter(filterType,filterValue,filterSource));
+                    fileCrawler.addFileCondition(getFilenameFilter(filterType,filterValue,filterSource));
                     break;
             }
         }
 
         // Adding a filter to specifically remove OSX temp files
-        batchProcessor.addFileCondition(new NameContainsString("._", NameContainsString.Mode.EXC_PARTIAL));
+        fileCrawler.addFileCondition(new NameContainsString("._", NameContainsString.Mode.EXC_PARTIAL));
 
     }
 
@@ -202,7 +205,7 @@ public class InputControl extends Module {
         HashSet<FileCondition> filters = new HashSet<>();
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
         for (ParameterCollection collection:collections) {
-            // If this filter is a filename filter type, addRef it to the BatchProcessor
+            // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
             String filterType = collection.getValue(FILTER_TYPE);

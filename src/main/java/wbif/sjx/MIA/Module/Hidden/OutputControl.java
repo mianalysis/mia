@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Module.Hidden;
 
+import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
@@ -8,17 +10,22 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.common.Object.HCMetadata;
+
+import java.io.File;
 
 /**
  * Created by Stephen on 29/07/2017.
  */
 public class OutputControl extends Module {
     public static final String EXPORT_SEPARATOR = "Core export controls";
-    public static final String SAVE_LOCATION = "Save location";
+    public static final String EXPORT_MODE = "Export mode";
+    public static final String GROUP_SAVE_LOCATION = "Group save location";
+    public static final String INDIVIDUAL_SAVE_LOCATION = "Individual save location";
+    public static final String MIRRORED_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
     public static final String SAVE_NAME_MODE = "Save name mode";
     public static final String SAVE_FILE_NAME = "File name";
-    public static final String EXPORT_MODE = "Export mode";
     public static final String METADATA_ITEM_FOR_GROUPING = "Metadata item for grouping";
     public static final String CONTINUOUS_DATA_EXPORT = "Continuous data export";
     public static final String SAVE_EVERY_N = "Save every n files";
@@ -38,11 +45,20 @@ public class OutputControl extends Module {
     }
 
 
-    public interface SaveLocations {
+    public interface IndividualSaveLocations {
+        String MIRRORED_DIRECTORY = "Mirrored directory";
         String SAVE_WITH_INPUT = "Save with input file";
         String SPECIFIC_LOCATION = "Specific location";
 
-        String[] ALL = new String[]{SAVE_WITH_INPUT, SPECIFIC_LOCATION};
+        String[] ALL = new String[]{MIRRORED_DIRECTORY,SAVE_WITH_INPUT,SPECIFIC_LOCATION};
+
+    }
+
+    public interface GroupSaveLocations {
+        String SAVE_WITH_INPUT = "Save with input file";
+        String SPECIFIC_LOCATION = "Specific location";
+
+        String[] ALL = new String[]{SAVE_WITH_INPUT,SPECIFIC_LOCATION};
 
     }
 
@@ -82,6 +98,130 @@ public class OutputControl extends Module {
 
     }
 
+    public boolean isExportIndividual() {
+        return parameters.getValue(EXPORT_MODE).equals(ExportModes.INDIVIDUAL_FILES);
+    }
+
+    public boolean isExportAllTogether() {
+        return parameters.getValue(EXPORT_MODE).equals(ExportModes.ALL_TOGETHER);
+    }
+
+    public boolean isExportGroupedByMetadata() {
+        return parameters.getValue(EXPORT_MODE).equals(ExportModes.GROUP_BY_METADATA);
+    }
+
+    public String getIndividualOutputPath(HCMetadata metadata) {
+        String mirroredRoot = getParameterValue(MIRRORED_DIRECTORY_ROOT);
+        String saveLocation = getParameterValue(INDIVIDUAL_SAVE_LOCATION);
+        String saveFilePath = getParameterValue(SAVE_FILE_PATH);
+
+        File inputFile = metadata.getFile();
+
+        // Determining the file path
+        String path = "";
+        switch (saveLocation) {
+            case IndividualSaveLocations.MIRRORED_DIRECTORY:
+                path = getMirroredDirectory(modules.getInputControl().getRootFile(),metadata,mirroredRoot);
+                break;
+
+            case IndividualSaveLocations.SAVE_WITH_INPUT:
+                if (inputFile.isFile()) path = inputFile.getParent() + MIA.getSlashes();
+                else path = inputFile.getAbsolutePath() + MIA.getSlashes();
+                break;
+
+            case IndividualSaveLocations.SPECIFIC_LOCATION:
+                path = saveFilePath + MIA.getSlashes();
+                break;
+        }
+
+        String suffix = getOutputSuffix();
+        String name = getOutputFilename(inputFile);
+
+        return path + name + suffix;
+
+    }
+
+    public static String getMirroredDirectory(File rootFile, HCMetadata metadata, String mirroredDirectoryRoot) {
+        int fileDepth = metadata.containsKey("FILE_DEPTH") ? (int) metadata.get("FILE_DEPTH") : 0;
+
+        StringBuilder sb = new StringBuilder();
+        File parentFile = metadata.getFile().getParentFile();
+        for (int i=0;i<fileDepth;i++) {
+            sb.insert(0,parentFile.getName()+MIA.getSlashes());
+            parentFile = parentFile.getParentFile();
+        }
+
+        new File(mirroredDirectoryRoot + MIA.getSlashes() +sb).mkdirs();
+
+        return mirroredDirectoryRoot + MIA.getSlashes() +sb;
+
+    }
+
+    public String getGroupOutputPath(File inputFile) {
+        String seriesMode = modules.getInputControl().getParameterValue(InputControl.SERIES_MODE);
+        String seriesList = modules.getInputControl().getParameterValue(InputControl.SERIES_LIST);
+        String saveLocation = getParameterValue(GROUP_SAVE_LOCATION);
+        String saveFilePath = getParameterValue(SAVE_FILE_PATH);
+        String saveNameMode = getParameterValue(SAVE_NAME_MODE);
+        String saveFileName = getParameterValue(SAVE_FILE_NAME);
+
+        // Determining the file path
+        String path = "";
+        switch (saveLocation) {
+            case GroupSaveLocations.SAVE_WITH_INPUT:
+                if (inputFile.isFile()) path = inputFile.getParent() + MIA.getSlashes();
+                else path = inputFile.getAbsolutePath() + MIA.getSlashes();
+                break;
+
+            case GroupSaveLocations.SPECIFIC_LOCATION:
+                path = saveFilePath + MIA.getSlashes();
+                break;
+        }
+
+        String suffix = getOutputSuffix();
+        String name = getOutputFilename(inputFile);
+
+        return path + name + suffix;
+
+    }
+
+    String getOutputFilename(File inputFile) {
+        String saveNameMode = getParameterValue(SAVE_NAME_MODE);
+        String saveFileName = getParameterValue(SAVE_FILE_NAME);
+
+        // Determining the file name
+        String name = "";
+        switch (saveNameMode) {
+            case OutputControl.SaveNameModes.MATCH_INPUT:
+                if (inputFile.isFile()) {
+                    name = FilenameUtils.removeExtension(inputFile.getName());
+                } else {
+                    name = inputFile.getName();
+                }
+                break;
+
+            case OutputControl.SaveNameModes.SPECIFIC_NAME:
+                name = saveFileName;
+                break;
+        }
+
+        return name;
+
+    }
+
+    String getOutputSuffix() {
+        String seriesMode = modules.getInputControl().getParameterValue(InputControl.SERIES_MODE);
+        String seriesList = modules.getInputControl().getParameterValue(InputControl.SERIES_LIST);
+
+        // Determining the suffix
+        String suffix = "";
+        if (seriesMode.equals(InputControl.SeriesModes.SERIES_LIST)) {
+            suffix = "_S" + seriesList.replace(" ", "");
+        }
+
+        return suffix;
+
+    }
 
     @Override
     public String getPackageName() {
@@ -101,11 +241,13 @@ public class OutputControl extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(EXPORT_SEPARATOR,this));
-        parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
+        parameters.add(new ChoiceP(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
+        parameters.add(new ChoiceP(INDIVIDUAL_SAVE_LOCATION, this,IndividualSaveLocations.SAVE_WITH_INPUT,IndividualSaveLocations.ALL));
+        parameters.add(new ChoiceP(GROUP_SAVE_LOCATION, this,GroupSaveLocations.SAVE_WITH_INPUT,GroupSaveLocations.ALL));
         parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+        parameters.add(new FolderPathP(MIRRORED_DIRECTORY_ROOT,this));
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME,this));
-        parameters.add(new ChoiceP(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_GROUPING,this));
         parameters.add(new BooleanP(CONTINUOUS_DATA_EXPORT,this,false));
         parameters.add(new IntegerP(SAVE_EVERY_N,this,10));
@@ -127,10 +269,36 @@ public class OutputControl extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(EXPORT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(SAVE_LOCATION));
-        switch ((String) parameters.getValue(SAVE_LOCATION)) {
-            case SaveLocations.SPECIFIC_LOCATION:
-                returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
+        ChoiceP exportMode = (ChoiceP) parameters.getParameter(EXPORT_MODE);
+        returnedParameters.add(exportMode);
+        switch (exportMode.getChoice()) {
+            case ExportModes.GROUP_BY_METADATA:
+                returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_GROUPING));
+                break;
+            case ExportModes.NONE:
+                return returnedParameters;
+        }
+
+        switch (exportMode.getChoice()) {
+            case ExportModes.INDIVIDUAL_FILES:
+                returnedParameters.add(parameters.getParameter(INDIVIDUAL_SAVE_LOCATION));
+                switch ((String) parameters.getValue(INDIVIDUAL_SAVE_LOCATION)) {
+                    case IndividualSaveLocations.SPECIFIC_LOCATION:
+                        returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
+                        break;
+                    case IndividualSaveLocations.MIRRORED_DIRECTORY:
+                        returnedParameters.add(parameters.getParameter(MIRRORED_DIRECTORY_ROOT));
+                        break;
+                }
+                break;
+            case ExportModes.GROUP_BY_METADATA:
+            case ExportModes.ALL_TOGETHER:
+                returnedParameters.add(parameters.getParameter(GROUP_SAVE_LOCATION));
+                switch ((String) parameters.getValue(GROUP_SAVE_LOCATION)) {
+                    case GroupSaveLocations.SPECIFIC_LOCATION:
+                        returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
+                        break;
+                }
                 break;
         }
 
@@ -141,18 +309,12 @@ public class OutputControl extends Module {
                 break;
         }
 
-        ChoiceP exportMode = (ChoiceP) parameters.getParameter(EXPORT_MODE);
-        returnedParameters.add(exportMode);
-        switch (exportMode.getChoice()) {
-            case ExportModes.GROUP_BY_METADATA:
-                returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_GROUPING));
-                break;
-        }
-
-        BooleanP continuousDataExport = (BooleanP) parameters.getParameter(CONTINUOUS_DATA_EXPORT);
-        returnedParameters.add(continuousDataExport);
-        if (continuousDataExport.isSelected()) {
-            returnedParameters.add(parameters.getParameter(SAVE_EVERY_N));
+        if (!exportMode.getValue().equals(ExportModes.INDIVIDUAL_FILES)) {
+            BooleanP continuousDataExport = (BooleanP) parameters.getParameter(CONTINUOUS_DATA_EXPORT);
+            returnedParameters.add(continuousDataExport);
+            if (continuousDataExport.isSelected()) {
+                returnedParameters.add(parameters.getParameter(SAVE_EVERY_N));
+            }
         }
 
         returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));

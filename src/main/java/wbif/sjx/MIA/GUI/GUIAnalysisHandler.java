@@ -1,11 +1,7 @@
 package wbif.sjx.MIA.GUI;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleCollectionDataFlavor;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleCollectionTransfer;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -15,17 +11,14 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisWriter;
 
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.datatransfer.*;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -98,7 +91,7 @@ public class GUIAnalysisHandler {
     public static void runAnalysis() {
         Thread t = new Thread(() -> {
             try {
-                AnalysisRunner.startAnalysis(GUI.getAnalysis());
+                AnalysisRunner.run(GUI.getAnalysis());
             } catch (IOException | InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -115,7 +108,6 @@ public class GUIAnalysisHandler {
         GUI.addUndo();
         for (Module module : GUI.getModules()) module.setEnabled(true);
         GUI.updateModuleList();
-
     }
 
     public static void disableAllModules() {

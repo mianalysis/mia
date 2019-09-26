@@ -611,7 +611,7 @@ public class AddObjectsOverlay extends Module {
         for (Obj object:inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
-//            Runnable task = () -> {
+//            Job task = () -> {
             float hue = hues.get(object.getID());
             Color colour = ColourFactory.getColour(hue);
 

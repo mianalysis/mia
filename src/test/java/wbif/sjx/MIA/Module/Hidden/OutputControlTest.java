@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.GUI.InputOutput;
+package wbif.sjx.MIA.Module.Hidden;
 
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.ModuleTest;

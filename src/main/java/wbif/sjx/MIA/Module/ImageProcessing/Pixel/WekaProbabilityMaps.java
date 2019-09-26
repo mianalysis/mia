@@ -19,6 +19,9 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Created by sc13967 on 22/03/2018.
@@ -65,7 +68,12 @@ public class WekaProbabilityMaps extends Module {
         }
 
         writeMessage("Loading classifier");
-        wekaSegmentation.loadClassifier(classifierFilePath);
+        try {
+            wekaSegmentation.loadClassifier(new FileInputStream(classifierFilePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
         writeMessage("Classifier loaded");
 
         int nThreads = Prefs.getThreads();

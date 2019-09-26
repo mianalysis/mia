@@ -16,10 +16,10 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
-import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.DependencyValidator;
 
 import javax.swing.*;
@@ -59,7 +59,7 @@ public class MIA implements Command {
 
             } else {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
-                AnalysisRunner.startAnalysis(analysis);
+                AnalysisRunner.run(analysis);
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
