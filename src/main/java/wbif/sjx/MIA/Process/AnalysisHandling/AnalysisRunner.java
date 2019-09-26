@@ -44,6 +44,7 @@ public class AnalysisRunner {
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
         GUI.setProgress(0);
+        counter = 0;
 
         // Get jobs and exit if no images found
         HashSet<Job> jobs = getJobs(analysis);
