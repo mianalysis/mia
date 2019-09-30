@@ -5,7 +5,7 @@ public class BasicLogRenderer implements LogRenderer {
 
     @Override
     public void write(String message, Level level) {
-
+        System.out.println(message);
     }
 
     @Override
