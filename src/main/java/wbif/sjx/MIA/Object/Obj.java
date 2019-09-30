@@ -9,6 +9,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -266,9 +267,8 @@ public class Obj extends Volume {
 
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
-        TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
         Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
-        sliceObj.setPoints(slicePoints);
+        setSlicePoints(sliceObj.coordinateSet,slice);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(sliceObj);
@@ -316,15 +316,8 @@ public class Obj extends Volume {
 
     }
 
-    public TreeSet<Point<Integer>> getSlicePoints(int slice) {
-        TreeSet<Point<Integer>> slicePoints = new TreeSet<>();
-
-        for (Point<Integer> point:getPoints()) {
-            if (point.getZ()==slice) slicePoints.add(point);
-        }
-
-        return slicePoints;
-
+    public void setSlicePoints(CoordinateSet sliceCoordinateSet, int slice) {
+        for (Point<Integer> point:coordinateSet) if (point.getZ()==slice) sliceCoordinateSet.add(point);
     }
 
     public Image convertObjToImage(String outputName, @Nullable Image templateImage) {

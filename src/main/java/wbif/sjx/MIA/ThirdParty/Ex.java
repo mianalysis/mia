@@ -18,6 +18,7 @@ import net.imglib2.*;
 import net.imglib2.img.Img;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
@@ -37,8 +38,8 @@ public class Ex {
         ImgPlus img = currentData.getImgPlus();
 
         // Getting key axis indices
-        AxisType xType = Axes.X;
-        AxisType yType = Axes.Y;
+        AxisType xType = Axes.Y;
+        AxisType yType = Axes.X;
         AxisType projType = Axes.Z;
 
         // Check specified axes exist, else return null
@@ -66,7 +67,7 @@ public class Ex {
         }
 
         // Apply transformation
-        ImgPlus<FloatType> proj = ImgPlus.wrap((Img<FloatType>) ij.op().create().img(new FinalDimensions(projected_dimensions), new FloatType()));
+        ImgPlus<UnsignedByteType> proj = ImgPlus.wrap((Img<UnsignedByteType>) ij.op().create().img(new FinalDimensions(projected_dimensions), new UnsignedByteType()));
         UnaryComputerOp mean_op = (UnaryComputerOp) ij.op().op(Ops.Stats.Mean.NAME,img);
         ij.op().transform().project(proj,perm,mean_op,2);
 
