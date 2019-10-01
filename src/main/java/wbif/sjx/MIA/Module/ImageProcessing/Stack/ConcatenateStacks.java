@@ -158,9 +158,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         if (axis.equals(AxisModes.X)) {
             dimsOutCombined[0] = getCombinedAxisLength(img1, img2, Axes.X);
             offsetOut2[0] = getAxisLength(img1, Axes.X);
-//        } else if (!checkAxisEquality(img1,img2,Axes.X)) {
-//            System.err.println("[Concatenate stacks] X-axis lengths not equal.");
-//            return null;
         } else {
             dimsOutCombined[0] = getAxisLength(img1, Axes.X);
         }
@@ -168,9 +165,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         if (axis.equals(AxisModes.Y)) {
             dimsOutCombined[1] = getCombinedAxisLength(img1, img2, Axes.Y);
             offsetOut2[1] = getAxisLength(img1, Axes.Y);
-//        } else if (!checkAxisEquality(img1,img2,Axes.Y)) {
-//            System.err.println("[Concatenate stacks] y-axis lengths not equal.");
-//            return null;
         } else {
             dimsOutCombined[1] = getAxisLength(img1, Axes.Y);
         }
@@ -178,9 +172,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         if (axis.equals(AxisModes.CHANNEL)) {
             dimsOutCombined[2] = getCombinedAxisLength(img1, img2, Axes.CHANNEL);
             offsetOut2[2] = getAxisLength(img1, Axes.CHANNEL);
-//        } else if (!checkAxisEquality(img1,img2,Axes.CHANNEL)) {
-//            System.err.println("[Concatenate stacks] channel-axis lengths not equal.");
-//            return null;
         } else {
             dimsOutCombined[2] = getAxisLength(img1, Axes.CHANNEL);
         }
@@ -188,9 +179,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         if (axis.equals(AxisModes.Z)) {
             dimsOutCombined[3] = getCombinedAxisLength(img1, img2, Axes.Z);
             offsetOut2[3] = getAxisLength(img1, Axes.Z);
-//        } else if (!checkAxisEquality(img1,img2,Axes.Z)) {
-//            System.err.println("[Concatenate stacks] Z-axis lengths not equal.");
-//            return null;
         } else {
             dimsOutCombined[3] = getAxisLength(img1, Axes.Z);
         }
@@ -198,9 +186,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         if (axis.equals(AxisModes.TIME)) {
             dimsOutCombined[4] = getCombinedAxisLength(img1, img2, Axes.TIME);
             offsetOut2[4] = getAxisLength(img1, Axes.TIME);
-//        } else if (!checkAxisEquality(img1,img2,Axes.TIME)) {
-//            System.err.println("[Concatenate stacks] time-axis lengths not equal.");
-//            return null;
         } else {
             dimsOutCombined[4] = getAxisLength(img1, Axes.TIME);
         }
