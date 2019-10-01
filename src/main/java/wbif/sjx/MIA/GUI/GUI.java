@@ -241,6 +241,7 @@ public class GUI {
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
+        // Getting the next file
         File nextFile = null;
         if (inputPath != null) {
             if (new File(inputPath).isFile()) {
@@ -252,29 +253,25 @@ public class GUI {
             }
         }
 
+        // Getting the next series
+        int nextSeries = 1;
+        ChoiceP seriesMode = (ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE);
+        if (InputControl.SeriesModes.SERIES_LIST.equals(seriesMode.getChoice())) {
+            SeriesListSelectorP listParameter = inputControl.getParameter(InputControl.SERIES_LIST);
+            nextSeries = listParameter.getSeriesList()[0];
+        }
+
         // If the new file is the same as the old, skip this
         File previousFile = testWorkspace.getMetadata().getFile();
+        int previousSeries = testWorkspace.getMetadata().getSeriesNumber();
+
         if (previousFile == null && nextFile == null) return;
-        if (previousFile != null && nextFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath())) return;
+        if (previousFile != null && nextFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeries) return;
 
         lastModuleEval = -1;
-        testWorkspace = new Workspace(1,nextFile,1);
+        testWorkspace = new Workspace(1,nextFile,nextSeries);
+        testWorkspace.getMetadata().setSeriesName("");
 
-        ChoiceP seriesMode = (ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE);
-        switch (seriesMode.getChoice()) {
-            case InputControl.SeriesModes.ALL_SERIES:
-                testWorkspace.getMetadata().setSeriesNumber(1);
-                testWorkspace.getMetadata().setSeriesName("");
-                break;
-
-            case InputControl.SeriesModes.SERIES_LIST:
-                SeriesListSelectorP listParameter = inputControl.getParameter(InputControl.SERIES_LIST);
-                int[] seriesList = listParameter.getSeriesList();
-                testWorkspace.getMetadata().setSeriesNumber(seriesList[0]);
-                testWorkspace.getMetadata().setSeriesName("");
-                break;
-
-        }
     }
 
     public static int getLastModuleEval(){

@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Object.References;
 
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.Units;
 
 import java.io.Serializable;
 import java.util.TreeMap;
@@ -14,9 +15,14 @@ public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRe
         return keySet().toArray(new String[0]);
     }
 
-    public ObjMeasurementRef getOrPut(Object key) {
+    public ObjMeasurementRef getOrPut(String key) {
+        // Stripping placeholder for units
+        key = Units.replace(key);
+
         putIfAbsent((String) key,new ObjMeasurementRef((String) key));
+
         return get(key);
+
     }
 
     public boolean hasExportedMeasurements() {

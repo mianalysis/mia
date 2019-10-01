@@ -5,6 +5,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
+import wbif.sjx.MIA.Object.Units;
 
 public class ObjMeasurementRef extends SummaryRef {
     private String objectsName = "";
@@ -66,9 +67,7 @@ public class ObjMeasurementRef extends SummaryRef {
 
     public String getFinalName() {
         int idx = name.lastIndexOf("//");
-
         return name.substring(idx+2);
-
     }
 
     public String getObjectsName() {

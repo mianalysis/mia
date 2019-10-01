@@ -137,12 +137,12 @@ public class FitGaussian2D extends Module {
         obj.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, Double.NaN));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.X0_CAL), Double.NaN));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.Y0_CAL), Double.NaN));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.Z0_CAL), Double.NaN));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_X_CAL), Double.NaN));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_Y_CAL), Double.NaN));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_MEAN_CAL), Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.X0_CAL, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.Y0_CAL, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.Z0_CAL, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_X_CAL, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_Y_CAL, Double.NaN));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_CAL, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.A_0, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.A_BG, Double.NaN));
         obj.addMeasurement(new Measurement(Measurements.THETA, Double.NaN));
@@ -174,12 +174,12 @@ public class FitGaussian2D extends Module {
         obj.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, sx));
         obj.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, sy));
         obj.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, sm));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.X0_CAL), x0*distPerPxXY));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.Y0_CAL), y0*distPerPxXY));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.Z0_CAL), z0*distPerPxZ));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_X_CAL), sx*distPerPxXY));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_Y_CAL), sy*distPerPxXY));
-        obj.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_MEAN_CAL), sm*distPerPxXY));
+        obj.addMeasurement(new Measurement(Measurements.X0_CAL, x0*distPerPxXY));
+        obj.addMeasurement(new Measurement(Measurements.Y0_CAL, y0*distPerPxXY));
+        obj.addMeasurement(new Measurement(Measurements.Z0_CAL, z0*distPerPxZ));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_X_CAL, sx*distPerPxXY));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_Y_CAL, sy*distPerPxXY));
+        obj.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_CAL, sm*distPerPxXY));
         obj.addMeasurement(new Measurement(Measurements.A_0, A0));
         obj.addMeasurement(new Measurement(Measurements.A_BG, ABG));
         obj.addMeasurement(new Measurement(Measurements.THETA, th));
@@ -398,27 +398,27 @@ public class FitGaussian2D extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X0_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.X0_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y0_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y0_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z0_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z0_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_X_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_Y_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_MEAN_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 

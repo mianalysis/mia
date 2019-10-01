@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
@@ -43,9 +44,11 @@ public class TextParameter extends ParameterControl implements FocusListener {
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        updateControl();
+        if (parameter.getModule().getClass().isInstance(new InputControl(GUI.getModules()))) GUI.updateTestFile(true);
 
         GUI.updateModuleStates(true);
+
+        updateControl();
 
     }
 

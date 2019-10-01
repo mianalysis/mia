@@ -113,7 +113,7 @@ public class MeasureObjectShape extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx, this));
 
                 double containedVolumeCal = inputObject.getContainedVolume(false);
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL), containedVolumeCal, this));
+                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal, this));
 
             }
 
@@ -132,7 +132,7 @@ public class MeasureObjectShape extends Module {
                 double areaPx = projectedObject.size();
                 double areaCal = areaPx*projectedObject.getDppXY()*projectedObject.getDppXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx, this));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_AREA_CAL), areaCal, this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal, this));
             }
 
             // Adding the projected-object diameter measurements
@@ -140,7 +140,7 @@ public class MeasureObjectShape extends Module {
                 double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
                 double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDppXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal, this));
             }
 
             // Adding the projected-object perimeter measurements
@@ -149,7 +149,7 @@ public class MeasureObjectShape extends Module {
                 double perimeterPx = projectedObject.getRoi(0).getLength();
                 double perimeterCal = perimeterPx*inputObject.getDppXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX,perimeterPx,this));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_PERIM_CAL),perimeterCal,this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_CAL,perimeterCal,this));
 
                 double circularity = 4*Math.PI*areaPx/(perimeterPx*perimeterPx);
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity, this));
@@ -206,7 +206,7 @@ public class MeasureObjectShape extends Module {
                     "Z into account (i.e. converts object height from slice units to pixel units.  Measured in pixel " +
                     "units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
+            reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_CAL);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
@@ -221,7 +221,7 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
+            reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_CAL);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
@@ -235,7 +235,7 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
+            reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_CAL);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
@@ -250,14 +250,14 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in pixel units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_PERIM_CAL));
+            reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_CAL);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
 
-            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_CIRCULARITY));
+            reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_CIRCULARITY);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Circularity of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +

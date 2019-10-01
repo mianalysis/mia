@@ -58,15 +58,15 @@ public class MeasureObjectCentroid extends Module {
 
             if (x != null) {
                 object.addMeasurement(new Measurement(Measurements.MEAN_X_PX,object.getXMean(true)));
-                object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_CAL),object.getXMean(false)));
+                object.addMeasurement(new Measurement(Measurements.MEAN_X_CAL,object.getXMean(false)));
             }
             if (y!= null) {
                 object.addMeasurement(new Measurement(Measurements.MEAN_Y_PX,object.getYMean(true)));
-                object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_CAL),object.getYMean(false)));
+                object.addMeasurement(new Measurement(Measurements.MEAN_Y_CAL,object.getYMean(false)));
             }
             if (z!= null) {
                 object.addMeasurement(new Measurement(Measurements.MEAN_Z_SLICE,object.getZMean(true,false)));
-                object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Z_CAL),object.getZMean(false,false)));
+                object.addMeasurement(new Measurement(Measurements.MEAN_Z_CAL,object.getZMean(false,false)));
             }
         }
 
@@ -115,19 +115,19 @@ public class MeasureObjectCentroid extends Module {
                 "  Measured in slice units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_X_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_X_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean x-position of all pixels in the object, \""+inputObjectsName+"\"." +
                 "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_Y_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Y_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean y-position of all pixels in the object, \""+inputObjectsName+"\"." +
                 "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_Z_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_Z_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean z-position of all pixels in the object, \""+inputObjectsName+"\"." +
                 "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");

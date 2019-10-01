@@ -127,9 +127,9 @@ public class RunTrackMate extends Module {
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
             spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
-            spotObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_CAL),spot.getFeature(Spot.RADIUS)*dppXY,this));
+            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY,this));
             spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
-            spotObject.addMeasurement(new Measurement(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
+            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
 
             spotObjects.add(spotObject);
 
@@ -177,9 +177,9 @@ public class RunTrackMate extends Module {
                 Obj spotObject = new Obj(spotObjectsName, spotObjects.getAndIncrementID(),trackObject);
 
                 spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_CAL),spot.getFeature(Spot.RADIUS)*dppXY,this));
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY,this));
                 spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
-                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
 
                 // Getting coordinates
                 int x = (int) Math.round(spot.getDoublePosition(0));
@@ -400,7 +400,7 @@ public class RunTrackMate extends Module {
         reference.setDescription("Radius used as size estimate for spot detection.  Measured in pixel units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_CAL);
         reference.setObjectsName(outputSpotObjectsName);
         reference.setDescription("Radius used as size estimate for spot detection.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
@@ -411,7 +411,7 @@ public class RunTrackMate extends Module {
         reference.setDescription("Diameter of spot as estimated by TrackMate.  Measured in pixel units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_CAL);
         reference.setObjectsName(outputSpotObjectsName);
         reference.setDescription("Diameter of spots as estimated by TrackMate.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");

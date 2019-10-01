@@ -14,23 +14,27 @@ public class Measurement {
     // CONSTRUCTOR
 
     public Measurement(String name) {
+        name = Units.replace(name);
         this.name = name;
 
     }
 
     public Measurement(String name, Module source) {
+        name = Units.replace(name);
         this.name = name;
         this.source = source;
 
     }
 
     public Measurement(String name, double value) {
+        name = Units.replace(name);
         this.name = name;
         this.value = value;
 
     }
 
     public Measurement(String name, double value, Module source) {
+        name = Units.replace(name);
         this.name = name;
         this.value = value;
         this.source = source;

@@ -16,11 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProjectImageTest extends ModuleTest {
     @BeforeAll
-    public static void setImageJ() {
-        ImageJ ij = new ImageJ();
-    }
-
-    @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(true);
     }
@@ -65,10 +60,6 @@ public class ProjectImageTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        new ij.ImageJ();
-        expectedImage.showImage();
-        outputImage.showImage();
-        IJ.runMacro("waitForUser");
         assertEquals(expectedImage,outputImage);
 
     }
@@ -351,10 +342,6 @@ public class ProjectImageTest extends ModuleTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        new ij.ImageJ();
-        expectedImage.showImage();
-        outputImage.showImage();
-        IJ.runMacro("waitForUser");
         assertEquals(expectedImage,outputImage);
 
     }

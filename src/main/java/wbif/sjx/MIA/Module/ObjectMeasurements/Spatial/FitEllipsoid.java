@@ -143,27 +143,27 @@ public class FitEllipsoid extends Module {
 
         double[] centres = calculator.getCentroid();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0]));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENT_CAL),centres[0]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENT_CAL,centres[0]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX,centres[1]));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENT_CAL),centres[1]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_CAL,centres[1]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE,centres[2]*dppXY/dppZ));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Z_CENT_CAL),centres[2]*dppZ));
+        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL,centres[2]*dppZ));
 
         double[] radii = calculator.getRadii();
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_PX,radii[0]));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_1_CAL),radii[0]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_CAL,radii[0]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_PX,radii[1]));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_2_CAL),radii[1]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_CAL,radii[1]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_PX,radii[2]));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_3_CAL),radii[2]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_CAL,radii[2]*dppXY));
 
         double surfaceArea = calculator.getSurfaceArea();
         inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_PX,surfaceArea));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SURFACE_AREA_CAL),surfaceArea*dppXY*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_CAL,surfaceArea*dppXY*dppXY));
 
         double volume = calculator.getVolume();
         inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX,volume));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL),volume*dppXY*dppXY*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL,volume*dppXY*dppXY*dppXY));
 
         double[] orientations = calculator.getOrientationRads();
         inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1,Math.toDegrees(orientations[0])));
@@ -278,7 +278,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENT_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.X_CENT_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -286,7 +286,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENT_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENT_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -294,7 +294,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z_CENT_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z_CENT_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -302,7 +302,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_1_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_1_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -310,7 +310,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_2_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_2_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -318,7 +318,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_3_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_3_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -326,7 +326,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SURFACE_AREA_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.SURFACE_AREA_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
@@ -334,7 +334,7 @@ public class FitEllipsoid extends Module {
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_CAL);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 

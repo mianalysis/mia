@@ -39,7 +39,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static String getFullName(String objectsName, String measurement) {
-        return "OBJ_OVERLAP // "+objectsName+"_"+Units.replace(measurement.substring(0,measurement.length()-2));
+        return "OBJ_OVERLAP // "+objectsName+"_"+measurement.substring(0,measurement.length()-2);
 
     }
 

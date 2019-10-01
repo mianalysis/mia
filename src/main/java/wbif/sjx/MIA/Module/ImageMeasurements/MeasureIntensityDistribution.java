@@ -520,11 +520,11 @@ public class MeasureIntensityDistribution extends Module {
                 if (inputObjects.size() == 0) {
                     String name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
-                    name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
+                    name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL);
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
                     name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
-                    name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
+                    name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL);
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
                     return true;
                 }
@@ -533,11 +533,11 @@ public class MeasureIntensityDistribution extends Module {
                 double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
                 String name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
                 inputImage.addMeasurement(new Measurement(name, cs.getMean()));
-                name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
+                name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL);
                 inputImage.addMeasurement(new Measurement(name, cs.getMean() * dppXY));
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
                 inputImage.addMeasurement(new Measurement(name, cs.getStd()));
-                name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
+                name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL);
                 inputImage.addMeasurement(new Measurement(name, cs.getStd() * dppXY));
 
                 writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- " + cs.getStd());
@@ -660,7 +660,7 @@ public class MeasureIntensityDistribution extends Module {
                 reference.setImageName(inputImageName);
                 returnedRefs.add(reference);
 
-                name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
+                name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
                 returnedRefs.add(reference);
@@ -670,7 +670,7 @@ public class MeasureIntensityDistribution extends Module {
                 reference.setImageName(inputImageName);
                 returnedRefs.add(reference);
 
-                name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
+                name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL);
                 reference = imageMeasurementRefs.getOrPut(name);
                 reference.setImageName(inputImageName);
                 returnedRefs.add(reference);

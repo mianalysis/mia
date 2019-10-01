@@ -13,6 +13,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -420,7 +421,7 @@ public class RelateObjectsTest extends ModuleTest {
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
             double expectedSurfDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_DIST_CAL.name()).getValue();
-            name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
+            name = Units.replace(RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name));
             double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
@@ -483,7 +484,7 @@ public class RelateObjectsTest extends ModuleTest {
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
             double expectedSurfDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_DIST_CAL_5PX.name()).getValue();
-            name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
+            name = Units.replace(RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name));
             double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
@@ -682,7 +683,7 @@ public class RelateObjectsTest extends ModuleTest {
             assertEquals(expectedDistPx, actualfDistPx, tolerance);
 
             double expectedDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_DIST_CAL.name()).getValue();
-            name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name);
+            name = Units.replace(RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name));
             double actualDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistCal, actualDistCal, tolerance);
 
@@ -745,7 +746,7 @@ public class RelateObjectsTest extends ModuleTest {
             assertEquals(expectedDistPx, actualfDistPx, tolerance);
 
             double expectedDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_DIST_CAL_5PX.name()).getValue();
-            name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name);
+            name = Units.replace(RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name));
             double actualDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistCal, actualDistCal, tolerance);
 

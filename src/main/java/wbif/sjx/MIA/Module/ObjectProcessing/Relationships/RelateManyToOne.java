@@ -78,7 +78,7 @@ public class RelateManyToOne extends Module {
 
 
     public static String getFullName(String measurement,String parentName) {
-        return Units.replace("RELATE_MANY_TO_ONE // "+measurement.replace("${PARENT}",parentName));
+        return "RELATE_MANY_TO_ONE // "+measurement.replace("${PARENT}",parentName);
     }
 
     public static void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
