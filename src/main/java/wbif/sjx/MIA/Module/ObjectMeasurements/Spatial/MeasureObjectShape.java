@@ -35,6 +35,8 @@ public class MeasureObjectShape extends Module {
         String N_VOXELS = "SHAPE // N_VOXELS";
         String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
         String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
+        String HEIGHT_SLICE = "SHAPE // HEIGHT_(SLICE)";
+        String HEIGHT_CAL = "SHAPE // HEIGHT_(${CAL})";
         String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
         String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
@@ -107,13 +109,19 @@ public class MeasureObjectShape extends Module {
             // Adding the volume measurements
             if (measureVolume) {
                 int nVoxels = inputObject.size();
-                inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,nVoxels,this));
+                inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,nVoxels));
 
                 double containedVolumePx = inputObject.getContainedVolume(true);
-                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx, this));
+                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx));
 
                 double containedVolumeCal = inputObject.getContainedVolume(false);
-                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal, this));
+                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal));
+
+                double heightSlice = inputObject.getHeight(true,false);
+                inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_SLICE, heightSlice));
+
+                double heightCal = inputObject.getHeight(false,false);
+                inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_CAL, heightCal));
 
             }
 
@@ -123,6 +131,7 @@ public class MeasureObjectShape extends Module {
                 try {
                     projectedObject = ProjectObjects.process(inputObject, "Projected",inputObject.is2D(),false);
                 } catch (IntegerOverflowException e) {
+                    MIA.log.writeWarning(e.getMessage());
                     return false;
                 }
             }
@@ -131,16 +140,16 @@ public class MeasureObjectShape extends Module {
             if (measureProjectedArea) {
                 double areaPx = projectedObject.size();
                 double areaCal = areaPx*projectedObject.getDppXY()*projectedObject.getDppXY();
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx, this));
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal, this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal));
             }
 
             // Adding the projected-object diameter measurements
             if (measureProjectedDiameter) {
                 double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
                 double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDppXY();
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal, this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal));
             }
 
             // Adding the projected-object perimeter measurements
@@ -148,11 +157,11 @@ public class MeasureObjectShape extends Module {
                 double areaPx = projectedObject.size();
                 double perimeterPx = projectedObject.getRoi(0).getLength();
                 double perimeterCal = perimeterPx*inputObject.getDppXY();
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX,perimeterPx,this));
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_CAL,perimeterCal,this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX,perimeterPx));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_CAL,perimeterCal));
 
                 double circularity = 4*Math.PI*areaPx/(perimeterPx*perimeterPx);
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity, this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity));
 
             }
         }
@@ -212,6 +221,18 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units prior to conversion" +
                     " to calibrated units.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.HEIGHT_SLICE);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Height of the object, \""+inputObjectsName+"\".  Measured in slice unit.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.HEIGHT_CAL);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Height of the object, \""+inputObjectsName+"\".  Measured in calibrated " +
+                    "("+Units.getOMEUnits().getSymbol()+") units.");
+
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_AREA)) {

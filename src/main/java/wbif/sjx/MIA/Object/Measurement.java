@@ -8,7 +8,6 @@ import wbif.sjx.MIA.Module.Module;
 public class Measurement {
     private final String name;
     private double value = Double.NaN;
-    private Module source = null;
 
 
     // CONSTRUCTOR
@@ -19,25 +18,10 @@ public class Measurement {
 
     }
 
-    public Measurement(String name, Module source) {
-        name = Units.replace(name);
-        this.name = name;
-        this.source = source;
-
-    }
-
     public Measurement(String name, double value) {
         name = Units.replace(name);
         this.name = name;
         this.value = value;
-
-    }
-
-    public Measurement(String name, double value, Module source) {
-        name = Units.replace(name);
-        this.name = name;
-        this.value = value;
-        this.source = source;
 
     }
 
@@ -54,13 +38,5 @@ public class Measurement {
 
     public void setValue(double value) {
         this.value = value;
-    }
-
-    public Module getSource() {
-        return source;
-    }
-
-    public void setSource(Module source) {
-        this.source = source;
     }
 }
