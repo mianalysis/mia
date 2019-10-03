@@ -797,8 +797,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Converting RGB to 3-channel
-        boolean toConvert = ipl.getBitDepth() == 24;
-        if (toConvert) ipl = CompositeConverter.makeComposite(ipl);
+        if (ipl.getBitDepth() == 24) ipl = CompositeConverter.makeComposite(ipl);
 
         // If either number of slices or timepoints is 1 check it's the right dimension
         if (threeDMode.equals(ThreeDModes.TIMESERIES) && ((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1))) {

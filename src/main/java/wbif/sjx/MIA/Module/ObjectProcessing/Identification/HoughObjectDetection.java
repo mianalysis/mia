@@ -202,7 +202,7 @@ public class HoughObjectDetection extends Module {
             if (showHoughScore) {
                 DecimalFormat df = LabelFactory.getDecimalFormat(0,true);
                 IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,df);
-                AddLabels.addOverlay(dispIpl,outputObjects,AddLabels.LabelPositions.CENTRE,IDs,labelSize,hues,false,true);
+                AddLabels.addOverlay(dispIpl,outputObjects,AddLabels.LabelPositions.CENTRE,IDs,labelSize,hues,false,false,true);
             }
 
             AddObjectOutline.addOverlay(dispIpl,outputObjects,0.3,hues,false,true);

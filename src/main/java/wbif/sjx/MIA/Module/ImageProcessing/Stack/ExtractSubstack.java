@@ -1,7 +1,12 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
-import javax.annotation.Nullable;import ij.ImagePlus;
+import javax.annotation.Nullable;
+
+import ij.CompositeImage;
+import ij.ImagePlus;
 import ij.plugin.SubHyperstackMaker;
+import ij.plugin.SubstackMaker;
+import net.imagej.ImageJ;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -179,9 +184,14 @@ public class ExtractSubstack extends Module implements ActionListener {
 
         if (!checkLimits(inputImage,cList,zList,tList)) return null;
 
+        ImageJ ij = new ImageJ();
+
         // Generating the substack and adding to the workspace
-        ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
+        ImagePlus outputImagePlus = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
+
+        if (outputImagePlus.isComposite()) ((CompositeImage) outputImagePlus).setMode(CompositeImage.COLOR);
+
         return new Image(outputImageName,outputImagePlus);
 
     }

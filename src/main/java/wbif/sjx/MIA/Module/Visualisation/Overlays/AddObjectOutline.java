@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Roi;
@@ -62,16 +63,12 @@ public class AddObjectOutline extends Overlay {
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            AtomicInteger count = new AtomicInteger();
             for (Obj object:inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
-
-                    addOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
-
+                    addOverlay(object, finalIpl, ColourFactory.getColour(hue), lineWidth, renderInAllFrames);
                 };
                 pool.submit(task);
             }
@@ -109,6 +106,7 @@ public class AddObjectOutline extends Overlay {
 
             polyRoi.setStrokeColor(colour);
             polyRoi.setStrokeWidth(lineWidth);
+
             ipl.getOverlay().addElement(polyRoi);
 
         }
@@ -150,11 +148,7 @@ public class AddObjectOutline extends Overlay {
         // Generating colours for each object
         HashMap<Integer,Float> hues = getHues(inputObjects);
 
-        MIA.log.writeDebug("1 "+ipl.isComposite()+"_"+ipl.isHyperStack()+"_"+ipl.getNChannels()+"_"+ipl.getNSlices()+"_"+ipl.getNFrames());
-
         addOverlay(ipl,inputObjects,lineWidth,hues,renderInAllFrames,multithread);
-
-        MIA.log.writeDebug("2 "+ipl.isComposite()+"_"+ipl.isHyperStack()+"_"+ipl.getNChannels()+"_"+ipl.getNSlices()+"_"+ipl.getNFrames());
 
         Image outputImage = new Image(outputImageName,ipl);
 

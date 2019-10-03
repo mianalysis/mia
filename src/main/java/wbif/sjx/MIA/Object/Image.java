@@ -202,9 +202,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
         if (lut != null && dispIpl.getBitDepth() != 24) dispIpl.setLut(lut);
-        if (composite) dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+        if (composite && dispIpl.getNChannels() > 1) {
+            dispIpl.setDisplayMode(CompositeImage.COMPOSITE);
+        } else {
+            dispIpl.setDisplayMode(CompositeImage.COLOR);
+        }
         dispIpl.show();
-
     }
 
     public void showImage(String title, LUT lut) {
