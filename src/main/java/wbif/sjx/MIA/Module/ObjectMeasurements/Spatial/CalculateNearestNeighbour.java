@@ -39,7 +39,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     public static String getFullName(String measurement,String neighbourObjectsName) {
-        return Units.replace("NEAREST_NEIGHBOUR // "+measurement.replace("${NEIGHBOUR}",neighbourObjectsName));
+        return "NEAREST_NEIGHBOUR // "+measurement.replace("${NEIGHBOUR}",neighbourObjectsName);
     }
 
 
@@ -75,7 +75,7 @@ public class CalculateNearestNeighbour extends Module {
             name = getFullName(Measurements.NN_DISTANCE_PX,nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, minDist));
 
-            name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),nearestNeighbourName);
+            name = getFullName(Measurements.NN_DISTANCE_CAL,nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, minDist*dppXY));
 
         } else {
@@ -85,7 +85,7 @@ public class CalculateNearestNeighbour extends Module {
             name = getFullName(Measurements.NN_DISTANCE_PX,nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, Double.NaN));
 
-            name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),nearestNeighbourName);
+            name = getFullName(Measurements.NN_DISTANCE_CAL,nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, Double.NaN));
 
         }
@@ -232,7 +232,7 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
-        String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
+        String name = getFullName(Measurements.NN_DISTANCE_CAL,neighbourObjectsName);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);

@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Resizer;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -27,16 +29,21 @@ public class InterpolateZAxis extends Module {
 
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
         // Calculating scaling
+        int nSlices = inputImagePlus.getNSlices();
         double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
         double distPerPxZ = inputImagePlus.getCalibration().pixelDepth;
-        int finalNSlices = (int) Math.round(inputImagePlus.getNSlices()*distPerPxZ/distPerPxXY);
+        int finalNSlices = (int) Math.round(nSlices*distPerPxZ/distPerPxXY);
 
         // Checking if interpolation is necessary
-        if (finalNSlices == inputImagePlus.getNSlices()) return inputImagePlus;
+        if (finalNSlices == nSlices) return inputImagePlus;
 
         Resizer resizer = new Resizer();
         resizer.setAverageWhenDownsizing(true);
-        return resizer.zScale(inputImagePlus,finalNSlices,Resizer.IN_PLACE);
+
+        ImagePlus resized = resizer.zScale(inputImagePlus,finalNSlices,Resizer.IN_PLACE);
+        resized.setDimensions(inputImagePlus.getNChannels(),finalNSlices,inputImagePlus.getNFrames());
+
+        return resized;
 
     }
 

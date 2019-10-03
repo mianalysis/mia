@@ -50,6 +50,7 @@ public class AddLabels extends Overlay {
     public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
     public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
     public static final String LABEL_POSITION = "Label position";
+    public static final String RENDER_IN_ALL_OBJECT_SLICES = "Render in all object slices";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
@@ -108,7 +109,7 @@ public class AddLabels extends Overlay {
 
     }
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String labelPosition, HashMap<Integer,String> labels, int labelSize, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String labelPosition, HashMap<Integer,String> labels, int labelSize, HashMap<Integer,Float> hues, boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -140,7 +141,17 @@ public class AddLabels extends Overlay {
                             break;
                     }
 
-                    addOverlay(finalIpl, label, location, colour, labelSize);
+                    if (renderInAllSlices) {
+                        double[][] extents = object.getExtents(true,false);
+                        int zMin = (int) Math.round(extents[2][0]);
+                        int zMax = (int) Math.round(extents[2][1]);
+                        for (int z=zMin;z<=zMax;z++) {
+                            location[2] = z+1;
+                            addOverlay(finalIpl, label, location, colour, labelSize);
+                        }
+                    } else {
+                        addOverlay(finalIpl, label, location, colour, labelSize);
+                    }
 
                 };
                 pool.submit(task);
@@ -227,6 +238,7 @@ public class AddLabels extends Overlay {
         String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
         String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
         String labelPosition = parameters.getValue(LABEL_POSITION);
+        boolean renderInAllSlices = parameters.getValue(RENDER_IN_ALL_OBJECT_SLICES);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -241,7 +253,7 @@ public class AddLabels extends Overlay {
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces,useScientific);
         HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,childObjectsForLabelName,parentObjectsForLabelName,measurementForLabel);
 
-        addOverlay(ipl,inputObjects,labelPosition,labels,labelSize,hues,renderInAllFrames,multithread);
+        addOverlay(ipl,inputObjects,labelPosition,labels,labelSize,hues,renderInAllSlices,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 
@@ -275,6 +287,7 @@ public class AddLabels extends Overlay {
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL,this));
         parameters.add(new ChoiceP(LABEL_POSITION,this,LabelPositions.CENTRE,LabelPositions.ALL));
+        parameters.add(new BooleanP(RENDER_IN_ALL_OBJECT_SLICES,this,false));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
@@ -337,6 +350,7 @@ public class AddLabels extends Overlay {
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(LABEL_POSITION));
+        returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_OBJECT_SLICES));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));

@@ -56,6 +56,9 @@ public class ExtendedMinima extends Module {
         // Creating output image
         ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,nChannels,nSlices,nFrames,8);
 
+        // Setting the calibration from the input image
+        outputIpl.setCalibration(inputImage.getImagePlus().getCalibration());
+
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 

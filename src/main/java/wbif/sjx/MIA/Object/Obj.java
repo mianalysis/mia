@@ -5,18 +5,16 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.TreeSet;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -266,9 +264,8 @@ public class Obj extends Volume {
 
     public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
-        TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
         Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
-        sliceObj.setPoints(slicePoints);
+        setSlicePoints(sliceObj.coordinateSet,slice);
 
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(sliceObj);
@@ -277,7 +274,7 @@ public class Obj extends Volume {
         ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertObjectsToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
+        Image objectImage = objectCollection.convertToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -316,15 +313,8 @@ public class Obj extends Volume {
 
     }
 
-    public TreeSet<Point<Integer>> getSlicePoints(int slice) {
-        TreeSet<Point<Integer>> slicePoints = new TreeSet<>();
-
-        for (Point<Integer> point:getPoints()) {
-            if (point.getZ()==slice) slicePoints.add(point);
-        }
-
-        return slicePoints;
-
+    public void setSlicePoints(CoordinateSet sliceCoordinateSet, int slice) {
+        for (Point<Integer> point:coordinateSet) if (point.getZ()==slice) sliceCoordinateSet.add(point);
     }
 
     public Image convertObjToImage(String outputName, @Nullable Image templateImage) {
@@ -334,7 +324,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertObjectsToImage(outputName,templateImage,hues,8,false);
+        return tempObj.convertToImage(outputName,templateImage,hues,8,false);
 
     }
 
@@ -345,7 +335,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertObjectsToImage(outputName,null,hues,8,false);
+        return tempObj.convertToImage(outputName,null,hues,8,false);
 
     }
 

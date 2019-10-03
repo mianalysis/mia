@@ -63,9 +63,9 @@ public class MeasureSkeleton extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.nTriplePoints,skeletonResult.getTriples()[0]));
         inputObject.addMeasurement(new Measurement(Measurements.nQuadruplePoints,skeletonResult.getQuadruples()[0]));
         inputObject.addMeasurement(new Measurement(Measurements.avBranchLengthPx,skeletonResult.getAverageBranchLength()[0]/dppXY));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.avBranchLengthCal),skeletonResult.getAverageBranchLength()[0]));
+        inputObject.addMeasurement(new Measurement(Measurements.avBranchLengthCal,skeletonResult.getAverageBranchLength()[0]));
         inputObject.addMeasurement(new Measurement(Measurements.maxBranchLengthPx,skeletonResult.getMaximumBranchLength()[0]/dppXY));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.maxBranchLengthCal),skeletonResult.getMaximumBranchLength()[0]));
+        inputObject.addMeasurement(new Measurement(Measurements.maxBranchLengthCal,skeletonResult.getMaximumBranchLength()[0]));
 
     }
 
@@ -253,7 +253,7 @@ public class MeasureSkeleton extends Module {
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 
-        ref = objectMeasurementRefs.getOrPut(Units.replace(Measurements.avBranchLengthCal));
+        ref = objectMeasurementRefs.getOrPut(Measurements.avBranchLengthCal);
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 
@@ -261,7 +261,7 @@ public class MeasureSkeleton extends Module {
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 
-        ref = objectMeasurementRefs.getOrPut(Units.replace(Measurements.maxBranchLengthCal));
+        ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthCal);
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
 

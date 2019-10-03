@@ -1,8 +1,10 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.LUT;
 import ij.process.StackStatistics;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -13,6 +15,8 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 07/06/2017.
@@ -152,6 +156,30 @@ public class ImageTypeConverter extends Module {
         imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
     }
 
+    static HashMap<Integer, LUT> getLUTs(Image image) {
+        ImagePlus ipl = image.getImagePlus();
+        HashMap<Integer,LUT> luts = new HashMap<>();
+
+        if (!ipl.isComposite()) return luts;
+
+        for (int c=0;c<ipl.getNChannels();c++) {
+            luts.put(c,((CompositeImage) ipl).getChannelLut(c+1));
+        }
+
+        return luts;
+
+    }
+
+    static void setLUTs(Image image, HashMap<Integer,LUT> luts) {
+        ImagePlus ipl = image.getImagePlus();
+
+        if (!ipl.isComposite()) return;
+
+        for (int c:luts.keySet()) {
+            ((CompositeImage) ipl).setChannelLut(luts.get(c),c+1);
+        }
+    }
+
 
     @Override
     public String getPackageName() {
@@ -178,6 +206,9 @@ public class ImageTypeConverter extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
+        // Getting LUTs by channel index
+        HashMap<Integer,LUT> luts = getLUTs(inputImage);
+
         // Applying the type conversion
         int outputBitDepth = getOutputBitDepth(outputType);
         applyConversion(inputImagePlus,outputBitDepth,scalingMode);
@@ -187,10 +218,12 @@ public class ImageTypeConverter extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
+            setLUTs(outputImage,luts);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
 
         } else {
+            setLUTs(inputImage,luts);
             if (showOutput) inputImage.showImage();
 
         }

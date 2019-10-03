@@ -65,8 +65,8 @@ public class MeasureTrackMotion extends Module {
 
 
     public static String getFullName(String measurement, boolean subtractAverageMotion) {
-        if (subtractAverageMotion) return Units.replace("TRACK_ANALYSIS // (AV_SUB) " + measurement);
-        return Units.replace("TRACK_ANALYSIS // " + measurement);
+        if (subtractAverageMotion) return "TRACK_ANALYSIS // (AV_SUB) " + measurement;
+        return "TRACK_ANALYSIS // " + measurement;
     }
 
 

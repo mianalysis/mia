@@ -94,7 +94,7 @@ public class MergeRelatedObjects extends Module {
             // Showing objects
             if (showOutput) {
                 HashMap<Integer,Float> hues = ColourFactory.getRandomHues(relatedObjects);
-                ImagePlus dispIpl = relatedObjects.convertObjectsToImage("Objects",null,hues,8,false).getImagePlus();
+                ImagePlus dispIpl = relatedObjects.convertToImage("Objects",null,hues,8,false).getImagePlus();
                 dispIpl.setLut(LUTs.Random(true));
                 dispIpl.setPosition(1,1,1);
                 dispIpl.updateChannelAndDraw();

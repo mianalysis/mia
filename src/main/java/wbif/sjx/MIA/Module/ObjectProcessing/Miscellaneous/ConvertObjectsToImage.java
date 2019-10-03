@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -33,6 +32,7 @@ public class ConvertObjectsToImage extends Module {
     public static final String TEMPLATE_IMAGE = "Template image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String OUTPUT_MODE = "Output mode";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
@@ -47,6 +47,14 @@ public class ConvertObjectsToImage extends Module {
         String OBJECTS_TO_IMAGE = "Objects to image";
 
         String[] ALL = new String[]{IMAGE_TO_OBJECTS, OBJECTS_TO_IMAGE};
+
+    }
+
+    public interface OutputModes {
+        String CENTROID = "Object centroid";
+        String WHOLE_OBJECT = "Whole object";
+
+        String[] ALL = new String[]{CENTROID,WHOLE_OBJECT};
 
     }
 
@@ -89,6 +97,7 @@ public class ConvertObjectsToImage extends Module {
             String objectName = parameters.getValue(INPUT_OBJECTS);
             String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputMode = parameters.getValue(OUTPUT_MODE);
             String colourMode = parameters.getValue(COLOUR_MODE);
             String measurementForColour = parameters.getValue(MEASUREMENT);
             String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
@@ -132,7 +141,15 @@ public class ConvertObjectsToImage extends Module {
                     break;
             }
 
-            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+            Image outputImage = null;
+            switch (outputMode) {
+                case OutputModes.CENTROID:
+                    outputImage = inputObjects.convertCentroidsToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+                    break;
+                case OutputModes.WHOLE_OBJECT:
+                    outputImage = inputObjects.convertToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+                    break;
+            }
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();
@@ -183,6 +200,7 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
         parameters.add(new ChoiceP(COLOUR_MODE, this,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
@@ -207,6 +225,7 @@ public class ConvertObjectsToImage extends Module {
             returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
             returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
 
             returnedParameters.add(parameters.getParameter(COLOUR_MODE));
             switch ((String) parameters.getValue(COLOUR_MODE)) {

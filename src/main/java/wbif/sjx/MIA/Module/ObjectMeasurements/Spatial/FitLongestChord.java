@@ -57,7 +57,7 @@ public class FitLongestChord extends Module {
 
         double longestChordLength = calculator.getLCLength();
         object.addMeasurement(new Measurement(Measurements.LENGTH_PX,longestChordLength));
-        object.addMeasurement(new Measurement(Units.replace(Measurements.LENGTH_CAL),longestChordLength*dppXY));
+        object.addMeasurement(new Measurement(Measurements.LENGTH_CAL,longestChordLength*dppXY));
 
         double[][] LC = calculator.getLC();
         object.addMeasurement(new Measurement(Measurements.X1_PX,LC[0][0]));
@@ -69,11 +69,11 @@ public class FitLongestChord extends Module {
 
         CumStat cumStat = calculator.calculateAverageDistanceFromLC();
         object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_PX,cumStat.getMean()));
-        object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_SURF_DIST_CAL),cumStat.getMean()*dppXY));
+        object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_CAL,cumStat.getMean()*dppXY));
         object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_PX,cumStat.getStd()));
-        object.addMeasurement(new Measurement(Units.replace(Measurements.STD_SURF_DIST_CAL),cumStat.getStd()*dppXY));
+        object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_CAL,cumStat.getStd()*dppXY));
         object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_PX,cumStat.getMax()));
-        object.addMeasurement(new Measurement(Units.replace(Measurements.MAX_SURF_DIST_CAL),cumStat.getMax()*dppXY));
+        object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_CAL,cumStat.getMax()*dppXY));
 
     }
 
@@ -205,7 +205,7 @@ public class FitLongestChord extends Module {
                 "\""+inputObjectsName+"\" object surface with the greatest spacing).  Measured in pixel units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Length of the longest chord (the vector passing between the two points on the " +
                 "\""+inputObjectsName+"\" object surface with the greatest spacing).  Measured in calibrated ("
@@ -255,7 +255,7 @@ public class FitLongestChord extends Module {
                 "converted to pixel units prior to calculation).");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_SURF_DIST_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_SURF_DIST_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Mean distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in calibrated ("
@@ -269,7 +269,7 @@ public class FitLongestChord extends Module {
                 "Z-coordinates are converted to pixel units prior to calculation).");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STD_SURF_DIST_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.STD_SURF_DIST_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Standard deviation distance of all points on the \""+inputObjectsName+"\" object " +
                 "surface to the respective closest point on the longest chord.  Measured in calibrated ("
@@ -283,7 +283,7 @@ public class FitLongestChord extends Module {
                 "converted to pixel units prior to calculation).");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAX_SURF_DIST_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_SURF_DIST_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Maximum distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in calibrated ("

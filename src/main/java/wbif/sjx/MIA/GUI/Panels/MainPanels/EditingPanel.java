@@ -24,9 +24,7 @@ public class EditingPanel extends MainPanel {
     private static int frameHeight = GUI.getFrameHeight();
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
-    private ModuleControlButton addModuleButton = null;
-    private static final JPopupMenu moduleListMenu = new JPopupMenu();
-
+    private final EditingControlPanel editingControlPanel = new EditingControlPanel();
     private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final InputOutputPanel inputPanel = new InputOutputPanel();
     private final InputOutputPanel outputPanel = new InputOutputPanel();
@@ -45,9 +43,6 @@ public class EditingPanel extends MainPanel {
 
 
     public EditingPanel() {
-        addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,GUI.getBigButtonSize(),moduleListMenu);
-        listAvailableModules();
-
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -56,12 +51,11 @@ public class EditingPanel extends MainPanel {
         c.gridy = 0;
 
         // Creating buttons to addRef and remove modules
-        JPanel controlPanel = initialiseControlPanel();
         c.weightx = 0;
         c.weighty = 1;
         c.gridheight = 3;
         c.fill = GridBagConstraints.VERTICAL;
-        add(controlPanel, c);
+        add(editingControlPanel, c);
 
         // Initialising the status panel
         c.gridheight = 1;
@@ -126,76 +120,7 @@ public class EditingPanel extends MainPanel {
     }
 
 
-    private JPanel initialiseControlPanel() {
-        int bigButtonSize = GUI.getBigButtonSize();
-        int frameHeight = GUI.getFrameHeight();
-        int statusHeight = GUI.getStatusHeight();
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weighty = 0;
-        c.insets = new Insets(5, 5, 0, 5);
-        c.anchor = GridBagConstraints.PAGE_START;
-
-        JPanel controlPanel = new JPanel();
-        controlPanel.setMaximumSize(new Dimension(bigButtonSize + 20, Integer.MAX_VALUE));
-        controlPanel.setMinimumSize(new Dimension(bigButtonSize + 20, frameHeight - statusHeight-350));
-        controlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        controlPanel.setLayout(new GridBagLayout());
-
-        // Add module button
-        addModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        controlPanel.add(addModuleButton, c);
-
-        // Remove module button
-        ModuleControlButton removeModuleButton = new ModuleControlButton(ModuleControlButton.REMOVE_MODULE,bigButtonSize,moduleListMenu);
-        removeModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
-        c.gridy++;
-        controlPanel.add(removeModuleButton, c);
-
-        // Move module up button
-        ModuleControlButton moveModuleUpButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_UP,bigButtonSize,moduleListMenu);
-        moveModuleUpButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-        c.gridy++;
-        controlPanel.add(moveModuleUpButton, c);
-
-        // Move module down button
-        ModuleControlButton moveModuleDownButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_DOWN,bigButtonSize,moduleListMenu);
-        moveModuleDownButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-        c.gridy++;
-        controlPanel.add(moveModuleDownButton, c);
-
-        // Load analysis protocol button
-        AnalysisControlButton loadAnalysisButton = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS,bigButtonSize);
-        c.gridy++;
-        c.weighty = 1;
-        c.anchor = GridBagConstraints.PAGE_END;
-        controlPanel.add(loadAnalysisButton, c);
-
-        // Save analysis protocol button
-        AnalysisControlButton saveAnalysisButton = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS,bigButtonSize);
-        c.gridy++;
-        c.weighty = 0;
-        controlPanel.add(saveAnalysisButton, c);
-
-        // Start analysis button
-        AnalysisControlButton startAnalysisButton = new AnalysisControlButton(AnalysisControlButton.START_ANALYSIS,bigButtonSize);
-        c.gridy++;
-        controlPanel.add(startAnalysisButton, c);
-
-        // Stop analysis button
-        AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,bigButtonSize);
-        c.gridy++;
-        c.insets = new Insets(5, 5, 5, 5);
-        controlPanel.add(stopAnalysisButton, c);
-
-        controlPanel.validate();
-        controlPanel.repaint();
-
-        return controlPanel;
-
-    }
 
     private void initialiseHelpNotesPanels() {
         // Adding panels to combined JPanel
@@ -212,53 +137,6 @@ public class EditingPanel extends MainPanel {
         c.gridy++;
         c.insets = new Insets(0,0,0,0);
         helpNotesPanel.add(notesPanel,c);
-
-    }
-
-    private void listAvailableModules() {
-        addModuleButton.setEnabled(false);
-        addModuleButton.setToolTipText("Loading modules");
-
-        TreeMap<String,Module> availableModules = GUI.getAvailableModules();
-        TreeSet<ModuleListMenu> topList = new TreeSet<>();
-        TreeSet<String> moduleNames = new TreeSet<>();
-        moduleNames.addAll(availableModules.keySet());
-
-        for (String name : moduleNames) {
-            // ActiveList starts at the top list
-            TreeSet<ModuleListMenu> activeList = topList;
-            ModuleListMenu activeItem = null;
-
-            String[] names = name.split("\\\\");
-            for (int i = 0; i < names.length-1; i++) {
-                boolean found = false;
-                for (ModuleListMenu listItemm : activeList) {
-                    if (listItemm.getName().equals(names[i])) {
-                        activeItem = listItemm;
-                        found = true;
-                    }
-                }
-
-                if (!found) {
-                    ModuleListMenu newItem = new ModuleListMenu(names[i], new ArrayList<>(),moduleListMenu);
-                    newItem.setName(names[i]);
-                    activeList.add(newItem);
-                    if (activeItem != null) activeItem.add(newItem);
-                    activeItem = newItem;
-                }
-
-                activeList = activeItem.getChildren();
-
-            }
-
-            if (activeItem != null) activeItem.addMenuItem(availableModules.get(name));
-
-        }
-
-        for (ModuleListMenu listMenu : topList) moduleListMenu.add(listMenu);
-
-        addModuleButton.setToolTipText("Add module");
-        addModuleButton.setEnabled(true);
 
     }
 

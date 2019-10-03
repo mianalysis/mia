@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.7</version>
+    <version>0.11.8</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -97,9 +97,14 @@
     </ciManagement>
 
     <repositories>
+        <!--<repository>-->
+            <!--<id>imagej.public</id>-->
+            <!--<url>http://maven.imagej.net/content/groups/public</url>-->
+        <!--</repository>-->
+
         <repository>
-            <id>imagej.public</id>
-            <url>http://maven.imagej.net/content/groups/public</url>
+            <id>scijava.public</id>
+            <url>https://maven.scijava.org/content/groups/public</url>
         </repository>
 
         <repository>
@@ -315,10 +320,10 @@
         <dependency>
 <!--            <groupId>wbif.sjx</groupId>-->
 <!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.5.4</version>-->
+<!--            <version>1.5.5-SNAPSHOT</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.5.4</version>
+            <version>1.5.5</version>
         </dependency>
     </dependencies>
 

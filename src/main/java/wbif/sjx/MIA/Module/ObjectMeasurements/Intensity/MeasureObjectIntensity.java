@@ -164,9 +164,9 @@ public class MeasureObjectIntensity extends Module {
         double distPerPxXY = object.getDppXY();
 
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX), cs.getMean()));
-        object.addMeasurement(new Measurement(Units.replace(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL)), cs.getMean()*distPerPxXY));
+        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL), cs.getMean()*distPerPxXY));
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_PX), cs.getStd()));
-        object.addMeasurement(new Measurement(Units.replace(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL)), cs.getStd()*distPerPxXY));
+        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL), cs.getStd()*distPerPxXY));
 
     }
 
@@ -446,7 +446,7 @@ public class MeasureObjectIntensity extends Module {
                     "regions of the image get closer to the input objects.  Measured in pixel units.");
             returnedRefs.add(reference);
 
-            name = Units.replace(getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL));
+            name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Mean intensity-weighted distance of all signal in the image, \""+inputImageName
@@ -463,7 +463,7 @@ public class MeasureObjectIntensity extends Module {
                     "the brightest regions of the image get closer to the input objects.  Measured in pixel units.");
             returnedRefs.add(reference);
 
-            name = Units.replace(getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL));
+            name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL);
             reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Standard deviation intensity-weighted distance of all signal in the image, \""

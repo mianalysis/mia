@@ -84,7 +84,7 @@ public class RelateObjects extends Module {
 
 
     public static String getFullName(String measurement,String parentName) {
-        return Units.replace("RELATE_OBJ // "+measurement.replace("${PARENT}",parentName));
+        return "RELATE_OBJ // "+measurement.replace("${PARENT}",parentName);
     }
 
     public void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {

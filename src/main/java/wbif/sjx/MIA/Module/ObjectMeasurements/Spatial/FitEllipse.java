@@ -117,47 +117,47 @@ public class FitEllipse extends Module {
 
     public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {
         if (calculator.getEllipseFit() == null) {
-            inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENTRE_CAL),Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MAJOR_CAL),Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,Double.NaN,this));
-            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_CAL,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_CAL,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_CAL,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_CAL,Double.NaN));
             return;
         }
 
         double dppXY = inputObject.getDppXY();
         double dppZ = inputObject.getDppZ();
 
-         double xCent = calculator.getXCentre();
-        inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent,this));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),xCent*dppXY,this));
+        double xCent = calculator.getXCentre();
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent));
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_CAL,xCent*dppXY));
 
         double yCent = calculator.getYCentre();
-        inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,yCent,this));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENTRE_CAL),yCent*dppXY,this));
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,yCent));
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_CAL,yCent*dppXY));
 
         double semiMajor = calculator.getSemiMajorAxis();
-        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,semiMajor,this));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MAJOR_CAL),semiMajor*dppXY,this));
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,semiMajor));
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_CAL,semiMajor*dppXY));
 
         double semiMinor = calculator.getSemiMinorAxis();
-        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,semiMinor,this));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),semiMinor*dppXY,this));
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,semiMinor));
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_CAL,semiMinor*dppXY));
 
         double eccentricity = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
-        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentricity,this));
+        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentricity));
 
         double ratio = semiMajor/semiMinor;
-        inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,ratio,this));
+        inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,ratio));
 
         double theta = Math.toDegrees(calculator.getEllipseThetaRads());
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,theta,this));
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,theta));
 
     }
 
@@ -264,7 +264,7 @@ public class FitEllipse extends Module {
                 "object, \""+inputObjectsName+"\".  Measured in pixels.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X_CENTRE_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.X_CENTRE_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
                 "object, \""+inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
@@ -277,7 +277,7 @@ public class FitEllipse extends Module {
                 "object, \""+inputObjectsName+"\".  Measured in pixels.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y_CENTRE_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y_CENTRE_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
                 "object, \""+inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
@@ -291,7 +291,7 @@ public class FitEllipse extends Module {
                 "point on it's perimeter.  Measured in pixels.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SEMI_MAJOR_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MAJOR_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
                 inputObjectsName+"\".  The semi-major axis passes from the centre of the ellipse to the furthest " +
@@ -305,7 +305,7 @@ public class FitEllipse extends Module {
                 "perpendiculart to the semi-major axis.  Measured in pixels.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SEMI_MINOR_CAL));
+        reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MINOR_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
                 inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
@@ -313,7 +313,7 @@ public class FitEllipse extends Module {
                 "units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ECCENTRICITY));
+        reference = objectMeasurementRefs.getOrPut(Measurements.ECCENTRICITY);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Measurement of how much the ellipse fit to the 2D Z-projection of the object, \"" +
                 inputObjectsName+"\", deviates from a perfect circle.  Eccentricity is calculated as sqrt(1-b^2/a^2)" +
@@ -321,7 +321,7 @@ public class FitEllipse extends Module {
                 "has no units.");
         returnedRefs.add(reference);
 
-        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAJOR_MINOR_RATIO));
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAJOR_MINOR_RATIO);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Ratio of semi-major axis length to semi-minor axis length for the ellipse fit to " +
                 "the 2D Z-projection of the object, \""+inputObjectsName+"\".  This measure has no units.");

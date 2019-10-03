@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
@@ -19,7 +18,6 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.Volume;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -85,7 +83,7 @@ public class ProjectObjects extends Module {
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",null,hues,8,false).getImagePlus();
+            ImagePlus dispIpl = outputObjects.convertToImage("Objects",null,hues,8,false).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

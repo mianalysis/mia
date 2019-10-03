@@ -30,7 +30,7 @@ public class MeasureImageDimensions extends Module {
 
 
     public static String getFullName(String measurement) {
-        return Units.replace("DIMENSIONS // "+measurement);
+        return "DIMENSIONS // "+measurement;
     }
 
 
