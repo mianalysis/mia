@@ -5,6 +5,7 @@ import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -39,8 +40,6 @@ public class AddObjectOutline extends Overlay {
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-
-//    private ColourServer colourServer;
 
     public AddObjectOutline(ModuleCollection modules) {
         super("Add object outline",modules);
@@ -145,21 +144,22 @@ public class AddObjectOutline extends Overlay {
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        // Only add output to workspace if not applying to input
-        if (applyToInput) addOutputToWorkspace = false;
-
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
         HashMap<Integer,Float> hues = getHues(inputObjects);
 
+        MIA.log.writeDebug("1 "+ipl.isComposite()+"_"+ipl.isHyperStack()+"_"+ipl.getNChannels()+"_"+ipl.getNSlices()+"_"+ipl.getNFrames());
+
         addOverlay(ipl,inputObjects,lineWidth,hues,renderInAllFrames,multithread);
+
+        MIA.log.writeDebug("2 "+ipl.isComposite()+"_"+ipl.isHyperStack()+"_"+ipl.getNChannels()+"_"+ipl.getNSlices()+"_"+ipl.getNFrames());
 
         Image outputImage = new Image(outputImageName,ipl);
 
         // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (addOutputToWorkspace) workspace.addImage(outputImage);
+        if (!applyToInput && addOutputToWorkspace) workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
 
         return true;

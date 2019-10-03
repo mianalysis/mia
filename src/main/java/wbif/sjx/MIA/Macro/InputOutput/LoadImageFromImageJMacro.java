@@ -58,7 +58,7 @@ public class LoadImageFromImageJMacro extends MacroOperation {
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_BIT_DEPTH,ImageLoader.OutputBitDepths.EIGHT);
         imageLoader.updateParameterValue(ImageLoader.MIN_INPUT_INTENSITY,0d);
         imageLoader.updateParameterValue(ImageLoader.MAX_INPUT_INTENSITY,0d);
-        imageLoader.updateParameterValue(ImageLoader.USE_IMAGEJ_READER,false);
+        imageLoader.updateParameterValue(ImageLoader.READER,ImageLoader.Readers.BIOFORMATS);
         imageLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
         // Running Module

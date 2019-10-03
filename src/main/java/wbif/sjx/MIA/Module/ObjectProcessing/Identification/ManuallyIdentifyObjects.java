@@ -9,7 +9,6 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -214,7 +213,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode, String type) throws IntegerOverflowException {
         // Create a binary image of the objects
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
-        Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,hues,8,false);
+        Image binaryImage = outputObjects.convertToImage("Binary",templateImage,hues,8,false);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
 
         switch (interpolationMode) {
@@ -372,7 +371,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Showing the selected objects
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,hues,8,false).getImagePlus();
+            ImagePlus dispIpl = outputObjects.convertToImage("Objects",inputImage,hues,8,false).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import ij.ImagePlus;
-import jogamp.graph.font.typecast.ot.table.ID;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
@@ -443,7 +442,7 @@ public class TrackObjects extends Module {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects,trackObjectsName,true);
 
         // Creating a parent-ID encoded image of the objects
-        Image dispImage = spotObjects.convertObjectsToImage(spotObjects.getName(),null,hues,32,false);
+        Image dispImage = spotObjects.convertToImage(spotObjects.getName(),null,hues,32,false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();

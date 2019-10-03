@@ -61,22 +61,18 @@ public class MeasureImageTexture extends Module {
 
         // Acquiring measurements
         Measurement ASMMeasurement = new Measurement(Measurements.ASM, textureCalculator.getASM());
-        ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
         writeMessage("ASM = " + ASMMeasurement.getValue());
 
         Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST, textureCalculator.getContrast());
-        contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
         writeMessage("Contrast = " + contrastMeasurement.getValue());
 
         Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION, textureCalculator.getCorrelation());
-        correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
         writeMessage("Correlation = " + correlationMeasurement.getValue());
 
         Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY, textureCalculator.getEntropy());
-        entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
         writeMessage("Entropy = " + entropyMeasurement.getValue());
 

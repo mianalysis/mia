@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Module.Visualisation;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
@@ -63,7 +62,7 @@ public class ShowObjectsTest extends ModuleTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
-        Image testImage = testObjects.convertObjectsToImage("Test image",new Image("Image",ipl),hues,32,false);
+        Image testImage = testObjects.convertToImage("Test image",new Image("Image",ipl),hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -116,7 +115,7 @@ public class ShowObjectsTest extends ModuleTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
-        Image testImage = testObjects.convertObjectsToImage("Test image",new Image("Image",ipl),hues,32,false);
+        Image testImage = testObjects.convertToImage("Test image",new Image("Image",ipl),hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();

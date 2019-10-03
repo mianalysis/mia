@@ -79,39 +79,14 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertObjectsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
+    public Image convertToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
-        ImagePlus ipl;
 
-        if (templateIpl == null) {
-            if (size() == 0) return null;
-
-            // Getting range of object pixels
-            int[][] sLim = getSpatialLimits();
-            int[] tLim = getTemporalLimits();
-
-            // Creating a new image
-            ipl = IJ.createHyperStack(outputName,sLim[0][1]+1,sLim[1][1]+1,1,sLim[2][1]+1,tLim[1]+1,bitDepth);
-        } else {
-            ipl = IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),
-                    templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
-        }
+        // Create output image
+        ImagePlus ipl = createImage(templateIpl,outputName,bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32 && nanBackground) {
-            for (int z = 1; z <= ipl.getNSlices(); z++) {
-                for (int c = 1; c <= ipl.getNChannels(); c++) {
-                    for (int t = 1; t <= ipl.getNFrames(); t++) {
-                        for (int x=0;x<ipl.getWidth();x++) {
-                            for (int y=0;y<ipl.getHeight();y++) {
-                                ipl.setPosition(c,z,t);
-                                ipl.getProcessor().putPixelValue(x,y,Double.NaN);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
 
         // Labelling pixels in image
         for (Obj object:values()) {
@@ -137,6 +112,81 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Assigning the spatial calibration from the template image
+        setCalibration(templateIpl,ipl);
+
+        return new Image(outputName,ipl);
+
+    }
+
+    public Image convertCentroidsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
+        ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
+
+        // Create output image
+        ImagePlus ipl = createImage(templateIpl,outputName,bitDepth);
+
+        // If it's a 32-bit image, set all background pixels to NaN
+        if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
+
+        // Labelling pixels in image
+        for (Obj object:values()) {
+            int tPos = object.getT();
+            int xPos = (int) Math.round(object.getXMean(true));
+            int yPos = (int) Math.round(object.getYMean(true));
+            int zPos = (int) Math.round(object.getZMean(true,false));
+
+            ipl.setPosition(1,zPos+1,tPos+1);
+
+            float hue = hues.get(object.getID());
+            switch (bitDepth) {
+                case 8:
+                case 16:
+                    ipl.getProcessor().putPixel(xPos,yPos,Math.round(hue*255));
+                    break;
+                case 32:
+                    ipl.getProcessor().putPixelValue(xPos,yPos,hue);
+                    break;
+            }
+        }
+
+        // Assigning the spatial calibration from the template image
+        setCalibration(templateIpl,ipl);
+
+        return new Image(outputName,ipl);
+
+    }
+
+    ImagePlus createImage(ImagePlus templateIpl, String outputName, int bitDepth) {
+        if (templateIpl == null) {
+            if (size() == 0) return null;
+
+            // Getting range of object pixels
+            int[][] sLim = getSpatialLimits();
+            int[] tLim = getTemporalLimits();
+
+            // Creating a new image
+            return IJ.createHyperStack(outputName,sLim[0][1]+1,sLim[1][1]+1,1,sLim[2][1]+1,tLim[1]+1,bitDepth);
+        } else {
+            return IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),
+                    templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
+        }
+    }
+
+    void setNaNBackground(ImagePlus ipl) {
+        for (int z = 1; z <= ipl.getNSlices(); z++) {
+            for (int c = 1; c <= ipl.getNChannels(); c++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    for (int x=0;x<ipl.getWidth();x++) {
+                        for (int y=0;y<ipl.getHeight();y++) {
+                            ipl.setPosition(c,z,t);
+                            ipl.getProcessor().putPixelValue(x,y,Double.NaN);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void setCalibration(ImagePlus templateIpl, ImagePlus ipl) {
         if (templateIpl != null) {
             ipl.getCalibration().pixelWidth = templateIpl.getCalibration().getX(1);
             ipl.getCalibration().pixelHeight = templateIpl.getCalibration().getY(1);
@@ -149,9 +199,6 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             ipl.getCalibration().pixelDepth = first.getDppZ();
             ipl.getCalibration().setUnit(first.getCalibratedUnits());
         }
-
-        return new Image(outputName,ipl);
-
     }
 
     /*

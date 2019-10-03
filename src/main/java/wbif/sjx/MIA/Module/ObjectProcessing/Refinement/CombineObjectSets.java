@@ -75,7 +75,7 @@ public class CombineObjectSets extends Module {
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            outputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus().show();
+            outputObjects.convertToImage("Objects", null, hues, 8,false).getImagePlus().show();
         }
 
         return true;

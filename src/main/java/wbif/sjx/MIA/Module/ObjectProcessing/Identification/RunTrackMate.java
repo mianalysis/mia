@@ -126,10 +126,10 @@ public class RunTrackMate extends Module {
             spotObject.add((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
-            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
-            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY,this));
-            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
-            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
+            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS)));
+            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY));
+            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
+            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY));
 
             spotObjects.add(spotObject);
 
@@ -176,10 +176,10 @@ public class RunTrackMate extends Module {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
                 Obj spotObject = new Obj(spotObjectsName, spotObjects.getAndIncrementID(),trackObject);
 
-                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY,this));
-                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
-                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS)));
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY));
 
                 // Getting coordinates
                 int x = (int) Math.round(spot.getDoublePosition(0));

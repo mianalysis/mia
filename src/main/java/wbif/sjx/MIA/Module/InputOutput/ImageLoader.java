@@ -65,7 +65,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String LOADER_SEPARATOR = "Core image loading controls";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMPORT_MODE = "Import mode";
-    public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
+    public static final String READER = "Reader";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
     public static final String STARTING_INDEX = "Starting index";
     public static final String FRAME_INTERVAL = "Frame interval";
@@ -116,6 +116,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String SPECIFIC_FILE = "Specific file";
 
         String[] ALL = new String[]{CURRENT_FILE, IMAGEJ, IMAGE_SEQUENCE, MATCHING_FORMAT, SPECIFIC_FILE};
+
+    }
+
+    public interface Readers {
+        String BIOFORMATS = "BioFormats";
+        String IMAGEJ = "ImageJ";
+
+        String[] ALL = new String[]{BIOFORMATS,IMAGEJ};
 
     }
 
@@ -613,14 +621,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
         double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY);
         double maxIntensity = parameters.getValue(MAX_INPUT_INTENSITY);
-        boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
+        String reader = parameters.getValue(READER);
         String threeDMode = parameters.getValue(THREE_D_MODE);
 
         // Series number comes from the Workspace
         int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
         // ImageJ reader can't use crop
-        if (useImageJReader) cropMode = CropModes.NONE;
+        if (reader.equals(Readers.IMAGEJ)) cropMode = CropModes.NONE;
 
         String[] dimRanges = new String[]{channels, slices, frames};
 
@@ -666,10 +674,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         return false;
                     }
 
-                    if (useImageJReader) {
-                        ipl = IJ.openImage(file.getAbsolutePath());
-                    } else {
-                        ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, intRange, setCalibration, true);
+                    switch (reader) {
+                        case Readers.BIOFORMATS:
+                            ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, intRange, setCalibration, true);
+                            break;
+                        case Readers.IMAGEJ:
+                            ipl = IJ.openImage(file.getAbsolutePath());
+                            break;
                     }
                     break;
 
@@ -737,10 +748,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         return false;
                     }
 
-                    if (useImageJReader) {
-                        ipl = IJ.openImage(file.getAbsolutePath());
-                    } else {
-                        ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, intRange, setCalibration, true);
+                    switch (reader) {
+                        case Readers.BIOFORMATS:
+                            ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, intRange, setCalibration, true);
+                            break;
+                        case Readers.IMAGEJ:
+                            ipl = IJ.openImage(file.getAbsolutePath());
+                            break;
                     }
 
                     break;
@@ -751,10 +765,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         return false;
                     }
 
-                    if (useImageJReader) {
-                        ipl = IJ.openImage(filePath);
-                    } else {
-                        ipl = getBFImage(filePath, 1, dimRanges, crop, intRange, setCalibration, true);
+                    switch (reader) {
+                        case Readers.BIOFORMATS:
+                            ipl = getBFImage(filePath, 1, dimRanges, crop, intRange, setCalibration, true);
+                            break;
+                        case Readers.IMAGEJ:
+                            ipl = IJ.openImage(filePath);
+                            break;
                     }
                     break;
             }
@@ -817,7 +834,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 "<br>- \""+ImportModes.IMAGE_SEQUENCE+"\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.<br>" +
                 "<br>- \""+ImportModes.MATCHING_FORMAT+"\" will load the image matching a filename based on the root-file for the workspace and a series of rules.<br>" +
                 "<br>- \""+ImportModes.SPECIFIC_FILE+"\" will load the image at a specific location."));
-        parameters.add(new BooleanP(USE_IMAGEJ_READER, this, false, "Use the stock ImageJ file reader, rather than the default BioFormats reader."));
+        parameters.add(new ChoiceP(READER, this, Readers.BIOFORMATS, Readers.ALL, "Set the reader for importing the image.<br>" +
+                "<br>- \""+Readers.BIOFORMATS+"\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).<br>" +
+                "<br>- \""+Readers.IMAGEJ+"\" will use the stock ImageJ file reader."));
         parameters.add(new IntegerP(NUMBER_OF_ZEROES, this, 4, "Number of digits in image sequence suffix."));
         parameters.add(new IntegerP(STARTING_INDEX, this, 0, "First number in sequence to load."));
         parameters.add(new IntegerP(FRAME_INTERVAL, this, 1, "Frame interval to use for loading."));
@@ -854,7 +873,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new IntegerP(TOP, this, 0, "Top coordinate limit for image cropping (specified in pixel units)."));
         parameters.add(new IntegerP(WIDTH, this, 512, "Width of the final cropped region (specified in pixel units)."));
         parameters.add(new IntegerP(HEIGHT, this, 512, "Height of the final cropped region (specified in pixel units)."));
-        
+
         parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new BooleanP(SET_CAL, this, false, "Option to use the automatically-applied spatial calibration or manually specify these values."));
         parameters.add(new DoubleP(XY_CAL, this, 1d, "Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module."));
@@ -925,11 +944,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
                 || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)
                 || parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)) {
-            returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
+            returnedParameters.add(parameters.getParameter(READER));
         }
 
-        returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
-        if (!((boolean) parameters.getValue(USE_IMAGEJ_READER))) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
+            returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
             if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
                     !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
                             && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
@@ -941,7 +960,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         returnedParameters.add(parameters.getParameter(THREE_D_MODE));
 
-        if (!((boolean) parameters.getValue(USE_IMAGEJ_READER))) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
             returnedParameters.add(parameters.getParameter(CROP_MODE));
             switch ((String) parameters.getValue(CROP_MODE)) {
                 case CropModes.FIXED:
@@ -963,7 +982,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(Z_CAL));
         }
 
-        if (!((boolean) parameters.getValue(USE_IMAGEJ_READER))) {
+        if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
             returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
             if (parameters.getValue(FORCE_BIT_DEPTH)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
