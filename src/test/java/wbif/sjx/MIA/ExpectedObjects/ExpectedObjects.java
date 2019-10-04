@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.*;
@@ -68,7 +69,9 @@ public abstract class ExpectedObjects {
             testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits));
 
             Obj testObject = testObjects.get(ID);
-            testObject.add(x,y,z);
+            try {
+                testObject.add(x,y,z);
+            } catch (PointOutOfRangeException e) {}
             testObject.setT(t);
 
         }

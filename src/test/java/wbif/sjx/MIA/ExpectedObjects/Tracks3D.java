@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.BufferedReader;
@@ -51,7 +52,9 @@ public class Tracks3D {
 
             spotID = spotID+(t*65536);
             Obj spotObject = new Obj(volumeType,spotsName,spotID,127,90,13,dppXY,dppZ,calibratedUnits);
-            spotObject.add(x,y,z);
+            try {
+                spotObject.add(x,y,z);
+            } catch (PointOutOfRangeException e) {}
             spotObject.setT(t);
 
             trackObjects.putIfAbsent(trackID,new Obj(volumeType,tracksName,trackID,127,90,13,dppXY,dppZ,calibratedUnits));

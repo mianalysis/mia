@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
 import wbif.sjx.common.Process.ActiveContour.Energies.BendingEnergy;
 import wbif.sjx.common.Process.ActiveContour.Energies.ElasticEnergy;
@@ -182,6 +183,8 @@ public class ActiveContourObjectDetection extends Module {
                 }
             } catch (IntegerOverflowException e) {
                 return false;
+            } catch (PointOutOfRangeException e) {
+                
             }
         }
 

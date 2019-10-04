@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbour(VolumeType volumeType) throws IntegerOverflowException {
+    public void testGetNearestNeighbour(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -59,7 +60,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbourOverlapping(VolumeType volumeType) throws IntegerOverflowException {
+    public void testGetNearestNeighbourOverlapping(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -99,7 +100,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbourLinkingDistanceNNFound(VolumeType volumeType) throws IntegerOverflowException {
+    public void testGetNearestNeighbourLinkingDistanceNNFound(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -135,7 +136,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNearestNeighbourLinkingDistanceNNNotFound(VolumeType volumeType) throws IntegerOverflowException {
+    public void testGetNearestNeighbourLinkingDistanceNNNotFound(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -171,7 +172,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunWithinSameSet(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunWithinSameSet(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -240,7 +241,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetMaxDistAllPass(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunWithinSameSetMaxDistAllPass(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -330,7 +331,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunWithinSameSetMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -420,7 +421,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunWithinSameSetMaxDistCalibratedSomeFail(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -510,7 +511,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetWithinParent(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunWithinSameSetWithinParent(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -599,7 +600,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunWithinSameSetWithinParentMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -688,7 +689,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunDifferentSets(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunDifferentSets(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -771,7 +772,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunDifferentSetsMaxDistSomePass(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunDifferentSetsMaxDistSomePass(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -854,7 +855,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunDifferentSetsWithinParent(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunDifferentSetsWithinParent(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -962,7 +963,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException {
+    public void testRunDifferentSetsWithinParentMaxDistSomeFail(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 

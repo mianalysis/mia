@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.8</version>
+    <version>0.11.9-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -125,24 +125,17 @@
     </repositories>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>junit</groupId>-->
-            <!--<artifactId>junit</artifactId>-->
-            <!--<version>4.12</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.5.0</version>
+            <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.5.0</version>
+            <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -318,12 +311,12 @@
         </dependency>
 
         <dependency>
-<!--            <groupId>wbif.sjx</groupId>-->
-<!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.5.5-SNAPSHOT</version>-->
-            <groupId>com.github.SJCross</groupId>
+            <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.5.5</version>
+            <version>1.5.6-SNAPSHOT</version>
+<!--            <groupId>com.github.SJCross</groupId>-->
+<!--            <artifactId>Common</artifactId>-->
+<!--            <version>1.5.5</version>-->
         </dependency>
     </dependencies>
 

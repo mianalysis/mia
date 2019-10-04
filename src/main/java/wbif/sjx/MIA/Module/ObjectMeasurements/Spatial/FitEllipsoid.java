@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
 import ij.ImageStack;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
@@ -11,6 +12,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.Volume;
 
 /**
@@ -122,7 +124,7 @@ public class FitEllipsoid extends Module {
         if (ellipsoid == null) return null;
 
         Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
-        ellipsoidObject.setPoints(ellipsoid.getPoints());
+        ellipsoidObject.setCoordinateSet(ellipsoid.getCoordinateSet());
         ellipsoidObject.setT(inputObject.getT());
 
         ellipsoidObject.addParent(inputObject);
@@ -134,7 +136,7 @@ public class FitEllipsoid extends Module {
     }
 
     public void updateInputObject(Obj inputObject, Volume ellipsoid) {
-        inputObject.setPoints(ellipsoid.getPoints());
+        inputObject.setCoordinateSet(ellipsoid.getCoordinateSet());
     }
 
     public void addMeasurements(Obj inputObject, EllipsoidCalculator calculator) {

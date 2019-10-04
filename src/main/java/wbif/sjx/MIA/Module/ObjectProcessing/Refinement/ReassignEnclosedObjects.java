@@ -16,6 +16,7 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -62,8 +63,10 @@ public class ReassignEnclosedObjects extends Module {
 
                 if (expanded == null) expanded = testObject;
 
-                for (Point<Integer> point : expanded.getPoints()) {
-                    object.add(point.getX(), point.getY(), point.getZ());
+                for (Point<Integer> point : expanded.getCoordinateSet()) {
+                    try {
+                        object.add(point.getX(), point.getY(), point.getZ());
+                    } catch (PointOutOfRangeException e) {}
                 }
 
                 // Removing the test object

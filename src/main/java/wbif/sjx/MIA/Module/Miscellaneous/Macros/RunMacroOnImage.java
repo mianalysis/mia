@@ -4,8 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.macro.CustomInterpreter;
-import ij.macro.Interpreter;
-import ij.text.TextWindow;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -41,7 +39,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_SEPARATOR = "Measurement output";
     public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
-    public static final String MEASUREMENT_HEADING = "Measurement heading";
+    public static final String VARIABLE = "Variable";
 
     public interface MacroModes {
         String MACRO_FILE = "Macro file";
@@ -55,6 +53,18 @@ public class RunMacroOnImage extends CoreMacroRunner {
         super("Run macro on image",modules);
     }
 
+    static ArrayList<ImagePlus> hideImages() {
+        ArrayList<ImagePlus> openImages = new ArrayList<>();
+        String[] imageTitles = WindowManager.getImageTitles();
+        for (String imageTitle:imageTitles) {
+            ImagePlus openImage = WindowManager.getImage(imageTitle);
+            openImages.add(openImage);
+            openImage.hide();
+        }
+
+        return openImages;
+
+    }
 
     @Override
     public String getPackageName() {
@@ -84,7 +94,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         // Getting a list of measurement headings
         ParameterGroup measurementGroup = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(measurementGroup,MEASUREMENT_HEADING);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(measurementGroup, VARIABLE);
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
@@ -100,15 +110,8 @@ public class RunMacroOnImage extends CoreMacroRunner {
         String finalMacroText = addVariables(macroText,inputVariables);
 
         // If providing the input image direct from the workspace, hide all open windows while the macro runs
-        ArrayList<ImagePlus> openImages = new ArrayList<>();
-        if (provideInputImage) {
-            String[] imageTitles = WindowManager.getImageTitles();
-            for (String imageTitle:imageTitles) {
-                ImagePlus openImage = WindowManager.getImage(imageTitle);
-                openImages.add(openImage);
-                openImage.hide();
-            }
-        }
+        ArrayList<ImagePlus> openImages = null;
+        if (provideInputImage) openImages = hideImages();
 
         // Running the macro
         CustomInterpreter interpreter = new CustomInterpreter();
@@ -116,6 +119,8 @@ public class RunMacroOnImage extends CoreMacroRunner {
             inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
             if (interpreter.wasError()) throw new RuntimeException();
         } catch (RuntimeException e) {
+            IJ.runMacro("setBatchMode(false)");
+            if (provideInputImage) for (ImagePlus openImage:openImages) openImage.show();
             MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
             return false;
         }
@@ -172,7 +177,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection measurementCollection = new ParameterCollection();
-        measurementCollection.add(new StringP(MEASUREMENT_HEADING,this));
+        measurementCollection.add(new StringP(VARIABLE,this));
         parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE,this,measurementCollection));
 
     }
@@ -231,7 +236,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
         String inputImage = parameters.getValue(INPUT_IMAGE);
 
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
 
         for (String expectedMeasurement:expectedMeasurements) {
             String fullName = getFullName(expectedMeasurement);

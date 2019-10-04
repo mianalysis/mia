@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 import java.util.ArrayList;
 
@@ -86,7 +87,9 @@ public class ExtractObjectEdges extends Module {
             double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
 
             if (pixelVal <= edgeDistance) {
-                edgeObject.add(parentX.get(i),parentY.get(i),parentZ.get(i));
+                try {
+                    edgeObject.add(parentX.get(i),parentY.get(i),parentZ.get(i));
+                } catch (PointOutOfRangeException e) {}
                 edgeObject.setT(inputObject.getT());
             }
         }
@@ -142,7 +145,9 @@ public class ExtractObjectEdges extends Module {
             double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
 
             if (pixelVal > edgeDistance ) {
-                interiorObject.add(parentX.get(i),parentY.get(i),parentZ.get(i));
+                try {
+                    interiorObject.add(parentX.get(i),parentY.get(i),parentZ.get(i));
+                } catch (PointOutOfRangeException e) {}
                 interiorObject.setT(inputObject.getT());
 
             }

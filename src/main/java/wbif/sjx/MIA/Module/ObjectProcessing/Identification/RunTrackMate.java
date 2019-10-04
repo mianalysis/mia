@@ -21,6 +21,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -123,7 +124,11 @@ public class RunTrackMate extends Module {
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
             Obj spotObject = new Obj(VolumeType.POINTLIST,spotObjectsName,spot.ID(),width,height,nSlices,dppXY,dppZ,calibrationUnits);
-            spotObject.add((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
+            try {
+                spotObject.add((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
+            } catch (PointOutOfRangeException e) {
+                e.printStackTrace();
+            }
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
             spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS)));
@@ -188,12 +193,12 @@ public class RunTrackMate extends Module {
                 int t = (int) Math.round(spot.getFeature(Spot.FRAME));
 
                 // Adding coordinates to the instance objects
-                spotObject.add(x, y, z);
+                try {
+                    spotObject.add(x, y, z);
+                } catch (PointOutOfRangeException e) {
+                    continue;
+                }
                 spotObject.setT(t);
-
-                // If necessary, adding coordinates to the summary objects
-                trackObject.add(x, y, z);
-                trackObject.setT(0);
 
                 // Adding the connection between instance and summary objects
                 spotObject.addParent(trackObject);

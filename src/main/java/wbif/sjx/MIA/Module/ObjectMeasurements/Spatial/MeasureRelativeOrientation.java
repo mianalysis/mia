@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 import java.util.HashMap;
 
@@ -243,7 +244,7 @@ public class MeasureRelativeOrientation extends Module {
                     centroidObj.add(x1,y1,z1);
                 } catch (IntegerOverflowException e) {
                     e.printStackTrace();
-                }
+                } catch (PointOutOfRangeException e) {}
 
                 SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidObj,referenceObject);
                 Point<Integer> p2 = calculator.getP2();

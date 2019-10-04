@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -157,7 +158,9 @@ public class RidgeDetection extends Module {
 
                                 // Adding central point
                                 if (x[i]>=0 && x[i]<imWidth && y[i]>=0 && y[i]<imHeight) {
-                                    outputObject.add(Math.round(x[i]), Math.round(y[i]), z);
+                                    try {
+                                        outputObject.add(Math.round(x[i]), Math.round(y[i]), z);
+                                    } catch (PointOutOfRangeException e) {}
                                 }
 
                                 // If selected, adding other points within the width of that point
@@ -171,7 +174,9 @@ public class RidgeDetection extends Module {
                                         for (int yy=yMin;yy<=yMax;yy++) {
                                             if (Math.sqrt((xx-x[i])*(xx-x[i])+(yy-y[i])*(yy-y[i])) > halfWidth) continue;
                                             if (xx<0 || xx>=imWidth || yy<0 || yy>=imHeight) continue;
-                                            outputObject.add(xx, yy, z);
+                                            try {
+                                                outputObject.add(xx, yy, z);
+                                            } catch (PointOutOfRangeException e) {}
                                         }
                                     }
                                 }

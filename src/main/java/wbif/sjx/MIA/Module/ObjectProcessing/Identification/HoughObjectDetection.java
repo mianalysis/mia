@@ -20,6 +20,7 @@ import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -166,7 +167,9 @@ public class HoughObjectDetection extends Module {
                             if (idx == -1) continue;
 
                             try {
-                                outputObject.add(xx[i] + x, yy[i] + y, z);
+                                try {
+                                    outputObject.add(xx[i] + x, yy[i] + y, z);
+                                } catch (PointOutOfRangeException e) {}
                             } catch (IntegerOverflowException e) {
                                 return false;
                             }
