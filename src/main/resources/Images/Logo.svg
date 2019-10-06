@@ -188,6 +188,32 @@
          stdDeviation="6.246042"
          id="feGaussianBlur1172-0" />
     </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1126-0"
+       x="-0.047080182"
+       width="1.0941604"
+       y="-0.38923174"
+       height="1.7784635">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="5.9634898"
+         id="feGaussianBlur1128-5" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1049-4"
+       x="-0.04667021"
+       width="1.0933404"
+       y="-0.41971329"
+       height="1.8394266">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="6.405"
+         id="feGaussianBlur1051-4" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -196,9 +222,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.25"
-     inkscape:cx="-2301.3948"
-     inkscape:cy="-3871.6487"
+     inkscape:zoom="0.1767767"
+     inkscape:cx="-2424.8517"
+     inkscape:cy="-2534.9678"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -296,6 +322,87 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <g
+       id="g1138-3"
+       transform="translate(-300.99112,181.01146)">
+      <flowRoot
+         inkscape:export-ydpi="40.138256"
+         inkscape:export-xdpi="40.138256"
+         transform="matrix(0.26458333,0,0,0.26458333,-20.643017,117.24678)"
+         style="font-style:normal;font-weight:normal;font-size:133.33332825px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36000001;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1126-0)"
+         id="flowRoot906-1-4-4-3-7-6-3"
+         xml:space="preserve"><flowRegion
+           style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="flowRegion908-3-5-5-3-4-2-1"><rect
+             style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             y="3848.5198"
+             x="-1046"
+             height="401.99976"
+             width="2722"
+             id="rect910-6-1-2-4-4-6-8" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="flowPara912-6-2-1-6-8-2-0">Creating interface</flowPara></flowRoot>      <flowRoot
+         inkscape:export-ydpi="40.138256"
+         inkscape:export-xdpi="40.138256"
+         transform="matrix(0.26458333,0,0,0.26458333,-20.643014,117.24678)"
+         style="font-style:normal;font-weight:normal;font-size:133.33332825px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+         id="flowRoot906-1-4-4-3-7-0"
+         xml:space="preserve"><flowRegion
+           style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1"
+           id="flowRegion908-3-5-5-3-4-0"><rect
+             style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1"
+             y="3848.5198"
+             x="-1046"
+             height="401.99976"
+             width="2722"
+             id="rect910-6-1-2-4-4-62" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1"
+           id="flowPara912-6-2-1-6-8-26">Creating interface</flowPara></flowRoot>    </g>
+    <rect
+       style="opacity:0.36000001;fill:#000000;fill-opacity:0;stroke:none;stroke-width:2.92477393;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect979-9"
+       width="146.091"
+       height="121.452"
+       x="-630.5697"
+       y="1236.8242"
+       inkscape:export-xdpi="40.16"
+       inkscape:export-ydpi="40.16" />
+    <g
+       id="g1061-6"
+       transform="translate(-135.36195,182.33438)">
+      <flowRoot
+         inkscape:export-ydpi="40.138256"
+         inkscape:export-xdpi="40.138256"
+         transform="matrix(0.26458333,0,0,0.26458333,-19.650828,169.08582)"
+         style="font-style:normal;font-weight:normal;font-size:133.33332825px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36000001;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter1049-4)"
+         id="flowRoot906-1-4-4-3-7-7-7-9"
+         xml:space="preserve"><flowRegion
+           style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="flowRegion908-3-5-5-3-4-1-8-1"><rect
+             style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             y="3848.5198"
+             x="-1046"
+             height="401.99976"
+             width="2722"
+             id="rect910-6-1-2-4-4-68-0-4" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="flowPara912-6-2-1-6-8-5-0-3">Initialising modules</flowPara></flowRoot>      <flowRoot
+         inkscape:export-ydpi="40.138256"
+         inkscape:export-xdpi="40.138256"
+         transform="matrix(0.26458333,0,0,0.26458333,-19.650829,169.08582)"
+         style="font-style:normal;font-weight:normal;font-size:133.33332825px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+         id="flowRoot906-1-4-4-3-7-7-5"
+         xml:space="preserve"><flowRegion
+           style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1"
+           id="flowRegion908-3-5-5-3-4-1-4"><rect
+             style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1"
+             y="3848.5198"
+             x="-1046"
+             height="401.99976"
+             width="2722"
+             id="rect910-6-1-2-4-4-68-7" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1"
+           id="flowPara912-6-2-1-6-8-5-9">Initialising modules</flowPara></flowRoot>    </g>
     <rect
        style="opacity:0.36000001;fill:#000000;fill-opacity:0.40909091;stroke:none;stroke-width:2.92477393;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
        id="rect979"
@@ -1005,18 +1112,9 @@
          style="font-size:40px"
          id="flowPara1802">Blur 7, opacity 36</flowPara><flowPara
          id="flowPara1794"
-         style="font-size:40px" /></flowRoot>    <rect
-       style="opacity:0.36000001;fill:#000000;fill-opacity:0.40909095;stroke:none;stroke-width:2.92477393;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-       id="rect979-9"
-       width="146.091"
-       height="121.452"
-       x="-630.5697"
-       y="1236.8242"
-       inkscape:export-xdpi="40.16"
-       inkscape:export-ydpi="40.16" />
-    <g
+         style="font-size:40px" /></flowRoot>    <g
        id="g1194-4"
-       transform="translate(-249.95061,168.61409)">
+       transform="translate(-55.48186,168.34951)">
       <flowRoot
          inkscape:export-ydpi="40.138256"
          inkscape:export-xdpi="40.138256"
