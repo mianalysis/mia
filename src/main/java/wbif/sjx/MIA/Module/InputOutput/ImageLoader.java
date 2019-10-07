@@ -42,7 +42,7 @@ import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -428,7 +428,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public String getHuygensPath(HCMetadata metadata) {
+    public String getHuygensPath(Metadata metadata) {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
         String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
@@ -443,7 +443,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getIncucyteShortName(HCMetadata metadata) {
+    private String getIncucyteShortName(Metadata metadata) {
         // First, running metadata extraction on the input file
         NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
         filenameExtractor.extract(metadata, metadata.getFile().getName());
@@ -451,15 +451,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Constructing a new name using the same name format
         String comment = metadata.getComment();
         return metadata.getFile().getParent() + MIA.getSlashes() + IncuCyteShortFilenameExtractor
-                .generate(comment, metadata.getWell(), metadata.getAsString(HCMetadata.FIELD), metadata.getExt());
+                .generate(comment, metadata.getWell(), metadata.getAsString(Metadata.FIELD), metadata.getExt());
 
     }
 
-    private String getYokogawaName(HCMetadata metadata)
+    private String getYokogawaName(Metadata metadata)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         // Creating metadata object
-        HCMetadata tempMetadata = new HCMetadata();
+        Metadata tempMetadata = new Metadata();
 
         // First, running metadata extraction on the input file
         CV7000FilenameExtractor extractor = new CV7000FilenameExtractor();
@@ -488,7 +488,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getPrefixName(HCMetadata metadata, boolean includeSeries, String ext)
+    private String getPrefixName(Metadata metadata, boolean includeSeries, String ext)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -500,7 +500,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getSuffixName(HCMetadata metadata, boolean includeSeries, String ext)
+    private String getSuffixName(Metadata metadata, boolean includeSeries, String ext)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -512,7 +512,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getGenericNameImage(HCMetadata metadata, String genericFormat)
+    private String getGenericNameImage(Metadata metadata, String genericFormat)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -556,7 +556,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public static String compileGenericFilename(String genericFormat, HCMetadata metadata) {
+    public static String compileGenericFilename(String genericFormat, Metadata metadata) {
         String outputName = genericFormat;
 
         // Use regex to find instances of "M{ }" and replace the contents with the appropriate metadata value
@@ -708,13 +708,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     String path = null;
                     switch (nameFormat) {
                         case NameFormats.HUYGENS:
-                            HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
+                            Metadata metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
                             path = getHuygensPath(metadata);
                             break;
 
                         case NameFormats.INCUCYTE_SHORT:
-                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
                             path = getIncucyteShortName(metadata);
                             break;
@@ -724,19 +724,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                             break;
 
                         case NameFormats.INPUT_FILE_PREFIX:
-                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(prefix);
                             path = getPrefixName(metadata,includeSeriesNumber,ext);
                             break;
 
                         case NameFormats.INPUT_FILE_SUFFIX:
-                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(suffix);
                             path = getSuffixName(metadata,includeSeriesNumber,ext);
                             break;
 
                         case NameFormats.GENERIC:
-                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata = (Metadata) workspace.getMetadata().clone();
                             path = getGenericNameImage(metadata,genericFormat);
                             break;
                     }

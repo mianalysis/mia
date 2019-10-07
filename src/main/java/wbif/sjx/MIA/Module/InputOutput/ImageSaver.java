@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -96,12 +96,12 @@ public class ImageSaver extends Module {
 //        String JPEG = "JPEG"; // jpeg
 //        String PGM = "PGM"; // pgm
 //        String PNG = "PNG"; // png
-        String RAW = "Raw"; // raw
+//        String RAW = "Raw"; // raw
         //        String TEXT_IMAGE = "Text image"; // text image
         String TIF = "TIF"; // tif
         String ZIP = "ZIP"; // zip
 
-        String[] ALL = new String[]{RAW,TIF,ZIP};
+        String[] ALL = new String[]{TIF,ZIP};
 
     }
 
@@ -146,9 +146,6 @@ public class ImageSaver extends Module {
 
     public static void saveImage(ImagePlus inputImagePlus, String fileFormat, String path) {
         switch (fileFormat) {
-            case FileFormats.RAW:
-                IJ.saveAs(inputImagePlus,"raw",path);
-                break;
             case FileFormats.TIF:
                 IJ.saveAs(inputImagePlus,"tif",path);
                 break;
@@ -182,20 +179,21 @@ public class ImageSaver extends Module {
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
         String suffix = parameters.getValue(SAVE_SUFFIX);
         String fileFormat = parameters.getValue(FILE_FORMAT);
-        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
-        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
         String channelMode = parameters.getValue(CHANNEL_MODE);
-
-        boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
+        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
+        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
+        if (channelMode.equals(ChannelModes.COMPOSITE)) inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
+
         // If the image is being altered make a copy
-        if (composite) inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
-        if (saveAsRGB || flattenOverlay) inputImagePlus = inputImagePlus.duplicate();
-        if (saveAsRGB) new ImageConverter(inputImagePlus).convertToRGB();
+        if (saveAsRGB || flattenOverlay) {
+            inputImagePlus = inputImagePlus.duplicate();
+            new ImageConverter(inputImagePlus).convertToRGB();
+        }
 
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
@@ -351,10 +349,17 @@ public class ImageSaver extends Module {
 
         returnedParameters.add(parameters.getParameter(FORMAT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILE_FORMAT));
-        returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
-        returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
-        if (parameters.getValue(SAVE_AS_RGB)) {
-            returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
+
+        switch ((String) parameters.getValue(FILE_FORMAT)) {
+            case FileFormats.TIF:
+            case FileFormats.ZIP:
+                returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
+                returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
+                if (!((boolean) parameters.getValue(FLATTEN_OVERLAY))) {
+                    returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
+                }
+
+                break;
         }
 
         return returnedParameters;

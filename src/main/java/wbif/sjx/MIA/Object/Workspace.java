@@ -1,8 +1,9 @@
 package wbif.sjx.MIA.Object;
 
+import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import java.io.File;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.LinkedHashMap;
 public class Workspace {
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
-    private HCMetadata metadata = new HCMetadata();
+    private Metadata metadata = new Metadata();
     private int ID;
 
 
@@ -23,13 +24,15 @@ public class Workspace {
     public Workspace(int ID, File file, int series) {
         this.ID = ID;
 
-        metadata.put(HCMetadata.FILE,file);
-        metadata.put(HCMetadata.SERIES_NUMBER,series);
+        metadata.setFile(file);
+        metadata.setSeriesNumber(series);
 
         if (file == null) {
-            metadata.put(HCMetadata.FILENAME, "");
+            metadata.setFilename("");
+            metadata.setExt("");
         } else {
-            metadata.put(HCMetadata.FILENAME, file.getName());
+            metadata.setFilename(FilenameUtils.getBaseName(file.getName()));
+            metadata.setExt(FilenameUtils.getExtension(file.getName()));
         }
     }
 
@@ -104,6 +107,7 @@ public class Workspace {
 
     public void clearMetadata() {
         String filename = metadata.getFilename();
+        String extension = metadata.getExt();
         File file = metadata.getFile();
         String seriesName = metadata.getSeriesName();
         int seriesNumber = metadata.getSeriesNumber();
@@ -111,6 +115,7 @@ public class Workspace {
         metadata.clear();
 
         metadata.setFilename(filename);
+        metadata.setExt(extension);
         metadata.setFile(file);
         metadata.setSeriesName(seriesName);
         metadata.setSeriesNumber(seriesNumber);
@@ -174,11 +179,11 @@ public class Workspace {
         this.images = images;
     }
 
-    public HCMetadata getMetadata() {
+    public Metadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(HCMetadata metadata) {
+    public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
 

@@ -25,6 +25,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Metadata;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -430,6 +431,9 @@ public class MeasureIntensityDistribution extends Module {
             proximalDistance = calibration.getRawX(proximalDistance);
         }
 
+
+        Metadata metadata = workspace.getMetadata();
+
         switch (measurementType) {
             case MeasurementTypes.DISTANCE_PROFILE:
                 Image distanceMap = workspace.getImage(distanceMapImageName);
@@ -453,15 +457,15 @@ public class MeasureIntensityDistribution extends Module {
 
                 switch (saveProfileMode) {
                     case SaveProfileModes.INDIVIDUAL_FILES:
-                        File rootFile = workspace.getMetadata().getFile();
+                        File rootFile =metadata.getFile();
                         String path = rootFile.getParent()+ MIA.getSlashes() +FilenameUtils.removeExtension(rootFile.getName());
-                        path = path + "_S" + workspace.getMetadata().getSeriesNumber()  + profileFileSuffix+ ".xlsx";
+                        path = path + "_S" + metadata.getSeriesNumber()  + profileFileSuffix+ ".xlsx";
                         writeResultsFile(path,distanceBins,cumStats);
                         break;
                 }
 
                 if (showOutput) {
-                    String title = "File: "+workspace.getMetadata().getFilename()+" intensity profile";
+                    String title = "File: "+metadata.getFilename()+"."+metadata.getExt()+" intensity profile";
                     Plot plot = new Plot(title,"Distance (px)","Mean intensity",distanceBins,mean);
                     plot.show();
                 }

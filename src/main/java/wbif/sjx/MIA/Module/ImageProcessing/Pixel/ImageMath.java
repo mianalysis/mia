@@ -32,12 +32,15 @@ public class ImageMath extends Module {
     }
 
     public interface CalculationTypes {
+        String ABSOLUTE = "Absolute";
         String ADD = "Add";
         String DIVIDE = "Divide";
         String MULTIPLY = "Multiply";
+        String SQUARE = "Square";
+        String SQUAREROOT = "Squareroot";
         String SUBTRACT = "Subtract";
 
-        String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[]{ABSOLUTE,ADD,DIVIDE,MULTIPLY,SQUARE,SQUAREROOT,SUBTRACT};
 
     }
 
@@ -61,6 +64,10 @@ public class ImageMath extends Module {
                     inputImagePlus.setPosition(c, z, t);
 
                     switch (calculationType) {
+                        case CalculationTypes.ABSOLUTE:
+                            inputImagePlus.getProcessor().abs();
+                            break;
+
                         case CalculationTypes.ADD:
                             inputImagePlus.getProcessor().add(mathValue);
                             break;
@@ -71,6 +78,14 @@ public class ImageMath extends Module {
 
                         case CalculationTypes.MULTIPLY:
                             inputImagePlus.getProcessor().multiply(mathValue);
+                            break;
+
+                        case CalculationTypes.SQUARE:
+                            inputImagePlus.getProcessor().sqr();
+                            break;
+
+                        case CalculationTypes.SQUAREROOT:
+                            inputImagePlus.getProcessor().sqrt();
                             break;
 
                         case CalculationTypes.SUBTRACT:
@@ -168,19 +183,27 @@ public class ImageMath extends Module {
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
-        returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
+        switch ((String) parameters.getValue(CALCULATION_TYPE)) {
+            case CalculationTypes.ADD:
+            case CalculationTypes.DIVIDE:
+            case CalculationTypes.MULTIPLY:
+            case CalculationTypes.SUBTRACT:
+                returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
+                switch ((String) parameters.getValue(VALUE_SOURCE)) {
+                    case ValueSources.FIXED:
 
-        switch ((String) parameters.getValue(VALUE_SOURCE)) {
-            case ValueSources.FIXED:
-                returnedParameters.add(parameters.getParameter(MATH_VALUE));
-                break;
+                        returnedParameters.add(parameters.getParameter(MATH_VALUE));
 
-            case ValueSources.MEASUREMENT:
-                returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                        break;
 
-                if (parameters.getValue(INPUT_IMAGE) != null) {
-                    ImageMeasurementP measurement = parameters.getParameter(MEASUREMENT);
-                    measurement.setImageName(parameters.getValue(INPUT_IMAGE));
+                    case ValueSources.MEASUREMENT:
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT));
+
+                        if (parameters.getValue(INPUT_IMAGE) != null) {
+                            ImageMeasurementP measurement = parameters.getParameter(MEASUREMENT);
+                            measurement.setImageName(parameters.getValue(INPUT_IMAGE));
+                        }
+                        break;
                 }
                 break;
         }

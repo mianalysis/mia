@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.common.Object.Metadata;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -72,16 +73,17 @@ public class ShowImage extends Module {
 
         boolean composite = channelMode.equals(ChannelModes.COMPOSITE);
 
+        Metadata metadata = workspace.getMetadata();
         String title = "";
         switch (titleMode) {
             case TitleModes.FILE_NAME:
-                title = workspace.getMetadata().getFilename();
+                title = metadata.getFilename()+"."+metadata.getExt();
                 break;
             case TitleModes.IMAGE_NAME:
                 title = imageName;
                 break;
             case TitleModes.IMAGE_AND_FILE_NAME:
-                title = workspace.getMetadata().getFilename()+"_"+imageName;
+                title = metadata.getFilename()+"."+metadata.getExt()+"_"+imageName;
                 break;
         }
 

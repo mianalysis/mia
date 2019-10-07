@@ -26,7 +26,7 @@ import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.awt.*;
@@ -368,10 +368,10 @@ public class InputControl extends Module {
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.FILE));
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.FILENAME));
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.SERIES_NUMBER));
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.SERIES_NAME));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.FILE));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.FILENAME));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.SERIES_NUMBER));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.SERIES_NAME));
 
         return returnedRefs;
 

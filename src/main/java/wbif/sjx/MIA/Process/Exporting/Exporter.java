@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -602,7 +602,7 @@ public class Exporter {
                                     HashMap<String,Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
 
         // Adding metadata values
-        HCMetadata metadata = workspace.getMetadata();
+        Metadata metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
             String headerName = getMetadataString(name);
             if (!colNumbers.containsKey(headerName)) continue;
@@ -922,7 +922,7 @@ public class Exporter {
                         timepointValueCell.setCellValue(object.getT());
 
                         // Adding metadata (if enabled)
-                        HCMetadata metadata = workspace.getMetadata();
+                        Metadata metadata = workspace.getMetadata();
                         for (int column:metadataNames.keySet()) {
                             Cell metaValueCell = objectValueRow.createCell(column);
                             metaValueCell.setCellValue(metadata.getAsString(metadataNames.get(column)));

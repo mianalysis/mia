@@ -46,10 +46,13 @@ public class ImageCalculator extends Module {
         String ADD = "Add image 1 and image 2";
         String DIFFERENCE = "Difference of image 1 and image 2";
         String DIVIDE = "Divide image 1 by image 2";
+        String MAX = "Maximum of image 1 and image 2";
+        String MEAN = "Mean of image 1 and image 2";
+        String MIN = "Minimum of image 1 and image 2";
         String MULTIPLY = "Multiply image 1 and image 2";
         String SUBTRACT = "Subtract image 2 from image 1";
 
-        String[] ALL = new String[]{ADD,DIFFERENCE,DIVIDE,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[]{ADD,DIFFERENCE,DIVIDE,MAX,MEAN,MIN,MULTIPLY,SUBTRACT};
 
     }
 
@@ -157,6 +160,18 @@ public class ImageCalculator extends Module {
                                     }
                                     break;
 
+                                case CalculationMethods.MAX:
+                                    val = Math.max(imageProcessor1.getPixelValue(x,y),imageProcessor2.getPixelValue(x,y));
+                                    break;
+
+                                case CalculationMethods.MEAN:
+                                    val = (imageProcessor1.getPixelValue(x,y)+imageProcessor2.getPixelValue(x,y))/2;
+                                    break;
+
+                                case CalculationMethods.MIN:
+                                    val = Math.min(imageProcessor1.getPixelValue(x,y),imageProcessor2.getPixelValue(x,y));
+                                    break;
+                                    
                                 case CalculationMethods.MULTIPLY:
                                     val = imageProcessor1.getPixelValue(x,y)*imageProcessor2.getPixelValue(x,y);
                                     break;

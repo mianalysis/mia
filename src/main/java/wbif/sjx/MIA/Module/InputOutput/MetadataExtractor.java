@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MetadataExtractors.*;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -111,7 +111,7 @@ public class MetadataExtractor extends Module {
     }
 
 
-    private void extractFilename(HCMetadata metadata, String filenameExtractorName) {
+    private void extractFilename(Metadata metadata, String filenameExtractorName) {
         NameExtractor filenameExtractor = null;
 
         switch (filenameExtractorName) {
@@ -144,7 +144,7 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private void extractGeneric(HCMetadata metadata, String input, String pattern, String groupString) {
+    private void extractGeneric(Metadata metadata, String input, String pattern, String groupString) {
         String[] groups = getGroups(groupString);
 
         NameExtractor extractor = new GenericExtractor(pattern,groups);
@@ -152,7 +152,7 @@ public class MetadataExtractor extends Module {
 
     }
 
-    private void extractFoldername(HCMetadata metadata, String foldernameExtractorName) {
+    private void extractFoldername(Metadata metadata, String foldernameExtractorName) {
         // Getting folder name extractor
         NameExtractor foldernameExtractor = null;
         switch (foldernameExtractorName) {
@@ -172,7 +172,7 @@ public class MetadataExtractor extends Module {
         if (foldernameExtractor != null) foldernameExtractor.extract(metadata,metadata.getFile().getParent());
     }
 
-    private void extractKeyword(HCMetadata metadata, String keywordList, String keywordSource) {
+    private void extractKeyword(Metadata metadata, String keywordList, String keywordSource) {
         KeywordExtractor keywordExtractor = new KeywordExtractor(keywordList);
 
         switch (keywordSource) {
@@ -185,7 +185,7 @@ public class MetadataExtractor extends Module {
         }
     }
 
-    private void extractMetadataFile(HCMetadata metadata, String metadataFileExtractorName) {
+    private void extractMetadataFile(Metadata metadata, String metadataFileExtractorName) {
         FileExtractor metadataFileExtractor = null;
         switch (metadataFileExtractorName) {
             case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
@@ -196,7 +196,7 @@ public class MetadataExtractor extends Module {
         if (metadataFileExtractor != null) metadataFileExtractor.extract(metadata,metadata.getFile());
     }
 
-    private String getExternalMetadataRegex(HCMetadata metadata, String inputFilePath, String metadataItemToMatch) {
+    private String getExternalMetadataRegex(Metadata metadata, String inputFilePath, String metadataItemToMatch) {
         // Reading contents of metadata file
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFilePath));
@@ -235,7 +235,7 @@ public class MetadataExtractor extends Module {
     public String getTestString(String pattern, String groupString, String exampleString) {
         String[] groups = getGroups(groupString);
 
-        HCMetadata metadata = new HCMetadata();
+        Metadata metadata = new Metadata();
         NameExtractor extractor = new GenericExtractor(pattern,groups);
         extractor.extract(metadata,exampleString);
 
@@ -283,7 +283,7 @@ public class MetadataExtractor extends Module {
         String metadataValueName = parameters.getValue(METADATA_VALUE_NAME);
 
         // Getting current result
-        HCMetadata metadata = workspace.getMetadata();
+        Metadata metadata = workspace.getMetadata();
 
         switch (extractorMode) {
             case ExtractorModes.FILENAME_MODE:
@@ -512,52 +512,52 @@ public class MetadataExtractor extends Module {
                         break;
 
                     case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.CHANNEL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.EXTENSION)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.FIELD)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.TIMEPOINT)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.WELL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.ZPOSITION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMEPOINT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ZPOSITION)));
                         break;
 
                     case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.EXTENSION)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.COMMENT)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.WELL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.FIELD)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.YEAR)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MONTH)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.DAY)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.HOUR)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MINUTE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
                         break;
 
                     case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.EXTENSION)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.COMMENT)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.WELL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
                         break;
 
                     case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.ROW)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.COL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.FIELD)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ROW)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
                         break;
 
                     case FilenameExtractors.YOKOGAWA_FILENAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.EXTENSION)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.PLATE_NAME)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.PLATE_MANUFACTURER)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.PLATE_MODEL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.WELL)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.TIMEPOINT)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.FIELD)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.TIMELINE_NUMBER)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.ACTION_NUMBER)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.ZPOSITION)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.CHANNEL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.EXTENSION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_NAME)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MANUFACTURER)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.PLATE_MODEL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.WELL)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMEPOINT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.FIELD)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.TIMELINE_NUMBER)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ACTION_NUMBER)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.ZPOSITION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.CHANNEL)));
                         break;
                 }
 
@@ -572,24 +572,24 @@ public class MetadataExtractor extends Module {
                         break;
 
                     case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.YEAR)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MONTH)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.DAY)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.HOUR)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MINUTE)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.SECOND)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MAGNIFICATION)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.CELLTYPE)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.COMMENT)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MAGNIFICATION)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.CELLTYPE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.COMMENT)));
                         break;
 
                     case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.YEAR)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MONTH)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.DAY)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.HOUR)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.MINUTE)));
-                        returnedRefs.add(metadataRefs.getOrPut((HCMetadata.SECOND)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.YEAR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MONTH)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.DAY)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.HOUR)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.MINUTE)));
+                        returnedRefs.add(metadataRefs.getOrPut((Metadata.SECOND)));
                         break;
 
                     case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
@@ -599,7 +599,7 @@ public class MetadataExtractor extends Module {
                 break;
 
             case ExtractorModes.KEYWORD_MODE:
-                returnedRefs.add(metadataRefs.getOrPut((HCMetadata.KEYWORD)));
+                returnedRefs.add(metadataRefs.getOrPut((Metadata.KEYWORD)));
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
