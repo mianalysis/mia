@@ -28,7 +28,9 @@ import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
 import org.apache.commons.io.FilenameUtils;
+import org.scijava.ui.swing.script.ScriptEditor;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -43,6 +45,7 @@ import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.Metadata;
+import wbif.sjx.common.System.FileCrawler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,6 +55,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,8 +77,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String FINAL_INDEX = "Final index";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
-    public static final String PREFIX = "Prefix";
-    public static final String SUFFIX = "Suffix";
     public static final String EXTENSION = "Extension";
     public static final String GENERIC_FORMAT = "Generic format";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
@@ -109,13 +111,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
 
     public interface ImportModes {
+        String ALL_IN_FOLDER = "All in current folder";
         String CURRENT_FILE = "Current file";
         String IMAGEJ = "From ImageJ";
         String IMAGE_SEQUENCE = "Image sequence";
         String MATCHING_FORMAT = "Matching format";
         String SPECIFIC_FILE = "Specific file";
 
-        String[] ALL = new String[]{CURRENT_FILE, IMAGEJ, IMAGE_SEQUENCE, MATCHING_FORMAT, SPECIFIC_FILE};
+        String[] ALL = new String[]{ALL_IN_FOLDER, CURRENT_FILE, IMAGEJ, IMAGE_SEQUENCE, MATCHING_FORMAT, SPECIFIC_FILE};
 
     }
 
@@ -140,10 +143,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String HUYGENS = "Huygens";
         String INCUCYTE_SHORT = "Incucyte short filename";
         String YOKOGAWA = "Yokogowa";
-        String INPUT_FILE_PREFIX = "Input filename with prefix";
-        String INPUT_FILE_SUFFIX = "Input filename with suffix";
 
-        String[] ALL = new String[]{GENERIC, HUYGENS, INCUCYTE_SHORT, YOKOGAWA, INPUT_FILE_PREFIX, INPUT_FILE_SUFFIX};
+        String[] ALL = new String[]{GENERIC, HUYGENS, INCUCYTE_SHORT, YOKOGAWA};
 
     }
 
@@ -428,6 +429,58 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public ImagePlus getAllInFolder(File rootFile, int[] crop, @Nullable double[] intRange, boolean manualCal)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String rootPath = rootFile.getParent();
+
+        // Creating a FileCrawler to get all the valid files in this folder
+        FileCrawler fileCrawler = new FileCrawler(rootFile.getParentFile());
+        modules.getInputControl().addFilenameFilters(fileCrawler);
+
+        // Getting number of valid files in this folder
+        File next = fileCrawler.getNextValidFileInFolder();
+        int count = 0;
+        while (next != null) {
+            count++;
+            next = fileCrawler.getNextValidFileInFolder();
+        }
+
+        // Determining the dimensions of the input image
+        String[] dimRanges = new String[]{"1", "1", "1"};
+        ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(), 1, dimRanges, crop, intRange, manualCal, false);
+        int width = rootIpl.getWidth();
+        int height = rootIpl.getHeight();
+        int bitDepth = rootIpl.getBitDepth();
+
+        if (crop != null) {
+            width = crop[2];
+            height = crop[3];
+        }
+
+        // Creating the new image
+        ImagePlus outputIpl = IJ.createImage("Image", width, height, count, bitDepth);
+        fileCrawler = new FileCrawler(rootFile.getParentFile());
+        next = fileCrawler.getNextValidFileInFolder();
+        int i = 0;
+        while (next != null) {
+            ImagePlus tempIpl = getBFImage(next.getAbsolutePath(), 1, dimRanges, crop, intRange, manualCal, false);
+
+            outputIpl.setPosition(i + 1);
+            outputIpl.setProcessor(tempIpl.getProcessor());
+
+            next = fileCrawler.getNextValidFileInFolder();
+            i++;
+
+        }
+
+        outputIpl.setPosition(1);
+        outputIpl.updateChannelAndDraw();
+        outputIpl.setCalibration(rootIpl.getCalibration());
+
+        return outputIpl;
+
+    }
+
     public String getHuygensPath(Metadata metadata) {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -560,7 +613,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String outputName = genericFormat;
 
         // Use regex to find instances of "M{ }" and replace the contents with the appropriate metadata value
-        Pattern pattern = Pattern.compile("M\\{([\\w]+)}");
+        Pattern pattern = Pattern.compile("M\\{([^{}]+)}");
         Matcher matcher = pattern.matcher(genericFormat);
         while (matcher.find()) {
             String fullName = matcher.group(0);
@@ -599,8 +652,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int finalIndex = parameters.getValue(FINAL_INDEX);
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
-        String prefix = parameters.getValue(PREFIX);
-        String suffix = parameters.getValue(SUFFIX);
         String ext = parameters.getValue(EXTENSION);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
         boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
@@ -662,8 +713,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         ImagePlus ipl = null;
         try {
             switch (importMode) {
-                case ImportModes.CURRENT_FILE:
+                case ImportModes.ALL_IN_FOLDER:
                     File file = workspace.getMetadata().getFile();
+                    ipl = getAllInFolder(file, crop, intRange, setCalibration);
+                    break;
+                case ImportModes.CURRENT_FILE:
+                    file = workspace.getMetadata().getFile();
                     if (file == null) {
                         MIA.log.write("No input file/folder selected.", LogRenderer.Level.WARNING);
                         return false;
@@ -721,18 +776,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                         case NameFormats.YOKOGAWA:
                             path = getYokogawaName(workspace.getMetadata());
-                            break;
-
-                        case NameFormats.INPUT_FILE_PREFIX:
-                            metadata = (Metadata) workspace.getMetadata().clone();
-                            metadata.setComment(prefix);
-                            path = getPrefixName(metadata,includeSeriesNumber,ext);
-                            break;
-
-                        case NameFormats.INPUT_FILE_SUFFIX:
-                            metadata = (Metadata) workspace.getMetadata().clone();
-                            metadata.setComment(suffix);
-                            path = getSuffixName(metadata,includeSeriesNumber,ext);
                             break;
 
                         case NameFormats.GENERIC:
@@ -845,12 +888,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 "<br>- \""+NameFormats.GENERIC+"\" (default) will generate a name from metadata values stored in the current workspace.<br>" +
                 "<br>- \""+NameFormats.HUYGENS+"\" will generate a name matching the SVI Huygens format, where channel numbers are specified as \"ch00\", \"ch01\", etc.<br>" +
                 "<br>- \""+NameFormats.INCUCYTE_SHORT+"\" will generate a name matching the short Incucyte Zoom format.  The root name is specified as the parameter \"Comment\".<br>" +
-                "<br>- \""+NameFormats.YOKOGAWA+"\" will generate a name matching the Yokogawa high content microscope name format.<br>" +
-                "<br>- \""+NameFormats.INPUT_FILE_PREFIX+"\" will add the specified prefix to the input filename for the current workspace.<br>" +
-                "<br>- \""+NameFormats.INPUT_FILE_SUFFIX+"\" will add the specified suffix to the input filename for the current workspace."));
+                "<br>- \""+NameFormats.YOKOGAWA+"\" will generate a name matching the Yokogawa high content microscope name format.<br>"));
         parameters.add(new StringP(COMMENT, this, "", "Root name for generation of Incucyte Zoom filenames.  This will be added before the standard well and field values."));
-        parameters.add(new StringP(PREFIX, this, "", "Text to append to the start of the root filename for this workspace.  For example, if the current root file is \"image.tif\" and a prefix of \"test_\" is specified, the generated filename will be \"test_image.tif\"."));
-        parameters.add(new StringP(SUFFIX, this, "", "Text to append to the end of the root filename for this workspace.  For example, if the current root file is \"image.tif\" and a prefix of \"_test\" is specified, the generated filename will be \"image_test.tif\"."));
         parameters.add(new StringP(EXTENSION, this, "", "Extension for the generated filename."));
         parameters.add(new StringP(GENERIC_FORMAT, this, "", "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false, "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
@@ -892,6 +931,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
         switch ((String) parameters.getValue(IMPORT_MODE)) {
+            case ImportModes.ALL_IN_FOLDER:
             case ImportModes.CURRENT_FILE:
             case ImportModes.IMAGEJ:
                 break;
@@ -915,16 +955,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         break;
                     case NameFormats.YOKOGAWA:
                         returnedParameters.add(parameters.getParameter(CHANNEL));
-                        break;
-                    case NameFormats.INPUT_FILE_PREFIX:
-                        returnedParameters.add(parameters.getParameter(PREFIX));
-                        returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
-                        returnedParameters.add(parameters.getParameter(EXTENSION));
-                        break;
-                    case NameFormats.INPUT_FILE_SUFFIX:
-                        returnedParameters.add(parameters.getParameter(SUFFIX));
-                        returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
-                        returnedParameters.add(parameters.getParameter(EXTENSION));
                         break;
                     case NameFormats.GENERIC:
                         returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
