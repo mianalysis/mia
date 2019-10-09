@@ -26,7 +26,7 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import java.util.Arrays;
 import java.util.TreeSet;
@@ -330,7 +330,7 @@ public class VideoLoader extends Module {
 //
 //    }
 
-    public String getGenericName(HCMetadata metadata, String genericFormat) {
+    public String getGenericName(Metadata metadata, String genericFormat) {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
         String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
@@ -340,7 +340,7 @@ public class VideoLoader extends Module {
 
     }
 
-    public String getPrefixName(HCMetadata metadata, int seriesNumber, boolean includeSeries, String ext) {
+    public String getPrefixName(Metadata metadata, int seriesNumber, boolean includeSeries, String ext) {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
         String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
@@ -351,7 +351,7 @@ public class VideoLoader extends Module {
 
     }
 
-    public String getSuffixName(HCMetadata metadata, int seriesNumber, boolean includeSeries, String ext ) {
+    public String getSuffixName(Metadata metadata, int seriesNumber, boolean includeSeries, String ext ) {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
         String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
@@ -413,18 +413,18 @@ public class VideoLoader extends Module {
             case ImportModes.MATCHING_FORMAT:
                 switch (nameFormat) {
                     case NameFormats.GENERIC:
-                        HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
+                        Metadata metadata = (Metadata) workspace.getMetadata().clone();
                         metadata.setComment(prefix);
                         pathName = getGenericName(metadata, genericFormat);
                         break;
                     case NameFormats.INPUT_FILE_PREFIX:
-                        metadata = (HCMetadata) workspace.getMetadata().clone();
+                        metadata = (Metadata) workspace.getMetadata().clone();
                         metadata.setComment(prefix);
                         pathName = getPrefixName(metadata, seriesNumber,  includeSeriesNumber,ext);
                         break;
 
                     case NameFormats.INPUT_FILE_SUFFIX:
-                        metadata = (HCMetadata) workspace.getMetadata().clone();
+                        metadata = (Metadata) workspace.getMetadata().clone();
                         metadata.setComment(suffix);
                         pathName = getSuffixName(metadata, seriesNumber, includeSeriesNumber,ext);
                         break;

@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -137,8 +138,9 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                                 int finalT = t;
 
                                 outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, w, h, nSlices, dppXY, dppZ, calibratedUnits).setT(finalT));
-                                outputObjects.get(outID).add(x, y, z);
-
+                                try {
+                                    outputObjects.get(outID).add(x, y, z);
+                                } catch (PointOutOfRangeException e) {}
                             }
                         }
                     }

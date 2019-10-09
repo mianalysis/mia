@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.HashMap;
@@ -105,7 +106,7 @@ public class WorkspaceTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testClearAllObjectsDoRetainMeasurements(VolumeType volumeType) throws IntegerOverflowException {
+    public void testClearAllObjectsDoRetainMeasurements(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -167,7 +168,7 @@ public class WorkspaceTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testClearAllObjectsDontRetainMeasurements(VolumeType volumeType) throws IntegerOverflowException {
+    public void testClearAllObjectsDontRetainMeasurements(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;

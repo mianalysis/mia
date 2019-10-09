@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 
 /**
@@ -58,11 +59,19 @@ public class GetLocalObjectRegion extends Module {
                     double yy = (yCent - y) * dppXY;
 
                     if (inputObject.is2D()) {
-                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
+                        if (Math.sqrt(xx*xx + yy*yy) < radius) {
+                            try {
+                                outputObject.add(x, y, 0);
+                            } catch (PointOutOfRangeException e) {}
+                        }
                     } else {
                         for (int z=zMin; z<zMax; z++) {
                             double zz = (zCent - z) * dppZ;
-                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
+                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) {
+                                try {
+                                    outputObject.add(x, y, z);
+                                } catch (PointOutOfRangeException e) {}
+                            }
                         }
                     }
                 }
@@ -82,11 +91,19 @@ public class GetLocalObjectRegion extends Module {
                     double yy = yCent - y;
 
                     if (inputObject.is2D()) {
-                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.add(x, y, 0);
+                        if (Math.sqrt(xx*xx + yy*yy) < radius) {
+                            try {
+                                outputObject.add(x, y, 0);
+                            } catch (PointOutOfRangeException e) {}
+                        }
                     } else {
                         for (int z=zMin; z<zMax; z++) {
                             double zz = (zCent - z) / xy_z_ratio;
-                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.add(x, y, z);
+                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) {
+                                try {
+                                    outputObject.add(x, y, z);
+                                } catch (PointOutOfRangeException e) {}
+                            }
                         }
                     }
                 }

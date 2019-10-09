@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import java.io.File;
 
@@ -110,7 +110,7 @@ public class OutputControl extends Module {
         return parameters.getValue(EXPORT_MODE).equals(ExportModes.GROUP_BY_METADATA);
     }
 
-    public String getIndividualOutputPath(HCMetadata metadata) {
+    public String getIndividualOutputPath(Metadata metadata) {
         String mirroredRoot = getParameterValue(MIRRORED_DIRECTORY_ROOT);
         String saveLocation = getParameterValue(INDIVIDUAL_SAVE_LOCATION);
         String saveFilePath = getParameterValue(SAVE_FILE_PATH);
@@ -141,7 +141,7 @@ public class OutputControl extends Module {
 
     }
 
-    public static String getMirroredDirectory(File rootFile, HCMetadata metadata, String mirroredDirectoryRoot) {
+    public static String getMirroredDirectory(File rootFile, Metadata metadata, String mirroredDirectoryRoot) {
         int fileDepth = metadata.containsKey("FILE_DEPTH") ? (int) metadata.get("FILE_DEPTH") : 0;
 
         StringBuilder sb = new StringBuilder();

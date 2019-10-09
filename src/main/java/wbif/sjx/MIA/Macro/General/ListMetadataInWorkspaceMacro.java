@@ -5,7 +5,7 @@ import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 public class ListMetadataInWorkspaceMacro extends MacroOperation {
     public ListMetadataInWorkspaceMacro(MacroExtension theHandler) {
@@ -29,7 +29,7 @@ public class ListMetadataInWorkspaceMacro extends MacroOperation {
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        HCMetadata metadata = workspace.getMetadata();
+        Metadata metadata = workspace.getMetadata();
         for (String metadataName:metadata.keySet()) {
             if (row != 0) rt.incrementCounter();
 

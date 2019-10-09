@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsNoOverlap(VolumeType volumeType) throws Exception {
+    public void testGetNOverlappingPointsNoOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -85,7 +86,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsPartialSingleObjectOverlap(VolumeType volumeType) throws Exception {
+    public void testGetNOverlappingPointsPartialSingleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -144,7 +145,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsPartialMultipleObjectOverlap(VolumeType volumeType) throws Exception {
+    public void testGetNOverlappingPointsPartialMultipleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -205,11 +206,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
     /**
      * In this test, two of the test objects share the same pixel.  This shouldn't lead to an increase in the overlap
      * volume of the main object.
-     * @throws Exception
+     * @throws PointOutOfRangeException
      */
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsPartialMultipleObjectOverlapWithInternalClash(VolumeType volumeType) throws Exception {
+    public void testGetNOverlappingPointsPartialMultipleObjectOverlapWithInternalClash(VolumeType volumeType) throws PointOutOfRangeException {
         // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -270,7 +271,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testGetNOverlappingPointsTotalOverlap(VolumeType volumeType) throws Exception {
+    public void testGetNOverlappingPointsTotalOverlap(VolumeType volumeType) throws PointOutOfRangeException {
 // Setting object parameters
         String objectsName1 = "Test objects 1";
         String objectsName2 = "Test objects 2";
@@ -333,7 +334,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunNoOverlap(VolumeType volumeType) throws Exception {
+    public void testRunNoOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -439,7 +440,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunPartialSingleObjectOverlap(VolumeType volumeType) throws Exception {
+    public void testRunPartialSingleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -548,7 +549,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunPartialMultipleObjectOverlap(VolumeType volumeType) throws Exception {
+    public void testRunPartialMultipleObjectOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -658,7 +659,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunPartialMultipleObjectOverlapWithInternalClash(VolumeType volumeType) throws Exception {
+    public void testRunPartialMultipleObjectOverlapWithInternalClash(VolumeType volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -769,7 +770,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunTotalOverlap(VolumeType volumeType) throws Exception {
+    public void testRunTotalOverlap(VolumeType volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -883,7 +884,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testRunPartialMultipleObjectOverlapMultipleTimepoints(VolumeType volumeType) throws Exception {
+    public void testRunPartialMultipleObjectOverlapMultipleTimepoints(VolumeType volumeType) throws PointOutOfRangeException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 

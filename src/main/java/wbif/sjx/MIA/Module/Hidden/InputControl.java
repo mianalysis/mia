@@ -26,7 +26,7 @@ import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.awt.*;
@@ -46,6 +46,7 @@ public class InputControl extends Module {
     public static final String MACRO_WARNING = "Macro warning";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
+    public static final String LOAD_FIRST_PER_FOLDER = "Only load first file per folder";
     public static final String FILTER_SEPARATOR = "File/folder filters";
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
@@ -303,6 +304,7 @@ public class InputControl extends Module {
         parameters.add(new MessageP(MACRO_WARNING,this,"Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",Color.RED));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
         parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1","Comma-separated list of series numbers to be processed."));
+        parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER,this,false));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
 
@@ -333,6 +335,7 @@ public class InputControl extends Module {
                 returnedParameters.add(parameters.getParameter(SERIES_LIST));
                 break;
         }
+        returnedParameters.add(parameters.getParameter(LOAD_FIRST_PER_FOLDER));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
 
@@ -368,10 +371,11 @@ public class InputControl extends Module {
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.FILE));
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.FILENAME));
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.SERIES_NUMBER));
-        returnedRefs.add(metadataRefs.getOrPut(HCMetadata.SERIES_NAME));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.EXTENSION));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.FILE));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.FILENAME));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.SERIES_NUMBER));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.SERIES_NAME));
 
         return returnedRefs;
 

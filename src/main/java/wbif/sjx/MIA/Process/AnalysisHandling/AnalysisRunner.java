@@ -116,6 +116,8 @@ public class AnalysisRunner {
         FileCrawler fileCrawler = new FileCrawler(inputFile);
         inputControl.addFilenameFilters(fileCrawler);
 
+        boolean firstPerFolder = inputControl.getParameterValue(InputControl.LOAD_FIRST_PER_FOLDER);
+
         File rootFolder = fileCrawler.getRootFolderAsFile();
         if (rootFolder.isFile()) {
             TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder);
@@ -135,6 +137,7 @@ public class AnalysisRunner {
 
                 }
 
+                if (firstPerFolder) fileCrawler.goToNextValidFolder();
                 next = fileCrawler.getNextValidFileInStructure();
 
             }

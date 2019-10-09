@@ -149,7 +149,6 @@ public class AddFromPositionMeasurement extends Overlay {
         }
 
         // Adding the overlay element
-        try {
             int nThreads = multithread ? Prefs.getThreads() : 1;
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
@@ -170,8 +169,8 @@ public class AddFromPositionMeasurement extends Overlay {
             }
 
             pool.shutdown();
+        try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
         } catch (InterruptedException e) {
             return false;
         }

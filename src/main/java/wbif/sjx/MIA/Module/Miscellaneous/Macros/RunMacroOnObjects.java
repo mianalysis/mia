@@ -4,8 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.macro.CustomInterpreter;
-import ij.macro.Interpreter;
-import ij.text.TextWindow;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -39,7 +37,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
     public static final String OUTPUT_SEPARATOR = "Measurement output";
     public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
 //    public static final String VARIABLE_TYPE = "Variable type";
-    public static final String MEASUREMENT_HEADING = "Measurement heading";
+    public static final String VARIABLE = "Variable";
 
 
     public interface MacroModes {
@@ -103,7 +101,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
 
         // If the macro is stored as a file, load this to the macroText string
         if (macroMode.equals(RunMacroOnImage.MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
@@ -192,7 +190,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new StringP(MEASUREMENT_HEADING,this));
+        collection.add(new StringP(VARIABLE,this));
         parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE,this,collection));
 
     }
@@ -243,7 +241,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
-        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group,MEASUREMENT_HEADING);
+        LinkedHashSet<String> expectedMeasurements = expectedMeasurements(group, VARIABLE);
 
         for (String expectedMeasurement:expectedMeasurements) {
             String fullName = getFullName(expectedMeasurement);

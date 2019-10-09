@@ -14,6 +14,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 import java.util.HashMap;
 
@@ -31,6 +32,15 @@ public class CombineObjectSets extends Module {
         super("Combine object sets",modules);
     }
 
+    static void combine(ObjCollection inputObjects, ObjCollection outputObjects) {
+        for (Obj obj:inputObjects.values()) {
+            int ID = outputObjects.getAndIncrementID();
+            Obj newObj = new Obj(outputObjects.getName(),ID,obj);
+            newObj.setCoordinateSet(obj.getCoordinateSet());
+            newObj.setT(obj.getT());
+            outputObjects.add(obj);
+        }
+    }
 
     @Override
     public String getPackageName() {
@@ -53,21 +63,8 @@ public class CombineObjectSets extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Doing object merging
-        for (Obj obj1:inputObjects1.values()) {
-            int ID = outputObjects.getAndIncrementID();
-            Obj newObj = new Obj(outputObjectsName,ID,obj1);
-            newObj.setPoints(obj1.getPoints());
-            newObj.setT(obj1.getT());
-            outputObjects.add(obj1);
-        }
-
-        for (Obj obj2:inputObjects2.values()) {
-            int ID = outputObjects.getAndIncrementID();
-            Obj newObj = new Obj(outputObjectsName,ID,obj2);
-            newObj.setPoints(obj2.getPoints());
-            newObj.setT(obj2.getT());
-            outputObjects.add(obj2);
-        }
+        combine(inputObjects1,outputObjects);
+        combine(inputObjects2,outputObjects);
 
         // Adding the combined objects to the workspace
         workspace.addObjects(outputObjects);

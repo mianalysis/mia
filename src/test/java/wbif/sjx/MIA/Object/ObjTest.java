@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.LinkedHashMap;
@@ -339,7 +340,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeSameObject(VolumeType volumeType) throws IntegerOverflowException {
+    public void testHashCodeSameObject(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -356,7 +357,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentOrder(VolumeType volumeType) throws IntegerOverflowException {
+    public void testHashCodeDifferentOrder(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -373,7 +374,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentNames(VolumeType volumeType) throws IntegerOverflowException {
+    public void testHashCodeDifferentNames(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -390,7 +391,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException {
+    public void testHashCodeDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,1,1);
@@ -407,7 +408,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+    public void testHashCodeDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -424,7 +425,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testHashCodeMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+    public void testHashCodeMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -440,7 +441,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsSameObject(VolumeType volumeType) throws IntegerOverflowException {
+    public void testEqualsSameObject(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -458,7 +459,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentOrder(VolumeType volumeType) throws IntegerOverflowException {
+    public void testEqualsDifferentOrder(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -476,7 +477,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentNames(VolumeType volumeType) throws IntegerOverflowException {
+    public void testEqualsDifferentNames(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -494,7 +495,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException {
+    public void testEqualsDifferentTimepoint(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,1,1);
@@ -512,7 +513,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+    public void testEqualsDifferentCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);
@@ -530,7 +531,7 @@ public class ObjTest {
 
     @ParameterizedTest
     @EnumSource(VolumeType.class)
-    public void testEqualsMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException {
+    public void testEqualsMissingCoordinates(VolumeType volumeType) throws IntegerOverflowException, PointOutOfRangeException {
         Obj obj1 = new Obj(volumeType,"Obj1",1,5,7,5,2.0,1.0,"PX");
         obj1.setT(1);
         obj1.add(1,3,4);

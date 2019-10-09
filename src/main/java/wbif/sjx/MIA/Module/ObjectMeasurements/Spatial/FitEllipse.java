@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.Volume;
 
 /**
@@ -100,7 +101,9 @@ public class FitEllipse extends Module {
         if (ellipse == null) return null;
 
         Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
-        ellipseObject.setPoints(ellipse.getPoints());
+        try {
+            ellipseObject.setPoints(ellipse.getPoints());
+        } catch (PointOutOfRangeException e) {}
         ellipseObject.setT(inputObject.getT());
 
         ellipseObject.addParent(inputObject);
@@ -112,7 +115,9 @@ public class FitEllipse extends Module {
     }
 
     public void updateInputObject(Obj inputObject, Volume ellipsoid) {
-        inputObject.setPoints(ellipsoid.getPoints());
+        try {
+            inputObject.setPoints(ellipsoid.getPoints());
+        } catch (PointOutOfRangeException e) {}
     }
 
     public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {

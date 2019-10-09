@@ -4,6 +4,7 @@
 
 package wbif.sjx.MIA.GUI;
 
+import ij.IJ;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
@@ -32,6 +33,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 import java.util.TreeMap;
 

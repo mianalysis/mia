@@ -23,6 +23,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.swing.*;
@@ -555,7 +556,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
-                        outputObject.add(x, y, z - 1);
+                        try {
+                            outputObject.add(x, y, z - 1);
+                        } catch (PointOutOfRangeException e) {}
                     }
                 }
             }

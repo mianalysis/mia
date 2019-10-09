@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Metadata;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -602,7 +602,7 @@ public class Exporter {
                                     HashMap<String,Integer> colNumbers, @Nullable String groupTitle, @Nullable String groupValue) {
 
         // Adding metadata values
-        HCMetadata metadata = workspace.getMetadata();
+        Metadata metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
             String headerName = getMetadataString(name);
             if (!colNumbers.containsKey(headerName)) continue;
@@ -634,6 +634,7 @@ public class Exporter {
                 Measurement measurement = image.getMeasurement(imageMeasurement.getName());
 
                 String headerName = getImageString(imageName,imageMeasurement.getNickname());
+                if (!colNumbers.containsKey(headerName)) continue;
                 int colNum = colNumbers.get(headerName);
 
                 Cell summaryCell = summaryValueRow.createCell(colNum);
@@ -653,6 +654,7 @@ public class Exporter {
 
             if (showObjectCounts) {
                 headerName = getObjectString(objSetName, "", "NUMBER");
+                if (!colNumbers.containsKey(headerName)) break;
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(objCollection.size());
@@ -675,6 +677,7 @@ public class Exporter {
 
                 if (ref.isExportMean()) {
                     headerName = getObjectString(objSetName, "MEAN", "NUM_CHILDREN_" + child);
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMean();
@@ -684,6 +687,7 @@ public class Exporter {
 
                 if (ref.isExportMin()) {
                     headerName = getObjectString(objSetName, "MIN", "NUM_CHILDREN_" + child);
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMin();
@@ -693,6 +697,7 @@ public class Exporter {
 
                 if (ref.isExportMax()) {
                     headerName = getObjectString(objSetName, "MAX", "NUM_CHILDREN_" + child);
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMax();
@@ -702,6 +707,7 @@ public class Exporter {
 
                 if (ref.isExportStd()) {
                     headerName = getObjectString(objSetName, "STD", "NUM_CHILDREN_" + child);
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getStd();
@@ -711,6 +717,7 @@ public class Exporter {
 
                 if (ref.isExportSum()) {
                     headerName = getObjectString(objSetName, "SUM", "NUM_CHILDREN_" + child);
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getSum();
@@ -738,6 +745,7 @@ public class Exporter {
 
                 if (objectMeasurement.isExportMean()) {
                     headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getNickname());
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMean();
@@ -747,6 +755,7 @@ public class Exporter {
 
                 if (objectMeasurement.isExportMin()) {
                     headerName = getObjectString(objSetName, "MIN", objectMeasurement.getNickname());
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMin();
@@ -756,6 +765,7 @@ public class Exporter {
 
                 if (objectMeasurement.isExportMax()) {
                     headerName = getObjectString(objSetName, "MAX", objectMeasurement.getNickname());
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMax();
@@ -765,6 +775,7 @@ public class Exporter {
 
                 if (objectMeasurement.isExportStd()) {
                     headerName = getObjectString(objSetName, "STD", objectMeasurement.getNickname());
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getStd();
@@ -774,6 +785,7 @@ public class Exporter {
 
                 if (objectMeasurement.isExportSum()) {
                     headerName = getObjectString(objSetName, "SUM", objectMeasurement.getNickname());
+                    if (!colNumbers.containsKey(headerName)) break;
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getSum();
@@ -922,7 +934,7 @@ public class Exporter {
                         timepointValueCell.setCellValue(object.getT());
 
                         // Adding metadata (if enabled)
-                        HCMetadata metadata = workspace.getMetadata();
+                        Metadata metadata = workspace.getMetadata();
                         for (int column:metadataNames.keySet()) {
                             Cell metaValueCell = objectValueRow.createCell(column);
                             metaValueCell.setCellValue(metadata.getAsString(metadataNames.get(column)));

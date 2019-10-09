@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.CoordinateSet;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -285,7 +286,7 @@ public class Obj extends Volume {
 
     }
 
-    public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
+    public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException, PointOutOfRangeException {
         for (java.awt.Point point:roi.getContainedPoints()) {
             add((int) point.getX(),(int) point.getY(),z);
         }
