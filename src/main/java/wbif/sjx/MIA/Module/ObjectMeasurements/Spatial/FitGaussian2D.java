@@ -277,7 +277,7 @@ public class FitGaussian2D extends Module {
             double[] pOut = fitGaussian2D(iprCrop,pIn,limits,maxEvaluations);
 
             // If the centroid has moved more than the width of the window, removing this localisation
-            if (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2) {
+            if (pOut != null && (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2)) {
                 pOut = null;
             }
 

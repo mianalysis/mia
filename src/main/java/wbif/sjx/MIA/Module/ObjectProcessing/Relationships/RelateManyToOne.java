@@ -1,6 +1,8 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
 import ij.ImagePlus;
+import ij.Prefs;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
@@ -12,6 +14,11 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RelateManyToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";
@@ -28,6 +35,9 @@ public class RelateManyToOne extends Module {
     public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
     public interface RelateModes {
@@ -95,158 +105,198 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static void linkByCentroidProximity(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame, double linkingDistance) {
+    public static void linkByCentroidProximity(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame, double linkingDistance, int nThreads) {
         String moduleName = RelateObjects.class.getSimpleName();
         String measurementNamePx = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
 
-        int count = 1;
+        AtomicInteger count = new AtomicInteger(1);
         int numberOfChildren = childObjects.size();
 
+        // Ensuring all parent objects have a calculated centroid
+        for (Obj parent:parentObjects.values()) parent.getMeanCentroid();
+
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
         for (Obj childObject:childObjects.values()) {
-            double minDist = Double.MAX_VALUE;
-            Obj minLink = null;
-            double dpp = childObject.getDppXY();
+            Runnable task = () -> {
+                double minDist = Double.MAX_VALUE;
+                Obj minLink = null;
+                double dpp = childObject.getDppXY();
 
-            for (Obj parentObject : parentObjects.values()) {
-                if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
+                for (Obj parentObject : parentObjects.values()) {
+                    if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
 
-                double dist = childObject.getCentroidSeparation(parentObject,true);
+                    double dist = childObject.getCentroidSeparation(parentObject,true);
 
-                if (dist < minDist && dist <= linkingDistance) {
-                    minDist = dist;
-                    minLink = parentObject;
+                    if (dist < minDist && dist <= linkingDistance) {
+                        minDist = dist;
+                        minLink = parentObject;
+                    }
                 }
-            }
 
-            // Adding measurements to the input object
-            if (minLink != null) {
-                childObject.addParent(minLink);
-                minLink.addChild(childObject);
+                // Adding measurements to the input object
+                if (minLink != null) {
+                    childObject.addParent(minLink);
+                    minLink.addChild(childObject);
 
-                childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
-            } else {
-                childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
-            }
+                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
+                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                } else {
+                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
+                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                }
 
-            writeMessage("Processed "+(count++)+" of "+numberOfChildren+" objects",moduleName);
+                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
 
+            };
+            pool.submit(task);
+
+        }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            e.printStackTrace(System.err);
         }
     }
 
-    public static void linkBySurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame, double linkingDistance, String insideOutsideMode) {
+    public static void linkBySurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, int nThreads) {
         String moduleName = RelateObjects.class.getSimpleName();
         String measurementNamePx = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
 
-        int count = 1;
+        AtomicInteger count = new AtomicInteger(1);
         int numberOfChildren = childObjects.size();
 
+        // Ensuring all parent objects have a calculated surface
+        for (Obj parent:parentObjects.values()) parent.getSurface();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
         for (Obj childObject:childObjects.values()) {
-            double minDist = Double.MAX_VALUE;
-            Obj minLink = null;
-            double dpp = childObject.getDppXY();
+            Runnable task = () -> {
+                double minDist = Double.MAX_VALUE;
+                Obj minLink = null;
+                double dpp = childObject.getDppXY();
 
-            for (Obj parentObject : parentObjects.values()) {
-                if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
+                for (Obj parentObject : parentObjects.values()) {
+                    if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
 
-                // Calculating the object spacing
-                double dist = childObject.getSurfaceSeparation(parentObject,true);
+                    // Calculating the object spacing
+                    double dist = childObject.getSurfaceSeparation(parentObject,true);
 
-                if (Math.abs(dist) < Math.abs(minDist) && Math.abs(dist) <= linkingDistance) {
-                    minDist = dist;
-                    minLink = parentObject;
+                    if (Math.abs(dist) < Math.abs(minDist) && Math.abs(dist) <= linkingDistance) {
+                        minDist = dist;
+                        minLink = parentObject;
+                    }
                 }
-            }
 
-            // Applying the inside outside mode (doesn't apply for centroid-centroid linking)
-            minDist = applyInsideOutsidePolicy(minDist,insideOutsideMode);
+                // Applying the inside outside mode (doesn't apply for centroid-centroid linking)
+                minDist = applyInsideOutsidePolicy(minDist,insideOutsideMode);
 
-            // Adding measurements to the input object
-            if (minLink != null) {
-                childObject.addParent(minLink);
-                minLink.addChild(childObject);
-                childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
-            } else {
-                childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
-            }
-
-            writeMessage("Processed "+(count++)+" of "+numberOfChildren+" objects",moduleName);
-
+                // Adding measurements to the input object
+                if (minLink != null) {
+                    childObject.addParent(minLink);
+                    minLink.addChild(childObject);
+                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
+                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
+                } else {
+                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
+                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                }
+                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+            };
+            pool.submit(task);
+        }
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            e.printStackTrace(System.err);
         }
     }
 
-    public static void linkByCentroidToSurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame, double linkingDistance, String insideOutsideMode) {
+    public static void linkByCentroidToSurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, int nThreads) {
         String moduleName = RelateObjects.class.getSimpleName();
         String measurementNamePx = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
 
-        int count = 1;
+        AtomicInteger count = new AtomicInteger(1);
         int numberOfChildren = childObjects.size();
 
+        // Ensuring all parent objects have a calculated surface
+        for (Obj parent:parentObjects.values()) parent.getSurface();
+
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
         for (Obj childObject:childObjects.values()) {
-            double minDist = Double.MAX_VALUE;
-            Obj minLink = null;
-            double dpp = childObject.getDppXY();
+            Runnable task = () -> {
+                double minDist = Double.MAX_VALUE;
+                Obj minLink = null;
+                double dpp = childObject.getDppXY();
 
-            for (Obj parentObject : parentObjects.values()) {
-                if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
+                for (Obj parentObject : parentObjects.values()) {
+                    if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
 
-                // Calculating the object spacing
-                double childXCent = childObject.getXMean(true);
-                double childYCent = childObject.getYMean(true);
-                double childZCent = childObject.getZMean(true, true);
-                double childZCentSlice = childObject.getZMean(true, false);
+                    // Calculating the object spacing
+                    double childXCent = childObject.getXMean(true);
+                    double childYCent = childObject.getYMean(true);
+                    double childZCent = childObject.getZMean(true, true);
+                    double childZCentSlice = childObject.getZMean(true, false);
 
-                Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
+                    Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
 
-                double[] parentX = parentObject.getSurfaceX(true);
-                double[] parentY = parentObject.getSurfaceY(true);
-                double[] parentZ = parentObject.getSurfaceZ(true, true);
+                    double[] parentX = parentObject.getSurfaceX(true);
+                    double[] parentY = parentObject.getSurfaceY(true);
+                    double[] parentZ = parentObject.getSurfaceZ(true, true);
 
-                boolean isInside = false;
-                for (int i = 0; i < parentX.length; i++) {
-                    double xDist = childXCent - parentX[i];
-                    double yDist = childYCent - parentY[i];
-                    double zDist = childZCent - parentZ[i];
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-                    if (dist < Math.abs(minDist) && dist <= linkingDistance) {
-                        minDist = dist;
-                        minLink = parentObject;
-                        isInside = parentObject.getPoints().contains(currentPoint);
+                    boolean isInside = false;
+                    for (int i = 0; i < parentX.length; i++) {
+                        double xDist = childXCent - parentX[i];
+                        double yDist = childYCent - parentY[i];
+                        double zDist = childZCent - parentZ[i];
+                        double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                        if (dist < Math.abs(minDist) && dist <= linkingDistance) {
+                            minDist = dist;
+                            minLink = parentObject;
+                            isInside = parentObject.getPoints().contains(currentPoint);
+                        }
                     }
+
+                    // If this point is inside the parent the distance should be negative
+                    if (isInside) minDist = -minDist;
+
                 }
 
-                // If this point is inside the parent the distance should be negative
-                if (isInside) minDist = -minDist;
+                // If using centroid to surface proximity and inside only, calculate the fractional distance
+                if (minLink != null) calculateFractionalDistance(childObject,minLink,minDist);
 
-            }
+                // Applying the inside outside mode (doesn't apply for centroid-centroid linking)
+                minDist = applyInsideOutsidePolicy(minDist,insideOutsideMode);
 
-            // If using centroid to surface proximity and inside only, calculate the fractional distance
-            if (minLink != null) calculateFractionalDistance(childObject,minLink,minDist);
+                // Adding measurements to the input object
+                if (minLink != null) {
+                    childObject.addParent(minLink);
+                    minLink.addChild(childObject);
 
-            // Applying the inside outside mode (doesn't apply for centroid-centroid linking)
-            minDist = applyInsideOutsidePolicy(minDist,insideOutsideMode);
+                    childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
+                    childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
 
-            // Adding measurements to the input object
-            if (minLink != null) {
-                childObject.addParent(minLink);
-                minLink.addChild(childObject);
+                } else {
+                    childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
+                    childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+                }
 
-                childObject.addMeasurement(new Measurement(measurementNamePx, minDist));
-                childObject.addMeasurement(new Measurement(measurementNameCal, minDist * dpp));
-
-            } else {
-                childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
-                childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
-            }
-
-            writeMessage("Processed "+(count++)+" of "+numberOfChildren+" objects",moduleName);
-
+                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+            };
+            pool.submit(task);
+        }
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            e.printStackTrace(System.err);
         }
     }
 
@@ -432,8 +482,11 @@ public class RelateManyToOne extends Module {
         String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
         double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         if (!limitLinking) linkingDistance = Double.MAX_VALUE;
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
 
         // Removing previous relationships
         parentObjects.removeChildren(childObjectName);
@@ -447,15 +500,15 @@ public class RelateManyToOne extends Module {
             case RelateModes.PROXIMITY:
                 switch (referencePoint) {
                     case ReferencePoints.CENTROID:
-                        linkByCentroidProximity(parentObjects,childObjects,linkInSameFrame,linkingDistance);
+                        linkByCentroidProximity(parentObjects,childObjects,linkInSameFrame,linkingDistance,nThreads);
                         break;
 
                     case ReferencePoints.SURFACE:
-                        linkBySurfaceProximity(parentObjects,childObjects,linkInSameFrame,linkingDistance,insideOutsideMode);
+                        linkBySurfaceProximity(parentObjects,childObjects,linkInSameFrame,linkingDistance,insideOutsideMode,nThreads);
                         break;
 
                     case ReferencePoints.CENTROID_TO_SURFACE:
-                        linkByCentroidToSurfaceProximity(parentObjects,childObjects,linkInSameFrame,linkingDistance,insideOutsideMode);
+                        linkByCentroidToSurfaceProximity(parentObjects,childObjects,linkInSameFrame,linkingDistance,insideOutsideMode,nThreads);
                         break;
 
                 }
@@ -470,6 +523,8 @@ public class RelateManyToOne extends Module {
                 break;
 
         }
+
+        if (showOutput) childObjects.showMeasurements(this,modules);
 
         return true;
 
@@ -491,6 +546,9 @@ public class RelateManyToOne extends Module {
         parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP,this,0d,"Percentage of total child volume overlapping with the parent object."));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP,this,true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
+
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
@@ -545,6 +603,9 @@ public class RelateManyToOne extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
