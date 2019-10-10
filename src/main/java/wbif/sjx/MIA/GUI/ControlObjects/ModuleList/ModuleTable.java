@@ -122,6 +122,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         if (value instanceof Module) {
             Module module = (Module) value;
             if (module instanceof GUISeparator) label.setForeground(Color.BLUE);
+            else if (!module.isEnabled()) setForeground(Color.DARK_GRAY);
             else setForeground(Color.BLACK);
             label.setText(module.getNickname());
 

@@ -44,6 +44,7 @@ public class AnalysisRunner {
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
         GUI.setProgress(0);
+        MIA.log.clearLog();
         counter = 0;
 
         // Get jobs and exit if no images found
