@@ -202,7 +202,7 @@ public class RelateOneToOne extends Module {
         double[] costs = linkables.stream().mapToDouble(Linkable::getCost).toArray();
 
         // Determining links using TrackMate implementation of Jonker-Volgenant algorithm for linear assignment problems
-        DefaultCostMatrixCreator<Integer,Integer> creator = new DefaultCostMatrixCreator<>(IDs1,IDs2,costs,1,1);
+        DefaultCostMatrixCreator<Integer,Integer> creator = new DefaultCostMatrixCreator<>(IDs1,IDs2,costs,1.05,1);
         if (!creator.checkInput() || !creator.process()) {
             System.err.println(creator.getErrorMessage());
             return null;

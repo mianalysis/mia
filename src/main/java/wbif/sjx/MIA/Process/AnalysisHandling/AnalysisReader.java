@@ -74,11 +74,12 @@ public class AnalysisReader {
         Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
         doc.getDocumentElement().normalize();
 
+        // If loading a version older than v0.10.0 use the legacy loader.  Also, has handling for older versions still,
+        // which didn't include a version number
         Version thisVersion = new Version("0.10.0");
-        Version loadedVersion = new Version(doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION").getNodeValue());
-
-        // If the loaded version is older than version 0.10.0 use the legacy analysis reader
-        if(thisVersion.compareTo(loadedVersion) > 0) return LegacyAnalysisReader.loadAnalysis(xml);
+        Node versionNode = doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION");
+        Version loadedVersion = versionNode == null ? null : new Version(versionNode.getNodeValue());
+        if(loadedVersion == null || thisVersion.compareTo(loadedVersion) > 0) return LegacyAnalysisReader.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
         ModuleCollection modules = loadModules(doc);
