@@ -24,6 +24,7 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -61,6 +62,10 @@ public class TrackObjects extends Module {
         super("Track objects",modules);
     }
 
+
+    public static void main(String[] args) {
+
+    }
 
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
@@ -532,19 +537,24 @@ public class TrackObjects extends Module {
 
                 // Calculating distances between objects and populating the cost matrix
                 ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
-                DefaultCostMatrixCreator<Integer,Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
-                JaqamanLinker<Integer,Integer> linker = new JaqamanLinker<>(creator);
-                if (!linker.checkInput() || !linker.process()) {
-                    MIA.log.writeError(linker.getErrorMessage());
-                    return false;
-                }
-                Map<Integer,Integer> assignment = linker.getResult();
-                // Applying the calculated assignments as relationships
-                for (int ID1:assignment.keySet()) {
-                    int ID2 = assignment.get(ID1);
-                    Obj currObj = inputObjects.get(ID1);
-                    Obj prevObj = inputObjects.get(ID2);
-                    linkObjects(prevObj, currObj, trackObjectsName);
+
+                // Check if there are potential links, if not, skip to the next frame
+                if (linkables.size() > 0) {
+                    DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
+                    JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
+                    if (!linker.checkInput() || !linker.process()) {
+                        MIA.log.writeError(linker.getErrorMessage());
+                        return false;
+                    }
+                    Map<Integer, Integer> assignment = linker.getResult();
+
+                    // Applying the calculated assignments as relationships
+                    for (int ID1 : assignment.keySet()) {
+                        int ID2 = assignment.get(ID1);
+                        Obj currObj = inputObjects.get(ID1);
+                        Obj prevObj = inputObjects.get(ID2);
+                        linkObjects(prevObj, currObj, trackObjectsName);
+                    }
                 }
 
                 // Assigning any objects in the current frame without a track as new tracks

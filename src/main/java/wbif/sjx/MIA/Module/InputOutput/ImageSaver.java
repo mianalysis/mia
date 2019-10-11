@@ -197,7 +197,7 @@ public class ImageSaver extends Module {
 
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
-            if (inputImagePlus.getNSlices() > 1) {
+            if (inputImagePlus.getNSlices() > 1 || inputImagePlus.getNFrames() > 1) {
                 IntensityMinMax.run(inputImagePlus,true);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
             } else {

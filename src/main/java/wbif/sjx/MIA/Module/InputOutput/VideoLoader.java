@@ -50,7 +50,8 @@ public class VideoLoader extends Module {
     public static final String RANGE_SEPARATOR = "Dimension ranges and cropping";
     public static final String CHANNELS = "Channels";
     public static final String FRAMES = "Frames";
-    public static final String CROP_IMAGE = "Crop image";
+    public static final String CROP_MODE = "Crop mode";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
@@ -83,6 +84,24 @@ public class VideoLoader extends Module {
         String[] ALL = new String[]{GENERIC,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
 
     }
+
+    public interface CropModes {
+        String NONE = "None";
+        String FIXED = "Fixed";
+        String FROM_REFERENCE = "From reference";
+
+        String[] ALL = new String[]{NONE, FIXED, FROM_REFERENCE};
+
+    }
+
+    public interface Measurements {
+        String ROI_LEFT = "VIDEO_LOADING // ROI_LEFT (PX)";
+        String ROI_TOP = "VIDEO_LOADING // ROI_TOP (PX)";
+        String ROI_WIDTH = "VIDEO_LOADING // ROI_WIDTH (PX)";
+        String ROI_HEIGHT = "VIDEO_LOADING // ROI_HEIGHT (PX)";
+
+    }
+
 
     public Image getAviVideo(String path, String outputImageName, String frameRange, String channelRange, @Nullable int[] crop) throws Exception {
         // Getting the first frame as a virtual stack to act as a size reference
@@ -267,7 +286,7 @@ public class VideoLoader extends Module {
         for (int frame:frames) {
             writeMessage("Loading frame "+(count)+" of "+total);
 
-            byte[] bytes = loader.getImage().frame(frame).imageBytes.get(0);
+            byte[] bytes = loader.getImage().frame(frame-1).imageBytes.get(0);
 
             ImageProcessor ipr = new ByteProcessor(origWidth,origHeight,bytes);
             if (crop != null) {
@@ -388,7 +407,8 @@ public class VideoLoader extends Module {
         boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
         String channelRange = parameters.getValue(CHANNELS);
         String frameRange = parameters.getValue(FRAMES);
-        boolean cropImage = parameters.getValue(CROP_IMAGE);
+        String cropMode = parameters.getValue(CROP_MODE);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int left = parameters.getValue(LEFT);
         int top = parameters.getValue(TOP);
         int width = parameters.getValue(WIDTH);
@@ -400,9 +420,17 @@ public class VideoLoader extends Module {
         // Series number comes from the Workspace
         int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
-
         int[] crop = null;
-        if (cropImage) crop = new int[]{left,top,width,height};
+        switch (cropMode) {
+            case CropModes.FIXED:
+                crop = new int[]{left, top, width, height};
+                break;
+            case CropModes.FROM_REFERENCE:
+                // Displaying the image
+                Image referenceImage = workspace.getImage(referenceImageName);
+                crop = ImageLoader.getCropROI(referenceImage);
+                break;
+        }
 
         String pathName = null;
         switch (importMode) {
@@ -452,10 +480,12 @@ public class VideoLoader extends Module {
 
             // If this has failed (outputImage is null) try new FFMPEG loading
             if (outputImage == null) {
+                MIA.log.writeDebug("Using new FFMPEG loader");
                 outputImage = getFFMPEGVideoNew(pathName,outputImageName,frameRange,crop);
             }
 
         } catch (Exception e) {
+            e.printStackTrace(System.err);
             MIA.log.writeError("Unable to read video.  Skipping this file.");
             return false;
         }
@@ -508,7 +538,11 @@ public class VideoLoader extends Module {
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new StringP(CHANNELS,this,"1-end"));
         parameters.add(new StringP(FRAMES,this,"1-end"));
-        parameters.add(new BooleanP(CROP_IMAGE, this, false));
+        parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL,"Choice of loading the entire frame, or cropping in XY.<br>" +
+                "<br>- \""+CropModes.NONE+"\" (default) will load the entire frame in XY.<br>" +
+                "<br>- \""+CropModes.FIXED+"\" will apply a pre-defined crop to the input frame based on the parameters \"Left\", \"Top\",\"Width\" and \"Height\".<br>" +
+                "<br>- \""+CropModes.FROM_REFERENCE+"\" will display a specified image and ask the user to select a region to crop the input frame to."));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this, "", "The frame to be displayed for selection of the cropping region if the cropping mode is set to \""+CropModes.FROM_REFERENCE+"\"."));
         parameters.add(new IntegerP(LEFT, this,0));
         parameters.add(new IntegerP(TOP, this,0));
         parameters.add(new IntegerP(WIDTH, this,512));
@@ -565,12 +599,17 @@ public class VideoLoader extends Module {
         returnedParameters.add(parameters.getParameter(CHANNELS));
         returnedParameters.add(parameters.getParameter(FRAMES));
 
-        returnedParameters.add(parameters.getParameter(CROP_IMAGE));
-        if (parameters.getValue(CROP_IMAGE)){
-            returnedParameters.add(parameters.getParameter(LEFT));
-            returnedParameters.add(parameters.getParameter(TOP));
-            returnedParameters.add(parameters.getParameter(WIDTH));
-            returnedParameters.add(parameters.getParameter(HEIGHT));
+        returnedParameters.add(parameters.getParameter(CROP_MODE));
+        switch ((String) parameters.getValue(CROP_MODE)) {
+            case CropModes.FIXED:
+                returnedParameters.add(parameters.getParameter(LEFT));
+                returnedParameters.add(parameters.getParameter(TOP));
+                returnedParameters.add(parameters.getParameter(WIDTH));
+                returnedParameters.add(parameters.getParameter(HEIGHT));
+                break;
+            case CropModes.FROM_REFERENCE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
@@ -586,7 +625,20 @@ public class VideoLoader extends Module {
 
     @Override
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
-        return null;
+        ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+
+        switch ((String) parameters.getValue(CROP_MODE)) {
+            case CropModes.FROM_REFERENCE:
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_LEFT).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_TOP).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_WIDTH).setImageName(outputImageName));
+                returnedRefs.add(imageMeasurementRefs.getOrPut(Measurements.ROI_HEIGHT).setImageName(outputImageName));
+
+                break;
+        }
+
+        return returnedRefs;
     }
 
     @Override

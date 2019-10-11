@@ -211,6 +211,27 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public static int[] getCropROI(Image referenceImage) {
+        int[] crop = null;
+        // Displaying the image
+        ImagePlus referenceIpl = referenceImage.getImagePlus().duplicate();
+        referenceIpl.show();
+
+        // Asking the user to draw a rectangular ROI
+        IJ.runMacro("waitForUser(getArgument())", "Click \"OK\" once ROI selected");
+
+        // Getting the ROI
+        Roi roi = referenceIpl.getRoi();
+        Rectangle bounds = roi.getBounds();
+        crop = new int[]{bounds.x, bounds.y, bounds.width, bounds.height};
+
+        // Closing the reference image
+        referenceIpl.close();
+
+        return crop;
+
+    }
+
     public ImagePlus getBFImage(String path, int seriesNumber, @Nonnull String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean manualCal, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
@@ -691,21 +712,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             case CropModes.FROM_REFERENCE:
                 // Displaying the image
                 Image referenceImage = workspace.getImage(referenceImageName);
-                ImagePlus referenceIpl = referenceImage.getImagePlus().duplicate();
-                referenceIpl.show();
-
-                // Asking the user to draw a rectangular ROI
-                IJ.runMacro("waitForUser(getArgument())", "Click \"OK\" once ROI selected");
-
-                // Getting the ROI
-                Roi roi = referenceIpl.getRoi();
-                Rectangle bounds = roi.getBounds();
-                crop = new int[]{bounds.x, bounds.y, bounds.width, bounds.height};
-
-                // Closing the reference image
-                referenceIpl.close();
+                crop = getCropROI(referenceImage);
                 break;
-
         }
 
         double[] intRange = (forceBitDepth) ? new double[]{Double.parseDouble(outputBitDepth), minIntensity, maxIntensity} : null;
