@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.10</version>
+    <version>0.11.11</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -267,12 +267,12 @@
             <scope>${myscope}</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>sc.fiji</groupId>-->
-<!--            <artifactId>TurboReg_</artifactId>-->
-<!--            <version>2.0.0</version>-->
-<!--            <scope>${myscope}</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>sc.fiji</groupId>-->
+        <!--            <artifactId>TurboReg_</artifactId>-->
+        <!--            <version>2.0.0</version>-->
+        <!--            <scope>${myscope}</scope>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.janelia</groupId>
@@ -281,11 +281,11 @@
             <scope>${myscope}</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.bytedeco</groupId>-->
-<!--            <artifactId>javacv-platform</artifactId>-->
-<!--            <version>1.5</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.bytedeco</groupId>-->
+        <!--            <artifactId>javacv-platform</artifactId>-->
+        <!--            <version>1.5</version>-->
+        <!--        </dependency>-->
 
         <!--        <dependency>-->
         <!--            <groupId>io.github.joheras</groupId>-->
@@ -306,9 +306,12 @@
         </dependency>
 
         <dependency>
-            <groupId>wbif.sjx</groupId>
+            <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
             <version>v1.5.8</version>
+<!--            <groupId>wbif.sjx</groupId>-->
+<!--            <artifactId>Common</artifactId>-->
+<!--            <version>v1.5.8</version>-->
         </dependency>
     </dependencies>
 
@@ -381,7 +384,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.7.1</version>
             </plugin>
-                 
+
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
