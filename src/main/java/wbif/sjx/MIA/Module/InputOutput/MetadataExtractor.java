@@ -297,7 +297,7 @@ public class MetadataExtractor extends Module {
 
             case ExtractorModes.FOLDERNAME_MODE:
                 if (foldernameExtractorName.equals(FoldernameExtractors.GENERIC)) {
-                    extractGeneric(metadata,metadata.getFile().getAbsolutePath(),pattern,groups);
+                    extractGeneric(metadata,metadata.getFile().getParent(),pattern,groups);
                 } else {
                     extractFilename(metadata, foldernameExtractorName);
                 }
@@ -336,6 +336,8 @@ public class MetadataExtractor extends Module {
                 }
                 break;
         }
+
+        if (showOutput) workspace.showMetadata(this);
 
         return true;
 
