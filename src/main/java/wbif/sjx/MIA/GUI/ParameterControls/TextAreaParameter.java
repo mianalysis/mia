@@ -5,6 +5,8 @@ import wbif.sjx.MIA.Object.Parameters.TextAreaP;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -29,9 +31,13 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         c.fill = GridBagConstraints.BOTH;
 
         textArea = new JEditorPane();
+        Document document = textArea.getDocument();
+        if (document instanceof PlainDocument) {
+            document.putProperty(PlainDocument.tabSizeAttribute,4);
+        }
         textArea.setEditable(parameter.isEditable());
         textArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
-        textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         textArea.setText(parameter.getRawStringValue());
         textArea.addFocusListener(this);
         textArea.setCaretPosition(0);

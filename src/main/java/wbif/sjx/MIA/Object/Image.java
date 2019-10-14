@@ -246,16 +246,13 @@ public class Image < T extends RealType< T > & NativeType< T >> {
             if (measRef.getImageName().equals(name)) measNames.add(measRef.getName());
         }
 
-        // Iterating over each measurement, adding all the values
-        int row = 0;
-
         // Setting the measurements from the Module
         for (String measName : measNames) {
             Measurement measurement = getMeasurement(measName);
             double value = measurement == null ? Double.NaN : measurement.getValue();
 
             // Setting value
-            rt.setValue(measName, row, value);
+            rt.setValue(measName, 0, value);
 
         }
 

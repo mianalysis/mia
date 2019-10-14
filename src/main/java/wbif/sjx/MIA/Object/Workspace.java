@@ -1,13 +1,18 @@
 package wbif.sjx.MIA.Object;
 
+import ij.measure.ResultsTable;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.Object.Metadata;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -119,6 +124,34 @@ public class Workspace {
         metadata.setFile(file);
         metadata.setSeriesName(seriesName);
         metadata.setSeriesNumber(seriesNumber);
+
+    }
+
+    public void showMetadata(Module module) {
+        // Getting MeasurementReferences
+        MetadataRefCollection metadataRefs = module.updateAndGetMetadataReferences();
+
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        for (MetadataRef metadataRef:metadataRefs.values()) {
+            String metadataName = metadataRef.getName();
+            rt.setValue(metadataName, 0, metadata.getAsString(metadataName));
+        }
+
+        rt.show("\"" + module.getName() + " \"metadata values");
+
+    }
+
+    public void showMetadata() {
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Iterating over each metadata value
+        for (String metadataName : metadata.keySet()) rt.setValue(metadataName, 0, metadata.getAsString(metadataName));
+
+        // Displaying the results table
+        rt.show("Metadata values");
 
     }
 

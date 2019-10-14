@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
 
+import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -236,31 +237,29 @@ public class RelateManyToOne extends Module {
                 Obj minLink = null;
                 double dpp = childObject.getDppXY();
 
+                // Calculating the object spacing
+                double childXCent = childObject.getXMean(true);
+                double childYCent = childObject.getYMean(true);
+                double childZCent = childObject.getZMean(true, true);
+                double childZCentSlice = childObject.getZMean(true, false);
+
+                Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
+
                 for (Obj parentObject : parentObjects.values()) {
                     if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
 
-                    // Calculating the object spacing
-                    double childXCent = childObject.getXMean(true);
-                    double childYCent = childObject.getYMean(true);
-                    double childZCent = childObject.getZMean(true, true);
-                    double childZCentSlice = childObject.getZMean(true, false);
-
-                    Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
-
-                    double[] parentX = parentObject.getSurfaceX(true);
-                    double[] parentY = parentObject.getSurfaceY(true);
-                    double[] parentZ = parentObject.getSurfaceZ(true, true);
-
                     boolean isInside = false;
-                    for (int i = 0; i < parentX.length; i++) {
-                        double xDist = childXCent - parentX[i];
-                        double yDist = childYCent - parentY[i];
-                        double zDist = childZCent - parentZ[i];
+                    Iterator<Point<Double>> iterator = parentObject.getSurface().getCalibratedIterator(true,true);
+                    while (iterator.hasNext()) {
+                        Point<Double> point = iterator.next();
+                        double xDist = childXCent - point.getX();
+                        double yDist = childYCent - point.getY();
+                        double zDist = childZCent - point.getZ();
                         double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
                         if (dist < Math.abs(minDist) && dist <= linkingDistance) {
                             minDist = dist;
                             minLink = parentObject;
-                            isInside = parentObject.getPoints().contains(currentPoint);
+                            isInside = parentObject.getCoordinateSet().contains(currentPoint);
                         }
                     }
 
@@ -449,7 +448,7 @@ public class RelateManyToOne extends Module {
         }
 
         for (Obj childObject:childObjects.values()) {
-            if (childObject.getChildren(parentObjects.getName()).size() == 0) {
+            if (childObject.getParent(parentObjects.getName()) == null) {
                 childObject.addMeasurement(new Measurement(childMeasurementName,0));
             } else {
                 childObject.addMeasurement(new Measurement(childMeasurementName,1));
@@ -524,7 +523,12 @@ public class RelateManyToOne extends Module {
 
         }
 
-        if (showOutput) childObjects.showMeasurements(this,modules);
+        applyLinkMeasurements(parentObjects,childObjects);
+
+        if (showOutput) {
+            childObjects.showMeasurements(this,modules);
+            parentObjects.showMeasurements(this,modules);
+        }
 
         return true;
 
