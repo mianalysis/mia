@@ -25,6 +25,15 @@ public class GetObjectSurface extends Module {
     public static final String OUTPUT_OBJECTS = "Output objects";
 
 
+    public static Obj getSurface(Obj inputObject, String outputObjectsName, int outputID) {
+        Volume outputVolume = inputObject.getSurface();
+        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputID,inputObject);
+        outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
+
+        return outputObject;
+
+    }
+
     public GetObjectSurface(ModuleCollection modules) {
         super("Get object surface", modules);
     }
@@ -44,23 +53,16 @@ public class GetObjectSurface extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         for (Obj inputObject:inputObjects.values()) {
-            Volume outputVolume = inputObject.getSurface();
-            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),inputObject);
-            outputObject.setCoordinateSet(outputVolume.getCoordinateSet());
+            Obj outputObject = getSurface(inputObject,outputObjectsName,outputObjects.getAndIncrementID());
             outputObjects.add(outputObject);
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
         }
 
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) {
-            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            ImagePlus dispIpl = outputObjects.convertToImage(outputObjectsName,null,hues,8,false).getImagePlus();
-            dispIpl.setLut(LUTs.Random(true));
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
-        }
+        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 
         return true;
 

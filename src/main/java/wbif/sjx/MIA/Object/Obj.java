@@ -14,6 +14,8 @@ import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -289,6 +291,21 @@ public class Obj extends Volume {
     public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException, PointOutOfRangeException {
         for (java.awt.Point point:roi.getContainedPoints()) {
             add((int) point.getX(),(int) point.getY(),z);
+        }
+    }
+
+    public void addPointsFromPolygon(Polygon polygon, int z) throws PointOutOfRangeException {
+        // Determining xy limits
+        int minX = Arrays.stream(polygon.xpoints).min().getAsInt();
+        int maxX = Arrays.stream(polygon.xpoints).max().getAsInt();
+        int minY = Arrays.stream(polygon.ypoints).min().getAsInt();
+        int maxY = Arrays.stream(polygon.ypoints).max().getAsInt();
+
+        // Iterating over all possible points, checking if they're inside the polygon
+        for (int x=minX;x<=maxX;x++) {
+            for (int y=minY;y<=maxY;y++) {
+                if (polygon.contains(x,y)) add(x,y,z);
+            }
         }
     }
 

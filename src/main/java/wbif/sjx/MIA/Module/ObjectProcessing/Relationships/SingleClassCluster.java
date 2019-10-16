@@ -29,6 +29,7 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -50,6 +51,7 @@ public class SingleClassCluster extends Module {
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
+
 
     public SingleClassCluster(ModuleCollection modules) {
         super("Single class cluster",modules);
@@ -233,23 +235,15 @@ public class SingleClassCluster extends Module {
         writeMessage("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
-        // Showing outlines of clustered objects
+        // Showing clustered objects colour coded by parent
         if (showOutput) {
-            // Creating the fake image
-            int[][] spatialLimits = inputObjects.getSpatialLimits();
-            int[] temporalLimits = inputObjects.getTemporalLimits();
-            ImagePlus dispIpl = IJ.createHyperStack(outputObjectsName,spatialLimits[0][1],spatialLimits[1][1],1,spatialLimits[2][1],temporalLimits[1],8);
-
             // Generating colours
             HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
-
-            // Adding overlay and displaying image
-            AddObjectOutline.addOverlay(dispIpl,inputObjects,0.2,hues,false,true);
-
+            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName,null,hues,8,true).getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
             dispIpl.show();
-
         }
 
         return true;

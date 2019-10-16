@@ -31,7 +31,7 @@ public class ProjectObjects extends Module {
         super("Project objects",modules);
     }
 
-    public static Obj process(Obj inputObject, String outputObjectsName, boolean is2D, boolean addRelationship) throws IntegerOverflowException {
+    public static Obj process(Obj inputObject, String outputObjectsName, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
         Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),projected);
@@ -70,7 +70,7 @@ public class ProjectObjects extends Module {
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;
             try {
-                outputObject = process(inputObject,outputObjectsName, inputObject.is2D(),true);
+                outputObject = process(inputObject,outputObjectsName, true);
             } catch (IntegerOverflowException e) {
                 return false;
             }
@@ -80,15 +80,7 @@ public class ProjectObjects extends Module {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) {
-            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = outputObjects.convertToImage("Objects",null,hues,8,false).getImagePlus();
-            dispIpl.setLut(LUTs.Random(true));
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
-        }
+        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 
         return true;
 

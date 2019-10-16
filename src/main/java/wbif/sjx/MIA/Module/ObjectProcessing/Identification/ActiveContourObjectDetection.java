@@ -192,19 +192,8 @@ public class ActiveContourObjectDetection extends Module {
         inputImagePlus.setPosition(1,1,1);
 
         if (showOutput) {
-            // Removing old overlay
-            dispIpl.setOverlay(null);
-            if (updateInputObjects) {
-                HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
-                AddObjectOutline.addOverlay(dispIpl,inputObjects,0.5,hues,false,true);
-            } else {
-                HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
-                AddObjectOutline.addOverlay(dispIpl,outputObjects,0.5,hues,false,true);
-            }
-
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
+            if (updateInputObjects) inputObjects.convertToImageRandomColours().showImage();
+            else outputObjects.convertToImageRandomColours().showImage();
         }
 
         // If selected, adding new ObjCollection to the Workspace

@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
 import ij.ImagePlus;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -14,6 +15,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.Object.Point;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,22 +28,29 @@ public class MergeRelatedObjects extends Module {
     public final static String OUTPUT_SEPARATOR = "Object output";
     public static final String RELATED_OBJECTS = "Output overlapping objects";
 
+    public static final String MERGE_SEPARATOR = "Merge controls";
+    public static final String MERGE_MODE = "Merge mode";
+
+    public interface MergeModes {
+        String MERGE_CHILDREN_ONLY = "Merge children only";
+        String MERGE_PARENTS_AND_CHILDREN = "Merge parents and children";
+
+        String[] ALL = new String[]{MERGE_CHILDREN_ONLY,MERGE_PARENTS_AND_CHILDREN};
+
+    }
 
     public MergeRelatedObjects(ModuleCollection modules) {
         super("Merge related objects", modules);
     }
 
 
-    public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName) {
+    public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName, String mergeMode) {
         Obj exampleParent = parentObjects.getFirst();
         ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
 
         if (exampleParent == null) return relatedObjects;
 
-        Iterator<Obj> parentIterator = parentObjects.values().iterator();
-        while (parentIterator.hasNext()) {
-            Obj parentObj = parentIterator.next();
-
+        for (Obj parentObj:parentObjects.values()) {
             // Collecting all children for this parent.  If none are present, skip to the next parent
             ObjCollection currChildObjects = parentObj.getChildren(childObjects.getName());
             if (currChildObjects.size() == 0) continue;
@@ -53,19 +62,15 @@ public class MergeRelatedObjects extends Module {
 
             for (Obj childObject:currChildObjects.values()) {
                 // Transferring points from the child object to the new object
-                relatedObject.getPoints().addAll(childObject.getPoints());
-
-                // Removing the child object from its original collection
-                childObjects.values().remove(childObject);
+                relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
 
             }
 
-            // Transferring points from the parent object to the new object
-            relatedObject.getPoints().addAll(parentObj.getPoints());
-
-            // Removing the parent object from its original collection
-            parentIterator.remove();
-
+            switch (mergeMode) {
+                case MergeModes.MERGE_PARENTS_AND_CHILDREN:
+                    relatedObject.getCoordinateSet().addAll(parentObj.getCoordinateSet());
+                    break;
+            }
         }
 
         return relatedObjects;
@@ -87,19 +92,15 @@ public class MergeRelatedObjects extends Module {
         ObjCollection childObjects = workspace.getObjects().get(childObjectName);
 
         String relatedObjectsName = parameters.getValue(RELATED_OBJECTS);
+        String mergeMode = parameters.getValue(MERGE_MODE);
 
-        ObjCollection relatedObjects = mergeRelatedObjects(parentObjects,childObjects,relatedObjectsName);
+        ObjCollection relatedObjects = mergeRelatedObjects(parentObjects,childObjects,relatedObjectsName,mergeMode);
         if (relatedObjects != null) {
             workspace.addObjects(relatedObjects);
+
             // Showing objects
-            if (showOutput) {
-                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(relatedObjects);
-                ImagePlus dispIpl = relatedObjects.convertToImage("Objects",null,hues,8,false).getImagePlus();
-                dispIpl.setLut(LUTs.Random(true));
-                dispIpl.setPosition(1,1,1);
-                dispIpl.updateChannelAndDraw();
-                dispIpl.show();
-            }
+            if (showOutput) relatedObjects.convertToImageRandomColours().showImage();
+
         }
 
         return true;
@@ -110,15 +111,21 @@ public class MergeRelatedObjects extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
-        parameters.add(new InputObjectsP(CHILD_OBJECTS, this));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new OutputObjectsP(RELATED_OBJECTS,this));
+
+        parameters.add(new ParamSeparatorP(MERGE_SEPARATOR,this));
+        parameters.add(new ChoiceP(MERGE_MODE,this,MergeModes.MERGE_CHILDREN_ONLY,MergeModes.ALL));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS);
+        childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
+
         return parameters;
 
     }

@@ -8,6 +8,8 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 
 import javax.annotation.Nullable;
@@ -118,6 +120,18 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
+    public Image convertToImageRandomColours() {
+        HashMap<Integer,Float> hues = ColourFactory.getRandomHues(this);
+        Image dispImage = convertToImage(name,null,hues,8,false);
+        ImagePlus dispIpl = dispImage.getImagePlus();
+        dispIpl.setLut(LUTs.Random(true));
+        dispIpl.setPosition(1,1,1);
+        dispIpl.updateChannelAndDraw();
+
+        return dispImage;
+
+    }
+
     public Image convertCentroidsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
 
@@ -225,6 +239,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
         ObjMeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
+        if (measRefs == null) return;
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();

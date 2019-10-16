@@ -113,7 +113,7 @@ public class FilterOnImageEdge extends CoreFilter {
         workspace.getMetadata().put(metadataName,count);
 
         // Showing objects
-        if (showOutput) showRemainingObjects(inputObjects);
+        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
 
         return true;
 

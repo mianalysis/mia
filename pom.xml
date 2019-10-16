@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.13</version>
+    <version>0.11.14-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -42,19 +42,16 @@
                 <role>maintainer</role>
             </roles>
         </developer>
+        <developer>
+            <id>jdjfisher</id>
+            <name>Jordan Fisher</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <contributors>
-        <contributor>
-            <name>Stephen Cross</name>
-            <roles><role>founder</role></roles>
-            <properties><id>sjcross</id></properties>
-        </contributor>
-        <contributor>
-            <name>Jordan Fisher</name>
-            <roles><role>developer</role></roles>
-            <properties><id>jdjfisher</id></properties>
-        </contributor>
         <contributor>
             <name>Gemma Fisher</name>
             <roles><role>support</role></roles>

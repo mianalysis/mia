@@ -69,11 +69,7 @@ public class CombineObjectSets extends Module {
         // Adding the combined objects to the workspace
         workspace.addObjects(outputObjects);
 
-        if (showOutput) {
-            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            outputObjects.convertToImage("Objects", null, hues, 8,false).getImagePlus().show();
-        }
+        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 
         return true;
 
