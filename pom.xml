@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.14-SNAPSHOT</version>
+    <version>0.11.14</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -264,31 +264,11 @@
             <scope>${myscope}</scope>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>sc.fiji</groupId>-->
-        <!--            <artifactId>TurboReg_</artifactId>-->
-        <!--            <version>2.0.0</version>-->
-        <!--            <scope>${myscope}</scope>-->
-        <!--        </dependency>-->
-
         <dependency>
-            <groupId>org.janelia</groupId>
-            <artifactId>H5J_Loader_Plugin</artifactId>
-            <version>1.1.0</version>
-            <scope>${myscope}</scope>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv</artifactId>
+            <version>1.4.4</version>
         </dependency>
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.bytedeco</groupId>-->
-        <!--            <artifactId>javacv-platform</artifactId>-->
-        <!--            <version>1.5</version>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.joheras</groupId>-->
-        <!--            <artifactId>IJ-OpenCV</artifactId>-->
-        <!--            <version>1.2.1-SNAPSHOT</version>-->
-        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.reflections</groupId>
@@ -306,9 +286,9 @@
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
             <version>v1.5.8</version>
-<!--            <groupId>wbif.sjx</groupId>-->
-<!--            <artifactId>Common</artifactId>-->
-<!--            <version>v1.5.8</version>-->
+            <!--            <groupId>wbif.sjx</groupId>-->
+            <!--            <artifactId>Common</artifactId>-->
+            <!--            <version>v1.5.8</version>-->
         </dependency>
     </dependencies>
 
