@@ -164,13 +164,8 @@ public class ExpandShrinkObjects extends Module {
 
         // Displaying updated objects
         if (showOutput) {
-            if (updateInputObjects) {
-                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
-                inputObjects.convertToImage("Objects", null, hues, 8,false).getImagePlus().show();
-            } else {
-                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-                outputObjects.convertToImage("Objects", null, hues, 8,false).getImagePlus().show();
-            }
+            if (updateInputObjects) inputObjects.convertToImageRandomColours().showImage();
+            else outputObjects.convertToImageRandomColours().showImage();
         }
 
         return true;

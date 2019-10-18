@@ -84,31 +84,37 @@ public class AddObjectOutline extends Overlay {
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
-        int t = object.getT() + 1;
-        if (renderInAllFrames) t = 0;
+        int t1 = object.getT() + 1;
+        int t2 = object.getT() + 1;
+        if (renderInAllFrames) {
+            t1 = 1;
+            t2 = ipl.getNFrames();
+        }
 
         // Running through each slice of this object
         double[][] range = object.getExtents(true,false);
-        for (int z= (int) range[2][0];z<= (int) range[2][1];z++) {
-            Roi polyRoi = object.getRoi(z);
+        for (int t = t1; t <= t2; t++) {
+            for (int z = (int) range[2][0]; z <= (int) range[2][1]; z++) {
+                Roi polyRoi = object.getRoi(z);
 
-            //  If the object doesn't have any pixels in this plane, skip it
-            if (polyRoi == null) continue;
+                //  If the object doesn't have any pixels in this plane, skip it
+                if (polyRoi == null) continue;
 
-            if (ipl.isHyperStack()) {
-                polyRoi.setPosition(1, z+1, t);
-                ipl.setPosition(1,z+1,t);
-            } else {
-                int pos = Math.max(Math.max(1, z+1), t);
-                polyRoi.setPosition(pos);
-                ipl.setPosition(pos);
+                if (ipl.isHyperStack()) {
+                    polyRoi.setPosition(1, z + 1, t);
+                    ipl.setPosition(1, z + 1, t);
+                } else {
+                    int pos = Math.max(Math.max(1, z + 1), t);
+                    polyRoi.setPosition(pos);
+                    ipl.setPosition(pos);
+                }
+
+                polyRoi.setStrokeColor(colour);
+                polyRoi.setStrokeWidth(lineWidth);
+
+                ipl.getOverlay().addElement(polyRoi);
+
             }
-
-            polyRoi.setStrokeColor(colour);
-            polyRoi.setStrokeWidth(lineWidth);
-
-            ipl.getOverlay().addElement(polyRoi);
-
         }
     }
 
@@ -174,7 +180,7 @@ public class AddObjectOutline extends Overlay {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
+        parameters.add(new DoubleP(LINE_WIDTH,this,1));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));

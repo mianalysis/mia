@@ -479,15 +479,7 @@ public class FilterObjects extends Module implements ActionListener {
         if (filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)) workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) {
-            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
-            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = inputObjects.convertToImage("Objects", inputImage, hues, 8,false).getImagePlus();
-            dispIpl.setLut(LUTs.Random(true));
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
-        }
+        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
 
         return true;
 

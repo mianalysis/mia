@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * Created by stephen on 30/04/2017.
  */
-public class Image < T extends RealType< T > & NativeType< T >> {
+public class Image <T extends RealType<T> & NativeType<T>> {
     private String name;
     private ImagePlus imagePlus;
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();

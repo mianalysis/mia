@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -69,9 +70,7 @@ public class FitEllipse extends Module {
                 break;
 
             case FitEllipsoid.FittingModes.FIT_TO_SURFACE:
-                ObjCollection edgeObjects = new ObjCollection("Edge");
-                String edgeMode = ExtractObjectEdges.EdgeModes.DISTANCE_FROM_EDGE;
-                Obj edgeObject = ExtractObjectEdges.getObjectEdge(inputObject,edgeObjects,edgeMode,1.0,1.0);
+                Obj edgeObject = GetObjectSurface.getSurface(inputObject,"Edge",1);
                 calculator = new EllipseCalculator(edgeObject,maxAxisLength);
                 break;
         }
@@ -213,7 +212,12 @@ public class FitEllipse extends Module {
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,modules);
+        if (showOutput) {
+            inputObjects.showMeasurements(this,modules);
+            if (!objectOutputMode.equals(OutputModes.DO_NOT_STORE)) {
+                outputObjects.convertToImageRandomColours().showImage();
+            }
+        }
 
         return true;
 

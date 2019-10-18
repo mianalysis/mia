@@ -251,7 +251,7 @@ public class AddRelationshipConnection extends Overlay {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
+        parameters.add(new DoubleP(LINE_WIDTH,this,1));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));

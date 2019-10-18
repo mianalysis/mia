@@ -274,14 +274,7 @@ public class RidgeDetection extends Module {
             IntensityMinMax.run(dispIpl, true);
 
             // Creating the overlay
-            String colourMode = Overlay.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            AddObjectOutline.addOverlay(dispIpl,outputObjects,0.2,hues,false,true);
-
-            // Displaying the overlay
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
+            outputObjects.convertToImageRandomColours().showImage();
 
         }
 

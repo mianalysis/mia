@@ -247,7 +247,7 @@ public class AddArrows extends Overlay {
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LENGTH, this));
         parameters.add(new DoubleP(LENGTH_SCALE,this,1d));
         parameters.add(new IntegerP(HEAD_SIZE,this,3));
-        parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
+        parameters.add(new DoubleP(LINE_WIDTH,this,1));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));

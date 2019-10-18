@@ -204,7 +204,7 @@ public class AddFromPositionMeasurement extends Overlay {
         parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
         parameters.add(new BooleanP(USE_RADIUS, this,true));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_RADIUS, this));
-        parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
+        parameters.add(new DoubleP(LINE_WIDTH,this,1));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));

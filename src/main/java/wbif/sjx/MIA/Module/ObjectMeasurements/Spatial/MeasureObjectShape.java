@@ -129,7 +129,7 @@ public class MeasureObjectShape extends Module {
             Obj projectedObject = null;
             if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                 try {
-                    projectedObject = ProjectObjects.process(inputObject, "Projected",inputObject.is2D(),false);
+                    projectedObject = ProjectObjects.process(inputObject, "Projected",false);
                 } catch (IntegerOverflowException e) {
                     MIA.log.writeWarning(e.getMessage());
                     return false;

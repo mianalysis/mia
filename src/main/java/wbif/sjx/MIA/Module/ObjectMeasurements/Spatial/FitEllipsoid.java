@@ -2,17 +2,16 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.Volume;
 
 /**
@@ -89,9 +88,7 @@ public class FitEllipsoid extends Module {
                 break;
 
             case FittingModes.FIT_TO_SURFACE:
-                ObjCollection edgeObjects = new ObjCollection("Edge");
-                String edgeMode = ExtractObjectEdges.EdgeModes.DISTANCE_FROM_EDGE;
-                Obj edgeObject = ExtractObjectEdges.getObjectEdge(inputObject,edgeObjects,edgeMode,1.0,1.0);
+                Obj edgeObject = GetObjectSurface.getSurface(inputObject,"Edge",1);
                 calculator = useIntensityWeighting
                         ? new EllipsoidCalculator(edgeObject, maxAxisLength, imageStack)
                         : new EllipsoidCalculator(edgeObject, maxAxisLength);

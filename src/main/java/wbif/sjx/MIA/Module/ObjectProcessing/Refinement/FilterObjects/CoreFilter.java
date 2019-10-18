@@ -87,17 +87,6 @@ public abstract class CoreFilter extends Module {
         iterator.remove();
     }
 
-    static void showRemainingObjects(ObjCollection inputObjects) {
-        HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
-        String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-        ImagePlus dispIpl = inputObjects.convertToImage("Objects", null, hues, 8,false).getImagePlus();
-        dispIpl.setLut(LUTs.Random(true));
-        dispIpl.setPosition(1,1,1);
-        dispIpl.updateChannelAndDraw();
-        dispIpl.show();
-
-    }
-
     @Override
     public boolean verify() {
         return true;
