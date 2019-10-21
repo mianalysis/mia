@@ -192,13 +192,15 @@ public class TrackObjects extends Module {
                 if (linkValid && useMeasurement) linkValid = testMeasurementValidity(prevObj,currObj,measurementName,maxMeasurementChange);
 
                 // Testing orientation
-                switch (directionWeightingMode) {
-                    case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                        linkValid = testDirectionTolerance(directionCost,directionTolerance);
-                        break;
-                    case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
-                        linkValid = testDirectionTolerance(directionCost,directionTolerance);
-                        break;
+                if (linkValid) {
+                    switch (directionWeightingMode) {
+                        case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                            linkValid = testDirectionTolerance(directionCost, directionTolerance);
+                            break;
+                        case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+                            linkValid = testDirectionTolerance(directionCost, directionTolerance);
+                            break;
+                    }
                 }
 
                 // Assigning costs if the link is valid (set to Double.NaN otherwise)
@@ -542,7 +544,11 @@ public class TrackObjects extends Module {
                 if (linkables.size() > 0) {
                     DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
                     JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
-                    if (!linker.checkInput() || !linker.process()) {
+                    if (!linker.checkInput()) {
+                        MIA.log.writeError(linker.getErrorMessage());
+                        return false;
+                    }
+                    if (!linker.process()) {
                         MIA.log.writeError(linker.getErrorMessage());
                         return false;
                     }

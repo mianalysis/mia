@@ -8,6 +8,7 @@ import fiji.plugin.trackmate.detection.LogDetectorFactory;
 import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
+import fiji.plugin.trackmate.tracking.kalman.KalmanTrackerFactory;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -47,15 +48,22 @@ public class RunTrackMate extends Module {
 
     public static final String TRACK_SEPARATOR = "Spot tracking";
     public static final String DO_TRACKING = "Run tracking";
+    public static final String TRACKING_METHOD = "Tracking method";
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
+    public static final String INITIAL_SEARCH_RADIUS = "Initial search radius";
+    public static final String SEARCH_RADIUS = "Search radius";
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
 
-    public RunTrackMate(ModuleCollection modules) {
-        super("Run TrackMate",modules);
-    }
 
+    public interface TrackingMethods {
+        String KALMAN = "Linear motion (Kalman)";
+        String SIMPLE = "Simple";
+
+        String[] ALL = new String[]{KALMAN,SIMPLE};
+
+    }
 
     public interface Measurements {
         String RADIUS_PX = "SPOT_DETECT_TRACK // RADIUS_(PX)";
@@ -66,14 +74,21 @@ public class RunTrackMate extends Module {
     }
 
 
+    public RunTrackMate(ModuleCollection modules) {
+        super("Run TrackMate",modules);
+    }
+
     public Settings initialiseSettings(ImagePlus ipl, Calibration calibration) {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
         double radius = parameters.getValue(RADIUS);
         double threshold = parameters.getValue(THRESHOLD);
+        String trackingMethod = parameters.getValue(TRACKING_METHOD);
         double maxLinkDist = parameters.getValue(LINKING_MAX_DISTANCE);
         double maxGapDist = parameters.getValue(GAP_CLOSING_MAX_DISTANCE);
+        double initialSearchRadius = parameters.getValue(INITIAL_SEARCH_RADIUS);
+        double searchRadius = parameters.getValue(SEARCH_RADIUS);
         int maxFrameGap = parameters.getValue(MAX_FRAME_GAP);
 
         // Applying conversion to parameters
@@ -97,13 +112,24 @@ public class RunTrackMate extends Module {
 
         settings.addSpotAnalyzerFactory(new SpotRadiusEstimatorFactory<>());
 
-        settings.trackerFactory  = new SparseLAPTrackerFactory();
-        settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
-        settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
-        settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, false);
-        settings.trackerSettings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, maxLinkDist);
-        settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE, maxGapDist);
-        settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP,maxFrameGap);
+        switch (trackingMethod) {
+            case TrackingMethods.KALMAN:
+                settings.trackerFactory = new KalmanTrackerFactory();
+                settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
+                settings.trackerSettings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, initialSearchRadius);
+                settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP,maxFrameGap);
+                settings.trackerSettings.put(KalmanTrackerFactory.KEY_KALMAN_SEARCH_RADIUS,searchRadius);
+                break;
+            case TrackingMethods.SIMPLE:
+                settings.trackerFactory  = new SparseLAPTrackerFactory();
+                settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
+                settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
+                settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, false);
+                settings.trackerSettings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, maxLinkDist);
+                settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE, maxGapDist);
+                settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP,maxFrameGap);
+                break;
+        }
 
         return settings;
 
@@ -349,13 +375,18 @@ public class RunTrackMate extends Module {
         parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true, "Enable TrackMate's \"Subpixel localisation\" functionality."));
         parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false, "Enable TrackMate's \"Median filtering\" functionality."));
         parameters.add(new DoubleP(RADIUS, this,2.0, "Expected radius of spots in the input image.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
-        parameters.add(new DoubleP(THRESHOLD, this,5000.0,"Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified \""+RADIUS+"\" value.  Increase this value to make detection more selective (i.e. detect fewer spots)."));
+        parameters.add(new DoubleP(THRESHOLD, this,10.0,"Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified \""+RADIUS+"\" value.  Increase this value to make detection more selective (i.e. detect fewer spots)."));
         parameters.add(new BooleanP(ESTIMATE_SIZE, this,false,"When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter."));
 
         parameters.add(new ParamSeparatorP(TRACK_SEPARATOR, this));
         parameters.add(new BooleanP(DO_TRACKING, this,true, "Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information."));
-        parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0, "Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
-        parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0, "Maximum distance a spot can travel between \""+MAX_FRAME_GAP+"\" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
+        parameters.add(new ChoiceP(TRACKING_METHOD,this, TrackingMethods.SIMPLE, TrackingMethods.ALL, "Method with which spots are tracked between frames<br>" +
+                "<br>- \""+ TrackingMethods.KALMAN+"\" uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.<br>" +
+                "<br>- \""+ TrackingMethods.SIMPLE+"\" (default) calculates links between spot positions in the previous and current frames.  This does not take motion into account.<br>"));
+        parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,10.0, "Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
+        parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,10.0, "Maximum distance a spot can travel between \""+MAX_FRAME_GAP+"\" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
+        parameters.add(new DoubleP(INITIAL_SEARCH_RADIUS,this,10.0, "Minimum spot separation required for creation of a new track."));
+        parameters.add(new DoubleP(SEARCH_RADIUS,this,10.0, "Maximum distance between predicted spot location and location of spot in current frame."));
         parameters.add(new IntegerP(MAX_FRAME_GAP, this,3, "Maximum number of frames a spot can go undetected before it will be classed as a new track upon reappearance."));
         parameters.add(new OutputTrackObjectP(OUTPUT_TRACK_OBJECTS, this, "", "Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements."));
 
@@ -381,8 +412,17 @@ public class RunTrackMate extends Module {
         returnedParameters.add(parameters.getParameter(DO_TRACKING));
         if (parameters.getValue(DO_TRACKING)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
-            returnedParameters.add(parameters.getParameter(LINKING_MAX_DISTANCE));
-            returnedParameters.add(parameters.getParameter(GAP_CLOSING_MAX_DISTANCE));
+            returnedParameters.add(parameters.getParameter(TRACKING_METHOD));
+            switch ((String) parameters.getValue(TRACKING_METHOD)) {
+                case TrackingMethods.KALMAN:
+                    returnedParameters.add(parameters.get(INITIAL_SEARCH_RADIUS));
+                    returnedParameters.add(parameters.get(SEARCH_RADIUS));
+                    break;
+                case TrackingMethods.SIMPLE:
+                    returnedParameters.add(parameters.get(LINKING_MAX_DISTANCE));
+                    returnedParameters.add(parameters.get(GAP_CLOSING_MAX_DISTANCE));
+                    break;
+            }
             returnedParameters.add(parameters.getParameter(MAX_FRAME_GAP));
         }
 

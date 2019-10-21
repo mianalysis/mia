@@ -51,6 +51,7 @@ public class SingleClassCluster extends Module {
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
+    public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
 
     public SingleClassCluster(ModuleCollection modules) {
@@ -185,6 +186,7 @@ public class SingleClassCluster extends Module {
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         // If there are no input objects skipping this module
         Obj firstObject = inputObjects.getFirst();
@@ -260,6 +262,7 @@ public class SingleClassCluster extends Module {
         parameters.add(new IntegerP(MAX_ITERATIONS, this,10000));
         parameters.add(new DoubleP(EPS, this,10.0));
         parameters.add(new IntegerP(MIN_POINTS, this,5));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
 
     }
 
@@ -282,6 +285,8 @@ public class SingleClassCluster extends Module {
             returnedParameters.add(parameters.getParameter(MIN_POINTS));
 
         }
+
+        returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;
 

@@ -220,7 +220,7 @@ public class VideoLoader extends Module {
         Image outputImage = null;
         try {
             // First first, testing new loader
-            outputImage = VideoLoaderCore.getVideo(pathName,outputImageName,frameRange,channelRange,crop);
+            outputImage = VideoLoaderCore.getVideo(pathName,outputImageName,frameRange,channelRange,crop,this);
 //
 //            // First, trying to load via AVI Reader (since this can split channels)
 //            if (outputImage == null) {

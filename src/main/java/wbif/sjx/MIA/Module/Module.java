@@ -333,7 +333,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
 
     // PROTECTED METHODS
 
-    protected void writeMessage(String message) {
+    public void writeMessage(String message) {
         if (verbose) System.out.println("[" + name + "] "+message);
     }
 

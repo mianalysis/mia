@@ -38,7 +38,7 @@ public class Video_Loader implements PlugIn {
 
         // Do file loading
         try {
-            Image image = VideoLoaderCore.getVideo(path,outputName,frameRange,channelRange,crop);
+            Image image = VideoLoaderCore.getVideo(path,outputName,frameRange,channelRange,crop,null);
 
             // Displaying the image
             image.getImagePlus().show();

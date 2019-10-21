@@ -10,6 +10,7 @@ import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 
 public class VideoLoaderCore {
-    public static Image getVideo(String path, String outputImageName, String frameRange, String channelRange, @Nullable int[] crop) throws FrameGrabber.Exception, FileNotFoundException {
+    public static Image getVideo(String path, String outputImageName, String frameRange, String channelRange, @Nullable int[] crop, @Nullable Module module) throws FrameGrabber.Exception, FileNotFoundException {
         // Initialising the video loader and converter
         Java2DFrameConverter frameConverter = new Java2DFrameConverter();
         FFmpegFrameGrabber loader = new FFmpegFrameGrabber(path);
@@ -54,8 +55,10 @@ public class VideoLoaderCore {
         ImagePlus ipl = IJ.createHyperStack("Image",width, height,channelsList.length,1,framesList.length,8);
         int count = 1;
         int total = frames.size();
+        IJ.showStatus("Loading video");
         for (int frame:frames) {
             IJ.showProgress(((double) count)/((double) total));
+            if (module != null) module.writeMessage("Loading frame "+frame+" ("+count+" of "+total+")");
 
             loader.setVideoFrameNumber(frame-1);
 
