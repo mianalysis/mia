@@ -1,9 +1,10 @@
-package wbif.sjx.MIA;
+package wbif.sjx.MIA.Plugins;
 
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.Logging.ConsoleRenderer;
 import wbif.sjx.MIA.Process.Logging.ErrorLog;
 import wbif.sjx.MIA.Process.Logging.MessageLog;
