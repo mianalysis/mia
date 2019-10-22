@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.Hidden;
 
 import loci.common.DebugTools;
+import loci.common.Log4jTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
@@ -15,6 +16,7 @@ import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
@@ -178,11 +180,11 @@ public class InputControl extends Module {
         // Creating the output collection
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
-        // If the input is a tif, we can skip this
-        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
-            namesAndNumbers.put(1,inputFile.getName());
-            return namesAndNumbers;
-        }
+//        // If the input is a tif, we can skip this
+//        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
+//            namesAndNumbers.put(1,inputFile.getName());
+//            return namesAndNumbers;
+//        }
 
         // Using BioFormats to get the number of series
         DebugTools.enableLogging("off");
@@ -235,18 +237,18 @@ public class InputControl extends Module {
 
         reader.close();
 
+        if (namesAndNumbers.size() == 0) {
+            MIA.log.writeDebug("Using name");
+            namesAndNumbers.put(1,inputFile.getName());
+            return namesAndNumbers;
+        }
+
         return namesAndNumbers;
 
     }
 
     private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
-
-        // If the input is a tif, we can skip this
-        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
-            namesAndNumbers.put(1,inputFile.getName());
-            return namesAndNumbers;
-        }
 
         // Using BioFormats to get the number of series
         DebugTools.enableLogging("off");
@@ -255,6 +257,7 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
+
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
@@ -267,6 +270,14 @@ public class InputControl extends Module {
         }
 
         reader.close();
+
+        // If no series were found, just use the filename
+//        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
+        if (namesAndNumbers.size() == 0) {
+            MIA.log.writeDebug("Using name");
+            namesAndNumbers.put(1,inputFile.getName());
+            return namesAndNumbers;
+        }
 
         return namesAndNumbers;
 
