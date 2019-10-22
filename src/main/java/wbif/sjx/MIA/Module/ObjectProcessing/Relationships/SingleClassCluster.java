@@ -80,12 +80,30 @@ public class SingleClassCluster extends Module {
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
+                outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
 
             outputObjects.add(outputObject);
 
+        }
+
+        // Add single object cluster object for unclustered objects
+        for (LocationWrapper wrapper:locations) {
+            Obj obj = wrapper.getObject();
+            if (obj.getParent(outputObjectsName) == null) {
+                int ID = outputObjects.getAndIncrementID();
+                VolumeType type = VolumeType.POINTLIST;
+                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                outputObject.setT(obj.getT());
+
+                obj.addParent(outputObject);
+                outputObject.addChild(obj);
+
+                outputObjects.add(outputObject);
+
+            }
         }
 
         return outputObjects;
@@ -108,12 +126,30 @@ public class SingleClassCluster extends Module {
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
+                outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
 
             outputObjects.add(outputObject);
 
+        }
+
+        // Add single object cluster object for unclustered objects
+        for (LocationWrapper wrapper:locations) {
+            Obj obj = wrapper.getObject();
+            if (obj.getParent(outputObjectsName) == null) {
+                int ID = outputObjects.getAndIncrementID();
+                VolumeType type = VolumeType.POINTLIST;
+                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                outputObject.setT(obj.getT());
+
+                obj.addParent(outputObject);
+                outputObject.addChild(obj);
+
+                outputObjects.add(outputObject);
+
+            }
         }
 
         return outputObjects;
@@ -155,7 +191,6 @@ public class SingleClassCluster extends Module {
 
         }
     }
-
 
     @Override
     public String getPackageName() {
