@@ -168,7 +168,7 @@ public class InputControl extends Module {
                     return getSeriesListNumbers(inputFile);
 
             }
-        } catch (DependencyException | FormatException | ServiceException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -176,15 +176,9 @@ public class InputControl extends Module {
 
     }
 
-    private TreeMap<Integer,String> getAllSeriesNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
+    private TreeMap<Integer,String> getAllSeriesNumbers(File inputFile) throws Exception {
         // Creating the output collection
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
-
-//        // If the input is a tif, we can skip this
-//        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
-//            namesAndNumbers.put(1,inputFile.getName());
-//            return namesAndNumbers;
-//        }
 
         // Using BioFormats to get the number of series
         DebugTools.enableLogging("off");
@@ -200,7 +194,7 @@ public class InputControl extends Module {
         try {
             reader.setId(inputFile.getAbsolutePath());
         } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
-            namesAndNumbers.put(0,inputFile.getAbsolutePath());
+            namesAndNumbers.put(1,inputFile.getName());
             return namesAndNumbers;
         }
 
@@ -238,7 +232,6 @@ public class InputControl extends Module {
         reader.close();
 
         if (namesAndNumbers.size() == 0) {
-            MIA.log.writeDebug("Using name");
             namesAndNumbers.put(1,inputFile.getName());
             return namesAndNumbers;
         }
@@ -247,7 +240,7 @@ public class InputControl extends Module {
 
     }
 
-    private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
+    private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws Exception {
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
         // Using BioFormats to get the number of series
@@ -261,7 +254,12 @@ public class InputControl extends Module {
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
-        reader.setId(inputFile.getAbsolutePath());
+        try {
+            reader.setId(inputFile.getAbsolutePath());
+        } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
+            namesAndNumbers.put(1,inputFile.getName());
+            return namesAndNumbers;
+        }
 
         SeriesListSelectorP seriesListSelectorP = parameters.getParameter(InputControl.SERIES_LIST);
         int[] seriesList = seriesListSelectorP.getSeriesList();
@@ -272,9 +270,7 @@ public class InputControl extends Module {
         reader.close();
 
         // If no series were found, just use the filename
-//        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
         if (namesAndNumbers.size() == 0) {
-            MIA.log.writeDebug("Using name");
             namesAndNumbers.put(1,inputFile.getName());
             return namesAndNumbers;
         }
