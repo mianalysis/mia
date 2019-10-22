@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -401,6 +402,46 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,1);
+
+        // Running Module
+        wekaProbabilityMaps.execute(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRun4DChannelsSlice8Bit3Block() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-slice_probability.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising BinaryOperations
+        WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps(new ModuleCollection());
+        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
+        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
+        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
+        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,3);
 
         // Running Module
         wekaProbabilityMaps.execute(workspace);

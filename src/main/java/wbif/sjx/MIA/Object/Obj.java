@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -39,6 +40,7 @@ public class Obj extends Volume {
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjCollection> children = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
+    private HashMap<Integer,Roi> rois = new HashMap<>();
 
 
     // CONSTRUCTORS
@@ -241,7 +243,6 @@ public class Obj extends Volume {
         if (parents != null) {
             for (Obj parent:parents.values()) {
                 if (parent != null) parent.removeChild(this);
-
             }
         }
 
@@ -249,11 +250,17 @@ public class Obj extends Volume {
         if (children != null) {
             for (ObjCollection childSet:children.values()) {
                 for (Obj child:childSet.values()) {
-                    child.removeParent(name);
-
+                    if (child.getParent(name) == this) {
+                        child.removeParent(name);
+                    }
                 }
             }
         }
+
+        // Clearing children and parents
+        children = new LinkedHashMap<>();
+        parents = new LinkedHashMap<>();
+
     }
 
     public LinkedHashMap<String, Measurement> getMeasurements() {
@@ -266,6 +273,8 @@ public class Obj extends Volume {
     }
 
     public Roi getRoi(int slice) {
+        if (rois.containsKey(slice)) return (Roi) rois.get(slice).clone();
+
         // Getting the image corresponding to this slice
         Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         setSlicePoints(sliceObj.coordinateSet,slice);
@@ -284,7 +293,10 @@ public class Obj extends Volume {
         ipr.setThreshold(0,0, ImageProcessor.NO_LUT_UPDATE);
         ThresholdToSelection selection = new ThresholdToSelection();
 
-        return selection.convert(objectImage.getImagePlus().getProcessor());
+        Roi roi = selection.convert(objectImage.getImagePlus().getProcessor());
+        rois.put(slice,roi);
+
+        return (Roi) roi.clone();
 
     }
 
@@ -366,6 +378,12 @@ public class Obj extends Volume {
                 || point.getY() < 0 || point.getY() >= height
                 || point.getZ() < 0 || point.getZ() >= nSlices);
 
+    }
+
+    @Override
+    public void clearAllCoordinates() {
+        super.clearAllCoordinates();
+        rois = new HashMap<>();
     }
 
     @Override
