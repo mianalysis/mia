@@ -2,11 +2,14 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.RGBStackConverter;
 import ij.plugin.SubHyperstackMaker;
+import ij.plugin.SubstackMaker;
 import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -84,63 +87,59 @@ public class WekaProbabilityMaps extends Module {
         int nFrames = inputImagePlus.getNFrames();
         int nClasses = wekaSegmentation.getNumOfClasses();
         int nOutputClasses = outputClass == -1 ? wekaSegmentation.getNumOfClasses() : 1;
-        int nBlocks = (int) Math.ceil((double) nSlices/(double) blockSize);
+
+        int nBlocks = (int) Math.ceil((double) (nChannels*nSlices*nFrames)/(double) blockSize);
 
         // Creating the new image
         ImagePlus probabilityMaps = IJ.createHyperStack(outputImageName,width,height,nChannels*nOutputClasses,nSlices,nFrames,bitDepth);
         probabilityMaps.setCalibration(inputImagePlus.getCalibration());
 
-        writeMessage("Calculating probabilities");
+        ImageStack inputStack = inputImagePlus.getStack();
+        int slices = inputStack.getSize();
+
         int count = 0;
-        int nImages = nChannels*nFrames*nSlices;
-        for (int c=1;c<=nChannels;c++) {
-            for (int t = 1; t <= nFrames; t++) {
-                for (int b=1;b<=nBlocks;b++) {
-                    int startingBlock = (b-1)*blockSize+1;
-                    int endingBlock = Math.min((b-1)*blockSize+blockSize,nSlices);
+        for (int b=1;b<=nBlocks;b++) {
+            int startingBlock = (b-1)*blockSize+1;
+            int endingBlock = Math.min((b-1)*blockSize+blockSize,slices);
 
-                    ImagePlus iplSingle = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c + "-" + c, startingBlock + "-" + endingBlock, t + "-" + t);
+            ImagePlus iplSingle = new SubstackMaker().makeSubstack(new ImagePlus("Tempstack",inputStack),startingBlock + "-" + endingBlock);
 
-                    wekaSegmentation.setTrainingImage(iplSingle);
-                    wekaSegmentation.applyClassifier(true);
-                    iplSingle = wekaSegmentation.getClassifiedImage();
+            wekaSegmentation.setTrainingImage(iplSingle);
+            wekaSegmentation.applyClassifier(true);
+            iplSingle = wekaSegmentation.getClassifiedImage();
 
-                    // Converting probability image to specified bit depth (it will be 32-bit by default)
-                    ImageTypeConverter.applyConversion(iplSingle,bitDepth,ImageTypeConverter.ScalingModes.SCALE);
-
-                    // If outputting all channels
-                    for (int cl = 1; cl <= nOutputClasses; cl++) {
-                        for (int z = 1; z <= (endingBlock - startingBlock + 1); z++) {
-                            if (outputClass == -1) {
-                                // If outputting all classes
-                                iplSingle.setPosition(nOutputClasses * (z - 1) + cl);
-                                probabilityMaps.setPosition((nOutputClasses * (c - 1) + cl), startingBlock + z - 1, t);
-                            } else {
-                                // If outputting a single class
-                                iplSingle.setPosition(nClasses * (z - 1) + outputClass);
-                                probabilityMaps.setPosition(1, startingBlock + z - 1, t);
-                            }
-
-                            ImageProcessor iprSingle = iplSingle.getProcessor();
-                            ImageProcessor iprProbability = probabilityMaps.getProcessor();
-
-                            for (int x = 0; x < width; x++) {
-                                for (int y = 0; y < height; y++) {
-                                    iprProbability.setf(x, y, iprSingle.getf(x, y));
-                                }
-                            }
-                        }
+            // Converting probability image to specified bit depth (it will be 32-bit by default)
+            ImageTypeConverter.applyConversion(iplSingle,bitDepth,ImageTypeConverter.ScalingModes.SCALE);
+            for (int cl = 1; cl <= nOutputClasses; cl++) {
+                for (int z = 1; z <= (endingBlock - startingBlock + 1); z++) {
+                    int[] pos = inputImagePlus.convertIndexToPosition(startingBlock+z-1);
+                    if (outputClass == -1) {
+                        // If outputting all classes
+                        iplSingle.setPosition(nOutputClasses * (z - 1) + cl);
+                        probabilityMaps.setPosition((nOutputClasses * (pos[0] - 1) + cl), pos[1], pos[2]);
+                    } else {
+                        // If outputting a single class
+                        iplSingle.setPosition(nClasses * (z - 1) + outputClass);
+                        probabilityMaps.setPosition(1, startingBlock + z - 1, pos[2]);
                     }
 
-                    count = count + endingBlock - startingBlock + 1;
-                    writeMessage("Processed "+count+" of "+nImages+" images");
+                    ImageProcessor iprSingle = iplSingle.getProcessor();
+                    ImageProcessor iprProbability = probabilityMaps.getProcessor();
 
+                    for (int x = 0; x < width; x++) {
+                        for (int y = 0; y < height; y++) {
+                            iprProbability.setf(x, y, iprSingle.getf(x, y));
+                        }
+                    }
                 }
             }
+
+            count = count + endingBlock - startingBlock + 1;
+            writeMessage("Processed "+count+" of "+slices+" images");
+
         }
 
         // Clearing the segmentation model from memory
-//        wekaSegmentation.shutDownNow();
         wekaSegmentation = null;
 
         return probabilityMaps;

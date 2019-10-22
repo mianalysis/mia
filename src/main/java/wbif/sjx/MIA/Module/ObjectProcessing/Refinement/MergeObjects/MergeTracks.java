@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
 import ij.IJ;
 import ij.ImagePlus;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -13,14 +14,18 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
+import wbif.sjx.common.MathFunc.CumStat;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Collection;
 import java.util.Iterator;
 
-public class MergeTracks extends Module implements ActionListener {
+public class MergeTracks extends Module implements ActionListener, WindowListener {
     public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
@@ -50,6 +55,7 @@ public class MergeTracks extends Module implements ActionListener {
         active = true;
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
+        frame.addWindowListener(this);
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -105,7 +111,6 @@ public class MergeTracks extends Module implements ActionListener {
 
         // Get dominant track
         Obj dominantTrack = trackObjects.get(ids[0]);
-        ObjCollection dominantSpots = dominantTrack.getChildren(spotObjectsName);
 
         // Iterate over each track to be combined
         for (int i = 1;i<ids.length;i++) {
@@ -114,33 +119,18 @@ public class MergeTracks extends Module implements ActionListener {
 
             Obj subTrack = trackObjects.get(ids[i]);
 
-            // This has to be done one at a time to resolve instances where spots are present in the same frame
-            ObjCollection subSpots = subTrack.getChildren(spotObjectsName);
-            Iterator<Obj> subSpotIterator = subSpots.values().iterator();
-            while (subSpotIterator.hasNext()) {
-                Obj subSpot = subSpotIterator.next();
-
-                // If present in the same frame, remove the subSpot object
-                for (Obj dominantSpot:dominantSpots.values()) {
-                    if (subSpot.getT() == dominantSpot.getT()) {
-                        subSpot.removeRelationships();
-                        subSpotIterator.remove();
-                    }
-                }
-
-                // Moving the spot object to the dominant track
-                subSpot.removeParent(subTrack.getName());
+            // Adding subTrack's spots to the dominantTrack
+            for (Obj subSpot:subTrack.getChildren(spotObjectsName).values()) {
                 subSpot.addParent(dominantTrack);
                 dominantTrack.addChild(subSpot);
-
             }
 
-            // Deleting this track from the original collection
+            // Removing all relationships from this track, then deleting from the track collection
+            subTrack.removeRelationships();
             trackObjects.remove(ids[i]);
 
         }
     }
-
 
     @Override
     public String getPackageName() {
@@ -258,12 +248,46 @@ public class MergeTracks extends Module implements ActionListener {
 
                 // Resetting the text field to blank
                 numbersField.setText("");
-
                 break;
 
             case FINISH_ADDING:
                 active = false;
                 break;
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        active = false;
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        active = false;
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }

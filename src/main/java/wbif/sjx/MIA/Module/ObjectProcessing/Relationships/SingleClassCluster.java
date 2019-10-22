@@ -51,6 +51,7 @@ public class SingleClassCluster extends Module {
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
+    public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
 
     public SingleClassCluster(ModuleCollection modules) {
@@ -79,12 +80,30 @@ public class SingleClassCluster extends Module {
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
+                outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
 
             outputObjects.add(outputObject);
 
+        }
+
+        // Add single object cluster object for unclustered objects
+        for (LocationWrapper wrapper:locations) {
+            Obj obj = wrapper.getObject();
+            if (obj.getParent(outputObjectsName) == null) {
+                int ID = outputObjects.getAndIncrementID();
+                VolumeType type = VolumeType.POINTLIST;
+                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                outputObject.setT(obj.getT());
+
+                obj.addParent(outputObject);
+                outputObject.addChild(obj);
+
+                outputObjects.add(outputObject);
+
+            }
         }
 
         return outputObjects;
@@ -107,12 +126,30 @@ public class SingleClassCluster extends Module {
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
+                outputObject.setT(pointObject.getT());
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
 
             outputObjects.add(outputObject);
 
+        }
+
+        // Add single object cluster object for unclustered objects
+        for (LocationWrapper wrapper:locations) {
+            Obj obj = wrapper.getObject();
+            if (obj.getParent(outputObjectsName) == null) {
+                int ID = outputObjects.getAndIncrementID();
+                VolumeType type = VolumeType.POINTLIST;
+                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                outputObject.setT(obj.getT());
+
+                obj.addParent(outputObject);
+                outputObject.addChild(obj);
+
+                outputObjects.add(outputObject);
+
+            }
         }
 
         return outputObjects;
@@ -155,7 +192,6 @@ public class SingleClassCluster extends Module {
         }
     }
 
-
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
@@ -185,6 +221,7 @@ public class SingleClassCluster extends Module {
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         // If there are no input objects skipping this module
         Obj firstObject = inputObjects.getFirst();
@@ -202,23 +239,49 @@ public class SingleClassCluster extends Module {
         String calibratedUnits = firstObject.getCalibratedUnits();
         boolean twoD = firstObject.is2D();
 
-        // Adding points to collection
-        writeMessage("Adding points to clustering algorithm");
-        List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
-        for (Obj inputObject:inputObjects.values()) {
-            locations.add(new LocationWrapper(inputObject));
-        }
+        int[] temporalLimits = inputObjects.getTemporalLimits();
+        if (linkInSameFrame) {
+            int count = 1;
+            int total = temporalLimits[1]-temporalLimits[0]+1;
+            for (int f=temporalLimits[0];f<=temporalLimits[1];f++) {
+                writeMessage("Processing frame "+(count++)+" of "+total);
+                // Getting locations in current frame
+                List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
+                for (Obj inputObject:inputObjects.values()) {
+                    if (inputObject.getT() == f) {
+                        locations.add(new LocationWrapper(inputObject));
+                    }
+                }
 
-        // Running clustering system
-        writeMessage("Running clustering algorithm");
-        switch (clusteringAlgorithm) {
-            case ClusteringAlgorithms.KMEANSPLUSPLUS:
-                runKMeansPlusPlus(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
+                // Running clustering system
+                switch (clusteringAlgorithm) {
+                    case ClusteringAlgorithms.KMEANSPLUSPLUS:
+                        runKMeansPlusPlus(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                        break;
+                    case ClusteringAlgorithms.DBSCAN:
+                        runDBSCAN(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                        break;
+                }
+            }
+        } else {
+            // Adding points to collection
+            writeMessage("Adding points to clustering algorithm");
+            List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
+            for (Obj inputObject:inputObjects.values()) {
+                locations.add(new LocationWrapper(inputObject));
+            }
 
-            case ClusteringAlgorithms.DBSCAN:
-                runDBSCAN(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
-                break;
+            // Running clustering system
+            writeMessage("Running clustering algorithm");
+            switch (clusteringAlgorithm) {
+                case ClusteringAlgorithms.KMEANSPLUSPLUS:
+                    runKMeansPlusPlus(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                    break;
+
+                case ClusteringAlgorithms.DBSCAN:
+                    runDBSCAN(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                    break;
+            }
         }
 
         // Adding measurement to each cluster and adding coordinates to clusters
@@ -260,6 +323,7 @@ public class SingleClassCluster extends Module {
         parameters.add(new IntegerP(MAX_ITERATIONS, this,10000));
         parameters.add(new DoubleP(EPS, this,10.0));
         parameters.add(new IntegerP(MIN_POINTS, this,5));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
 
     }
 
@@ -282,6 +346,8 @@ public class SingleClassCluster extends Module {
             returnedParameters.add(parameters.getParameter(MIN_POINTS));
 
         }
+
+        returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;
 

@@ -46,7 +46,7 @@ public class BasicControlPanel extends JScrollPane {
         repaint();
 
         globalVariablesSeparator.setNickname("Global variables");
-        loadSeparator.setNickname("File loading");
+        loadSeparator.setNickname("File selection");
 
     }
 

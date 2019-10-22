@@ -44,7 +44,7 @@ public class MergeRelatedObjects extends Module {
     }
 
 
-    public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName, String mergeMode) {
+    public static ObjCollection mergeRelatedObjects(ObjCollection parentObjects, String childObjectsName, String relatedObjectsName, String mergeMode) {
         Obj exampleParent = parentObjects.getFirst();
         ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
 
@@ -52,7 +52,7 @@ public class MergeRelatedObjects extends Module {
 
         for (Obj parentObj:parentObjects.values()) {
             // Collecting all children for this parent.  If none are present, skip to the next parent
-            ObjCollection currChildObjects = parentObj.getChildren(childObjects.getName());
+            ObjCollection currChildObjects = parentObj.getChildren(childObjectsName);
             if (currChildObjects.size() == 0) continue;
 
             // Creating a new Obj and assigning pixels from the parent and all children
@@ -63,7 +63,6 @@ public class MergeRelatedObjects extends Module {
             for (Obj childObject:currChildObjects.values()) {
                 // Transferring points from the child object to the new object
                 relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
-
             }
 
             switch (mergeMode) {
@@ -88,13 +87,11 @@ public class MergeRelatedObjects extends Module {
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
 
-        String childObjectName = parameters.getValue(CHILD_OBJECTS);
-        ObjCollection childObjects = workspace.getObjects().get(childObjectName);
-
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String relatedObjectsName = parameters.getValue(RELATED_OBJECTS);
         String mergeMode = parameters.getValue(MERGE_MODE);
 
-        ObjCollection relatedObjects = mergeRelatedObjects(parentObjects,childObjects,relatedObjectsName,mergeMode);
+        ObjCollection relatedObjects = mergeRelatedObjects(parentObjects,childObjectsName,relatedObjectsName,mergeMode);
         if (relatedObjects != null) {
             workspace.addObjects(relatedObjects);
 

@@ -45,6 +45,9 @@ public class HoughObjectDetection extends Module {
     public static final String SAMPLING_RATE = "Sampling rate";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public static final String POST_PROCESSING_SEPARATOR = "Object post processing";
+    public static final String RADIUS_RESIZE = "Output radius resize (px)";
+
     public static final String VISUALISATION_SEPARATOR = "Visualisation controls";
     public static final String SHOW_DETECTION_IMAGE = "Show detection image";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
@@ -89,6 +92,7 @@ public class HoughObjectDetection extends Module {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
+        int radiusResize = parameters.getValue(RADIUS_RESIZE);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
         boolean showDetectionImage = parameters.getValue(SHOW_DETECTION_IMAGE);
         boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
@@ -154,7 +158,7 @@ public class HoughObjectDetection extends Module {
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0])*samplingRate;
                         int y = (int) Math.round(circle[1])*samplingRate;
-                        int r = (int) Math.round(circle[2])*samplingRate;
+                        int r = (int) Math.round(circle[2])*samplingRate + radiusResize;
                         double score = circle[3];
 
                         // Getting coordinates corresponding to circle
@@ -173,7 +177,6 @@ public class HoughObjectDetection extends Module {
                             } catch (IntegerOverflowException e) {
                                 return false;
                             }
-
                         }
 
                         // Adding measurements
@@ -208,7 +211,7 @@ public class HoughObjectDetection extends Module {
                 AddLabels.addOverlay(dispIpl,outputObjects,AddLabels.LabelPositions.CENTRE,IDs,labelSize,hues,false,false,true);
             }
 
-            AddObjectOutline.addOverlay(dispIpl,outputObjects,0.3,hues,false,true);
+            AddObjectOutline.addOverlay(dispIpl,outputObjects,1,hues,false,true);
 
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
@@ -234,6 +237,9 @@ public class HoughObjectDetection extends Module {
         parameters.add(new IntegerP(EXCLUSION_RADIUS,this,10));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        parameters.add(new ParamSeparatorP(POST_PROCESSING_SEPARATOR,this));
+        parameters.add(new IntegerP(RADIUS_RESIZE,this,0,"Radius of output objects will be adjusted by this value.  For example, a detected circle of radius 5 with a \"radius resize\" of 2 will have an output of 7.  Similarly, setting \"radius resize\" to -3 would produce a circle of radius 2."));
+
         parameters.add(new ParamSeparatorP(VISUALISATION_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,true));
         parameters.add(new BooleanP(SHOW_DETECTION_IMAGE,this,true));
@@ -258,9 +264,11 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(SAMPLING_RATE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
+        returnedParameters.add(parameters.getParameter(POST_PROCESSING_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(RADIUS_RESIZE));
+
         returnedParameters.add(parameters.getParameter(VISUALISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
-
         returnedParameters.add(parameters.getParameter(SHOW_DETECTION_IMAGE));
         if (parameters.getValue(SHOW_DETECTION_IMAGE)) {
             returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));

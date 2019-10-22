@@ -62,10 +62,9 @@ public class TrackObjects extends Module {
         super("Track objects",modules);
     }
 
-
-    public static void main(String[] args) {
-
-    }
+//    public static void main(String[] args) {
+//        DefaultCostMatrixCreator<Integer,Integer> creator = new DefaultCostMatrixCreator<>(IDs1,IDs2,costs,alternativeCostFactor,percentile);
+//    }
 
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
@@ -192,19 +191,23 @@ public class TrackObjects extends Module {
                 if (linkValid && useMeasurement) linkValid = testMeasurementValidity(prevObj,currObj,measurementName,maxMeasurementChange);
 
                 // Testing orientation
-                switch (directionWeightingMode) {
-                    case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                        linkValid = testDirectionTolerance(directionCost,directionTolerance);
-                        break;
-                    case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
-                        linkValid = testDirectionTolerance(directionCost,directionTolerance);
-                        break;
+                if (linkValid) {
+                    switch (directionWeightingMode) {
+                        case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                            linkValid = testDirectionTolerance(directionCost, directionTolerance);
+                            break;
+                        case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+                            linkValid = testDirectionTolerance(directionCost, directionTolerance);
+                            break;
+                    }
                 }
 
                 // Assigning costs if the link is valid (set to Double.NaN otherwise)
                 if (linkValid) {
                     double cost = spatialCost + volumeCost*volumeWeighting + directionCost*directionWeighting +
                             measurementCost*measurementWeighting;
+                    // Linker occasionally fails on zero-costs, so adding 0.1 to all values
+                    cost = cost + 0.1;
                     linkables.add(new Linkable(cost,currObj.getID(),prevObj.getID()));
                 }
             }
@@ -537,12 +540,15 @@ public class TrackObjects extends Module {
 
                 // Calculating distances between objects and populating the cost matrix
                 ArrayList<Linkable> linkables = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
-
                 // Check if there are potential links, if not, skip to the next frame
                 if (linkables.size() > 0) {
                     DefaultCostMatrixCreator<Integer, Integer> creator = RelateOneToOne.getCostMatrixCreator(linkables);
                     JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
-                    if (!linker.checkInput() || !linker.process()) {
+                    if (!linker.checkInput()) {
+                        MIA.log.writeError(linker.getErrorMessage());
+                        return false;
+                    }
+                    if (!linker.process()) {
                         MIA.log.writeError(linker.getErrorMessage());
                         return false;
                     }
