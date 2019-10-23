@@ -166,7 +166,7 @@ public class InputControl extends Module {
                     return getSeriesListNumbers(inputFile);
 
             }
-        } catch (DependencyException | FormatException | ServiceException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -174,12 +174,15 @@ public class InputControl extends Module {
 
     }
 
-    private TreeMap<Integer,String> getAllSeriesNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
+    private TreeMap<Integer,String> getAllSeriesNumbers(File inputFile) throws Exception {
         // Creating the output collection
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
-        // If the input is a tif, we can skip this
-        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
+        // If the input is a tif or video, we can skip this
+        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
             namesAndNumbers.put(1,inputFile.getName());
             return namesAndNumbers;
         }
@@ -198,7 +201,7 @@ public class InputControl extends Module {
         try {
             reader.setId(inputFile.getAbsolutePath());
         } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
-            namesAndNumbers.put(0,inputFile.getAbsolutePath());
+            namesAndNumbers.put(1,inputFile.getName());
             return namesAndNumbers;
         }
 
@@ -239,11 +242,14 @@ public class InputControl extends Module {
 
     }
 
-    private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
+    private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws Exception {
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
-        // If the input is a tif, we can skip this
-        if (FilenameUtils.getExtension(inputFile.getName()).equals("tif") || FilenameUtils.getExtension(inputFile.getName()).equals("tiff")) {
+        // If the input is a tif or video, we can skip this
+        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
             namesAndNumbers.put(1,inputFile.getName());
             return namesAndNumbers;
         }
@@ -258,7 +264,12 @@ public class InputControl extends Module {
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
-        reader.setId(inputFile.getAbsolutePath());
+        try {
+            reader.setId(inputFile.getAbsolutePath());
+        } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
+            namesAndNumbers.put(1,inputFile.getName());
+            return namesAndNumbers;
+        }
 
         SeriesListSelectorP seriesListSelectorP = parameters.getParameter(InputControl.SERIES_LIST);
         int[] seriesList = seriesListSelectorP.getSeriesList();
