@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.Module.Hidden;
 
 import loci.common.DebugTools;
-import loci.common.Log4jTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
@@ -16,7 +15,6 @@ import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
@@ -180,6 +178,15 @@ public class InputControl extends Module {
         // Creating the output collection
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
+        // If the input is a tif or video, we can skip this
+        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
+            namesAndNumbers.put(1,inputFile.getName());
+            return namesAndNumbers;
+        }
+
         // Using BioFormats to get the number of series
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
@@ -231,17 +238,21 @@ public class InputControl extends Module {
 
         reader.close();
 
-        if (namesAndNumbers.size() == 0) {
-            namesAndNumbers.put(1,inputFile.getName());
-            return namesAndNumbers;
-        }
-
         return namesAndNumbers;
 
     }
 
     private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws Exception {
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+
+        // If the input is a tif or video, we can skip this
+        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi") ||
+                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
+            namesAndNumbers.put(1,inputFile.getName());
+            return namesAndNumbers;
+        }
 
         // Using BioFormats to get the number of series
         DebugTools.enableLogging("off");
@@ -250,7 +261,6 @@ public class InputControl extends Module {
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         OMEXMLMetadata meta = service.createOMEXMLMetadata();
-
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
         reader.setGroupFiles(false);
@@ -268,12 +278,6 @@ public class InputControl extends Module {
         }
 
         reader.close();
-
-        // If no series were found, just use the filename
-        if (namesAndNumbers.size() == 0) {
-            namesAndNumbers.put(1,inputFile.getName());
-            return namesAndNumbers;
-        }
 
         return namesAndNumbers;
 

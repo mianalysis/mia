@@ -109,6 +109,11 @@
             <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
             <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
         </repository>
+
+        <!--        <repository>-->
+        <!--            <id>ossrh</id>-->
+        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--        </repository>-->
     </repositories>
 
     <dependencies>
