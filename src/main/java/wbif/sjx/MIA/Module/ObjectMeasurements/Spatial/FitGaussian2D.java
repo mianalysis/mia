@@ -8,6 +8,8 @@ import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -17,8 +19,10 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 
 import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
@@ -41,6 +45,9 @@ public class FitGaussian2D extends Module {
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
     public static final String APPLY_VOLUME = "Apply volume";
+    public static final String CREATE_GAUSSIAN_IMAGE = "Create Gaussian image";
+    public static final String GAUSSIAN_IMAGE = "Gaussian image name";
+
 
     public FitGaussian2D(ModuleCollection modules) {
         super("Fit Gaussian 2D",modules);
@@ -188,6 +195,78 @@ public class FitGaussian2D extends Module {
 
     }
 
+    static Image createGaussianImage(ObjCollection objects, String outputImageName, @Nullable Module module) {
+        if (objects.size() == 0) return null;
+
+        // Create blank image
+        Obj firstObject = objects.getFirst();
+        ImagePlus ipl = IJ.createImage(outputImageName,firstObject.getWidth(),firstObject.getHeight(),1,32);
+        Image image = new Image(outputImageName,ipl);
+
+        // Get the image for the first object.  Not adding the background to any object, as the average background will
+        // be added later on.
+        Iterator<Obj> iterator = objects.values().iterator();
+        addGaussianProfile(iterator.next(),image,true);
+
+        // Iterate overall subsequent objects, adding the images
+        String calculationMethod = ImageCalculator.CalculationMethods.ADD;
+        String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
+
+        int count = 0;
+        int total = objects.size();
+        while (iterator.hasNext()) {
+            // Adding current object's Gaussian
+            addGaussianProfile(iterator.next(),image,true);
+
+            if (module != null) module.writeMessage("Rendered object "+(++count)+" of "+total);
+
+        }
+
+        // Determining the average background and adding this on to the image
+        double BG = getMeanBackground(objects);
+        ImageMath.process(image.getImagePlus(),ImageMath.CalculationTypes.ADD,BG);
+
+        return image;
+
+    }
+
+    static double getMeanBackground(ObjCollection objects) {
+        CumStat cs = new CumStat();
+
+        for (Obj obj:objects.values()) cs.addMeasure(obj.getMeasurement(Measurements.A_BG).getValue());
+
+        return cs.getMean();
+
+    }
+
+    static void addGaussianProfile(Obj obj, Image inputImage, boolean zeroBackground) {
+        // Create the 2D Gaussian distribution
+        double x0 = obj.getMeasurement(Measurements.X0_PX).getValue();
+        double y0 = obj.getMeasurement(Measurements.Y0_PX).getValue();
+        double sx = obj.getMeasurement(Measurements.SIGMA_X_PX).getValue();
+        double sy = obj.getMeasurement(Measurements.SIGMA_Y_PX).getValue();
+        double A0 = obj.getMeasurement(Measurements.A_0).getValue();
+        double ABG = zeroBackground? 0 : obj.getMeasurement(Measurements.A_BG).getValue();
+        double th = obj.getMeasurement(Measurements.THETA).getValue();
+        GaussianDistribution2D g2D = new GaussianDistribution2D(x0,y0,sx,sy,A0,ABG,th);
+
+        // Create the blank image
+        int minX = (int) Math.round(Math.max(0,x0-4*sx));
+        int maxX = (int) Math.round(Math.min(x0+4*sx,obj.getWidth()));
+        int minY = (int) Math.round(Math.max(0,y0-4*sy));
+        int maxY = (int) Math.round(Math.min(y0+4*sy,obj.getHeight()));
+
+        // Iterate over all pixels, evaluating the Gaussian
+        ImageProcessor ipr = inputImage.getImagePlus().getProcessor();
+        for (int x=minX;x<=maxX;x++) {
+            for (int y=minY;y<=maxY;y++) {
+                float inputVal = ipr.getf(x,y);
+                float newVal = (float) g2D.getValues(x,y)[0];
+                ipr.setf(x,y,inputVal+newVal);
+            }
+        }
+    }
+
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
@@ -222,6 +301,8 @@ public class FitGaussian2D extends Module {
         int maxEvaluations = parameters.getValue(MAX_EVALUATIONS);
         boolean removeUnfit = parameters.getValue(REMOVE_UNFIT);
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
+        boolean createGaussianImage = parameters.getValue(CREATE_GAUSSIAN_IMAGE);
+        String gaussianImageName = parameters.getValue(GAUSSIAN_IMAGE);
 
         // Setting the desired values to limit sigma
         if (!limitSigma) {
@@ -300,9 +381,21 @@ public class FitGaussian2D extends Module {
         // Adding explicit volume to spots
         if (applyVolume) assignVolume(inputObjects);
 
-        inputImagePlus.setPosition(1,1,1);
+        // Creating a Gaussian image
+        Image gaussianImage = null;
+        if (createGaussianImage) {
+            gaussianImage = createGaussianImage(inputObjects,gaussianImageName,this);
+            workspace.addImage(gaussianImage);
+        }
 
-        if (showOutput) inputObjects.showMeasurements(this,modules);
+        if (showOutput) {
+            inputObjects.showMeasurements(this,modules);
+
+            if (createGaussianImage) gaussianImage.showImage();
+
+            // Also show output objects, if storing coordinates is somehow enabled
+
+        }
 
         return true;
 
@@ -324,6 +417,9 @@ public class FitGaussian2D extends Module {
         parameters.add(new IntegerP(MAX_EVALUATIONS, this,1000));
         parameters.add(new BooleanP(REMOVE_UNFIT, this,false));
         parameters.add(new BooleanP(APPLY_VOLUME,this,true));
+        parameters.add(new BooleanP(CREATE_GAUSSIAN_IMAGE,this,false));
+        parameters.add(new OutputImageP(GAUSSIAN_IMAGE,this));
+
 
     }
 
@@ -359,6 +455,11 @@ public class FitGaussian2D extends Module {
         returnedParameters.add(parameters.getParameter(MAX_EVALUATIONS));
         returnedParameters.add(parameters.getParameter(REMOVE_UNFIT));
         returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
+
+        returnedParameters.add(parameters.getParameter(CREATE_GAUSSIAN_IMAGE));
+        if (parameters.getValue(CREATE_GAUSSIAN_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(GAUSSIAN_IMAGE));
+        }
 
         return returnedParameters;
 
