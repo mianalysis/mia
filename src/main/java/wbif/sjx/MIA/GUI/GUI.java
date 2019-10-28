@@ -85,7 +85,7 @@ public class GUI {
         splash.setVisible(true);
 
         splash.setStatus(Splash.Status.DETECTING_MODULES);
-        Set<Class<? extends Module>> detectedModules = new ClassHunter<Module>().getClasses(Module.class, MIA.isDebug());
+        Set<Class<? extends Module>> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
 
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
