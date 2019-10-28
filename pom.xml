@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.11.15</version>
+    <version>0.11.16</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -261,19 +261,6 @@
             <groupId>de.biomedical-imaging.imagej</groupId>
             <artifactId>ij_ridge_detect</artifactId>
             <version>1.4.0</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv</artifactId>
-            <version>1.4.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.4.4</version>
             <scope>${myscope}</scope>
         </dependency>
 

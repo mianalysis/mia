@@ -318,7 +318,7 @@ public class DocumentationGenerator {
 
     private static LinkedHashSet<Module> getModules() {
         // Get a list of Modules
-        Set<Class<? extends Module>> clazzes = new ClassHunter<Module>().getClasses(Module.class, false);
+        Set<Class<? extends Module>> clazzes = ClassHunter.getModules(false,MIA.isDebug());
 
         // Converting the list of classes to a list of Modules
         LinkedHashSet<Module> modules = new LinkedHashSet<>();

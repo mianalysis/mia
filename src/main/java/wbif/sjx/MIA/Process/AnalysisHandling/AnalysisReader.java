@@ -94,7 +94,7 @@ public class AnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
+        Set<Class<? extends Module>> availableModules = ClassHunter.getModules(false,MIA.isDebug());
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
