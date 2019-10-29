@@ -128,7 +128,7 @@ public class AnalysisRunner {
         } else {
             File next = fileCrawler.getNextValidFileInStructure();
             int loadTotal = 0;
-            while (next != null) {
+            while (next != null && fileCrawler.getCurrentFolderAsFolder() != null) {
                 TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(next);
                 for (int seriesNumber:seriesNumbers.keySet()) {
                     jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));

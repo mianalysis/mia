@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
@@ -123,6 +124,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     public Image convertToImageRandomColours() {
         HashMap<Integer,Float> hues = ColourFactory.getRandomHues(this);
         Image dispImage = convertToImage(name,null,hues,8,false);
+
+        if (dispImage == null) return null;
+
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(LUTs.Random(true));
         dispIpl.setPosition(1,1,1);
@@ -166,6 +170,18 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         setCalibration(templateIpl,ipl);
 
         return new Image(outputName,ipl);
+
+    }
+
+    public void applyCalibration(Image image) {
+        Obj obj = getFirst();
+        if (obj == null) return;
+
+        Calibration calibration = image.getImagePlus().getCalibration();
+        calibration.pixelWidth = obj.getDppXY();
+        calibration.pixelHeight = obj.getDppXY();
+        calibration.pixelDepth = obj.getDppZ();
+        calibration.setUnit(obj.getCalibratedUnits());
 
     }
 
