@@ -82,7 +82,7 @@ public class NotesPanel extends JPanel {
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "Click a module title to<br>see an editable notes panel."+
                 "<br><br>" +
-                "To hide this, go to<br>View > Toggle notes panel" +
+                "To hide this, go to<br>View > Show notes panel" +
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);

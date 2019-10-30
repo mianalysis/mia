@@ -1,3 +1,3 @@
 Citing MIA
 ----------
-We hope you find MIA useful.  If you've used MIA in your research, please cite it in applicable publications using the Zenodo DOI for that version of the plugin.  Zenodo DOIs for MIA can be found [here](https://doi.org/10.5281/zenodo.1201320).
+We hope you find MIA useful.  If you've used MIA in your research, please cite it using the Zenodo DOI for that version of the plugin.  Zenodo DOIs for MIA can be found [here](https://doi.org/10.5281/zenodo.1201320).

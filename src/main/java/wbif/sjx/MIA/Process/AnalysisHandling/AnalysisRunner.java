@@ -30,12 +30,11 @@ import java.util.concurrent.TimeUnit;
  * Created by sc13967 on 21/10/2016.
  */
 public class AnalysisRunner {
-    private final static DecimalFormat dfInt = new DecimalFormat("0");
-    private final static DecimalFormat dfDec = new DecimalFormat("0.00");
-
     private static ThreadPoolExecutor pool;
     private static int counter = 0;
     private static int origThreads = Prefs.getThreads();
+
+    private final static DecimalFormat dfInt = new DecimalFormat("0");
 
 
     // PUBLIC METHODS
@@ -254,10 +253,7 @@ public class AnalysisRunner {
 
                 // Getting the number of completed and total tasks
                 incrementCounter();
-                String nComplete = dfInt.format(getCounter());
-                String nTotal = dfInt.format(pool.getTaskCount());
-                String percentageComplete = dfDec.format(((double) getCounter() / (double) pool.getTaskCount()) * 100);
-                System.out.println("Completed " + nComplete + "/" + nTotal + " (" + percentageComplete + "%), " + file.getName());
+                ProgressMonitor.finaliseWorkspace(workspace);
 
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
@@ -295,7 +291,7 @@ public class AnalysisRunner {
 
     // GETTERS AND SETTERS
 
-    static synchronized int getCounter() {
+    public static synchronized int getCounter() {
         return counter;
 
     }
