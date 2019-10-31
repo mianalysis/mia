@@ -133,7 +133,7 @@ public class AnalysisRunner {
                     jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));
 
                     // Displaying the current progress
-                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
+//                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
 
                 }
 
@@ -253,7 +253,7 @@ public class AnalysisRunner {
 
                 // Getting the number of completed and total tasks
                 incrementCounter();
-                ProgressMonitor.finaliseWorkspace(workspace);
+//                ProgressMonitor.finaliseWorkspace(workspace);
 
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());

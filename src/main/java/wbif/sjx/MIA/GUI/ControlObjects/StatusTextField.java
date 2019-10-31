@@ -2,7 +2,6 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.ProgressMonitor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +32,7 @@ public class StatusTextField extends JLabel implements MouseListener{
                 if (state) {
                     setText("Verbose output disabled");
                     TimeUnit.SECONDS.sleep(1);
-                    ProgressMonitor.displayProgressMessage(null);
+                    GUI.updateProgressBar();
                 } else {
                     setText("Verbose output enabled");
                     TimeUnit.SECONDS.sleep(1);

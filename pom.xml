@@ -277,12 +277,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.SJCross</groupId>
-            <artifactId>Common</artifactId>
-            <version>v1.5.8</version>
-            <!--<groupId>wbif.sjx</groupId>-->
+            <!--<groupId>com.github.SJCross</groupId>-->
             <!--<artifactId>Common</artifactId>-->
-            <!--<version>1.5.9-SNAPSHOT</version>-->
+            <!--<version>v1.5.8</version>-->
+            <groupId>wbif.sjx</groupId>
+            <artifactId>Common</artifactId>
+            <version>1.5.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
