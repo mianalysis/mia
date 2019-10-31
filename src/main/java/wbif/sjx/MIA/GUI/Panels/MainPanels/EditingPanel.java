@@ -34,7 +34,7 @@ public class EditingPanel extends MainPanel {
     private final NotesPanel notesPanel = new NotesPanel();
     private final HelpPanel helpPanel = new HelpPanel();
     private final StatusPanel statusPanel = new StatusPanel();
-    private final FileListPanel fileListPanel = new FileListPanel();
+    private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
 
     private boolean showHelp = Prefs.get("MIA.showEditingHelp",false);
     private boolean showNotes = Prefs.get("MIA.showEditingNotes",false);
@@ -209,6 +209,7 @@ public class EditingPanel extends MainPanel {
     @Override
     public void setProgress(int progress) {
         progressBarPanel.setValue(progress);
+        fileListPanel.updatePanel();
     }
 
     @Override
@@ -228,7 +229,7 @@ public class EditingPanel extends MainPanel {
         outputPanel.updatePanel(outputControl);
 
         parametersPanel.updatePanel(GUI.getFirstSelectedModule());
-//        modulesPanel.updateButtonStates();
+        modulesPanel.updateButtonStates();
         modulesPanel.updatePanel();
 
     }

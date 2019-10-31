@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Object;
 
+import wbif.sjx.common.MathFunc.CumStat;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -72,6 +74,20 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
         }
 
         return workspaces;
+
+    }
+
+    public synchronized void resetProgress() {
+        for (Workspace workspace:this) {
+            workspace.setProgress(0);
+        }
+    }
+
+    public synchronized double getOverallProgress() {
+        CumStat cs = new CumStat();
+        for (Workspace workspace:this) cs.addMeasure(workspace.getProgress());
+
+        return cs.getMean();
 
     }
 }

@@ -97,7 +97,8 @@ public class ParametersPanel extends JScrollPane {
         }
 
         // If selected, adding the measurement selector for output control
-        if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled()) {
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
+        if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
             MetadataRefCollection metadataRefs = modules.getMetadataRefs();
             addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
 

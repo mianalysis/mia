@@ -22,6 +22,7 @@ public class Workspace {
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private Metadata metadata = new Metadata();
     private int ID;
+    private double progress = 0;
 
 
     // CONSTRUCTOR
@@ -40,6 +41,7 @@ public class Workspace {
             metadata.setExt(FilenameUtils.getExtension(file.getName()));
         }
     }
+
 
     // PUBLIC METHODS
 
@@ -222,5 +224,13 @@ public class Workspace {
 
     public int getID() {
         return ID;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 }

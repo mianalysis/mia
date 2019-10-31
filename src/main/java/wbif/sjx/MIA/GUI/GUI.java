@@ -4,7 +4,6 @@
 
 package wbif.sjx.MIA.GUI;
 
-import ij.IJ;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
@@ -33,8 +32,6 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -45,6 +42,7 @@ public class GUI {
     private static boolean initialised = false;
 
     private static Analysis analysis = new Analysis();
+    private static AnalysisRunner analysisRunner = new AnalysisRunner();
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
@@ -224,8 +222,15 @@ public class GUI {
         return analysis.getModules();
     }
 
-    public static void setProgress(int val) {
+    public static void updateProgressBar(int val) {
         mainPanel.setProgress(val);
+    }
+
+    public static void updateProgressBar() {
+        WorkspaceCollection workspaces = analysisRunner.getWorkspaces();
+
+        updateProgressBar((int) Math.round(workspaces.getOverallProgress()*100));
+
     }
 
     public static void updateModules() {
@@ -365,6 +370,10 @@ public class GUI {
 
     public static Analysis getAnalysis() {
         return analysis;
+    }
+
+    public static AnalysisRunner getAnalysisRunner() {
+        return analysisRunner;
     }
 
     public static StatusTextField getTextField() {

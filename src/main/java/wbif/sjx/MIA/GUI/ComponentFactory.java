@@ -345,11 +345,15 @@ public class ComponentFactory {
 
     private JPanel createSummaryExportLabels(boolean includeSummary) {
         ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
-        BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
+        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
+        BooleanP exportIndividual = outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        BooleanP exportSummary = outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setPreferredSize(new Dimension(200,25));
+
+        // If we're not exporting anything, skip this
+        if (exportMode.equals(OutputControl.ExportModes.NONE)) return labelPanel;
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -408,11 +412,15 @@ public class ComponentFactory {
 
     private JPanel createExportControls(ExportableRef ref, ExportCheck.Type type) {
         ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
+        String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200,25));
+
+        // If we're not exporting anything, skip this
+        if (exportMode.equals(OutputControl.ExportModes.NONE)) return controlPanel;
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -594,7 +602,6 @@ public class ComponentFactory {
         ExportName exportName = new ExportName(ref);
         exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
-//        exportName.setEditable(true);
         exportName.setToolTipText("<html><p width=\"500\">" +ref.getDescription()+"</p></html>");
         exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;

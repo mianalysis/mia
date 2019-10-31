@@ -91,7 +91,7 @@ public class GUIAnalysisHandler {
     public static void runAnalysis() {
         Thread t = new Thread(() -> {
             try {
-                AnalysisRunner.run(GUI.getAnalysis());
+                GUI.getAnalysisRunner().run(GUI.getAnalysis());
             } catch (IOException | InterruptedException e1) {
                 e1.printStackTrace();
             }
