@@ -20,6 +20,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -100,11 +101,14 @@ public class MeasureObjectIntensity extends Module {
         String imageName = parameters.getValue(INPUT_IMAGE);
 
         // Running through all pixels in this object and adding the intensity to the MultiCumStat object
-        int t = object.getT()+1;
-        int nSlices = ipl.getNSlices();
+        int t = object.getT();
+        CumStat cs = new CumStat();
 
-        ImageStack timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-"+nSlices, t+"-"+t).getStack();
-        CumStat cs = IntensityCalculator.calculate(timeStack,object);
+        for (Point<Integer> point:object.getCoordinateSet()) {
+            ipl.setPosition(1,point.getZ()+1,t+1);
+            float value = ipl.getProcessor().getf(point.getX(),point.getY());
+            cs.addMeasure(value);
+        }
 
         // Calculating mean, std, min and max intensity
         object.addMeasurement(new Measurement(getFullName(imageName,Measurements.MEAN), cs.getMean()));
