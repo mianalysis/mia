@@ -97,7 +97,8 @@ public class ParametersPanel extends JScrollPane {
         }
 
         // If selected, adding the measurement selector for output control
-        if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled()) {
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
+        if (module.getClass().isInstance(new OutputControl(modules)) && outputControl.isEnabled() &! exportMode.equals(OutputControl.ExportModes.NONE)) {
             MetadataRefCollection metadataRefs = modules.getMetadataRefs();
             addRefExportControls(metadataRefs,"Metadata",componentFactory,c);
 
@@ -236,7 +237,7 @@ public class ParametersPanel extends JScrollPane {
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "To change parameters for an existing module, click the module name on the list to the left."+
                 "<br><br>" +
-                "Modules can be added, removed and re-ordered using the +, -, ▲ and ▼ buttons." +
+                "Modules can be added, removed and re-ordered using the +, -, ⮝ and ⮟ buttons." +
                 "<br><br>" +
                 "Modules can also be disabled using the power icons to the left of each module name.  " +
                 "<br><br>Any modules highlighted in red are currently mis-configured " +

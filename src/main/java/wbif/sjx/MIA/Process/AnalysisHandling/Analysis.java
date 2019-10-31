@@ -4,10 +4,11 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
+import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -41,6 +42,8 @@ public class Analysis {
      * @param workspace Workspace containing stores for images and objects
      */
     public boolean execute(Workspace workspace) {
+        MIA.log.writeDebug("Processing file \""+workspace.getMetadata().getFile().getAbsolutePath()+"\"");
+
         // Running through modules
         int total = modules.size();
         int count = 0;
@@ -57,10 +60,9 @@ public class Analysis {
             }
 
             // Updating progress bar
-            double percentageComplete = ((double) (++count))/((double) total)*100;
-            ProgressMonitor.setWorkspaceProgress(workspace,percentageComplete);
-            double overallPercentageComplete = ProgressMonitor.getOverallProgress();
-            GUI.setProgress((int) Math.round(overallPercentageComplete));
+            double fractionComplete = ((double) ++count)/((double) total);
+            workspace.setProgress(fractionComplete);
+            if (!MIA.isHeadless()) GUI.updateProgressBar();
 
         }
 

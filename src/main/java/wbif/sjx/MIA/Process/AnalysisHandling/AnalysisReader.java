@@ -23,7 +23,6 @@ import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
-import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -65,7 +64,7 @@ public class AnalysisReader {
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         System.out.println("Loading analysis");
-        GUI.setProgress(0);
+        GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) xml = xml.substring(1);
 

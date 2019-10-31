@@ -10,7 +10,6 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.ProgressMonitor;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.Exporting.Exporter;
@@ -30,20 +29,18 @@ import java.util.concurrent.TimeUnit;
  * Created by sc13967 on 21/10/2016.
  */
 public class AnalysisRunner {
-    private final static DecimalFormat dfInt = new DecimalFormat("0");
-    private final static DecimalFormat dfDec = new DecimalFormat("0.00");
-
     private static ThreadPoolExecutor pool;
     private static int counter = 0;
     private static int origThreads = Prefs.getThreads();
 
+    private final WorkspaceCollection workspaces = new WorkspaceCollection();
+
 
     // PUBLIC METHODS
 
-    public static void run(Analysis analysis) throws InterruptedException, IOException {
-        // Resetting progress monitor
-        ProgressMonitor.resetProgress();
-        GUI.setProgress(0);
+    public void run(Analysis analysis) throws InterruptedException, IOException {
+        // Resetting progress display
+        GUI.updateProgressBar(0);
         MIA.log.clearLog();
         counter = 0;
 
@@ -73,9 +70,11 @@ public class AnalysisRunner {
 
         pool = new ThreadPoolExecutor(nSimultaneousJobs,nSimultaneousJobs,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
+        // Restarting the WorkspaceCollection
+        workspaces.clear();
+
         // Runnables are first stored in a HashSet, then loaded all at once to the ThreadPoolExecutor.  This means the
         // system isn't scanning files and reading for the analysis simultaneously.
-        WorkspaceCollection workspaces = new WorkspaceCollection();
         for (Job job:jobs) {
             // Iterating over all seriesNumber to analyse, adding each one as a new workspace
             Workspace workspace = workspaces.getNewWorkspace(job.getFile(),job.getSeriesNumber());
@@ -83,9 +82,9 @@ public class AnalysisRunner {
             workspace.getMetadata().put("FILE_DEPTH", job.getFileDepth());
 
             // Adding this Workspace to the Progress monitor
-            ProgressMonitor.setWorkspaceProgress(workspace,0d);
+            workspace.setProgress(0);
 
-            pool.submit(createRunnable(analysis,workspaces,workspace,exporter));
+            pool.submit(createRunnable(analysis,workspace,exporter));
 
         }
 
@@ -106,7 +105,7 @@ public class AnalysisRunner {
 
     }
 
-    public static HashSet<Job> getJobs(Analysis analysis) {
+    public HashSet<Job> getJobs(Analysis analysis) {
         HashSet<Job> jobs = new HashSet<>();
 
         InputControl inputControl = analysis.getModules().getInputControl();
@@ -128,13 +127,13 @@ public class AnalysisRunner {
         } else {
             File next = fileCrawler.getNextValidFileInStructure();
             int loadTotal = 0;
-            while (next != null) {
+            while (next != null && fileCrawler.getCurrentFolderAsFolder() != null) {
                 TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(next);
                 for (int seriesNumber:seriesNumbers.keySet()) {
                     jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));
 
                     // Displaying the current progress
-                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
+//                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
 
                 }
 
@@ -148,7 +147,7 @@ public class AnalysisRunner {
 
     }
 
-    public static File getInputFile(InputControl inputControl) {
+    public File getInputFile(InputControl inputControl) {
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
 
         if (!checkInputFileValidity(inputPath)) return null;
@@ -156,7 +155,7 @@ public class AnalysisRunner {
 
     }
 
-    public static boolean checkInputFileValidity(String path) {
+    public boolean checkInputFileValidity(String path) {
         // Checking if a file/folder had been selected
         if (path == null) {
             MIA.log.write("Select an input file/folder first", LogRenderer.Level.WARNING);
@@ -173,7 +172,7 @@ public class AnalysisRunner {
 
     }
 
-    static Exporter initialiseExporter(OutputControl outputControl) {
+    Exporter initialiseExporter(OutputControl outputControl) {
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
         String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING);
         boolean exportXLS = outputControl.isEnabled();
@@ -239,7 +238,7 @@ public class AnalysisRunner {
 
     }
 
-    static Runnable createRunnable(Analysis analysis, WorkspaceCollection workspaces, Workspace workspace, Exporter exporter) {
+    Runnable createRunnable(Analysis analysis, Workspace workspace, Exporter exporter) {
         return () -> {
             File file = workspace.getMetadata().getFile();
 
@@ -254,10 +253,7 @@ public class AnalysisRunner {
 
                 // Getting the number of completed and total tasks
                 incrementCounter();
-                String nComplete = dfInt.format(getCounter());
-                String nTotal = dfInt.format(pool.getTaskCount());
-                String percentageComplete = dfDec.format(((double) getCounter() / (double) pool.getTaskCount()) * 100);
-                System.out.println("Completed " + nComplete + "/" + nTotal + " (" + percentageComplete + "%), " + file.getName());
+//                ProgressMonitor.finaliseWorkspace(workspace);
 
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
@@ -266,7 +262,7 @@ public class AnalysisRunner {
                     workspace.clearAllImages(false);
                 } else if (continuousExport && getCounter() % saveNFiles == 0) {
                     String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
-                    exporter.exportResults(workspaces, analysis, name);
+                    exporter.exportResults(workspace,analysis, name);
                 }
 
             } catch (Throwable t) {
@@ -295,7 +291,7 @@ public class AnalysisRunner {
 
     // GETTERS AND SETTERS
 
-    static synchronized int getCounter() {
+    public static synchronized int getCounter() {
         return counter;
 
     }
@@ -303,6 +299,10 @@ public class AnalysisRunner {
     static synchronized void incrementCounter() {
         counter++;
 
+    }
+
+    public WorkspaceCollection getWorkspaces() {
+        return workspaces;
     }
 }
 

@@ -16,6 +16,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
@@ -37,10 +38,11 @@ public class MIA implements Command {
     private static String version = "";
     private static boolean debug = false;
     public static LogRenderer log = new BasicLogRenderer(); // This is effectively just for test methods
+    private final static boolean headless = false; // Determines if there is a GUI
 
     /*
-    Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
-     */
+        Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.
+         */
     private static final boolean imagePlusMode = true;
 
     @Parameter
@@ -59,7 +61,7 @@ public class MIA implements Command {
 
             } else {
                 Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
-                AnalysisRunner.run(analysis);
+                new AnalysisRunner().run(analysis);
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
@@ -149,5 +151,9 @@ public class MIA implements Command {
 
     public static void setLog(LogRenderer log) {
         MIA.log = log;
+    }
+
+    public static boolean isHeadless() {
+        return headless;
     }
 }

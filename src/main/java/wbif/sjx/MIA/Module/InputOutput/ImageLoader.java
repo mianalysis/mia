@@ -827,7 +827,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     break;
             }
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
-            e.printStackTrace();
+            MIA.log.writeWarning(e.getMessage());
+            return false;
         }
 
         if (ipl == null) return false;

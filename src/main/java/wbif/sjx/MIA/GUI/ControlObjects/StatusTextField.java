@@ -32,7 +32,7 @@ public class StatusTextField extends JLabel implements MouseListener{
                 if (state) {
                     setText("Verbose output disabled");
                     TimeUnit.SECONDS.sleep(1);
-                    setText("");
+                    GUI.updateProgressBar();
                 } else {
                     setText("Verbose output enabled");
                     TimeUnit.SECONDS.sleep(1);

@@ -4,7 +4,11 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.DocumentationGenerator;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class DocumentationPanel {
     public static void showAbout() {
@@ -41,6 +45,18 @@ public class DocumentationPanel {
             editorPane.setText(textToDisplay);
             editorPane.setCaretPosition(0);
             editorPane.setMargin(new Insets(10,10,10,10));
+            editorPane.addHyperlinkListener(new HyperlinkListener() {
+                @Override
+                public void hyperlinkUpdate(HyperlinkEvent e) {
+                    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().browse(e.getURL().toURI());
+                        } catch (IOException | URISyntaxException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            });
 
             JScrollPane scrollPane = new JScrollPane(editorPane);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -50,6 +66,7 @@ public class DocumentationPanel {
 
             JFrame frame = new JFrame();
             frame.add(scrollPane);
+            frame.setIconImage(new ImageIcon(MIA.class.getResource("/Icons/Logo_wide_32.png"),"").getImage());
 
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             frame.setPreferredSize(new Dimension(700,700));

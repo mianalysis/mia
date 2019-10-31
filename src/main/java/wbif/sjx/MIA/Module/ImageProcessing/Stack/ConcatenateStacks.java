@@ -96,7 +96,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    boolean checkAxisEquality(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
+    static <T extends RealType<T> & NativeType<T>> boolean checkAxisEquality(ImgPlus<T> img1, ImgPlus<T> img2, AxisType axis) {
         long lengthIn1 = getAxisLength(img1,axis);
         long lengthIn2 = getAxisLength(img2,axis);
 
@@ -159,6 +159,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             dimsOutCombined[0] = getCombinedAxisLength(img1, img2, Axes.X);
             offsetOut2[0] = getAxisLength(img1, Axes.X);
         } else {
+            if (!checkAxisEquality(img1,img2,Axes.X)) {
+                MIA.log.writeWarning("Axes not equal along X axis");
+                return null;
+            }
             dimsOutCombined[0] = getAxisLength(img1, Axes.X);
         }
 
@@ -166,6 +170,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             dimsOutCombined[1] = getCombinedAxisLength(img1, img2, Axes.Y);
             offsetOut2[1] = getAxisLength(img1, Axes.Y);
         } else {
+            if (!checkAxisEquality(img1,img2,Axes.Y)) {
+                MIA.log.writeWarning("Axes not equal along Y axis");
+                return null;
+            }
             dimsOutCombined[1] = getAxisLength(img1, Axes.Y);
         }
 
@@ -173,6 +181,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             dimsOutCombined[2] = getCombinedAxisLength(img1, img2, Axes.CHANNEL);
             offsetOut2[2] = getAxisLength(img1, Axes.CHANNEL);
         } else {
+            if (!checkAxisEquality(img1,img2,Axes.CHANNEL)) {
+                MIA.log.writeWarning("Axes not equal along channel axis");
+                return null;
+            }
             dimsOutCombined[2] = getAxisLength(img1, Axes.CHANNEL);
         }
 
@@ -180,6 +192,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             dimsOutCombined[3] = getCombinedAxisLength(img1, img2, Axes.Z);
             offsetOut2[3] = getAxisLength(img1, Axes.Z);
         } else {
+            if (!checkAxisEquality(img1,img2,Axes.Z)) {
+                MIA.log.writeWarning("Axes not equal along Z axis");
+                return null;
+            }
             dimsOutCombined[3] = getAxisLength(img1, Axes.Z);
         }
 
@@ -187,6 +203,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             dimsOutCombined[4] = getCombinedAxisLength(img1, img2, Axes.TIME);
             offsetOut2[4] = getAxisLength(img1, Axes.TIME);
         } else {
+            if (!checkAxisEquality(img1,img2,Axes.TIME)) {
+                MIA.log.writeWarning("Axes not equal along time axis");
+                return null;
+            }
             dimsOutCombined[4] = getAxisLength(img1, Axes.TIME);
         }
 

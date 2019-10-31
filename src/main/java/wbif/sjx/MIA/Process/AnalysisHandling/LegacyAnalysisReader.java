@@ -65,7 +65,7 @@ public class LegacyAnalysisReader {
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         System.out.println("Loading analysis");
-        GUI.setProgress(0);
+        GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) {
             xml = xml.substring(1);
@@ -106,7 +106,7 @@ public class LegacyAnalysisReader {
             }
 
             System.out.println("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
-            GUI.setProgress(100*Math.floorDiv(i,moduleNodes.getLength()));
+            GUI.updateProgressBar(100*Math.floorDiv(i,moduleNodes.getLength()));
 
         }
 
