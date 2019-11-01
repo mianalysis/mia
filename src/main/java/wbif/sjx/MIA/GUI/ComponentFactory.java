@@ -31,9 +31,9 @@ import java.util.LinkedHashSet;
 public class ComponentFactory {
     private int elementHeight;
 
-    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_blue_12px.png"), "");
-    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_blue_12px.png"), "");
-    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_blue_12px.png"), "");
+    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow-204_blue_12px.png"), "");
+    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow-204_blue_12px.png"), "");
+    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow-204_blue_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
@@ -135,7 +135,7 @@ public class ComponentFactory {
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
         moduleName.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        moduleName.setForeground(Colours.DARK_BLUE);
+        moduleName.setForeground(Color.BLACK);
         paramPanel.add(moduleName, c);
 
         JSeparator separator = new JSeparator();

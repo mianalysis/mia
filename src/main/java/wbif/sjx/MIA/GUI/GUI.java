@@ -223,11 +223,11 @@ public class GUI {
         return analysis.getModules();
     }
 
-    public static void updateProgressBar(int val) {
+    public synchronized static void updateProgressBar(int val) {
         mainPanel.setProgress(val);
     }
 
-    public static void updateProgressBar() {
+    public synchronized static void updateProgressBar() {
         WorkspaceCollection workspaces = analysisRunner.getWorkspaces();
 
         updateProgressBar((int) Math.round(workspaces.getOverallProgress()*100));

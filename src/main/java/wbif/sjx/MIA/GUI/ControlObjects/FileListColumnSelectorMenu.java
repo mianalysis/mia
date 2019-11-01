@@ -29,14 +29,14 @@ public class FileListColumnSelectorMenu extends JPopupMenu implements ActionList
 
         showSeriesname = new JCheckBoxMenuItem();
         showSeriesname.setText("Show series name");
-        showSeriesname.setSelected(true);
+        showSeriesname.setSelected(false);
         showSeriesname.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         showSeriesname.addActionListener(this);
         add(showSeriesname);
 
         showSeriesnumber = new JCheckBoxMenuItem();
         showSeriesnumber.setText("Show series number");
-        showSeriesnumber.setSelected(true);
+        showSeriesnumber.setSelected(false);
         showSeriesnumber.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         showSeriesnumber.addActionListener(this);
         add(showSeriesnumber);

@@ -227,7 +227,7 @@ public class Workspace {
         return ID;
     }
 
-    public double getProgress() {
+    public synchronized double getProgress() {
         return progress;
     }
 

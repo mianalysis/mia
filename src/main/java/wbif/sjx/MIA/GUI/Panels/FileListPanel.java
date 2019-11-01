@@ -59,12 +59,16 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setBorder(BorderFactory.createEmptyBorder());
         table.setAutoCreateRowSorter(true);
         table.setBackground(null);
+        table.setDefaultEditor(Object.class,null);
 
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
         columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
+
+        showColumn(COL_SERIESNAME,false);
+        showColumn(COL_SERIESNUMBER,false);
 
         maxWidth = columnModel.getColumn(0).getMaxWidth();
         minWidth = columnModel.getColumn(0).getMinWidth();
@@ -90,7 +94,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     }
 
-    public void updatePanel() {
+    public synchronized void updatePanel() {
         // Iterate over all current rows, removing any that don't exist
         HashSet<Workspace> currentWorkspaces = new HashSet<>();
         if (model.getRowCount() > 0) {
@@ -144,27 +148,32 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         switch (column) {
             case COL_WORKSPACE:
+                Metadata metadata = ((Workspace) value).getMetadata();
                 JLabel label = new JLabel();
-                label.setText(" "+((Workspace) value).getMetadata().getFilename());
+                label.setText(" "+metadata.getFilename());
+                label.setToolTipText(metadata.getFile().getAbsolutePath());
                 return label;
 
             case COL_SERIESNAME:
                 label = new JLabel();
                 label.setText((String) value);
+                label.setToolTipText((String) value);
                 return label;
 
             case COL_SERIESNUMBER:
                 label = new JLabel();
                 label.setText((String) value);
+                label.setToolTipText((String) value);
                 return label;
 
             case COL_PROGRESS:
-                int progress = (int) Math.round(((Double) value)*100);
+                int progress = (int) Math.round(((double) value)*100);
                 JProgressBar progressBar = new JProgressBar(0,100);
                 progressBar.setValue(progress);
                 progressBar.setBorderPainted(false);
                 progressBar.setStringPainted(true);
                 progressBar.setString("");
+                progressBar.setToolTipText(String.valueOf((double) value));
                 if (progress ==0) progressBar.setForeground(Colours.ORANGE);
                 else if (progress == 100) progressBar.setForeground(Colours.GREEN);
                 else progressBar.setForeground(Colours.BLUE);
