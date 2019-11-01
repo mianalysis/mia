@@ -23,6 +23,7 @@ public class Workspace {
     private Metadata metadata = new Metadata();
     private int ID;
     private double progress = 0;
+    private boolean analysisFailed = false;
 
 
     // CONSTRUCTOR
@@ -232,6 +233,14 @@ public class Workspace {
 
     public void setProgress(double progress) {
         this.progress = progress;
+    }
+
+    public boolean isAnalysisFailed() {
+        return analysisFailed;
+    }
+
+    public void setAnalysisFailed(boolean analysisFailed) {
+        this.analysisFailed = analysisFailed;
     }
 
     @Override

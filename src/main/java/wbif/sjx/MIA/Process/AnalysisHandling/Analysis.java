@@ -53,6 +53,8 @@ public class Analysis {
             if (status && module.isEnabled() && module.isRunnable()) {
                 status = module.execute(workspace);
                 if (!status) {
+                    workspace.setAnalysisFailed(true);
+
                     // The module failed or requested analysis termination.  Add this message to the log
                     MIA.log.write("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
                             "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").", LogRenderer.Level.WARNING);

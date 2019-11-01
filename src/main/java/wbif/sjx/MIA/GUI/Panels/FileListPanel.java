@@ -168,6 +168,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 if (progress ==0) progressBar.setForeground(Colours.ORANGE);
                 else if (progress == 100) progressBar.setForeground(Colours.GREEN);
                 else progressBar.setForeground(Colours.BLUE);
+
+                // Set a special colour if the analysis is marked as having failed
+                if (((Workspace) model.getValueAt(row,COL_WORKSPACE)).isAnalysisFailed()) progressBar.setForeground(Colours.RED);
+
                 return progressBar;
         }
 

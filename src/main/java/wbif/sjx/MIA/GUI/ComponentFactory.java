@@ -95,7 +95,7 @@ public class ComponentFactory {
             if (parameter.isValid()) {
                 parameterName.setForeground(Color.BLACK);
             } else {
-                parameterName.setForeground(Colours.ORANGE);
+                parameterName.setForeground(Colours.RED);
             }
 
             c.gridx++;

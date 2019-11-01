@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Process.Logging;
 import org.scijava.ui.UIService;
 import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.swing.console.ConsolePanel;
+import wbif.sjx.MIA.GUI.Colours;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -43,17 +44,17 @@ public class ConsoleRenderer implements LogRenderer {
         writeToConsole.put(Level.MESSAGE,false);
 
         Style warningStyle = consoleTextPane.addStyle("Warning style", null);
-        StyleConstants.setForeground(warningStyle, new Color(251,120,0));
+        StyleConstants.setForeground(warningStyle, Colours.ORANGE);
         logStyles.put(Level.WARNING,warningStyle);
         writeToConsole.put(Level.WARNING,true);
 
         Style errorStyle = consoleTextPane.addStyle("Error style", null);
-        StyleConstants.setForeground(errorStyle, new Color(234, 32, 50));
+        StyleConstants.setForeground(errorStyle, Colours.RED);
         logStyles.put(Level.ERROR,errorStyle);
         writeToConsole.put(Level.ERROR,true);
 
         Style debugStyle = consoleTextPane.addStyle("Debug style", null);
-        StyleConstants.setForeground(debugStyle, new Color(57,172,229));
+        StyleConstants.setForeground(debugStyle, Colours.BLUE);
         logStyles.put(Level.DEBUG,debugStyle);
         writeToConsole.put(Level.DEBUG,false);
 
