@@ -23,10 +23,11 @@ public class BasicPanel extends MainPanel {
     private static final JPanel helpNotesPanel = new JPanel();
     private static final HelpPanel helpPanel = new HelpPanel();
     private static final NotesPanel notesPanel = new NotesPanel();
+    private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
 
     private static boolean showHelp = Prefs.get("MIA.showBasicHelp",false);
     private static boolean showNotes = Prefs.get("MIA.showBasicNotes",false);
-    private boolean showFileList = Prefs.get("MIA.showFileList",false);
+    private boolean showFileList = Prefs.get("MIA.showBasicFileList",false);
     private static Module lastHelpNotesModule = null;
 
 
@@ -34,53 +35,58 @@ public class BasicPanel extends MainPanel {
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 0, 5);
+
+        // Initialising the control panel
+        c.insets = new Insets(5, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Initialising the control panel
         add(initialiseBasicControlPanel(), c);
 
         // Initialising the parameters panel
         c.gridy++;
         c.weighty = 1;
         c.gridwidth = 1;
+        c.insets = new Insets(0, 5, 5, 5);
         c.fill = GridBagConstraints.BOTH;
         add(controlPanel, c);
 
-        // Initialising the help and notes panels
-        initialiseBasicHelpNotesPanels();
+        updateFileList();
         c.weightx = 0;
         c.gridx++;
-        c.insets = new Insets(5, 0, 0, 5);
+        c.insets = new Insets(0, 0, 5, 5);
+        add(fileListPanel,c);
+
+        // Initialising the help and notes panels
+        initialiseBasicHelpNotesPanels();
+        c.gridx++;
+        c.insets = new Insets(0,0,0,0);
         add(helpNotesPanel,c);
 
         // Initialising the status panel
         c.gridx = 0;
-        c.gridy++;
+        c.gridy = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.weighty = 0;
-        c.gridwidth = 2;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.gridwidth = 3;
+        c.gridheight = 1;
+        c.insets = new Insets(0, 5, 5, 5);
         add(statusPanel,c);
 
         // Initialising the progress bar
         c.gridy++;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5,5,5,5);
         add(progressBarPanel,c);
 
         revalidate();
         repaint();
 
     }
-
 
     private static JPanel initialiseBasicControlPanel() {
         int bigButtonSize = GUI.getBigButtonSize();
@@ -139,20 +145,19 @@ public class BasicPanel extends MainPanel {
     private static void initialiseBasicHelpNotesPanels() {
         // Adding panels to combined JPanel
         helpNotesPanel.setLayout(new GridBagLayout());
-        GridBagConstraints cc = new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints();
 
-        cc.fill = GridBagConstraints.BOTH;
-        cc.gridx = 0;
-        cc.gridy = 0;
-        cc.weightx = 1;
-        cc.weighty = 1;
-        cc.insets = new Insets(0,0,5,0);
-        helpNotesPanel.add(helpPanel,cc);
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.insets = new Insets(0, 0, 5, 5);
+        helpNotesPanel.add(helpPanel,c);
         helpPanel.setVisible(showHelp);
 
-        cc.gridy++;
-        cc.insets = new Insets(0,0,0,0);
-        helpNotesPanel.add(notesPanel,cc);
+        c.gridy++;
+        helpNotesPanel.add(notesPanel,c);
         notesPanel.setVisible(showNotes);
 
     }
@@ -176,6 +181,7 @@ public class BasicPanel extends MainPanel {
         updateParameters();
 
         if (showHelp || showNotes) updateHelpNotes();
+        if (showFileList) updateFileList();
 
         revalidate();
         repaint();
@@ -222,7 +228,8 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public void updateFileList() {
-        MIA.log.writeDebug("ADD BASIC PANEL FILE LIST HANDLING");
+        fileListPanel.setVisible(showFileList);
+        fileListPanel.updatePanel();
     }
 
     @Override
@@ -263,6 +270,7 @@ public class BasicPanel extends MainPanel {
     @Override
     public void setProgress(int progress) {
         progressBarPanel.setValue(progress);
+        fileListPanel.updatePanel();
     }
 
     @Override
@@ -303,6 +311,10 @@ public class BasicPanel extends MainPanel {
     @Override
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
+        Prefs.set("MIA.showBasicFileList",showFileList);
+
+        fileListPanel.setVerifyInputWhenFocusTarget(showFileList);
+        GUI.updatePanel();
     }
 
     @Override

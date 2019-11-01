@@ -13,7 +13,7 @@ public class ProgressBarPanel extends JProgressBar {
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 15));
         setStringPainted(true);
         setString("");
-        setForeground(new Color(86,190,253));
+        setForeground(new Color(70,181,213));
 
     }
 }

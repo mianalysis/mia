@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
 import ij.IJ;
 import ij.ImagePlus;
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -190,7 +191,7 @@ public class MergeTracks extends Module implements ActionListener, WindowListene
         parameters.add(new ParamSeparatorP(DISPLAY_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
-        parameters.add(new MessageP(MEASUREMENT_WARNING,this,"Previously-acquired measurements for merged objects may become invalid.  During merging, the measurement associated with the object specified first will be retained.",Color.RED));
+        parameters.add(new MessageP(MEASUREMENT_WARNING,this,"Previously-acquired measurements for merged objects may become invalid.  During merging, the measurement associated with the object specified first will be retained.", Colours.RED));
 
     }
 

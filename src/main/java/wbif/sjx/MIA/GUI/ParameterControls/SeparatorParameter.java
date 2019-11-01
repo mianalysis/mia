@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class SeparatorParameter extends ParameterControl {
         c.anchor = GridBagConstraints.EAST;
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Color.BLUE);
+        separatorLeft.setForeground(Colours.DARK_BLUE);
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,0,0,5);
@@ -31,14 +32,14 @@ public class SeparatorParameter extends ParameterControl {
 
         JLabel label = new JLabel();
         label.setText(parameter.getName());
-        label.setForeground(Color.BLUE);
+        label.setForeground(Colours.DARK_BLUE);
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0,0,0,0);
         control.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Color.BLUE);
+        separatorRight.setForeground(Colours.DARK_BLUE);
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,5,0,0);

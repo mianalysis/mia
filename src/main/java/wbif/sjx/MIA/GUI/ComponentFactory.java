@@ -95,7 +95,7 @@ public class ComponentFactory {
             if (parameter.isValid()) {
                 parameterName.setForeground(Color.BLACK);
             } else {
-                parameterName.setForeground(Color.RED);
+                parameterName.setForeground(Colours.ORANGE);
             }
 
             c.gridx++;
@@ -135,7 +135,7 @@ public class ComponentFactory {
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
         moduleName.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        moduleName.setForeground(Color.BLUE);
+        moduleName.setForeground(Colours.DARK_BLUE);
         paramPanel.add(moduleName, c);
 
         JSeparator separator = new JSeparator();
@@ -181,7 +181,7 @@ public class ComponentFactory {
 
         ModuleTitle title = new ModuleTitle(module);
         if (module.isRunnable() |! module.isEnabled()) title.setForeground(Color.BLACK);
-        else title.setForeground(Color.RED);
+        else title.setForeground(Colours.RED);
         title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
         c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;
@@ -224,7 +224,7 @@ public class ComponentFactory {
         panel.add(leftArrowLabel,c);
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Color.BLUE);
+        separatorLeft.setForeground(Colours.DARK_BLUE);
         c.weightx = 1;
         c.gridx++;
         panel.add(separatorLeft,c);
@@ -232,14 +232,14 @@ public class ComponentFactory {
         JLabel label = new JLabel();
         label.setText(module.getNickname());
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        label.setForeground(Color.BLUE);
+        label.setForeground(Colours.DARK_BLUE);
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0,0,0,0);
         panel.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Color.BLUE);
+        separatorRight.setForeground(Colours.DARK_BLUE);
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,5,0,0);

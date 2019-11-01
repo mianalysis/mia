@@ -67,8 +67,8 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.add(helpCheckbox);
         notesCheckbox.setSelected(GUI.showNotes());
         menu.add(notesCheckbox);
-//        fileListCheckbox.setSelected(GUI.showFileList());
-//        menu.add(fileListCheckbox);
+        fileListCheckbox.setSelected(GUI.showFileList());
+        menu.add(fileListCheckbox);
 
         // Creating the help menu
         menu = new JMenu("Help");

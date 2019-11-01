@@ -38,7 +38,7 @@ public class EditingPanel extends MainPanel {
 
     private boolean showHelp = Prefs.get("MIA.showEditingHelp",false);
     private boolean showNotes = Prefs.get("MIA.showEditingNotes",false);
-    private boolean showFileList = Prefs.get("MIA.showFileList",true);
+    private boolean showFileList = Prefs.get("MIA.showEditingFileList",false);
     private Module lastHelpNotesModule = null;
 
 
@@ -313,6 +313,10 @@ public class EditingPanel extends MainPanel {
     @Override
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
+        Prefs.set("MIA.showEditingFileList",showFileList);
+
+        fileListPanel.setVerifyInputWhenFocusTarget(showFileList);
+        GUI.updatePanel();
     }
 
     @Override

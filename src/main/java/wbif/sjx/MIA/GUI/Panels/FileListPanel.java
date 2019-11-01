@@ -1,28 +1,40 @@
 package wbif.sjx.MIA.GUI.Panels;
 
+import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Metadata;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class FileListPanel extends JPanel implements TableCellRenderer {
+public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
     private final WorkspaceCollection workspaces;
     private final JTable table;
     private final HashMap<Workspace,Integer> rows = new HashMap<>();
-    private DefaultTableModel model = new DefaultTableModel();
+    private final DefaultTableModel model = new DefaultTableModel();
+    private final FileListColumnSelectorMenu columnSelectorMenu = new FileListColumnSelectorMenu(this);
+    TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
 
-    private static final int COL_WORKSPACE = 0;
-    private static final int COL_SERIESNAME = 1;
-    private static final int COL_SERIESNUMBER = 2;
-    private static final int COL_PROGRESS = 3;
+    private final int maxWidth;
+    private final int minWidth;
+    private final int preferredWidth;
+
+    public static final int COL_WORKSPACE = 0;
+    public static final int COL_SERIESNAME = 1;
+    public static final int COL_SERIESNUMBER = 2;
+    public static final int COL_PROGRESS = 3;
 
     public FileListPanel(WorkspaceCollection workspaces) {
         this.workspaces = workspaces;
@@ -37,24 +49,38 @@ public class FileListPanel extends JPanel implements TableCellRenderer {
         setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
 
         model.setColumnCount(4);
-        model.setColumnIdentifiers(new String[]{"Filename","Series name","Series #","Progress"});
+        model.setColumnIdentifiers(new String[]{"Filename","Ser. name","Ser. #","Progress"});
 
         table = new JTable(model);
         table.setRowSelectionAllowed(false);
-        table.getColumnModel().getColumn(COL_WORKSPACE).setCellRenderer(this);
-        table.getColumnModel().getColumn(COL_PROGRESS).setCellRenderer(this);
+        table.getTableHeader().addMouseListener(this);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setDragEnabled(false);
+        table.setBorder(BorderFactory.createEmptyBorder());
+        table.setAutoCreateRowSorter(true);
+        table.setBackground(null);
+
+        TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
+        columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
+        columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
+        columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
+
+        maxWidth = columnModel.getColumn(0).getMaxWidth();
+        minWidth = columnModel.getColumn(0).getMinWidth();
+        preferredWidth = columnModel.getColumn(0).getPreferredWidth();
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(5, 5, 20, 0);
         c.anchor = GridBagConstraints.NORTHWEST;
 
         add(scrollPane,c);
@@ -74,7 +100,7 @@ public class FileListPanel extends JPanel implements TableCellRenderer {
                     model.removeRow(row);
                 } else {
                     currentWorkspaces.add(workspace);
-                    model.setValueAt(String.valueOf(workspace.getProgress()),row,COL_PROGRESS);
+                    model.setValueAt(workspace.getProgress(),row,COL_PROGRESS);
                 }
             }
         }
@@ -84,11 +110,34 @@ public class FileListPanel extends JPanel implements TableCellRenderer {
             Metadata metadata = workspace.getMetadata();
             String seriesName = metadata.getSeriesName();
             String seriesNumber = String.valueOf(metadata.getSeriesNumber());
-            String progress = String.valueOf(workspace.getProgress());
+            double progress = workspace.getProgress();
 
             if (!currentWorkspaces.contains(workspace)) model.addRow(new Object[]{workspace,seriesName,seriesNumber,progress});
 
         }
+
+        table.repaint();
+        table.validate();
+
+    }
+
+    public void showColumn(int columnIndex, boolean show) {
+        TableColumn column = table.getColumnModel().getColumn(columnIndex);
+
+        if (show) {
+            column.setPreferredWidth(preferredWidth);
+            column.setMinWidth(minWidth);
+            column.setMaxWidth(maxWidth);
+        } else {
+            column.setPreferredWidth(0);
+            column.setMinWidth(0);
+            column.setMaxWidth(0);
+        }
+
+        table.repaint();
+        table.validate();
+        table.doLayout();
+
     }
 
     @Override
@@ -96,13 +145,65 @@ public class FileListPanel extends JPanel implements TableCellRenderer {
         switch (column) {
             case COL_WORKSPACE:
                 JLabel label = new JLabel();
-                label.setText(((Workspace) value).getMetadata().getFilename());
+                label.setText(" "+((Workspace) value).getMetadata().getFilename());
                 return label;
+
+            case COL_SERIESNAME:
+                label = new JLabel();
+                label.setText((String) value);
+                return label;
+
+            case COL_SERIESNUMBER:
+                label = new JLabel();
+                label.setText((String) value);
+                return label;
+
             case COL_PROGRESS:
-                return null;
+                int progress = (int) Math.round(((Double) value)*100);
+                JProgressBar progressBar = new JProgressBar(0,100);
+                progressBar.setValue(progress);
+                progressBar.setBorderPainted(false);
+                progressBar.setStringPainted(true);
+                progressBar.setString("");
+                if (progress ==0) progressBar.setForeground(Colours.ORANGE);
+                else if (progress == 100) progressBar.setForeground(Colours.GREEN);
+                else progressBar.setForeground(Colours.BLUE);
+                return progressBar;
         }
 
         return null;
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // Only display menu if the right mouse button is clicked
+        if (e.getButton() != MouseEvent.BUTTON3) return;
+
+        // Populating the list containing all available modules
+        columnSelectorMenu.show(GUI.getFrame(), 0, 0);
+        columnSelectorMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
+        columnSelectorMenu.setVisible(true);
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
 
     }
 }

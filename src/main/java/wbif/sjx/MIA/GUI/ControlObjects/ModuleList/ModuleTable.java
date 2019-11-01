@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.ControlObjects.RenameListMenu;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
@@ -116,12 +117,12 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setOpaque(true);
 
-        if (isSelected) label.setBackground(new Color(145,201,247));
+        if (isSelected) label.setBackground(Colours.LIGHT_BLUE);
         else label.setBackground(table.getBackground());
 
         if (value instanceof Module) {
             Module module = (Module) value;
-            if (module instanceof GUISeparator) label.setForeground(Color.BLUE);
+            if (module instanceof GUISeparator) label.setForeground(Colours.DARK_BLUE);
             else if (!module.isEnabled()) label.setForeground(Color.GRAY);
             else label.setForeground(Color.BLACK);
             label.setText(module.getNickname());

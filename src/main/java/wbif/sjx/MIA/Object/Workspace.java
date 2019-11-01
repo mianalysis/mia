@@ -233,4 +233,9 @@ public class Workspace {
     public void setProgress(double progress) {
         this.progress = progress;
     }
+
+    @Override
+    public String toString() {
+        return "Workspace{File: "+metadata.getFilename()+", series: "+metadata.getSeriesNumber()+"("+metadata.getSeriesName()+")}";
+    }
 }

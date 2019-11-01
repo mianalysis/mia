@@ -15,6 +15,7 @@ import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
@@ -312,7 +313,7 @@ public class InputControl extends Module {
         parameters.add(new FileFolderPathP(INPUT_PATH,this,"","The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
 //        parameters.add(new FileListP(FILE_LIST,this));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1,"The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
-        parameters.add(new MessageP(MACRO_WARNING,this,"Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",Color.RED));
+        parameters.add(new MessageP(MACRO_WARNING,this,"Analysis can only be run as a single simultaneous job when ImageJ macro module is present.", Colours.RED));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
         parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1","Comma-separated list of series numbers to be processed."));
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER,this,false));
@@ -327,7 +328,7 @@ public class InputControl extends Module {
 
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 
-        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Color.RED));
+        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Colours.RED));
 
     }
 

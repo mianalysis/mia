@@ -6,6 +6,7 @@ package wbif.sjx.MIA.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
+import wbif.sjx.MIA.GUI.Panels.FileListPanel;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
@@ -89,8 +90,8 @@ public class GUI {
         initialiseAvailableModules(detectedModules);
 
         splash.setStatus(Splash.Status.CREATING_INTERFACE);
-        editingPan = new EditingPanel();
         basicPan = new BasicPanel();
+        editingPan = new EditingPanel();
 
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
