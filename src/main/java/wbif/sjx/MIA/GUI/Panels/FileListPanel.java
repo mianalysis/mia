@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Metadata;
@@ -9,15 +8,21 @@ import wbif.sjx.common.Object.Metadata;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.io.File;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 
-public class FileListPanel extends JPanel {
+public class FileListPanel extends JPanel implements TableCellRenderer {
     private final WorkspaceCollection workspaces;
     private final JTable table;
+    private final HashMap<Workspace,Integer> rows = new HashMap<>();
+    private DefaultTableModel model = new DefaultTableModel();
+
+    private static final int COL_WORKSPACE = 0;
+    private static final int COL_SERIESNAME = 1;
+    private static final int COL_SERIESNUMBER = 2;
+    private static final int COL_PROGRESS = 3;
 
     public FileListPanel(WorkspaceCollection workspaces) {
         this.workspaces = workspaces;
@@ -31,10 +36,13 @@ public class FileListPanel extends JPanel {
         setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
         setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
 
-        String[] columnNames = new String[]{"Filename","Series name","Series #","Progress"};
-        String[][] testData = new String[][]{{"dsfsf","gdfg","dgdgdfg","0.1"}};
-        table = new JTable(testData,columnNames);
+        model.setColumnCount(4);
+        model.setColumnIdentifiers(new String[]{"Filename","Series name","Series #","Progress"});
+
+        table = new JTable(model);
         table.setRowSelectionAllowed(false);
+        table.getColumnModel().getColumn(COL_WORKSPACE).setCellRenderer(this);
+        table.getColumnModel().getColumn(COL_PROGRESS).setCellRenderer(this);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -54,146 +62,47 @@ public class FileListPanel extends JPanel {
         validate();
         repaint();
 
-        validate();
-        repaint();
-
     }
 
     public void updatePanel() {
-//        removeAll();
-//
-//        // Get list of available images
-//        String[][] tableContents = getTableContents(workspaces);
-//
-//        // Creating table containing all file names
-//        JTable table = new JTable(tableContents,columnNames);
-//        scrollPane.add(table,c);
-//
-//        scrollPane.revalidate();
-//        scrollPane.repaint();
-//
-//        revalidate();
-//        repaint();
+        // Iterate over all current rows, removing any that don't exist
+        HashSet<Workspace> currentWorkspaces = new HashSet<>();
+        if (model.getRowCount() > 0) {
+            for (int row = model.getRowCount() - 1; row >= 0; row--) {
+                Workspace workspace = (Workspace) model.getValueAt(row, COL_WORKSPACE);
+                if (!workspaces.contains(workspace)) {
+                    model.removeRow(row);
+                } else {
+                    currentWorkspaces.add(workspace);
+                    model.setValueAt(String.valueOf(workspace.getProgress()),row,COL_PROGRESS);
+                }
+            }
+        }
 
-        //        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-    }
-
-    static String[][] getTableContents(WorkspaceCollection workspaces) {
-        String[][] contents = new String[workspaces.size()][4];
-
-        int i = 0;
+        // Iterating over all current Workspaces, adding any that are missing
         for (Workspace workspace:workspaces) {
             Metadata metadata = workspace.getMetadata();
-            String filename = metadata.getFilename();
             String seriesName = metadata.getSeriesName();
             String seriesNumber = String.valueOf(metadata.getSeriesNumber());
             String progress = String.valueOf(workspace.getProgress());
 
-            contents[i++] = new String[]{filename,seriesName,seriesNumber,progress};
+            if (!currentWorkspaces.contains(workspace)) model.addRow(new Object[]{workspace,seriesName,seriesNumber,progress});
 
         }
+    }
 
-        return contents;
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        switch (column) {
+            case COL_WORKSPACE:
+                JLabel label = new JLabel();
+                label.setText(((Workspace) value).getMetadata().getFilename());
+                return label;
+            case COL_PROGRESS:
+                return null;
+        }
+
+        return null;
 
     }
 }
-
-
-
-
-
-//package wbif.sjx.MIA.GUI.Panels;
-//
-//        import wbif.sjx.MIA.GUI.GUI;
-//        import wbif.sjx.MIA.Object.Workspace;
-//        import wbif.sjx.MIA.Object.WorkspaceCollection;
-//        import wbif.sjx.common.Object.Metadata;
-//
-//        import javax.swing.*;
-//        import javax.swing.border.EtchedBorder;
-//        import java.awt.*;
-//        import java.io.File;
-//
-//public class FileListPanel extends JScrollPane {
-//    private JPanel panel;
-//    private final WorkspaceCollection workspaces;
-//    private final JTable table;
-//
-//    public FileListPanel(WorkspaceCollection workspaces) {
-//        this.workspaces = workspaces;
-//
-//        panel = new JPanel();
-//        setViewportView(panel);
-//
-//        String[] columnNames = new String[]{"Filename", "Series name", "Series #", "Progress"};
-//        String[][] testData = new String[][]{{"dsfsf", "gdfg", "dgdgdfg", "0.1"}};
-//        table = new JTable(testData, columnNames);
-//        table.setRowSelectionAllowed(false);
-//
-//        JScrollPane scrollPane = new JScrollPane(table);
-//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-//
-//        panel.add(table);
-//
-//        int frameWidth = GUI.getMinimumFrameWidth();
-//        int bigButtonSize = GUI.getBigButtonSize();
-//
-//        // Initialising the scroll panel
-//        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-//        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//        getVerticalScrollBar().setUnitIncrement(10);
-//        setPreferredSize(new Dimension(frameWidth - 45 - bigButtonSize, bigButtonSize + 15));
-//        setMinimumSize(new Dimension(frameWidth - 45 - bigButtonSize, bigButtonSize + 15));
-//
-//        panel.setLayout(new GridBagLayout());
-//        panel.validate();
-//        panel.repaint();
-//
-//        validate();
-//        repaint();
-//
-//    }
-//
-//    public void updatePanel() {
-////        removeAll();
-////
-////        // Get list of available images
-////        String[][] tableContents = getTableContents(workspaces);
-////
-////        // Creating table containing all file names
-////        JTable table = new JTable(tableContents,columnNames);
-////        scrollPane.add(table,c);
-////
-////        scrollPane.revalidate();
-////        scrollPane.repaint();
-////
-////        revalidate();
-////        repaint();
-//
-//        //        DefaultTableModel model = (DefaultTableModel) table.getModel();
-//
-//    }
-//
-//    static String[][] getTableContents(WorkspaceCollection workspaces) {
-//        String[][] contents = new String[workspaces.size()][4];
-//
-//        int i = 0;
-//        for (Workspace workspace : workspaces) {
-//            Metadata metadata = workspace.getMetadata();
-//            String filename = metadata.getFilename();
-//            String seriesName = metadata.getSeriesName();
-//            String seriesNumber = String.valueOf(metadata.getSeriesNumber());
-//            String progress = String.valueOf(workspace.getProgress());
-//
-//            contents[i++] = new String[]{filename, seriesName, seriesNumber, progress};
-//
-//        }
-//
-//        return contents;
-//
-//    }
-//}

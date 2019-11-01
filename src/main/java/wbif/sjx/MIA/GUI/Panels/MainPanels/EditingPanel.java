@@ -38,7 +38,7 @@ public class EditingPanel extends MainPanel {
 
     private boolean showHelp = Prefs.get("MIA.showEditingHelp",false);
     private boolean showNotes = Prefs.get("MIA.showEditingNotes",false);
-    private boolean showFileList = Prefs.get("MIA.showFileList",false);
+    private boolean showFileList = Prefs.get("MIA.showFileList",true);
     private Module lastHelpNotesModule = null;
 
 
