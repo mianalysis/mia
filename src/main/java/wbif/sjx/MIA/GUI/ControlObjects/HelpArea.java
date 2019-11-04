@@ -22,6 +22,7 @@ public class HelpArea extends JTextPane {
         }
 
         setBackground(null);
+        setOpaque(false);
         setEditable(false);
         setCaretPosition(0);
         setBorder(new EmptyBorder(2,5,5,5));

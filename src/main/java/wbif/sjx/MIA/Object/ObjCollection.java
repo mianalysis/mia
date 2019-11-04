@@ -341,4 +341,20 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     public void removeChildren(String childObjectsName) {
         for (Obj obj:values()) obj.removeChildren(childObjectsName);
     }
+
+    public boolean containsPoint(Point<Integer> point) {
+        for (Obj obj:values()) {
+            if (obj.contains(point)) return true;
+        }
+
+        return false;
+
+    }
+
+    public boolean containsPoint(int x, int y, int z) {
+        Point<Integer> point = new Point<>(x,y,z);
+
+        return containsPoint(point);
+
+    }
 }

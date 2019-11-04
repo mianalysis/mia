@@ -76,6 +76,7 @@ public class GUI {
         }
         initialised = true;
 
+        // Creating main Frame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight,screenSize.height-50);
 
