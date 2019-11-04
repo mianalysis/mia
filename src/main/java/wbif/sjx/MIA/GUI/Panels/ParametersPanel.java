@@ -25,21 +25,26 @@ import java.awt.*;
 import java.util.LinkedHashSet;
 
 public class ParametersPanel extends JScrollPane {
+    private static final int minimumWidth = 400;
+
     private JPanel panel;
+
+    public static int getMinimumWidth() {
+        return minimumWidth;
+    }
 
     public ParametersPanel() {
         panel = new JPanel();
         setViewportView(panel);
-
-        int frameWidth = GUI.getMinimumFrameWidth();
-        int bigButtonSize = GUI.getBigButtonSize();
 
         // Initialising the scroll panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
-        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
+        setMinimumSize(new Dimension(minimumWidth,1));
+        setPreferredSize(new Dimension(1,1));
+//        setPreferredSize(new Dimension(1,Integer.MAX_VALUE));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();
@@ -237,7 +242,7 @@ public class ParametersPanel extends JScrollPane {
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "To change parameters for an existing module, click the module name on the list to the left."+
                 "<br><br>" +
-                "Modules can be added, removed and re-ordered using the +, -, ⮝ and ⮟ buttons." +
+                "Modules can be added, removed and re-ordered using the +, -, ▲ and ▼ buttons." +
                 "<br><br>" +
                 "Modules can also be disabled using the power icons to the left of each module name.  " +
                 "<br><br>Any modules highlighted in red are currently mis-configured " +

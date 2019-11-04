@@ -1,6 +1,17 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Workspace;
+
 /**
  * Created by sc13967 on 12/05/2017.
  */
@@ -10,7 +21,7 @@ public class ObjectLoader extends Module {
 
     public static final String COORDINATE_SEPARATOR = "Coordinate input";
     public static final String COORDINATE_SOURCE = "Coordinate source";
-    public static final String INPUT_IMAGE = "Input file";
+    public static final String INPUT_FILE = "Input file";
     public static final String ID_COLUMN_INDEX = "ID-column index";
     public static final String X_COLUMN_INDEX = "X-column index";
     public static final String Y_COLUMN_INDEX = "Y-column index";
@@ -49,9 +60,9 @@ public class ObjectLoader extends Module {
 
     @Override
     public boolean process(Workspace workspace) {
+        MIA.log.writeWarning("Need to implement Object loader");
 
-
-        return true;
+        return false;
 
     }
 
@@ -62,7 +73,7 @@ public class ObjectLoader extends Module {
 
         parameters.add(new ParamSeparatorP(COORDINATE_SEPARATOR,this));
         parameters.add(new ChoiceP(COORDINATE_SOURCE,this,CoordinateSources.CURRENT_FILE,CoordinateSources.ALL));
-        parameters.add(new FileParamP(INPUT_FILE,this));
+        parameters.add(new FilePathP(INPUT_FILE,this));
         parameters.add(new IntegerP(ID_COLUMN_INDEX,this,0));
         parameters.add(new IntegerP(X_COLUMN_INDEX,this,1));
         parameters.add(new IntegerP(Y_COLUMN_INDEX,this,2));

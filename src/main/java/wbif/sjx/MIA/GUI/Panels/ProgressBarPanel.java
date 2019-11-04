@@ -11,8 +11,8 @@ public class ProgressBarPanel extends JProgressBar {
 
         setValue(0);
         setBorderPainted(false);
-        setMinimumSize(new Dimension(0, 15));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 15));
+        setMinimumSize(new Dimension(1, 15));
+        setMaximumSize(new Dimension(1, 15));
         setStringPainted(true);
         setString("");
         setForeground(Colours.ORANGE);

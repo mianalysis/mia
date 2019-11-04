@@ -17,6 +17,12 @@ public class EditingControlPanel extends JPanel {
     private ModuleControlButton addModuleButton = null;
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
 
+    private static final int minimumWidth = GUI.getBigButtonSize() + 20;
+
+    public static int getMinimumWidth() {
+        return minimumWidth;
+    }
+
     public EditingControlPanel() {
         addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,GUI.getBigButtonSize(),moduleListMenu);
         listAvailableModules();
@@ -32,8 +38,9 @@ public class EditingControlPanel extends JPanel {
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.PAGE_START;
         
-        setMaximumSize(new Dimension(bigButtonSize + 20, Integer.MAX_VALUE));
-        setMinimumSize(new Dimension(bigButtonSize + 20, frameHeight - statusHeight-350));
+        setMaximumSize(new Dimension(minimumWidth, Integer.MAX_VALUE));
+        setMinimumSize(new Dimension(minimumWidth, frameHeight - statusHeight-350));
+
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setLayout(new GridBagLayout());
 

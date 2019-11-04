@@ -95,7 +95,6 @@ public class BasicPanel extends MainPanel {
 
         JPanel basicControlPanel = new JPanel();
 
-        basicControlPanel.setPreferredSize(new Dimension(frameWidth-30, bigButtonSize + 15));
         basicControlPanel.setMinimumSize(new Dimension(frameWidth-30, bigButtonSize + 15));
         basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicControlPanel.setLayout(new GridBagLayout());

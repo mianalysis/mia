@@ -26,6 +26,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     private final DefaultTableModel model = new DefaultTableModel();
     private final FileListColumnSelectorMenu columnSelectorMenu = new FileListColumnSelectorMenu(this);
     TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
+    private final static int minimumWidth = 200;
 
     private final int maxWidth;
     private final int minWidth;
@@ -39,14 +40,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     public FileListPanel(WorkspaceCollection workspaces) {
         this.workspaces = workspaces;
 
-        int frameWidth = GUI.getMinimumFrameWidth();
-        int bigButtonSize = GUI.getBigButtonSize();
-
         // Initialising the scroll panel
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
-        setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
+        setMinimumSize(new Dimension(minimumWidth, 1));
 
         model.setColumnCount(4);
         model.setColumnIdentifiers(new String[]{"Filename","Ser. name","Ser. #","Progress"});
@@ -142,6 +139,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.validate();
         table.doLayout();
 
+    }
+
+    public static int getMinimumWidth() {
+        return minimumWidth;
     }
 
     @Override
