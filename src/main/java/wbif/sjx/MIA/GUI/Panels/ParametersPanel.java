@@ -248,6 +248,7 @@ public class ParametersPanel extends JScrollPane {
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
+        usageMessage.setOpaque(false);
         panel.add(usageMessage);
 
         panel.revalidate();

@@ -17,8 +17,8 @@ import java.awt.event.ActionListener;
 public class ModuleControlButton extends JButton implements ActionListener {
     public static final String ADD_MODULE = "+";
     public static final String REMOVE_MODULE = "-";
-    public static final String MOVE_MODULE_UP = "⮝";
-    public static final String MOVE_MODULE_DOWN = "⮟";
+    public static final String MOVE_MODULE_UP = "▲";
+    public static final String MOVE_MODULE_DOWN = "▼";
 
     private JPopupMenu moduleListMenu;
 

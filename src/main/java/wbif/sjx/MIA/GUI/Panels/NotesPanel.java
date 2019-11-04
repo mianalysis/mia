@@ -86,6 +86,7 @@ public class NotesPanel extends JPanel {
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
+        usageMessage.setOpaque(false);
         add(usageMessage);
 
         revalidate();

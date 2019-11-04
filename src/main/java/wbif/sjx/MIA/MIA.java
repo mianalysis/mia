@@ -24,9 +24,12 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.DependencyValidator;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 
 /**
@@ -54,7 +57,6 @@ public class MIA implements Command {
 
         try {
             if (args.length == 0) {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 ImageJ ij = new ImageJ();
                 ij.ui().showUI();
                 ij.command().run("wbif.sjx.MIA.MIA",false);
@@ -65,7 +67,7 @@ public class MIA implements Command {
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
-                UnsupportedLookAndFeelException | ParserConfigurationException | InterruptedException e) {
+                ParserConfigurationException | InterruptedException e) {
             e.printStackTrace(System.err);
 
         }
@@ -103,12 +105,29 @@ public class MIA implements Command {
         System.setErr(new PrintStream(ErrorLog.getInstance()));
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            setLookAndFeel();
             new GUI();
 
-        } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    public void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
+//        Set<Object> def = UIManager.getLookAndFeel().getDefaults().keySet();
+//        for (Object key:def) {
+//            if (key != null) MIA.log.writeDebug(key+"_"+UIManager.getLookAndFeel().getDefaults().get(key));
+//        }
+//
+//        UIManager.put("Button.highlight",new ColorUIResource(255,0,0));
+//        UIManager.put("Button.select",new ColorUIResource(255,0,255));
+
     }
 
     public static boolean isImagePlusMode() {
