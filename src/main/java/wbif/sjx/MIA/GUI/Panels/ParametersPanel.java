@@ -25,13 +25,10 @@ import java.awt.*;
 import java.util.LinkedHashSet;
 
 public class ParametersPanel extends JScrollPane {
-    private static final int minimumWidth = 400;
+    private static final int minimumWidth = 300;
+    private static final int preferredWidth = 500;
 
     private JPanel panel;
-
-    public static int getMinimumWidth() {
-        return minimumWidth;
-    }
 
     public ParametersPanel() {
         panel = new JPanel();
@@ -43,8 +40,7 @@ public class ParametersPanel extends JScrollPane {
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
         setMinimumSize(new Dimension(minimumWidth,1));
-        setPreferredSize(new Dimension(1,1));
-//        setPreferredSize(new Dimension(1,Integer.MAX_VALUE));
+        setPreferredSize(new Dimension(preferredWidth,1));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();
@@ -271,4 +267,11 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
+    public static int getMinimumWidth() {
+        return minimumWidth;
+    }
+
+    public static int getPreferredWidth() {
+        return preferredWidth;
+    }
 }

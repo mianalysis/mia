@@ -4,10 +4,13 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 
 public class HelpNotesPanel extends JSplitPane {
     private static final int minimumWidth = 200;
+    private static final int preferredWidth = 300;
 
     private final NotesPanel notesPanel = new NotesPanel();
     private final HelpPanel helpPanel = new HelpPanel();
@@ -17,10 +20,15 @@ public class HelpNotesPanel extends JSplitPane {
         setTopComponent(helpPanel);
         setBottomComponent(notesPanel);
 
-        setMinimumSize(new Dimension(minimumWidth, 1));
+        setMinimumSize(new Dimension(minimumWidth,1));
+        setPreferredSize(new Dimension(preferredWidth,1));
         setBorder(null);
         setDividerLocation(0.5);
         setResizeWeight(0.5);
+
+        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) getUI();
+        splitPaneUI.getDivider().setBorder(new EmptyBorder(0,0,0,0));
+
         updateSeparator();
 
     }
@@ -65,5 +73,9 @@ public class HelpNotesPanel extends JSplitPane {
 
     public static int getMinimumWidth() {
         return minimumWidth;
+    }
+
+    public static int getPreferredWidth() {
+        return preferredWidth;
     }
 }

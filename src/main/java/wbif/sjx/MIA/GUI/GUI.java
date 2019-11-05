@@ -147,21 +147,21 @@ public class GUI {
     }
 
     public static void updatePanel() {
-//        int preferredWidth = mainPanel.getPreferredWidth();
-//        int preferredHeight = mainPanel.getPreferredHeight();
-//        frame.setPreferredSize(new Dimension(preferredWidth,preferredHeight));
-//
-//        int minimumWidth = mainPanel.getMinimumWidth();
-//        int minimumHeight = mainPanel.getMinimumHeight();
-//        frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
+        int preferredWidth = mainPanel.getPreferredWidth();
+        int preferredHeight = mainPanel.getPreferredHeight();
+        frame.setPreferredSize(new Dimension(preferredWidth,preferredHeight));
+
+        int minimumWidth = mainPanel.getMinimumWidth();
+        int minimumHeight = mainPanel.getMinimumHeight();
+        frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
 
         menuBar.setHelpSelected(showHelp());
         menuBar.setNotesSelected(showNotes());
         menuBar.setFileListSelected(showFileList());
 
-//        frame.pack();
-//        frame.revalidate();
-//        frame.repaint();
+        frame.pack();
+        frame.revalidate();
+        frame.repaint();
 
     }
 

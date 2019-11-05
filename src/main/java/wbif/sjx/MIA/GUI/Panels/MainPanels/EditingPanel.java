@@ -11,6 +11,9 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 
 public class EditingPanel extends MainPanel {
@@ -98,12 +101,16 @@ public class EditingPanel extends MainPanel {
         splitPane1.setBorder(null);
         splitPane1.setDividerSize(5);
         splitPane1.setDividerLocation(0.5);
+        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane1.getUI();
+        splitPaneUI.getDivider().setBorder(new EmptyBorder(0,0,0,0));
 
         splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,parametersPanel,splitPane1);
         splitPane2.setPreferredSize(new Dimension(1,1));
         splitPane2.setBorder(null);
         splitPane2.setDividerSize(5);
         splitPane2.setDividerLocation(0.5);
+        splitPaneUI = (BasicSplitPaneUI) splitPane2.getUI();
+        splitPaneUI.getDivider().setBorder(new EmptyBorder(0,0,0,0));
 
         c.gridx++;
         c.gridy = 0;
@@ -170,29 +177,29 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public int getPreferredWidth() {
-//        int currentWidth = EditingControlPanel.getMinimumWidth()
-//                + ModulesPanel.getMinimumWidth()
-//                + ParametersPanel.getMinimumWidth();
-//
-//        if (showHelp || showNotes) {
-//            currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth();
-//        }
-//        if (showFileList) {
-//            currentWidth = currentWidth + FileListPanel.getMinimumWidth();
-//        }
+        int currentWidth = EditingControlPanel.getMinimumWidth()
+                + ModulesPanel.getMinimumWidth()
+                + ParametersPanel.getPreferredWidth()
+                + 15;
 
-        return 1100;
+        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth() + 5;
+        if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth() + 5;
+
+        return currentWidth;
 
     }
 
     @Override
     public int getMinimumWidth() {
-        int currentWidth = EditingControlPanel.getMinimumWidth() + ModulesPanel.getMinimumWidth();
+        int currentWidth = EditingControlPanel.getMinimumWidth()
+                + ModulesPanel.getMinimumWidth()
+                + ParametersPanel.getMinimumWidth()
+                + 15;
 
-        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth();
-        if (showFileList) currentWidth = currentWidth + FileListPanel.getMinimumWidth();
+        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth() + 5;
+        if (showFileList) currentWidth = currentWidth + FileListPanel.getMinimumWidth() + 5;
 
-        return 1100;
+        return currentWidth;
 
     }
 
@@ -279,7 +286,6 @@ public class EditingPanel extends MainPanel {
         GUI.updatePanel();
 
         updateSeparators();
-//        GUI.getFrame().pack();
 
     }
 
@@ -297,7 +303,6 @@ public class EditingPanel extends MainPanel {
         GUI.updatePanel();
 
         updateSeparators();
-//        GUI.getFrame().pack();
 
     }
 
@@ -315,7 +320,6 @@ public class EditingPanel extends MainPanel {
         GUI.updatePanel();
 
         updateSeparators();
-//        GUI.getFrame().pack();
 
     }
 

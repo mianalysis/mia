@@ -3,7 +3,6 @@ package wbif.sjx.MIA.GUI.Panels;
 import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Metadata;
@@ -14,8 +13,6 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -26,11 +23,13 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     private final DefaultTableModel model = new DefaultTableModel();
     private final FileListColumnSelectorMenu columnSelectorMenu = new FileListColumnSelectorMenu(this);
     TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
+
     private final static int minimumWidth = 200;
+    private final static int preferredWidth = 300;
 
     private final int maxWidth;
     private final int minWidth;
-    private final int preferredWidth;
+    private final int prefWidth;
 
     public static final int COL_WORKSPACE = 0;
     public static final int COL_SERIESNAME = 1;
@@ -43,7 +42,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         // Initialising the scroll panel
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setMinimumSize(new Dimension(minimumWidth, 1));
+        setMinimumSize(new Dimension(minimumWidth,1));
+        setPreferredSize(new Dimension(preferredWidth,1));
 
         model.setColumnCount(4);
         model.setColumnIdentifiers(new String[]{"Filename","Ser. name","Ser. #","Progress"});
@@ -69,7 +69,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         maxWidth = columnModel.getColumn(0).getMaxWidth();
         minWidth = columnModel.getColumn(0).getMinWidth();
-        preferredWidth = columnModel.getColumn(0).getPreferredWidth();
+        prefWidth = columnModel.getColumn(0).getPreferredWidth();
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -126,7 +126,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         TableColumn column = table.getColumnModel().getColumn(columnIndex);
 
         if (show) {
-            column.setPreferredWidth(preferredWidth);
+            column.setPreferredWidth(prefWidth);
             column.setMinWidth(minWidth);
             column.setMaxWidth(maxWidth);
         } else {
@@ -143,6 +143,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
     public static int getMinimumWidth() {
         return minimumWidth;
+    }
+
+    public static int getPreferredWidth() {
+        return preferredWidth;
     }
 
     @Override
