@@ -11,7 +11,6 @@ public class StatusPanel extends JLayeredPane {
 
     public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
-        int frameWidth = GUI.getMinimumFrameWidth();
 
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));

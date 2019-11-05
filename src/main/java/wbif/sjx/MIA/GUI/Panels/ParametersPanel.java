@@ -236,16 +236,21 @@ public class ParametersPanel extends JScrollPane {
         usageMessage.setContentType("text/html");
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
-                "To change parameters for an existing module, click the module name on the list to the left."+
+                "To change parameters for an existing module," +
+                "<br>click the module name on the list to the left."+
                 "<br><br>" +
-                "Modules can be added, removed and re-ordered using the +, -, ▲ and ▼ buttons." +
+                "Modules can be added, removed and re-ordered using" +
+                "<br>the +, -, ▲ and ▼ buttons." +
                 "<br><br>" +
-                "Modules can also be disabled using the power icons to the left of each module name.  " +
-                "<br><br>Any modules highlighted in red are currently mis-configured " +
-                "<br>(possibly missing outputs from previous modules) and won't run." +
+                "Modules can also be disabled using the power icons" +
+                "<br>to the left of each module name.  " +
+                "<br><br>Any modules highlighted in red are currently" +
+                "<br>mis-configured (possibly missing outputs from " +
+                "<br>previous modules) and won't run." +
                 "<br><br>" +
                 "To execute a full analysis, click \"Run\".  " +
-                "<br>Alternatively, step through an analysis using the arrow icons to the right of each module name." +
+                "<br>Alternatively, step through an analysis using the" +
+                "<br>arrow icons to the right of each module name." +
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);

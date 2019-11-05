@@ -31,9 +31,9 @@ import java.util.LinkedHashSet;
 public class ComponentFactory {
     private int elementHeight;
 
-    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow-204_blue_12px.png"), "");
-    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow-204_blue_12px.png"), "");
-    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow-204_blue_12px.png"), "");
+    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_darkblue_12px.png"), "");
+    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_darkblue_12px.png"), "");
+    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_darkblue_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
@@ -58,22 +58,6 @@ public class ComponentFactory {
             parameterComponent.setToolTipText(value == null ? "" : value);
             c.insets = new Insets(10,3,5,5);
             paramPanel.add(parameterComponent,c);
-
-        } else if (parameter instanceof FileListP) {
-            String value = parameter.getRawStringValue();
-            parameterComponent.setToolTipText(value == null ? "" : value);
-            c.insets = new Insets(10,3,5,0);
-            paramPanel.add(parameterComponent,c);
-
-            if (editable) {
-                c.insets = new Insets(2, 5, 0, 5);
-                c.gridx++;
-                c.weightx = 0;
-                c.anchor = GridBagConstraints.EAST;
-                VisibleCheck visibleCheck = new VisibleCheck(parameter);
-                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-                paramPanel.add(visibleCheck, c);
-            }
 
         } else if (parameter instanceof ParamSeparatorP) {
             if (module.updateAndGetParameters().values().iterator().next() == parameter) {

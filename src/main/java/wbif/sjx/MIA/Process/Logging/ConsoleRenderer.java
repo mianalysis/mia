@@ -59,7 +59,7 @@ public class ConsoleRenderer implements LogRenderer {
         writeToConsole.put(Level.DEBUG,false);
 
         Style memoryStyle = consoleTextPane.addStyle("Memory style", null);
-        StyleConstants.setForeground(memoryStyle, new Color(63, 176, 22));
+        StyleConstants.setForeground(memoryStyle, Colours.GREEN);
         logStyles.put(Level.MEMORY,memoryStyle);
         writeToConsole.put(Level.MEMORY,false);
 
