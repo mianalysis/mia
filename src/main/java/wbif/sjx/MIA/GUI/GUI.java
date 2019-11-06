@@ -82,16 +82,33 @@ public class GUI {
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
         splash.setVisible(true);
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         splash.setStatus(Splash.Status.DETECTING_MODULES);
         Set<Class<? extends Module>> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
-
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
-
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         splash.setStatus(Splash.Status.CREATING_INTERFACE);
         basicPan = new BasicPanel();
         editingPan = new EditingPanel();
-
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
 

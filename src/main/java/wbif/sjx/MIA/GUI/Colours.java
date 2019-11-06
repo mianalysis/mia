@@ -6,11 +6,18 @@ import java.awt.*;
  * Created by Stephen Cross on 01/11/2019.
  */
 public class Colours {
-    public static final Color LIGHT_BLUE = new Color(134,208,230); // #86d0e6
-    public static final Color BLUE = new Color(66,183,217); // #42b7d9
-    public static final Color DARK_BLUE = new Color(34,140,170); // #228caa
-    public static final Color GREEN = new Color(89,216,68); // #59d844
-    public static final Color ORANGE = new Color(233,142,50); // #e98e32
-    public static final Color RED = new Color(217,66,66); // #d94242
+    public static final String LIGHT_BLUE_HEX = "#86D0E6";
+    public static final String BLUE_HEX = "#42B7D9";
+    public static final String DARK_BLUE_HEX = "#228CAA";
+    public static final String GREEN_HEX = "#59D844";
+    public static final String ORANGE_HEX = "#E98E32";
+    public static final String RED_HEX = "#D94242";
+
+    public static final Color LIGHT_BLUE = Color.decode(LIGHT_BLUE_HEX);
+    public static final Color BLUE = Color.decode(BLUE_HEX);
+    public static final Color DARK_BLUE = Color.decode(DARK_BLUE_HEX);
+    public static final Color GREEN = Color.decode(GREEN_HEX);
+    public static final Color ORANGE = Color.decode(ORANGE_HEX);
+    public static final Color RED = Color.decode(RED_HEX);
 
 }
