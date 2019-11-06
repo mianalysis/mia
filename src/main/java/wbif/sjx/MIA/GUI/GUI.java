@@ -6,7 +6,6 @@ package wbif.sjx.MIA.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.Panels.FileListPanel;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
@@ -51,7 +50,6 @@ public class GUI {
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
-    private static int minimumFrameWidth = 400;
     private static int frameHeight = 850;
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
@@ -487,10 +485,6 @@ public class GUI {
 
 
     // COMPONENT SIZE GETTERS
-
-    public static int getMinimumFrameWidth() {
-        return minimumFrameWidth;
-    }
 
     public static int getMinimumFrameHeight() {
         return minimumFrameHeight;

@@ -1,10 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.Panels.FileListPanel;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -25,21 +25,22 @@ import java.awt.*;
 import java.util.LinkedHashSet;
 
 public class ParametersPanel extends JScrollPane {
+    private static final int minimumWidth = 300;
+    private static final int preferredWidth = 500;
+
     private JPanel panel;
 
     public ParametersPanel() {
         panel = new JPanel();
         setViewportView(panel);
 
-        int frameWidth = GUI.getMinimumFrameWidth();
-        int bigButtonSize = GUI.getBigButtonSize();
-
         // Initialising the scroll panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
-        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
+        setMinimumSize(new Dimension(minimumWidth,1));
+        setPreferredSize(new Dimension(preferredWidth,1));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();
@@ -235,16 +236,21 @@ public class ParametersPanel extends JScrollPane {
         usageMessage.setContentType("text/html");
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
-                "To change parameters for an existing module, click the module name on the list to the left."+
+                "To change parameters for an existing module," +
+                "<br>click the module name on the list to the left."+
                 "<br><br>" +
-                "Modules can be added, removed and re-ordered using the +, -, ⮝ and ⮟ buttons." +
+                "Modules can be added, removed and re-ordered using" +
+                "<br>the +, -, ▲ and ▼ buttons." +
                 "<br><br>" +
-                "Modules can also be disabled using the power icons to the left of each module name.  " +
-                "<br><br>Any modules highlighted in red are currently mis-configured " +
-                "<br>(possibly missing outputs from previous modules) and won't run." +
+                "Modules can also be disabled using the power icons" +
+                "<br>to the left of each module name.  " +
+                "<br><br>Any modules highlighted in red are currently" +
+                "<br>mis-configured (possibly missing outputs from " +
+                "<br>previous modules) and won't run." +
                 "<br><br>" +
                 "To execute a full analysis, click \"Run\".  " +
-                "<br>Alternatively, step through an analysis using the arrow icons to the right of each module name." +
+                "<br>Alternatively, step through an analysis using the" +
+                "<br>arrow icons to the right of each module name." +
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
@@ -266,4 +272,11 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
+    public static int getMinimumWidth() {
+        return minimumWidth;
+    }
+
+    public static int getPreferredWidth() {
+        return preferredWidth;
+    }
 }
