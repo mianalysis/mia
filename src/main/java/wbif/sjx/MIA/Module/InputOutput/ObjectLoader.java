@@ -64,7 +64,10 @@ public class ObjectLoader extends Module {
 
     public static final String RELATIONSHIP_SEPARATOR = "Relationship controls";
     public static final String CREATE_PARENTS = "Create parent objects";
+    public static final String PARENT_TYPE = "Parent objects type";
+    public static final String PARENT_CLUSTERS_NAME = "Output parent clusters name";
     public static final String PARENT_OBJECTS_NAME = "Output parent objects name";
+    public static final String PARENT_TRACKS_NAME = "Output parent tracks name";
     public static final String PARENTS_COLUMN_INDEX = "Parent object ID index";
 
     public ObjectLoader(ModuleCollection modules) {
@@ -93,6 +96,15 @@ public class ObjectLoader extends Module {
         String MANUAL = "Manual";
 
         String[] ALL = new String[]{FROM_IMAGE,MANUAL};
+
+    }
+
+    public interface ParentTypes {
+        String CLUSTER = "Cluster";
+        String NORMAL = "Normal";
+        String TRACK = "Track";
+
+        String[] ALL = new String[]{CLUSTER,NORMAL,TRACK};
 
     }
 
@@ -332,8 +344,21 @@ public class ObjectLoader extends Module {
         String limitsSource = parameters.getValue(LIMITS_SOURCE);
         String calSource = parameters.getValue(CALIBRATION_SOURCE);
         boolean createParents = parameters.getValue(CREATE_PARENTS);
-        String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+        String parentType = parameters.getValue(PARENT_TYPE);
         int parentsIdx = parameters.getValue(PARENTS_COLUMN_INDEX);
+
+        String parentObjectsName = null;
+        switch (parentType) {
+            case ParentTypes.CLUSTER:
+                parentObjectsName = parameters.getValue(PARENT_CLUSTERS_NAME);
+                break;
+            case ParentTypes.NORMAL:
+                parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+                break;
+            case ParentTypes.TRACK:
+                parentObjectsName = parameters.getValue(PARENT_TRACKS_NAME);
+                break;
+        }
 
         // Getting file to load
         File inputFile = getInputFile(workspace);
@@ -408,7 +433,10 @@ public class ObjectLoader extends Module {
 
         parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
         parameters.add(new BooleanP(CREATE_PARENTS,this,false));
+        parameters.add(new ChoiceP(PARENT_TYPE,this,ParentTypes.NORMAL,ParentTypes.ALL));
+        parameters.add(new OutputClusterObjectsP(PARENT_CLUSTERS_NAME,this));
         parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME,this));
+        parameters.add(new OutputTrackObjectP(PARENT_TRACKS_NAME,this));
         parameters.add(new IntegerP(PARENTS_COLUMN_INDEX,this,5));
 
     }
@@ -461,7 +489,18 @@ public class ObjectLoader extends Module {
         returnedParameters.add(parameters.get(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.get(CREATE_PARENTS));
         if (parameters.getValue(CREATE_PARENTS)) {
-            returnedParameters.add(parameters.get(PARENT_OBJECTS_NAME));
+            returnedParameters.add(parameters.get(PARENT_TYPE));
+            switch ((String) parameters.getValue(PARENT_TYPE)) {
+                case ParentTypes.CLUSTER:
+                    returnedParameters.add(parameters.get(PARENT_CLUSTERS_NAME));
+                    break;
+                case ParentTypes.NORMAL:
+                    returnedParameters.add(parameters.get(PARENT_OBJECTS_NAME));
+                    break;
+                case ParentTypes.TRACK:
+                    returnedParameters.add(parameters.get(PARENT_TRACKS_NAME));
+                    break;
+            }
             returnedParameters.add(parameters.get(PARENTS_COLUMN_INDEX));
         }
 
@@ -490,7 +529,18 @@ public class ObjectLoader extends Module {
 
         if (parameters.getValue(CREATE_PARENTS)) {
             String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+            String parentObjectsName = null;
+            switch ((String) parameters.getValue(PARENT_TYPE)) {
+                case ParentTypes.CLUSTER:
+                    parentObjectsName = parameters.getValue(PARENT_CLUSTERS_NAME);
+                    break;
+                case ParentTypes.NORMAL:
+                    parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+                    break;
+                case ParentTypes.TRACK:
+                    parentObjectsName = parameters.getValue(PARENT_TRACKS_NAME);
+                    break;
+            }
             returnedRelationships.add(relationshipRefs.getOrPut(parentObjectsName,childObjectsName));
         }
 

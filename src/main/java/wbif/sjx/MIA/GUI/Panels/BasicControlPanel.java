@@ -20,7 +20,7 @@ public class BasicControlPanel extends JScrollPane {
     private static GUISeparator loadSeparator;
     private JPanel panel;
 
-    private static final int minimumWidth = 300;
+    private static final int minimumWidth = 400;
     private static final int preferredWidth = 400;
 
 

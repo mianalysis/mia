@@ -25,8 +25,8 @@ import java.awt.*;
 import java.util.LinkedHashSet;
 
 public class ParametersPanel extends JScrollPane {
-    private static final int minimumWidth = 300;
-    private static final int preferredWidth = 500;
+    private static final int minimumWidth = 400;
+    private static final int preferredWidth = 600;
 
     private JPanel panel;
 

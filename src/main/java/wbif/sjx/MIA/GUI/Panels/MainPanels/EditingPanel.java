@@ -179,11 +179,10 @@ public class EditingPanel extends MainPanel {
     public int getPreferredWidth() {
         int currentWidth = EditingControlPanel.getMinimumWidth()
                 + ModulesPanel.getMinimumWidth()
-                + ParametersPanel.getPreferredWidth()
-                + 15;
+                + ParametersPanel.getPreferredWidth();
 
-        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth() + 5;
-        if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth() + 5;
+        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
+        if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth();
 
         return currentWidth;
 
@@ -193,11 +192,10 @@ public class EditingPanel extends MainPanel {
     public int getMinimumWidth() {
         int currentWidth = EditingControlPanel.getMinimumWidth()
                 + ModulesPanel.getMinimumWidth()
-                + ParametersPanel.getMinimumWidth()
-                + 15;
+                + ParametersPanel.getMinimumWidth();
 
-        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth() + 5;
-        if (showFileList) currentWidth = currentWidth + FileListPanel.getMinimumWidth() + 5;
+        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getMinimumWidth();
+        if (showFileList) currentWidth = currentWidth + FileListPanel.getMinimumWidth();
 
         return currentWidth;
 
