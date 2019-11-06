@@ -27,6 +27,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         addActionListener(this);
 
+
     }
 
     public Module getModule() {

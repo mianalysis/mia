@@ -50,7 +50,6 @@ public class GUI {
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
-    private static int minimumFrameWidth = 400;
     private static int frameHeight = 850;
     private static int elementHeight = 26;
     private static int bigButtonSize = 45;
@@ -75,6 +74,7 @@ public class GUI {
         }
         initialised = true;
 
+        // Creating main Frame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight,screenSize.height-50);
 
@@ -89,8 +89,8 @@ public class GUI {
         initialiseAvailableModules(detectedModules);
 
         splash.setStatus(Splash.Status.CREATING_INTERFACE);
-        editingPan = new EditingPanel();
         basicPan = new BasicPanel();
+        editingPan = new EditingPanel();
 
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
@@ -222,11 +222,11 @@ public class GUI {
         return analysis.getModules();
     }
 
-    public static void updateProgressBar(int val) {
+    public synchronized static void updateProgressBar(int val) {
         mainPanel.setProgress(val);
     }
 
-    public static void updateProgressBar() {
+    public synchronized static void updateProgressBar() {
         WorkspaceCollection workspaces = analysisRunner.getWorkspaces();
 
         updateProgressBar((int) Math.round(workspaces.getOverallProgress()*100));
@@ -485,10 +485,6 @@ public class GUI {
 
 
     // COMPONENT SIZE GETTERS
-
-    public static int getMinimumFrameWidth() {
-        return minimumFrameWidth;
-    }
 
     public static int getMinimumFrameHeight() {
         return minimumFrameHeight;

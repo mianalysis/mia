@@ -8,25 +8,28 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 
 public class BasicPanel extends MainPanel {
-    private static int frameWidth = GUI.getMinimumFrameWidth();
-    private static int minimumFrameWidth = GUI.getMinimumFrameWidth();
     private static int frameHeight = GUI.getFrameHeight();
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
     private static final StatusPanel statusPanel = new StatusPanel();
     private static final BasicControlPanel controlPanel = new BasicControlPanel();
     private static final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
-    private static final JPanel helpNotesPanel = new JPanel();
+    private final HelpNotesPanel helpNotesPanel = new HelpNotesPanel();
     private static final HelpPanel helpPanel = new HelpPanel();
     private static final NotesPanel notesPanel = new NotesPanel();
+    private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
+    private final JSplitPane splitPane1;
+    private final JSplitPane splitPane2;
 
     private static boolean showHelp = Prefs.get("MIA.showBasicHelp",false);
     private static boolean showNotes = Prefs.get("MIA.showBasicNotes",false);
-    private boolean showFileList = Prefs.get("MIA.showFileList",false);
+    private boolean showFileList = Prefs.get("MIA.showBasicFileList",false);
     private static Module lastHelpNotesModule = null;
 
 
@@ -34,53 +37,66 @@ public class BasicPanel extends MainPanel {
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 0, 5);
+
+        // Initialising the control panel
+        c.insets = new Insets(5, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
+        c.gridheight = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Initialising the control panel
         add(initialiseBasicControlPanel(), c);
 
         // Initialising the parameters panel
-        c.gridy++;
-        c.weighty = 1;
-        c.gridwidth = 1;
-        c.fill = GridBagConstraints.BOTH;
-        add(controlPanel, c);
+        updateFileList();
+        updateHelpNotes();
 
-        // Initialising the help and notes panels
-        initialiseBasicHelpNotesPanels();
-        c.weightx = 0;
-        c.gridx++;
-        c.insets = new Insets(5, 0, 0, 5);
-        add(helpNotesPanel,c);
+        splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,fileListPanel,helpNotesPanel);
+        splitPane1.setPreferredSize(new Dimension(1,1));
+        splitPane1.setBorder(null);
+        splitPane1.setDividerSize(5);
+        splitPane1.setDividerLocation(0.5);
+        BasicSplitPaneUI splitPaneUI = (BasicSplitPaneUI) splitPane1.getUI();
+        splitPaneUI.getDivider().setBorder(new EmptyBorder(0,0,0,0));
+
+        splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,controlPanel,splitPane1);
+        splitPane2.setPreferredSize(new Dimension(1,1));
+        splitPane2.setBorder(null);
+        splitPane2.setDividerSize(5);
+        splitPane2.setDividerLocation(0.5);
+        splitPaneUI = (BasicSplitPaneUI) splitPane2.getUI();
+        splitPaneUI.getDivider().setBorder(new EmptyBorder(0,0,0,0));
+
+        c.gridy++;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0, 5, 5, 5);
+        add(splitPane2,c);
 
         // Initialising the status panel
-        c.gridx = 0;
         c.gridy++;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.weighty = 0;
-        c.gridwidth = 2;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(0, 5, 5, 5);
         add(statusPanel,c);
 
         // Initialising the progress bar
         c.gridy++;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5,5,5,5);
         add(progressBarPanel,c);
 
         revalidate();
         repaint();
 
-    }
+        updateSeparators();
+        helpNotesPanel.updateSeparator();
 
+    }
 
     private static JPanel initialiseBasicControlPanel() {
         int bigButtonSize = GUI.getBigButtonSize();
@@ -89,7 +105,6 @@ public class BasicPanel extends MainPanel {
 
         JPanel basicControlPanel = new JPanel();
 
-        basicControlPanel.setPreferredSize(new Dimension(frameWidth-30, bigButtonSize + 15));
         basicControlPanel.setMinimumSize(new Dimension(frameWidth-30, bigButtonSize + 15));
         basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicControlPanel.setLayout(new GridBagLayout());
@@ -136,27 +151,6 @@ public class BasicPanel extends MainPanel {
 
     }
 
-    private static void initialiseBasicHelpNotesPanels() {
-        // Adding panels to combined JPanel
-        helpNotesPanel.setLayout(new GridBagLayout());
-        GridBagConstraints cc = new GridBagConstraints();
-
-        cc.fill = GridBagConstraints.BOTH;
-        cc.gridx = 0;
-        cc.gridy = 0;
-        cc.weightx = 1;
-        cc.weighty = 1;
-        cc.insets = new Insets(0,0,5,0);
-        helpNotesPanel.add(helpPanel,cc);
-        helpPanel.setVisible(showHelp);
-
-        cc.gridy++;
-        cc.insets = new Insets(0,0,0,0);
-        helpNotesPanel.add(notesPanel,cc);
-        notesPanel.setVisible(showNotes);
-
-    }
-
     @Override
     public void updatePanel() {
         GridBagConstraints c = new GridBagConstraints();
@@ -176,10 +170,41 @@ public class BasicPanel extends MainPanel {
         updateParameters();
 
         if (showHelp || showNotes) updateHelpNotes();
+        if (showFileList) updateFileList();
 
         revalidate();
         repaint();
 
+    }
+
+    void updateSeparators() {
+        splitPane1.getLeftComponent().setVisible(showFileList);
+        splitPane1.getRightComponent().setVisible(showHelp || showNotes);
+
+        // If both helpnotes and filelist are visible, show the separator for splitPane1
+        int pane1MinWidth = 0;
+        if ((showHelp || showNotes) && showFileList) {
+            splitPane1.setDividerSize(5);
+            splitPane1.setDividerLocation(0.5);
+            pane1MinWidth = HelpNotesPanel.getMinimumWidth()+FileListPanel.getMinimumWidth();
+        } else {
+            splitPane1.setDividerSize(0);
+            if (showHelp || showNotes) pane1MinWidth = HelpNotesPanel.getMinimumWidth();
+            else pane1MinWidth = FileListPanel.getMinimumWidth();
+        }
+        splitPane1.setMinimumSize(new Dimension(pane1MinWidth,1));
+
+        // If either the helpnotes or filelist is visible, show the separator for splitPane2
+        if (showHelp || showNotes || showFileList) {
+            splitPane2.setDividerSize(5);
+            splitPane2.getRightComponent().setVisible(true);
+            splitPane2.setDividerLocation(0.5);
+            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth()+pane1MinWidth,1));
+        } else {
+            splitPane2.setDividerSize(0);
+            splitPane2.getRightComponent().setVisible(false);
+            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth(),1));
+        }
     }
 
     @Override
@@ -199,50 +224,38 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public void updateHelpNotes() {
-        helpPanel.setVisible(showHelp);
-        notesPanel.setVisible(showNotes);
+        helpNotesPanel.showHelp(showHelp);
+        helpNotesPanel.showNotes(showNotes);
         helpNotesPanel.setVisible(showHelp || showNotes);
-
-        Module activeModule  = GUI.getFirstSelectedModule();
-
-        // If null, show a special message
-        if (activeModule == null) {
-            helpPanel.showUsageMessage();
-            notesPanel.showUsageMessage();
-            return;
-        }
-
-        // Only update the help and notes if the module has changed
-        if (activeModule != lastHelpNotesModule) {
-            lastHelpNotesModule = activeModule;
-            helpPanel.updatePanel();
-            notesPanel.updatePanel();
-        }
+        helpNotesPanel.updatePanel(GUI.getFirstSelectedModule(),lastHelpNotesModule);
     }
 
     @Override
     public void updateFileList() {
-        MIA.log.writeDebug("ADD BASIC PANEL FILE LIST HANDLING");
+        fileListPanel.setVisible(showFileList);
+        fileListPanel.updatePanel();
     }
 
     @Override
     public int getPreferredWidth() {
-        int currentWidth = frameWidth;
+        int currentWidth = BasicControlPanel.getPreferredWidth();
 
-        if (showHelp || showNotes) currentWidth+=315;
-        if (showFileList) currentWidth+=315;
+        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
+        if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth();
 
         return currentWidth;
+
     }
 
     @Override
     public int getMinimumWidth() {
-        int currentWidth = frameWidth;
+        int currentWidth = BasicControlPanel.getMinimumWidth();
 
-        if (showHelp || showNotes) currentWidth+=315;
-        if (showFileList) currentWidth+=315;
+        if (showHelp || showNotes) currentWidth = currentWidth + HelpNotesPanel.getPreferredWidth();
+        if (showFileList) currentWidth = currentWidth + FileListPanel.getPreferredWidth();
 
         return currentWidth;
+
     }
 
     @Override
@@ -263,6 +276,7 @@ public class BasicPanel extends MainPanel {
     @Override
     public void setProgress(int progress) {
         progressBarPanel.setValue(progress);
+        fileListPanel.updatePanel();
     }
 
     @Override
@@ -277,6 +291,8 @@ public class BasicPanel extends MainPanel {
 
         helpNotesPanel.setVisible(showHelp);
         GUI.updatePanel();
+
+        updateSeparators();
 
     }
 
@@ -293,6 +309,8 @@ public class BasicPanel extends MainPanel {
         helpNotesPanel.setVisible(showNotes);
         GUI.updatePanel();
 
+        updateSeparators();
+
     }
 
     @Override
@@ -303,6 +321,12 @@ public class BasicPanel extends MainPanel {
     @Override
     public void setShowFileList(boolean showFileList) {
         this.showFileList = showFileList;
+        Prefs.set("MIA.showBasicFileList",showFileList);
+
+        fileListPanel.setVisible(showFileList);
+        GUI.updatePanel();
+
+        updateSeparators();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.GUI.Panels;
 
+import wbif.sjx.MIA.GUI.Colours;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,11 +11,18 @@ public class ProgressBarPanel extends JProgressBar {
 
         setValue(0);
         setBorderPainted(false);
-        setMinimumSize(new Dimension(0, 15));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 15));
+        setMinimumSize(new Dimension(1, 15));
+        setMaximumSize(new Dimension(1, 15));
         setStringPainted(true);
         setString("");
-        setForeground(new Color(86,190,253));
+        setForeground(Colours.ORANGE);
 
+    }
+
+    @Override
+    public void setValue(int value) {
+        super.setValue(value);
+        if (value == 100) setForeground(Colours.GREEN);
+        else setForeground(Colours.BLUE);
     }
 }

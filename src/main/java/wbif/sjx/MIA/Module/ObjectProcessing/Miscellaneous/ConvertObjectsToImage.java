@@ -29,7 +29,6 @@ public class ConvertObjectsToImage extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String VOLUME_TYPE = "Volume type";
-    public static final String TEMPLATE_IMAGE = "Template image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_MODE = "Output mode";
@@ -95,7 +94,6 @@ public class ConvertObjectsToImage extends Module {
 
         } else if (conversionMode.equals(ConversionModes.OBJECTS_TO_IMAGE)) {
             String objectName = parameters.getValue(INPUT_OBJECTS);
-            String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             String outputMode = parameters.getValue(OUTPUT_MODE);
             String colourMode = parameters.getValue(COLOUR_MODE);
@@ -104,7 +102,6 @@ public class ConvertObjectsToImage extends Module {
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
-            Image templateImage = workspace.getImages().get(templateImageName);
 
             // Generating colours for each object
             HashMap<Integer, Float> hues = null;
@@ -144,16 +141,22 @@ public class ConvertObjectsToImage extends Module {
             Image outputImage = null;
             switch (outputMode) {
                 case OutputModes.CENTROID:
-                    outputImage = inputObjects.convertCentroidsToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+                    outputImage = inputObjects.convertCentroidsToImage(outputImageName, null, hues, bitDepth, nanBackground);
                     break;
                 case OutputModes.WHOLE_OBJECT:
-                    outputImage = inputObjects.convertToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+                    outputImage = inputObjects.convertToImage(outputImageName, null, hues, bitDepth, nanBackground);
                     break;
             }
 
-            // Applying spatial calibration from template image
-            Calibration calibration = templateImage.getImagePlus().getCalibration();
-            outputImage.getImagePlus().setCalibration(calibration);
+            // Applying spatial calibration from the first object (assuming there is one)
+            Calibration calibration = outputImage.getImagePlus().getCalibration();
+            Obj firstObj = inputObjects.getFirst();
+            if (firstObj != null) {
+                calibration.pixelWidth = firstObj.getDppXY();
+                calibration.pixelHeight= firstObj.getDppXY();
+                calibration.pixelDepth= firstObj.getDppZ();
+                calibration.setUnit(firstObj.getCalibratedUnits());
+            }
 
             // Adding image to workspace
             workspace.addImage(outputImage);
@@ -197,7 +200,6 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(VOLUME_TYPE, this,VolumeTypes.POINTLIST,VolumeTypes.ALL));
-        parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
@@ -222,7 +224,6 @@ public class ConvertObjectsToImage extends Module {
             returnedParameters.add(parameters.getParameter(VOLUME_TYPE));
 
         } else if(parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
-            returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
             returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(OUTPUT_MODE));

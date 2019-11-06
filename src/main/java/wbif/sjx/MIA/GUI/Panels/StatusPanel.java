@@ -11,13 +11,12 @@ public class StatusPanel extends JLayeredPane {
 
     public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
-        int frameWidth = GUI.getMinimumFrameWidth();
 
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setMinimumSize(new Dimension(0,statusHeight+15));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
-        setPreferredSize(new Dimension(frameWidth-30,statusHeight+15));
+        setMinimumSize(new Dimension(1,statusHeight+15));
+        setMaximumSize(new Dimension(1,statusHeight+15));
+        setPreferredSize(new Dimension(1,statusHeight+15));
 
     }
 }

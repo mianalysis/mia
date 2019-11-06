@@ -31,9 +31,9 @@ import java.util.LinkedHashSet;
 public class ComponentFactory {
     private int elementHeight;
 
-    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_blue_12px.png"), "");
-    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_blue_12px.png"), "");
-    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_blue_12px.png"), "");
+    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_darkblue_12px.png"), "");
+    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_darkblue_12px.png"), "");
+    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_darkblue_12px.png"), "");
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
@@ -59,22 +59,6 @@ public class ComponentFactory {
             c.insets = new Insets(10,3,5,5);
             paramPanel.add(parameterComponent,c);
 
-        } else if (parameter instanceof FileListP) {
-            String value = parameter.getRawStringValue();
-            parameterComponent.setToolTipText(value == null ? "" : value);
-            c.insets = new Insets(10,3,5,0);
-            paramPanel.add(parameterComponent,c);
-
-            if (editable) {
-                c.insets = new Insets(2, 5, 0, 5);
-                c.gridx++;
-                c.weightx = 0;
-                c.anchor = GridBagConstraints.EAST;
-                VisibleCheck visibleCheck = new VisibleCheck(parameter);
-                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-                paramPanel.add(visibleCheck, c);
-            }
-
         } else if (parameter instanceof ParamSeparatorP) {
             if (module.updateAndGetParameters().values().iterator().next() == parameter) {
                 c.insets = new Insets(0, 5, 5, 8);
@@ -92,11 +76,8 @@ public class ComponentFactory {
             parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
             paramPanel.add(parameterName, c);
 
-            if (parameter.isValid()) {
-                parameterName.setForeground(Color.BLACK);
-            } else {
-                parameterName.setForeground(Color.RED);
-            }
+            if (parameter.isValid()) parameterName.setForeground(Color.BLACK);
+            else parameterName.setForeground(Colours.RED);
 
             c.gridx++;
             c.weightx=1;
@@ -135,7 +116,7 @@ public class ComponentFactory {
         // Adding the nickname control to the top of the panel
         ExportName moduleName = new ExportName(activeModule);
         moduleName.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        moduleName.setForeground(Color.BLUE);
+        moduleName.setForeground(Color.BLACK);
         paramPanel.add(moduleName, c);
 
         JSeparator separator = new JSeparator();
@@ -181,7 +162,7 @@ public class ComponentFactory {
 
         ModuleTitle title = new ModuleTitle(module);
         if (module.isRunnable() |! module.isEnabled()) title.setForeground(Color.BLACK);
-        else title.setForeground(Color.RED);
+        else title.setForeground(Colours.RED);
         title.setToolTipText("<html><p width=\"500\">" +module.getDescription()+"</p></html>");
         c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;
@@ -192,7 +173,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicSeparator(Module module, int panelWidth) {
+    public JPanel createBasicSeparator(Module module) {
         JPanel panel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -224,7 +205,7 @@ public class ComponentFactory {
         panel.add(leftArrowLabel,c);
 
         JSeparator separatorLeft = new JSeparator();
-        separatorLeft.setForeground(Color.BLUE);
+        separatorLeft.setForeground(Colours.DARK_BLUE);
         c.weightx = 1;
         c.gridx++;
         panel.add(separatorLeft,c);
@@ -232,14 +213,14 @@ public class ComponentFactory {
         JLabel label = new JLabel();
         label.setText(module.getNickname());
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        label.setForeground(Color.BLUE);
+        label.setForeground(Colours.DARK_BLUE);
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0,0,0,0);
         panel.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
-        separatorRight.setForeground(Color.BLUE);
+        separatorRight.setForeground(Colours.DARK_BLUE);
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,5,0,0);
@@ -255,13 +236,13 @@ public class ComponentFactory {
         c.gridx++;
         panel.add(rightArrowLabel,c);
 
-        panel.setPreferredSize(new Dimension(panelWidth,25));
+//        panel.setPreferredSize(new Dimension(panelWidth,25));
 
         int labelWidth = label.getPreferredSize().width;
         label.setPreferredSize(new Dimension(labelWidth+20,25));
         label.setHorizontalAlignment(JLabel.CENTER);
-        separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
-        separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
+//        separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
+//        separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
 
         // Adding an MouseListener to check if it was clicked
         panel.addMouseListener(new MouseListener() {
@@ -300,7 +281,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleControl(Module module, int panelWidth) {
+    public JPanel createBasicModuleControl(Module module) {
         // Only displaying the module title if it has at least one visible parameter
         if (!module.hasVisibleParameters() &! module.canBeDisabled()) return null;
 

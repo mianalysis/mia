@@ -21,17 +21,20 @@ import java.util.HashMap;
 public class ModulesPanel extends JScrollPane {
     private JPanel panel;
 
+    private static final int minimumWidth = 310;
+
+    public static int getMinimumWidth() {
+        return minimumWidth;
+    }
+
     public ModulesPanel() {
         panel = new JPanel();
 
         setViewportView(panel);
 
-        int frameWidth = GUI.getMinimumFrameWidth();
-        int bigButtonSize = GUI.getBigButtonSize();
-
         // Initialising the scroll panel
-        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, -1));
-        setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, -1));
+        setPreferredSize(new Dimension(minimumWidth, -1));
+        setMinimumSize(new Dimension(minimumWidth, -1));
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

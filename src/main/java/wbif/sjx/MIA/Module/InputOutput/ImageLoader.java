@@ -18,7 +18,6 @@ import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
-import loci.plugins.in.ImporterOptions;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
@@ -28,9 +27,7 @@ import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
 import org.apache.commons.io.FilenameUtils;
-import org.scijava.ui.swing.script.ScriptEditor;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -55,7 +52,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -562,7 +558,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getPrefixName(Metadata metadata, boolean includeSeries, String ext)
+    public static String getPrefixName(Metadata metadata, boolean includeSeries, String ext)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -574,7 +570,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getSuffixName(Metadata metadata, boolean includeSeries, String ext)
+    public static String getSuffixName(Metadata metadata, boolean includeSeries, String ext)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -586,7 +582,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private String getGenericNameImage(Metadata metadata, String genericFormat)
+    public static String getGenericName(Metadata metadata, String genericFormat)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -788,7 +784,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                         case NameFormats.GENERIC:
                             metadata = (Metadata) workspace.getMetadata().clone();
-                            path = getGenericNameImage(metadata,genericFormat);
+                            path = getGenericName(metadata,genericFormat);
                             break;
                     }
 

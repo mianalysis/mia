@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
@@ -37,11 +38,11 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     public void updateState() {
         setText(module.getNickname());
         if (module.getClass() == GUISeparator.class) {
-            setForeground(Color.BLUE);
+            setForeground(Colours.DARK_BLUE);
         } else if (module.isEnabled() && module.isRunnable()) {
             setForeground(Color.BLACK);
         } else if (module.isEnabled() &! module.isRunnable()) {
-            setForeground(Color.RED);
+            setForeground(Colours.RED);
         } else {
             setForeground(Color.GRAY);
         }

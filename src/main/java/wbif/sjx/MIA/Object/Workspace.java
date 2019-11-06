@@ -23,6 +23,7 @@ public class Workspace {
     private Metadata metadata = new Metadata();
     private int ID;
     private double progress = 0;
+    private boolean analysisFailed = false;
 
 
     // CONSTRUCTOR
@@ -226,11 +227,24 @@ public class Workspace {
         return ID;
     }
 
-    public double getProgress() {
+    public synchronized double getProgress() {
         return progress;
     }
 
     public void setProgress(double progress) {
         this.progress = progress;
+    }
+
+    public boolean isAnalysisFailed() {
+        return analysisFailed;
+    }
+
+    public void setAnalysisFailed(boolean analysisFailed) {
+        this.analysisFailed = analysisFailed;
+    }
+
+    @Override
+    public String toString() {
+        return "Workspace{File: "+metadata.getFilename()+", series: "+metadata.getSeriesNumber()+"("+metadata.getSeriesName()+")}";
     }
 }

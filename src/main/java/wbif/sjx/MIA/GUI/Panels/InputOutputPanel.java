@@ -11,13 +11,14 @@ import java.awt.*;
 public class InputOutputPanel extends JPanel {
     private ModuleButton button;
 
+    private static final int minimumWidth = 310;
+
     public InputOutputPanel() {
-        int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
         // Initialising the panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
+        setPreferredSize(new Dimension(minimumWidth, bigButtonSize+15));
         setLayout(new GridBagLayout());
 
         validate();

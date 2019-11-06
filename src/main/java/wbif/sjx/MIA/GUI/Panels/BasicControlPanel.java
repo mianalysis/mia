@@ -20,18 +20,20 @@ public class BasicControlPanel extends JScrollPane {
     private static GUISeparator loadSeparator;
     private JPanel panel;
 
+    private static final int minimumWidth = 400;
+    private static final int preferredWidth = 400;
+
+
     public BasicControlPanel() {
         panel = new JPanel();
         setViewportView(panel);
-
-        int frameWidth = GUI.getMinimumFrameWidth();
-        int bigButtonSize = GUI.getBigButtonSize();
 
         globalVariablesSeparator = new GUISeparator(GUI.getModules());
         loadSeparator = new GUISeparator(GUI.getModules());
 
         // Initialising the scroll panel
-        setPreferredSize(new Dimension(frameWidth-30, -1));
+        setMinimumSize(new Dimension(minimumWidth,1));
+        setPreferredSize(new Dimension(preferredWidth, 1));
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -58,7 +60,6 @@ public class BasicControlPanel extends JScrollPane {
         AnalysisTester.testModule(outputControl,GUI.getModules());
         AnalysisTester.testModules(GUI.getModules());
 
-        int frameWidth = GUI.getMinimumFrameWidth();
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
 
@@ -80,7 +81,7 @@ public class BasicControlPanel extends JScrollPane {
 
         // Adding a separator between the input and main modules
         c.insets = new Insets(5,0,0,5);
-        panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
+        panel.add(componentFactory.createBasicSeparator(loadSeparator),c);
         c.insets = new Insets(0,0,0,5);
 
         // Only modules below an expanded GUISeparator should be displayed
@@ -89,7 +90,7 @@ public class BasicControlPanel extends JScrollPane {
         // Adding input control options
         if (expanded.isSelected()) {
             c.gridy++;
-            JPanel inputPanel = componentFactory.createBasicModuleControl(inputControl, frameWidth - 80);
+            JPanel inputPanel = componentFactory.createBasicModuleControl(inputControl);
             if (inputPanel != null) panel.add(inputPanel, c);
         }
 
@@ -109,20 +110,12 @@ public class BasicControlPanel extends JScrollPane {
                 // If this separator doesn't control any visible modules, skip it
                 if (((GUISeparator) module).getBasicModules().size() == 0 &! module.canBeDisabled()) continue;
 
-//                // Adding a blank space before the next separator
-//                if (expanded.isSelected()) {
-//                    JPanel blankPanel = new JPanel();
-//                    blankPanel.setPreferredSize(new Dimension(10, 10));
-//                    c.gridy++;
-//                    panel.add(blankPanel, c);
-//                }
-
                 expanded = module.getParameter(GUISeparator.EXPANDED_BASIC);
-                modulePanel = componentFactory.createBasicSeparator(module, frameWidth-80);
+                modulePanel = componentFactory.createBasicSeparator(module);
 
             } else {
                 if (separator.isEnabled() && module.isRunnable() || module.invalidParameterIsVisible()) {
-                    modulePanel = componentFactory.createBasicModuleControl(module, frameWidth - 80);
+                    modulePanel = componentFactory.createBasicModuleControl(module);
                 }
             }
 
@@ -137,7 +130,7 @@ public class BasicControlPanel extends JScrollPane {
             }
         }
 
-        JPanel outputPanel =componentFactory.createBasicModuleControl(outputControl,frameWidth-80);
+        JPanel outputPanel =componentFactory.createBasicModuleControl(outputControl);
         if (outputPanel != null && expanded.isSelected()) {
             c.gridy++;
             panel.add(outputPanel,c);
@@ -181,6 +174,7 @@ public class BasicControlPanel extends JScrollPane {
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);
+        usageMessage.setOpaque(false);
         panel.add(usageMessage);
 
         panel.revalidate();
@@ -188,4 +182,11 @@ public class BasicControlPanel extends JScrollPane {
 
     }
 
+    public static int getMinimumWidth() {
+        return minimumWidth;
+    }
+
+    public static int getPreferredWidth() {
+        return preferredWidth;
+    }
 }

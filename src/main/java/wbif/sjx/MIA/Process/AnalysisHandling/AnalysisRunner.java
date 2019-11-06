@@ -83,10 +83,9 @@ public class AnalysisRunner {
 
             // Adding this Workspace to the Progress monitor
             workspace.setProgress(0);
-
-            pool.submit(createRunnable(analysis,workspace,exporter));
-
         }
+
+        for (Workspace workspace:workspaces) pool.submit(createRunnable(analysis,workspace,exporter));
 
         // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
         pool.shutdown();
@@ -253,7 +252,6 @@ public class AnalysisRunner {
 
                 // Getting the number of completed and total tasks
                 incrementCounter();
-//                ProgressMonitor.finaliseWorkspace(workspace);
 
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
