@@ -51,7 +51,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table = new JTable(model);
         table.setRowSelectionAllowed(false);
         table.getTableHeader().addMouseListener(this);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         table.setDragEnabled(false);
         table.setBorder(BorderFactory.createEmptyBorder());
         table.setAutoCreateRowSorter(true);

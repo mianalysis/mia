@@ -157,21 +157,28 @@ public class EditingPanel extends MainPanel {
         splitPane1.getRightComponent().setVisible(showHelp || showNotes);
 
         // If both helpnotes and filelist are visible, show the separator for splitPane1
+        int pane1MinWidth = 0;
         if ((showHelp || showNotes) && showFileList) {
             splitPane1.setDividerSize(5);
             splitPane1.setDividerLocation(0.5);
+            pane1MinWidth = HelpNotesPanel.getMinimumWidth()+FileListPanel.getMinimumWidth();
         } else {
             splitPane1.setDividerSize(0);
+            if (showHelp || showNotes) pane1MinWidth = HelpNotesPanel.getMinimumWidth();
+            else pane1MinWidth = FileListPanel.getMinimumWidth();
         }
+        splitPane1.setMinimumSize(new Dimension(pane1MinWidth,1));
 
         // If either the helpnotes or filelist is visible, show the separator for splitPane2
         if (showHelp || showNotes || showFileList) {
             splitPane2.setDividerSize(5);
             splitPane2.getRightComponent().setVisible(true);
             splitPane2.setDividerLocation(0.5);
+            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth()+pane1MinWidth,1));
         } else {
             splitPane2.setDividerSize(0);
             splitPane2.getRightComponent().setVisible(false);
+            splitPane2.setMinimumSize(new Dimension(ParametersPanel.getMinimumWidth(),1));
         }
     }
 

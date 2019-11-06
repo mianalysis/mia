@@ -80,8 +80,8 @@ public class ParametersPanel extends JScrollPane {
         panel.add(topPanel,c);
 
         // If it's an input/output control, get the current version
-        if (module.getClass().isInstance(new InputControl(modules))) module = inputControl;
-        if (module.getClass().isInstance(new OutputControl(modules))) module = outputControl;
+        if (module instanceof InputControl) module = inputControl;
+        if (module instanceof OutputControl) module = outputControl;
 
         // If the active module hasn't got parameters enabled, skip it
         c.anchor = GridBagConstraints.NORTHWEST;

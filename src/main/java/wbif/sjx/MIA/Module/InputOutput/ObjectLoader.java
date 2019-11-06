@@ -27,6 +27,7 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -43,7 +44,16 @@ public class ObjectLoader extends Module {
 
     public static final String COORDINATE_SEPARATOR = "Coordinate input";
     public static final String COORDINATE_SOURCE = "Coordinate source";
+    public static final String NAME_FORMAT = "Name format";
+    public static final String GENERIC_FORMAT = "Generic format";
+    public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
+    public static final String PREFIX = "Prefix";
+    public static final String SUFFIX = "Suffix";
+    public static final String EXTENSION = "Extension";
+    public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String INPUT_FILE = "Input file";
+
+    public static final String COLUMN_SEPARATOR = "Column selection";
     public static final String ID_COLUMN_INDEX = "ID-column index";
     public static final String X_COLUMN_INDEX = "X-column index";
     public static final String Y_COLUMN_INDEX = "Y-column index";
@@ -76,9 +86,19 @@ public class ObjectLoader extends Module {
 
     public interface CoordinateSources {
         String CURRENT_FILE = "Current file";
+        String MATCHING_FORMAT = "Matching format";
         String SPECIFIC_FILE = "Specific file";
 
-        String[] ALL = new String[]{CURRENT_FILE,SPECIFIC_FILE};
+        String[] ALL = new String[]{CURRENT_FILE,MATCHING_FORMAT,SPECIFIC_FILE};
+
+    }
+
+    public interface NameFormats {
+        String GENERIC = "Generic (from metadata)";
+        String INPUT_FILE_PREFIX = "Input filename with prefix";
+        String INPUT_FILE_SUFFIX = "Input filename with suffix";
+
+        String[] ALL = new String[]{GENERIC,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
 
     }
 
@@ -111,16 +131,42 @@ public class ObjectLoader extends Module {
 
     File getInputFile(Workspace workspace) {
         String coordinateSource = parameters.getValue(COORDINATE_SOURCE);
+        String nameFormat = parameters.getValue(NAME_FORMAT);
+        String genericFormat = parameters.getValue(GENERIC_FORMAT);
+        String prefix = parameters.getValue(PREFIX);
+        String suffix = parameters.getValue(SUFFIX);
+        String ext = parameters.getValue(EXTENSION);
+        boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
         String filePath = parameters.getValue(INPUT_FILE);
 
         // Getting input file
-        File inputFile = null;
-        switch (coordinateSource) {
-            case CoordinateSources.CURRENT_FILE:
-            default:
-                return workspace.getMetadata().getFile();
-            case CoordinateSources.SPECIFIC_FILE:
-                return new File(filePath);
+        try {
+            switch (coordinateSource) {
+                case CoordinateSources.CURRENT_FILE:
+                default:
+                    return workspace.getMetadata().getFile();
+                case CoordinateSources.MATCHING_FORMAT:
+                    switch (nameFormat) {
+                        case NameFormats.GENERIC:
+                            default:
+                            Metadata metadata = (Metadata) workspace.getMetadata().clone();
+                            metadata.setComment(prefix);
+                            return new File(ImageLoader.getGenericName(metadata, genericFormat));
+                        case NameFormats.INPUT_FILE_PREFIX:
+                            metadata = (Metadata) workspace.getMetadata().clone();
+                            metadata.setComment(prefix);
+                            return new File(ImageLoader.getPrefixName(metadata,includeSeriesNumber,ext));
+                        case NameFormats.INPUT_FILE_SUFFIX:
+                            metadata = (Metadata) workspace.getMetadata().clone();
+                            metadata.setComment(suffix);
+                            return new File(ImageLoader.getSuffixName(metadata,includeSeriesNumber,ext));
+                    }
+                case CoordinateSources.SPECIFIC_FILE:
+                    return new File(filePath);
+            }
+        } catch (DependencyException | FormatException | IOException | ServiceException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -165,22 +211,17 @@ public class ObjectLoader extends Module {
         try {
             String[] row = csvReader.readNext();
             while (row != null) {
-                // Parsing row
-                int[] thisCoord;
                 try {
-                    thisCoord = Arrays.stream(row).mapToInt(Integer::parseInt).toArray();
-                } catch (NumberFormatException e) {
-                    // If this row doesn't contain numbers, skip to the next row
-                    row = csvReader.readNext();
-                    continue;
-                }
+                    // Comparing the coordinates
+                    int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
+                    int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    limits[0] = Math.max(limits[0],x);
+                    limits[1] = Math.max(limits[1],y);
+                    limits[2] = Math.max(limits[2],z);
 
-                // Comparing the coordinates
-                limits[0] = Math.max(limits[0],thisCoord[xIdx]);
-                limits[1] = Math.max(limits[1],thisCoord[yIdx]);
-                limits[2] = Math.max(limits[2],thisCoord[zIdx]);
+                } catch (NumberFormatException e) {}
 
-                // Getting the next row
                 row = csvReader.readNext();
 
             }
@@ -201,43 +242,12 @@ public class ObjectLoader extends Module {
     double[] getCalibrationFromImage(Workspace workspace, int[] limits) {
         double[] cal = new double[2];
 
-        String referenceImageName = parameters.getValue(LIMITS_REFERENCE_IMAGE);
+        String referenceImageName = parameters.getValue(CALIBRATION_REFERENCE_IMAGE);
         Image image = workspace.getImage(referenceImageName);
         Calibration calibration = image.getImagePlus().getCalibration();
 
-        try {
-            String path = workspace.getMetadata().getFile().getAbsolutePath();
-            int seriesNumber = workspace.getMetadata().getSeriesNumber() - 1;
-            Unit<Length> unit = Units.getOMEUnits();
-
-            // Setting spatial calibration
-            ServiceFactory factory = null;
-            factory = new ServiceFactory();
-            OMEXMLService service = factory.getInstance(OMEXMLService.class);
-            IMetadata meta = service.createOMEXMLMetadata();
-
-            ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
-            reader.setMetadataStore((MetadataStore) meta);
-            reader.setGroupFiles(false);
-            reader.setId(path);
-            reader.setSeries(seriesNumber);
-
-            if (meta.getPixelsPhysicalSizeX(seriesNumber - 1) != null) {
-                Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber - 1);
-                if (!unit.isConvertible(physicalSizeX.unit())) {
-                    MIA.log.writeWarning("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong");
-                }
-                cal[0] = (double) physicalSizeX.value(unit);
-            }
-
-            if (limits[2] > 1 && meta.getPixelsPhysicalSizeZ(seriesNumber - 1) != null) {
-                Length physicalSizeZ = meta.getPixelsPhysicalSizeZ(seriesNumber - 1);
-                cal[1] = (double) physicalSizeZ.value(unit);
-            }
-
-        } catch (DependencyException | FormatException | ServiceException | IOException e) {
-            e.printStackTrace();
-        }
+        cal[0] = calibration.pixelWidth;
+        cal[1] = calibration.pixelDepth;
 
         return cal;
 
@@ -272,42 +282,49 @@ public class ObjectLoader extends Module {
         // Iterating over each row, adding as a new Obj
         VolumeType type = VolumeType.POINTLIST;
         String units = Units.getOMEUnits().getSymbol();
+        int outOfRangeCount = 0;
         try {
             CSVReader csvReader = new CSVReader(reader);
 
             String[] row = csvReader.readNext();
             int count = 1;
             while (row != null) {
-                writeMessage("Loading object "+(count++));
-                // Parsing row
-                int[] thisCoord;
+                // If any of these fields can't be read (e.g. for the title row) we get a NumberFormatException and the row is skipped
                 try {
-                     thisCoord = Arrays.stream(row).mapToInt(Integer::parseInt).toArray();
-                } catch (NumberFormatException e) {
-                    // If this row doesn't contain numbers, skip to the next row
-                    row = csvReader.readNext();
-                    continue;
-                }
+                    // Comparing the coordinates
+                    int ID = (int) Math.round((double) Double.parseDouble(row[idIdx]));
+                    int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
+                    int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
-                // Creating the object and setting the coordinates
-                Obj obj = new Obj(type,outputObjects.getName(),thisCoord[idIdx],limits[0],limits[1],limits[2],cal[0],cal[1],units);
-                obj.add(thisCoord[xIdx],thisCoord[yIdx],thisCoord[zIdx]);
-                obj.setT(thisCoord[tIdx]);
-                outputObjects.add(obj);
+                    // Creating the object and setting the coordinates
+                    Obj obj = new Obj(type,outputObjects.getName(),ID,limits[0],limits[1],limits[2],cal[0],cal[1],units);
+                    try {
+                        obj.add(x,y,z);
+                    } catch (PointOutOfRangeException e) {
+                        outOfRangeCount++;
+                    }
+                    obj.setT(t);
+                    outputObjects.add(obj);
 
-                // Adding parent object, if necessary
-                if (parentObjects != null) {
-                    int parentID = thisCoord[parentsIdx];
+                    // Adding parent object, if necessary
+                    if (parentObjects != null) {
+                        int parentID = (int) Math.round((double) Double.parseDouble(row[parentsIdx]));
 
-                    // Getting parent object.  If it doesn't exist, adding it to the parent objects collection
-                    parentObjects.putIfAbsent(parentID,new Obj(parentObjects.getName(),parentID,obj));
-                    Obj parentObj = parentObjects.get(parentID);
+                        // Getting parent object.  If it doesn't exist, adding it to the parent objects collection
+                        parentObjects.putIfAbsent(parentID,new Obj(parentObjects.getName(),parentID,obj));
+                        Obj parentObj = parentObjects.get(parentID);
 
-                    // Adding relationship
-                    parentObj.addChild(obj);
-                    obj.addParent(parentObj);
+                        // Adding relationship
+                        parentObj.addChild(obj);
+                        obj.addParent(parentObj);
 
-                }
+                    }
+
+                    writeMessage("Loaded object "+(++count));
+
+                } catch (NumberFormatException e) {}
 
                 // Getting the next row
                 row = csvReader.readNext();
@@ -320,10 +337,9 @@ public class ObjectLoader extends Module {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return;
-        } catch (PointOutOfRangeException e) {
-            MIA.log.writeWarning(e.getMessage());
         }
+
+        if (outOfRangeCount > 0) MIA.log.writeWarning(outOfRangeCount+" points ignored due to exceeding spatial limits");
     }
 
 
@@ -368,10 +384,13 @@ public class ObjectLoader extends Module {
         switch (limitsSource) {
             case LimitsSources.FROM_IMAGE:
                 limits = getLimitsFromImage(workspace);
+                break;
             case LimitsSources.MANUAL:
                 limits = getLimitsFromManualValues();
+                break;
             case LimitsSources.MAXIMUM_COORDINATE:
                 limits = getLimitsFromMaximumCoordinates(workspace,inputFile);
+                break;
         }
         if (limits == null) return false;
 
@@ -380,8 +399,10 @@ public class ObjectLoader extends Module {
         switch (calSource) {
             case CalibrationSources.FROM_IMAGE:
                 cal = getCalibrationFromImage(workspace,limits);
+                break;
             case CalibrationSources.MANUAL:
                 cal = getCalibrationFromManualValues();
+                break;
         }
         if (cal == null) return false;
 
@@ -412,7 +433,16 @@ public class ObjectLoader extends Module {
 
         parameters.add(new ParamSeparatorP(COORDINATE_SEPARATOR,this));
         parameters.add(new ChoiceP(COORDINATE_SOURCE,this,CoordinateSources.CURRENT_FILE,CoordinateSources.ALL));
+        parameters.add(new ChoiceP(NAME_FORMAT,this, NameFormats.GENERIC, NameFormats.ALL));
+        parameters.add(new StringP(GENERIC_FORMAT,this));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS,this,false));
+        parameters.add(new StringP(PREFIX,this));
+        parameters.add(new StringP(SUFFIX,this));
+        parameters.add(new StringP(EXTENSION,this));
+        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(INPUT_FILE,this));
+
+        parameters.add(new ParamSeparatorP(COLUMN_SEPARATOR,this));
         parameters.add(new IntegerP(ID_COLUMN_INDEX,this,0));
         parameters.add(new IntegerP(X_COLUMN_INDEX,this,1));
         parameters.add(new IntegerP(Y_COLUMN_INDEX,this,2));
@@ -451,10 +481,33 @@ public class ObjectLoader extends Module {
         returnedParameters.add(parameters.get(COORDINATE_SEPARATOR));
         returnedParameters.add(parameters.get(COORDINATE_SOURCE));
         switch((String) parameters.getValue(COORDINATE_SOURCE)) {
+            case CoordinateSources.MATCHING_FORMAT:
+                returnedParameters.add(parameters.getParameter(NAME_FORMAT));
+                switch ((String) parameters.getValue(NAME_FORMAT)) {
+                    case NameFormats.GENERIC:
+                        returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
+                        returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                        MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                        parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(ImageLoader.getMetadataValues(metadataRefs));
+                        break;
+                    case NameFormats.INPUT_FILE_PREFIX:
+                        returnedParameters.add(parameters.getParameter(PREFIX));
+                        returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
+                        returnedParameters.add(parameters.getParameter(EXTENSION));
+                        break;
+                    case NameFormats.INPUT_FILE_SUFFIX:
+                        returnedParameters.add(parameters.getParameter(SUFFIX));
+                        returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
+                        returnedParameters.add(parameters.getParameter(EXTENSION));
+                        break;
+                }
+                break;
             case CoordinateSources.SPECIFIC_FILE:
                 returnedParameters.add(parameters.get(INPUT_FILE));
                 break;
         }
+
+        returnedParameters.add(parameters.get(COLUMN_SEPARATOR));
         returnedParameters.add(parameters.get(ID_COLUMN_INDEX));
         returnedParameters.add(parameters.get(X_COLUMN_INDEX));
         returnedParameters.add(parameters.get(Y_COLUMN_INDEX));

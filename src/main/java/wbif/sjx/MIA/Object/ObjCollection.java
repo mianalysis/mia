@@ -126,6 +126,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         Image dispImage = convertToImage(name,null,hues,8,false);
 
         if (dispImage == null) return null;
+        if (dispImage.getImagePlus() == null) return null;
 
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(LUTs.Random(true));

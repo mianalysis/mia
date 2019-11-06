@@ -1,9 +1,12 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 import wbif.sjx.MIA.Object.Parameters.MessageP;
 
 import javax.swing.*;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 
 public class MessageArea extends ParameterControl {
@@ -14,10 +17,13 @@ public class MessageArea extends ParameterControl {
     public MessageArea(MessageP parameter) {
         this.parameter = parameter;
 
-        control = new JPanel(new GridBagLayout());
+        control = new JPanel();
+
+        control.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
 
         textArea = new JTextArea();
         textArea.setEditable(false);
@@ -28,8 +34,17 @@ public class MessageArea extends ParameterControl {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        textArea.setBorder(null);
 
-        control.add(textArea,c);
+        JScrollPane objectsScrollPane = new JScrollPane(textArea);
+        objectsScrollPane.setPreferredSize(new Dimension(0,50));
+        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        objectsScrollPane.getVerticalScrollBar().setValue(0);
+        objectsScrollPane.setBorder(null);
+        control.add(objectsScrollPane,c);
+
 
     }
 

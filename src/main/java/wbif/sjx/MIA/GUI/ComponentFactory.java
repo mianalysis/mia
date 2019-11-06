@@ -76,11 +76,8 @@ public class ComponentFactory {
             parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
             paramPanel.add(parameterName, c);
 
-            if (parameter.isValid()) {
-                parameterName.setForeground(Color.BLACK);
-            } else {
-                parameterName.setForeground(Colours.RED);
-            }
+            if (parameter.isValid()) parameterName.setForeground(Color.BLACK);
+            else parameterName.setForeground(Colours.RED);
 
             c.gridx++;
             c.weightx=1;
@@ -176,7 +173,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicSeparator(Module module, int panelWidth) {
+    public JPanel createBasicSeparator(Module module) {
         JPanel panel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -239,13 +236,13 @@ public class ComponentFactory {
         c.gridx++;
         panel.add(rightArrowLabel,c);
 
-        panel.setPreferredSize(new Dimension(panelWidth,25));
+//        panel.setPreferredSize(new Dimension(panelWidth,25));
 
         int labelWidth = label.getPreferredSize().width;
         label.setPreferredSize(new Dimension(labelWidth+20,25));
         label.setHorizontalAlignment(JLabel.CENTER);
-        separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
-        separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
+//        separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
+//        separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
 
         // Adding an MouseListener to check if it was clicked
         panel.addMouseListener(new MouseListener() {
@@ -284,7 +281,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleControl(Module module, int panelWidth) {
+    public JPanel createBasicModuleControl(Module module) {
         // Only displaying the module title if it has at least one visible parameter
         if (!module.hasVisibleParameters() &! module.canBeDisabled()) return null;
 
