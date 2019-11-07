@@ -9,8 +9,8 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg1149"
    version="1.1"
-   viewBox="0 0 264.58333 179.91665"
-   height="680"
+   viewBox="0 0 264.58333 185.20832"
+   height="700"
    width="1000"
    sodipodi:docname="SingleLogo.svg"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)">
@@ -62,7 +62,7 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(0,-117.08335)"
+     transform="translate(0,-111.79168)"
      id="layer1">
     <g
        transform="translate(417.18672,-999.75749)"
@@ -90,7 +90,7 @@
     </g>
     <g
        id="g7097"
-       transform="translate(-0.12358699,13.166479)">
+       transform="translate(-0.12358563,10.520643)">
       <path
          inkscape:connector-curvature="0"
          style="opacity:0.36000001;fill:#404040;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter1254-8-2)"
@@ -99,19 +99,22 @@
          transform="matrix(1.8285263,0,0,1.8285263,299.52096,-1744.3305)" />
       <path
          inkscape:connector-curvature="0"
-         style="fill:#46b5d5;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+		 fill="#46b5d5"
+         style="fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 29.331355,263.0216 80.381655,-138.43213 21.09327,40.35159 23.73032,-40.69923 80.10785,138.77977 H 199.84931 L 154.43967,184.30973 131.72539,223.1373 109.71301,184.30976 64.343662,263.0216 Z"
          id="letterM" />
       <path
          inkscape:connector-curvature="0"
          inkscape:label="#path1890"
-         style="fill:#e97b32;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+		 fill="#e97b32"
+         style="fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 74.360927,263.0216 35.352083,-61.59928 17.11926,30.19437 -18.06307,31.40491 z"
          id="letterI" />
       <path
          inkscape:connector-curvature="0"
          inkscape:label="#path1892"
-         style="fill:#3edd9b;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+		 fill="#3edd9b"
+         style="fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 118.77649,263.0216 35.66325,-61.59931 35.56163,61.59931 z"
          id="letterA" />
     </g>

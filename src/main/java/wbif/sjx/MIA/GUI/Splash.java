@@ -22,11 +22,8 @@ import java.util.Date;
 
 
 public class Splash extends JFrame {
-    private int height = 290;
+    private int height = 220;
     private int width = 250;
-
-    JPanel panel = new JPanel();
-    private BorderLayout layout = new BorderLayout();
 
     JSVGCanvas canvasLogo = new JSVGCanvas();
     JSVGCanvas canvasTextDetectingModules = new JSVGCanvas();
@@ -40,8 +37,7 @@ public class Splash extends JFrame {
     public Splash() {
         // Determine special date
         String suffix = getSpecialSuffix();
-
-        setLayout(layout);
+        setLayout(new BorderLayout());
         setUndecorated(true);
         setBackground(new Color(0,0,0,0));
         setAlwaysOnTop(true);
@@ -50,7 +46,7 @@ public class Splash extends JFrame {
         setMaximumSize(new Dimension(width,height));
         setResizable(false);
 
-        canvasLogo.setDocumentState(JSVGCanvas.ALWAYS_INTERACTIVE);
+        canvasLogo.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
         canvasLogo.setOpaque(false);
         canvasLogo.setBackground(new Color(0,0,0,0));
         canvasLogo.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
@@ -62,73 +58,37 @@ public class Splash extends JFrame {
                 doc.getElementById("letterA").setAttributeNS(null, "fill", Colours.GREEN_HEX);
             }
         });
-        canvasLogo.setPreferredSize(new Dimension(width,210));
-        canvasLogo.setMinimumSize(new Dimension(width,210));
-        canvasLogo.setMaximumSize(new Dimension(width,210));
+        canvasLogo.setPreferredSize(new Dimension(width,170));
+        canvasLogo.setMinimumSize(new Dimension(width,170));
+        canvasLogo.setMaximumSize(new Dimension(width,170));
         canvasLogo.setURI(Splash.class.getResource("/Images/SingleLogo.svg").toString());
 
         canvasTextDetectingModules.setOpaque(false);
         canvasTextDetectingModules.setBackground(new Color(0,0,0,0));
-        canvasTextDetectingModules.setPreferredSize(new Dimension(width,210));
-        canvasTextDetectingModules.setMinimumSize(new Dimension(width,210));
-        canvasTextDetectingModules.setMaximumSize(new Dimension(width,210));
+        canvasTextDetectingModules.setPreferredSize(new Dimension(width,90));
+        canvasTextDetectingModules.setMinimumSize(new Dimension(width,90));
+        canvasTextDetectingModules.setMaximumSize(new Dimension(width,90));
         canvasTextDetectingModules.setURI(Splash.class.getResource("/Images/DetectingModules.svg").toString());
+        canvasTextDetectingModules.validate();
+        canvasTextDetectingModules.repaint();
 
-        canvasTextInitialisingModules.setOpaque(false);
-        canvasTextInitialisingModules.setBackground(new Color(0,0,0,0));
-        canvasTextInitialisingModules.setPreferredSize(new Dimension(width,210));
-        canvasTextInitialisingModules.setMinimumSize(new Dimension(width,210));
-        canvasTextInitialisingModules.setMaximumSize(new Dimension(width,210));
-        canvasTextInitialisingModules.setURI(Splash.class.getResource("/Images/InitialisingModules.svg").toString());
-
-        canvasTextCreatingInterface.setOpaque(false);
-        canvasTextCreatingInterface.setBackground(new Color(0,0,0,0));
-        canvasTextCreatingInterface.setPreferredSize(new Dimension(width,210));
-        canvasTextCreatingInterface.setMinimumSize(new Dimension(width,210));
-        canvasTextCreatingInterface.setMaximumSize(new Dimension(width,210));
-        canvasTextCreatingInterface.setURI(Splash.class.getResource("/Images/CreatingInterface.svg").toString());
-
-        add(BorderLayout.PAGE_START,canvasLogo);
-        panel.add(canvasTextDetectingModules);
-        panel.setBackground(new Color(0,0,0,0));
-        add(BorderLayout.PAGE_END,panel);
-
-//        validate();
-//        pack();
+        add(canvasLogo,BorderLayout.PAGE_START);
+        add(canvasTextDetectingModules,BorderLayout.PAGE_END);
 
     }
 
     public void setStatus(Status status) {
-        removeAll();
-        add(BorderLayout.PAGE_START,canvasLogo);
-        panel = new JPanel();
-        panel.setBackground(new Color(0,0,0,0));
-//        panel.add(canvasTextDetectingModules);
-
         switch (status) {
             case DETECTING_MODULES:
-//                panel.remove(0);
-                panel.add(canvasTextDetectingModules);
-//                getContentPane().remove(layout.getLayoutComponent(BorderLayout.PAGE_END));
-//                getContentPane().add(canvasTextDetectingModules,BorderLayout.PAGE_END);
+                canvasTextDetectingModules.setURI(Splash.class.getResource("/Images/DetectingModules.svg").toString());
                 break;
             case INITIALISING_MODULES:
-//                panel.remove(0);
-                panel.add(canvasTextInitialisingModules);
-//                getContentPane().remove(layout.getLayoutComponent(BorderLayout.PAGE_END));
-//                getContentPane().add(canvasTextInitialisingModules,BorderLayout.PAGE_END);
+                canvasTextDetectingModules.setURI(Splash.class.getResource("/Images/InitialisingModules.svg").toString());
                 break;
             case CREATING_INTERFACE:
-//                panel.remove(0);
-                panel.add(canvasTextCreatingInterface);
-//                getContentPane().remove(layout.getLayoutComponent(BorderLayout.PAGE_END));
-//                getContentPane().add(canvasTextCreatingInterface,BorderLayout.PAGE_END);
+                canvasTextDetectingModules.setURI(Splash.class.getResource("/Images/CreatingInterface.svg").toString());
                 break;
         }
-        add(BorderLayout.PAGE_END,panel);
-        repaint();
-//        revalidate();
-//        pack();
     }
 
     static String getSpecialSuffix() {

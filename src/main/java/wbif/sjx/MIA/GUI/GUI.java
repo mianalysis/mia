@@ -56,6 +56,7 @@ public class GUI {
     private static int moduleButtonWidth = 295;
     private static int statusHeight = 20;
 
+    Splash splash = new Splash();
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static JFrame frame = new JFrame();
     private static CustomMenuBar menuBar = new CustomMenuBar();
@@ -78,37 +79,19 @@ public class GUI {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameHeight = Math.min(frameHeight,screenSize.height-50);
 
-        Splash splash = new Splash();
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
         splash.setVisible(true);
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         splash.setStatus(Splash.Status.DETECTING_MODULES);
         Set<Class<? extends Module>> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         splash.setStatus(Splash.Status.CREATING_INTERFACE);
         basicPan = new BasicPanel();
         editingPan = new EditingPanel();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         // Adding a new ImageLoader module to the empty analysis
         analysis.getModules().add(new ImageLoader<>(getModules()));
 
