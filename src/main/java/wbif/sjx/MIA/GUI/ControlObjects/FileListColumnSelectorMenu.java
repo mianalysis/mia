@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 public class FileListColumnSelectorMenu extends JPopupMenu implements ActionListener {
     private final FileListPanel panel;
+    private final JCheckBoxMenuItem showJobID;
     private final JCheckBoxMenuItem showFilename;
     private final JCheckBoxMenuItem showSeriesname;
     private final JCheckBoxMenuItem showSeriesnumber;
@@ -17,6 +18,13 @@ public class FileListColumnSelectorMenu extends JPopupMenu implements ActionList
 
     public FileListColumnSelectorMenu(FileListPanel panel) {
         this.panel = panel;
+
+        showJobID = new JCheckBoxMenuItem();
+        showJobID.setText("Show job ID");
+        showJobID.setSelected(true);
+        showJobID.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        showJobID.addActionListener(this);
+        add(showJobID);
 
         showFilename = new JCheckBoxMenuItem();
         showFilename.setText("Show filename");
@@ -51,6 +59,9 @@ public class FileListColumnSelectorMenu extends JPopupMenu implements ActionList
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
+            case "Show job ID":
+                panel.showColumn(FileListPanel.COL_JOB_ID,showJobID.isSelected());
+                break;
             case "Show filename":
                 panel.showColumn(FileListPanel.COL_WORKSPACE,showFilename.isSelected());
                 break;
