@@ -15,6 +15,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
@@ -124,9 +125,37 @@ public class MIA implements Command {
 //        for (Object key:def) {
 //            if (key != null) MIA.log.writeDebug(key+"_"+UIManager.getLookAndFeel().getDefaults().get(key));
 //        }
-//
-//        UIManager.put("Button.highlight",new ColorUIResource(255,0,0));
-//        UIManager.put("Button.select",new ColorUIResource(255,0,255));
+
+//        UIManager.put("Menu.foreground", new ColorUIResource(255,0,128));
+//        UIManager.put("Menu.background", new ColorUIResource(50,0,50));
+        UIManager.put("Menu.selectionBackground", new ColorUIResource(255,0,255));
+        UIManager.put("Menu.acceleratorForeground", new ColorUIResource(255,0,255));
+        UIManager.put("Menu.acceleratorSelectionForeground", new ColorUIResource(255,0,255));
+        UIManager.put("Menu.useMenuBarBackgroundForTopLevel", false);
+        UIManager.put("Menu.selectionForeground", new ColorUIResource(128,128,255));
+        UIManager.put("Menu.opaque", true);
+
+
+//        try {
+//            UIManager.setLookAndFeel(lookAndFeel);
+//        } catch (UnsupportedLookAndFeelException e) {
+//            e.printStackTrace();
+//        }
+
+//        UIManager.getLookAndFeel().getDefaults().put("CheckBoxMenuItem.selectionBackground", Colours.GREEN);
+//        UIManager.getLookAndFeel().getDefaults().put("CheckBoxMenuItem.opaque", true);
+
+//        UIManager.getLookAndFeel().getDefaults().put("MenuItem.background", Colours.RED);
+//        UIManager.getLookAndFeel().getDefaults().put("MenuItem.opaque", true);
+//        UIManager.getLookAndFeel().getDefaults().put("Menu.selectionBackground",new ColorUIResource(255,0,255));
+//        UIManager.getLookAndFeel().getDefaults().put("Menu.opaque", false);
+
+
+
+//        def = UIManager.getLookAndFeel().getDefaults().keySet();
+//        for (Object key:def) {
+//            if (key != null) MIA.log.writeDebug(key+"_"+UIManager.getLookAndFeel().getDefaults().get(key));
+//        }
 
     }
 

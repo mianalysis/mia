@@ -58,6 +58,7 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu = new JMenu("View");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         add(menu);
+        menu.add(new JMenuItem("bla"));
         if (MIA.isDebug()) {
             menu.add(new MenuItem(MenuItem.BASIC_VIEW));
         } else {
