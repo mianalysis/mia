@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -81,7 +82,7 @@ public class LegacyAnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
+        List<String> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
@@ -114,16 +115,21 @@ public class LegacyAnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, Set<Class<? extends Module>> availableModules)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModules)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-        String fullModuleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
-        String moduleName = FilenameUtils.getExtension(fullModuleName);
+        String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
 
-        for (Class<?> clazz:availableModules) {
-            if (moduleName.equals(clazz.getSimpleName())) {
-                Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+        for (String availableModule:availableModules) {
+            if (moduleName.equals(availableModule)) {
+                Module module;
+                try {
+                    module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+                } catch (ClassNotFoundException e) {
+                    MIA.log.writeError(e.getMessage());
+                    continue;
+                }
 
                 if (moduleAttributes.getNamedItem("NICKNAME") != null) {
                     String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();

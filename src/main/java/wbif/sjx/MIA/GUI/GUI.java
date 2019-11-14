@@ -35,6 +35,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -87,7 +88,7 @@ public class GUI {
 
         // Detecting modules
         splash.setStatus(Splash.Status.DETECTING_MODULES);
-        Set<Class<? extends Module>> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
 
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
@@ -125,12 +126,14 @@ public class GUI {
 
     }
 
-    void initialiseAvailableModules(Set<Class<? extends Module>> detectedModules) {
+    void initialiseAvailableModules(List<String> detectedModuleNames) {
         try {
             // Creating an alphabetically-ordered list of all modules
             ModuleCollection moduleCollection = new ModuleCollection();
             availableModules = new TreeMap<>();
-            for (Class clazz : detectedModules) {
+
+            for (String detectedModuleName : detectedModuleNames) {
+                Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
                     // Skip any abstract Modules
                     if (Modifier.isAbstract(clazz.getModifiers())) continue;
@@ -143,8 +146,8 @@ public class GUI {
 
                 }
             }
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            MIA.log.writeError(e.getMessage());
         }
     }
 

@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -93,14 +94,14 @@ public class AnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        Set<Class<? extends Module>> availableModules = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> availableModuleNames = ClassHunter.getModules(false,MIA.isDebug());
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
             Node moduleNode = moduleNodes.item(i);
 
             // Creating an empty Module matching the input type.  If none was found the loop skips to the next Module
-            Module module = initialiseModule(moduleNode,modules,availableModules);
+            Module module = initialiseModule(moduleNode,modules,availableModuleNames);
             if (module == null) continue;
 
             module.setAttributesFromXML(moduleNode);
@@ -119,15 +120,21 @@ public class AnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, Set<Class<? extends Module>> availableModules)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModuleNames)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
         String className = moduleAttributes.getNamedItem("CLASSNAME").getNodeValue();
         String moduleName = FilenameUtils.getExtension(className);
 
-        for (Class<?> clazz:availableModules) {
-            if (moduleName.equals(clazz.getSimpleName())) {
+        for (String availableModuleName:availableModuleNames) {
+            if (moduleName.equals(availableModuleName)) {
+                Class<Module> clazz = null;
+                try {
+                    clazz = (Class<Module>) Class.forName(availableModuleName);
+                } catch (ClassNotFoundException e) {
+                    MIA.log.writeError(e.getMessage());
+                }
                 Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
 
                 // Populating parameters

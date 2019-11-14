@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Macro;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ClassHunter;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class MacroHandler implements MacroExtension {
@@ -66,15 +68,15 @@ public class MacroHandler implements MacroExtension {
 
     private static ArrayList<MacroOperation> initialiseMacroOperations(MacroHandler macroHandler) {
         // Using Reflections to get all MacroOperations
-        Set<Class<? extends MacroOperation>> clazzes= new ClassHunter<MacroOperation>().getClasses(MacroOperation.class,false);
+        List<String> clazzes= new ClassHunter<MacroOperation>().getClasses(MacroOperation.class,false);
 
         // Iterating over each Module, adding MacroOperations to an ArrayList
         ArrayList<MacroOperation> macroOperations = new ArrayList<>();
-        for (Class<? extends MacroOperation> clazz:clazzes) {
+        for (String clazz:clazzes) {
             try {
-                macroOperations.add(clazz.getDeclaredConstructor(MacroExtension.class).newInstance(macroHandler));
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
+                macroOperations.add((MacroOperation) Class.forName(clazz).getDeclaredConstructor(MacroExtension.class).newInstance(macroHandler));
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
+                MIA.log.writeError(e.getMessage());
             }
         }
 
