@@ -148,7 +148,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+                writeStatus("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
 
             };
             pool.submit(task);
@@ -159,7 +159,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
+            MIA.log.writeError(e.getMessage());
         }
     }
 
@@ -206,7 +206,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
-                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+                writeStatus("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
             };
             pool.submit(task);
         }
@@ -214,7 +214,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
+            MIA.log.writeError(e.getMessage());
         }
     }
 
@@ -287,7 +287,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+                writeStatus("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
             };
             pool.submit(task);
         }
@@ -295,7 +295,7 @@ public class RelateManyToOne extends Module {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            e.printStackTrace(System.err);
+            MIA.log.writeError(e.getMessage());
         }
     }
 
@@ -416,7 +416,7 @@ public class RelateManyToOne extends Module {
 
             }
 
-            writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
+            writeStatus("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
     }

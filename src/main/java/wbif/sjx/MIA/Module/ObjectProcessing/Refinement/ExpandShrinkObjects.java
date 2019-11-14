@@ -16,7 +16,6 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -132,7 +131,7 @@ public class ExpandShrinkObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()){
             Obj inputObject = iterator.next();
-            writeMessage("Processing object " + (count++) + " of " + total);
+            writeStatus("Processing object " + (count++) + " of " + total);
 
             Obj newObject = null;
             try {

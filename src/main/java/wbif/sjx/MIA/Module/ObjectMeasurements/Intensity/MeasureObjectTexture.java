@@ -1,9 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
@@ -16,9 +14,6 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.TextureCalculator;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -160,7 +155,7 @@ public class MeasureObjectTexture extends Module {
                     regionObject = GetLocalObjectRegion.getLocalRegion(object, "Centroid", radius, calibrated, false);
                 }
                 processObject(object, regionObject, inputImage, textureCalculator, offs, calibratedOffset);
-                writeMessage("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
+                writeStatus("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
             }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);

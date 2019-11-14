@@ -22,7 +22,7 @@ import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -48,7 +48,7 @@ public class LegacyAnalysisReader {
         Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
 
-        System.out.println("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        MIA.log.writeStatus("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
         return analysis;
 
@@ -64,7 +64,7 @@ public class LegacyAnalysisReader {
 
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        System.out.println("Loading analysis");
+        MIA.log.writeStatus("Loading analysis");
         GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) {
@@ -105,7 +105,7 @@ public class LegacyAnalysisReader {
                 modules.add(module);
             }
 
-            System.out.println("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
+            MIA.log.writeStatus("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
             GUI.updateProgressBar(100*Math.floorDiv(i,moduleNodes.getLength()));
 
         }
@@ -173,7 +173,7 @@ public class LegacyAnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.write("Module \""+moduleName+"\" not found (skipping)", LogRenderer.Level.WARNING);
+        MIA.log.writeWarning("Module \""+moduleName+"\" not found (skipping)");
 
         return null;
 
@@ -307,7 +307,7 @@ public class LegacyAnalysisReader {
                 }
 
             } catch (NullPointerException e) {
-                MIA.log.write("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set", LogRenderer.Level.WARNING);
+                MIA.log.writeWarning("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
 
             }
         }

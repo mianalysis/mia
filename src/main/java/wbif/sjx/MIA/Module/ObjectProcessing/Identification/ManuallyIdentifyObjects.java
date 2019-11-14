@@ -20,9 +20,8 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -648,7 +647,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 case Roi.POLYLINE:
                     polyRoi = (PolygonRoi) roi;
 
-                    if (polyRoi.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.", LogRenderer.Level.WARNING);
+                    if (polyRoi.getStrokeWidth() > 0) MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
 
                     x = polyRoi.getXCoordinates();
                     xx = new int[x.length];
@@ -664,7 +663,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 case Roi.LINE:
                     Line line = (Line) roi;
 
-                    if (line.getStrokeWidth() > 0) MIA.log.write("Thick lines currently unsupported.  Using backbone only.", LogRenderer.Level.WARNING);
+                    if (line.getStrokeWidth() > 0) MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
 
                     newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
                     break;
@@ -684,7 +683,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     break;
 
                 default:
-                    MIA.log.write("ROI type unsupported.  Using bounding box for selection.", LogRenderer.Level.WARNING);
+                    MIA.log.writeWarning("ROI type unsupported.  Using bounding box for selection.");
                     newRoi = new Roi(roi.getBounds());
                     break;
             }

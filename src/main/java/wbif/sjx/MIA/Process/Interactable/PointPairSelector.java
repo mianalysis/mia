@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Process.Interactable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Image;
 
 import javax.swing.*;
@@ -296,7 +297,7 @@ public class PointPairSelector implements ActionListener {
         Roi roi2 = reference.getImagePlus().getRoi();
 
         if (roi1 == null || roi2 == null) {
-            System.err.println("No points selected in at least one image");
+            MIA.log.writeError("No points selected in at least one image");
             return null;
         }
 
@@ -306,7 +307,7 @@ public class PointPairSelector implements ActionListener {
         float[] centroidY2 = roi2.getFloatPolygon().ypoints;
 
         if (centroidX1.length != centroidX2.length) {
-            System.err.println("Unequal number of points selected in each image");
+            MIA.log.writeError("Unequal number of points selected in each image");
             return null;
         }
 

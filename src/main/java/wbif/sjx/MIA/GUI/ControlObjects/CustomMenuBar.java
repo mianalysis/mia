@@ -5,6 +5,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.UndoRedoStore;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,20 +83,26 @@ public class CustomMenuBar extends JMenuBar implements ActionListener {
         menu.add(logMenu);
         logMenu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
-        LogRenderer.Level level = LogRenderer.Level.MESSAGE;
-        MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        LogRenderer renderer = MIA.getMainRenderer();
+
+        Level level = Level.DEBUG;
+        MenuLogCheckbox menuLogCheckbox = new MenuLogCheckbox(level,renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = LogRenderer.Level.WARNING;
-        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        level = Level.MEMORY;
+        menuLogCheckbox = new MenuLogCheckbox(level,renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = LogRenderer.Level.DEBUG;
-        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        level = Level.MESSAGE;
+        menuLogCheckbox = new MenuLogCheckbox(level,renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
-        level = LogRenderer.Level.MEMORY;
-        menuLogCheckbox = new MenuLogCheckbox(level,MIA.log.isWriteEnabled(level));
+        level = Level.STATUS;
+        menuLogCheckbox = new MenuLogCheckbox(level,renderer.isWriteEnabled(level));
+        logMenu.add(menuLogCheckbox);
+
+        level = Level.WARNING;
+        menuLogCheckbox = new MenuLogCheckbox(level,renderer.isWriteEnabled(level));
         logMenu.add(menuLogCheckbox);
 
         add(Box.createHorizontalGlue());

@@ -21,7 +21,7 @@ import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,7 +47,7 @@ public class AnalysisReader {
         Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
 
-        MIA.log.writeMessage("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        MIA.log.writeStatus("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
         return analysis;
 
@@ -63,7 +63,7 @@ public class AnalysisReader {
 
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        System.out.println("Loading analysis");
+        MIA.log.writeStatus("Loading analysis");
         GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) xml = xml.substring(1);
@@ -167,7 +167,7 @@ public class AnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.write("Module \""+moduleName+"\" not found (skipping)", LogRenderer.Level.WARNING);
+        MIA.log.writeWarning("Module \""+moduleName+"\" not found (skipping)");
 
         return null;
 

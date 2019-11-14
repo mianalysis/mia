@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -41,7 +42,7 @@ public class StatusTextField extends JLabel implements MouseListener{
                 Module.setVerbose(!state);
 
             } catch (InterruptedException e1) {
-                System.err.println(e1);
+                MIA.log.writeError(e1.getMessage());
             }
         });
         t.start();

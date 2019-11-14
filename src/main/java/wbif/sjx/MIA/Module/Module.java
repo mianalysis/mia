@@ -88,7 +88,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
     // PUBLIC METHODS
 
     public boolean execute(Workspace workspace) {
-        writeMessage("Processing");
+        writeStatus("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
@@ -97,13 +97,13 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         boolean status = process(workspace);
 
         if (status) {
-            writeMessage("Completed");
+            writeStatus("Completed");
         } else {
-            writeMessage("Did not complete");
+            writeStatus("Did not complete");
         }
 
         // If enabled, write the current memory usage to the console
-        if (MIA.log.isWriteEnabled(LogRenderer.Level.MEMORY)) {
+        if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
             ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -116,7 +116,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
                     ", file \""+workspace.getMetadata().getFile() +
                     ", time "+dateTime;
 
-            MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
+            MIA.log.writeMemory(memoryMessage);
 
         }
 
@@ -333,12 +333,12 @@ public abstract class Module extends Ref implements Comparable, Serializable {
 
     // PROTECTED METHODS
 
-    public void writeMessage(String message) {
-        if (verbose) System.out.println("[" + name + "] "+message);
+    public void writeStatus(String message) {
+        if (verbose) MIA.log.writeStatus("[" + name + "] "+message);
     }
 
-    protected static void writeMessage(String message, String name) {
-        if (verbose) System.out.println("[" + name + "] "+message);
+    protected static void writeStatus(String message, String name) {
+        if (verbose) MIA.log.writeStatus("[" + name + "] "+message);
     }
 
 

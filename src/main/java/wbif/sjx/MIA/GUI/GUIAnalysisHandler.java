@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -100,7 +101,7 @@ public class GUIAnalysisHandler {
     }
 
     public static void stopAnalysis() {
-        System.out.println("Shutting system down");
+        MIA.log.writeStatus("Shutting system down");
         AnalysisRunner.stopAnalysis();
     }
 

@@ -24,6 +24,6 @@ public class MenuLogCheckbox extends JCheckBoxMenuItem implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        MIA.log.setWriteEnabled(level,isSelected());
+        MIA.getMainRenderer().setWriteEnabled(level,isSelected());
     }
 }

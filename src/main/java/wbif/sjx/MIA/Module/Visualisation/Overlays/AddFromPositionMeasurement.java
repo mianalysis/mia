@@ -163,7 +163,7 @@ public class AddFromPositionMeasurement extends Overlay {
 
                     addOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
-                    writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
                 };
                 pool.submit(task);
             }

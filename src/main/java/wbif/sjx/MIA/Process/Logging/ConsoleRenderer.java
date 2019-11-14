@@ -4,6 +4,7 @@ import org.scijava.ui.UIService;
 import org.scijava.ui.console.ConsolePane;
 import org.scijava.ui.swing.console.ConsolePanel;
 import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.MIA;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -19,10 +20,9 @@ import java.util.HashMap;
 public class ConsoleRenderer implements LogRenderer {
     private UIService uiService = null;
     private JTextPane consoleTextPane = null;
-    private Level activeLevel = Level.MESSAGE;
 
     private HashMap<Level,Style> logStyles = new HashMap<>();
-    private HashMap<Level,Boolean> writeToConsole = new HashMap<>();
+    private HashMap<Level,Boolean> levelStatus = new HashMap<>();
 
 
     // CONSTRUCTOR
@@ -41,27 +41,32 @@ public class ConsoleRenderer implements LogRenderer {
         Style messageStyle = consoleTextPane.addStyle("Message style", null);
         StyleConstants.setForeground(messageStyle, new Color(44, 38, 37));
         logStyles.put(Level.MESSAGE,messageStyle);
-        writeToConsole.put(Level.MESSAGE,false);
+        levelStatus.put(Level.MESSAGE,false);
 
         Style warningStyle = consoleTextPane.addStyle("Warning style", null);
         StyleConstants.setForeground(warningStyle, Colours.ORANGE);
         logStyles.put(Level.WARNING,warningStyle);
-        writeToConsole.put(Level.WARNING,true);
+        levelStatus.put(Level.WARNING,true);
 
         Style errorStyle = consoleTextPane.addStyle("Error style", null);
         StyleConstants.setForeground(errorStyle, Colours.RED);
         logStyles.put(Level.ERROR,errorStyle);
-        writeToConsole.put(Level.ERROR,true);
+        levelStatus.put(Level.ERROR,true);
 
         Style debugStyle = consoleTextPane.addStyle("Debug style", null);
         StyleConstants.setForeground(debugStyle, Colours.BLUE);
         logStyles.put(Level.DEBUG,debugStyle);
-        writeToConsole.put(Level.DEBUG,false);
+        levelStatus.put(Level.DEBUG,false);
 
         Style memoryStyle = consoleTextPane.addStyle("Memory style", null);
         StyleConstants.setForeground(memoryStyle, Colours.GREEN);
         logStyles.put(Level.MEMORY,memoryStyle);
-        writeToConsole.put(Level.MEMORY,false);
+        levelStatus.put(Level.MEMORY,false);
+
+        Style statusStyle = consoleTextPane.addStyle("Status style", null);
+        StyleConstants.setForeground(statusStyle, Colours.DARK_GREY);
+        logStyles.put(Level.STATUS,statusStyle);
+        levelStatus.put(Level.STATUS,false);
 
     }
 
@@ -70,15 +75,15 @@ public class ConsoleRenderer implements LogRenderer {
 
     public void write(String message, Level level) {
         // If this level isn't currently being written, skip it
-        if (!writeToConsole.get(level)) return;
+        if (!levelStatus.get(level)) return;
 
         // Ensuring the console is visible
         uiService.getDefaultUI().getConsolePane().show();
 
         StyledDocument document = consoleTextPane.getStyledDocument();
-
+        String formattedMessage = "["+level.toString()+"] "+message+"\n";
         try {
-            document.insertString(document.getLength(), "["+level.toString()+"] "+message+"\n", logStyles.get(level));
+            document.insertString(document.getLength(),formattedMessage , logStyles.get(level));
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -100,19 +105,14 @@ public class ConsoleRenderer implements LogRenderer {
 
     }
 
-    public String getLogText() {
-        return consoleTextPane.getText();
-    }
 
+    @Override
     public boolean isWriteEnabled(Level level) {
-        return writeToConsole.get(level);
+        return levelStatus.get(level);
     }
 
+    @Override
     public void setWriteEnabled(Level level, boolean writeEnabled) {
-        writeToConsole.put(level,writeEnabled);
-    }
-
-    public void clearLog() {
-        consoleTextPane.setText("");
+        levelStatus.put(level,writeEnabled);
     }
 }

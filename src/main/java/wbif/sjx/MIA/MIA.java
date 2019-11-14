@@ -16,7 +16,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.Logging.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
@@ -24,12 +23,9 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.DependencyValidator;
 
 import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Set;
 
 
 /**
@@ -40,7 +36,8 @@ public class MIA implements Command {
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
-    public static LogRenderer log = new BasicLogRenderer(); // This is effectively just for test methods
+    private static LogRenderer mainRenderer = new BasicLogRenderer();
+    public static Log log = new Log(mainRenderer); // This is for testing and headless modes
     private final static boolean headless = false; // Determines if there is a GUI
 
     /*
@@ -68,8 +65,7 @@ public class MIA implements Command {
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
                 ParserConfigurationException | InterruptedException e) {
-            e.printStackTrace(System.err);
-
+            MIA.log.writeError(e.getMessage());
         }
     }
 
@@ -84,8 +80,20 @@ public class MIA implements Command {
             }
         }
 
-        log = new ConsoleRenderer(uiService);
-        log.setWriteEnabled(LogRenderer.Level.DEBUG,debug);
+        try {
+            if (!headless) {
+                // Before removing the old renderer we want to check the new one can be created
+                LogRenderer newRenderer = new ConsoleRenderer(uiService);
+                log.removeRenderer(mainRenderer);
+
+                mainRenderer = newRenderer;
+                mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
+                log.addRenderer(mainRenderer);
+
+            }
+        } catch (Exception e) {
+            // If any exception was thrown, just don't apply the ConsoleRenderer.
+        }
 
         // Determining the version number from the pom file
         try {
@@ -100,16 +108,11 @@ public class MIA implements Command {
         // Run the dependency validator.  If updates were required, return.
         if (DependencyValidator.run()) return;
 
-        // Redirecting the standard output and error streams, so they are formatted by for the console
-        System.setOut(new PrintStream(MessageLog.getInstance()));
-        System.setErr(new PrintStream(ErrorLog.getInstance()));
-
         try {
             setLookAndFeel();
             new GUI();
-
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace(System.err);
+            MIA.log.writeError(e.getMessage());
         }
     }
 
@@ -120,12 +123,19 @@ public class MIA implements Command {
             e.printStackTrace();
         }
 
+//        UIManager.put("Menu.selectionBackground",Color.YELLOW);
+//        UIManager.put("Menu.background",Color.ORANGE);
+////        UIManager.put("MenuItem.selectionBackground", Colours.LIGHT_BLUE);
+////        UIManager.put("MenuItem.background",Colours.LIGHT_BLUE);
+////        UIManager.put("MenuItem.opaque",false);
+//
 //        Set<Object> def = UIManager.getLookAndFeel().getDefaults().keySet();
 //        for (Object key:def) {
 //            if (key != null) MIA.log.writeDebug(key+"_"+UIManager.getLookAndFeel().getDefaults().get(key));
 //        }
 //
-//        UIManager.put("Button.highlight",new ColorUIResource(255,0,0));
+//        UIManager.put("Panel.background", Color.YELLOW);
+//        UIManager.put("Button.highlight",new ColorUIResource(255,255,0));
 //        UIManager.put("Button.select",new ColorUIResource(255,0,255));
 
     }
@@ -164,11 +174,15 @@ public class MIA implements Command {
 
     }
 
-    public static LogRenderer getLog() {
+    public static Log getLog() {
         return log;
     }
 
-    public static void setLog(LogRenderer log) {
+    public static LogRenderer getMainRenderer() {
+        return mainRenderer;
+    }
+
+    public static void setLog(Log log) {
         MIA.log = log;
     }
 

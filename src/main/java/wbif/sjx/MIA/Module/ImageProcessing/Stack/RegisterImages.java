@@ -166,7 +166,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         int count = 0;
         int total = source.getImagePlus().getNFrames();
         for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
-            writeMessage("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint "+(++count)+" of "+total);
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
@@ -250,7 +250,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         int count = 0;
         int total = inputImage.getImagePlus().getNFrames();
         for (int t = 1; t <= inputImage.getImagePlus().getNFrames(); t++) {
-            writeMessage("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint "+(++count)+" of "+total);
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same transformation.
@@ -442,7 +442,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
     @Override
     public void doAction(Object[] objects) {
-        writeMessage("Running test registration");
+        writeStatus("Running test registration");
 
         String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         String fillMode = parameters.getValue(FILL_MODE);
@@ -466,7 +466,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         int count = 0;
         int total = dupImage.getImagePlus().getNFrames();
         for (int t = 1; t <= dupImage.getImagePlus().getNFrames(); t++) {
-            writeMessage("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint "+(++count)+" of "+total);
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same transformation.

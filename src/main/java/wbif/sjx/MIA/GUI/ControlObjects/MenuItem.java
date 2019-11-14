@@ -40,6 +40,8 @@ public class MenuItem extends JMenuItem implements ActionListener {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(command);
         addActionListener(this);
+        setContentAreaFilled(false);
+        setOpaque(true);
 
     }
 

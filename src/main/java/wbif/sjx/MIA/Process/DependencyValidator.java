@@ -8,7 +8,7 @@ import net.imagej.updater.util.AvailableSites;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,7 +51,7 @@ public class DependencyValidator {
             int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependencies missing", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 update(toInstall);
-                MIA.log.write("Installation complete.  Please restart Fiji.", LogRenderer.Level.MESSAGE);
+                MIA.log.writeWarning("Installation complete.  Please restart Fiji.");
                 JOptionPane.showMessageDialog(null, "Please restart Fiji, then process the plugin again");
             }
         }
@@ -72,7 +72,7 @@ public class DependencyValidator {
             final ResolveDependencies resolver = new ResolveDependencies(null, files, true);
             resolver.resolve();
 
-            MIA.log.write("Gathering available sites", LogRenderer.Level.MESSAGE);
+            MIA.log.writeStatus("Gathering available sites");
             Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
             if (toInstall[0]) {
                 UpdateSite updateSite = sites.get("http://sites.imagej.net/Biomedgroup/");
@@ -95,12 +95,12 @@ public class DependencyValidator {
                 files.activateUpdateSite(updateSite, null);
             }
 
-            MIA.log.write("Installing dependencies", LogRenderer.Level.MESSAGE);
+            MIA.log.writeStatus("Installing dependencies");
             Installer installer = new Installer(files,null);
             installer.start();
             installer.moveUpdatedIntoPlace();
 
-            MIA.log.write("Writing to file", LogRenderer.Level.MESSAGE);
+            MIA.log.writeStatus("Writing to file");
             files.write();
 
         } catch (SAXException | ParserConfigurationException | IOException | TransformerConfigurationException e) {

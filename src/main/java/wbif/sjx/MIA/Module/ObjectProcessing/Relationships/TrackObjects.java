@@ -24,7 +24,6 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -520,7 +519,7 @@ public class TrackObjects extends Module {
         }
 
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
-            writeMessage("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
+            writeStatus("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
 
             // Testing the previous permitted frames for links
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
@@ -578,7 +577,7 @@ public class TrackObjects extends Module {
         if (showOutput) showObjects(inputObjects,trackObjectsName,colourMode);
 
         // Adding track objects to the workspace
-        writeMessage("Assigned "+trackObjects.size()+" tracks");
+        writeStatus("Assigned "+trackObjects.size()+" tracks");
 
         return true;
 

@@ -55,8 +55,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
-
 
 /**
  * Created by Stephen on 15/05/2017.
@@ -271,11 +269,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[0], true);
         if (channelsList[channelsList.length - 1] == Integer.MAX_VALUE)
-            channelsList = extendRangeToEnd(channelsList, sizeC);
+            channelsList = CommaSeparatedStringInterpreter.extendRangeToEnd(channelsList, sizeC);
+
         int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[1], true);
-        if (slicesList[slicesList.length - 1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList, sizeZ);
+        if (slicesList[slicesList.length - 1] == Integer.MAX_VALUE)
+            slicesList = CommaSeparatedStringInterpreter.extendRangeToEnd(slicesList, sizeZ);
+
         int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2], true);
-        if (framesList[framesList.length - 1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList, sizeT);
+        if (framesList[framesList.length - 1] == Integer.MAX_VALUE)
+            framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, sizeT);
 
         int nC = channelsList.length;
         int nZ = slicesList.length;
@@ -298,7 +300,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     try {
                         idx = reader.getIndex(z - 1, c - 1, t - 1);
                     } catch (IllegalArgumentException e) {
-                        MIA.log.writeError("Indices out of range for image \"" + path + "\" at c=" + (c - 1) + ", z=" + (z - 1) + ", t=" + (t - 1));
+                        MIA.log.writeWarning("Indices out of range for image \"" + path + "\" at c=" + (c - 1) + ", z=" + (z - 1) + ", t=" + (t - 1));
                         return null;
                     }
 
@@ -323,7 +325,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     ipl.setPosition(countC, countZ, countT);
                     ipl.setProcessor(ip);
 
-                    if (localVerbose) writeMessage("Loaded image " + (++count) + " of " + nTotal);
+                    if (localVerbose) writeStatus("Loaded image " + (++count) + " of " + nTotal);
 
                     countT++;
                 }
@@ -352,14 +354,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             if (meta.getPixelsPhysicalSizeX(seriesNumber - 1) != null) {
                 Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber - 1);
                 if (!unit.isConvertible(physicalSizeX.unit())) {
-                    MIA.log.write("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong", LogRenderer.Level.WARNING);
+                    MIA.log.writeWarning("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong");
                     reader.close();
                     return ipl;
                 }
                 ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit);
                 ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
-                MIA.log.write("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatial calibration set to pixel units.", LogRenderer.Level.WARNING);
+                MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatial calibration set to pixel units.");
                 ipl.getCalibration().pixelWidth = 1.0;
                 ipl.getCalibration().setXUnit("px");
             }
@@ -382,7 +384,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 ipl.getCalibration().setZUnit("px");
             }
         } else if (!manualCal) {
-            MIA.log.write("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong", LogRenderer.Level.WARNING);
+            MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong");
         }
 
         reader.close();
@@ -429,7 +431,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Creating the new image
         ImagePlus outputIpl = IJ.createImage("Image", width, height, count, bitDepth);
         for (int i = 0; i < count; i++) {
-            writeMessage("Loading image " + (i + 1) + " of " + count);
+            writeStatus("Loading image " + (i + 1) + " of " + count);
             String currentPath = rootPath + rootName + df.format(i * frameInterval + startingIndex) + "." + extension;
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, intRange, manualCal, false);
 
@@ -724,12 +726,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 case ImportModes.CURRENT_FILE:
                     file = workspace.getMetadata().getFile();
                     if (file == null) {
-                        MIA.log.write("No input file/folder selected.", LogRenderer.Level.WARNING);
+                        MIA.log.writeWarning("No input file/folder selected.");
                         return false;
                     }
 
                     if (!file.exists()) {
-                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
+                        MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
                         return false;
                     }
 
@@ -746,7 +748,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 case ImportModes.IMAGEJ:
                     ipl = IJ.getImage().duplicate();
                     if (ipl == null) {
-                        MIA.log.write("No image open in ImageJ.  Skipping.", LogRenderer.Level.WARNING);
+                        MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
                         return false;
                     }
                     break;
@@ -791,7 +793,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     file = new File(path);
 
                     if (!file.exists()) {
-                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
+                        MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
                         return false;
                     }
 
@@ -808,7 +810,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.SPECIFIC_FILE:
                     if (!(new File(filePath)).exists()) {
-                        MIA.log.write("File \"" + filePath + "\" not found.  Skipping file.", LogRenderer.Level.WARNING);
+                        MIA.log.writeWarning("File \"" + filePath + "\" not found.  Skipping file.");
                         return false;
                     }
 
@@ -831,7 +833,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
-            writeMessage("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
+            writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
@@ -854,7 +856,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Adding image to workspace
-        writeMessage("Adding image (" + outputImageName + ") to workspace");
+        writeStatus("Adding image (" + outputImageName + ") to workspace");
         Image outputImage = new Image(outputImageName, ipl);
         workspace.addImage(outputImage);
 

@@ -179,7 +179,7 @@ public class MeasureRadialIntensityProfile extends Module {
         int count = 0;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            writeMessage("Processing object "+(++count)+" of "+total);
+            writeStatus("Processing object "+(++count)+" of "+total);
             CumStat[] cumStats = processObject(inputObject,inputImage,distanceMap,distanceBins);
 
             for (int i=0;i<distanceBins.length;i++) {

@@ -10,6 +10,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -76,7 +77,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
         if (axisIndex == -1) {
-            System.err.println("[FlipStack] Specified axis for image flipping doesn't exist.");
+            MIA.log.writeError("[FlipStack] Specified axis for image flipping doesn't exist.");
             return null;
         }
 

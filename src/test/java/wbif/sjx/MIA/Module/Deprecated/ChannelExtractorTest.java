@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -54,7 +55,7 @@ public class ChannelExtractorTest extends ModuleTest {
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,1);
 
-        System.out.println(channelExtractor.getParameter(ChannelExtractor.CHANNEL_TO_EXTRACT).toString());
+        MIA.log.writeMessage(channelExtractor.getParameter(ChannelExtractor.CHANNEL_TO_EXTRACT).toString());
 
         // Running ChannelExtractor
         channelExtractor.execute(workspace);

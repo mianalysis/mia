@@ -202,7 +202,7 @@ public class ExtractSubstackTest extends ModuleTest {
     public void testExpandRangeToEnd() {
         int[] inputRange = new int[]{2,3,4,12,15,Integer.MAX_VALUE};
 
-        int[] actual = ExtractSubstack.extendRangeToEnd(inputRange,20);
+        int[] actual = CommaSeparatedStringInterpreter.extendRangeToEnd(inputRange,20);
         int[] expected = new int[]{2,3,4,12,15,18};
 
         assertArrayEquals(expected,actual);

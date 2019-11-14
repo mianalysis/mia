@@ -2,12 +2,10 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
 import ij.gui.Roi;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -15,7 +13,6 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
@@ -29,7 +26,6 @@ import wbif.sjx.common.Process.ActiveContour.Visualisation.GridOverlay;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -114,7 +110,7 @@ public class ActiveContourObjectDetection extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeMessage("Processing object " + (count++) + " of " + total);
+            writeStatus("Processing object " + (count++) + " of " + total);
 
             // Getting the z-plane of the current object
             int z = inputObject.getPoints().iterator().next().getZ();
