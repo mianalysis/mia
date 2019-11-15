@@ -122,7 +122,7 @@ public class LegacyAnalysisReader {
         String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
 
         for (String availableModule:availableModules) {
-            if (moduleName.equals(availableModule)) {
+            if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
                 Module module;
                 try {
                     module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class).newInstance(modules);

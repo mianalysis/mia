@@ -128,7 +128,7 @@ public class AnalysisReader {
         String moduleName = FilenameUtils.getExtension(className);
 
         for (String availableModuleName:availableModuleNames) {
-            if (moduleName.equals(availableModuleName)) {
+            if (moduleName.equals(FilenameUtils.getExtension(availableModuleName))) {
                 Class<Module> clazz = null;
                 try {
                     clazz = (Class<Module>) Class.forName(availableModuleName);
