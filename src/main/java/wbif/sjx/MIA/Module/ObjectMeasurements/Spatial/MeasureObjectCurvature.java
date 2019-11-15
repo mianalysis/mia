@@ -353,7 +353,7 @@ public class MeasureObjectCurvature extends Module {
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            writeMessage("Processing object " + (count++) + " of " + total);
+            writeStatus("Processing object " + (count++) + " of " + total);
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object

@@ -12,5 +12,6 @@ public class Colours {
     public static final Color GREEN = new Color(89,216,68); // #59d844
     public static final Color ORANGE = new Color(233,142,50); // #e98e32
     public static final Color RED = new Color(217,66,66); // #d94242
+    public static final Color DARK_GREY = new Color(66,66,66); // #d94242
 
 }

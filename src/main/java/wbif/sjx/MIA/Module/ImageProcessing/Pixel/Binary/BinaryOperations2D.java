@@ -126,7 +126,7 @@ public class BinaryOperations2D extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeMessage("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();

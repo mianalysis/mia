@@ -323,19 +323,21 @@ public class DocumentationGenerator {
 
     private static LinkedHashSet<Module> getModules() {
         // Get a list of Modules
-        Set<Class<? extends Module>> clazzes = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> classNames = ClassHunter.getModules(false,MIA.isDebug());
 
         // Converting the list of classes to a list of Modules
         LinkedHashSet<Module> modules = new LinkedHashSet<>();
-        for (Class<? extends Module> clazz:clazzes) {
+        for (String className:classNames) {
             try {
+                Class<Module> clazz = (Class<Module>) Class.forName(className);
+
                 // Skip any abstract Modules
                 if (Modifier.isAbstract(clazz.getModifiers())) continue;
 
                 Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                 modules.add((Module) constructor.newInstance(new ModuleCollection()));
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (ClassNotFoundException |InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                MIA.log.writeError(e.getMessage());
             }
         }
 

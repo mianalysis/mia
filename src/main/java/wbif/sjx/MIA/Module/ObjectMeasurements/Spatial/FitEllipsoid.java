@@ -4,7 +4,6 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -218,7 +217,7 @@ public class FitEllipsoid extends Module {
             } catch (IntegerOverflowException e) {
                 return false;
             }
-            writeMessage("Processed object "+(++count)+" of "+nTotal);
+            writeStatus("Processed object "+(++count)+" of "+nTotal);
         }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);

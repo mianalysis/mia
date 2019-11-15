@@ -22,7 +22,7 @@ import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,7 +49,7 @@ public class LegacyAnalysisReader {
         Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
 
-        System.out.println("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        MIA.log.writeStatus("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
         return analysis;
 
@@ -64,7 +65,7 @@ public class LegacyAnalysisReader {
 
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        System.out.println("Loading analysis");
+        MIA.log.writeStatus("Loading analysis");
         GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) {
@@ -81,7 +82,7 @@ public class LegacyAnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
+        List<String> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
@@ -105,7 +106,7 @@ public class LegacyAnalysisReader {
                 modules.add(module);
             }
 
-            System.out.println("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
+            MIA.log.writeStatus("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
             GUI.updateProgressBar(100*Math.floorDiv(i,moduleNodes.getLength()));
 
         }
@@ -114,16 +115,21 @@ public class LegacyAnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, Set<Class<? extends Module>> availableModules)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModules)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-        String fullModuleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
-        String moduleName = FilenameUtils.getExtension(fullModuleName);
+        String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
 
-        for (Class<?> clazz:availableModules) {
-            if (moduleName.equals(clazz.getSimpleName())) {
-                Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+        for (String availableModule:availableModules) {
+            if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
+                Module module;
+                try {
+                    module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+                } catch (ClassNotFoundException e) {
+                    MIA.log.writeError(e.getMessage());
+                    continue;
+                }
 
                 if (moduleAttributes.getNamedItem("NICKNAME") != null) {
                     String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
@@ -173,7 +179,7 @@ public class LegacyAnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.write("Module \""+moduleName+"\" not found (skipping)", LogRenderer.Level.WARNING);
+        MIA.log.writeWarning("Module \""+moduleName+"\" not found (skipping)");
 
         return null;
 
@@ -307,7 +313,7 @@ public class LegacyAnalysisReader {
                 }
 
             } catch (NullPointerException e) {
-                MIA.log.write("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set", LogRenderer.Level.WARNING);
+                MIA.log.writeWarning("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
 
             }
         }

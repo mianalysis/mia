@@ -1,38 +1,33 @@
 package wbif.sjx.MIA.Process;
 
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfoList;
+import io.github.classgraph.ScanResult;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
-import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 public class ClassHunter<T> {
-    private static Set<Class<? extends Module>> modules = null;
+    private static List<String> classNames = null;
 
-    static public Set<Class<? extends Module>> getModules(boolean rescan, boolean debugOn) {
-        // Check if modules have already been searched for
-        if (modules != null &! rescan) return modules;
+    static public List<String> getModules(boolean rescan, boolean debugOn) {
+        // Check if classNames have already been searched for
+        if (classNames != null &! rescan) return classNames;
 
-        // Otherwise, scan for modules
+        // Otherwise, scan for classNames
         return new ClassHunter<Module>().getClasses(Module.class, debugOn);
 
     }
 
-    public Set<Class<? extends T>> getClasses(Class<T> clazz, boolean debugOn) {
-        Reflections.log = null;
-        ConfigurationBuilder builder = ConfigurationBuilder.build("");
-        builder.addUrls(ClasspathHelper.forPackage("wbif.sjx.MIA"));
-        for (String packageName:MIA.getPluginPackages()) builder.addUrls(ClasspathHelper.forPackage(packageName));
-        if (!debugOn) {
-            for (URL url : ClasspathHelper.forClassLoader()) {
-                if (url.getPath().contains("plugins")) builder.addUrls(url);
-            }
-        }
+    public List<String> getClasses(Class<T> clazz, boolean debugOn) {
+        ScanResult scanResult = new ClassGraph().enableClassInfo().scan();
+        ClassInfoList classInfos = scanResult.getSubclasses(clazz.getName());
 
-        return new Reflections(builder).getSubTypesOf(clazz);
+        if (clazz.getPackage().getName().equals(Module.class.getPackage().getName())) classNames = classInfos.getNames();
+
+        return classInfos.getNames();
 
     }
 }

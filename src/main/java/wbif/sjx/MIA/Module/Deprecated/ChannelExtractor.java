@@ -44,7 +44,7 @@ public class ChannelExtractor extends Module {
     public boolean process(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        writeMessage("Loading image ("+inputImageName+") into workspace");
+        writeStatus("Loading image ("+inputImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(inputImageName).getImagePlus();
 
         // Getting parameters
@@ -52,12 +52,12 @@ public class ChannelExtractor extends Module {
         int channel = parameters.getValue(CHANNEL_TO_EXTRACT);
 
         // Getting selected channel
-        writeMessage("Extracting channel "+channel);
+        writeStatus("Extracting channel "+channel);
         ipl = new Duplicator().run(ipl);
         ImagePlus outputChannelImagePlus = ChannelSplitter.split(ipl)[channel-1];
 
         // Adding image to workspace
-        writeMessage("Adding image ("+outputImageName+") to workspace");
+        writeStatus("Adding image ("+outputImageName+") to workspace");
         Image outputImage = new Image(outputImageName,outputChannelImagePlus);
         workspace.addImage(outputImage);
 

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -102,7 +103,7 @@ public class EvalButton extends JButton implements ActionListener {
 
         // If it's currently evaluating, this will kill the thread
         if (idx == GUI.getModuleBeingEval()) {
-            System.out.println("Stopping");
+            MIA.log.writeStatus("Stopping");
             GUI.setModuleBeingEval(-1);
             GUI.updateModuleStates(false);
             t.stop();

@@ -140,7 +140,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         inputImage.getImagePlus().setCalibration(calibration);
 
         if (!applyToInput) {
-            writeMessage("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();

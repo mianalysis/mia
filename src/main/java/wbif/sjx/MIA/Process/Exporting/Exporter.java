@@ -3,7 +3,6 @@
 
 package wbif.sjx.MIA.Process.Exporting;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -15,6 +14,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Metadata;
@@ -112,7 +112,7 @@ public class Exporter {
 
         // Adding relevant sheets
         prepareParameters(workbook,analysis);
-        prepareErrorLog(workbook);
+        prepareLog(workbook);
         if (exportSummary) prepareSummary(workbook,workspaces,modules, summaryMode);
         if (exportIndividualObjects) prepareObjectsXLS(workbook,workspaces,modules);
 
@@ -143,7 +143,7 @@ public class Exporter {
 
         workbook.close();
 
-        if (verbose) System.out.println("Saved results");
+        if (verbose) MIA.log.writeStatus("Saved results");
 
     }
 
@@ -273,12 +273,12 @@ public class Exporter {
 
     }
 
-    private void prepareErrorLog(SXSSFWorkbook workbook) {
+    private void prepareLog(SXSSFWorkbook workbook) {
         // Creating a sheet for parameters
         Sheet errorSheet = workbook.createSheet("Log");
 
         // Getting error write text and split by line returns
-        String logText = MIA.log.getLogText();
+        String logText = MIA.log.getLogHistory(LogRenderer.Level.ERROR);
         StringTokenizer tokenizer = new StringTokenizer(logText,"\n");
 
         // Adding a header row for the parameter titles

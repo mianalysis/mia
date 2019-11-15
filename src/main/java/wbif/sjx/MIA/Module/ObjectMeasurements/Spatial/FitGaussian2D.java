@@ -3,11 +3,8 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.PolygonRoi;
-import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
@@ -18,7 +15,6 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 
@@ -218,7 +214,7 @@ public class FitGaussian2D extends Module {
             // Adding current object's Gaussian
             addGaussianProfile(iterator.next(),image,true);
 
-            if (module != null) module.writeMessage("Rendered object "+(++count)+" of "+total);
+            if (module != null) module.writeStatus("Rendered object "+(++count)+" of "+total);
 
         }
 
@@ -316,7 +312,7 @@ public class FitGaussian2D extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeMessage("Fitting object " + (count++ + 1) + " of " + startingNumber);
+            writeStatus("Fitting object " + (count++ + 1) + " of " + startingNumber);
 
             // Getting the centroid of the current object (should be single points anyway)
             int x = (int) Math.round(inputObject.getXMean(true));

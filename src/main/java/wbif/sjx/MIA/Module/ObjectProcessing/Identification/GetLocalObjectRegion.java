@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import javax.annotation.Nullable;import ij.ImagePlus;
+import javax.annotation.Nullable;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -178,7 +179,7 @@ public class GetLocalObjectRegion extends Module {
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
-        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
+        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
 
         return true;
 

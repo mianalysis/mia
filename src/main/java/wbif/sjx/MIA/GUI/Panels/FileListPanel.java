@@ -13,13 +13,13 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
     private final WorkspaceCollection workspaces;
     private final JTable table;
-    private final HashMap<Workspace,Integer> rows = new HashMap<>();
     private final DefaultTableModel model = new DefaultTableModel();
     private final FileListColumnSelectorMenu columnSelectorMenu = new FileListColumnSelectorMenu(this);
     TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
@@ -31,10 +31,13 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     private final int minWidth;
     private final int prefWidth;
 
-    public static final int COL_WORKSPACE = 0;
-    public static final int COL_SERIESNAME = 1;
-    public static final int COL_SERIESNUMBER = 2;
-    public static final int COL_PROGRESS = 3;
+    public static final int COL_JOB_ID = 0;
+    public static final int COL_WORKSPACE = 1;
+    public static final int COL_SERIESNAME = 2;
+    public static final int COL_SERIESNUMBER = 3;
+    public static final int COL_PROGRESS = 4;
+
+    private int maxJob = 0;
 
     public FileListPanel(WorkspaceCollection workspaces) {
         this.workspaces = workspaces;
@@ -45,8 +48,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         setMinimumSize(new Dimension(minimumWidth,1));
         setPreferredSize(new Dimension(preferredWidth,1));
 
-        model.setColumnCount(4);
-        model.setColumnIdentifiers(new String[]{"Filename","Ser. name","Ser. #","Progress"});
+        model.setColumnCount(5);
+        model.setColumnIdentifiers(new String[]{"#","Filename","Ser. name","Ser. #","Progress"});
 
         table = new JTable(model);
         table.setRowSelectionAllowed(false);
@@ -59,6 +62,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setDefaultEditor(Object.class,null);
 
         TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn(COL_JOB_ID).setWidth(10);
+        columnModel.getColumn(COL_JOB_ID).setCellRenderer(this);
         columnModel.getColumn(COL_WORKSPACE).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNAME).setCellRenderer(this);
         columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
@@ -67,9 +72,9 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         showColumn(COL_SERIESNAME,false);
         showColumn(COL_SERIESNUMBER,false);
 
-        maxWidth = columnModel.getColumn(0).getMaxWidth();
-        minWidth = columnModel.getColumn(0).getMinWidth();
-        prefWidth = columnModel.getColumn(0).getPreferredWidth();
+        maxWidth = columnModel.getColumn(1).getMaxWidth();
+        minWidth = columnModel.getColumn(1).getMinWidth();
+        prefWidth = columnModel.getColumn(1).getPreferredWidth();
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -108,13 +113,16 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
 
         // Iterating over all current Workspaces, adding any that are missing
         for (Workspace workspace:workspaces) {
-            Metadata metadata = workspace.getMetadata();
-            String seriesName = metadata.getSeriesName();
-            String seriesNumber = String.valueOf(metadata.getSeriesNumber());
-            double progress = workspace.getProgress();
+            if (!currentWorkspaces.contains(workspace)) {
+                JobNumber jobNumber = new JobNumber(++maxJob);
+                Metadata metadata = workspace.getMetadata();
+                String seriesName = metadata.getSeriesName();
+                String seriesNumber = String.valueOf(metadata.getSeriesNumber());
+                double progress = workspace.getProgress();
 
-            if (!currentWorkspaces.contains(workspace)) model.addRow(new Object[]{workspace,seriesName,seriesNumber,progress});
+                model.addRow(new Object[]{jobNumber, workspace, seriesName, seriesNumber, progress});
 
+            }
         }
 
         table.repaint();
@@ -126,7 +134,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         TableColumn column = table.getColumnModel().getColumn(columnIndex);
 
         if (show) {
-            column.setPreferredWidth(prefWidth);
+            if (columnIndex == COL_JOB_ID) column.setPreferredWidth(10);
+            else column.setPreferredWidth(prefWidth);
             column.setMinWidth(minWidth);
             column.setMaxWidth(maxWidth);
         } else {
@@ -152,19 +161,21 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         switch (column) {
+            case COL_JOB_ID:
+                JLabel label = new JLabel();
+                JobNumber jobNumber = (JobNumber) value;
+                label.setText(String.valueOf(jobNumber.getJobNumber()));
+                label.setToolTipText(String.valueOf(jobNumber.getJobNumber()));
+                return label;
+
             case COL_WORKSPACE:
                 Metadata metadata = ((Workspace) value).getMetadata();
-                JLabel label = new JLabel();
+                label = new JLabel();
                 label.setText(" "+metadata.getFilename());
                 label.setToolTipText(metadata.getFile().getAbsolutePath());
                 return label;
 
             case COL_SERIESNAME:
-                label = new JLabel();
-                label.setText((String) value);
-                label.setToolTipText((String) value);
-                return label;
-
             case COL_SERIESNUMBER:
                 label = new JLabel();
                 label.setText((String) value);
@@ -223,5 +234,23 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    class JobNumber {
+        private final DecimalFormat df = new DecimalFormat("00000000000");
+        private final int jobNumber;
+
+        public JobNumber(int jobNumber) {
+            this.jobNumber = jobNumber;
+        }
+
+        public int getJobNumber() {
+            return jobNumber;
+        }
+
+        @Override
+        public String toString() {
+            return df.format(jobNumber);
+        }
     }
 }

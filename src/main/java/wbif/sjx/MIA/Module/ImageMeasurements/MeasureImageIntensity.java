@@ -48,7 +48,7 @@ public class MeasureImageIntensity extends Module {
     public boolean process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        writeMessage("Loading image ("+inputImageName+")");
+        writeStatus("Loading image ("+inputImageName+")");
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 

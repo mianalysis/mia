@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
 import util.opencsv.CSVReader;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -117,7 +118,7 @@ public abstract class ExpectedObjects {
             return coords;
 
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            MIA.log.writeError(e.getMessage());
             return null;
         }
     }

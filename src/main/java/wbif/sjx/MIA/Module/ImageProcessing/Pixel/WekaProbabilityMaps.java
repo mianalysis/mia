@@ -5,7 +5,6 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.RGBStackConverter;
-import ij.plugin.SubHyperstackMaker;
 import ij.plugin.SubstackMaker;
 import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
@@ -24,7 +23,6 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 /**
  * Created by sc13967 on 22/03/2018.
@@ -66,18 +64,18 @@ public class WekaProbabilityMaps extends Module {
 
         // Checking classifier can be loaded
         if (!new File(classifierFilePath).exists()) {
-            System.err.println("Can't find classifier ("+classifierFilePath+")");
+            MIA.log.writeError("Can't find classifier ("+classifierFilePath+")");
             return null;
         }
 
-        writeMessage("Loading classifier");
+        writeStatus("Loading classifier");
         try {
             wekaSegmentation.loadClassifier(new FileInputStream(classifierFilePath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
         }
-        writeMessage("Classifier loaded");
+        writeStatus("Classifier loaded");
 
         int nThreads = Prefs.getThreads();
         int width = inputImagePlus.getWidth();
@@ -135,7 +133,7 @@ public class WekaProbabilityMaps extends Module {
             }
 
             count = count + endingBlock - startingBlock + 1;
-            writeMessage("Processed "+count+" of "+slices+" images");
+            writeStatus("Processed "+count+" of "+slices+" images");
 
         }
 

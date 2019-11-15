@@ -16,6 +16,7 @@ import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
@@ -23,6 +24,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
@@ -179,6 +181,8 @@ public class InputControl extends Module {
         // Creating the output collection
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
+        if (inputFile == null) return namesAndNumbers;
+
         // If the input is a tif or video, we can skip this
         if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
                 FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
@@ -227,7 +231,7 @@ public class InputControl extends Module {
 
             boolean pass = true;
             for (FileCondition filter:filters) {
-                if (name!= null && filter.test(new File(name))) {
+                if (name!= null &! filter.test(new File(name))) {
                     pass = false;
                     break;
                 }
@@ -245,6 +249,8 @@ public class InputControl extends Module {
 
     private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws Exception {
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+
+        if (inputFile == null) return namesAndNumbers;
 
         // If the input is a tif or video, we can skip this
         if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
@@ -272,8 +278,8 @@ public class InputControl extends Module {
             return namesAndNumbers;
         }
 
-        SeriesListSelectorP seriesListSelectorP = parameters.getParameter(InputControl.SERIES_LIST);
-        int[] seriesList = seriesListSelectorP.getSeriesList();
+        String seriesListString = parameters.getValue(InputControl.SERIES_LIST);
+        int[] seriesList = CommaSeparatedStringInterpreter.interpretIntegers(seriesListString, true,reader.getSeriesCount());
         for (int aSeriesList : seriesList) {
             namesAndNumbers.put(aSeriesList, meta.getImageName(aSeriesList - 1));
         }

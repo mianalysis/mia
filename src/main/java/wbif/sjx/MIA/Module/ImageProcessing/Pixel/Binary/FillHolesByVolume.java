@@ -52,7 +52,7 @@ public class FillHolesByVolume extends Module {
         int nSlices = ipl.getNSlices();
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             for (int t = 1; t <= ipl.getNFrames(); t++) {
-                writeMessage("Processing stack "+(++count)+" of "+total);
+                writeStatus("Processing stack "+(++count)+" of "+total);
 
                 // Creating the current sub-stack
                 ImagePlus currStack;
@@ -147,7 +147,7 @@ public class FillHolesByVolume extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeMessage("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();

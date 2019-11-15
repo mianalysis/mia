@@ -23,6 +23,9 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.MIA.Process.Logging.ConsoleRenderer;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.StatusPanelRenderer;
 import wbif.sjx.common.System.FileCrawler;
 
 import javax.swing.*;
@@ -32,6 +35,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -82,8 +86,9 @@ public class GUI {
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
         splash.setVisible(true);
 
+        // Detecting modules
         splash.setStatus(Splash.Status.DETECTING_MODULES);
-        Set<Class<? extends Module>> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
 
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
@@ -121,12 +126,14 @@ public class GUI {
 
     }
 
-    void initialiseAvailableModules(Set<Class<? extends Module>> detectedModules) {
+    void initialiseAvailableModules(List<String> detectedModuleNames) {
         try {
             // Creating an alphabetically-ordered list of all modules
             ModuleCollection moduleCollection = new ModuleCollection();
             availableModules = new TreeMap<>();
-            for (Class clazz : detectedModules) {
+
+            for (String detectedModuleName : detectedModuleNames) {
+                Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
                     // Skip any abstract Modules
                     if (Modifier.isAbstract(clazz.getModifiers())) continue;
@@ -139,8 +146,8 @@ public class GUI {
 
                 }
             }
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            MIA.log.writeError(e.getMessage());
         }
     }
 
@@ -171,11 +178,14 @@ public class GUI {
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);
 
-        OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
-        PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
+//        OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
+//        PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
-        TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
-        System.setOut(new PrintStream(teeOutputStream));
+        StatusPanelRenderer statusPanelRenderer = new StatusPanelRenderer(textField);
+        MIA.log.addRenderer(statusPanelRenderer);
+
+//        TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
+//        System.setOut(new PrintStream(teeOutputStream));
 
     }
 
@@ -196,7 +206,7 @@ public class GUI {
         int nActive = 0;
         for (Module module:getModules()) if (module.isEnabled()) nActive++;
         int nModules = getModules().size();
-        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
+        if (verbose && nModules > 0) MIA.log.writeStatus(nRunnable+" of "+nActive+" active modules are runnable");
 
         mainPanel.updateModuleStates();
 
@@ -261,20 +271,16 @@ public class GUI {
             }
         }
 
+        if (nextFile == null) return;
+
         // Getting the next series
-        int nextSeries = 1;
-        ChoiceP seriesMode = (ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE);
-        if (InputControl.SeriesModes.SERIES_LIST.equals(seriesMode.getChoice())) {
-            SeriesListSelectorP listParameter = inputControl.getParameter(InputControl.SERIES_LIST);
-            nextSeries = listParameter.getSeriesList()[0];
-        }
+        int nextSeries = inputControl.getSeriesNumbers(nextFile).firstEntry().getKey();
 
         // If the new file is the same as the old, skip this
         File previousFile = testWorkspace.getMetadata().getFile();
         int previousSeries = testWorkspace.getMetadata().getSeriesNumber();
 
-        if (previousFile == null && nextFile == null) return;
-        if (previousFile != null && nextFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeries) return;
+        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeries) return;
 
         lastModuleEval = -1;
         testWorkspace = new Workspace(1,nextFile,nextSeries);

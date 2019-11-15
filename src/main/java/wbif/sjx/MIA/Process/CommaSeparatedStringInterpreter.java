@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Process;
 
+import wbif.sjx.MIA.MIA;
+
 import java.util.LinkedHashSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -21,6 +23,7 @@ public class CommaSeparatedStringInterpreter {
         Pattern intervalRangePattern = Pattern.compile("^([-]?[\\d]+)-([-]?[\\d]+)-([-]?[\\d]+)$");
         Pattern intervalRangeEndPattern = Pattern.compile("^([-]?[\\d]+)-end-([-]?[\\d]+)$");
         Pattern singleValuePattern = Pattern.compile("^[-]?[\\d]+$");
+        Pattern endOnlyPattern = Pattern.compile("end");
 
         // First, splitting comma-delimited sections
         StringTokenizer stringTokenizer = new StringTokenizer(range,",");
@@ -33,6 +36,7 @@ public class CommaSeparatedStringInterpreter {
             Matcher intervalRangeMatcher = intervalRangePattern.matcher(token);
             Matcher intervalRangeEndMatcher = intervalRangeEndPattern.matcher(token);
             Matcher singleValueMatcher = singleValuePattern.matcher(token);
+            Matcher endOnlyMatcher = endOnlyPattern.matcher(token);
 
             if (singleRangeMatcher.matches()) {
                 int start = Integer.parseInt(singleRangeMatcher.group(1));
@@ -78,12 +82,48 @@ public class CommaSeparatedStringInterpreter {
             } else if (singleValueMatcher.matches()) {
                 values.add(Integer.parseInt(token));
 
+            } else if (endOnlyMatcher.matches()) {
+                values.add(Integer.MAX_VALUE);
+
             }
         }
 
         // Returning an array of the indices.  If they should be in ascending order, put them in a TreeSet first
         if (ascendingOrder) return new TreeSet<>(values).stream().mapToInt(Integer::intValue).toArray();
         else return values.stream().mapToInt(Integer::intValue).toArray();
+
+    }
+
+    public static int[] interpretIntegers(String range, boolean ascendingOrder, int end) {
+        // Getting the list of values
+        int[] values = interpretIntegers(range, ascendingOrder);
+
+        // If the final value is Integer.MAX_VALUE extending to the specified end
+        if (values[values.length-1] == Integer.MAX_VALUE) values = extendRangeToEnd(values,end);
+
+        return values;
+
+    }
+
+    public static int[] extendRangeToEnd(int[] inputRange, int end) {
+        // Adding the numbers to a TreeSet, then returning as an array
+        TreeSet<Integer> values = new TreeSet<>();
+
+        // Checking for the special case where the only value is Integer.MAX_VALUE (i.e. the range was only "end")
+        if (inputRange.length == 1 && inputRange[0] == Integer.MAX_VALUE) {
+            values.add(end);
+        } else {
+            // Adding the explicitly-named values
+            for (int i = 0; i < inputRange.length - 3; i++) values.add(inputRange[i]);
+
+            // Adding the range values
+            int start = inputRange[inputRange.length - 3];
+            int interval = inputRange[inputRange.length - 2] - start;
+            for (int i = start; i <= end; i = i + interval) values.add(i);
+
+        }
+
+        return values.stream().mapToInt(Integer::intValue).toArray();
 
     }
 }

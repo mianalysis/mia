@@ -50,7 +50,7 @@ public class AnalysisWriter {
         transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
         outputStream.close();
 
-        System.out.println("File saved ("+ FilenameUtils.getName(outputFileName)+")");
+        MIA.log.writeStatus("File saved ("+ FilenameUtils.getName(outputFileName)+")");
 
     }
 

@@ -5,16 +5,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
-import loci.common.services.ServiceFactory;
-import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
-import loci.formats.meta.MetadataStore;
-import loci.formats.services.OMEXMLService;
-import loci.plugins.util.ImageProcessorReader;
-import loci.plugins.util.LociPrefs;
-import ome.units.quantity.Length;
-import ome.units.unit.Unit;
-import ome.xml.meta.IMetadata;
 import util.opencsv.CSVReader;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
@@ -26,14 +17,12 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -322,7 +311,7 @@ public class ObjectLoader extends Module {
 
                     }
 
-                    writeMessage("Loaded object "+(++count));
+                    writeStatus("Loaded object "+(++count));
 
                 } catch (NumberFormatException e) {}
 

@@ -8,10 +8,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.Volume;
-
-import java.util.HashSet;
 
 /**
  * Created by sc13967 on 07/02/2018.
@@ -104,7 +101,7 @@ public class MeasureObjectOverlap extends Module {
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOL_CAL_1),overlapVolCal));
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_PERCENT_1),overlapPC));
 
-            writeMessage("Processed "+(++count)+" objects of "+totalObjects);
+            writeStatus("Processed "+(++count)+" objects of "+totalObjects);
 
         }
 
@@ -126,7 +123,7 @@ public class MeasureObjectOverlap extends Module {
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOL_CAL_2),overlapVolCal));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
 
-            writeMessage("Processed "+(++count)+" objects of "+totalObjects);
+            writeStatus("Processed "+(++count)+" objects of "+totalObjects);
 
         }
 

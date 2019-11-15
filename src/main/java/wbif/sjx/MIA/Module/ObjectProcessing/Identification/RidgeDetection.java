@@ -7,16 +7,12 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
@@ -112,7 +108,7 @@ public class RidgeDetection extends Module {
         for (int c=0;c<nChannels;c++) {
             for (int z=0;z<nSlices;z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-                    writeMessage("Processing image "+(count++)+" of "+total);
+                    writeStatus("Processing image "+(count++)+" of "+total);
                     inputImagePlus.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
@@ -267,7 +263,7 @@ public class RidgeDetection extends Module {
 
         if (showOutput) {
             // Adding image to workspace
-            writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
+            writeStatus("Adding objects (" + outputObjectsName + ") to workspace");
 
             // Creating a duplicate of the input image
             ImagePlus dispIpl = inputImage.getImagePlus().duplicate();

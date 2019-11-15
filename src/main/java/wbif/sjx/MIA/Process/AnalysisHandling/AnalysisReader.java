@@ -21,7 +21,7 @@ import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,7 +48,7 @@ public class AnalysisReader {
         Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
 
-        MIA.log.writeMessage("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        MIA.log.writeStatus("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
         return analysis;
 
@@ -63,7 +64,7 @@ public class AnalysisReader {
 
     public static Analysis loadAnalysis(String xml)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        System.out.println("Loading analysis");
+        MIA.log.writeStatus("Loading analysis");
         GUI.updateProgressBar(0);
 
         if (xml.startsWith("\uFEFF")) xml = xml.substring(1);
@@ -93,14 +94,14 @@ public class AnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        Set<Class<? extends Module>> availableModules = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> availableModuleNames = ClassHunter.getModules(false,MIA.isDebug());
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
             Node moduleNode = moduleNodes.item(i);
 
             // Creating an empty Module matching the input type.  If none was found the loop skips to the next Module
-            Module module = initialiseModule(moduleNode,modules,availableModules);
+            Module module = initialiseModule(moduleNode,modules,availableModuleNames);
             if (module == null) continue;
 
             module.setAttributesFromXML(moduleNode);
@@ -119,15 +120,21 @@ public class AnalysisReader {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, Set<Class<? extends Module>> availableModules)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModuleNames)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
         String className = moduleAttributes.getNamedItem("CLASSNAME").getNodeValue();
         String moduleName = FilenameUtils.getExtension(className);
 
-        for (Class<?> clazz:availableModules) {
-            if (moduleName.equals(clazz.getSimpleName())) {
+        for (String availableModuleName:availableModuleNames) {
+            if (moduleName.equals(FilenameUtils.getExtension(availableModuleName))) {
+                Class<Module> clazz = null;
+                try {
+                    clazz = (Class<Module>) Class.forName(availableModuleName);
+                } catch (ClassNotFoundException e) {
+                    MIA.log.writeError(e.getMessage());
+                }
                 Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
 
                 // Populating parameters
@@ -167,7 +174,7 @@ public class AnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.write("Module \""+moduleName+"\" not found (skipping)", LogRenderer.Level.WARNING);
+        MIA.log.writeWarning("Module \""+moduleName+"\" not found (skipping)");
 
         return null;
 

@@ -256,7 +256,7 @@ public class BinaryOperations extends Module {
             //  Replacing the maskIpl intensity
             overwriteTimepoint(maskIpl,timepointMaskIpl,t);
 
-            writeMessage("Processed "+t+" of "+nFrames+" frames");
+            writeStatus("Processed "+t+" of "+nFrames+" frames");
 
         }
     }
@@ -399,7 +399,7 @@ public class BinaryOperations extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeMessage("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 

@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.Exporting.Exporter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
@@ -35,13 +35,15 @@ public class AnalysisRunner {
 
     private final WorkspaceCollection workspaces = new WorkspaceCollection();
 
+    private final static DecimalFormat dfInt = new DecimalFormat("0");
+    private final static DecimalFormat dfDec = new DecimalFormat("0.00");
 
     // PUBLIC METHODS
 
     public void run(Analysis analysis) throws InterruptedException, IOException {
         // Resetting progress display
         GUI.updateProgressBar(0);
-        MIA.log.clearLog();
+        MIA.log.clearLogHistory();
         counter = 0;
 
         // Get jobs and exit if no images found
@@ -100,7 +102,7 @@ public class AnalysisRunner {
         }
 
         // Cleaning up
-        System.out.println("Complete!");
+        MIA.log.writeStatus("Complete!");
 
     }
 
@@ -132,7 +134,7 @@ public class AnalysisRunner {
                     jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));
 
                     // Displaying the current progress
-//                    System.out.println("Initialising "+dfInt.format(++loadTotal)+" jobs");
+                    MIA.log.writeStatus("Initialising "+dfInt.format(++loadTotal)+" jobs");
 
                 }
 
@@ -157,13 +159,13 @@ public class AnalysisRunner {
     public boolean checkInputFileValidity(String path) {
         // Checking if a file/folder had been selected
         if (path == null) {
-            MIA.log.write("Select an input file/folder first", LogRenderer.Level.WARNING);
+            MIA.log.writeWarning("Select an input file/folder first");
             return false;
         }
 
         // Checking if the specified input file is present
         if (!new File(path).exists()) {
-            MIA.log.write("Selected input file/folder can't be found", LogRenderer.Level.WARNING);
+            MIA.log.writeWarning("Selected input file/folder can't be found");
             return false;
         }
 
@@ -253,6 +255,11 @@ public class AnalysisRunner {
                 // Getting the number of completed and total tasks
                 incrementCounter();
 
+                String nComplete = dfInt.format(getCounter());
+                String nTotal = dfInt.format(pool.getTaskCount());
+                String percentageComplete = dfDec.format(((double) getCounter() / (double) pool.getTaskCount()) * 100);
+                MIA.log.writeStatus("Completed " + nComplete + "/" + nTotal + " (" + percentageComplete + "%), " + file.getName());
+
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
                     exporter.exportResults(workspace, analysis, name);
@@ -264,8 +271,14 @@ public class AnalysisRunner {
                 }
 
             } catch (Throwable t) {
-                System.err.println("Failed for file " + file.getName());
-                t.printStackTrace(System.err);
+                DecimalFormat df = new DecimalFormat("#.0");
+
+                double totalMemory = Runtime.getRuntime().totalMemory();
+                double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+                String memoryMessage = "Memory: "+df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB";
+
+                MIA.log.writeError("Failed for file " + file.getName()+" ("+memoryMessage+")");
+                MIA.log.writeError(t.getMessage());
 
                 workspace.clearAllImages(true);
                 workspace.clearAllObjects(true);
@@ -277,12 +290,12 @@ public class AnalysisRunner {
     }
 
     static public void stopAnalysis() {
-        MIA.log.write("STOPPING", LogRenderer.Level.WARNING);
+        MIA.log.writeWarning("STOPPING");
         Prefs.setThreads(origThreads);
         GUI.setModuleBeingEval(-1);
         GUI.updateModules();
         Thread.currentThread().getThreadGroup().stop();
-        MIA.log.write("Shutdown complete!", LogRenderer.Level.MESSAGE);
+        MIA.log.writeStatus("Shutdown complete!");
 
     }
 

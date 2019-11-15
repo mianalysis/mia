@@ -83,7 +83,7 @@ public class DistanceMap extends Module {
         inputImagePlus = getDistanceMap(inputImagePlus,matchZToXY);
 
         // If the image is being saved as a new image, adding it to the workspace
-        writeMessage("Adding image ("+outputImageName+") to workspace");
+        writeStatus("Adding image ("+outputImageName+") to workspace");
         Image outputImage = new Image(outputImageName,inputImagePlus);
         workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();

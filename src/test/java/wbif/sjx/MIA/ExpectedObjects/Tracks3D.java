@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.ExpectedObjects;
 
 import util.opencsv.CSVReader;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -118,7 +119,7 @@ public class Tracks3D {
             return tracks;
 
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            MIA.log.writeError(e.getMessage());
             return null;
         }
     }

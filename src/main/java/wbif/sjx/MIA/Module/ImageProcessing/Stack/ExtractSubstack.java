@@ -150,33 +150,12 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
-    public static int[] extendRangeToEnd(int[] inputRange, int end) {
-        // Adding the numbers to a TreeSet, then returning as an array
-        TreeSet<Integer> values = new TreeSet<>();
-
-        // Adding the explicitly-named values
-        for (int i=0;i<inputRange.length-3;i++) values.add(inputRange[i]);
-
-        // Adding the range values
-        int start = inputRange[inputRange.length-3];
-        int interval = inputRange[inputRange.length-2] - start;
-        for (int i=start;i<=end;i=i+interval) values.add(i);
-
-        return values.stream().mapToInt(Integer::intValue).toArray();
-
-    }
-
     public static Image extractSubstack(Image inputImage, String outputImageName, String channels, String slices, String frames) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(channels,true);
-        if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,inputImagePlus.getNChannels());
-
-        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(slices,true);
-        if (slicesList[slicesList.length-1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList,inputImagePlus.getNSlices());
-
-        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames,true);
-        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,inputImagePlus.getNFrames());
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(channels,true,inputImagePlus.getNChannels());
+        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(slices,true,inputImagePlus.getNSlices());
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames,true,inputImagePlus.getNFrames());
 
         List<Integer> cList = java.util.Arrays.stream(channelsList).boxed().collect(Collectors.toList());
         List<Integer> zList = java.util.Arrays.stream(slicesList).boxed().collect(Collectors.toList());

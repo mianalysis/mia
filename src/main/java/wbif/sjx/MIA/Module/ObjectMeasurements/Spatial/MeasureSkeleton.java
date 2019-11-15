@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -151,7 +150,7 @@ public class MeasureSkeleton extends Module {
                 // Taking the first result for each (in the event there was more than one isolated region)
                 addMeasurements(inputObject,skeletonResult);
 
-                writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
+                writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
 
             };
             pool.submit(task);

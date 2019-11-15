@@ -455,14 +455,14 @@ public class Image <T extends RealType<T> & NativeType<T>> {
 
             // Ratio of xy to z
             double xyToZ = imagePlus.getCalibration().pixelDepth/imagePlus.getCalibration().pixelWidth;
-            System.out.println("        XY to Z "+xyToZ);
+            MIA.log.writeMessage("        XY to Z "+xyToZ);
 
             // If distribution of points indicates a sparse object, use PointList.  This is calculated differently for 2D/3D
             if (csZ.getMax() - csZ.getMin() == 0) {
                 // Assuming a circle of volume equal the number of coordinates, the expected radius is
                 double expectedRadius = Math.sqrt(N / Math.PI);
                 double expectedStdev = 4.24 * expectedRadius;
-                System.out.println("        2D, Exp stdev = "+expectedStdev+", actual stdev = "+((csX.getStd() + csY.getStd()) / 2));
+                MIA.log.writeMessage("        2D, Exp stdev = "+expectedStdev+", actual stdev = "+((csX.getStd() + csY.getStd()) / 2));
                 if ((csX.getStd() + csY.getStd()) / 2 < expectedStdev * 2) return VolumeType.QUADTREE;
 
             } else {
@@ -470,7 +470,7 @@ public class Image <T extends RealType<T> & NativeType<T>> {
                 // sampling), the expected radius is
                 double expectedRadius = Math.cbrt(N*xyToZ * 3d / (4d * Math.PI));
                 double expectedStdev = 5.16 * expectedRadius;
-                System.out.println("        3D, Exp stdev = "+expectedStdev+", actual stdev = "+((csX.getStd() + csY.getStd() + csZ.getStd()*xyToZ) / 3));
+                MIA.log.writeMessage("        3D, Exp stdev = "+expectedStdev+", actual stdev = "+((csX.getStd() + csY.getStd() + csZ.getStd()*xyToZ) / 3));
                 if ((csX.getStd() + csY.getStd() + csZ.getStd()*xyToZ) / 3 < expectedStdev * 2) {
                     if (xyToZ > 3) return VolumeType.QUADTREE;
                     else return VolumeType.OCTREE;
@@ -482,14 +482,14 @@ public class Image <T extends RealType<T> & NativeType<T>> {
                 CumStat cs = new CumStat();
                 cs.addMeasure(csX.getStd());
                 cs.addMeasure(csY.getStd());
-                System.out.println("        2D, Ratio "+(cs.getStd() / cs.getMean()));
+                MIA.log.writeMessage("        2D, Ratio "+(cs.getStd() / cs.getMean()));
                 if (cs.getStd() / cs.getMean() < 2) return VolumeType.QUADTREE;
             } else {
                 CumStat cs = new CumStat();
                 cs.addMeasure(csX.getStd());
                 cs.addMeasure(csY.getStd());
                 cs.addMeasure(csZ.getStd());
-                System.out.println("        3D, Ratio "+(cs.getStd() / cs.getMean()));
+                MIA.log.writeMessage("        3D, Ratio "+(cs.getStd() / cs.getMean()));
                 if (cs.getStd() / cs.getMean() < 2) {
                     if (xyToZ > 3) return VolumeType.QUADTREE;
                     else return VolumeType.OCTREE;
