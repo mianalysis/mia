@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.Icons.IconFactory;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -15,12 +17,12 @@ import java.awt.event.ActionListener;
 public class ShowOutputButton extends JButton implements ActionListener {
     private Module module;
     private boolean state = true;
-    private static final ImageIcon blackClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
-    private static final ImageIcon blackOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");
-    private static final ImageIcon redClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_red_12px.png"), "");
-    private static final ImageIcon redOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_red_12px.png"), "");
-    private static final ImageIcon greyClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_grey_12px.png"), "");
-    private static final ImageIcon greyOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_grey_12px.png"), "");
+    private static final ImageIcon blackOpenIcon = new IconFactory(14,14).getEyeOpen(Colours.BLACK_HEX);
+    private static final ImageIcon redOpenIcon = new IconFactory(14,14).getEyeOpen(Colours.RED_HEX);
+    private static final ImageIcon greyOpenIcon = new IconFactory(14,14).getEyeOpen(Colours.GREY_HEX);
+    private static final ImageIcon blackClosedIcon = new IconFactory(14,14).getEyeClosed(Colours.BLACK_HEX);
+    private static final ImageIcon redClosedIcon = new IconFactory(14,14).getEyeClosed(Colours.RED_HEX);
+    private static final ImageIcon greyClosedIcon = new IconFactory(14,14).getEyeClosed(Colours.GREY_HEX);
 
 
     public ShowOutputButton(Module module) {

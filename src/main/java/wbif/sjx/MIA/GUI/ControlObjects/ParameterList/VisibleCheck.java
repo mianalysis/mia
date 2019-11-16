@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ParameterList;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.Icons.IconFactory;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 import javax.swing.*;
@@ -16,8 +18,8 @@ public class VisibleCheck extends JButton implements ActionListener {
     private Parameter parameter;
     private boolean state = true;
 
-    private static final ImageIcon closedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
-    private static final ImageIcon openIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");
+    private static final ImageIcon closedIcon = new IconFactory(14,14).getEyeClosed(Colours.BLACK_HEX);
+    private static final ImageIcon openIcon = new IconFactory(14,14).getEyeOpen(Colours.BLACK_HEX);
 
     public VisibleCheck(Parameter parameter) {
         this.parameter = parameter;

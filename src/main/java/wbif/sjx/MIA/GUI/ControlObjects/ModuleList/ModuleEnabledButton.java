@@ -1,12 +1,15 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.Icons.IconFactory;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,9 +19,9 @@ import java.awt.event.ActionListener;
  */
 public class ModuleEnabledButton extends JButton implements ActionListener {
     private Module module;
-    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_strike_12px.png"), "");
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
+    private static final ImageIcon blackIcon = new IconFactory(13,13).getPowerOff(Colours.BLACK_HEX);
+    private static final ImageIcon redIcon = new IconFactory(13,13).getPowerOn(Colours.RED_HEX);
+    private static final ImageIcon greenIcon = new IconFactory(13,13).getPowerOn(Colours.GREEN_HEX);
 
     public ModuleEnabledButton(Module module) {
         this.module = module;

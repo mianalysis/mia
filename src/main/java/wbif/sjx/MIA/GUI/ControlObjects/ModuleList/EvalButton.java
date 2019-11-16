@@ -2,7 +2,7 @@ package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.IconTranscoder;
+import wbif.sjx.MIA.GUI.Icons.IconTranscoder;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -20,8 +20,7 @@ public class EvalButton extends JButton implements ActionListener {
     private static Thread t;
 
     private Module module;
-//    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
-    private static final ImageIcon blackIcon = new IconTranscoder(ModuleEnabledCheck.class.getResource("/Images/drawing.svg").toString()).getIcon();
+    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
     private static final ImageIcon redOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_red_12px.png"), "");

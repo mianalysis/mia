@@ -14,6 +14,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import java.awt.*;
@@ -117,7 +118,7 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         label.setOpaque(true);
 
-        if (isSelected) label.setBackground(Colours.LIGHT_BLUE);
+        if (isSelected) label.setBackground(Colours.NON_THEME_MENU_BLUE);
         else label.setBackground(table.getBackground());
 
         if (value instanceof Module) {

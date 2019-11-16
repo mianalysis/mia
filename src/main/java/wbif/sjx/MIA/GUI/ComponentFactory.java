@@ -1,12 +1,9 @@
 package wbif.sjx.MIA.GUI;
 
 import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.*;
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.Icons.IconFactory;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
@@ -31,9 +28,9 @@ import java.util.LinkedHashSet;
 public class ComponentFactory {
     private int elementHeight;
 
-    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_darkblue_12px.png"), "");
-    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_darkblue_12px.png"), "");
-    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_darkblue_12px.png"), "");
+    private static final ImageIcon downArrow = new IconFactory().getArrowDown();
+    private static final ImageIcon leftArrow = new IconFactory().getArrowLeft();
+    private static final ImageIcon rightArrow = new IconFactory().getArrowRight();
 
     public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
