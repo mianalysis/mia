@@ -133,7 +133,7 @@ public class FitLongestChord extends Module {
             processObject(inputObject);
             if (addOverlay) addEndpointsOverlay(inputObject,inputImagePlus);
 
-            writeStatus("Processed object "+(++count)+" of "+nTotal);
+            writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
         if (addOverlay) {

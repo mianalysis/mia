@@ -179,7 +179,7 @@ public class GetLocalObjectRegion extends Module {
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
-        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
 
         return true;
 

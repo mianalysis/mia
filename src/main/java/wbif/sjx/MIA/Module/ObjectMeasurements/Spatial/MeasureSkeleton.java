@@ -150,7 +150,7 @@ public class MeasureSkeleton extends Module {
                 // Taking the first result for each (in the event there was more than one isolated region)
                 addMeasurements(inputObject,skeletonResult);
 
-                writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
+                writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
 
             };
             pool.submit(task);

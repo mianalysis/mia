@@ -257,7 +257,7 @@ public class UnwarpImages extends Module {
         int count = 0;
         int total = source.getImagePlus().getNFrames();
         for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint "+(++count)+" of "+total);
+            writeMessage("Processing timepoint "+(++count)+" of "+total);
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {

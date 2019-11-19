@@ -208,7 +208,7 @@ public class FitEllipse extends Module {
             } catch (IntegerOverflowException e) {
                 return false;
             }
-            writeStatus("Processed object "+(++count)+" of "+nTotal);
+            writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
         if (showOutput) {

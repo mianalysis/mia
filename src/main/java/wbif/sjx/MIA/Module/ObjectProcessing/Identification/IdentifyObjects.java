@@ -56,7 +56,7 @@ public class IdentifyObjects extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            writeStatus("Processing image "+t+" of "+inputImagePlus.getNFrames());
+            writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
 
             // Creating a copy of the input image
             ImagePlus currStack;
@@ -145,7 +145,7 @@ public class IdentifyObjects extends Module {
         ObjCollection outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, type);
 
         // Adding objects to workspace
-        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing objects

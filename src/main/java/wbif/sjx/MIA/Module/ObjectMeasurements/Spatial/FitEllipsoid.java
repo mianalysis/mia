@@ -217,7 +217,7 @@ public class FitEllipsoid extends Module {
             } catch (IntegerOverflowException e) {
                 return false;
             }
-            writeStatus("Processed object "+(++count)+" of "+nTotal);
+            writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);

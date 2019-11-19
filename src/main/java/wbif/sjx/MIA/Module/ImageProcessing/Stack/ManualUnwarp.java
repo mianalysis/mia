@@ -293,7 +293,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public void doAction(Object[] objects) {
-        writeStatus("Running test unwarp");
+        writeMessage("Running test unwarp");
 
         // Getting objects
         ImagePlus ipl1 = new Duplicator().run(inputImage.getImagePlus());

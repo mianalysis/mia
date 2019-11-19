@@ -201,7 +201,7 @@ public class AddArrows extends Overlay {
 
                     addOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
-                    writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
                 };
                 pool.submit(task);

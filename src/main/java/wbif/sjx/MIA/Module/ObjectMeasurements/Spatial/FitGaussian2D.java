@@ -214,7 +214,7 @@ public class FitGaussian2D extends Module {
             // Adding current object's Gaussian
             addGaussianProfile(iterator.next(),image,true);
 
-            if (module != null) module.writeStatus("Rendered object "+(++count)+" of "+total);
+            if (module != null) module.writeMessage("Rendered object "+(++count)+" of "+total);
 
         }
 
@@ -312,7 +312,7 @@ public class FitGaussian2D extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeStatus("Fitting object " + (count++ + 1) + " of " + startingNumber);
+            writeMessage("Fitting object " + (count++ + 1) + " of " + startingNumber);
 
             // Getting the centroid of the current object (should be single points anyway)
             int x = (int) Math.round(inputObject.getXMean(true));
