@@ -179,7 +179,7 @@ public class RelateObjects extends Module {
             // Adding measurements to the input object
             applyMeasurements(childObject,parentObjects,minDist,minLink);
 
-            writeStatus("Processed "+(iter++)+" of "+numberOfChildren+" objects");
+            writeMessage("Processed "+(iter++)+" of "+numberOfChildren+" objects");
 
         }
     }
@@ -366,7 +366,7 @@ public class RelateObjects extends Module {
 
             }
 
-            writeStatus("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
+            writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
     }
@@ -468,22 +468,22 @@ public class RelateObjects extends Module {
 
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
-                writeStatus("Relating objects by matching ID numbers");
+                writeMessage("Relating objects by matching ID numbers");
                 linkMatchingIDs(parentObjects,childObjects);
                 break;
 
             case RelateModes.PROXIMITY:
-                writeStatus("Relating objects by proximity");
+                writeMessage("Relating objects by proximity");
                 proximity(parentObjects,childObjects);
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
-                writeStatus("Relating objects by proximity to children");
+                writeMessage("Relating objects by proximity to children");
                 proximityToChildren(parentObjects,childObjects);
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                writeStatus("Relating objects by spatial overlap");
+                writeMessage("Relating objects by spatial overlap");
                 spatialOverlap(parentObjects,childObjects,minOverlap,centroidOverlap,linkInSameFrame);
                 break;
 

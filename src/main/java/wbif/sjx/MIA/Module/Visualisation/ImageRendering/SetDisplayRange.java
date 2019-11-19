@@ -132,7 +132,7 @@ public class SetDisplayRange extends Module {
         double[] manualRange = new double[]{minRange,maxRange};
 
         // Adjusting display range
-        writeStatus("Adjusting display range");
+        writeMessage("Adjusting display range");
         switch (calculationMode) {
             case CalculationModes.FAST:
             case CalculationModes.PRECISE:

@@ -325,7 +325,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     ipl.setPosition(countC, countZ, countT);
                     ipl.setProcessor(ip);
 
-                    if (localVerbose) writeStatus("Loaded image " + (++count) + " of " + nTotal);
+                    if (localVerbose) writeMessage("Loaded image " + (++count) + " of " + nTotal);
 
                     countT++;
                 }
@@ -431,7 +431,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Creating the new image
         ImagePlus outputIpl = IJ.createImage("Image", width, height, count, bitDepth);
         for (int i = 0; i < count; i++) {
-            writeStatus("Loading image " + (i + 1) + " of " + count);
+            writeMessage("Loading image " + (i + 1) + " of " + count);
             String currentPath = rootPath + rootName + df.format(i * frameInterval + startingIndex) + "." + extension;
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, intRange, manualCal, false);
 
@@ -833,7 +833,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
-            writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
+            writeMessage("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
@@ -856,7 +856,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Adding image to workspace
-        writeStatus("Adding image (" + outputImageName + ") to workspace");
+        writeMessage("Adding image (" + outputImageName + ") to workspace");
         Image outputImage = new Image(outputImageName, ipl);
         workspace.addImage(outputImage);
 

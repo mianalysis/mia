@@ -148,7 +148,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeStatus("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
 
             };
             pool.submit(task);
@@ -206,7 +206,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
-                writeStatus("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
             };
             pool.submit(task);
         }
@@ -287,7 +287,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeStatus("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
+                writeMessage("Processed "+(count.getAndIncrement())+" of "+numberOfChildren+" objects",moduleName);
             };
             pool.submit(task);
         }
@@ -416,7 +416,7 @@ public class RelateManyToOne extends Module {
 
             }
 
-            writeStatus("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
+            writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
     }

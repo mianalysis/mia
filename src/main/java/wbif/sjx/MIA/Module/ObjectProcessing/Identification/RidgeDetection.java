@@ -108,7 +108,7 @@ public class RidgeDetection extends Module {
         for (int c=0;c<nChannels;c++) {
             for (int z=0;z<nSlices;z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-                    writeStatus("Processing image "+(count++)+" of "+total);
+                    writeMessage("Processing image "+(count++)+" of "+total);
                     inputImagePlus.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
@@ -263,7 +263,7 @@ public class RidgeDetection extends Module {
 
         if (showOutput) {
             // Adding image to workspace
-            writeStatus("Adding objects (" + outputObjectsName + ") to workspace");
+            writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
 
             // Creating a duplicate of the input image
             ImagePlus dispIpl = inputImage.getImagePlus().duplicate();

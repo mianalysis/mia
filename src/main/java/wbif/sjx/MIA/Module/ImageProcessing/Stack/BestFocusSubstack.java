@@ -201,7 +201,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
                     break;
             }
 
-            writeStatus("Best focus for frame "+(f+1)+" at "+(bestSlices[f]+1) +" (provisional)");
+            writeMessage("Best focus for frame "+(f+1)+" at "+(bestSlices[f]+1) +" (provisional)");
 
         }
 

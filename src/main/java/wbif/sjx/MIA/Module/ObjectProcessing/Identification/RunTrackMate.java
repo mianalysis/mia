@@ -140,7 +140,7 @@ public class RunTrackMate extends Module {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         // Getting trackObjects and adding them to the output trackObjects
-        writeStatus("Processing detected objects");
+        writeMessage("Processing detected objects");
 
         // Getting calibration
         double dppXY = calibration.getX(1);
@@ -168,7 +168,7 @@ public class RunTrackMate extends Module {
         }
 
         // Adding spotObjects to the workspace
-        writeStatus(spots.getNSpots(false)+" trackObjects detected");
+        writeMessage(spots.getNSpots(false)+" trackObjects detected");
 
         return spotObjects;
 
@@ -187,7 +187,7 @@ public class RunTrackMate extends Module {
         ObjCollection trackObjects = new ObjCollection(trackObjectsName);
 
         // Converting tracks to local track model
-        writeStatus("Converting tracks to local track model");
+        writeMessage("Converting tracks to local track model");
         TrackModel trackModel = model.getTrackModel();
         Set<Integer> trackIDs = trackModel.trackIDs(false);
 
@@ -239,8 +239,8 @@ public class RunTrackMate extends Module {
         }
 
         // Displaying the number of objects detected
-        writeStatus(spotObjects.size() + " spots detected");
-        writeStatus(trackObjects.size() + " tracks detected");
+        writeMessage(spotObjects.size() + " spots detected");
+        writeMessage(trackObjects.size() + " tracks detected");
 
         return new ObjCollection[]{spotObjects,trackObjects};
 
@@ -325,7 +325,7 @@ public class RunTrackMate extends Module {
         ObjCollection spotObjects;
         try {
             if (doTracking) {
-                writeStatus("Running detection and tracking");
+                writeMessage("Running detection and tracking");
                 if (!trackmate.process()) MIA.log.writeError(trackmate.getErrorMessage());
 
                 ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration,width,height,nSlices);
@@ -339,7 +339,7 @@ public class RunTrackMate extends Module {
                 workspace.addObjects(trackObjects);
 
             } else {
-                writeStatus("Running detection only");
+                writeMessage("Running detection only");
                 if (!trackmate.checkInput()) MIA.log.writeError(trackmate.getErrorMessage());
                 if (!trackmate.execDetection()) MIA.log.writeError(trackmate.getErrorMessage());
                 if (!trackmate.computeSpotFeatures(false)) MIA.log.writeError(trackmate.getErrorMessage());

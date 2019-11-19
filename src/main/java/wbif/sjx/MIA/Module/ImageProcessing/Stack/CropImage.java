@@ -116,7 +116,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
             if (showOutput) inputImage.showImage();
 
         } else {
-            writeStatus("Adding image ("+outputImageName+") to workspace");
+            writeMessage("Adding image ("+outputImageName+") to workspace");
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
         }

@@ -330,7 +330,7 @@ public class FilterImage extends Module {
             case FilterModes.MEDIAN2D:
             case FilterModes.MINIMUM2D:
             case FilterModes.VARIANCE2D:
-                writeStatus("Applying "+filterMode+" filter");
+                writeMessage("Applying "+filterMode+" filter");
                 apply2DFilter(inputImagePlus,filterMode,filterRadius);
                 break;
 
@@ -339,37 +339,37 @@ public class FilterImage extends Module {
             case FilterModes.MEDIAN3D:
             case FilterModes.MINIMUM3D:
             case FilterModes.VARIANCE3D:
-                writeStatus("Applying "+filterMode+" filter");
+                writeMessage("Applying "+filterMode+" filter");
                 apply3DFilter(inputImagePlus,filterMode,(float) filterRadius);
                 break;
 
             case FilterModes.DOG2D:
-                writeStatus("Applying "+filterMode+" filter");
+                writeMessage("Applying "+filterMode+" filter");
                 DoG.run(inputImagePlus,filterRadius,true);
                 break;
 
             case FilterModes.GAUSSIAN2D:
-                writeStatus("Applying "+filterMode+" filter");
+                writeMessage("Applying "+filterMode+" filter");
                 runGaussian2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN3D:
-                writeStatus("Applying "+filterMode+" filter");
+                writeMessage("Applying "+filterMode+" filter");
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
                 break;
 
             case FilterModes.GRADIENT2D:
-                writeStatus("Applying "+filterMode+" filter");
+                writeMessage("Applying "+filterMode+" filter");
                 runGradient2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.RIDGE_ENHANCEMENT:
-                writeStatus("Applying 3D median filter");
+                writeMessage("Applying 3D median filter");
                 RidgeEnhancement.run(inputImagePlus,(float) filterRadius, true);
                 break;
 
             case FilterModes.ROLLING_FRAME:
-                writeStatus("Applying rolling frame filter");
+                writeMessage("Applying rolling frame filter");
                 runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod,windowMode);
                 break;
 

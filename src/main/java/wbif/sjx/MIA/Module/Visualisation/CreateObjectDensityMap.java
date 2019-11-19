@@ -38,7 +38,7 @@ public class CreateObjectDensityMap extends Module {
         int count = 0;
         int nTotal = objects.size();
         for (Obj object:objects.values()) {
-            if (message != null) writeStatus("Processing object "+(++count)+" of "+nTotal,message);
+            if (message != null) writeMessage("Processing object "+(++count)+" of "+nTotal,message);
 
             // Getting all object points
             for (Point<Integer> point:object.getPoints()) {
@@ -121,7 +121,7 @@ public class CreateObjectDensityMap extends Module {
         process(cumStats,indexer,inputObjects,getName());
 
         // Converting statistic array to Image
-        writeStatus("Creating output image");
+        writeMessage("Creating output image");
         Calibration calibration = templateImage.getImagePlus().getCalibration();
         Image outputImage = convertToImage(cumStats,indexer,outputImageName,calibration);
 

@@ -127,7 +127,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         int count = 1;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            writeStatus("Running macro on object "+(count++)+" of "+nTotal);
+            writeMessage("Running macro on object "+(count++)+" of "+nTotal);
 
             // Appending object name and ID number onto macro
             String finalMacroText = addObjectToMacroText(macroText,inputObjectsName,inputObject.getID());

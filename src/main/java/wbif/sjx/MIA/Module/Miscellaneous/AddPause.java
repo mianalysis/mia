@@ -60,7 +60,7 @@ public class AddPause extends Module {
         dialog.setModal(false);
         dialog.setVisible(true);
 
-        writeStatus("Execution paused");
+        writeMessage("Execution paused");
 
         while (optionPane.getValue() == JOptionPane.UNINITIALIZED_VALUE) {
             try {

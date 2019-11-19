@@ -88,7 +88,7 @@ public abstract class Module extends Ref implements Comparable, Serializable {
     // PUBLIC METHODS
 
     public boolean execute(Workspace workspace) {
-        writeStatus("Processing");
+        writeMessage("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
@@ -97,9 +97,9 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         boolean status = process(workspace);
 
         if (status) {
-            writeStatus("Completed");
+            writeMessage("Completed");
         } else {
-            writeStatus("Did not complete");
+            writeMessage("Did not complete");
         }
 
         // If enabled, write the current memory usage to the console
@@ -333,11 +333,11 @@ public abstract class Module extends Ref implements Comparable, Serializable {
 
     // PROTECTED METHODS
 
-    public void writeStatus(String message) {
+    public void writeMessage(String message) {
         if (verbose) MIA.log.writeStatus("[" + name + "] "+message);
     }
 
-    protected static void writeStatus(String message, String name) {
+    protected static void writeMessage(String message, String name) {
         if (verbose) MIA.log.writeStatus("[" + name + "] "+message);
     }
 

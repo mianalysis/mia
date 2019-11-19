@@ -51,6 +51,7 @@ public class MeasureTrackMotion extends Module {
         String EUCLIDEAN_DISTANCE_PX = "EUCLIDEAN_DISTANCE_(PX)";
         String EUCLIDEAN_DISTANCE_CAL = "EUCLIDEAN_DISTANCE_(${CAL})";
         String DIRECTIONALITY_RATIO = "DIRECTIONALITY_RATIO";
+        String STDEV_ANGULAR_PERSISTENCE = "STDEV_ANGULAR_PERSISTENCE";
         String INSTANTANEOUS_SPEED_PX = "INSTANTANEOUS_SPEED_(PX/FRAME)";
         String INSTANTANEOUS_SPEED_CAL = "INSTANTANEOUS_SPEED_(${CAL}/FRAME)";
         String CUMULATIVE_PATH_LENGTH_PX = "CUMULATIVE_PATH_LENGTH_(PX)";
@@ -58,6 +59,7 @@ public class MeasureTrackMotion extends Module {
         String ROLLING_EUCLIDEAN_DISTANCE_PX = "ROLLING_EUCLIDEAN_DISTANCE_(PX)";
         String ROLLING_EUCLIDEAN_DISTANCE_CAL = "ROLLING_EUCLIDEAN_DISTANCE_(${CAL})";
         String ROLLING_DIRECTIONALITY_RATIO = "ROLLING_DIRECTIONALITY_RATIO";
+        String ANGULAR_PERSISTENCE = "ANGULAR_PERSISTENCE";
         String DETECTION_FRACTION = "DETECTION_FRACTION";
         String RELATIVE_FRAME = "RELATIVE_FRAME";
 
@@ -343,6 +345,7 @@ public class MeasureTrackMotion extends Module {
         TreeMap<Integer, Double> pathLength = track.getRollingTotalPathLength();
         TreeMap<Integer, Double> euclidean = track.getRollingEuclideanDistance();
         TreeMap<Integer, Double> dirRatio = track.getRollingDirectionalityRatio();
+        TreeMap<Integer, Double> angularPersistence = track.getAngularPersistence();
 
         // Applying the relevant measurement to each spot
         for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
@@ -359,6 +362,8 @@ public class MeasureTrackMotion extends Module {
             spotObject.addMeasurement(new Measurement(name, euclidean.get(t)*distPerPxXY));
             name = getFullName(Measurements.ROLLING_DIRECTIONALITY_RATIO,averageSubtracted);
             spotObject.addMeasurement(new Measurement(name, dirRatio.get(t)));
+            name = getFullName(Measurements.ANGULAR_PERSISTENCE,averageSubtracted);
+            spotObject.addMeasurement(new Measurement(name, angularPersistence.get(t)));
 
         }
     }
@@ -594,6 +599,11 @@ public class MeasureTrackMotion extends Module {
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.ROLLING_DIRECTIONALITY_RATIO,subtractAverage);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setObjectsName(inputSpotObjects);
+        returnedRefs.add(reference);
+
+        name = getFullName(Measurements.ANGULAR_PERSISTENCE,subtractAverage);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputSpotObjects);
         returnedRefs.add(reference);
