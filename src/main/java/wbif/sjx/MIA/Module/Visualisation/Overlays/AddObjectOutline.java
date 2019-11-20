@@ -1,12 +1,10 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -23,7 +21,6 @@ import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddObjectOutline extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
@@ -51,7 +48,7 @@ public class AddObjectOutline extends Overlay {
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, double lineWidth, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, double lineWidth, HashMap<Integer,Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -68,7 +65,7 @@ public class AddObjectOutline extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    addOverlay(object, finalIpl, ColourFactory.getColour(hue), lineWidth, renderInAllFrames);
+                    addOverlay(object, finalIpl, ColourFactory.getColour(hue,opacity), lineWidth, renderInAllFrames);
                 };
                 pool.submit(task);
             }
@@ -144,6 +141,7 @@ public class AddObjectOutline extends Overlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -154,7 +152,7 @@ public class AddObjectOutline extends Overlay {
         // Generating colours for each object
         HashMap<Integer,Float> hues = getHues(inputObjects);
 
-        addOverlay(ipl,inputObjects,lineWidth,hues,renderInAllFrames,multithread);
+        addOverlay(ipl,inputObjects,lineWidth,hues,opacity,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 

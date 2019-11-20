@@ -103,7 +103,7 @@ public class CreateDistanceMap extends Module {
         // Calculating the distance maps.  The inside map is set to negative
         ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
         InvertIntensity.process(objIpl);
-        BinaryOperations2D.process(objIpl,BinaryOperations2D.OperationModes.ERODE,1);
+        BinaryOperations2D.process(objIpl,BinaryOperations2D.OperationModes.ERODE,1,1);
         ImagePlus insideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
 
         // If selected, inverting the inside of the object, so values here are negative

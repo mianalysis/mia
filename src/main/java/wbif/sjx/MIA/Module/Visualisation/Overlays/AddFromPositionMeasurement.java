@@ -126,6 +126,7 @@ public class AddFromPositionMeasurement extends Overlay {
         boolean useRadius = parameters.getValue(USE_RADIUS);
         String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
 
+        double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -159,7 +160,7 @@ public class AddFromPositionMeasurement extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
 
                     addOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 

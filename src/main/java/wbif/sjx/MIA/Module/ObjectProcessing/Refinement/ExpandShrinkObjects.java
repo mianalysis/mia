@@ -53,7 +53,7 @@ public class ExpandShrinkObjects extends Module {
         ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
         objectCollection.add(inputObject);
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertToImage("Object image", templateImage, hues, 8,false);
+        Image objectImage = objectCollection.convertToImage("Object image", templateImage, hues, 8, false);
         InvertIntensity.process(objectImage);
 
         Prefs.blackBackground = false;
@@ -62,7 +62,7 @@ public class ExpandShrinkObjects extends Module {
         // from the converter has white objects on a black background.
         switch (method) {
             case Methods.EXPAND_2D:
-                BinaryOperations2D.process(objectImage,BinaryOperations2D.OperationModes.DILATE,radiusChangePx);
+                BinaryOperations2D.process(objectImage,BinaryOperations2D.OperationModes.DILATE,radiusChangePx,1);
                 break;
 
             case Methods.EXPAND_3D:
@@ -70,7 +70,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
 
             case Methods.SHRINK_2D:
-                BinaryOperations2D.process(objectImage,BinaryOperations2D.OperationModes.ERODE,radiusChangePx);
+                BinaryOperations2D.process(objectImage,BinaryOperations2D.OperationModes.ERODE,radiusChangePx,1);
                 break;
 
             case Methods.SHRINK_3D:

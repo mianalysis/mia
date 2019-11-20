@@ -1,8 +1,6 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import org.apache.bcel.generic.RETURN;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -21,6 +19,7 @@ public abstract class Overlay extends Module {
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String OPACITY = "Opacity (%)";
 
 
     public Overlay(String name, ModuleCollection modules) {
@@ -83,6 +82,7 @@ public abstract class Overlay extends Module {
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR,this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR,this));
+        parameters.add(new DoubleP(OPACITY,this,100));
 
     }
 
@@ -140,6 +140,8 @@ public abstract class Overlay extends Module {
 
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(OPACITY));
 
         return returnedParameters;
 

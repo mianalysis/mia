@@ -55,7 +55,7 @@ public class AddRelationshipConnection extends Overlay {
         super("Add relationship connection",modules);
     }
 
-    public static void addParentChildOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjectsName, double lineWidth, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+    public static void addParentChildOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjectsName, double lineWidth, HashMap<Integer,Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -73,7 +73,7 @@ public class AddRelationshipConnection extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
 
                     addParentChildOverlay(object, childObjectsName, finalIpl, colour, lineWidth, renderInAllFrames);
 
@@ -99,7 +99,7 @@ public class AddRelationshipConnection extends Overlay {
         }
     }
 
-    public static void addSiblingOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjects1Name, String childObjects2Name, double lineWidth, HashMap<Integer,Float> hues, boolean renderInAllFrames, boolean multithread) {
+    public static void addSiblingOverlay(ImagePlus ipl, ObjCollection inputObjects, String childObjects1Name, String childObjects2Name, double lineWidth, HashMap<Integer,Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -117,7 +117,7 @@ public class AddRelationshipConnection extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
 
                     addSiblingOverlay(object, childObjects1Name, childObjects2Name, finalIpl, colour, lineWidth, renderInAllFrames);
 
@@ -201,6 +201,7 @@ public class AddRelationshipConnection extends Overlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -216,11 +217,11 @@ public class AddRelationshipConnection extends Overlay {
 
         switch (lineMode) {
             case LineModes.BETWEEN_CHILDREN:
-                addSiblingOverlay(ipl,parentObjects,childObjects1Name,childObjects2Name,lineWidth,hues,renderInAllFrames,multithread);
+                addSiblingOverlay(ipl,parentObjects,childObjects1Name,childObjects2Name,lineWidth,hues,opacity,renderInAllFrames,multithread);
                 break;
 
             case LineModes.PARENT_TO_CHILD:
-                addParentChildOverlay(ipl,parentObjects,childObjects1Name,lineWidth,hues,renderInAllFrames,multithread);
+                addParentChildOverlay(ipl,parentObjects,childObjects1Name,lineWidth,hues,opacity,renderInAllFrames,multithread);
                 break;
         }
 

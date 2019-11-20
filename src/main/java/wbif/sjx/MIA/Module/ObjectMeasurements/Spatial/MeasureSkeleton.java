@@ -81,7 +81,7 @@ public class MeasureSkeleton extends Module {
         InvertIntensity.process(projectedImage);
 
         // Run skeletonisation
-        BinaryOperations2D.process(projectedImage,BinaryOperations2D.OperationModes.SKELETONISE,1);
+        BinaryOperations2D.process(projectedImage,BinaryOperations2D.OperationModes.SKELETONISE,1,1);
         InvertIntensity.process(projectedImage);
 
         return projectedImage;

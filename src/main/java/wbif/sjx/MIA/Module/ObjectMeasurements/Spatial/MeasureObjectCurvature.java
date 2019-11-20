@@ -92,7 +92,7 @@ public class MeasureObjectCurvature extends Module {
         InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1);
+        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
 
         // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
         return new Skeleton(objectImage.getImagePlus()).getLongestPath();

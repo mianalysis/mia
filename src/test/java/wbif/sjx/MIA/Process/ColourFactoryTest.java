@@ -317,7 +317,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         assertEquals(3,actual.size());
         assertEquals(Color.getHSBColor(1f,0f,1f),actual.get(0));
@@ -348,7 +348,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getRandomHues(collection);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -386,7 +386,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(collection,"Meas",false);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -424,7 +424,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getMeasurementValueHues(collection,"Meas",true);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -462,7 +462,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(collection,false);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -494,7 +494,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getIDHues(collection,true);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -530,7 +530,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(collection,"Parent",false);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());
@@ -566,7 +566,7 @@ public class ColourFactoryTest {
         collection.add(obj);
 
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(collection,"Parent",true);
-        HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
+        HashMap<Integer, Color> actual = ColourFactory.getColours(hues,100);
 
         // For random numbers we don't know what value they will have
         assertEquals(3,actual.size());

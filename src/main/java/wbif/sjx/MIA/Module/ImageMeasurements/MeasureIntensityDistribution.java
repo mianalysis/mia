@@ -224,7 +224,7 @@ public class MeasureIntensityDistribution extends Module {
 
                 dist1 = DistanceMap.getDistanceMap(dist1,true);
                 InvertIntensity.process(distIpl);
-                BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1);
+                BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1,1);
                 distIpl = DistanceMap.getDistanceMap(distIpl,true);
 
                 ImageCalculator.process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
@@ -234,7 +234,7 @@ public class MeasureIntensityDistribution extends Module {
             case EdgeDistanceModes.INSIDE_ONLY:
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
                 InvertIntensity.process(distIpl);
-                BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1);
+                BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1,1);
                 distIpl = DistanceMap.getDistanceMap(distIpl,true);
                 break;
 
