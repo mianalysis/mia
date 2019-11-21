@@ -48,6 +48,13 @@ public class SingleClassCluster extends Module {
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
+
+    public static final String ADD_COST = "Add cost";
+    public static final String COST_MEASUREMENT = "Cost measurement";
+    public static final String COST_CALCULATION = "Cost calculation";
+    public static final String ENFORCE_COST_LIMIT = "Enforce cost limit";
+    public static final String COST_LIMIT = "Cost limit";
+
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
 
@@ -56,10 +63,19 @@ public class SingleClassCluster extends Module {
     }
 
     public interface ClusteringAlgorithms {
-        String KMEANSPLUSPLUS = "KMeans++";
         String DBSCAN = "DBSCAN";
+        String KMEANSPLUSPLUS = "KMeans++";
+        String MUNKRES = "Munkres";
 
-        String[] ALL = new String[]{KMEANSPLUSPLUS, DBSCAN};
+        String[] ALL = new String[]{DBSCAN,KMEANSPLUSPLUS,MUNKRES};
+
+    }
+
+    public interface CostCalculations {
+        String DIFFERENCE = "Difference";
+        String SUM = "Sum";
+
+        String[] ALL = new String[]{DIFFERENCE,SUM};
 
     }
 
@@ -320,6 +336,14 @@ public class SingleClassCluster extends Module {
         parameters.add(new IntegerP(MAX_ITERATIONS, this,10000));
         parameters.add(new DoubleP(EPS, this,10.0));
         parameters.add(new IntegerP(MIN_POINTS, this,5));
+
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new ObjectMeasurementP(COST_MEASUREMENT,this));
+        collection.add(new ChoiceP(COST_CALCULATION,this,CostCalculations.DIFFERENCE,CostCalculations.ALL));
+        collection.add(new BooleanP(ENFORCE_COST_LIMIT,this,false));
+        collection.add(new DoubleP(COST_LIMIT,this,1));
+        parameters.add(new ParameterGroup(ADD_COST,this,collection,1));
+
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
 
     }
@@ -332,16 +356,18 @@ public class SingleClassCluster extends Module {
         returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 
         returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
-        if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
-            // Running KMeans++ clustering
-            returnedParameters.add(parameters.getParameter(K_CLUSTERS));
-            returnedParameters.add(parameters.getParameter(MAX_ITERATIONS));
-
-        } else if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.DBSCAN)) {
-            // Running DBSCAN clustering
-            returnedParameters.add(parameters.getParameter(EPS));
-            returnedParameters.add(parameters.getParameter(MIN_POINTS));
-
+        switch ((String) parameters.getValue(CLUSTERING_ALGORITHM)) {
+            case ClusteringAlgorithms.DBSCAN:
+                returnedParameters.add(parameters.getParameter(EPS));
+                returnedParameters.add(parameters.getParameter(MIN_POINTS));
+                break;
+            case ClusteringAlgorithms.KMEANSPLUSPLUS:
+                returnedParameters.add(parameters.getParameter(K_CLUSTERS));
+                returnedParameters.add(parameters.getParameter(MAX_ITERATIONS));
+                break;
+            case ClusteringAlgorithms.MUNKRES:
+                returnedParameters.add(parameters.getParameter(ADD_COST));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
