@@ -68,7 +68,7 @@ public class AddObjectCentroid extends Overlay {
         super("Add object centroid",modules);
     }
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, String size, String type, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, double opacity, String size, String type, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -85,7 +85,7 @@ public class AddObjectCentroid extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
 
                     addOverlay(object, finalIpl, colour, size, type, renderInAllFrames);
 
@@ -96,9 +96,7 @@ public class AddObjectCentroid extends Overlay {
             pool.shutdown();
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        } catch (InterruptedException e) {
-            return;
-        }
+        } catch (InterruptedException e) {}
     }
 
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type, boolean renderInAllFrames) {
@@ -190,6 +188,7 @@ public class AddObjectCentroid extends Overlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        double opacity = parameters.getValue(OPACITY);
         String pointSize = parameters.getValue(POINT_SIZE);
         String pointType = parameters.getValue(POINT_TYPE);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
@@ -204,7 +203,7 @@ public class AddObjectCentroid extends Overlay {
         // Generating colours for each object
         HashMap<Integer,Float> hues= getHues(inputObjects);
 
-        addOverlay(ipl,inputObjects,hues,pointSize,pointType,renderInAllFrames,multithread);
+        addOverlay(ipl,inputObjects,hues,opacity,pointSize,pointType,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 

@@ -1,16 +1,14 @@
-// TODO: Add option to leave overlay as objects (i.e. don't flatten)
-// TODO: Add option to plot tracks (will need to import track and spot objects as parent/child relationship)
-
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
 import ij.ImagePlus;
-import ij.gui.*;
+import ij.Prefs;
+import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -20,17 +18,14 @@ import wbif.sjx.MIA.Process.ColourFactory;
 
 import java.awt.*;
 import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Created by sc13967 on 17/05/2017.
- */
-public class AddTracks extends Overlay {
+public class AddObjectFill extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String SPOT_OBJECTS = "Spot objects";
 
     public static final String OUTPUT_SEPARATOR = "Image output";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -38,66 +33,85 @@ public class AddTracks extends Overlay {
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
-    public static final String LIMIT_TRACK_HISTORY = "Limit track history";
-    public static final String TRACK_HISTORY = "Track history (frames)";
-    public static final String LINE_WIDTH = "Line width";
+    public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-
-    public AddTracks(ModuleCollection modules) {
-        super("Add tracks",modules);
+    public AddObjectFill(ModuleCollection modules) {
+        super("Add object fill",modules);
     }
 
 
-    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
-        ObjCollection pointObjects = object.getChildren(spotObjectsName);
+    public interface ColourModes extends Overlay.ColourModes {}
 
-        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
-        ij.gui.Overlay ovl = ipl.getOverlay();
+    public interface SingleColours extends ColourFactory.SingleColours {}
 
-        // Putting the current track points into a TreeMap stored by the frame
-        TreeMap<Integer,Obj> points = new TreeMap<>();
-        for (Obj pointObject:pointObjects.values()) {
-            points.put(pointObject.getT(),pointObject);
-        }
-
-        //  Iterating over all points in the track, drawing lines between them
-        int nFrames = ipl.getNFrames();
-        Obj p1 = null;
-        for (Obj p2:points.values()) {
-            if (p1 != null) {
-                double x1 = p1.getXMean(true)+0.5;
-                double y1 = p1.getYMean(true)+0.5;
-                double x2 = p2.getXMean(true)+0.5;
-                double y2 = p2.getYMean(true)+0.5;
-
-                int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames,p2.getT()+history);
-                for (int t = p2.getT();t<=maxFrame-1;t++) {
-                    Line line = new Line(x1,y1,x2,y2);
-
-                    if (ipl.isHyperStack()) {
-                        ipl.setPosition(1,1,t+1);
-                        line.setPosition(1,1, t+1);
-                    } else {
-                        int pos = Math.max(1,t+1);
-                        ipl.setPosition(pos);
-                        line.setPosition(pos);
-                    }
-
-                    line.setStrokeWidth(lineWidth);
-                    line.setStrokeColor(colour);
-                    ovl.addElement(line);
-
-                }
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
+        // Adding the overlay element
+        try {
+            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
             }
 
-            p1 = p2;
+            int nThreads = multithread ? Prefs.getThreads() : 1;
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
+            // Running through each object, adding it to the overlay along with an ID label
+            for (Obj object:inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
+
+                Runnable task = () -> {
+                    float hue = hues.get(object.getID());
+                    addOverlay(object, finalIpl, ColourFactory.getColour(hue,opacity), renderInAllFrames);
+                };
+                pool.submit(task);
+            }
+
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        } catch (InterruptedException e) {
+            return;
         }
     }
 
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+
+        int t1 = object.getT() + 1;
+        int t2 = object.getT() + 1;
+        if (renderInAllFrames) {
+            t1 = 1;
+            t2 = ipl.getNFrames();
+        }
+
+        // Running through each slice of this object
+        double[][] range = object.getExtents(true,false);
+        for (int t = t1; t <= t2; t++) {
+            for (int z = (int) range[2][0]; z <= (int) range[2][1]; z++) {
+                Roi polyRoi = object.getRoi(z);
+
+                //  If the object doesn't have any pixels in this plane, skip it
+                if (polyRoi == null) continue;
+
+                if (ipl.isHyperStack()) {
+                    polyRoi.setPosition(1, z + 1, t);
+                    ipl.setPosition(1, z + 1, t);
+                } else {
+                    int pos = Math.max(Math.max(1, z + 1), t);
+                    polyRoi.setPosition(pos);
+                    ipl.setPosition(pos);
+                }
+
+                polyRoi.setFillColor(colour);
+
+                ipl.getOverlay().addElement(polyRoi);
+
+            }
+        }
+    }
 
     @Override
     public String getPackageName() {
@@ -110,12 +124,11 @@ public class AddTracks extends Overlay {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -126,15 +139,9 @@ public class AddTracks extends Overlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
-        int history = parameters.getValue(TRACK_HISTORY);
-
         double opacity = parameters.getValue(OPACITY);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
-
-        // Only add output to workspace if not applying to input
-        if (applyToInput) addOutputToWorkspace = false;
 
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
@@ -142,30 +149,12 @@ public class AddTracks extends Overlay {
         // Generating colours for each object
         HashMap<Integer,Float> hues = getHues(inputObjects);
 
-        // Adding the overlay element
-        if (!limitHistory) history = Integer.MAX_VALUE;
-
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
-
-        // Running through each object, adding it to the overlay along with an ID label
-        AtomicInteger count = new AtomicInteger();
-        for (Obj object:inputObjects.values()) {
-            float hue = hues.get(object.getID());
-            Color colour = ColourFactory.getColour(hue,opacity);
-
-            addOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
-
-            writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
-
-        }
+        addOverlay(ipl,inputObjects,hues,opacity,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 
         // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (addOutputToWorkspace) workspace.addImage(outputImage);
+        if (!applyToInput && addOutputToWorkspace) workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
 
         return true;
@@ -178,8 +167,7 @@ public class AddTracks extends Overlay {
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new InputTrackObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
@@ -187,9 +175,7 @@ public class AddTracks extends Overlay {
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new BooleanP(LIMIT_TRACK_HISTORY, this,false));
-        parameters.add(new IntegerP(TRACK_HISTORY, this,10));
-        parameters.add(new DoubleP(LINE_WIDTH,this,1));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -205,26 +191,19 @@ public class AddTracks extends Overlay {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-
             if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
-
-        if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
-        ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
-
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
-        returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+        returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_FRAMES));
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));

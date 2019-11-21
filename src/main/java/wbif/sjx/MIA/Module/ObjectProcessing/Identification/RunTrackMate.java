@@ -275,7 +275,9 @@ public class RunTrackMate extends Module {
         IntensityMinMax.run(ipl,true);
 
         // Adding the overlay
-        AddObjectCentroid.addOverlay(ipl,spotObjects,hues,pointSize,pointType,false,true);
+        AddObjectCentroid.addOverlay(ipl,spotObjects,hues,100,pointSize,pointType,false,true);
+        ipl.setPosition(1,1,1);
+        ipl.updateChannelAndDraw();
 
         // Displaying the overlay
         ipl.show();

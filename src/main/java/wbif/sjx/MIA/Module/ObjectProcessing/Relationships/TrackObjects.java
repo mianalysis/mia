@@ -453,7 +453,9 @@ public class TrackObjects extends Module {
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();
+        ipl.setPosition(1,1,1);
         ipl.setLut(LUTs.Random(true));
+        ipl.updateChannelAndDraw();
         ipl.show();
 
     }

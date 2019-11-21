@@ -102,6 +102,7 @@ public class AddAllObjectPoints extends Overlay {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        double opacity = parameters.getValue(OPACITY);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -131,7 +132,7 @@ public class AddAllObjectPoints extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
 
                     addAllPointsOverlay(object, finalIpl, colour, renderInAllFrames);
 

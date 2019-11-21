@@ -396,7 +396,7 @@ public class AddObjectsOverlay extends Module {
 
             Runnable task = () -> {
                 float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+                Color colour = ColourFactory.getColour(hue,100);
 
                 addAllPointsOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
@@ -430,7 +430,7 @@ public class AddObjectsOverlay extends Module {
 
             Runnable task = () -> {
                 float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+                Color colour = ColourFactory.getColour(hue,100);
                 double orientation = 0;
                 switch (oriMode) {
                     case OrientationModes.MEASUREMENT:
@@ -485,7 +485,7 @@ public class AddObjectsOverlay extends Module {
 
             Runnable task = () -> {
                 float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+                Color colour = ColourFactory.getColour(hue,100);
                 addCentroidOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
                 writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
@@ -514,7 +514,7 @@ public class AddObjectsOverlay extends Module {
 
             Runnable task = () -> {
                 float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+                Color colour = ColourFactory.getColour(hue,100);
                 String label = labels == null ? "" : labels.get(object.getID());
 
                 double xMean = object.getXMean(true);
@@ -553,7 +553,7 @@ public class AddObjectsOverlay extends Module {
 
             Runnable task = () -> {
                 float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+                Color colour = ColourFactory.getColour(hue,100);
 
                 addOutlineOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
 
@@ -583,7 +583,7 @@ public class AddObjectsOverlay extends Module {
 
             Runnable task = () -> {
                 float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+                Color colour = ColourFactory.getColour(hue,100);
 
                 addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
 
@@ -613,7 +613,7 @@ public class AddObjectsOverlay extends Module {
 
 //            Job task = () -> {
             float hue = hues.get(object.getID());
-            Color colour = ColourFactory.getColour(hue);
+            Color colour = ColourFactory.getColour(hue,100);
 
             addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth,  history);
 

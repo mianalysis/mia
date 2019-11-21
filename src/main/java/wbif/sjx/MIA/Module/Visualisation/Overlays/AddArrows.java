@@ -143,6 +143,7 @@ public class AddArrows extends Overlay {
         double lengthScale = parameters.getValue(LENGTH_SCALE);
         int headSize = parameters.getValue(HEAD_SIZE);
 
+        double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -173,7 +174,7 @@ public class AddArrows extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
                     double orientation = 0;
                     switch (orientationMode) {
                         case OrientationModes.MEASUREMENT:

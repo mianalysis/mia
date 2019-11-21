@@ -46,6 +46,8 @@ public class AddLabels extends Overlay {
     public static final String DECIMAL_PLACES = "Decimal places";
     public static final String USE_SCIENTIFIC = "Use scientific notation";
     public static final String LABEL_SIZE = "Label size";
+    public static final String X_OFFSET = "X-offset";
+    public static final String Y_OFFSET = "Y-offset";
     public static final String CHILD_OBJECTS_FOR_LABEL = "Child objects for label";
     public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
     public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
@@ -86,7 +88,7 @@ public class AddLabels extends Overlay {
         // Binarise object and calculate its distance map
         Image binaryImage = obj.convertObjToImage("Binary");
         InvertIntensity.process(binaryImage);
-        BinaryOperations2D.process(binaryImage,BinaryOperations2D.OperationModes.ERODE,1);
+        BinaryOperations2D.process(binaryImage,BinaryOperations2D.OperationModes.ERODE,1,1);
         ImagePlus distanceMap = DistanceMap.getDistanceMap(binaryImage.getImagePlus(),true);
 
         // Get location of largest value
@@ -109,7 +111,7 @@ public class AddLabels extends Overlay {
 
     }
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String labelPosition, HashMap<Integer,String> labels, int labelSize, HashMap<Integer,Float> hues, boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, String labelPosition, HashMap<Integer,String> labels, int labelSize, int xOffset, int yOffset, HashMap<Integer,Float> hues, double opacity, boolean renderInAllSlices, boolean renderInAllFrames, boolean multithread) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -127,7 +129,7 @@ public class AddLabels extends Overlay {
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue);
+                    Color colour = ColourFactory.getColour(hue,opacity);
                     String label = labels == null ? "" : labels.get(object.getID());
 
                     double[] location;
@@ -147,10 +149,10 @@ public class AddLabels extends Overlay {
                         int zMax = (int) Math.round(extents[2][1]);
                         for (int z=zMin;z<=zMax;z++) {
                             location[2] = z+1;
-                            addOverlay(finalIpl, label, location, colour, labelSize);
+                            addOverlay(finalIpl, label, location, colour, labelSize, xOffset, yOffset);
                         }
                     } else {
-                        addOverlay(finalIpl, label, location, colour, labelSize);
+                        addOverlay(finalIpl, label, location, colour, labelSize, xOffset, yOffset);
                     }
 
                 };
@@ -165,7 +167,7 @@ public class AddLabels extends Overlay {
         }
     }
 
-    public static void addOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
+    public static void addOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize, int xOffset, int yOffset) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Adding text label
@@ -178,7 +180,7 @@ public class AddLabels extends Overlay {
             text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
         }
 
-        text.setLocation(text.getXBase()-text.getFloatWidth()/2+1,text.getYBase()-text.getFloatHeight()/2+1);
+        text.setLocation(xOffset+text.getXBase()-text.getFloatWidth()/2+1,yOffset+text.getYBase()-text.getFloatHeight()/2+1);
         ipl.getOverlay().addElement(text);
 
     }
@@ -230,8 +232,11 @@ public class AddLabels extends Overlay {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting label settings
+        double opacity = parameters.getValue(OPACITY);
         String labelMode = parameters.getValue(LABEL_MODE);
         int labelSize = parameters.getValue(LABEL_SIZE);
+        int xOffset = parameters.getValue(X_OFFSET);
+        int yOffset = parameters.getValue(Y_OFFSET);
         int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
         boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
         String childObjectsForLabelName = parameters.getValue(CHILD_OBJECTS_FOR_LABEL);
@@ -253,7 +258,7 @@ public class AddLabels extends Overlay {
         DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces,useScientific);
         HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,childObjectsForLabelName,parentObjectsForLabelName,measurementForLabel);
 
-        addOverlay(ipl,inputObjects,labelPosition,labels,labelSize,hues,renderInAllSlices,renderInAllFrames,multithread);
+        addOverlay(ipl,inputObjects,labelPosition,labels,labelSize,xOffset,yOffset,hues,opacity,renderInAllSlices,renderInAllFrames,multithread);
 
         Image outputImage = new Image(outputImageName,ipl);
 
@@ -283,6 +288,8 @@ public class AddLabels extends Overlay {
         parameters.add(new IntegerP(DECIMAL_PLACES,this,0));
         parameters.add(new BooleanP(USE_SCIENTIFIC,this,false));
         parameters.add(new IntegerP(LABEL_SIZE,this,8));
+        parameters.add(new IntegerP(X_OFFSET,this,0));
+        parameters.add(new IntegerP(Y_OFFSET,this,0));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_LABEL,this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL,this));
@@ -348,6 +355,8 @@ public class AddLabels extends Overlay {
         returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
         returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
         returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+        returnedParameters.add(parameters.getParameter(X_OFFSET));
+        returnedParameters.add(parameters.getParameter(Y_OFFSET));
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(LABEL_POSITION));
         returnedParameters.add(parameters.getParameter(RENDER_IN_ALL_OBJECT_SLICES));

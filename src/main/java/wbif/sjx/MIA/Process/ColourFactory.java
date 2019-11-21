@@ -261,21 +261,36 @@ public class ColourFactory {
     }
 
     public static Color getColour(float hue) {
+        return getColour(hue,0);
+    }
+
+    public static Color getColour(float hue,double opacity) {
+        Color color;
+
         // If the hue was assigned as -1 (for example, no parent found), setting the colour to white
         if (hue == Float.MAX_VALUE || hue == -1) {
-            return Color.getHSBColor(0f,0f,1f);
+            color = Color.getHSBColor(0f,0f,1f);
         } else if (hue == Float.MIN_VALUE) {
-            return Color.getHSBColor(0f,0f,0f);
+            color = Color.getHSBColor(0f,0f,0f);
         } else {
             // Have to addRef 1E-8 to prevent 0 values having a rounding error that makes them negative
-            return Color.getHSBColor(hue+1E-8f,1f,1f);
+            color = Color.getHSBColor(hue+1E-8f,1f,1f);
         }
+
+        int alpha = (int) Math.round(opacity*2.55);
+
+        return new Color(color.getRed(),color.getGreen(),color.getBlue(),alpha);
+
     }
 
     public static HashMap<Integer,Color> getColours(HashMap<Integer,Float> hues) {
+        return getColours(hues,0);
+    }
+
+    public static HashMap<Integer,Color> getColours(HashMap<Integer,Float> hues, double opacity) {
         HashMap<Integer,Color> colours = new HashMap<>();
 
-        for (int key:hues.keySet()) colours.put(key,getColour(hues.get(key)));
+        for (int key:hues.keySet()) colours.put(key,getColour(hues.get(key),opacity));
 
         return colours;
 

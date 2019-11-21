@@ -68,13 +68,21 @@ public class FitLongestChord extends Module {
         object.addMeasurement(new Measurement(Measurements.Z2_SLICE,LC[1][2]));
 
         CumStat cumStat = calculator.calculateAverageDistanceFromLC();
-        object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_PX,cumStat.getMean()));
-        object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_CAL,cumStat.getMean()*dppXY));
-        object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_PX,cumStat.getStd()));
-        object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_CAL,cumStat.getStd()*dppXY));
-        object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_PX,cumStat.getMax()));
-        object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_CAL,cumStat.getMax()*dppXY));
-
+        if (cumStat == null) {
+            object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_PX,Double.NaN));
+            object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_CAL,Double.NaN));
+            object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_PX,Double.NaN));
+            object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_CAL,Double.NaN));
+            object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_PX,Double.NaN));
+            object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_CAL,Double.NaN));
+        } else {
+            object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_PX,cumStat.getMean()));
+            object.addMeasurement(new Measurement(Measurements.MEAN_SURF_DIST_CAL,cumStat.getMean()*dppXY));
+            object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_PX,cumStat.getStd()));
+            object.addMeasurement(new Measurement(Measurements.STD_SURF_DIST_CAL,cumStat.getStd()*dppXY));
+            object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_PX,cumStat.getMax()));
+            object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_CAL,cumStat.getMax()*dppXY));
+        }
     }
 
     public void addEndpointsOverlay(Obj object, ImagePlus imagePlus) {

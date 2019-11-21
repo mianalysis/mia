@@ -24,6 +24,7 @@ public class BinaryOperations2D extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
+    public static final String COUNT = "Count";
 
     public BinaryOperations2D(ModuleCollection modules) {
         super("Binary operations 2D",modules);
@@ -45,25 +46,25 @@ public class BinaryOperations2D extends Module {
 
     }
 
-    public static void process(ImagePlus ipl, String operationMode, int numIterations) {
-        process(new Image("Image",ipl),operationMode,numIterations);
+    public static void process(ImagePlus ipl, String operationMode, int numIterations, int count) {
+        process(new Image("Image",ipl),operationMode,numIterations,count);
     }
 
-    public static void process(Image image, String operationMode, int numIterations) {
+    public static void process(Image image, String operationMode, int numIterations, int count) {
         ImagePlus ipl = image.getImagePlus();
 
         // Applying processAutomatic to stack
         switch (operationMode) {
             case OperationModes.DILATE:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Dilate stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=Dilate stack");
                 break;
 
             case OperationModes.ERODE:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Erode stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=Erode stack");
                 break;
 
             case OperationModes.FILL_HOLES:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=[Fill Holes] stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=[Fill Holes] stack");
                 break;
 
             case OperationModes.OUTLINE:
@@ -71,7 +72,7 @@ public class BinaryOperations2D extends Module {
                 break;
 
             case OperationModes.SKELETONISE:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Skeletonize stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=Skeletonize stack");
                 break;
 
             case OperationModes.VORONOI:
@@ -114,6 +115,7 @@ public class BinaryOperations2D extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String operationMode = parameters.getValue(OPERATION_MODE);
         int numIterations = parameters.getValue(NUM_ITERATIONS);
+        int count = parameters.getValue(COUNT);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
@@ -121,7 +123,7 @@ public class BinaryOperations2D extends Module {
         if (operationMode.equals(OperationModes.DISTANCE_MAP)) {
             IJ.run(inputImagePlus,"Distance Map", "stack");
         } else {
-            process(inputImagePlus, operationMode, numIterations);
+            process(inputImagePlus,operationMode,numIterations,count);
         }
 
         // If the image is being saved as a new image, adding it to the workspace
@@ -147,6 +149,7 @@ public class BinaryOperations2D extends Module {
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(OPERATION_MODE,this,OperationModes.DILATE,OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS,this,1));
+        parameters.add(new IntegerP(COUNT,this,1));
 
     }
 
@@ -168,6 +171,7 @@ public class BinaryOperations2D extends Module {
             case OperationModes.SKELETONISE:
             case OperationModes.WATERSHED:
                 returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
+                returnedParameters.add(parameters.getParameter(COUNT));
                 break;
         }
 
