@@ -61,7 +61,7 @@ public class Workspace {
 
     }
 
-    public void removeObject(String name, boolean retainMeasurements) {
+    public void removeObjects(String name, boolean retainMeasurements) {
         if (retainMeasurements) {
             for (Obj obj:objects.get(name).values()) {
                 obj.clearAllCoordinates();

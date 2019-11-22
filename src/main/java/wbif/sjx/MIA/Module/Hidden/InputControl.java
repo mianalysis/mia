@@ -173,7 +173,7 @@ public class InputControl extends Module {
             e.printStackTrace();
         }
 
-        return null;
+        return new TreeMap<>();
 
     }
 

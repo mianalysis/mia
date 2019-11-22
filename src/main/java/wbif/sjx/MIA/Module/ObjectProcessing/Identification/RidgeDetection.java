@@ -7,6 +7,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -35,6 +36,7 @@ public class RidgeDetection extends Module {
     public static final String SIGMA = "Sigma";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ESTIMATE_WIDTH = "Estimate width";
+    public static final String EXTEND_LINE = "Extend line";
     public static final String MIN_LENGTH = "Minimum length";
     public static final String MAX_LENGTH = "Maximum length";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
@@ -83,7 +85,7 @@ public class RidgeDetection extends Module {
 
     public ObjCollection process(Image inputImage, String outputObjectsName, String contourContrast, double sigma,
                                  double upperThreshold, double lowerThreshold, double minLength, double maxLength,
-                                 boolean linkContours, boolean estimateWidth) throws IntegerOverflowException {
+                                 boolean linkContours, boolean estimateWidth, boolean extendLine) throws IntegerOverflowException {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Storing the image calibration
@@ -114,8 +116,7 @@ public class RidgeDetection extends Module {
                     // Running the ridge detection
                     Lines lines;
                     try {
-                        lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
-                                lowerThreshold, minLength, maxLength, darkLine, true, true, false);
+                        lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,lowerThreshold, minLength, maxLength, darkLine, true, estimateWidth, extendLine,OverlapOption.NONE);
                     } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
                         continue;
                     }
@@ -149,7 +150,7 @@ public class RidgeDetection extends Module {
                             float[] widthL = line.getLineWidthL();
                             float[] widthR = line.getLineWidthR();
                             for (int i = 0; i < x.length; i++) {
-                                float halfWidth = (widthL[i] + widthR[i])/2;
+                                float halfWidth = estimateWidth ? (widthL[i] + widthR[i])/2 : 0.5f;
                                 width.addMeasure(halfWidth);
 
                                 // Adding central point
@@ -235,6 +236,7 @@ public class RidgeDetection extends Module {
         double sigma = parameters.getValue(SIGMA);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH);
+        boolean extendLine = parameters.getValue(EXTEND_LINE);
         String contourContrast = parameters.getValue(CONTOUR_CONTRAST);
         double minLength = parameters.getValue(MIN_LENGTH);
         double maxLength = parameters.getValue(MAX_LENGTH);
@@ -243,18 +245,16 @@ public class RidgeDetection extends Module {
         // Converting distances to calibrated units if necessary
         if (calibratedUnits) {
             Calibration calibration = inputImage.getImagePlus().getCalibration();
-
             sigma = calibration.getRawX(sigma);
             minLength = calibration.getRawX(minLength);
             maxLength = calibration.getRawX(maxLength);
-
         }
 
         // Running on the present image
         ObjCollection outputObjects = null;
         try {
             outputObjects = process(inputImage,outputObjectsName,contourContrast,sigma,upperThreshold,
-                    lowerThreshold,minLength,maxLength,linkContours,estimateWidth);
+                    lowerThreshold,minLength,maxLength,linkContours,estimateWidth,extendLine);
         } catch (IntegerOverflowException e) {
             return false;
         }
@@ -287,6 +287,7 @@ public class RidgeDetection extends Module {
         parameters.add(new DoubleP(SIGMA,this, 3d));
         parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
         parameters.add(new BooleanP(ESTIMATE_WIDTH,this,false));
+        parameters.add(new BooleanP(EXTEND_LINE,this,false));
         parameters.add(new ChoiceP(CONTOUR_CONTRAST,this,ContourContrast.DARK_LINE,ContourContrast.ALL));
         parameters.add(new DoubleP(MIN_LENGTH,this, 0d));
         parameters.add(new DoubleP(MAX_LENGTH,this, 0d));

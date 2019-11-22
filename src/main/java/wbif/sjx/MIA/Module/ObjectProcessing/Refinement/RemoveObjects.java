@@ -39,7 +39,7 @@ public class RemoveObjects extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         boolean retainMeasurements = parameters.getValue(RETAIN_MEASUREMENTS);
 
-        workspace.removeObject(inputObjectsName,retainMeasurements);
+        workspace.removeObjects(inputObjectsName,retainMeasurements);
 
         return true;
 
