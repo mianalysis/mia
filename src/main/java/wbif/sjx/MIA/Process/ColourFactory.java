@@ -260,6 +260,33 @@ public class ColourFactory {
 
     }
 
+    public static Color getColour(String colour) {
+        switch (colour) {
+            default:
+            case "":
+            case SingleColours.WHITE:
+                return Color.WHITE;
+            case SingleColours.BLACK:
+                return Color.BLACK;
+            case SingleColours.RED:
+                return Color.RED;
+            case SingleColours.ORANGE:
+                return Color.ORANGE;
+            case SingleColours.YELLOW:
+                return Color.YELLOW;
+            case SingleColours.GREEN:
+                return Color.GREEN;
+            case SingleColours.CYAN:
+                return Color.CYAN;
+            case SingleColours.BLUE:
+                return Color.BLUE;
+            case SingleColours.VIOLET:
+                return Color.getHSBColor(0.706f,1,1);
+            case SingleColours.MAGENTA:
+                return Color.MAGENTA;
+        }
+    }
+
     public static Color getColour(float hue) {
         return getColour(hue,0);
     }

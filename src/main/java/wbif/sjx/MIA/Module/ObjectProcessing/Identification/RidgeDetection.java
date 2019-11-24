@@ -41,6 +41,9 @@ public class RidgeDetection extends Module {
     public static final String MAX_LENGTH = "Maximum length";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
+    public static final String LIMIT_END_MISALIGNMENT = "Limit end misalignment";
+    public static final String MAXIMUM_END_MISALIGNMENT = "Maximum end misalignment";
+    public static final String ALIGNMENT_RANGE = "Alignment range (px)";
 
     public RidgeDetection(ModuleCollection modules) {
         super("Ridge detection",modules);
