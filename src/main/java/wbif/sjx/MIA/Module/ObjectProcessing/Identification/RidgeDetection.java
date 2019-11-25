@@ -14,11 +14,11 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
+import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -70,7 +70,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static void linkJunctions(HashMap<Line, HashSet<Line>> groups, Junctions junctions, boolean limitMisalignment, int alignmentRange, double maxMisalignment) {
+    public static void linkJunctions(HashMap<Line, HashSet<Line>> groups, Junctions junctions, boolean limitMisalignment, int endRange, double maxMisalignment) {
         for (Junction junction : junctions) {
             // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
             Line line1 = junction.getLine1();
@@ -81,8 +81,8 @@ public class RidgeDetection extends Module {
             HashSet<Line> group2 = groups.get(line2);
 
             // If necessary, testing end alignment
-            double endAlignment = calculateEndAlignment(line1,line2,junction,alignmentRange);
-            if (endAlignment > maxMisalignment) continue;
+            double misalignment = calculateEndMisalignment(line1,line2,junction,endRange);
+            if (misalignment > maxMisalignment) continue;
 
             // Adding all entries from the second LineGroup into the first
             group1.addAll(group2);
@@ -94,19 +94,58 @@ public class RidgeDetection extends Module {
         }
     }
 
-    public static double calculateEndAlignment(Line line1, Line line2, Junction junction, int endRange) {
+    public static double calculateEndMisalignment(Line line1, Line line2, Junction junction, int endRange) {
         ArrayList<int[]> end1 = getLineAtJunction(line1,junction,endRange);
         ArrayList<int[]> end2 = getLineAtJunction(line2,junction,endRange);
 
-        MIA.log.writeDebug("RidgeDetection.calculateEndAlignment() still needs implementing");
+        double angle1 = Math.toDegrees(BreakFixer.getEndAngleRads(end1));
+        double angle2 = Math.toDegrees(BreakFixer.getEndAngleRads(end2))-180;
 
-        return 0;
+        // Get mean coords for lines
+        CumStat x1 = new CumStat();
+        CumStat x2 = new CumStat();
+        CumStat y1 = new CumStat();
+        CumStat y2 = new CumStat();
+
+        for (int[] coord:end1) {
+            x1.addMeasure(coord[0]);
+            y1.addMeasure(coord[1]);
+        }
+
+        for (int[] coord:end2) {
+            x2.addMeasure(coord[0]);
+            y2.addMeasure(coord[1]);
+        }
+
+        double misAlignment = angle1-angle2;
+        misAlignment = Math.abs((misAlignment + 180) % 360 - 180);
+
+        return misAlignment;
 
     }
 
     public static ArrayList<int[]> getLineAtJunction(Line line, Junction junction, int endRange) {
-        MIA.log.writeDebug("RidgeDetection.getLineAtJunction() still needs implementing");
-        return null;
+        // Get line coordinates
+        float[] x = line.getXCoordinates();
+        float[] y = line.getYCoordinates();
+
+        // Finding which end is to be linked
+        float dx1 = x[0]-junction.getX();
+        float dy1 = y[0]-junction.getY();
+        double dist1 = Math.sqrt(dx1*dx1+dy1*dy1);
+
+        float dx2 = x[x.length-1]-junction.getX();
+        float dy2 = y[y.length-1]-junction.getY();
+        double dist2 = Math.sqrt(dx2*dx2+dy2*dy2);
+
+        ArrayList<int[]> c = new ArrayList<>();
+        if (dist1 < dist2) {
+            for (int i=0;i<Math.min(x.length-1,endRange);i++) c.add(new int[]{Math.round(x[i]),Math.round(y[i])});
+        } else {
+            for (int i=x.length-1;i>=Math.max(0,x.length-endRange);i--) c.add(new int[]{Math.round(x[i]),Math.round(y[i])});
+        }
+
+        return c;
 
     }
 
@@ -353,8 +392,11 @@ public class RidgeDetection extends Module {
         returnedParameters.add(parameters.getParameter(LINK_CONTOURS));
         if (parameters.getValue(LINK_CONTOURS)) {
             returnedParameters.add(parameters.getParameter(LIMIT_END_MISALIGNMENT));
-            returnedParameters.add(parameters.getParameter(ALIGNMENT_RANGE));
-            returnedParameters.add(parameters.getParameter(MAXIMUM_END_MISALIGNMENT));
+
+            if (parameters.getValue(LIMIT_END_MISALIGNMENT)) {
+                returnedParameters.add(parameters.getParameter(ALIGNMENT_RANGE));
+                returnedParameters.add(parameters.getParameter(MAXIMUM_END_MISALIGNMENT));
+            }
         }
 
         return returnedParameters;
