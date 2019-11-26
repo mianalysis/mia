@@ -267,7 +267,7 @@
         <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
-            <version>LATEST</version>
+            <version>4.8.54</version>
         </dependency>
 
         <dependency>

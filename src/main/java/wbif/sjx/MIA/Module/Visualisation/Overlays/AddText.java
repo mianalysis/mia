@@ -6,6 +6,7 @@ import ij.ImagePlus;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -20,6 +21,8 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddText extends Overlay {
     TextRoi textRoi = null;
@@ -31,6 +34,7 @@ public class AddText extends Overlay {
 
     public static final String RENDERING_SEPARATOR = "Overlay rendering";
     public static final String TEXT = "Text";
+    public static final String DYNAMIC_VALUES = "Available dynamic values";
     public static final String X_POSITION = "X-position";
     public static final String Y_POSITION = "Y-position";
     public static final String Z_RANGE = "Z-range";
@@ -52,10 +56,17 @@ public class AddText extends Overlay {
 
         for (int z:zRange) {
             for (int f : frameRange) {
+                String finalText = replaceDynamicValues(text,f,z);
                 double[] location = new double[]{xPosition,yPosition,z,f};
-                AddLabels.addOverlay(ipl,text,location,color,labelSize,false);
+                AddLabels.addOverlay(ipl,finalText,location,color,labelSize,false);
             }
         }
+    }
+
+    public static String replaceDynamicValues(String text, int f, int z) {
+        text = text.replace("D{FRAME}", String.valueOf(f));
+        return text.replace("D{SLICE}", String.valueOf(z));
+
     }
 
     @Override
@@ -127,6 +138,7 @@ public class AddText extends Overlay {
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new StringP(TEXT,this));
+        parameters.add(new MessageP(DYNAMIC_VALUES,this,"The current slice and/or frame can be inserted into the rendered text by including one of the following: D{FRAME}, D{SLICE}.", Colours.DARK_BLUE));
         parameters.add(new IntegerP(X_POSITION,this,0));
         parameters.add(new IntegerP(Y_POSITION,this,0));
         parameters.add(new StringP(Z_RANGE,this,"1-end"));
@@ -154,6 +166,7 @@ public class AddText extends Overlay {
 
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(TEXT));
+        returnedParameters.add(parameters.getParameter(DYNAMIC_VALUES));
         returnedParameters.add(parameters.getParameter(X_POSITION));
         returnedParameters.add(parameters.getParameter(Y_POSITION));
         returnedParameters.add(parameters.getParameter(Z_RANGE));

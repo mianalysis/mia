@@ -10,6 +10,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
@@ -200,10 +201,27 @@ public abstract class Module extends Ref implements Comparable, Serializable {
             if (type.isInstance(currParameter)) {
                 parameters.add((T) currParameter);
             }
+            if (currParameter instanceof ParameterGroup) {
+                addParameterGroupParameters((ParameterGroup) currParameter,type,parameters);
+            }
         }
 
         return parameters;
 
+    }
+
+    public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type, LinkedHashSet<T> parameters) {
+        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
+        for (ParameterCollection collection:collections) {
+            for (Parameter currParameter : collection.values()) {
+                if (type.isInstance(currParameter)) {
+                    parameters.add((T) currParameter);
+                }
+                if (currParameter instanceof ParameterGroup) {
+                    addParameterGroupParameters((ParameterGroup) currParameter,type,parameters);
+                }
+            }
+        }
     }
 
     public ModuleCollection getModules() {
