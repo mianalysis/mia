@@ -37,6 +37,7 @@ public class MeasureObjectCurvature extends Module {
     public static final String ABSOLUTE_CURVATURE = "Measure absolute curvature";
     public static final String SIGNED_CURVATURE = "Measure signed curvature";
     public static final String DRAW_SPLINE = "Draw spline";
+    public static final String LINE_WIDTH = "Line width";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
     public static final String APPLY_TO_IMAGE = "Apply to image";
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
@@ -332,6 +333,7 @@ public class MeasureObjectCurvature extends Module {
         boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE);
         boolean drawSpline = parameters.getValue(DRAW_SPLINE);
         boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE);
+        double lineWidth = parameters.getValue(LINE_WIDTH);
         double maxCurvature = parameters.getValue(MAX_CURVATURE);
         boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
         int fittingRange = parameters.getValue(FITTING_RANGE_PX);
@@ -388,7 +390,7 @@ public class MeasureObjectCurvature extends Module {
                 if (drawSpline) {
                     int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
                     referenceImageImagePlus.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
-                    calculator.showOverlay(referenceImageImagePlus, maxCurvature, position);
+                    calculator.showOverlay(referenceImageImagePlus, maxCurvature, position, lineWidth);
                 }
             }
 
@@ -422,6 +424,7 @@ public class MeasureObjectCurvature extends Module {
         parameters.add(new BooleanP(SIGNED_CURVATURE,this,true));
         parameters.add(new BooleanP(DRAW_SPLINE, this,false));
         parameters.add(new BooleanP(APPLY_TO_IMAGE, this,false));
+        parameters.add(new DoubleP(LINE_WIDTH,this,1d));
         parameters.add(new DoubleP(MAX_CURVATURE,this,1d));
         parameters.add(new BooleanP(CALCULATE_END_END_ANGLE, this,true));
         parameters.add(new IntegerP(FITTING_RANGE_PX, this,5));
@@ -463,6 +466,7 @@ public class MeasureObjectCurvature extends Module {
             returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
             if (parameters.getValue(DRAW_SPLINE)) {
                 returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
+                returnedParameters.add(parameters.getParameter(LINE_WIDTH));
                 returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
             }
         }

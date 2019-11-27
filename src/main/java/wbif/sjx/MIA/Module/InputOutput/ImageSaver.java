@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.InputOutput;
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.filter.AVI_Writer;
 import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
@@ -21,6 +22,7 @@ import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -46,6 +48,8 @@ public class ImageSaver extends Module {
     public static final String FILE_FORMAT = "File format";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String SAVE_AS_RGB = "Save as RGB";
+    public static final String COMPRESSION_MODE = "Compression mode";
+    public static final String QUALITY = "Quality (0-100)";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public ImageSaver(ModuleCollection modules) {
@@ -90,7 +94,7 @@ public class ImageSaver extends Module {
     }
 
     public interface FileFormats {
-        //        String AVI = "AVI"; // avi
+                String AVI = "AVI"; // avi
 //        String BITMAP = "Bitmap"; // bmp
 //        String FITS = "FITS"; // fits
 //        String JPEG = "JPEG"; // jpeg
@@ -101,7 +105,7 @@ public class ImageSaver extends Module {
         String TIF = "TIF"; // tif
         String ZIP = "ZIP"; // zip
 
-        String[] ALL = new String[]{TIF,ZIP};
+        String[] ALL = new String[]{AVI,TIF,ZIP};
 
     }
 
@@ -110,6 +114,15 @@ public class ImageSaver extends Module {
         String COMPOSITE = "Composite";
 
         String[] ALL = new String[]{COLOUR,COMPOSITE};
+
+    }
+
+    public interface CompressionModes {
+        String NONE = "None";
+        String JPEG = "JPEG";
+        String PNG = "PNG";
+
+        String[] ALL = new String[]{NONE,JPEG,PNG};
 
     }
 
@@ -155,6 +168,29 @@ public class ImageSaver extends Module {
         }
     }
 
+    public static void saveVideo(ImagePlus inputImagePlus, String compressionMode, int jpegQuality, String path) {
+        AVI_Writer writer = new AVI_Writer();
+        int compressionType = getVideoCompressionType(compressionMode);
+
+        try {
+            writer.writeImage(inputImagePlus,path,compressionType,jpegQuality);
+        } catch (IOException e) {
+            MIA.log.writeError(e.getMessage());
+        }
+    }
+
+    public static int getVideoCompressionType(String compressionMode) {
+        switch (compressionMode) {
+            case CompressionModes.NONE:
+            default:
+                return AVI_Writer.NO_COMPRESSION;
+            case CompressionModes.JPEG:
+                return AVI_Writer.JPEG_COMPRESSION;
+            case CompressionModes.PNG:
+                return AVI_Writer.PNG_COMPRESSION;
+        }
+    }
+
 
     @Override
     public String getPackageName() {
@@ -181,6 +217,8 @@ public class ImageSaver extends Module {
         String fileFormat = parameters.getValue(FILE_FORMAT);
         String channelMode = parameters.getValue(CHANNEL_MODE);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
+        String compressionMode = parameters.getValue(COMPRESSION_MODE);
+        int quality = parameters.getValue(QUALITY);
         boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
 
         // Loading the image to save
@@ -279,9 +317,20 @@ public class ImageSaver extends Module {
         // Adding last bits to name
         path = path + name;
         path = appendSeries(path,workspace,appendSeriesMode);
-        path = path + suffix + ".tif";
         path = appendDateTime(path,appendDateTimeMode);
-        saveImage(inputImagePlus,fileFormat,path);
+
+        switch (fileFormat) {
+            case FileFormats.AVI:
+                path = path + suffix + ".avi";
+                saveVideo(inputImagePlus,compressionMode,quality,path);
+                break;
+            case FileFormats.TIF:
+            case FileFormats.ZIP:
+                path = path + suffix + ".tif";
+                saveImage(inputImagePlus,fileFormat,path);
+                break;
+        }
+
 
         return true;
 
@@ -312,6 +361,8 @@ public class ImageSaver extends Module {
         parameters.add(new ChoiceP(FILE_FORMAT,this,FileFormats.TIF,FileFormats.ALL));
         parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL,"Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode."));
         parameters.add(new BooleanP(SAVE_AS_RGB, this,false,"Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ."));
+        parameters.add(new ChoiceP(COMPRESSION_MODE,this,CompressionModes.NONE,CompressionModes.ALL));
+        parameters.add(new IntegerP(QUALITY,this,100));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false,"Flatten any overlay elements onto the image prior to saving."));
 
     }
@@ -359,6 +410,14 @@ public class ImageSaver extends Module {
                     returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
                 }
 
+                break;
+
+            case FileFormats.AVI:
+                returnedParameters.add(parameters.getParameter(COMPRESSION_MODE));
+                if (parameters.getValue(COMPRESSION_MODE).equals(CompressionModes.JPEG)) {
+                    returnedParameters.add(parameters.getParameter(QUALITY));
+                }
+                returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
                 break;
         }
 
