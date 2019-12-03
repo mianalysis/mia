@@ -278,7 +278,7 @@ public class AnalysisRunner {
                 String memoryMessage = "Memory: "+df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB";
 
                 MIA.log.writeError("Failed for file " + file.getName()+" ("+memoryMessage+")");
-                MIA.log.writeError(t.getMessage());
+                MIA.log.writeError(t);
 
                 workspace.clearAllImages(true);
                 workspace.clearAllObjects(true);

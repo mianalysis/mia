@@ -252,6 +252,9 @@ public class RunTrackMate extends Module {
             double radius = spotObject.getMeasurement(Measurements.RADIUS_PX).getValue();
             Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
             spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
+            spotObject.clearSurface();
+            spotObject.clearCentroid();
+            spotObject.clearProjected();
         }
     }
 

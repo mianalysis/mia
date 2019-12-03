@@ -133,7 +133,7 @@ public class AnalysisReader {
                 try {
                     clazz = (Class<Module>) Class.forName(availableModuleName);
                 } catch (ClassNotFoundException e) {
-                    MIA.log.writeError(e.getMessage());
+                    MIA.log.writeError(e);
                 }
                 Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
 

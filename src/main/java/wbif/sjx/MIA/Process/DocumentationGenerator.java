@@ -337,7 +337,7 @@ public class DocumentationGenerator {
                 Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                 modules.add((Module) constructor.newInstance(new ModuleCollection()));
             } catch (ClassNotFoundException |InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                MIA.log.writeError(e.getMessage());
+                MIA.log.writeError(e);
             }
         }
 

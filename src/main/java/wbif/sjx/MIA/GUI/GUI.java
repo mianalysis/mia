@@ -148,7 +148,7 @@ public class GUI {
                 }
             }
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 

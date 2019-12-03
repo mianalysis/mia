@@ -113,6 +113,7 @@ public class FitEllipse extends Module {
     }
 
     public void updateInputObject(Obj inputObject, Volume ellipsoid) {
+        inputObject.getCoordinateSet().clear();
         try {
             inputObject.setPoints(ellipsoid.getPoints());
         } catch (PointOutOfRangeException e) {}

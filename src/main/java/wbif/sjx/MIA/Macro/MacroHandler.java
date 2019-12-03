@@ -76,7 +76,7 @@ public class MacroHandler implements MacroExtension {
             try {
                 macroOperations.add((MacroOperation) Class.forName(clazz).getDeclaredConstructor(MacroExtension.class).newInstance(macroHandler));
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
-                MIA.log.writeError(e.getMessage());
+                MIA.log.writeError(e);
             }
         }
 

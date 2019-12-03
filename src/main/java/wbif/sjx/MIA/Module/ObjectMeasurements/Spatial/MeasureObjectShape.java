@@ -131,7 +131,7 @@ public class MeasureObjectShape extends Module {
                 try {
                     projectedObject = ProjectObjects.process(inputObject, "Projected",false);
                 } catch (IntegerOverflowException e) {
-                    MIA.log.writeWarning(e.getMessage());
+                    MIA.log.writeWarning(e);
                     return false;
                 }
             }

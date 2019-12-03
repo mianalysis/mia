@@ -120,6 +120,9 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
                     break;
                 case OutputModes.UPDATE_INPUT:
                     inputObject.setCoordinateSet(maskedObject.getCoordinateSet());
+                    inputObject.clearSurface();
+                    inputObject.clearCentroid();
+                    inputObject.clearProjected();
                     break;
             }
         }

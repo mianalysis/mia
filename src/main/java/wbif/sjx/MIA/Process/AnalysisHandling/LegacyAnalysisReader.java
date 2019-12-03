@@ -128,7 +128,7 @@ public class LegacyAnalysisReader {
                 try {
                     module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
                 } catch (ClassNotFoundException e) {
-                    MIA.log.writeError(e.getMessage());
+                    MIA.log.writeError(e);
                     continue;
                 }
 

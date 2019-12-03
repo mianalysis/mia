@@ -65,7 +65,7 @@ public class MIA implements Command {
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
                 ParserConfigurationException | InterruptedException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 
@@ -112,7 +112,7 @@ public class MIA implements Command {
             setLookAndFeel();
             new GUI();
         } catch (InstantiationException | IllegalAccessException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 

@@ -130,6 +130,9 @@ public class FitGaussian2D extends Module {
             double radius = spotObject.getMeasurement(Measurements.SIGMA_X_PX).getValue();
             Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
             spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
+            spotObject.clearSurface();
+            spotObject.clearCentroid();
+            spotObject.clearProjected();
         }
     }
 

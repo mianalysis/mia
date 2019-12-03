@@ -150,6 +150,9 @@ public class ExpandShrinkObjects extends Module {
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
             if (updateInputObjects) {
                 inputObject.setCoordinateSet(newObject.getCoordinateSet());
+                inputObject.clearSurface();
+                inputObject.clearCentroid();
+                inputObject.clearProjected();
             } else {
                 Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),firstObject);
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());

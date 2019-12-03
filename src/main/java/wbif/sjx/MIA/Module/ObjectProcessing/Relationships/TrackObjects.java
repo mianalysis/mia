@@ -500,6 +500,7 @@ public class TrackObjects extends Module {
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
+        if (inputObjects == null) return true;
         if (inputObjects.size() == 0) return true;
 
         // Clearing previous relationships and measurements (in case module has been generateModuleList before)

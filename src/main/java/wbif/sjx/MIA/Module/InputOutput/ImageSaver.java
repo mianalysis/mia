@@ -175,7 +175,7 @@ public class ImageSaver extends Module {
         try {
             writer.writeImage(inputImagePlus,path,compressionType,jpegQuality);
         } catch (IOException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 
