@@ -1,10 +1,12 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -148,11 +150,13 @@ public class AddLabels extends Overlay {
                         int zMin = (int) Math.round(extents[2][0]);
                         int zMax = (int) Math.round(extents[2][1]);
                         for (int z=zMin;z<=zMax;z++) {
+                            location[0] = location[0] + xOffset;
+                            location[1] = location[1] + yOffset;
                             location[2] = z+1;
-                            addOverlay(finalIpl, label, location, colour, labelSize, xOffset, yOffset);
+                            addOverlay(finalIpl, label, location, colour, labelSize, true);
                         }
                     } else {
-                        addOverlay(finalIpl, label, location, colour, labelSize, xOffset, yOffset);
+                        addOverlay(finalIpl, label, location, colour, labelSize, true);
                     }
 
                 };
@@ -162,17 +166,16 @@ public class AddLabels extends Overlay {
             pool.shutdown();
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        } catch (InterruptedException e) {
-            return;
-        }
+        } catch (InterruptedException e) { }
     }
 
-    public static void addOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize, int xOffset, int yOffset) {
+    public static void addOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize, boolean centreText) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Adding text label
         TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label, new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
         text.setStrokeColor(colour);
+        text.setAntialiased(true);
 
         if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);
@@ -180,7 +183,9 @@ public class AddLabels extends Overlay {
             text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
         }
 
-        text.setLocation(xOffset+text.getXBase()-text.getFloatWidth()/2+1,yOffset+text.getYBase()-text.getFloatHeight()/2+1);
+        if (centreText) {
+            text.setLocation(text.getXBase() - text.getFloatWidth()/2 + 1, text.getYBase() - text.getFloatHeight()/2 + 1);
+        }
         ipl.getOverlay().addElement(text);
 
     }

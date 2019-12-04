@@ -94,7 +94,7 @@ public class AnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        List<String> availableModuleNames = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> availableModuleNames = ClassHunter.getModules(false);
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
@@ -133,7 +133,7 @@ public class AnalysisReader {
                 try {
                     clazz = (Class<Module>) Class.forName(availableModuleName);
                 } catch (ClassNotFoundException e) {
-                    MIA.log.writeError(e.getMessage());
+                    MIA.log.writeError(e);
                 }
                 Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
 

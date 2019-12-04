@@ -82,7 +82,7 @@ public class LegacyAnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        List<String> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
+        List<String> availableModules = new ClassHunter<Module>().getClasses(Module.class);
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
@@ -119,7 +119,8 @@ public class LegacyAnalysisReader {
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-        String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
+        String className = moduleAttributes.getNamedItem("NAME").getNodeValue();
+        String moduleName = FilenameUtils.getExtension(className);
 
         for (String availableModule:availableModules) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
@@ -127,7 +128,7 @@ public class LegacyAnalysisReader {
                 try {
                     module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
                 } catch (ClassNotFoundException e) {
-                    MIA.log.writeError(e.getMessage());
+                    MIA.log.writeError(e);
                     continue;
                 }
 

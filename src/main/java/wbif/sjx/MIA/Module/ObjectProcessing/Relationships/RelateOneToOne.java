@@ -141,8 +141,6 @@ public class RelateOneToOne extends Module {
         String N_VOXELS2 = "N_VOXELS2";
         String WAS_LINKED1 = "WAS_LINKED1";
 
-        String[] ALL = new String[]{FRACTION_1,N_VOXELS1,FRACTION_2,N_VOXELS2};
-
     }
 
     public static String getFullName(String objectName, String measurement) {
@@ -257,6 +255,7 @@ public class RelateOneToOne extends Module {
 
     static Obj createClusterObject(Obj object1, Obj object2, String outputObjectsName, int ID) {
         Obj outputObject = new Obj(outputObjectsName,ID,object1);
+        outputObject.setT(object1.getT());
 
         // Adding relationships
         outputObject.addChild(object1);

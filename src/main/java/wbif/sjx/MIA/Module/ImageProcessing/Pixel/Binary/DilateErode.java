@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
+import inra.ijpb.morphology.Strel;
 import inra.ijpb.morphology.Strel3D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -30,10 +31,12 @@ public class DilateErode extends Module {
     }
 
     public interface OperationModes {
+        String DILATE_2D = "Dilate 2D";
         String DILATE_3D = "Dilate 3D";
+        String ERODE_2D = "Erode 2D";
         String ERODE_3D = "Erode 3D";
 
-        String[] ALL = new String[]{DILATE_3D,ERODE_3D};
+        String[] ALL = new String[]{DILATE_2D,DILATE_3D,ERODE_2D,ERODE_3D};
 
     }
 
@@ -48,7 +51,18 @@ public class DilateErode extends Module {
         double dppZ = ipl.getCalibration().pixelDepth;
         double ratio = dppXY/dppZ;
 
-        Strel3D ballStrel = Strel3D.Shape.BALL.fromRadiusList(numIterations,numIterations,(int) (numIterations*ratio));
+        Strel3D ballStrel = null;
+        Strel diskStrel = null;
+        switch (operationMode) {
+            case OperationModes.DILATE_2D:
+            case OperationModes.ERODE_2D:
+                diskStrel = Strel.Shape.DISK.fromRadius(numIterations);
+                break;
+            case OperationModes.DILATE_3D:
+            case OperationModes.ERODE_3D:
+                ballStrel = Strel3D.Shape.BALL.fromRadiusList(numIterations,numIterations,(int) (numIterations*ratio));
+                break;
+        }
 
         // MorphoLibJ takes objects as being white
         InvertIntensity.process(ipl);
@@ -59,8 +73,14 @@ public class DilateErode extends Module {
                 ImageStack istFilt = null;
 
                 switch (operationMode) {
+                    case OperationModes.DILATE_2D:
+                        istFilt = Morphology.dilation(iplOrig.getImageStack(),diskStrel);
+                        break;
                     case OperationModes.DILATE_3D:
                         istFilt = Morphology.dilation(iplOrig.getImageStack(),ballStrel);
+                        break;
+                    case OperationModes.ERODE_2D:
+                        istFilt = Morphology.erosion(iplOrig.getImageStack(),diskStrel);
                         break;
                     case OperationModes.ERODE_3D:
                         istFilt = Morphology.erosion(iplOrig.getImageStack(),ballStrel);

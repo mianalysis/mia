@@ -42,7 +42,7 @@ public class StatusTextField extends JLabel implements MouseListener{
                 Module.setVerbose(!state);
 
             } catch (InterruptedException e1) {
-                MIA.log.writeError(e1.getMessage());
+                MIA.log.writeError(e1);
             }
         });
         t.start();

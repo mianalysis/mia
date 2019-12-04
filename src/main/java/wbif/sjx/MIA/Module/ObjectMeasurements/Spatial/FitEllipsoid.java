@@ -132,6 +132,7 @@ public class FitEllipsoid extends Module {
     }
 
     public void updateInputObject(Obj inputObject, Volume ellipsoid) {
+        inputObject.getCoordinateSet().clear();
         inputObject.setCoordinateSet(ellipsoid.getCoordinateSet());
     }
 

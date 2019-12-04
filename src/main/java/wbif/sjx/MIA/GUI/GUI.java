@@ -4,7 +4,7 @@
 
 package wbif.sjx.MIA.GUI;
 
-import org.apache.commons.io.output.TeeOutputStream;
+import ij.IJ;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
@@ -35,6 +35,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -88,7 +89,7 @@ public class GUI {
 
         // Detecting modules
         splash.setStatus(Splash.Status.DETECTING_MODULES);
-        List<String> detectedModules = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> detectedModules = ClassHunter.getModules(false);
 
         splash.setStatus(Splash.Status.INITIALISING_MODULES);
         initialiseAvailableModules(detectedModules);
@@ -105,7 +106,6 @@ public class GUI {
         else mainPanel = basicPan;
 
         initialiseStatusTextField();
-
         frame.setTitle("MIA (version " + MIA.getVersion() + ")");
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
@@ -114,7 +114,6 @@ public class GUI {
 
         mainPanel.updatePanel();
         menuBar.setUndoRedoStatus(undoRedoStore);
-
         splash.setVisible(false);
 
         // Final bits for listeners
@@ -123,6 +122,8 @@ public class GUI {
         frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2, (screenSize.height - frameHeight) / 2);
 
         updatePanel();
+
+        System.gc();
 
     }
 
@@ -147,7 +148,7 @@ public class GUI {
                 }
             }
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 
@@ -178,14 +179,8 @@ public class GUI {
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);
 
-//        OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
-//        PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
-
         StatusPanelRenderer statusPanelRenderer = new StatusPanelRenderer(textField);
         MIA.log.addRenderer(statusPanelRenderer);
-
-//        TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
-//        System.setOut(new PrintStream(teeOutputStream));
 
     }
 
@@ -274,17 +269,20 @@ public class GUI {
         if (nextFile == null) return;
 
         // Getting the next series
-        int nextSeries = inputControl.getSeriesNumbers(nextFile).firstEntry().getKey();
+        TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(nextFile);
+        if (seriesNumbers.size() == 0) return;
+        int nextSeriesNumber = seriesNumbers.firstEntry().getKey();
+        String nextSeriesName = seriesNumbers.get(nextSeriesNumber);
 
         // If the new file is the same as the old, skip this
         File previousFile = testWorkspace.getMetadata().getFile();
         int previousSeries = testWorkspace.getMetadata().getSeriesNumber();
 
-        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeries) return;
+        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeriesNumber) return;
 
         lastModuleEval = -1;
-        testWorkspace = new Workspace(1,nextFile,nextSeries);
-        testWorkspace.getMetadata().setSeriesName("");
+        testWorkspace = new Workspace(1,nextFile,nextSeriesNumber);
+        testWorkspace.getMetadata().setSeriesName(nextSeriesName);
 
     }
 

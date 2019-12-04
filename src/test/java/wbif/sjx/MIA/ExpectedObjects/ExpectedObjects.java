@@ -118,7 +118,7 @@ public abstract class ExpectedObjects {
             return coords;
 
         } catch (IOException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
             return null;
         }
     }

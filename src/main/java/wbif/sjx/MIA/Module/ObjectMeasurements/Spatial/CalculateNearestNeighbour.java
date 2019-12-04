@@ -47,6 +47,8 @@ public class CalculateNearestNeighbour extends Module {
         double minDist = Double.MAX_VALUE;
         Obj nearestNeighbour = null;
 
+        if (testObjects == null) return null;
+
         for (Obj testObject : testObjects.values()) {
             if (testObject == inputObject) continue;
 
@@ -118,6 +120,7 @@ public class CalculateNearestNeighbour extends Module {
         boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE);
 
         // If there are no input objects skip the module
+        if (inputObjects == null) return true;
         Obj firstObj = inputObjects.getFirst();
         if (firstObj == null) return true;
 

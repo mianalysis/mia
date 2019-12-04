@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Point;
 
 /**
  * Created by sc13967 on 29/06/2017.
@@ -35,6 +36,8 @@ public class MeasureObjectShape extends Module {
         String N_VOXELS = "SHAPE // N_VOXELS";
         String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
         String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
+        String BASE_AREA_PX = "SHAPE // BASE_AREA_(PX^2)";
+        String BASE_AREA_CAL = "SHAPE // BASE_AREA_(${CAL}^2)";
         String HEIGHT_SLICE = "SHAPE // HEIGHT_(SLICE)";
         String HEIGHT_CAL = "SHAPE // HEIGHT_(${CAL})";
         String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
@@ -47,6 +50,21 @@ public class MeasureObjectShape extends Module {
 
     }
 
+    public double calculateBaseAreaPx(Obj object) {
+        // Getting the lowest slice
+        double[][] extents = object.getExtents(true,false);
+        int baseZ = (int) Math.round(extents[2][0]);
+
+        // Counting the number of pixels in this slice
+        int count = 0;
+        for (Point<Integer> point:object.getCoordinateSet()) {
+            if (point.getZ() == baseZ) count++;
+        }
+
+        // The area in px^2 is simply the number of pixels
+                    return count;
+
+    }
 
     /*
      * Calculates the maximum distance between any two points of the
@@ -117,6 +135,12 @@ public class MeasureObjectShape extends Module {
                 double containedVolumeCal = inputObject.getContainedVolume(false);
                 inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal));
 
+                double baseAreaPx = calculateBaseAreaPx(inputObject);
+                inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_PX, baseAreaPx));
+
+                double dppXY = inputObject.getDppXY();
+                inputObject.addMeasurement(new Measurement(Measurements.BASE_AREA_CAL, baseAreaPx*dppXY*dppXY));
+
                 double heightSlice = inputObject.getHeight(true,false);
                 inputObject.addMeasurement(new Measurement(Measurements.HEIGHT_SLICE, heightSlice));
 
@@ -131,7 +155,7 @@ public class MeasureObjectShape extends Module {
                 try {
                     projectedObject = ProjectObjects.process(inputObject, "Projected",false);
                 } catch (IntegerOverflowException e) {
-                    MIA.log.writeWarning(e.getMessage());
+                    MIA.log.writeWarning(e);
                     return false;
                 }
             }
@@ -221,6 +245,18 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units prior to conversion" +
                     " to calibrated units.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.BASE_AREA_PX);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Area of the lowest slice present for the object, \""+inputObjectsName+"\".  " +
+                    "Measured in pixel units.");
+
+            reference = objectMeasurementRefs.getOrPut(Measurements.BASE_AREA_CAL);
+            returnedRefs.add(reference);
+            reference.setObjectsName(inputObjectsName);
+            reference.setDescription("Area of the lowest slice present for the object, \""+inputObjectsName+"\".  " +
+                            "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
             reference = objectMeasurementRefs.getOrPut(Measurements.HEIGHT_SLICE);
             returnedRefs.add(reference);

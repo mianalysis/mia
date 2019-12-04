@@ -65,7 +65,7 @@ public class MIA implements Command {
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
                 ParserConfigurationException | InterruptedException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 
@@ -112,7 +112,7 @@ public class MIA implements Command {
             setLookAndFeel();
             new GUI();
         } catch (InstantiationException | IllegalAccessException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
         }
     }
 
@@ -122,22 +122,6 @@ public class MIA implements Command {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-
-//        UIManager.put("Menu.selectionBackground",Color.YELLOW);
-//        UIManager.put("Menu.background",Color.ORANGE);
-////        UIManager.put("MenuItem.selectionBackground", Colours.LIGHT_BLUE);
-////        UIManager.put("MenuItem.background",Colours.LIGHT_BLUE);
-////        UIManager.put("MenuItem.opaque",false);
-//
-//        Set<Object> def = UIManager.getLookAndFeel().getDefaults().keySet();
-//        for (Object key:def) {
-//            if (key != null) MIA.log.writeDebug(key+"_"+UIManager.getLookAndFeel().getDefaults().get(key));
-//        }
-//
-//        UIManager.put("Panel.background", Color.YELLOW);
-//        UIManager.put("Button.highlight",new ColorUIResource(255,255,0));
-//        UIManager.put("Button.select",new ColorUIResource(255,0,255));
-
     }
 
     public static boolean isImagePlusMode() {

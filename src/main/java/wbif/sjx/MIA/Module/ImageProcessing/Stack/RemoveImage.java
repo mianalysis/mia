@@ -4,23 +4,22 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
+import java.util.LinkedHashSet;
+
 /**
  * Created by sc13967 on 30/06/2017.
  */
 public class RemoveImage extends Module {
-    public static final String INPUT_SEPARATOR = "Image input";
+    public static final String REMOVAL_SEPARATOR = "Images to remove";
     public static final String INPUT_IMAGE = "Input image";
-    public static final String REMOVAL_CONTROLS = "Image removal controls";
     public static final String RETAIN_MEASUREMENTS = "Retain measurements";
+    public static final String REMOVE_ANOTHER_IMAGE = "Remove another image";
 
     public RemoveImage(ModuleCollection modules) {
         super("Remove image",modules);
@@ -34,18 +33,24 @@ public class RemoveImage extends Module {
 
     @Override
     public String getDescription() {
-        return "Removes the specified image from the workspace.  This helps keep memory usage down";
+        return "Removes the specified image(s) from the workspace.  This helps keep memory usage down.";
     }
 
     @Override
     public boolean process(Workspace workspace) {
         // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean retainMeasurements = parameters.getValue(RETAIN_MEASUREMENTS);
+        ParameterGroup parameterGroup = parameters.getParameter(REMOVE_ANOTHER_IMAGE);
+        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
 
-        // Removing the relevant image from the workspace
-        writeMessage("Removing image ("+inputImageName+") from workspace");
-        workspace.removeImage(inputImageName,retainMeasurements);
+        for (ParameterCollection collection:collections) {
+            String inputImageName = collection.getValue(INPUT_IMAGE);
+            boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS);
+
+            // Removing the relevant image from the workspace
+            writeMessage("Removing image ("+inputImageName+") from workspace");
+            workspace.removeImage(inputImageName,retainMeasurements);
+
+        }
 
         return true;
 
@@ -53,10 +58,12 @@ public class RemoveImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new RemovedImageP(INPUT_IMAGE,this));
-        parameters.add(new ParamSeparatorP(REMOVAL_CONTROLS,this));
-        parameters.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
+        parameters.add(new ParamSeparatorP(REMOVAL_SEPARATOR,this));
+
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new RemovedImageP(INPUT_IMAGE,this));
+        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
+        parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE,this,collection,1));
 
     }
 

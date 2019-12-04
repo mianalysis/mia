@@ -17,6 +17,8 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.SingleClassCluster;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
@@ -46,7 +48,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(filterImage);
 
         RemoveImage removeImage = new RemoveImage(new ModuleCollection());
-        removeImage.updateParameterValue(RemoveImage.INPUT_IMAGE,im1Name);
+        ParameterGroup group = removeImage.getParameter(RemoveImage.REMOVE_ANOTHER_IMAGE);
+        ParameterCollection collection = group.addParameters();
+        collection.updateValue(RemoveImage.INPUT_IMAGE,im1Name);
         modules.add(removeImage);
 
         LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null);
@@ -203,13 +207,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Checking the values for the second object set
         ObjMeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name);
-        assertEquals(7,references2.size());
+        assertEquals(9,references2.size());
 
         String[] expectedNames2 = new String[]{
-                Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
                 MeasureObjectShape.Measurements.PROJ_DIA_PX,
+                Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
+                MeasureObjectShape.Measurements.VOLUME_PX,
                 Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
-                Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
+                MeasureObjectShape.Measurements.BASE_AREA_PX,
+                Units.replace(MeasureObjectShape.Measurements.BASE_AREA_CAL),
                 MeasureObjectShape.Measurements.HEIGHT_SLICE,
                 Units.replace(MeasureObjectShape.Measurements.HEIGHT_CAL)};
 

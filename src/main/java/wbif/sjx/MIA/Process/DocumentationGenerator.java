@@ -323,7 +323,7 @@ public class DocumentationGenerator {
 
     private static LinkedHashSet<Module> getModules() {
         // Get a list of Modules
-        List<String> classNames = ClassHunter.getModules(false,MIA.isDebug());
+        List<String> classNames = ClassHunter.getModules(false);
 
         // Converting the list of classes to a list of Modules
         LinkedHashSet<Module> modules = new LinkedHashSet<>();
@@ -337,7 +337,7 @@ public class DocumentationGenerator {
                 Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                 modules.add((Module) constructor.newInstance(new ModuleCollection()));
             } catch (ClassNotFoundException |InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                MIA.log.writeError(e.getMessage());
+                MIA.log.writeError(e);
             }
         }
 

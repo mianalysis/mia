@@ -3,6 +3,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import sc.fiji.analyzeSkeleton.SkeletonResult;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -16,6 +18,7 @@ import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Vertex;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Process.SkeletonTools.Skeleton;
 
 import java.util.*;
@@ -23,13 +26,15 @@ import java.util.*;
 /**
  * Created by sc13967 on 24/01/2018.
  */
-public class MeasureObjectCurvature extends Module {
+public class FitSpline extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String OBJECT_OUTPUT_MODE = "Object output mode";
+    public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String EXPORT_EVERY_N_POINTS = "Export every N points";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String RELATE_TO_REFERENCE_POINT = "Relate to reference point";
     public static final String X_REF_MEASUREMENT = "X-axis reference measurement";
     public static final String Y_REF_MEASUREMENT = "Y-axis reference measurement";
-    public static final String FIT_SPLINE = "Fit spline";
     public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
     public static final String N_NEIGHBOURS = "Number of neighbours (smoothing)";
     public static final String ITERATIONS = "Iterations";
@@ -43,11 +48,22 @@ public class MeasureObjectCurvature extends Module {
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
-    public MeasureObjectCurvature(ModuleCollection modules) {
-        super("Measure object curvature",modules);
+    public FitSpline(ModuleCollection modules) {
+        super("Fit spline",modules);
     }
 
-    interface SplineFittingMethods {
+
+    public interface ObjectOutputModes {
+        String DO_NOT_STORE = "Do not store";
+        String CONTROL_POINTS = "Individual control points";
+        String FULL_CONTOUR = "Full contour";
+
+        String[] ALL = new String[]{DO_NOT_STORE,CONTROL_POINTS,FULL_CONTOUR};
+
+    }
+
+
+    public interface SplineFittingMethods {
         String LOESS = "LOESS (smooth fitting)";
         String STANDARD = "Standard (fits all points)";
 
@@ -96,9 +112,19 @@ public class MeasureObjectCurvature extends Module {
         BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
 
         // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        return new Skeleton(objectImage.getImagePlus()).getLongestPath();
+        Skeleton skeleton = new Skeleton(objectImage.getImagePlus());
+        LinkedHashSet<Vertex> longestPath = skeleton.getLongestPath();
+
+        // If the object was a closed loop, remove a random point and try again
+        if (longestPath.size() < 2) {
+            skeleton.addBreak();
+            longestPath = skeleton.getLongestPath();
+        }
+
+        return longestPath;
 
     }
+
 
     /*
      * Checks if the longest path (skeleton backbone) needs to be inverted to have the first point closer to the
@@ -258,45 +284,75 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    private void initialiseObjectMeasurements(Obj inputObject, boolean fitSpline, boolean absoluteCurvature,
-                                              boolean signedCurvature, boolean useReference) {
-        if (fitSpline) {
-            if (absoluteCurvature) {
-                inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-            }
-
-            if (signedCurvature) {
-                inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, Double.NaN));
-            }
-
-            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX,Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL,Double.NaN));
-
-            if (useReference) {
-                inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, Double.NaN));
-
-            }
+    private void initialiseObjectMeasurements(Obj inputObject, boolean absoluteCurvature, boolean signedCurvature, boolean useReference) {
+        if (absoluteCurvature) {
+            inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
         }
 
+        if (signedCurvature) {
+            inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, Double.NaN));
+        }
+
+        if (useReference) {
+            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, Double.NaN));
+
+        }
+
+        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX,Double.NaN));
+        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL,Double.NaN));
         inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,Double.NaN));
 
+    }
+
+    public void createFullContour (Obj inputObject, ObjCollection outputObjects, LinkedHashSet<Vertex> spline, int everyNPoints) {
+        if (spline == null) return;
+
+        Obj splineObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
+        int i = 0;
+        for (Vertex vertex:spline) {
+            try {
+                if (i++ % everyNPoints == 0) splineObject.add(vertex.x,vertex.y,vertex.z);
+            } catch (PointOutOfRangeException e) {}
+        }
+
+        splineObject.setT(inputObject.getT());
+        splineObject.addParent(inputObject);
+        inputObject.addChild(splineObject);
+        outputObjects.add(splineObject);
+
+    }
+
+    public void createControlPointObjects(Obj inputObject, ObjCollection outputObjects, LinkedHashSet<Vertex> spline, int everyNPoints) {
+        int i = 0;
+        for (Vertex vertex:spline) {
+            try {
+                if (i++ % everyNPoints == 0) {
+                    Obj splineObject = new Obj(outputObjects.getName(),outputObjects.getAndIncrementID(),inputObject);
+                    splineObject.add(vertex.x,vertex.y,vertex.z);
+                    splineObject.setT(inputObject.getT());
+                    splineObject.addParent(inputObject);
+                    inputObject.addChild(splineObject);
+                    outputObjects.add(splineObject);
+                }
+            } catch (PointOutOfRangeException e) {}
+        }
     }
 
 
@@ -312,9 +368,12 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public boolean process(Workspace workspace) {
-        // Getting input objects
+        // Getting parameters
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
+        String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS);
 
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         Image referenceImage = workspace.getImage(referenceImageName);
@@ -324,7 +383,6 @@ public class MeasureObjectCurvature extends Module {
         boolean useReference = parameters.getValue(RELATE_TO_REFERENCE_POINT);
         String xReference = parameters.getValue(X_REF_MEASUREMENT);
         String yReference = parameters.getValue(Y_REF_MEASUREMENT);
-        boolean fitSpline = parameters.getValue(FIT_SPLINE);
         String splineFittingMethod = parameters.getValue(SPLINE_FITTING_METHOD);
         int nNeighbours = parameters.getValue(N_NEIGHBOURS);
         int iterations = parameters.getValue(ITERATIONS);
@@ -338,9 +396,16 @@ public class MeasureObjectCurvature extends Module {
         boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
         int fittingRange = parameters.getValue(FITTING_RANGE_PX);
 
+        // If necessary, creating a new ObjCollection and adding it to the Workspace
+        ObjCollection outputObjects = null;
+        if (!objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
+            outputObjects = new ObjCollection(outputObjectsName);
+            workspace.addObjects(outputObjects);
+        }
+
         // If there are no objects, exit the module
         if (inputObjects.size() == 0) return true;
-
+        
         // If no reference is provided there's nothing to tell the sign of the curvature
         if (!useReference) {
             absoluteCurvature = true;
@@ -356,7 +421,7 @@ public class MeasureObjectCurvature extends Module {
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
             writeMessage("Processing object " + (count++) + " of " + total);
-            initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
+            initialiseObjectMeasurements(inputObject,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
             LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, new Image("Template",templateIpl));
@@ -381,21 +446,27 @@ public class MeasureObjectCurvature extends Module {
                 }
             }
 
-            if (fitSpline) {
-                CurvatureCalculator calculator = getCurvatureCalculator(longestPath, splineFittingMethod, nNeighbours, iterations, accuracy);
-                TreeMap<Double,Double> curvature = calculator.getCurvature();
-                measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
-                measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
+            CurvatureCalculator calculator = getCurvatureCalculator(longestPath, splineFittingMethod, nNeighbours, iterations, accuracy);
+            TreeMap<Double,Double> curvature = calculator.getCurvature();
+            measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
+            measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
 
-                if (drawSpline) {
-                    int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
-                    referenceImageImagePlus.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
-                    calculator.showOverlay(referenceImageImagePlus, maxCurvature, position, lineWidth);
-                }
+            if (drawSpline) {
+                int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
+                referenceImageImagePlus.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
+                calculator.showOverlay(referenceImageImagePlus, maxCurvature, position, lineWidth);
             }
 
             if (calculateEndEndAngle) measureHeadTailAngle(inputObject, longestPath, fittingRange);
-            
+
+            switch (objectOutputMode) {
+                case ObjectOutputModes.FULL_CONTOUR:
+                    createFullContour(inputObject,outputObjects,calculator.getSpline(),exportEveryNPoints);
+                    break;
+                case ObjectOutputModes.CONTROL_POINTS:
+                    createControlPointObjects(inputObject,outputObjects,calculator.getSpline(),exportEveryNPoints);
+                    break;
+            }
         }
 
         if (showOutput && drawSpline) {
@@ -404,6 +475,10 @@ public class MeasureObjectCurvature extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
+        if (showOutput &! objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
+            outputObjects.convertToImageRandomColours().showImage();
+        }
+
         return true;
 
     }
@@ -411,11 +486,13 @@ public class MeasureObjectCurvature extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE,this,ObjectOutputModes.DO_NOT_STORE,ObjectOutputModes.ALL));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new IntegerP(EXPORT_EVERY_N_POINTS,this,1));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new BooleanP(RELATE_TO_REFERENCE_POINT,this,false));
         parameters.add(new ObjectMeasurementP(X_REF_MEASUREMENT,this));
         parameters.add(new ObjectMeasurementP(Y_REF_MEASUREMENT,this));
-        parameters.add(new BooleanP(FIT_SPLINE, this,true));
         parameters.add(new ChoiceP(SPLINE_FITTING_METHOD, this,SplineFittingMethods.LOESS,SplineFittingMethods.ALL));
         parameters.add(new IntegerP(N_NEIGHBOURS, this,20));
         parameters.add(new IntegerP(ITERATIONS, this,10));
@@ -436,6 +513,16 @@ public class MeasureObjectCurvature extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+            case ObjectOutputModes.CONTROL_POINTS:
+            case ObjectOutputModes.FULL_CONTOUR:
+                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(EXPORT_EVERY_N_POINTS));
+
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
 
         returnedParameters.add(parameters.getParameter(RELATE_TO_REFERENCE_POINT));
@@ -452,23 +539,20 @@ public class MeasureObjectCurvature extends Module {
 
         }
 
-        returnedParameters.add(parameters.getParameter(FIT_SPLINE));
-        if (parameters.getValue(FIT_SPLINE)) {
-            returnedParameters.add(parameters.getParameter(SPLINE_FITTING_METHOD));
-            switch ((String) parameters.getValue(SPLINE_FITTING_METHOD)) {
-                case SplineFittingMethods.LOESS:
-                    returnedParameters.add(parameters.getParameter(N_NEIGHBOURS));
-                    returnedParameters.add(parameters.getParameter(ITERATIONS));
-                    returnedParameters.add(parameters.getParameter(ACCURACY));
-                    break;
-            }
+        returnedParameters.add(parameters.getParameter(SPLINE_FITTING_METHOD));
+        switch ((String) parameters.getValue(SPLINE_FITTING_METHOD)) {
+            case SplineFittingMethods.LOESS:
+                returnedParameters.add(parameters.getParameter(N_NEIGHBOURS));
+                returnedParameters.add(parameters.getParameter(ITERATIONS));
+                returnedParameters.add(parameters.getParameter(ACCURACY));
+                break;
+        }
 
-            returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
-            if (parameters.getValue(DRAW_SPLINE)) {
-                returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
-                returnedParameters.add(parameters.getParameter(LINE_WIDTH));
-                returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
-            }
+        returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
+        if (parameters.getValue(DRAW_SPLINE)) {
+            returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
+            returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+            returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATE_END_END_ANGLE));
@@ -543,16 +627,14 @@ public class MeasureObjectCurvature extends Module {
         boolean signedCurvature = false;
         boolean calculateHeadTailAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
 
-        if (parameters.getValue(FIT_SPLINE)) {
-            if (parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
-                relateToReference = true;
-                if (parameters.getValue(ABSOLUTE_CURVATURE)) absoluteCurvature = true;
-                if (parameters.getValue(SIGNED_CURVATURE)) signedCurvature = true;
+        if (parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
+            relateToReference = true;
+            if (parameters.getValue(ABSOLUTE_CURVATURE)) absoluteCurvature = true;
+            if (parameters.getValue(SIGNED_CURVATURE)) signedCurvature = true;
 
-            } else {
-                absoluteCurvature = true;
-                signedCurvature = false;
-            }
+        } else {
+            absoluteCurvature = true;
+            signedCurvature = false;
         }
 
         returnedRefs.add(splineLengthPx);
@@ -590,7 +672,16 @@ public class MeasureObjectCurvature extends Module {
 
     @Override
     public RelationshipRefCollection updateAndGetRelationships() {
-        return null;
+        RelationshipRefCollection refCollection = new RelationshipRefCollection();
+
+        if (!parameters.getValue(OBJECT_OUTPUT_MODE).equals(ObjectOutputModes.DO_NOT_STORE)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+            refCollection.add(new RelationshipRef(inputObjectsName,outputObjectsName));
+        }
+
+        return refCollection;
+
     }
 
     @Override

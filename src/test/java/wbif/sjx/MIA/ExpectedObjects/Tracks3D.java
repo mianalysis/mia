@@ -119,7 +119,7 @@ public class Tracks3D {
             return tracks;
 
         } catch (IOException e) {
-            MIA.log.writeError(e.getMessage());
+            MIA.log.writeError(e);
             return null;
         }
     }

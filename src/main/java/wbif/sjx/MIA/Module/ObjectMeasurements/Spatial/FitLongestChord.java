@@ -46,6 +46,7 @@ public class FitLongestChord extends Module {
         String STD_SURF_DIST_CAL = "LONGEST_CHORD // STD_SURF_DIST (${CAL})";
         String MAX_SURF_DIST_PX = "LONGEST_CHORD // MAX_SURF_DIST (PX)";
         String MAX_SURF_DIST_CAL = "LONGEST_CHORD // MAX_SURF_DIST (${CAL})";
+        String ORIENTATION_XY_DEGS = "LONGEST_CHORD // ORIENTATION_XY_(DEGS)";
 
     }
 
@@ -83,6 +84,12 @@ public class FitLongestChord extends Module {
             object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_PX,cumStat.getMax()));
             object.addMeasurement(new Measurement(Measurements.MAX_SURF_DIST_CAL,cumStat.getMax()*dppXY));
         }
+
+        double orientationDegs = Math.toDegrees(calculator.getXYOrientationRads());
+        orientationDegs = Math.abs((orientationDegs + 90) % 180 - 90);
+        if (orientationDegs >= 90) orientationDegs = orientationDegs - 180;
+        object.addMeasurement(new Measurement(Measurements.ORIENTATION_XY_DEGS,orientationDegs));
+
     }
 
     public void addEndpointsOverlay(Obj object, ImagePlus imagePlus) {
@@ -296,6 +303,12 @@ public class FitLongestChord extends Module {
         reference.setDescription("Maximum distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in calibrated ("
                 +Units.getOMEUnits().getSymbol()+") units.");
+        returnedRefs.add(reference);
+
+        reference = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION_XY_DEGS);
+        reference.setObjectsName(inputObjectsName);
+        reference.setDescription("Orientation in XY of longest chord fit to the object, \""+ inputObjectsName+"\".  " +
+                "Measured in degrees, relative to positive x-axis (positive above x-axis, negative below x-axis).");
         returnedRefs.add(reference);
 
         return returnedRefs;
