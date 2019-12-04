@@ -604,6 +604,12 @@ public class MetadataExtractor extends Module {
                 }
                 break;
 
+            case ExtractorModes.SERIES_NAME:
+                String groupString = parameters.getValue(GROUPS);
+                String[] groups = getGroups(groupString);
+                for (String group:groups) returnedRefs.add(metadataRefs.getOrPut((group)));
+                break;
+
         }
 
         return returnedRefs;

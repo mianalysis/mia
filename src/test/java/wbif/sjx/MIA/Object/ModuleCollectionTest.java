@@ -207,13 +207,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Checking the values for the second object set
         ObjMeasurementRefCollection references2 = modules.getObjectMeasurementRefs(obj2Name);
-        assertEquals(7,references2.size());
+        assertEquals(9,references2.size());
 
         String[] expectedNames2 = new String[]{
-                Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
                 MeasureObjectShape.Measurements.PROJ_DIA_PX,
+                Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
+                MeasureObjectShape.Measurements.VOLUME_PX,
                 Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
-                Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
+                MeasureObjectShape.Measurements.BASE_AREA_PX,
+                Units.replace(MeasureObjectShape.Measurements.BASE_AREA_CAL),
                 MeasureObjectShape.Measurements.HEIGHT_SLICE,
                 Units.replace(MeasureObjectShape.Measurements.HEIGHT_CAL)};
 
