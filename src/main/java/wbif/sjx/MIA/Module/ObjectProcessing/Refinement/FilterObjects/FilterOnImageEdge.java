@@ -18,8 +18,13 @@ public class FilterOnImageEdge extends CoreFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String MAXIMUM_CONTACT = "Maximum permitted contact";
+    public static final String REMOVE_ON_TOP = "Remove on top";
+    public static final String REMOVE_ON_LEFT = "Remove on left";
+    public static final String REMOVE_ON_BOTTOM = "Remove on bottom";
+    public static final String REMOVE_ON_RIGHT = "Remove on right";
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String STORE_RESULTS = "Store filter results";
+
 
     public FilterOnImageEdge(ModuleCollection modules) {
         super("Remove on image edge",modules);
@@ -35,10 +40,18 @@ public class FilterOnImageEdge extends CoreFilter {
     }
 
 
-    public static boolean hasContactWithEdge(Obj obj, Image image, int maxContact, boolean includeZ) {
+    public static boolean hasContactWithEdge(Obj obj, Image image, int maxContact, boolean[] removalEdges, boolean includeZ) {
+        int minX = 0;
+        int minY = 0;
+        int minZ = 0;
         int maxX = image.getImagePlus().getWidth()-1;
         int maxY = image.getImagePlus().getHeight()-1;
         int maxZ = image.getImagePlus().getNSlices()-1;
+
+        if (!removalEdges[0]) minY = -Integer.MAX_VALUE;
+        if (!removalEdges[1]) minX = -Integer.MAX_VALUE;
+        if (!removalEdges[2]) maxY = Integer.MAX_VALUE;
+        if (!removalEdges[3]) maxX = Integer.MAX_VALUE;
 
         ArrayList<Integer> x = obj.getXCoords();
         ArrayList<Integer> y = obj.getYCoords();
@@ -46,10 +59,10 @@ public class FilterOnImageEdge extends CoreFilter {
 
         int count = 0;
         for (int i=0;i<x.size();i++) {
-            if (x.get(i) == 0 | x.get(i) == maxX | y.get(i) == 0 | y.get(i) == maxY) count++;
+            if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) count++;
 
             // Only consider Z if the user requested this
-            if (includeZ && (z.get(i) == 0 | z.get(i) == maxZ)) count++;
+            if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ)) count++;
 
             // Check if the maximum number of contacts with the edge has been made
             if (count > maxContact) return true;
@@ -82,11 +95,17 @@ public class FilterOnImageEdge extends CoreFilter {
         String inputImageName = parameters.getValue(REFERENCE_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
         int maxContact = parameters.getValue(MAXIMUM_CONTACT);
+        boolean removeTop = parameters.getValue(REMOVE_ON_TOP);
+        boolean removeLeft = parameters.getValue(REMOVE_ON_LEFT);
+        boolean removeBottom = parameters.getValue(REMOVE_ON_BOTTOM);
+        boolean removeRight = parameters.getValue(REMOVE_ON_RIGHT);
         boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
         boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
+
+        boolean[] removalEdges = new boolean[]{removeTop,removeLeft,removeBottom,removeRight};
 
         ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
 
@@ -96,7 +115,7 @@ public class FilterOnImageEdge extends CoreFilter {
             Obj inputObject = iterator.next();
 
             // If the following is negative, there's no need to remove the object
-            if (!hasContactWithEdge(inputObject,inputImage,maxContact,includeZ)) continue;
+            if (!hasContactWithEdge(inputObject,inputImage,maxContact,removalEdges,includeZ)) continue;
 
             if (remove) processRemoval(inputObject,outputObjects,iterator);
 
@@ -121,15 +140,19 @@ public class FilterOnImageEdge extends CoreFilter {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
-        parameters.add(new IntegerP(MAXIMUM_CONTACT,this,0));
-        parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
+        parameters.add(new IntegerP(MAXIMUM_CONTACT, this,0));
+        parameters.add(new BooleanP(REMOVE_ON_TOP, this,true));
+        parameters.add(new BooleanP(REMOVE_ON_LEFT, this,true));
+        parameters.add(new BooleanP(REMOVE_ON_BOTTOM, this,true));
+        parameters.add(new BooleanP(REMOVE_ON_RIGHT, this,true));
+        parameters.add(new BooleanP(INCLUDE_Z_POSITION, this,false));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
     }
@@ -149,6 +172,10 @@ public class FilterOnImageEdge extends CoreFilter {
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
         returnedParameters.add(parameters.getParameter(MAXIMUM_CONTACT));
+        returnedParameters.add(parameters.getParameter(REMOVE_ON_TOP));
+        returnedParameters.add(parameters.getParameter(REMOVE_ON_LEFT));
+        returnedParameters.add(parameters.getParameter(REMOVE_ON_BOTTOM));
+        returnedParameters.add(parameters.getParameter(REMOVE_ON_RIGHT));
         returnedParameters.add(parameters.getParameter(INCLUDE_Z_POSITION));
         returnedParameters.add(parameters.getParameter(STORE_RESULTS));
 

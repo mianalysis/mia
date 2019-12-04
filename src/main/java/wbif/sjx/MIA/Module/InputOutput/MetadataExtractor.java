@@ -58,8 +58,9 @@ public class MetadataExtractor extends Module {
         String FOLDERNAME_MODE = "Foldername";
         String KEYWORD_MODE = "Keyword";
         String METADATA_FILE_MODE = "Metadata file";
+        String SERIES_NAME = "Series name";
 
-        String[] ALL = new String[]{FILENAME_MODE, FOLDERNAME_MODE, KEYWORD_MODE, METADATA_FILE_MODE};
+        String[] ALL = new String[]{FILENAME_MODE, FOLDERNAME_MODE, KEYWORD_MODE, METADATA_FILE_MODE, SERIES_NAME};
 
     }
 
@@ -335,6 +336,10 @@ public class MetadataExtractor extends Module {
                         break;
                 }
                 break;
+
+            case ExtractorModes.SERIES_NAME:
+                extractGeneric(metadata,metadata.getSeriesName(),pattern,groups);
+                break;
         }
 
         if (showOutput) workspace.showMetadata(this);
@@ -383,25 +388,7 @@ public class MetadataExtractor extends Module {
                 returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
                 switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
                     case FilenameExtractors.GENERIC:
-                        returnedParameters.add(parameters.getParameter(REGEX_SEPARATOR));
-                        returnedParameters.add(parameters.getParameter(PATTERN));
-                        returnedParameters.add(parameters.getParameter(GROUPS));
-
-                        returnedParameters.add(parameters.getParameter(SHOW_TEST));
-                        if (parameters.getValue(SHOW_TEST)) {
-                            returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
-                            returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
-
-                            String pattern = parameters.getValue(PATTERN);
-                            String groups = parameters.getValue(GROUPS);
-                            String exampleString = parameters.getValue(EXAMPLE_STRING);
-                            String groupsString = getTestString(pattern,groups,exampleString);
-                            TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
-                            identifiedGroups.setValue(groupsString);
-
-                            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
-
-                        }
+                        returnedParameters.addAll(getGenericExtractorParameters());
                         break;
                 }
                 break;
@@ -410,25 +397,7 @@ public class MetadataExtractor extends Module {
                 returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
                 switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
                     case FoldernameExtractors.GENERIC:
-                        returnedParameters.add(parameters.getParameter(REGEX_SEPARATOR));
-                        returnedParameters.add(parameters.getParameter(PATTERN));
-                        returnedParameters.add(parameters.getParameter(GROUPS));
-
-                        returnedParameters.add(parameters.getParameter(SHOW_TEST));
-                        if (parameters.getValue(SHOW_TEST)) {
-                            returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
-                            returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
-
-                            String pattern = parameters.getValue(PATTERN);
-                            String groups = parameters.getValue(GROUPS);
-                            String exampleString = parameters.getValue(EXAMPLE_STRING);
-                            String groupsString = getTestString(pattern,groups,exampleString);
-                            TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
-                            identifiedGroups.setValue(groupsString);
-
-                            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
-
-                        }
+                        returnedParameters.addAll(getGenericExtractorParameters());
                         break;
                 }
                 break;
@@ -458,31 +427,44 @@ public class MetadataExtractor extends Module {
 
                         returnedParameters.add(parameters.getParameter(REGEX_SPLITTING));
                         if (parameters.getValue(REGEX_SPLITTING)) {
-                            returnedParameters.add(parameters.getParameter(REGEX_SEPARATOR));
-                            returnedParameters.add(parameters.getParameter(PATTERN));
-                            returnedParameters.add(parameters.getParameter(GROUPS));
-
-                            returnedParameters.add(parameters.getParameter(SHOW_TEST));
-                            if (parameters.getValue(SHOW_TEST)) {
-                                returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
-                                returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
-
-                                String pattern = parameters.getValue(PATTERN);
-                                String groups = parameters.getValue(GROUPS);
-                                String exampleString = parameters.getValue(EXAMPLE_STRING);
-                                String groupsString = getTestString(pattern, groups, exampleString);
-                                TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
-                                identifiedGroups.setValue(groupsString);
-
-                                returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
-
-                            }
+                            returnedParameters.addAll(getGenericExtractorParameters());
                         } else {
                             returnedParameters.add(parameters.getParameter(METADATA_VALUE_NAME));
                         }
                         break;
                 }
                 break;
+
+            case ExtractorModes.SERIES_NAME:
+                returnedParameters.addAll(getGenericExtractorParameters());
+                break;
+
+        }
+
+        return returnedParameters;
+
+    }
+
+    private ParameterCollection getGenericExtractorParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(REGEX_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(PATTERN));
+        returnedParameters.add(parameters.getParameter(GROUPS));
+
+        returnedParameters.add(parameters.getParameter(SHOW_TEST));
+        if (parameters.getValue(SHOW_TEST)) {
+            returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
+            returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
+
+            String pattern = parameters.getValue(PATTERN);
+            String groups = parameters.getValue(GROUPS);
+            String exampleString = parameters.getValue(EXAMPLE_STRING);
+            String groupsString = getTestString(pattern,groups,exampleString);
+            TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
+            identifiedGroups.setValue(groupsString);
+
+            returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
 
         }
 

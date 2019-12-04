@@ -271,17 +271,18 @@ public class GUI {
         // Getting the next series
         TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(nextFile);
         if (seriesNumbers.size() == 0) return;
-        int nextSeries = seriesNumbers.firstEntry().getKey();
+        int nextSeriesNumber = seriesNumbers.firstEntry().getKey();
+        String nextSeriesName = seriesNumbers.get(nextSeriesNumber);
 
         // If the new file is the same as the old, skip this
         File previousFile = testWorkspace.getMetadata().getFile();
         int previousSeries = testWorkspace.getMetadata().getSeriesNumber();
 
-        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeries) return;
+        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeriesNumber) return;
 
         lastModuleEval = -1;
-        testWorkspace = new Workspace(1,nextFile,nextSeries);
-        testWorkspace.getMetadata().setSeriesName("");
+        testWorkspace = new Workspace(1,nextFile,nextSeriesNumber);
+        testWorkspace.getMetadata().setSeriesName(nextSeriesName);
 
     }
 
