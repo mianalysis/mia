@@ -38,7 +38,7 @@ public abstract class CoreFilter extends Module {
 
     }
 
-    static boolean testFilter(double testValue, double referenceValue, String filterMethod) {
+    public static boolean testFilter(double testValue, double referenceValue, String filterMethod) {
         switch (filterMethod) {
             case FilterMethods.LESS_THAN:
                 return testValue < referenceValue;
@@ -58,7 +58,7 @@ public abstract class CoreFilter extends Module {
 
     }
 
-    static String getFilterMethodSymbol(String filterMethod) {
+    public static String getFilterMethodSymbol(String filterMethod) {
         switch (filterMethod) {
             case FilterMethods.LESS_THAN:
                 return "<";
