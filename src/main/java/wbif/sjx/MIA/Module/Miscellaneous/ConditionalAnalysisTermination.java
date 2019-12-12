@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.CoreFilter;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -17,9 +19,10 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String TEST_MODE = "Test mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String REFERENCE_IMAGE_MEASUREMENT_MODE = "Reference image measurement mode";
+    public static final String FILTER_MODE = "Reference image measurement mode";
     public static final String REFERENCE_IMAGE_MEASUREMENT = "Reference image measurement";
     public static final String REFERENCE_OBJECT_COUNT_MODE = "Reference object count mode";
+    public static final String REFERENCE_METADATA_VALUE = "Reference metadata value";
     public static final String REFERENCE_VALUE = "Reference value";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
@@ -31,28 +34,14 @@ public class ConditionalAnalysisTermination extends Module {
 
     public interface TestModes {
         String IMAGE_MEASUREMENT = "Image measurement";
+        String METADATA_VALUE = "Metadata value";
         String OBJECT_COUNT = "Object count";
 
-        String[] ALL = new String[]{IMAGE_MEASUREMENT,OBJECT_COUNT};
+        String[] ALL = new String[]{IMAGE_MEASUREMENT,METADATA_VALUE,OBJECT_COUNT};
 
     }
 
-    public interface ReferenceImageMeasurementModes {
-        String MEASUREMENT_LESS_THAN = "Terminate if measurement less than";
-        String MEASUREMENT_GREATER_THAN = "Terminate if measurement greater than";
-
-        String[] ALL = new String[]{MEASUREMENT_LESS_THAN,MEASUREMENT_GREATER_THAN};
-
-    }
-
-    public interface ReferenceObjectCountModes {
-        String FEWER_OBJECTS_THAN = "Fewer objects than";
-        String MORE_OBJECTS_THAN = "More objects than";
-        String NO_OBJECTS = "No objects";
-
-        String[] ALL = new String[]{FEWER_OBJECTS_THAN,MORE_OBJECTS_THAN,NO_OBJECTS};
-
-    }
+    public interface FilterModes extends CoreFilter.FilterMethods {}
 
 
     public static boolean testImageMeasurement(Image inputImage, String measurementName, String referenceMode, double referenceValue) {
@@ -64,30 +53,28 @@ public class ConditionalAnalysisTermination extends Module {
 
         // Testing the value
         double measurementValue = measurement.getValue();
-        switch (referenceMode) {
-            case ReferenceImageMeasurementModes.MEASUREMENT_LESS_THAN:
-                return measurementValue < referenceValue;
-
-            case ReferenceImageMeasurementModes.MEASUREMENT_GREATER_THAN:
-                return measurementValue > referenceValue;
-
-        }
-
-        return true;
+        return CoreFilter.testFilter(measurementValue,referenceValue,referenceMode);
 
     }
 
-    public static boolean testObjectCount(ObjCollection inputObjects, String referenceMode, double referenceValue) {
-        switch (referenceMode) {
-            case ReferenceObjectCountModes.FEWER_OBJECTS_THAN:
-                return inputObjects == null || inputObjects.size() < (int) Math.round(referenceValue);
-            case ReferenceObjectCountModes.MORE_OBJECTS_THAN:
-                return inputObjects != null && inputObjects.size() > (int) Math.round(referenceValue);
-            case ReferenceObjectCountModes.NO_OBJECTS:
-                return inputObjects.size() == 0;
-        }
+    public static boolean testMetadata(String metadataValue, String referenceMode, double referenceValue) {
+        try {
+            double testValue = Double.parseDouble(metadataValue);
+            return CoreFilter.testFilter(testValue,referenceValue,referenceMode);
 
-        return false;
+        } catch (NumberFormatException e) {
+            // This will be thrown if the value specified wasn't a number
+            MIA.log.writeWarning("Specified metadata value for filtering ("+metadataValue+") wasn't a number.  Terminating this run.");
+            return false;
+
+        }
+    }
+
+    public static boolean testObjectCount(ObjCollection inputObjects, String referenceMode, double referenceValue) {
+        int testValue = 0;
+        if (inputObjects != null) testValue = inputObjects.size();
+
+        return CoreFilter.testFilter(testValue,referenceValue,referenceMode);
 
     }
 
@@ -107,9 +94,9 @@ public class ConditionalAnalysisTermination extends Module {
         String testMode = parameters.getValue(TEST_MODE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String imageMeasurementReferenceMode = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT_MODE);
+        String filterMode = parameters.getValue(FILTER_MODE);
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
-        String objectCountReferenceMode = parameters.getValue(REFERENCE_OBJECT_COUNT_MODE);
+        String referenceMetadataValue = parameters.getValue(REFERENCE_METADATA_VALUE);
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
         boolean removeImages = parameters.getValue(REMOVE_IMAGES);
         boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
@@ -119,11 +106,15 @@ public class ConditionalAnalysisTermination extends Module {
         switch (testMode) {
             case TestModes.IMAGE_MEASUREMENT:
                 Image inputImage = workspace.getImage(inputImageName);
-                terminate = testImageMeasurement(inputImage,referenceImageMeasurement,imageMeasurementReferenceMode,referenceValue);
+                terminate = testImageMeasurement(inputImage,referenceImageMeasurement,filterMode,referenceValue);
+                break;
+            case TestModes.METADATA_VALUE:
+                String metadataValue = workspace.getMetadata().get(referenceMetadataValue).toString();
+                terminate = testMetadata(metadataValue,filterMode,referenceValue);
                 break;
             case TestModes.OBJECT_COUNT:
                 ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-                terminate = testObjectCount(inputObjects,objectCountReferenceMode,referenceValue);
+                terminate = testObjectCount(inputObjects,filterMode,referenceValue);
                 break;
         }
 
@@ -143,9 +134,9 @@ public class ConditionalAnalysisTermination extends Module {
         parameters.add(new ChoiceP(TEST_MODE,this,TestModes.IMAGE_MEASUREMENT,TestModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new ChoiceP(REFERENCE_IMAGE_MEASUREMENT_MODE,this, ReferenceImageMeasurementModes.MEASUREMENT_LESS_THAN, ReferenceImageMeasurementModes.ALL));
+        parameters.add(new ChoiceP(FILTER_MODE,this,FilterModes.LESS_THAN,FilterModes.ALL));
         parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT,this));
-        parameters.add(new ChoiceP(REFERENCE_OBJECT_COUNT_MODE,this,ReferenceObjectCountModes.FEWER_OBJECTS_THAN,ReferenceObjectCountModes.ALL));
+        parameters.add(new MetadataItemP(REFERENCE_METADATA_VALUE,this));
         parameters.add(new DoubleP(REFERENCE_VALUE,this,0d));
         parameters.add(new BooleanP(REMOVE_IMAGES,this,false));
         parameters.add(new BooleanP(REMOVE_OBJECTS,this,false));
@@ -160,23 +151,27 @@ public class ConditionalAnalysisTermination extends Module {
         switch ((String) parameters.getValue(TEST_MODE)) {
             case TestModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT_MODE));
+                returnedParameters.add(parameters.getParameter(FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 
                 String inputImageName = parameters.getValue(INPUT_IMAGE);
                 ImageMeasurementP parameter = parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT);
                 parameter.setImageName(inputImageName);
+                break;
 
+            case TestModes.METADATA_VALUE:
+                returnedParameters.add(parameters.getParameter(FILTER_MODE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_METADATA_VALUE));
                 break;
 
             case TestModes.OBJECT_COUNT:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-                returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_COUNT_MODE));
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                returnedParameters.add(parameters.getParameter(FILTER_MODE));
 
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 
         returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
         returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
