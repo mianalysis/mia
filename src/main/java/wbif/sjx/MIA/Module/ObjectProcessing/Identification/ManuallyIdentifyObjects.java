@@ -69,8 +69,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
+    public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String SELECTION_SEPARATOR = "Object selection controls";
+    public static final String SELECTOR_TYPE = "Default selector type";
     public static final String INTERPOLATION_MODE = "Interpolation mode";
     public static final String VOLUME_TYPE = "Volume type";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
@@ -80,6 +83,16 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         super("Manually identify objects",modules);
     }
 
+    public interface SelectorTypes {
+        String FREEHAND_LINE = "Freehand line";
+        String LINE = "Line";
+        String OVAL = "Oval";
+        String RECTANGLE = "Rectangle";
+        String SEGMENTED_LINE = "Segmented line";
+
+        String[] ALL = new String[]{FREEHAND_LINE,LINE,OVAL,RECTANGLE,SEGMENTED_LINE};
+
+    }
 
     public interface InterpolationModes {
         String NONE = "None";
@@ -99,12 +112,31 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 return VolumeType.OCTREE;
 //            case Image.VolumeTypes.OPTIMISED:
             default:
-//                System.out.println("Need to implement optimised - look into number of slices and sort of ROI tool used");
-//                return VolumeType.POINTLIST;
             case Image.VolumeTypes.POINTLIST:
                 return VolumeType.POINTLIST;
             case Image.VolumeTypes.QUADTREE:
                 return VolumeType.QUADTREE;
+        }
+    }
+
+    void setSelector(String selectorType) {
+        switch (selectorType) {
+            default:
+            case SelectorTypes.FREEHAND_LINE:
+                IJ.setTool(Toolbar.FREELINE);
+                return;
+            case SelectorTypes.LINE:
+                IJ.setTool(Toolbar.LINE);
+                return;
+            case SelectorTypes.OVAL:
+                IJ.setTool(Toolbar.OVAL);
+                return;
+            case SelectorTypes.RECTANGLE:
+                IJ.setTool(Toolbar.RECTANGLE);
+                return;
+            case SelectorTypes.SEGMENTED_LINE:
+                IJ.setTool(Toolbar.POLYGON);
+                return;
         }
     }
 
@@ -305,6 +337,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String selectorType = parameters.getValue(SELECTOR_TYPE);
         String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
         String type = parameters.getValue(VOLUME_TYPE);
         String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
@@ -318,6 +351,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         nSlices = inputImagePlus.getNSlices();
         dppXY = inputImagePlus.getCalibration().pixelWidth;
         dppZ = inputImagePlus.getCalibration().pixelDepth;
+
+        setSelector(selectorType);
 
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
@@ -377,8 +412,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
+        parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR,this));
+        parameters.add(new ChoiceP(SELECTOR_TYPE,this,SelectorTypes.FREEHAND_LINE,SelectorTypes.ALL,"Default region drawing tool to enable.  This tool can be changed by the user when selecting regions."));
         parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL,"Interpolation method used for reducing the number of selections that must be made"));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image", "Message to display in title of image."));
