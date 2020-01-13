@@ -41,7 +41,7 @@ public class MeasureImageDimensions extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Measure dimensions of an image and store the values as measurements associated with that image.";
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MeasureImageDimensions extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image to measure dimensions for."));
     }
 
     @Override

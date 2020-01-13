@@ -298,7 +298,8 @@ public class FilterImage extends Module {
 
     @Override
     public String getDescription() {
-        return "3D median filter currently incompatible with 5D hyperstacks";
+        return "Apply intensity filters to an image in the workspace." +
+                "<br>Note: 3D median filter is currently incompatible with 5D hyperstacks";
     }
 
     @Override
@@ -395,12 +396,28 @@ public class FilterImage extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output image created during the filtering process.  This image will be added to the workspace."));
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
-        parameters.add(new ChoiceP(FILTER_MODE, this,FilterModes.DOG2D,FilterModes.ALL, "Filter to be applied to the image.  Some filters have separate 2D and 3D variants."));
+        parameters.add(new ChoiceP(FILTER_MODE, this,FilterModes.DOG2D,FilterModes.ALL, "Filter to be applied to the image.<br>" +
+                "<br>- "+FilterModes.DOG2D+" Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for \""+FILTER_RADIUS+"\".<br>"+
+                "<br>- "+FilterModes.GAUSSIAN2D+".<br>"+
+                "<br>- "+FilterModes.GAUSSIAN3D+".<br>"+
+                "<br>- "+FilterModes.GRADIENT2D+".<br>"+
+                "<br>- "+FilterModes.MAXIMUM2D+".<br>"+
+                "<br>- "+FilterModes.MAXIMUM3D+".<br>"+
+                "<br>- "+FilterModes.MEAN2D+".<br>"+
+                "<br>- "+FilterModes.MEAN3D+".<br>"+
+                "<br>- "+FilterModes.MEDIAN2D+".<br>"+
+                "<br>- "+FilterModes.MEDIAN3D+".<br>"+
+                "<br>- "+FilterModes.MINIMUM2D+".<br>"+
+                "<br>- "+FilterModes.MINIMUM3D+".<br>"+
+                "<br>- "+FilterModes.RIDGE_ENHANCEMENT+" enhances ridge-like structures in the image.<br>"+
+                "<br>- "+FilterModes.ROLLING_FRAME+" filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable..<br>"+
+                "<br>- "+FilterModes.VARIANCE2D+".<br>"+
+                "<br>- "+FilterModes.VARIANCE3D+".<br>"));
         parameters.add(new DoubleP(FILTER_RADIUS, this, 2d, "Range the filter is calculated over.  Often also referred to as \"sigma\".  Value specified in pixel units, unless \"calibrated units\" is enabled."));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this,false, "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\" units.  What units are used are controlled from \"Input control\"."));
-        parameters.add(new ChoiceP(ROLLING_METHOD, this,RollingMethods.AVERAGE,RollingMethods.ALL));
-        parameters.add(new IntegerP(WINDOW_HALF_WIDTH,this,1));
-        parameters.add(new ChoiceP(WINDOW_MODE,this,WindowModes.BOTH_SIDES,WindowModes.ALL));
+        parameters.add(new ChoiceP(ROLLING_METHOD, this,RollingMethods.AVERAGE,RollingMethods.ALL, "Statistic to apply for rolling frame filtering."));
+        parameters.add(new IntegerP(WINDOW_HALF_WIDTH,this,1,"Number of frames before/after target frame to be used for rolling frame filtering.  For example, averaging over a half window width of 3 will use 3 frames before the target frame, 3 frames after and the target frame itself."));
+        parameters.add(new ChoiceP(WINDOW_MODE,this,WindowModes.BOTH_SIDES,WindowModes.ALL,"Controls which frames are used in the rolling frame filter calculation"));
 
     }
 

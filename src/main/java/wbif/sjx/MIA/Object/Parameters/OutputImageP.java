@@ -13,6 +13,11 @@ public class OutputImageP extends TextType {
         super(name,module);
     }
 
+    public OutputImageP(String name, Module module, @Nonnull String imageName) {
+        super(name,module);
+        this.imageName = imageName;
+    }
+
     public OutputImageP(String name, Module module, @Nonnull String imageName, String description) {
         super(name,module,description);
         this.imageName = imageName;

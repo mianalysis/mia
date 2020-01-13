@@ -223,7 +223,8 @@ public class ImageCalculator extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Apply pixel-wise intensity calculations for two images of matching dimensions.<br><br>" +
+                "Note: Images to be processed must have matching spatial dimensions and intensity bit-depths.";
     }
 
     @Override
@@ -270,14 +271,17 @@ public class ImageCalculator extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE1,this));
-        parameters.add(new InputImageP(INPUT_IMAGE2,this));
-        parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new BooleanP(OUTPUT_32BIT,this,false));
+        parameters.add(new InputImageP(INPUT_IMAGE1,this,"","First image to be processed as part of calculation."));
+        parameters.add(new InputImageP(INPUT_IMAGE2,this,"","Second image to be processed as part of calculation."));
+        parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL,"Controls how the resultant image should be output.<br>" +
+                "<br> - \""+OverwriteModes.CREATE_NEW+"\" (default) will create a new image and save it to the workspace." +
+                "<br> - \""+OverwriteModes.OVERWRITE_IMAGE1+"\" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image" +
+                "<br> - \""+OverwriteModes.OVERWRITE_IMAGE2+"\" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image"));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Name of the output image created during the image calculation.  This image will be added to the workspace."));
+        parameters.add(new BooleanP(OUTPUT_32BIT,this,false,"When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image."));
         parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
-        parameters.add(new ChoiceP(CALCULATION_METHOD,this,CalculationMethods.ADD,CalculationMethods.ALL));
-        parameters.add(new BooleanP(SET_NAN_TO_ZERO,this,false));
+        parameters.add(new ChoiceP(CALCULATION_METHOD,this,CalculationMethods.ADD,CalculationMethods.ALL,"The calculation to apply to the two input images."));
+        parameters.add(new BooleanP(SET_NAN_TO_ZERO,this,false,"If input images are 32-bit (or are being converted to 32-bit via \""+OUTPUT_32BIT+"\" option) the output image can contain NaN (not a number) values in place of any zeros."));
 
     }
 
