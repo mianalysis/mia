@@ -62,7 +62,7 @@ public class RemoveImage extends Module {
 
         ParameterCollection collection = new ParameterCollection();
         collection.add(new RemovedImageP(INPUT_IMAGE,this,"","Name of the image to be removed from the workspace."));
-        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false,"Retain measurements for this object, or remove everything.  When selected, the image intensity information will be removed, as this is typically where most memory us used, however any measurements associated with it will be retained."));
+        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false,"Retain measurements for this image, or remove everything.  When selected, the image intensity information will be removed, as this is typically where most memory us used, however any measurements associated with it will be retained."));
         parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE,this,collection,1,"Mark another image from the workspace for removal."));
 
     }

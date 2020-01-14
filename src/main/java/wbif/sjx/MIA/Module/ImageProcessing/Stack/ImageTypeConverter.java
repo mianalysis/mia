@@ -243,8 +243,8 @@ public class ImageTypeConverter extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this,"","Input image to be converted to another bit-depth."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true,"If selected, the converted image will replacec the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","The name for the output image in the workspace."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true,"If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Name of the output converted image."));
         parameters.add(new ChoiceP(OUTPUT_TYPE,this,OutputTypes.INT8,OutputTypes.ALL,"Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision)."));
 
         parameters.add(new ParamSeparatorP(CONVERSION_SEPARATOR,this));

@@ -147,12 +147,12 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to process."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true, "If selected, the flipped image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the flipped image."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output flipped image."));
 
         parameters.add(new ParamSeparatorP(FLIP_SEPARATOR,this));
-        parameters.add(new ChoiceP(AXIS_MODE, this,AxisModes.X,AxisModes.ALL));
+        parameters.add(new ChoiceP(AXIS_MODE, this,AxisModes.X,AxisModes.ALL,"Axis along which to flip the image."));
 
     }
 
