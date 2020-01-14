@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modules.html" class="nav1">Modules</a>
+    <a href="../modulelist.html" class="nav2">List of modules</a>
+    <a href="../macros.html" class="nav1">Macros</a>
+    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Track objects</h1>
+<h2>Description</h2>
+Track objects between frames.  Tracks are produced as separate "parent" objects to the "child" spots.  Track objects only serve to link different timepoint instances of objects together.  As such, track objects store no coordinate information.<br><br>Uses the TrackMate implementation of the Jaqaman linear assignment problem solving algorithm (Jaqaman, et al., Nature Methods, 2008).  The implementation utilises sparse matrices for calculating costs in order to minimise memory overhead.<br><br>Note: Leading point determination currently only works in 2D
+<h2>Parameters</h2>
+<ul><li>Input objects<ul><li>Type: InputObjectsP</li></ul><br><li>Output track objects<ul><li>Type: OutputTrackObjectP</li></ul><br><li>Maximum number of missing frames<ul><li>Type: IntegerP</li><li>Default value: 0</li></ul><br><li>Linking method<ul><li>Type: ChoiceP</li><li>Default value: Centroid</li><li>Choices: <ul><li>Absolute overlap</li><li>Centroid</li></ul></li></ul><br><li>Minimum overlap<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Maximum linking distance (px)<ul><li>Type: DoubleP</li><li>Default value: 20.0</li></ul><br><li>Use volume (minimise volume change)<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Volume weighting<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Maximum volume change (px^3)<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Direction weighting mode<ul><li>Type: ChoiceP</li><li>Default value: None</li><li>Choices: <ul><li>None</li><li>Absolute orientation 2D</li><li>Relative to previous step</li></ul></li></ul><br><li>Preferred direction (-180 to 180 degs)<ul><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><br><li>Direction tolerance<ul><li>Type: DoubleP</li><li>Default value: 180.0</li></ul><br><li>Direction weighting<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Use measurement (minimise change)<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Measurement<ul><li>Type: ObjectMeasurementP</li></ul><br><li>Measurement weighting<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Maximum measurement change<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Identify leading point<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Orientation mode<ul><li>Type: ChoiceP</li><li>Default value: Relative to both points</li><li>Choices: <ul><li>Relative to both points</li><li>Relative to previous point</li><li>Relative to next point</li></ul></li></ul><br></ul>
+
+</div>
+</body>

@@ -45,7 +45,7 @@ public class InvertIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Invert intensity of each pixel.  This uses the stock ImageJ intensity inversion function (\"Edit > Invert\")";
     }
 
     @Override
@@ -83,9 +83,9 @@ public class InvertIntensity extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "Image to be inverted."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true, "When selected, the input image will be replaced by the inverted image in the workspace.  If disabled, the inverted image will be stored as a new image in the workspace."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output inverted image."));
 
     }
 
