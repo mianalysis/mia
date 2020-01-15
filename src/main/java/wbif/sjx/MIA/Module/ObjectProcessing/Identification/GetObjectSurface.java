@@ -44,6 +44,13 @@ public class GetObjectSurface extends Module {
     }
 
     @Override
+    public String getDescription() {
+        return "Create surface objects for each input object.  Surface coordinates are those with at least one " +
+                "non-object neighbouring pixel (using 26-way connectivity).  Surfaces are stored as children of the " +
+                "input object.";
+    }
+
+    @Override
     protected boolean process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -71,8 +78,8 @@ public class GetObjectSurface extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this, "", "Input objects to extract surface from."));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this, "", "Output surface objects to be stored in the workspace."));
 
     }
 
@@ -109,10 +116,5 @@ public class GetObjectSurface extends Module {
     @Override
     public boolean verify() {
         return true;
-    }
-
-    @Override
-    public String getDescription() {
-        return "Create surface objects for each input object.  Surfaces are stored as children of the input object.";
     }
 }

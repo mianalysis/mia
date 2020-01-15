@@ -20,9 +20,10 @@ public class DocumentationCoverageChecker {
         // Get a list of Modules
         List<String> classNames = ClassHunter.getModules(false);
 
-        CumStat parameterCoverageCS = new CumStat();
         int completedDescriptions = 0;
         int completedParameterSets = 0;
+        int completedParameters = 0;
+        int totalParameters = 0;
 
         // Converting the list of classes to a list of Modules
         for (String className:classNames) {
@@ -38,12 +39,14 @@ public class DocumentationCoverageChecker {
                 if (module.getDescription() != null) {
                     if (module.getDescription().length() > 1) completedDescriptions++;
                 }
-                
-                double parameterCoverage = getModuleParameterCoverage(module);
-                parameterCoverageCS.addMeasure(parameterCoverage);
 
-                if (parameterCoverage > 0.999) completedParameterSets++;
+                int[] parameterCounts = getModuleParameterCoverage(module);
+                totalParameters = totalParameters + parameterCounts[0];
+                completedParameters = completedParameters + parameterCounts[1];
 
+                if (parameterCounts[0] == parameterCounts[1]) completedParameterSets++;
+
+                double parameterCoverage = (double) parameterCounts[1] / (double) parameterCounts[0];
                 System.out.println("Module \""+module.getName()+"\", parameters = "+(100*parameterCoverage)+"%");
 
             } catch (ClassNotFoundException |InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -52,18 +55,21 @@ public class DocumentationCoverageChecker {
         }
 
         double fractionModuleDescriptions = (double) completedDescriptions / (double) classNames.size();
-        double fractionParameterDescriptions = (double) completedParameterSets/ (double) classNames.size();
+        double fractionModuleParameters = (double) completedParameterSets / (double) classNames.size();
+        double fractionParameters = (double) completedParameters / (double) totalParameters;
 
         System.out.println(" ");
         System.out.println("Completed module descriptions = "+completedDescriptions+"/"+classNames.size()+" ("+(100*fractionModuleDescriptions)+"%)");
-        System.out.println("Completed parameter descriptions = "+completedParameterSets+"/"+classNames.size()+" ("+(100*fractionParameterDescriptions)+"%)");
-        System.out.println("Mean parameter coverage = "+(100*parameterCoverageCS.getMean())+"%");
+        System.out.println("Completed parameter descriptions = "+completedParameterSets+"/"+classNames.size()+" ("+(100*fractionModuleParameters)+"%)");
+        System.out.println("Mean parameter coverage = "+completedParameters+"/"+totalParameters+" ("+(100*fractionParameters)+"%)");
 
     }
 
-    public static double getModuleParameterCoverage(Module module) {
+    public static int[] getModuleParameterCoverage(Module module) {
         int nParams = module.getAllParameters().size();
         int nCoveredParams = 0;
+
+        int[] results = new int[2];
 
         for (Parameter parameter:module.getAllParameters().values()) {
             if (parameter.getDescription() == null) continue;
@@ -71,9 +77,10 @@ public class DocumentationCoverageChecker {
             if (parameter.getDescription().length() > 1) nCoveredParams++;
         }
 
-        if (nParams == 0) return 1;
+        results[0] = nParams;
+        results[1] = nCoveredParams;
 
-        return (double) nCoveredParams / (double) nParams;
+        return results;
 
     }
 }

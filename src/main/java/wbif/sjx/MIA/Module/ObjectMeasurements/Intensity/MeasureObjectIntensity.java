@@ -272,7 +272,7 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Measure intensity of each object in a specified image.  Measurements of intensity are taken at all pixel coordinates corresponding to each object.";
     }
 
     @Override

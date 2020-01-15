@@ -56,7 +56,10 @@ public class ProjectObjects extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Create projections of objects along the z-axis into an xy-plane representation.  The output projected " +
+                "objects capture the maximum xy profile of the object, thus acting like a silhouette.  These objects " +
+                "are stored separately in the workspace from the input objects, but are related in a parent-child " +
+                "relationship (input-output, respectively).";
     }
 
     @Override
@@ -88,8 +91,8 @@ public class ProjectObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to be projected into the xy-plane."));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Output projected objects to be stored in the workspace."));
 
     }
 
