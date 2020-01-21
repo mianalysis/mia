@@ -6,6 +6,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
 import ij.process.StackStatistics;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -188,7 +189,8 @@ public class ImageTypeConverter extends Module {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Change the bit-depth of an image stack.  This module provides multiple ways to handle the intensity transformation from one bit-depth to another.<br>" +
+                "<br>Note: Different scaling modes currently only apply when reducing the bit-depth of an image.  As such, converting from 8-bit to 16-bit will always result in direct conversion of intensities.";
     }
 
     @Override
@@ -235,14 +237,16 @@ public class ImageTypeConverter extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new ChoiceP(OUTPUT_TYPE,this,OutputTypes.INT8,OutputTypes.ALL));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,"","Input image to be converted to another bit-depth."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true,"If selected, the converted image will replace the input image in the workspace.  All measurements associated with the input image will be transferred to the converted image."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Name of the output converted image."));
+        parameters.add(new ChoiceP(OUTPUT_TYPE,this,OutputTypes.INT8,OutputTypes.ALL,"Target bit-depth to convert the image to.  Pixel intensities will lie within the following ranges for each bit-depth: 8-bit (0-255), 16-bit (0-65535), 32-bit (floating point precision)."));
 
         parameters.add(new ParamSeparatorP(CONVERSION_SEPARATOR,this));
-        parameters.add(new ChoiceP(SCALING_MODE,this,ScalingModes.CLIP,ScalingModes.ALL));
-
+        parameters.add(new ChoiceP(SCALING_MODE,this,ScalingModes.CLIP,ScalingModes.ALL,"Method for calculating the intensity transformation between the input and output bit-depths<br>" +
+                "<br> - \""+ScalingModes.CLIP+"\" will convert directly from the input to output bit-depth without performing any intensity scaling.  As such, any input intensities outside the available range of the output bit-depth will be clipped to the closest possible value.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 234-255.<br>" +
+                "<br> - \""+ScalingModes.FILL+"\" will stretch the input intensity range to fill the available output intensity range.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 0-255.  Images converted to 32-bit will be scaled to the range 0-1.<br>" +
+                "<br> - \""+ScalingModes.SCALE+"\" will proportionately scale intensities such that the input and output intensity ranges fill their respective bit-depths by equal amounts.  For example, an input 16-bit image with intensity range 234-34563 converted to 8-bit will have an output range of 1-135."));
     }
 
     @Override

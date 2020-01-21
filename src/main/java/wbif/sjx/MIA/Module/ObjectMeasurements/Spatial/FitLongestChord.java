@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Analysis.LongestChordCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 
@@ -19,7 +20,9 @@ import java.awt.*;
  * Created by sc13967 on 20/06/2018.
  */
 public class FitLongestChord extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String RENDERING_SEPARATOR = "Longest chord rendering";
     public static final String ADD_ENDPOINTS_AS_OVERLAY = "Add endpoints as overlay";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input";
@@ -153,8 +156,12 @@ public class FitLongestChord extends Module {
 
         if (addOverlay) {
             if (showOutput) {
-                Image inputImage = workspace.getImage(inputImageName);
-                inputImage.showImage();
+                ImagePlus dispIpl = inputImagePlus.duplicate();
+                dispIpl.setTitle(inputImageName);
+                IntensityMinMax.run(dispIpl, true);
+                dispIpl.setPosition(1, 1, 1);
+                dispIpl.updateChannelAndDraw();
+                dispIpl.show();
             }
 
             // If the user requested, the output image can be added to the workspace
@@ -171,7 +178,9 @@ public class FitLongestChord extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new BooleanP(ADD_ENDPOINTS_AS_OVERLAY, this,false));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
@@ -184,8 +193,10 @@ public class FitLongestChord extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
+        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_ENDPOINTS_AS_OVERLAY));
         if (parameters.getValue(ADD_ENDPOINTS_AS_OVERLAY)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));

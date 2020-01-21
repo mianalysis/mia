@@ -25,6 +25,7 @@ import java.util.HashMap;
  * Created by sc13967 on 04/05/2017.
  */
 public class ConvertObjectsToImage extends Module {
+    public static final String INPUT_SEPARATOR = "Image/object input/output";
     public static final String CONVERSION_MODE = "Conversion mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -32,6 +33,8 @@ public class ConvertObjectsToImage extends Module {
     public static final String TEMPLATE_IMAGE = "Template image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String RENDERING_SEPARATOR = "Rendering controls";
     public static final String OUTPUT_MODE = "Output mode";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
@@ -193,6 +196,7 @@ public class ConvertObjectsToImage extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new ChoiceP(CONVERSION_MODE, this,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
@@ -200,6 +204,7 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
         parameters.add(new ChoiceP(COLOUR_MODE, this,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
@@ -214,6 +219,8 @@ public class ConvertObjectsToImage extends Module {
         String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CONVERSION_MODE));
 
         if (parameters.getValue(CONVERSION_MODE).equals(ConversionModes.IMAGE_TO_OBJECTS)) {
@@ -225,6 +232,8 @@ public class ConvertObjectsToImage extends Module {
             returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
             returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+            returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
             returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
 
             returnedParameters.add(parameters.getParameter(COLOUR_MODE));

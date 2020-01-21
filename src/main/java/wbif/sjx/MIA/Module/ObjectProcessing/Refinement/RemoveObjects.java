@@ -31,7 +31,7 @@ public class RemoveObjects extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Removes the specified object set from the workspace.  Doing this helps keep memory usage down.  Measurements associated with an object set can be retained for further use.";
     }
 
     @Override
@@ -47,8 +47,8 @@ public class RemoveObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new RemovedObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
+        parameters.add(new RemovedObjectsP(INPUT_OBJECTS,this,"","Name of the object set to be removed from the workspace."));
+        parameters.add(new BooleanP(RETAIN_MEASUREMENTS,this,false,"Retain measurements for this object set, or remove everything.  When selected, the object coordinates will be removed, as this is typically where most memory us used, however any measurements associated with each object will be retained."));
 
     }
 

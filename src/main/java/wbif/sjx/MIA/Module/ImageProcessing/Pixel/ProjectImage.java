@@ -129,7 +129,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     public String getDescription() {
-        return "";
+        return "Project an image along the z-axis into the xy-plane.  Various statistics are available at each pixel " +
+                "location (e.g. maximum, mean, etc.).";
     }
 
     @Override
@@ -157,10 +158,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to be projected."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name for the projected image to be stored in the workspace with."));
         parameters.add(new ParamSeparatorP(PROJECTION_SEPARATOR,this));
-        parameters.add(new ChoiceP(PROJECTION_MODE,this,ProjectionModes.AVERAGE,ProjectionModes.ALL));
+        parameters.add(new ChoiceP(PROJECTION_MODE,this,ProjectionModes.AVERAGE,ProjectionModes.ALL,"Statistic for calculation of the intensity projection."));
 
     }
 

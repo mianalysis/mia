@@ -18,6 +18,8 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
+import java.util.Iterator;
+
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
@@ -31,6 +33,9 @@ public class ReassignEnclosedObjects extends Module {
         int total = objects.size();
 
         for (Obj object:objects.values()) {
+            // If this object has already been removed (i.e. ID = -1), skip it
+            if (object.getID() == -1) continue;
+
             // Creating a binary image of the input object
             Image binaryImage = object.convertObjToImage("Binary",templateImage);
             ImagePlus binaryIpl = binaryImage.getImagePlus();

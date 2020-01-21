@@ -298,7 +298,8 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     public String getDescription() {
-        return "";
+        return "Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br>" +
+                "<br>Note: Image stack dimensions and bit-depths must be compatible.";
     }
 
     @Override
@@ -338,13 +339,13 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new CustomInputImageP(INPUT_IMAGE,this));
-        parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
-        parameters.add(new BooleanP(ALLOW_MISSING_IMAGES,this,false));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        collection.add(new CustomInputImageP(INPUT_IMAGE,this,"","Image for concatenation."));
+        parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2,"Add another image for concatenation."));
+        parameters.add(new BooleanP(ALLOW_MISSING_IMAGES,this,false,"If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","The resultant image of concatenation to be added to the workspace."));
 
         parameters.add(new ParamSeparatorP(CONCAT_SEPARATOR,this));
-        parameters.add(new ChoiceP(AXIS_MODE,this,AxisModes.X,AxisModes.ALL));
+        parameters.add(new ChoiceP(AXIS_MODE,this,AxisModes.X,AxisModes.ALL,"Axis along which to concatenate input images."));
 
     }
 

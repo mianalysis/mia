@@ -87,6 +87,12 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
+    public String getDescription() {
+        return "Applies the mask image to the specified object collection.  Only object pixels coincident with black " +
+                "pixels (intensity 0) will be removed.";
+    }
+
+    @Override
     protected boolean process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -144,10 +150,12 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(MASK_IMAGE,this));
-        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE,this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this,"","Objects to be masked."));
+        parameters.add(new InputImageP(MASK_IMAGE,this,"","Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed."));
+        parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE,this, OutputModes.CREATE_NEW_OBJECT, OutputModes.ALL,"Controls how the masked objects will be stored.<br>" +
+                "<br> - \""+OutputModes.CREATE_NEW_OBJECT+"\" (default) will add the masked objects to a new object set and store this set in the workspace.<br>" +
+                "<br> - \""+OutputModes.UPDATE_INPUT+"\" will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects."));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this,"","Name for the output masked objects to be stored in workspace."));
 
     }
 
@@ -204,11 +212,5 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
     @Override
     public boolean verify() {
         return true;
-    }
-
-    @Override
-    public String getDescription() {
-        return "Applies the mask image to the specified object collection.  Only object pixels coincident with black " +
-                "pixels (intensity 0) will be removed.";
     }
 }
