@@ -25,7 +25,7 @@ layout: default
 <h2>Description</h2>
 Applies the mask image to the specified object collection.  Only object pixels coincident with black pixels (intensity 0) will be removed.
 <h2>Parameters</h2>
-<ul><li>Input objects<ul><li>Type: InputObjectsP</li></ul><br><li>Mask image<ul><li>Type: InputImageP</li></ul><br><li>Output object mode<ul><li>Type: ChoiceP</li><li>Default value: Create new objects</li><li>Choices: <ul><li>Create new objects</li><li>Update input objects</li></ul></li></ul><br><li>Output objects<ul><li>Type: OutputObjectsP</li></ul><br></ul>
+<ul><li>Input objects<ul><li>Description: Objects to be masked.</li><li>Type: InputObjectsP</li></ul><br><li>Mask image<ul><li>Description: Image to use as mask on input objects.  Object coordinates coincident with black pixels (pixel intensity = 0) are removed.</li><li>Type: InputImageP</li></ul><br><li>Output object mode<ul><li>Description: Controls how the masked objects will be stored.<br><br> - "Create new objects" (default) will add the masked objects to a new object set and store this set in the workspace.<br><br> - "Update input objects" will replace the coordinates of the input object with the masked coordinates.  All measurements associated with input objects will be transferred to the masked objects.</li><li>Type: ChoiceP</li><li>Default value: Create new objects</li><li>Choices: <ul><li>Create new objects</li><li>Update input objects</li></ul></li></ul><br><li>Output objects<ul><li>Description: Name for the output masked objects to be stored in workspace.</li><li>Type: OutputObjectsP</li></ul><br></ul>
 
 </div>
 </body>

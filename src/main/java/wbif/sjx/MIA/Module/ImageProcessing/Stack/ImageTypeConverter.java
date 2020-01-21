@@ -76,8 +76,6 @@ public class ImageTypeConverter extends Module {
         // If the image is already the output bit depth, skip this
         if (bitDepth == outputBitDepth) return;
 
-        MIA.log.writeDebug("Scaled range before"+inputImagePlus.getDisplayRangeMin()+"_"+inputImagePlus.getDisplayRangeMax());
-
         switch (scalingMode) {
             case ScalingModes.CLIP:
                 applyClippedRange(inputImagePlus,outputBitDepth);
@@ -91,8 +89,6 @@ public class ImageTypeConverter extends Module {
                 break;
         }
 
-        MIA.log.writeDebug("Scaled range after"+inputImagePlus.getDisplayRangeMin()+"_"+inputImagePlus.getDisplayRangeMax());
-
         // Converting to requested type
         switch (outputBitDepth) {
             case 8:
@@ -100,7 +96,6 @@ public class ImageTypeConverter extends Module {
                 break;
             case 16:
                 IJ.run(inputImagePlus,"16-bit",null);
-                MIA.log.writeDebug("Scaled range after 16 "+inputImagePlus.getDisplayRangeMin()+"_"+inputImagePlus.getDisplayRangeMax());
                 break;
             case 32:
                 IJ.run(inputImagePlus,"32-bit",null);

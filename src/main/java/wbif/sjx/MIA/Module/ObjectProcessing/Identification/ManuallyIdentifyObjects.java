@@ -20,7 +20,6 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -85,12 +84,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public interface SelectorTypes {
         String FREEHAND_LINE = "Freehand line";
+        String FREEHAND_REGION = "Freehand region";
         String LINE = "Line";
         String OVAL = "Oval";
+        String POLYGON = "Polygon";
         String RECTANGLE = "Rectangle";
         String SEGMENTED_LINE = "Segmented line";
 
-        String[] ALL = new String[]{FREEHAND_LINE,LINE,OVAL,RECTANGLE,SEGMENTED_LINE};
+        String[] ALL = new String[]{FREEHAND_LINE,FREEHAND_REGION,LINE,OVAL,POLYGON,RECTANGLE,SEGMENTED_LINE};
 
     }
 
@@ -121,9 +122,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     void setSelector(String selectorType) {
         switch (selectorType) {
-            default:
             case SelectorTypes.FREEHAND_LINE:
                 IJ.setTool(Toolbar.FREELINE);
+                return;
+            default:
+            case SelectorTypes.FREEHAND_REGION:
+                IJ.setTool(Toolbar.FREEROI);
                 return;
             case SelectorTypes.LINE:
                 IJ.setTool(Toolbar.LINE);
@@ -135,6 +139,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 IJ.setTool(Toolbar.RECTANGLE);
                 return;
             case SelectorTypes.SEGMENTED_LINE:
+                IJ.setTool(Toolbar.POLYLINE);
+                return;
+            case SelectorTypes.POLYGON:
                 IJ.setTool(Toolbar.POLYGON);
                 return;
         }
@@ -416,7 +423,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
         parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR,this));
-        parameters.add(new ChoiceP(SELECTOR_TYPE,this,SelectorTypes.FREEHAND_LINE,SelectorTypes.ALL,"Default region drawing tool to enable.  This tool can be changed by the user when selecting regions."));
+        parameters.add(new ChoiceP(SELECTOR_TYPE,this,SelectorTypes.FREEHAND_REGION,SelectorTypes.ALL,"Default region drawing tool to enable.  This tool can be changed by the user when selecting regions."));
         parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL,"Interpolation method used for reducing the number of selections that must be made"));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image", "Message to display in title of image."));

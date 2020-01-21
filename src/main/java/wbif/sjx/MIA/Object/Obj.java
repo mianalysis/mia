@@ -279,11 +279,13 @@ public class Obj extends Volume {
         Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
         setSlicePoints(sliceObj.coordinateSet,slice);
 
-        ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
+        // Checking if the object exists in this slice
+        if (sliceObj.size() == 0) return null;
+
+        ObjCollection objectCollection = new ObjCollection("SliceObjects");
         objectCollection.add(sliceObj);
 
-        double[][] extents = getExtents(true,false);
-        ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
+        ImagePlus sliceIpl = IJ.createImage("SliceIm",width,height,1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
         Image objectImage = objectCollection.convertToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
