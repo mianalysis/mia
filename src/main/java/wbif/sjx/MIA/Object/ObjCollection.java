@@ -358,4 +358,41 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return containsPoint(point);
 
     }
+
+    public Obj getLargestObject(int t) {
+        Obj referenceObject = null;
+        int objSize = Integer.MIN_VALUE;
+
+        // Iterating over each object, checking it's size against the current reference values
+        for (Obj currReferenceObject:values()) {
+            // Only check objects in the current frame (if required - if frame doesn't matter, t = -1)
+            if (t != -1 && currReferenceObject.getT() != t) continue;
+            if (currReferenceObject.size() > objSize) {
+                objSize = currReferenceObject.size();
+                referenceObject = currReferenceObject;
+            }
+        }
+
+        return referenceObject;
+
+    }
+
+    public Obj getSmallestObject(int t) {
+        Obj referenceObject = null;
+        int objSize = Integer.MAX_VALUE;
+
+        // Iterating over each object, checking it's size against the current reference values
+        for (Obj currReferenceObject:values()) {
+            // Only check objects in the current frame (if required - if frame doesn't matter, t = -1)
+            if (t != -1 && currReferenceObject.getT() != t) continue;
+
+            if (currReferenceObject.size() < objSize) {
+                objSize = currReferenceObject.size();
+                referenceObject = currReferenceObject;
+            }
+        }
+
+        return referenceObject;
+
+    }
 }
