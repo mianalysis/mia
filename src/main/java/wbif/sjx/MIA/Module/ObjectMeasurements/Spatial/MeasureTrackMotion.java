@@ -157,10 +157,9 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, firstPoint.getF()));
 
             int nSpots = track.values().size();
-            double detectionFraction = (double) nSpots/(double) duration;
-            name = getFullName(Measurements.DETECTION_FRACTION,averageSubtracted);
+            double detectionFraction = (double) nSpots / ((double) duration+1);
+            name = getFullName(Measurements.DETECTION_FRACTION, averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, detectionFraction));
-
         }
     }
 
