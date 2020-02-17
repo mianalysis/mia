@@ -924,7 +924,6 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
         thresholdImage.execute(workspace);
@@ -961,7 +960,6 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
         thresholdImage.execute(workspace);
@@ -996,7 +994,6 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
         thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,145.0);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
         thresholdImage.execute(workspace);
@@ -1029,7 +1026,6 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
         thresholdImage.execute(workspace);
@@ -1060,48 +1056,12 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
         thresholdImage.execute(workspace);
 
         // Verifying results
         assertEquals(0,image.getMeasurements().size());
-
-    }
-
-    @Test
-    public void testRunDoNotStoreThresholdGlobal() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage(new ModuleCollection());
-        thresholdImage.initialiseParameters();
-        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
-        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
-        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
-        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,false);
-
-        // Running MeasureImageIntensity
-        thresholdImage.execute(workspace);
-
-        // Getting output image
-        Image outputImage = workspace.getImage("Test_output");
-
-        // Verifying results
-        assertEquals(0,outputImage.getMeasurements().size());
 
     }
 }
