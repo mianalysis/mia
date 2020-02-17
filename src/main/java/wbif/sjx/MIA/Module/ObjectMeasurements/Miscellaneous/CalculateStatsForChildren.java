@@ -166,7 +166,7 @@ public class CalculateStatsForChildren extends Module {
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);
 
-        if (parameters.getValue(CALCULATE_MEAN)) {
+        if ((boolean) parameters.getValue(CALCULATE_MEAN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
@@ -175,7 +175,7 @@ public class CalculateStatsForChildren extends Module {
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(CALCULATE_STD)) {
+        if ((boolean) parameters.getValue(CALCULATE_STD)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.STD);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
@@ -184,7 +184,7 @@ public class CalculateStatsForChildren extends Module {
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(CALCULATE_MIN)) {
+        if ((boolean) parameters.getValue(CALCULATE_MIN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MIN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
@@ -193,7 +193,7 @@ public class CalculateStatsForChildren extends Module {
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(CALCULATE_MAX)) {
+        if ((boolean) parameters.getValue(CALCULATE_MAX)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MAX);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);
@@ -202,7 +202,7 @@ public class CalculateStatsForChildren extends Module {
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(CALCULATE_SUM)) {
+        if ((boolean) parameters.getValue(CALCULATE_SUM)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.SUM);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(parentObjectsName);

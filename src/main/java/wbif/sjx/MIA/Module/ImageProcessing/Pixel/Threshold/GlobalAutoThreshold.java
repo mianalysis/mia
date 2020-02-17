@@ -165,7 +165,9 @@ public class GlobalAutoThreshold extends Module {
         Prefs.blackBackground = !whiteBackground;
 
         // Image must be 8-bit
-        ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
+        if (inputImagePlus.getBitDepth() != 8) {
+            ImageTypeConverter.applyConversion(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
+        }
 
         // Calculating the threshold based on the selected algorithm
         writeMessage("Applying "+algorithm+" threshold (multiplier = "+thrMult+" x)");
@@ -241,7 +243,7 @@ public class GlobalAutoThreshold extends Module {
         returnedParameters.add(parameters.getParameter(ALGORITHM));
 
         returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-        if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+        if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
             returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
         }
 
@@ -255,7 +257,20 @@ public class GlobalAutoThreshold extends Module {
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
-        String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
+        String imageName = "";
+        switch ((String) parameters.getValue(OUTPUT_MODE)){
+            case OutputModes.CALCULATE_AND_APPLY:
+                if ((boolean) parameters.getValue(APPLY_TO_INPUT)) {
+                    imageName = parameters.getValue(INPUT_IMAGE);
+                } else {
+                    imageName = parameters.getValue(OUTPUT_IMAGE);
+                }
+                break;
+            case OutputModes.CALCULATE_ONLY:
+                imageName = parameters.getValue(INPUT_IMAGE);
+                break;
+        }
+
         String method = parameters.getValue(ALGORITHM);
         String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 

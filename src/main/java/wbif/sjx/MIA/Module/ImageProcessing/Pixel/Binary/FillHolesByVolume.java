@@ -185,11 +185,11 @@ public class FillHolesByVolume extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(USE_MINIMUM_VOLUME));
-        if (parameters.getValue(USE_MINIMUM_VOLUME)) {
+        if ((boolean) parameters.getValue(USE_MINIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MINIMUM_VOLUME));
         }
         returnedParameters.add(parameters.getParameter(USE_MAXIMUM_VOLUME));
-        if (parameters.getValue(USE_MAXIMUM_VOLUME)) {
+        if ((boolean) parameters.getValue(USE_MAXIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_VOLUME));
         }
 

@@ -795,7 +795,7 @@ public class AddObjectsOverlay extends Module {
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
@@ -861,7 +861,7 @@ public class AddObjectsOverlay extends Module {
                 ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(USE_RADIUS));
-                if (parameters.getValue(USE_RADIUS)) {
+                if ((boolean) parameters.getValue(USE_RADIUS)) {
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
                     ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
                 }
@@ -871,7 +871,7 @@ public class AddObjectsOverlay extends Module {
                 returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
-                if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
+                if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
                 ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
                 break;
         }

@@ -414,7 +414,7 @@ public class ImageSaver extends Module {
 
             case FileFormats.AVI:
                 returnedParameters.add(parameters.getParameter(COMPRESSION_MODE));
-                if (parameters.getValue(COMPRESSION_MODE).equals(CompressionModes.JPEG)) {
+                if ((boolean) parameters.getValue(COMPRESSION_MODE).equals(CompressionModes.JPEG)) {
                     returnedParameters.add(parameters.getParameter(QUALITY));
                 }
                 returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));

@@ -671,7 +671,7 @@ public class TrackObjects extends Module {
 
         returnedParamters.add(parameters.getParameter(ORIENTATION_SEPARATOR));
         returnedParamters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
-        if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT)) {
             returnedParamters.add(parameters.getParameter(ORIENTATION_MODE));
         }
 
@@ -702,7 +702,7 @@ public class TrackObjects extends Module {
         returnedRefs.add(trackPrevID);
         returnedRefs.add(trackNextID);
 
-        if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
+        if ((boolean) parameters.getValue(IDENTIFY_LEADING_POINT)) {
             returnedRefs.add(angleMeasurement);
             returnedRefs.add(leadingXPx);
             returnedRefs.add(leadingYPx);

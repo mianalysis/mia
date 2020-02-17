@@ -441,13 +441,13 @@ public class FitGaussian2D extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_SIGMA_RANGE));
-        if (parameters.getValue(LIMIT_SIGMA_RANGE)) {
+        if ((boolean) parameters.getValue(LIMIT_SIGMA_RANGE)) {
             returnedParameters.add(parameters.getParameter(MIN_SIGMA));
             returnedParameters.add(parameters.getParameter(MAX_SIGMA));
         }
 
         returnedParameters.add(parameters.getParameter(FIXED_FITTING_WINDOW));
-        if (parameters.getValue(FIXED_FITTING_WINDOW)) {
+        if ((boolean) parameters.getValue(FIXED_FITTING_WINDOW)) {
             returnedParameters.add(parameters.getParameter(WINDOW_SIZE));
         }
 
@@ -456,7 +456,7 @@ public class FitGaussian2D extends Module {
         returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 
         returnedParameters.add(parameters.getParameter(CREATE_GAUSSIAN_IMAGE));
-        if (parameters.getValue(CREATE_GAUSSIAN_IMAGE)) {
+        if ((boolean) parameters.getValue(CREATE_GAUSSIAN_IMAGE)) {
             returnedParameters.add(parameters.getParameter(GAUSSIAN_IMAGE));
         }
 

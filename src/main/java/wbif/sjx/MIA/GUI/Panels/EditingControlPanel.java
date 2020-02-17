@@ -4,6 +4,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleListMenu;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 
 import javax.swing.*;
@@ -111,17 +112,21 @@ public class EditingControlPanel extends JPanel {
 
             String[] names = name.split("\\\\");
             for (int i = 0; i < names.length-1; i++) {
+                String curr_name = names[i];
+                if (name.substring(0,1).equals(".")) curr_name = curr_name.substring(1);
+
                 boolean found = false;
-                for (ModuleListMenu listItemm : activeList) {
-                    if (listItemm.getName().equals(names[i])) {
-                        activeItem = listItemm;
+                for (ModuleListMenu listItem : activeList) {
+                    if (listItem.getName().equals(curr_name)) {
+                        activeItem = listItem;
                         found = true;
                     }
                 }
 
                 if (!found) {
-                    ModuleListMenu newItem = new ModuleListMenu(names[i], new ArrayList<>(),moduleListMenu);
-                    newItem.setName(names[i]);
+                    // It's a new package
+                    ModuleListMenu newItem = new ModuleListMenu(curr_name, new ArrayList<>(),moduleListMenu);
+                    newItem.setName(curr_name);
                     activeList.add(newItem);
                     if (activeItem != null) activeItem.add(newItem);
                     activeItem = newItem;
@@ -135,7 +140,9 @@ public class EditingControlPanel extends JPanel {
 
         }
 
-        for (ModuleListMenu listMenu : topList) moduleListMenu.add(listMenu);
+        for (ModuleListMenu listMenu : topList) {
+            moduleListMenu.add(listMenu);
+        }
 
         addModuleButton.setToolTipText("Add module");
         addModuleButton.setEnabled(true);

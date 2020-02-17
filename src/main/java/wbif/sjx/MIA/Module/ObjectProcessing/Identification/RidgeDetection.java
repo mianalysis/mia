@@ -390,10 +390,10 @@ public class RidgeDetection extends Module {
         returnedParameters.add(parameters.getParameter(MIN_LENGTH));
         returnedParameters.add(parameters.getParameter(MAX_LENGTH));
         returnedParameters.add(parameters.getParameter(LINK_CONTOURS));
-        if (parameters.getValue(LINK_CONTOURS)) {
+        if ((boolean) parameters.getValue(LINK_CONTOURS)) {
             returnedParameters.add(parameters.getParameter(LIMIT_END_MISALIGNMENT));
 
-            if (parameters.getValue(LIMIT_END_MISALIGNMENT)) {
+            if ((boolean) parameters.getValue(LIMIT_END_MISALIGNMENT)) {
                 returnedParameters.add(parameters.getParameter(ALIGNMENT_RANGE));
                 returnedParameters.add(parameters.getParameter(MAXIMUM_END_MISALIGNMENT));
             }
@@ -426,7 +426,7 @@ public class RidgeDetection extends Module {
                 "("+Units.getOMEUnits().getSymbol()+") units.");
         returnedRefs.add(reference);
 
-        if (parameters.getValue(ESTIMATE_WIDTH)) {
+        if ((boolean) parameters.getValue(ESTIMATE_WIDTH)) {
             reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
             reference.setObjectsName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +

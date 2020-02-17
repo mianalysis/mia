@@ -416,7 +416,7 @@ public class RunTrackMate extends Module {
 
         returnedParameters.add(parameters.getParameter(TRACK_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DO_TRACKING));
-        if (parameters.getValue(DO_TRACKING)) {
+        if ((boolean) parameters.getValue(DO_TRACKING)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
             returnedParameters.add(parameters.getParameter(TRACKING_METHOD));
             switch ((String) parameters.getValue(TRACKING_METHOD)) {
@@ -481,7 +481,7 @@ public class RunTrackMate extends Module {
     public RelationshipRefCollection updateAndGetRelationships() {
         RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
 
-        if (parameters.getValue(DO_TRACKING)) {
+        if ((boolean) parameters.getValue(DO_TRACKING)) {
             returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS)));
 
         }

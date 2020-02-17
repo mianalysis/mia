@@ -237,7 +237,7 @@ public class Watershed extends Module {
 
         returnedParameters.add(parameters.getParameter(WATERSHED_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_MARKERS));
-        if (parameters.getValue(USE_MARKERS)) {
+        if ((boolean) parameters.getValue(USE_MARKERS)) {
             returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
         } else {
             returnedParameters.add(parameters.getParameter(DYNAMIC));

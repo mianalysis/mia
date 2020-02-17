@@ -198,7 +198,7 @@ public class MeasureSkeleton extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_SKELETONS_TO_WORKSPACE));
 
-        if (parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
+        if ((boolean) parameters.getValue(ADD_SKELETONS_TO_WORKSPACE)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         }
 

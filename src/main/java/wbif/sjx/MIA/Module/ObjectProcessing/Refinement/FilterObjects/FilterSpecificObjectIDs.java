@@ -220,7 +220,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
         returnedParameters.add(parameters.getParameter(MEASUREMENT));
         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_IMAGE)) {
             returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE_NAME));
         }
 
@@ -263,7 +263,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
         // Filter results are stored as a metadata item since they apply to the whole set
-        if (parameters.getValue(STORE_RESULTS)) {
+        if ((boolean) parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filterMethod = parameters.getValue(FILTER_METHOD);
             String measName = parameters.getValue(MEASUREMENT);

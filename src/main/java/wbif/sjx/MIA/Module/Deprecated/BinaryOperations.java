@@ -451,7 +451,7 @@ public class BinaryOperations extends Module {
 
             case OperationModes.WATERSHED_3D:
                 returnedParameters.add(parameters.getParameter(USE_MARKERS));
-                if (parameters.getValue(USE_MARKERS)) {
+                if ((boolean) parameters.getValue(USE_MARKERS)) {
                     returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
                 } else {
                     returnedParameters.add(parameters.getParameter(DYNAMIC));

@@ -252,7 +252,7 @@ public class AddObjectCentroid extends Overlay {
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
-            if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }

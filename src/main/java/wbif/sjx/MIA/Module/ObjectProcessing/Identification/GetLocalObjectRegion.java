@@ -206,7 +206,7 @@ public class GetLocalObjectRegion extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(USE_MEASUREMENT));
 
-        if (parameters.getValue(USE_MEASUREMENT)) {
+        if ((boolean) parameters.getValue(USE_MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_NAME)).setObjectName(inputObjectsName);
         } else {

@@ -20,6 +20,7 @@ public class ModuleListMenu extends JMenu implements Comparable {
         this.topLevelMenu = topLevelMenu;
 
         setText(name);
+
         for (Module module : modules) {
             add(new PopupMenuItem(module,topLevelMenu));
         }

@@ -1,12 +1,13 @@
 // TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
 
-package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -212,7 +213,7 @@ public class ThresholdImage extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
@@ -399,7 +400,7 @@ public class ThresholdImage extends Module {
         // If using an automatic threshold algorithm, we can set a lower threshold limit
         if (!parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.MANUAL)) {
             returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-            if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+            if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
                 returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
             }
         }

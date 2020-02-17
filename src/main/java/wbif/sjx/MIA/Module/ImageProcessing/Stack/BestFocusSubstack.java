@@ -551,7 +551,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             case BestFocusCalculations.MAX_MEAN:
             case BestFocusCalculations.MAX_STDEV:
                 returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
-                if (parameters.getValue(SMOOTH_TIMESERIES)) {
+                if ((boolean) parameters.getValue(SMOOTH_TIMESERIES)) {
                     returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
                 }
 

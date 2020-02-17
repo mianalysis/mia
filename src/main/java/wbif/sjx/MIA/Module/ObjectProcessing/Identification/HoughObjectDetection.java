@@ -270,7 +270,7 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_TRANSFORM_IMAGE));
-        if (parameters.getValue(OUTPUT_TRANSFORM_IMAGE)) {
+        if ((boolean) parameters.getValue(OUTPUT_TRANSFORM_IMAGE)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
@@ -288,9 +288,9 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(VISUALISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
         returnedParameters.add(parameters.getParameter(SHOW_DETECTION_IMAGE));
-        if (parameters.getValue(SHOW_DETECTION_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_DETECTION_IMAGE)) {
             returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
-            if (parameters.getValue(SHOW_HOUGH_SCORE)) {
+            if ((boolean) parameters.getValue(SHOW_HOUGH_SCORE)) {
                 returnedParameters.add(parameters.getParameter(LABEL_SIZE));
             }
         }

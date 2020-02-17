@@ -196,7 +196,7 @@ public class CalculateNearestNeighbour extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
-        if (parameters.getValue(CALCULATE_WITHIN_PARENT)) {
+        if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT)) {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -204,7 +204,7 @@ public class CalculateNearestNeighbour extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_LINKING_DISTANCE));
-        if (parameters.getValue(LIMIT_LINKING_DISTANCE)) {
+        if ((boolean) parameters.getValue(LIMIT_LINKING_DISTANCE)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
             returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCE));
         }
