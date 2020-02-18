@@ -19,9 +19,11 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
  * Created by sc13967 on 06/06/2017.
  */
 public class BinaryOperations2D extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String OPERATION_SEPARATOR = "Operation controls";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
     public static final String COUNT = "Count";
@@ -144,9 +146,11 @@ public class BinaryOperations2D extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ParamSeparatorP(OPERATION_SEPARATOR,this));
         parameters.add(new ChoiceP(OPERATION_MODE,this,OperationModes.DILATE,OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS,this,1));
         parameters.add(new IntegerP(COUNT,this,1));
@@ -156,6 +160,8 @@ public class BinaryOperations2D extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -163,6 +169,7 @@ public class BinaryOperations2D extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(OPERATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
         switch ((String) parameters.getValue(OPERATION_MODE)) {
             case OperationModes.DILATE:

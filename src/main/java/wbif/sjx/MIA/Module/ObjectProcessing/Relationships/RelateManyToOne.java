@@ -572,7 +572,7 @@ public class RelateManyToOne extends Module {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if (parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 
@@ -586,7 +586,7 @@ public class RelateManyToOne extends Module {
             case RelateModes.PROXIMITY_TO_CHILDREN:
                 returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if (parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 

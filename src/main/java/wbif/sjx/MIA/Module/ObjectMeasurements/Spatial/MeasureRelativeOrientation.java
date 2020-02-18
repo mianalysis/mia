@@ -122,41 +122,14 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     static Obj getReferenceObject(ObjCollection objects, int t, String choiceMode) {
-        Obj referenceObject = null;
-
-        int objSize = 0;
         switch (choiceMode) {
+            default:
+                return null;
             case ObjectChoiceModes.LARGEST_OBJECT:
-                objSize = Integer.MIN_VALUE;
-                break;
+                return objects.getLargestObject(t);
             case ObjectChoiceModes.SMALLEST_OBJECT:
-                objSize = Integer.MAX_VALUE;
-                break;
+                return objects.getSmallestObject(t);
         }
-
-        // Iterating over each object, checking it's size against the current reference values
-        for (Obj currReferenceObject:objects.values()) {
-            // Only check objects in the current frame (if required - if frame doesn't matter, t = -1)
-            if (t != -1 && currReferenceObject.getT() != t) continue;
-
-            switch (choiceMode) {
-                case ObjectChoiceModes.LARGEST_OBJECT:
-                    if (currReferenceObject.size() > objSize) {
-                        objSize = currReferenceObject.size();
-                        referenceObject = currReferenceObject;
-                    }
-                    break;
-                case ObjectChoiceModes.SMALLEST_OBJECT:
-                    if (currReferenceObject.size() < objSize) {
-                        objSize = currReferenceObject.size();
-                        referenceObject = currReferenceObject;
-                    }
-                    break;
-            }
-        }
-
-        return referenceObject;
-
     }
 
     static HashMap<Integer,Point<Double>> getObjectCentroidRefs(ObjCollection objects, String choiceMode, String orientationMode, int nFrames, boolean mustBeSameFrame){
@@ -485,7 +458,7 @@ public class MeasureRelativeOrientation extends Module {
                 objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
                 choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 referenceDescription = "the closest point of the "+choice+" object in the set "+referenceObjectsName +
-                    " to the centroid of the target object";
+                        " to the centroid of the target object";
                 break;
         }
 

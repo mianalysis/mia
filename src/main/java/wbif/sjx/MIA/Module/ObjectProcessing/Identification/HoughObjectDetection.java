@@ -35,6 +35,8 @@ public class HoughObjectDetection extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String OUTPUT_TRANSFORM_IMAGE = "Output transform image";
+    public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String DETECTION_SEPARATOR = "Hough-based circle detection";
     public static final String MIN_RADIUS = "Minimum radius (px)";
@@ -48,8 +50,8 @@ public class HoughObjectDetection extends Module {
     public static final String RADIUS_RESIZE = "Output radius resize (px)";
 
     public static final String VISUALISATION_SEPARATOR = "Visualisation controls";
-    public static final String SHOW_DETECTION_IMAGE = "Show detection image";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
+    public static final String SHOW_DETECTION_IMAGE = "Show detection image";
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
@@ -83,6 +85,10 @@ public class HoughObjectDetection extends Module {
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        // Getting output image name
+        boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Getting parameters
         int minR = parameters.getValue(MIN_RADIUS);
@@ -138,11 +144,18 @@ public class HoughObjectDetection extends Module {
                     circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
-                    if (showOutput && showTransformImage) {
+                    if (outputTransformImage || (showOutput && showTransformImage)) {
                         ImagePlus showIpl = new Duplicator().run(circleHoughTransform.getAccumulatorAsImage());
-                        IntensityMinMax.run(showIpl,true);
-                        showIpl.setTitle("Accumulator");
-                        showIpl.show();
+
+                        if (outputTransformImage) {
+                            Image outputImage = new Image(outputImageName,showIpl);
+                            workspace.addImage(outputImage);
+                        }
+                        if (showOutput && showTransformImage) {
+                            IntensityMinMax.run(showIpl,true);
+                            showIpl.setTitle("Accumulator");
+                            showIpl.show();
+                        }
                     }
 
                     // Getting circle objects and adding to workspace
@@ -227,6 +240,8 @@ public class HoughObjectDetection extends Module {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new BooleanP(OUTPUT_TRANSFORM_IMAGE,this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
         parameters.add(new ParamSeparatorP(DETECTION_SEPARATOR,this));
         parameters.add(new IntegerP(MIN_RADIUS,this,10));
@@ -254,6 +269,10 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(OUTPUT_TRANSFORM_IMAGE));
+        if ((boolean) parameters.getValue(OUTPUT_TRANSFORM_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        }
 
         returnedParameters.add(parameters.getParameter(DETECTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MIN_RADIUS));
@@ -269,9 +288,9 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(VISUALISATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
         returnedParameters.add(parameters.getParameter(SHOW_DETECTION_IMAGE));
-        if (parameters.getValue(SHOW_DETECTION_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_DETECTION_IMAGE)) {
             returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
-            if (parameters.getValue(SHOW_HOUGH_SCORE)) {
+            if ((boolean) parameters.getValue(SHOW_HOUGH_SCORE)) {
                 returnedParameters.add(parameters.getParameter(LABEL_SIZE));
             }
         }

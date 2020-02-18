@@ -195,7 +195,7 @@ public class PlotMeasurementsScatter extends Module {
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT2)).setObjectName(objectName);
 
         returnedParameters.add(parameters.getParameter(INCLUDE_COLOUR));
-        if (parameters.getValue(INCLUDE_COLOUR)) {
+        if ((boolean) parameters.getValue(INCLUDE_COLOUR)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT3));
             returnedParameters.add(parameters.getParameter(COLOURMAP));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT3)).setObjectName(objectName);

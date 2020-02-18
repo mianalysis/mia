@@ -217,7 +217,7 @@ public class FilterOnImageEdge extends CoreFilter {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
         // Filter results are stored as a metadata item since they apply to the whole set
-        if (parameters.getValue(STORE_RESULTS)) {
+        if ((boolean) parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
             boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);

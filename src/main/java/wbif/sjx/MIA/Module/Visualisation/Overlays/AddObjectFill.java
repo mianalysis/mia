@@ -5,6 +5,7 @@ import ij.Prefs;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
@@ -89,9 +90,23 @@ public class AddObjectFill extends Overlay {
 
         // Running through each slice of this object
         double[][] range = object.getExtents(true,false);
+
+        // If this is a 2D object, add it to all slices
+        int minZ = (int) Math.floor(range[2][0]);
+        int maxZ = (int) Math.floor(range[2][1]);
+        if (object.is2D()) {
+            minZ = 0;
+            maxZ = ipl.getNSlices()-1;
+        }
+
         for (int t = t1; t <= t2; t++) {
-            for (int z = (int) range[2][0]; z <= (int) range[2][1]; z++) {
-                Roi polyRoi = object.getRoi(z);
+            for (int z = minZ; z <= maxZ; z++) {
+                Roi polyRoi = null;
+                if (object.is2D()) {
+                    polyRoi = object.getRoi(0);
+                } else {
+                    polyRoi = object.getRoi(z);
+                }
 
                 //  If the object doesn't have any pixels in this plane, skip it
                 if (polyRoi == null) continue;
@@ -196,7 +211,7 @@ public class AddObjectFill extends Overlay {
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-            if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }

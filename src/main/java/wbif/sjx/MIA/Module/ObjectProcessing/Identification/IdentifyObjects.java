@@ -120,11 +120,12 @@ public class IdentifyObjects extends Module {
 
     @Override
     public String getDescription() {
-        return  "Takes a binary image and uses connected components labelling to create objects" +
-                "\nUses MorphoLibJ to perform connected components labelling in 3D. " +
-                "\n\nLarger label bit depths will require more memory, but will enable more objects " +
-                "\nto be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.";
+        return "Creates objects from an input binary image.  Each object is identified in 3D as a contiguous region of " +
+                "foreground labelled pixels.  All coordinates corresponding to that object are stored for use later.<br>" +
+                "<br>Note: Input binary images must be 8-bit and only contain values 0 and 255.<br>" +
+                "<br>Note: Uses MorphoLibJ to perform connected components labelling in 3D.";
     }
+
 
     @Override
     public boolean process(Workspace workspace) {
@@ -158,15 +159,19 @@ public class IdentifyObjects extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,"","Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255."));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this,"","Name of output objects to be stored in workspace."));
 
         parameters.add(new ParamSeparatorP(IDENTIFICATION_SEPARATOR,this));
-        parameters.add(new BooleanP(WHITE_BACKGROUND,this,true));
-        parameters.add(new BooleanP(SINGLE_OBJECT,this,false));
-        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
-
+        parameters.add(new BooleanP(WHITE_BACKGROUND,this,true,"When selected, \"foreground\" pixels are considered to have intensities of 0 and background 255 (i.e. black objects on a white background).  When not selected, the inverse is true."));
+        parameters.add(new BooleanP(SINGLE_OBJECT,this,false,"Add all pixels to a single output object.  Enabling this skips the connected-components step."));
+        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL,"When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br>" +
+                "<br> - \""+Connectivity.SIX+"\" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.<br>" +
+                "<br> - \""+Connectivity.TWENTYSIX+"\" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity,"));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL,"The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br>" +
+                "<br> - \""+VolumeTypes.POINTLIST+"\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.<br>" +
+                "<br> - \""+VolumeTypes.OCTREE+"\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.<br>" +
+                "<br> - \""+VolumeTypes.QUADTREE+"\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects."));
     }
 
     @Override

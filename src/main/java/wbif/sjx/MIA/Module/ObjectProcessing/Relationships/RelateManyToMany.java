@@ -485,7 +485,7 @@ public class RelateManyToMany extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CREATE_CLUSTER_OBJECTS));
-        if (parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
         }
 

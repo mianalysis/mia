@@ -251,7 +251,7 @@ public class FitEllipse extends Module {
 
         returnedParameters.add(parameters.getParameter(FITTING_MODE));
         returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
-        if (parameters.getValue(LIMIT_AXIS_LENGTH)) returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
+        if ((boolean) parameters.getValue(LIMIT_AXIS_LENGTH)) returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         return returnedParameters;
 

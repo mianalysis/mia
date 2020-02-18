@@ -170,7 +170,7 @@ public class FilterWithoutMeasurement extends CoreFilter {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
         // Filter results are stored as a metadata item since they apply to the whole set
-        if (parameters.getValue(STORE_RESULTS)) {
+        if ((boolean) parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filterMethod = parameters.getValue(FILTER_METHOD);
             String measName = parameters.getValue(MEASUREMENT);

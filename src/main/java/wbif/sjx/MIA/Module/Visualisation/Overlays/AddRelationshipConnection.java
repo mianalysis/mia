@@ -273,7 +273,7 @@ public class AddRelationshipConnection extends Overlay {
         ChildObjectsP childObjectsP = parameters.getParameter(CHILD_OBJECTS_1);
         childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
         returnedParameters.add(childObjectsP);
-        if (parameters.getValue(LINE_MODE).equals(LineModes.BETWEEN_CHILDREN)) {
+        if ((boolean) parameters.getValue(LINE_MODE).equals(LineModes.BETWEEN_CHILDREN)) {
             childObjectsP = parameters.getParameter(CHILD_OBJECTS_2);
             childObjectsP.setParentObjectsName(parameters.getValue(PARENT_OBJECTS));
             returnedParameters.add(childObjectsP);
@@ -283,7 +283,7 @@ public class AddRelationshipConnection extends Overlay {
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-            if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
             }
         }

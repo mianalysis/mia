@@ -538,7 +538,7 @@ public class RelateObjects extends Module {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if (parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 
@@ -552,7 +552,7 @@ public class RelateObjects extends Module {
             case RelateModes.PROXIMITY_TO_CHILDREN:
                 returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if (parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 
@@ -576,7 +576,7 @@ public class RelateObjects extends Module {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MERGE_RELATED_OBJECTS));
-        if (parameters.getValue(MERGE_RELATED_OBJECTS)) {
+        if ((boolean) parameters.getValue(MERGE_RELATED_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(RELATED_OBJECTS));
         }
 

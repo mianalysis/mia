@@ -34,16 +34,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV);
+        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(5,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(3,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(10,actual);
 
     }
@@ -55,16 +55,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStatSlice(image,0,1, BestFocusSubstack.Stat.STDEV);
+        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(0,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,1,1, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,1,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(8,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,2,1, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,2,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(7,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,3,1, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,3,1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(11,actual);
 
     }
@@ -76,16 +76,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStatSlice(image,0,-1, BestFocusSubstack.Stat.STDEV);
+        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(0,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,1,-1, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,1,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,2,-1, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,2,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(7,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,3,-1, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,3,-1, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(10,actual);
 
     }
@@ -97,16 +97,16 @@ public class BestFocusSubstackTest extends ModuleTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV);
+        int actual = BestFocusSubstack.getOptimalStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(5,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(3,actual);
 
-        actual = BestFocusSubstack.getMaxStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV);
+        actual = BestFocusSubstack.getOptimalStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV, BestFocusSubstack.MinMaxMode.MAX);
         assertEquals(10,actual);
 
     }

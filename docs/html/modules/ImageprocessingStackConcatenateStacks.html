@@ -23,9 +23,9 @@ layout: default
     <a href="../modulelist.html">Back to module list</a>
 <h1>Concatenate stacks</h1>
 <h2>Description</h2>
-
+Combine two or more image stacks into a single stack.  This module allows images to be combined along any of the axes X,Y,C,Z or T.<br><br>Note: Image stack dimensions and bit-depths must be compatible.
 <h2>Parameters</h2>
-<ul><li>Add image<ul><li>Type: ParameterGroup</li></ul><br><li>Allow missing images<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Output image<ul><li>Type: OutputImageP</li></ul><br><li>Axis mode<ul><li>Type: ChoiceP</li><li>Default value: X</li><li>Choices: <ul><li>X</li><li>Y</li><li>Z</li><li>Channel</li><li>Time</li></ul></li></ul><br></ul>
+<ul><li>Add image<ul><li>Description: Add another image for concatenation.</li><li>Type: ParameterGroup</li></ul><br><li>Allow missing images<ul><li>Description: If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules.</li><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Output image<ul><li>Description: The resultant image of concatenation to be added to the workspace.</li><li>Type: OutputImageP</li></ul><br><li>Axis mode<ul><li>Description: Axis along which to concatenate input images.</li><li>Type: ChoiceP</li><li>Default value: X</li><li>Choices: <ul><li>X</li><li>Y</li><li>Z</li><li>Channel</li><li>Time</li></ul></li></ul><br></ul>
 
 </div>
 </body>

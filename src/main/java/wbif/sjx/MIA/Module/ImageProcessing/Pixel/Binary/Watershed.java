@@ -25,9 +25,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Watershed extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String WATERSHED_SEPARATOR = "Watershed controls";
     public static final String USE_MARKERS = "Use markers";
     public static final String MARKER_IMAGE = "Input marker image";
     public static final String INTENSITY_MODE = "Intensity mode";
@@ -35,6 +37,7 @@ public class Watershed extends Module {
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public Watershed(ModuleCollection modules) {
@@ -203,9 +206,11 @@ public class Watershed extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ParamSeparatorP(WATERSHED_SEPARATOR,this));
         parameters.add(new BooleanP(USE_MARKERS, this,false));
         parameters.add(new InputImageP(MARKER_IMAGE, this));
         parameters.add(new ChoiceP(INTENSITY_MODE, this,IntensityModes.DISTANCE,IntensityModes.ALL));
@@ -213,6 +218,7 @@ public class Watershed extends Module {
         parameters.add(new IntegerP(DYNAMIC, this,1));
         parameters.add(new ChoiceP(CONNECTIVITY, this,Connectivity.TWENTYSIX,Connectivity.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
@@ -220,6 +226,8 @@ public class Watershed extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -227,8 +235,9 @@ public class Watershed extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(WATERSHED_SEPARATOR));
         returnedParameters.add(parameters.getParameter(USE_MARKERS));
-        if (parameters.getValue(USE_MARKERS)) {
+        if ((boolean) parameters.getValue(USE_MARKERS)) {
             returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
         } else {
             returnedParameters.add(parameters.getParameter(DYNAMIC));
@@ -245,6 +254,8 @@ public class Watershed extends Module {
                 break;
         }
         returnedParameters.add(parameters.getParameter(CONNECTIVITY));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;

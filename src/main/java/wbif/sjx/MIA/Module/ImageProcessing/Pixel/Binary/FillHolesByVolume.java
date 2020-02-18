@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -24,11 +25,20 @@ public class FillHolesByVolume extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String BLACK_WHITE_MODE = "Black-white mode";
     public static final String USE_MINIMUM_VOLUME = "Use minimum volume";
     public static final String MINIMUM_VOLUME = "Minimum size";
     public static final String USE_MAXIMUM_VOLUME = "Use maximum volume";
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+    public interface BlackWhiteModes {
+        String FILL_BLACK_HOLES = "Fill black holes";
+        String FILL_WHITE_HOLES = "Fill white holes";
+
+        String[] ALL = new String[]{FILL_BLACK_HOLES,FILL_WHITE_HOLES};
+
+    }
 
     public FillHolesByVolume(ModuleCollection modules) {
         super("Fill holes by volume",modules);
@@ -110,8 +120,7 @@ public class FillHolesByVolume extends Module {
 
     @Override
     public String getDescription() {
-        return "Larger label bit depths will require more memory, but will enable more objects " +
-                "\nto be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.";
+        return "";
     }
 
     @Override
@@ -124,6 +133,7 @@ public class FillHolesByVolume extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String blackWhiteMode = parameters.getValue(BLACK_WHITE_MODE);
         boolean useMinVolume = parameters.getValue(USE_MINIMUM_VOLUME);
         boolean useMaxVolume = parameters.getValue(USE_MAXIMUM_VOLUME);
         double minVolume = parameters.getValue(MINIMUM_VOLUME);
@@ -132,6 +142,9 @@ public class FillHolesByVolume extends Module {
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+
+        // If filling black holes, need to invert image
+        if (blackWhiteMode.equals(BlackWhiteModes.FILL_BLACK_HOLES)) InvertIntensity.process(inputImagePlus);
 
         if (!useMinVolume) minVolume = -Float.MAX_VALUE;
         if (!useMaxVolume) maxVolume = Float.MAX_VALUE;
@@ -144,6 +157,9 @@ public class FillHolesByVolume extends Module {
         } catch (LongOverflowException e) {
             return false;
         }
+
+        // If filling black holes, need to invert image back to original
+        if (blackWhiteMode.equals(BlackWhiteModes.FILL_BLACK_HOLES)) InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -166,6 +182,7 @@ public class FillHolesByVolume extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(BLACK_WHITE_MODE, this, BlackWhiteModes.FILL_WHITE_HOLES, BlackWhiteModes.ALL));
         parameters.add(new BooleanP(USE_MINIMUM_VOLUME, this,true));
         parameters.add(new DoubleP(MINIMUM_VOLUME, this,0d));
         parameters.add(new BooleanP(USE_MAXIMUM_VOLUME, this,true));
@@ -184,12 +201,13 @@ public class FillHolesByVolume extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(BLACK_WHITE_MODE));
         returnedParameters.add(parameters.getParameter(USE_MINIMUM_VOLUME));
-        if (parameters.getValue(USE_MINIMUM_VOLUME)) {
+        if ((boolean) parameters.getValue(USE_MINIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MINIMUM_VOLUME));
         }
         returnedParameters.add(parameters.getParameter(USE_MAXIMUM_VOLUME));
-        if (parameters.getValue(USE_MAXIMUM_VOLUME)) {
+        if ((boolean) parameters.getValue(USE_MAXIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_VOLUME));
         }
 

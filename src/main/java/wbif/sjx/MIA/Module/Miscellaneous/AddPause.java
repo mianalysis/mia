@@ -94,7 +94,7 @@ public class AddPause extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if ((boolean) parameters.getValue(SHOW_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
