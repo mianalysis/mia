@@ -53,7 +53,7 @@ public class ComponentFactory {
         parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
-        if (parameter instanceof MessageP) {
+        if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
             String value = parameter.getRawStringValue();
             parameterComponent.setToolTipText(value == null ? "" : value);
             c.insets = new Insets(10,3,5,5);
