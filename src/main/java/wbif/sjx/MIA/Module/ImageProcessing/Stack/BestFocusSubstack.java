@@ -38,6 +38,9 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MAX;
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MIN;
+
 public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;
@@ -78,9 +81,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     public interface BestFocusCalculations {
         String MANUAL = "Manual";
         String MAX_MEAN = "Largest mean intensity";
+        String MIN_STDEV = "Smallest standard deviation";
         String MAX_STDEV = "Largest standard deviation";
 
-        String[] ALL = new String[]{MANUAL,MAX_MEAN,MAX_STDEV};
+        String[] ALL = new String[]{MANUAL,MAX_MEAN,MIN_STDEV,MAX_STDEV};
 
     }
 
@@ -106,6 +110,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     enum Stat {
         MEAN,STDEV;
+    }
+
+    enum MinMaxMode {
+        MIN, MAX;
     }
 
 
@@ -184,7 +192,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         });
     }
 
-    int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, String bestFocusCalculation, int channel) {
+    int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, String bestFocusCalculation, MinMaxMode mode, int channel) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Iterating over frame, extracting the relevant substack, then appending it to the output
@@ -194,10 +202,10 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             // Determining the best slice
             switch (bestFocusCalculation) {
                 case BestFocusCalculations.MAX_MEAN:
-                    bestSlices[f] = getMaxStatSlice(calculationImage,f,channel,Stat.MEAN);
+                    bestSlices[f] = getOptimalStatSlice(calculationImage,f,channel,Stat.MEAN,mode);
                     break;
                 case BestFocusCalculations.MAX_STDEV:
-                    bestSlices[f] = getMaxStatSlice(calculationImage,f,channel,Stat.STDEV);
+                    bestSlices[f] = getOptimalStatSlice(calculationImage,f,channel,Stat.STDEV,mode);
                     break;
             }
 
@@ -266,7 +274,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    static int getMaxStatSlice(Image image, int frame, int channel, Stat stat) {
+    static int getOptimalStatSlice(Image image, int frame, int channel, Stat stat, MinMaxMode mode) {
         ImagePlus inputIpl = image.getImagePlus();
 
         // Setting the channels to measure over.  If channel is -1, use all channels
@@ -291,9 +299,19 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
                         break;
                 }
 
-                if (val > bestVal) {
-                    bestSlice = z;
-                    bestVal = val;
+                switch (mode) {
+                    case MIN:
+                        if (val < bestVal) {
+                            bestSlice = z;
+                            bestVal = val;
+                        }
+                        break;
+                    case MAX:
+                        if (val > bestVal) {
+                            bestSlice = z;
+                            bestVal = val;
+                        }
+                        break;
                 }
             }
         }
@@ -488,7 +506,13 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             case BestFocusCalculations.MAX_STDEV:
                 // Setting the channel number to zero-indexed or -1 if using all channels
                 if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
-                bestSlices = getBestFocusAuto(inputImage,calculationImage,bestFocusCalculation,channel);
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,bestFocusCalculation,MAX,channel);
+                break;
+
+            case BestFocusCalculations.MIN_STDEV:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,bestFocusCalculation,MIN,channel);
                 break;
 
             default:
