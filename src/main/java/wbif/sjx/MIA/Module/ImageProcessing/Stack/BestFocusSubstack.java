@@ -15,6 +15,7 @@ import net.imglib2.view.Views;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -38,6 +39,8 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.Stat.MEAN;
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.Stat.STDEV;
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MAX;
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MIN;
 
@@ -80,11 +83,12 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     public interface BestFocusCalculations {
         String MANUAL = "Manual";
+        String MIN_MEAN = "Smallest mean intensity";
         String MAX_MEAN = "Largest mean intensity";
         String MIN_STDEV = "Smallest standard deviation";
         String MAX_STDEV = "Largest standard deviation";
 
-        String[] ALL = new String[]{MANUAL,MAX_MEAN,MIN_STDEV,MAX_STDEV};
+        String[] ALL = new String[]{MANUAL,MIN_MEAN,MAX_MEAN,MIN_STDEV,MAX_STDEV};
 
     }
 
@@ -192,25 +196,15 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         });
     }
 
-    int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, String bestFocusCalculation, MinMaxMode mode, int channel) {
+    int[] getBestFocusAuto(Image<T> inputImage, Image calculationImage, Stat stat, MinMaxMode minMax, int channel) {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Iterating over frame, extracting the relevant substack, then appending it to the output
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
         int[] bestSlices = new int[(int) nFrames];
         for (int f=0;f<nFrames;f++) {
-            // Determining the best slice
-            switch (bestFocusCalculation) {
-                case BestFocusCalculations.MAX_MEAN:
-                    bestSlices[f] = getOptimalStatSlice(calculationImage,f,channel,Stat.MEAN,mode);
-                    break;
-                case BestFocusCalculations.MAX_STDEV:
-                    bestSlices[f] = getOptimalStatSlice(calculationImage,f,channel,Stat.STDEV,mode);
-                    break;
-            }
-
+            bestSlices[f] = getOptimalStatSlice(calculationImage,f,channel,stat,minMax);
             writeMessage("Best focus for frame "+(f+1)+" at "+(bestSlices[f]+1) +" (provisional)");
-
         }
 
         return bestSlices;
@@ -285,6 +279,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         // Measuring the statistics for each slice
         int bestSlice = 0;
         double bestVal = 0;
+        if (mode == MIN) bestVal = Double.MAX_VALUE;
 
         for (int c=startChannel;c<=endChannel;c++) {
             for (int z = 0; z < inputIpl.getNSlices(); z++) {
@@ -317,6 +312,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         }
 
         return bestSlice;
+
     }
 
     Image<T> extract(Image<T> inputImage, int relativeStart, int relativeEnd, int[] bestSlices, String outputImageName) {
@@ -502,17 +498,28 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
                 workspace.getMetadata().put(MetadataNames.SLICES,metadataString);
                 break;
 
-            case BestFocusCalculations.MAX_MEAN:
-            case BestFocusCalculations.MAX_STDEV:
+            case BestFocusCalculations.MIN_MEAN:
                 // Setting the channel number to zero-indexed or -1 if using all channels
                 if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
-                bestSlices = getBestFocusAuto(inputImage,calculationImage,bestFocusCalculation,MAX,channel);
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,MEAN,MIN,channel);
+                break;
+
+            case BestFocusCalculations.MAX_MEAN:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,MEAN,MAX,channel);
                 break;
 
             case BestFocusCalculations.MIN_STDEV:
                 // Setting the channel number to zero-indexed or -1 if using all channels
                 if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
-                bestSlices = getBestFocusAuto(inputImage,calculationImage,bestFocusCalculation,MIN,channel);
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,STDEV,MIN,channel);
+                break;
+
+            case BestFocusCalculations.MAX_STDEV:
+                // Setting the channel number to zero-indexed or -1 if using all channels
+                if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
+                bestSlices = getBestFocusAuto(inputImage,calculationImage,STDEV,MAX,channel);
                 break;
 
             default:
@@ -572,7 +579,9 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
 
+            case BestFocusCalculations.MIN_MEAN:
             case BestFocusCalculations.MAX_MEAN:
+            case BestFocusCalculations.MIN_STDEV:
             case BestFocusCalculations.MAX_STDEV:
                 returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
                 if ((boolean) parameters.getValue(SMOOTH_TIMESERIES)) {

@@ -55,7 +55,7 @@ public class FocusStack extends Module {
         // Getting the image type
         int type = getImageType(ipr);
 
-        // Initialising the stack focuser.  This requires an example stack.
+        // Initialising the stack focusser.  This requires an example stack.
         int nSlices = inputIpl.getNSlices();
         ImagePlus stack = SubHyperstackMaker.makeSubhyperstack(inputIpl,"1-1","1-"+nSlices,"1-1");
         Stack_Focuser_ focuser = new Stack_Focuser_();

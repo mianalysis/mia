@@ -242,6 +242,7 @@ public class AnalysisRunner {
     Runnable createRunnable(Analysis analysis, Workspace workspace, Exporter exporter) {
         return () -> {
             File file = workspace.getMetadata().getFile();
+            int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
             try {
                 InputControl inputControl = analysis.getModules().getInputControl();
@@ -277,7 +278,7 @@ public class AnalysisRunner {
                 double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
                 String memoryMessage = "Memory: "+df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB";
 
-                MIA.log.writeError("Failed for file " + file.getName()+" ("+memoryMessage+")");
+                MIA.log.writeError("Failed for file " + file.getName()+", series "+seriesNumber+" ("+memoryMessage+")");
                 MIA.log.writeError(t);
 
                 workspace.clearAllImages(true);

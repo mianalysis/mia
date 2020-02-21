@@ -282,7 +282,7 @@
             <version>v1.5.15</version>
 <!--            <groupId>wbif.sjx</groupId>-->
 <!--            <artifactId>Common</artifactId>-->
-<!--            <version>1.5.15</version>-->
+<!--            <version>1.5.16-SNAPSHOT</version>-->
         </dependency>
     </dependencies>
 

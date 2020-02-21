@@ -55,7 +55,8 @@ public class Analysis {
 
                     // The module failed or requested analysis termination.  Add this message to the log
                     MIA.log.writeWarning("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
-                            "\" by module \""+module.getName()+"\" (\""+module.getNickname()+"\").");
+                            "\" (series "+workspace.getMetadata().getSeriesNumber()+") by module \""+module.getName()+
+                            "\" (\""+module.getNickname()+"\").");
                 }
             }
 
