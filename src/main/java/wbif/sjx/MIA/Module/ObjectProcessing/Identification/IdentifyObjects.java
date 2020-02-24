@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -53,7 +54,10 @@ public class IdentifyObjects extends Module {
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = inputImagePlus.duplicate();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        VolumeCalibration cal = VolumeCalibration.getFromImage(inputImagePlus);
+
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());

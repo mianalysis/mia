@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.Volume;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 
 import java.util.HashMap;
 
@@ -68,7 +69,9 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        VolumeCalibration calIn = inputObjects.getCalibration();
+        VolumeCalibration calOut = new VolumeCalibration(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut);
 
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;

@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.*;
@@ -40,8 +41,10 @@ public abstract class ExpectedObjects {
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
     public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,width,height,nSlices);
+
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName);
+        ObjCollection testObjects = new ObjCollection(objectName,calibration);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -67,7 +70,7 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits));
+            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,calibration));
 
             Obj testObject = testObjects.get(ID);
             try {

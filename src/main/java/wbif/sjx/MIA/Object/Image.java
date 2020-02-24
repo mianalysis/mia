@@ -25,6 +25,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -94,13 +95,10 @@ public class Image <T extends RealType<T> & NativeType<T>> {
     }
 
     public ObjCollection convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
-        // Need to get coordinates and convert to a HCObject
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
-
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().getX(1);
         double dppZ = imagePlus.getCalibration().getZ(1);
-        String calibratedUnits = imagePlus.getCalibration().getUnits();
+        String units = imagePlus.getCalibration().getUnits();
         boolean twoD = getImagePlus().getNSlices() == 1;
         ImageProcessor ipr = imagePlus.getProcessor();
 
@@ -109,6 +107,10 @@ public class Image <T extends RealType<T> & NativeType<T>> {
         int nSlices = imagePlus.getNSlices();
         int nFrames = imagePlus.getNFrames();
         int nChannels = imagePlus.getNChannels();
+
+        // Need to get coordinates and convert to a HCObject
+        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,units,w,h,nSlices);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
 
         // Will return null if optimised
         VolumeType volumeType = getVolumeType(type);
@@ -137,7 +139,7 @@ public class Image <T extends RealType<T> & NativeType<T>> {
                                 VolumeType outType = link.getVolumeType();
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, w, h, nSlices, dppXY, dppZ, calibratedUnits).setT(finalT));
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, w, h, nSlices, dppXY, dppZ, units).setT(finalT));
                                 try {
                                     outputObjects.get(outID).add(x, y, z);
                                 } catch (PointOutOfRangeException e) {}

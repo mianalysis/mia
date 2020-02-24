@@ -46,7 +46,7 @@ public class MergeRelatedObjects extends Module {
 
     public static ObjCollection mergeRelatedObjects(ObjCollection parentObjects, String childObjectsName, String relatedObjectsName, String mergeMode) {
         Obj exampleParent = parentObjects.getFirst();
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
+        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName,parentObjects.getCalibration());
 
         if (exampleParent == null) return relatedObjects;
 

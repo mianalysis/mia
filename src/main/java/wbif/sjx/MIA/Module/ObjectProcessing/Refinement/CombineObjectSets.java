@@ -60,7 +60,7 @@ public class CombineObjectSets extends Module {
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCalibration());
 
         // Doing object merging
         combine(inputObjects1,outputObjects);

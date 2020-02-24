@@ -9,10 +9,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume.CoordinateSet;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.Volume;
-import wbif.sjx.common.Object.Volume.VolumeType;
+import wbif.sjx.common.Object.Volume.*;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -45,8 +42,16 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
-    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
-        super(volumeType,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String units) {
+        super(volumeType,width,height,nSlices,dppXY,dppZ,units);
+
+        this.name = name;
+        this.ID = ID;
+
+    }
+
+    public Obj(VolumeType volumeType, String name, int ID, VolumeCalibration calibration) {
+        super(volumeType,calibration);
 
         this.name = name;
         this.ID = ID;
@@ -54,7 +59,7 @@ public class Obj extends Volume {
     }
 
     public Obj(String name, int ID, Volume exampleVolume) {
-        super(exampleVolume.getVolumeType(),exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
+        super(exampleVolume.getVolumeType(),exampleVolume.getCalibration().duplicate());
 
         this.name = name;
         this.ID = ID;
@@ -62,7 +67,7 @@ public class Obj extends Volume {
     }
 
     public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume) {
-        super(volumeType,exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
+        super(volumeType,exampleVolume.getCalibration().duplicate());
 
         this.name = name;
         this.ID = ID;
@@ -186,7 +191,7 @@ public class Obj extends Volume {
 
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
-        if (allChildren == null) return new ObjCollection(elements[0]);
+        if (allChildren == null) return new ObjCollection(elements[0],cal);
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1) return allChildren;
@@ -199,7 +204,7 @@ public class Obj extends Volume {
         }
 
         // Going through each child in the current set, then adding all their children to the output set
-        ObjCollection outputChildren = new ObjCollection(name);
+        ObjCollection outputChildren = new ObjCollection(name,allChildren.getCalibration());
         for (Obj child:allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
@@ -224,7 +229,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName,child.cal));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -276,16 +281,17 @@ public class Obj extends Volume {
         if (rois.containsKey(slice)) return (Roi) rois.get(slice).clone();
 
         // Getting the image corresponding to this slice
-        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        VolumeCalibration newCal = new VolumeCalibration(cal.getDppXY(),cal.getDppZ(),cal.getUnits(),cal.getWidth(),cal.getHeight(),1);
+        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,cal.duplicate());
         setSlicePoints(sliceObj.coordinateSet,slice);
 
         // Checking if the object exists in this slice
         if (sliceObj.size() == 0) return null;
 
-        ObjCollection objectCollection = new ObjCollection("SliceObjects");
+        ObjCollection objectCollection = new ObjCollection("SliceObjects",newCal);
         objectCollection.add(sliceObj);
 
-        ImagePlus sliceIpl = IJ.createImage("SliceIm",width,height,1,8);
+        ImagePlus sliceIpl = IJ.createImage("SliceIm",newCal.getWidth(),newCal.getHeight(),1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
         Image objectImage = objectCollection.convertToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
@@ -351,7 +357,7 @@ public class Obj extends Volume {
 
     public Image convertObjToImage(String outputName, @Nullable Image templateImage) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName);
+        ObjCollection tempObj = new ObjCollection(outputName,cal);
         tempObj.add(this);
 
         // Getting the image
@@ -362,7 +368,7 @@ public class Obj extends Volume {
 
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName);
+        ObjCollection tempObj = new ObjCollection(outputName,cal);
         tempObj.add(this);
 
         // Getting the image

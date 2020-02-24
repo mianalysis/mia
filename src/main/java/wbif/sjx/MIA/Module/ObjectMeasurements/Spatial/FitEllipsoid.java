@@ -202,7 +202,7 @@ public class FitEllipsoid extends Module {
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = new ObjCollection(outputObjectsName);
+            outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
             workspace.addObjects(outputObjects);
         }
 

@@ -40,7 +40,7 @@ public class ConvexHull2D extends Module {
         Polygon polygon = inputObject.getRoi(0).getConvexHull();
 
         // We have to explicitly define this, as the number of slices is 1 (potentially unlike the input object)
-        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,outputID,inputObject.getWidth(),inputObject.getHeight(),1,inputObject.getDppXY(),inputObject.getDppZ(),inputObject.getCalibratedUnits());
+        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,outputID,inputObject.getWidth(),inputObject.getHeight(),1,inputObject.getDppXY(),inputObject.getDppZ(),inputObject.getUnits());
         try {outputObject.addPointsFromPolygon(polygon,0);}
         catch (PointOutOfRangeException e) {}
 
@@ -72,7 +72,7 @@ public class ConvexHull2D extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // If necessary, creating a new ObjCollection and adding it to the Workspace
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
         workspace.addObjects(outputObjects);
 
         for (Obj inputObject:inputObjects.values()) {

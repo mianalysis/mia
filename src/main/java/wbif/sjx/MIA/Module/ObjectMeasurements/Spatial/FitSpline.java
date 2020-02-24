@@ -101,7 +101,7 @@ public class FitSpline extends Module {
 
     public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, Image templateImage) {
         // Converting object to image, then inverting, so we have a black object on a white background
-        ObjCollection tempObjects = new ObjCollection("Backbone");
+        ObjCollection tempObjects = new ObjCollection("Backbone",inputObject.getCalibration());
         tempObjects.add(inputObject);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
@@ -399,7 +399,7 @@ public class FitSpline extends Module {
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
         if (!objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects = new ObjCollection(outputObjectsName);
+            outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
             workspace.addObjects(outputObjects);
         }
 

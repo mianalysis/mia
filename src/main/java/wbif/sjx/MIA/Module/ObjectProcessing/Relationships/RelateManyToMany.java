@@ -103,6 +103,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 
 import java.util.*;
 
@@ -275,8 +276,8 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj,Integer> assignments) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj,Integer> assignments, VolumeCalibration calibration) {
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
         for (Obj object:assignments.keySet()) {
             int groupID = assignments.get(object);
 
@@ -351,7 +352,7 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName));
+            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCalibration()));
             return true;
         }
 
@@ -412,7 +413,7 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName,false);
             }
 
-            ObjCollection outputObjects = createClusters(outputObjectsName, assignments);
+            ObjCollection outputObjects = createClusters(outputObjectsName, assignments, inputObjects1.getCalibration());
             workspace.addObjects(outputObjects);
 
             if (showOutput) {

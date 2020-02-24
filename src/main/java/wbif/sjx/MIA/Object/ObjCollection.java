@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -22,9 +23,17 @@ import java.util.*;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
+    private VolumeCalibration calibration;
 
-    public ObjCollection(String name) {
+    public ObjCollection(String name, VolumeCalibration calibration) {
         this.name = name;
+        this.calibration = calibration;
+    }
+
+    public ObjCollection(String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+        this.name = name;
+        this.calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,width,height,nSlices);
+
     }
 
     public String getName() {
@@ -34,6 +43,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     synchronized public void add(Obj object) {
         put(object.getID(),object);
 
+    }
+
+    public VolumeCalibration getCalibration() {
+        return calibration;
     }
 
     public int getAndIncrementID() {
@@ -52,7 +65,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Taking limits from the first object, otherwise returning null
         if (size() == 0) return null;
 
-        return new int[][]{{0,getFirst().getWidth()-1},{0,getFirst().getHeight()-1},{0,getFirst().getnSlices()-1}};
+        return new int[][]{{0,getFirst().getWidth()-1},{0,getFirst().getHeight()-1},{0,getFirst().getNSlices()-1}};
 
     }
 
@@ -182,7 +195,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         calibration.pixelWidth = obj.getDppXY();
         calibration.pixelHeight = obj.getDppXY();
         calibration.pixelDepth = obj.getDppZ();
-        calibration.setUnit(obj.getCalibratedUnits());
+        calibration.setUnit(obj.getUnits());
 
     }
 
@@ -228,7 +241,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             ipl.getCalibration().pixelWidth = first.getDppXY();
             ipl.getCalibration().pixelHeight = first.getDppXY();
             ipl.getCalibration().pixelDepth = first.getDppZ();
-            ipl.getCalibration().setUnit(first.getCalibratedUnits());
+            ipl.getCalibration().setUnit(first.getUnits());
         }
     }
 

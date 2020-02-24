@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.net.URLDecoder;
@@ -257,12 +258,12 @@ public class FilterObjectsTest extends ModuleTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children");
+        ObjCollection childObjects = new ObjCollection("Children",testObjects.getCalibration());
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),testObjects.getCalibration());
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -307,12 +308,12 @@ public class FilterObjectsTest extends ModuleTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children");
+        ObjCollection childObjects = new ObjCollection("Children",testObjects.getCalibration());
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),testObjects.getCalibration());
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -356,12 +357,12 @@ public class FilterObjectsTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,true};
-        ObjCollection parentObjects = new ObjCollection("Parents");
+        ObjCollection parentObjects = new ObjCollection("Parents",testObjects.getCalibration());
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),testObjects.getCalibration());
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -402,12 +403,12 @@ public class FilterObjectsTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents");
+        ObjCollection parentObjects = new ObjCollection("Parents",testObjects.getCalibration());
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),testObjects.getCalibration());
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

@@ -74,7 +74,7 @@ public class ActiveContourObjectDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
 
         // If there are no input objects, creating an empty collection
         if (inputObjects.getFirst() == null) {

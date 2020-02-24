@@ -16,6 +16,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
@@ -149,21 +150,25 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static Obj initialiseObject(ObjCollection outputObjects, int t, Image referenceImage) {
+    public static VolumeCalibration getCalibration(Image referenceImage) {
         ImagePlus inputIpl = referenceImage.getImagePlus();
         Calibration calibration = inputIpl.getCalibration();
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
-        String calibrationUnits = calibration.getUnits();
+        String units = calibration.getUnits();
         boolean twoD = inputIpl.getNSlices()==1;
         int imWidth = inputIpl.getWidth();
         int imHeight = inputIpl.getHeight();
-        int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
 
+        return new VolumeCalibration(dppXY,dppZ,units,imWidth,imHeight,nSlices);
+
+    }
+
+    public static Obj initialiseObject(ObjCollection outputObjects, int t) {
         int ID = outputObjects.getAndIncrementID();
 
-        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjects.getName(),ID,imWidth,imHeight,nSlices,dppXY, dppZ,calibrationUnits);
+        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjects.getName(),ID,outputObjects.getCalibration());
         outputObject.setT(t);
         outputObjects.add(outputObject);
 
@@ -270,7 +275,8 @@ public class RidgeDetection extends Module {
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         LineDetector lineDetector = new LineDetector();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        VolumeCalibration calibration = getCalibration(inputImage);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack
@@ -307,7 +313,7 @@ public class RidgeDetection extends Module {
                     // Getting the unique LineGroups and converting them to Obj
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
-                        Obj outputObject = initialiseObject(outputObjects,t,inputImage);
+                        Obj outputObject = initialiseObject(outputObjects,t);
 
                         double estimatedLength = 0;
                         if (estimateWidth) width = new CumStat();

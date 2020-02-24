@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.Arrays;
@@ -346,11 +347,11 @@ public class RelateObjectsTest extends ModuleTest {
 //        workspace.addObjects(proxObj2);
 
         ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        ObjCollection c1 = new ObjCollection(proxObj1Name);
+        ObjCollection c1 = new ObjCollection(proxObj1Name,proxObj1.getCalibration());
         c1.add(proxObj1.get(20));
         workspace.addObjects(c1);
         ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        ObjCollection c2 = new ObjCollection(proxObj2Name);
+        ObjCollection c2 = new ObjCollection(proxObj2Name,proxObj2.getCalibration());
         c2.add(proxObj2.get(12));
         workspace.addObjects(c2);
 
@@ -380,6 +381,7 @@ public class RelateObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,64, 76, 12);
 
         // Creating objects and adding to workspace
         ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -387,7 +389,7 @@ public class RelateObjectsTest extends ModuleTest {
         ObjCollection proxObj2 = new ProxCubes2(volumeType).getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
-        ObjCollection c1 = new ObjCollection(proxObj1Name);
+        ObjCollection c1 = new ObjCollection(proxObj1Name,proxObj1.getCalibration());
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects(new ModuleCollection());

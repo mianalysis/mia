@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
@@ -252,7 +253,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    void loadObjects(ObjCollection outputObjects, File inputFile, int[] limits, double[] cal, @Nullable ObjCollection parentObjects) {
+    void loadObjects(ObjCollection outputObjects, File inputFile, @Nullable ObjCollection parentObjects) {
         int idIdx = parameters.getValue(ID_COLUMN_INDEX);
         int xIdx = parameters.getValue(X_COLUMN_INDEX);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX);
@@ -270,7 +271,6 @@ public class ObjectLoader extends Module {
 
         // Iterating over each row, adding as a new Obj
         VolumeType type = VolumeType.POINTLIST;
-        String units = Units.getOMEUnits().getSymbol();
         int outOfRangeCount = 0;
         try {
             CSVReader csvReader = new CSVReader(reader);
@@ -288,7 +288,7 @@ public class ObjectLoader extends Module {
                     int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
                     // Creating the object and setting the coordinates
-                    Obj obj = new Obj(type,outputObjects.getName(),ID,limits[0],limits[1],limits[2],cal[0],cal[1],units);
+                    Obj obj = new Obj(type,outputObjects.getName(),ID,outputObjects.getCalibration());
                     try {
                         obj.add(x,y,z);
                     } catch (PointOutOfRangeException e) {
@@ -395,19 +395,22 @@ public class ObjectLoader extends Module {
         }
         if (cal == null) return false;
 
+        String units = Units.getOMEUnits().getSymbol();
+        VolumeCalibration calibration = new VolumeCalibration(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
+
         // Creating output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
         ObjCollection parentObjects = null;
         if (createParents) {
-            parentObjects = new ObjCollection(parentObjectsName);
+            parentObjects = new ObjCollection(parentObjectsName,calibration);
             workspace.addObjects(parentObjects);
         }
 
         // Loading objects to the specified collections
-        loadObjects(outputObjects,inputFile,limits,cal,parentObjects);
+        loadObjects(outputObjects,inputFile,parentObjects);
 
         if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 

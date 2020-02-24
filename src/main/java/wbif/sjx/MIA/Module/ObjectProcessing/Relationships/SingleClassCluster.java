@@ -209,7 +209,7 @@ public class SingleClassCluster extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
@@ -230,10 +230,10 @@ public class SingleClassCluster extends Module {
         // Getting object parameters
         int width = firstObject.getWidth();
         int height = firstObject.getHeight();
-        int nSlices = firstObject.getnSlices();
+        int nSlices = firstObject.getNSlices();
         double dppXY = firstObject.getDppXY();
         double dppZ = firstObject.getDppZ();
-        String calibratedUnits = firstObject.getCalibratedUnits();
+        String calibratedUnits = firstObject.getUnits();
         boolean twoD = firstObject.is2D();
 
         int[] temporalLimits = inputObjects.getTemporalLimits();
@@ -632,10 +632,10 @@ public class SingleClassCluster extends Module {
 //        // Getting object parameters
 //        int width = firstObject.getWidth();
 //        int height = firstObject.getHeight();
-//        int nSlices = firstObject.getnSlices();
+//        int nSlices = firstObject.getNSlices();
 //        double dppXY = firstObject.getDppXY();
 //        double dppZ = firstObject.getDppZ();
-//        String calibratedUnits = firstObject.getCalibratedUnits();
+//        String calibratedUnits = firstObject.getUnits();
 //        boolean twoD = firstObject.is2D();
 //
 //        int[] temporalLimits = inputObjects.getTemporalLimits();

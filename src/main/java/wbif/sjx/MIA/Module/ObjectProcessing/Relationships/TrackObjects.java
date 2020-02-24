@@ -496,7 +496,7 @@ public class TrackObjects extends Module {
 
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName,inputObjects.getCalibration());
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module

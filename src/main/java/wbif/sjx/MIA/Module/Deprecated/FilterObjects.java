@@ -404,7 +404,7 @@ public class FilterObjects extends Module implements ActionListener {
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
         ObjCollection outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
-                ? new ObjCollection(outputObjectsName) : null;
+                ? new ObjCollection(outputObjectsName,inputObjects.getCalibration()) : null;
 
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 

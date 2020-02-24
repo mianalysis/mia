@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.swing.*;
@@ -53,12 +54,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private String outputObjectsName;
     private ObjCollection outputObjects;
 
-    private int width;
-    private int height;
-    private int nSlices;
-    private double dppXY;
-    private double dppZ;
-    private String calibrationUnits;
+    private VolumeCalibration calibration;
     private boolean overflow = false;
 
     private int elementHeight = 40;
@@ -352,12 +348,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-
-        width = inputImagePlus.getWidth();
-        height = inputImagePlus.getHeight();
-        nSlices = inputImagePlus.getNSlices();
-        dppXY = inputImagePlus.getCalibration().pixelWidth;
-        dppZ = inputImagePlus.getCalibration().pixelDepth;
+        calibration = VolumeCalibration.getFromImage(inputImagePlus);
 
         setSelector(selectorType);
 
@@ -376,7 +367,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         listModel.clear();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName);
+        outputObjects = new ObjCollection(outputObjectsName,calibration);
 
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
@@ -578,7 +569,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = getVolumeType(type);
-            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
+            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,calibration);
             outputObjects.add(outputObject);
 
             for (ObjRoi objRoi:currentRois) {
