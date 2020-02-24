@@ -116,7 +116,7 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         workspace.addImage(image2);
 
         // Running the analysis
-        MeasureImageColocalisation.measurePCC(image1,image2,null);
+        MeasureImageColocalisation.measurePCC(image1,image2,null,MeasureImageColocalisation.PCCImplementations.CLASSIC);
 
         // Calculating PCC (expected value from Coloc2)
         double expected = 0.44;
@@ -149,7 +149,7 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         workspace.addImage(maskImage);
 
         // Running the analysis
-        MeasureImageColocalisation.measurePCC(image1,image2,maskImage);
+        MeasureImageColocalisation.measurePCC(image1,image2,maskImage,MeasureImageColocalisation.PCCImplementations.CLASSIC);
 
         // Calculating PCC (expected value from Coloc2)
         double expected = 0.28;
