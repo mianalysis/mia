@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Module.ImageMeasurements;
 
 import ij.IJ;
 import ij.ImagePlus;
+import net.imglib2.img.Img;
+import net.imglib2.type.logic.BitType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -45,7 +47,7 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         ImagePlus ipl1 = IJ.openImage(pathToImage);
         Image image1 = new Image("Im1",ipl1);
 
-        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.NONE);
+        Image actual = MeasureImageColocalisation.getObjectMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.NONE);
 
         assertNull(actual);
 
@@ -69,7 +71,7 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         ImagePlus expectedIpl = IJ.openImage(pathToImage);
         Image expectedImage = new Image("Expected",expectedIpl);
 
-        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_INSIDE_OBJECTS);
+        Image actual = MeasureImageColocalisation.getObjectMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_INSIDE_OBJECTS);
 
         assertEquals(expectedImage,actual);
 
@@ -93,7 +95,7 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         ImagePlus expectedIpl = IJ.openImage(pathToImage);
         Image expectedImage = new Image("Expected",expectedIpl);
 
-        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_OUTSIDE_OBJECTS);
+        Image actual = MeasureImageColocalisation.getObjectMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_OUTSIDE_OBJECTS);
 
         assertEquals(expectedImage,actual);
 
@@ -149,7 +151,8 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         workspace.addImage(maskImage);
 
         // Running the analysis
-        MeasureImageColocalisation.measurePCC(image1,image2,maskImage,MeasureImageColocalisation.PCCImplementations.CLASSIC);
+        Img<BitType> bitTypeMask = MeasureImageColocalisation.getBitTypeMask(maskImage);
+        MeasureImageColocalisation.measurePCC(image1,image2,bitTypeMask,MeasureImageColocalisation.PCCImplementations.CLASSIC);
 
         // Calculating PCC (expected value from Coloc2)
         double expected = 0.28;

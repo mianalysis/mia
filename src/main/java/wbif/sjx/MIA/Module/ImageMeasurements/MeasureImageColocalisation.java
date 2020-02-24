@@ -1,14 +1,9 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
-import ij.IJ;
 import ij.ImagePlus;
 import net.imagej.ImageJ;
-import net.imagej.ops.Ops;
-import net.imagej.ops.convert.normalizeScale.NormalizeScaleRealTypes;
-import net.imglib2.converter.Converter;
+import net.imagej.ops.OpService;
 import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgs;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.logic.BitType;
 import sc.fiji.coloc.algorithms.MissingPreconditionException;
 import sc.fiji.coloc.algorithms.PearsonsCorrelation;
@@ -35,8 +30,8 @@ public class MeasureImageColocalisation extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String MEASURE_PCC = "Measure PCC";
     public static final String PCC_IMPLEMENTATION = "PCC implementation";
-//    public static final String MEASURE_MANDERS = "Measure Manders";
-//    public static final String THRESHOLDING_MODE = "Thresholding mode";
+    public static final String MEASURE_MANDERS = "Measure Manders";
+    public static final String THRESHOLDING_MODE = "Thresholding mode";
 
     public MeasureImageColocalisation(ModuleCollection modules) {
         super("Measure image colocalisation",modules);
@@ -64,8 +59,9 @@ public class MeasureImageColocalisation extends Module {
     public interface ThresholdingModes {
         String BISECTION = "Bisection (correlation)";
         String COSTES = "Costes (correlation)";
+        String NONE = "None";
 
-        String[] ALL = new String[]{BISECTION,COSTES};
+        String[] ALL = new String[]{BISECTION,COSTES,NONE};
 
     }
 
@@ -74,7 +70,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
 
-    public static Image getMaskImage(ObjCollection objects, Image templateImage, String maskingMode) {
+    public static Image getObjectMaskImage(ObjCollection objects, Image templateImage, String maskingMode) {
         switch (maskingMode) {
             case MaskingModes.MEASURE_INSIDE_OBJECTS:
                 // Creating the new Obj
@@ -87,9 +83,6 @@ public class MeasureImageColocalisation extends Module {
                 // Creating the new Obj
                 hues = ColourFactory.getSingleColourHues(objects,ColourFactory.SingleColours.WHITE);
                 return objects.convertToImage("Mask",templateImage,hues,8,false);
-
-            case MaskingModes.NONE:
-                return null;
 
             default:
                 return null;
@@ -129,6 +122,20 @@ public class MeasureImageColocalisation extends Module {
 
     }
 
+    public static Img<BitType> getBitTypeMask(Image maskImage) {
+        // Converting mask to BitType
+        OpService ops = new ImageJ().op();
+
+        Img maskImg = maskImage == null ? null : maskImage.getImgPlus();
+
+        Img<BitType> maskImgBitType = ops.convert().bit(maskImg);
+        Img<BitType> maskImgBitTypeInv = ops.create().img(maskImgBitType,new BitType());
+        ops.image().invert(maskImgBitTypeInv,maskImgBitType);
+
+        return maskImgBitTypeInv;
+
+    }
+
     public static PearsonsCorrelation.Implementation getPCCImplementation(String pccImplementationName) {
         switch (pccImplementationName) {
             case PCCImplementations.CLASSIC:
@@ -139,37 +146,17 @@ public class MeasureImageColocalisation extends Module {
         }
     }
 
-    public static void measurePCC(Image image1, Image image2, Image maskImage, String pccImplementationName) {
+    public static void measurePCC(Image image1, Image image2, Img<BitType> maskImg, String pccImplementationName) {
         Img img1 = image1.getImgPlus();
         Img img2 = image2.getImgPlus();
-        Img maskImg = maskImage == null ? null : maskImage.getImgPlus();
 
-        // Converting mask to BitType
-//        Img<BitType> maskImgBitType = ArrayImgs.bits(maskImg);
-        ImageJ ij = new ImageJ();
-
-//        NormalizeScaleRealTypes converter = new NormalizeScaleRealTypes();
-//        converter.setEnvironment(ij.op());
-//        converter.initialize();
-//        converter.checkInput(maskImg);
-//
-//        Img<BitType> maskImgBitType = ij.op().create().img(maskImg,new BitType());
-//        Img<BitType> maskImgBitTypeInv = ij.op().create().img(maskImgBitType,new BitType());
-//        ij.op().run(Ops.Convert.ImageType.class, maskImgBitType, maskImg);
-        Img<BitType> maskImgBitType = ij.op().convert().bit(maskImg);
-        ImageJFunctions.show(maskImgBitType);
-        IJ.runMacro("waitForUser");
-        ij.op().image().invert(maskImgBitType,maskImgBitType);
 
         PearsonsCorrelation.Implementation implementation = getPCCImplementation(pccImplementationName);
         PearsonsCorrelation pcc = new PearsonsCorrelation(implementation);
         double pccValue = 0;
         try {
-            if (maskImg == null) {
-                pccValue = pcc.calculatePearsons(img1,img2);
-            } else {
-                pccValue = pcc.calculatePearsons(img1,img2,maskImgBitType);
-            }
+            if (maskImg == null) pccValue = pcc.calculatePearsons(img1,img2);
+            else pccValue = pcc.calculatePearsons(img1,img2,maskImg);
         } catch (MissingPreconditionException e) {
             e.printStackTrace();
         }
@@ -208,19 +195,30 @@ public class MeasureImageColocalisation extends Module {
         Image maskImage = workspace.getImage(maskImageName);
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);
+        String thresholdingMode = parameters.getValue(THRESHOLDING_MODE);
+        boolean measurePCC = parameters.getValue(MEASURE_PCC);
         String pccImplementationName = parameters.getValue(PCC_IMPLEMENTATION);
+        boolean measureManders = parameters.getValue(MEASURE_MANDERS);
+
+        MIA.log.writeDebug("Need to add default thresholding in image colocalisation, so we can get PCC above and below threshold");
 
         // If objects are to be used as a mask a binary image is created.  Otherwise, null is returned
         switch (maskingMode) {
             case MaskingModes.MEASURE_INSIDE_OBJECTS:
             case MaskingModes.MEASURE_OUTSIDE_OBJECTS:
-                maskImage = getMaskImage(objects,image1,maskingMode);
+                maskImage = getObjectMaskImage(objects,image1,maskingMode);
+                break;
+            case MaskingModes.NONE:
+                maskImage = null;
                 break;
         }
 
+        // Getting BitType ImgLib2 Img for Coloc2
+        Img<BitType> bitTypeMask = getBitTypeMask(maskImage);
+
         // Running measurements
         measurePCCOld(image1,image2,maskImage);
-        measurePCC(image1,image2,maskImage,pccImplementationName);
+        measurePCC(image1,image2,bitTypeMask,pccImplementationName);
 
         if (showOutput) image1.showMeasurements(this);
         if (showOutput) image2.showMeasurements(this);
@@ -236,8 +234,10 @@ public class MeasureImageColocalisation extends Module {
         parameters.add(new ChoiceP(MASKING_MODE,this,MaskingModes.NONE,MaskingModes.ALL));
         parameters.add(new InputImageP(MASK_IMAGE,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new ChoiceP(THRESHOLDING_MODE,this,ThresholdingModes.BISECTION,ThresholdingModes.ALL));
         parameters.add(new BooleanP(MEASURE_PCC,this,true));
         parameters.add(new ChoiceP(PCC_IMPLEMENTATION,this,PCCImplementations.CLASSIC,PCCImplementations.ALL));
+        parameters.add(new BooleanP(MEASURE_MANDERS,this,true));
 
     }
 
@@ -259,10 +259,13 @@ public class MeasureImageColocalisation extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(THRESHOLDING_MODE));
         returnedParameters.add(parameters.getParameter(MEASURE_PCC));
         if ((boolean) parameters.getValue(MEASURE_PCC)) {
             returnedParameters.add(parameters.getParameter(PCC_IMPLEMENTATION));
         }
+
+        returnedParameters.add(parameters.getParameter(MEASURE_MANDERS));
 
         return returnedParameters;
 
