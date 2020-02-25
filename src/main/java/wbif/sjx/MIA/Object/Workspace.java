@@ -24,6 +24,7 @@ public class Workspace {
     private int ID;
     private double progress = 0;
     private boolean analysisFailed = false;
+    private boolean exportWorkspace = true;
 
 
     // CONSTRUCTOR
@@ -241,6 +242,14 @@ public class Workspace {
 
     public void setAnalysisFailed(boolean analysisFailed) {
         this.analysisFailed = analysisFailed;
+    }
+
+    public boolean exportWorkspace() {
+        return exportWorkspace;
+    }
+
+    public void setExportWorkspace(boolean exportWorkspace) {
+        this.exportWorkspace = exportWorkspace;
     }
 
     @Override
