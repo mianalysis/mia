@@ -310,6 +310,7 @@ public class RelateOneToOne extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
+            addMissingLinks(inputObjects1,inputObjects2);
             workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCal()));
             return true;
         }

@@ -68,6 +68,7 @@ public class Exporter {
                 // Getting list of unique metadata values
                 HashSet<String> metadataValues = new HashSet<>();
                 for (Workspace workspace:workspaces) {
+                    if (!workspace.exportWorkspace()) continue;
                     if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
                         metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
                     }
@@ -78,6 +79,7 @@ public class Exporter {
 
                     // Adding Workspaces matching this metadata value
                     for (Workspace workspace:workspaces) {
+                        if (!workspace.exportWorkspace()) continue;
                         if (!workspace.getMetadata().containsKey(metadataItemForGrouping)) continue;
                         if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
                             currentWorkspaces.add(workspace);
@@ -309,6 +311,7 @@ public class Exporter {
         switch (summaryType) {
             case PER_FILE:
                 for (Workspace workspace:workspaces) {
+                    if (!workspace.exportWorkspace()) continue;
                     Row summaryValueRow = summarySheet.createRow(summaryRow++);
                     populateSummaryRow(summaryValueRow, workspace, modules, colNumbers, null, null);
                 }
@@ -316,6 +319,7 @@ public class Exporter {
 
             case PER_TIMEPOINT_PER_FILE:
                 for (Workspace workspace:workspaces) {
+                    if (!workspace.exportWorkspace()) continue;
                     // For the current workspace, iterating over all available time points and creating a new workspace
                     HashMap<Integer, Workspace> currentWorkspaces = workspace.getSingleTimepointWorkspaces();
                     for (Integer timepoint : currentWorkspaces.keySet()) {
@@ -331,6 +335,7 @@ public class Exporter {
                 HashMap<String, Workspace> metadataWorkspaces = workspaces.getMetadataWorkspaces(metadataItemForSummary);
                 for (String metadataValue: metadataWorkspaces.keySet()) {
                     Workspace currentWorkspace = metadataWorkspaces.get(metadataValue);
+                    if (!currentWorkspace.exportWorkspace()) continue;
                     Row summaryValueRow = summarySheet.createRow(summaryRow++);
                     populateSummaryRow(summaryValueRow, currentWorkspace, modules, colNumbers, metadataItemForSummary, metadataValue);
 

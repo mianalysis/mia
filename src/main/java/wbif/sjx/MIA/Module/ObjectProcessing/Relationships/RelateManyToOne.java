@@ -365,6 +365,7 @@ public class RelateManyToOne extends Module {
         long count = 0;
         String overlapMeasurementName = getFullName(Measurements.OVERLAP_PC,parentObjects.getName());
 
+        // If there are no objects to link, just set all children to no link
         if (nCombined == 0) return;
 
         // Runs through each child object against each parent object

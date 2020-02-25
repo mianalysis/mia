@@ -24,6 +24,7 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REFERENCE_OBJECT_COUNT_MODE = "Reference object count mode";
     public static final String REFERENCE_METADATA_VALUE = "Reference metadata value";
     public static final String REFERENCE_VALUE = "Reference value";
+    public static final String EXPORT_WORKSPACE = "Export terminated workspaces";
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
@@ -98,6 +99,7 @@ public class ConditionalAnalysisTermination extends Module {
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String referenceMetadataValue = parameters.getValue(REFERENCE_METADATA_VALUE);
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
+        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
         boolean removeImages = parameters.getValue(REMOVE_IMAGES);
         boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
 
@@ -120,6 +122,7 @@ public class ConditionalAnalysisTermination extends Module {
 
         // If terminate, remove necessary images and objects
         if (terminate) {
+            workspace.setExportWorkspace(exportWorkspace);
             if (removeImages) workspace.clearAllImages(false);
             if (removeObjects) workspace.clearAllObjects(false);
         }
@@ -138,6 +141,7 @@ public class ConditionalAnalysisTermination extends Module {
         parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT,this));
         parameters.add(new MetadataItemP(REFERENCE_METADATA_VALUE,this));
         parameters.add(new DoubleP(REFERENCE_VALUE,this,0d));
+        parameters.add(new BooleanP(EXPORT_WORKSPACE,this,true));
         parameters.add(new BooleanP(REMOVE_IMAGES,this,false));
         parameters.add(new BooleanP(REMOVE_OBJECTS,this,false));
 
@@ -173,6 +177,7 @@ public class ConditionalAnalysisTermination extends Module {
 
         returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 
+        returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
         returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
         returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
 

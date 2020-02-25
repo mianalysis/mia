@@ -164,7 +164,7 @@ public class ExtendedMinima extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new IntegerP(DYNAMIC, this,1));
-        parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.SIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
