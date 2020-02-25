@@ -192,7 +192,7 @@ public class MeasureObjectTexture extends Module {
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POINT_MEASUREMENT));
 
-        if (parameters.getValue(POINT_MEASUREMENT)) {
+        if ((boolean) parameters.getValue(POINT_MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
             returnedParameters.add(parameters.getParameter(MEASUREMENT_RADIUS));
         }

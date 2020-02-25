@@ -188,7 +188,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
-        if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 
@@ -209,8 +209,8 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         returnedParameters.add(parameters.getParameter(IMAGE_OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INTERCEPT_OUTPUT_IMAGE));
-        if (parameters.getValue(INTERCEPT_OUTPUT_IMAGE)) {
-            if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(INTERCEPT_OUTPUT_IMAGE)) {
+            if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
                 returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
                 if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
                     returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
@@ -220,7 +220,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
             }
         }
 
-        if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
             returnedParameters.add(parameters.getParameter(ADD_INTERCEPTED_VARIABLE));
         }

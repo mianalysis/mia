@@ -948,7 +948,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 returnedParameters.add(parameters.getParameter(STARTING_INDEX));
                 returnedParameters.add(parameters.getParameter(FRAME_INTERVAL));
                 returnedParameters.add(parameters.getParameter(LIMIT_FRAMES));
-                if (parameters.getValue(LIMIT_FRAMES)) {
+                if ((boolean) parameters.getValue(LIMIT_FRAMES)) {
                     returnedParameters.add(parameters.getParameter(FINAL_INDEX));
                 }
                 break;
@@ -1013,14 +1013,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         returnedParameters.add(parameters.getParameter(CALIBRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SET_CAL));
-        if (parameters.getValue(SET_CAL)) {
+        if ((boolean) parameters.getValue(SET_CAL)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));
             returnedParameters.add(parameters.getParameter(Z_CAL));
         }
 
         if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
             returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
-            if (parameters.getValue(FORCE_BIT_DEPTH)) {
+            if ((boolean) parameters.getValue(FORCE_BIT_DEPTH)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
                 if (!parameters.getValue(OUTPUT_BIT_DEPTH).equals(OutputBitDepths.THIRTY_TWO)) {
                     returnedParameters.add(parameters.getParameter(MIN_INPUT_INTENSITY));

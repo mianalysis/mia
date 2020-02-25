@@ -439,7 +439,7 @@ public class MeasureObjectCurvature extends Module {
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
 
         returnedParameters.add(parameters.getParameter(RELATE_TO_REFERENCE_POINT));
-        if (parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
+        if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
             ((ObjectMeasurementP) parameters.getParameter(X_REF_MEASUREMENT)).setObjectName(inputObjectsName);
@@ -453,7 +453,7 @@ public class MeasureObjectCurvature extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(FIT_SPLINE));
-        if (parameters.getValue(FIT_SPLINE)) {
+        if ((boolean) parameters.getValue(FIT_SPLINE)) {
             returnedParameters.add(parameters.getParameter(SPLINE_FITTING_METHOD));
             switch ((String) parameters.getValue(SPLINE_FITTING_METHOD)) {
                 case SplineFittingMethods.LOESS:
@@ -464,7 +464,7 @@ public class MeasureObjectCurvature extends Module {
             }
 
             returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
-            if (parameters.getValue(DRAW_SPLINE)) {
+            if ((boolean) parameters.getValue(DRAW_SPLINE)) {
                 returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
                 returnedParameters.add(parameters.getParameter(LINE_WIDTH));
                 returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
@@ -472,7 +472,7 @@ public class MeasureObjectCurvature extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATE_END_END_ANGLE));
-        if (parameters.getValue(CALCULATE_END_END_ANGLE)) {
+        if ((boolean) parameters.getValue(CALCULATE_END_END_ANGLE)) {
             returnedParameters.add(parameters.getParameter(FITTING_RANGE_PX));
         }
 
@@ -543,11 +543,11 @@ public class MeasureObjectCurvature extends Module {
         boolean signedCurvature = false;
         boolean calculateHeadTailAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
 
-        if (parameters.getValue(FIT_SPLINE)) {
-            if (parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
+        if ((boolean) parameters.getValue(FIT_SPLINE)) {
+            if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
                 relateToReference = true;
-                if (parameters.getValue(ABSOLUTE_CURVATURE)) absoluteCurvature = true;
-                if (parameters.getValue(SIGNED_CURVATURE)) signedCurvature = true;
+                if ((boolean) parameters.getValue(ABSOLUTE_CURVATURE)) absoluteCurvature = true;
+                if ((boolean) parameters.getValue(SIGNED_CURVATURE)) signedCurvature = true;
 
             } else {
                 absoluteCurvature = true;

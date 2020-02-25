@@ -313,6 +313,7 @@ public class RelateOneToOne extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
+            addMissingLinks(inputObjects1,inputObjects2);
             workspace.addObjects(new ObjCollection(outputObjectsName));
             return true;
         }
@@ -379,7 +380,7 @@ public class RelateOneToOne extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_2));
         returnedParameters.add(parameters.getParameter(CREATE_CLUSTER_OBJECTS));
-        if (parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
         }
 
@@ -462,7 +463,7 @@ public class RelateOneToOne extends Module {
     public RelationshipRefCollection updateAndGetRelationships() {
         RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
 
-        if (parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
             // Getting input objects
             String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
             String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);

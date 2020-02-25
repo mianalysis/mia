@@ -290,19 +290,19 @@ public class MeasureObjectIntensity extends Module {
         for (Obj object:objects.values()) measureIntensity(object,ipl);
 
         // If specified, measuring weighted centre for intensity
-        if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             for (Obj object:objects.values()) measureWeightedCentre(object,ipl);
         }
 
         // If specified, measuring weighted distance to the object edge
-        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             for (Obj object:objects.values()) measureWeightedEdgeDistance(object,image);
         }
 
         // If specified, measuring intensity profiles relative to the object edge
-        if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
             Image maskImage = null;
-            if (parameters.getValue(ONLY_MEASURE_ON_MASK)) {
+            if ((boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
                 maskImage = workspace.getImage(parameters.getValue(MASK_IMAGE));
             }
             for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl,maskImage);
@@ -351,19 +351,19 @@ public class MeasureObjectIntensity extends Module {
 
         returnedParameters.add(parameters.getParameter(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_EDGE_DISTANCE));
-        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
         }
 
         returnedParameters.add(parameters.getParameter(INTENSITY_PROFILE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASURE_EDGE_INTENSITY_PROFILE));
-        if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
             returnedParameters.add(parameters.getParameter(MINIMUM_DISTANCE));
             returnedParameters.add(parameters.getParameter(MAXIMUM_DISTANCE));
             returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCES));
             returnedParameters.add(parameters.getParameter(NUMBER_OF_MEASUREMENTS));
             returnedParameters.add(parameters.getParameter(ONLY_MEASURE_ON_MASK));
-            if (parameters.getValue(ONLY_MEASURE_ON_MASK)) {
+            if ((boolean) parameters.getValue(ONLY_MEASURE_ON_MASK)) {
                 returnedParameters.add(parameters.getParameter(MASK_IMAGE));
             }
         }
@@ -419,7 +419,7 @@ public class MeasureObjectIntensity extends Module {
                 " \""+inputObjectsName+"\" object");
         returnedRefs.add(sum);
 
-        if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -467,7 +467,7 @@ public class MeasureObjectIntensity extends Module {
 
         }
 
-        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+        if ((boolean) parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_PX);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
@@ -504,7 +504,7 @@ public class MeasureObjectIntensity extends Module {
 
         }
 
-        if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+        if ((boolean) parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
             double minDist = parameters.getValue(MINIMUM_DISTANCE);
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);

@@ -224,7 +224,7 @@ public class MeasureObjectShape extends Module {
         ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (parameters.getValue(MEASURE_VOLUME)) {
+        if ((boolean) parameters.getValue(MEASURE_VOLUME)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -271,7 +271,7 @@ public class MeasureObjectShape extends Module {
 
         }
 
-        if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_AREA)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -285,7 +285,7 @@ public class MeasureObjectShape extends Module {
                     "in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
-        if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_DIA)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
@@ -300,7 +300,7 @@ public class MeasureObjectShape extends Module {
                     "units.");
         }
 
-        if (parameters.getValue(MEASURE_PROJECTED_PERIM)) {
+        if ((boolean) parameters.getValue(MEASURE_PROJECTED_PERIM)) {
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);

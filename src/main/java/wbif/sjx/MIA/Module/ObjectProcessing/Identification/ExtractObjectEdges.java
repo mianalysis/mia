@@ -228,12 +228,12 @@ public class ExtractObjectEdges extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(CREATE_EDGE_OBJECTS));
-        if (parameters.getValue(CREATE_EDGE_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(CREATE_INTERIOR_OBJECTS));
-        if (parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_INTERIOR_OBJECTS));
         }
 
@@ -273,12 +273,12 @@ public class ExtractObjectEdges extends Module {
 
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
-        if (parameters.getValue(CREATE_EDGE_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS)) {
             String outputEdgeObjects = parameters.getValue(OUTPUT_EDGE_OBJECTS);
             returnedRelationships.add(relationshipRefs.getOrPut(inputObjects, outputEdgeObjects));
         }
 
-        if (parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
+        if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
             String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
             returnedRelationships.add(relationshipRefs.getOrPut(inputObjects,outputInteriorObjects));
         }

@@ -426,7 +426,7 @@ public class MetadataExtractor extends Module {
                         returnedParameters.add(parameters.getParameter(METADATA_ITEM_TO_MATCH));
 
                         returnedParameters.add(parameters.getParameter(REGEX_SPLITTING));
-                        if (parameters.getValue(REGEX_SPLITTING)) {
+                        if ((boolean) parameters.getValue(REGEX_SPLITTING)) {
                             returnedParameters.addAll(getGenericExtractorParameters());
                         } else {
                             returnedParameters.add(parameters.getParameter(METADATA_VALUE_NAME));
@@ -453,7 +453,7 @@ public class MetadataExtractor extends Module {
         returnedParameters.add(parameters.getParameter(GROUPS));
 
         returnedParameters.add(parameters.getParameter(SHOW_TEST));
-        if (parameters.getValue(SHOW_TEST)) {
+        if ((boolean) parameters.getValue(SHOW_TEST)) {
             returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
             returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
 
@@ -593,7 +593,7 @@ public class MetadataExtractor extends Module {
                         break;
 
                     case MetadataFileExtractors.CSV_FILE:
-                        if (parameters.getValue(REGEX_SPLITTING)) {
+                        if ((boolean) parameters.getValue(REGEX_SPLITTING)) {
                             String groupString = parameters.getValue(GROUPS);
                             String[] groups = getGroups(groupString);
                             for (String group : groups) metadataRefs.getOrPut((group));

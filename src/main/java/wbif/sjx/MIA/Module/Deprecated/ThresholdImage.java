@@ -1,12 +1,13 @@
 // TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
 
-package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -22,6 +23,7 @@ import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 public class ThresholdImage extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String OUTPUT_MODE = "Output mode";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     
@@ -37,12 +39,17 @@ public class ThresholdImage extends Module {
     public static final String THRESHOLD_VALUE = "Threshold value";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
-    public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
+
 
     public ThresholdImage(ModuleCollection modules) {
         super("Threshold image",modules);
     }
 
+    public interface OutputModes {
+        String CALCULATE_ONLY = "Calculate only";
+        String CALCULATE_AND_APPLY = "Calculate and apply";
+
+    }
 
     public interface ThresholdTypes {
         String GLOBAL = "Global";
@@ -206,7 +213,7 @@ public class ThresholdImage extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
@@ -239,7 +246,7 @@ public class ThresholdImage extends Module {
         int thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
-        boolean storeMeasurement = parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT);
+
         int threshold = 0;
 
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
@@ -316,7 +323,7 @@ public class ThresholdImage extends Module {
         if (applyToInput) {
             if (showOutput) inputImage.showImage();
 
-            if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(inputImage,threshold);
+            if (thresholdType.equals(ThresholdTypes.GLOBAL)) addGlobalThresholdMeasurement(inputImage,threshold);
 
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -324,7 +331,7 @@ public class ThresholdImage extends Module {
             workspace.addImage(outputImage);
             if (showOutput) outputImage.showImage();
 
-            if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(outputImage,threshold);
+            if (thresholdType.equals(ThresholdTypes.GLOBAL)) addGlobalThresholdMeasurement(outputImage,threshold);
         }
 
         return true;
@@ -353,7 +360,6 @@ public class ThresholdImage extends Module {
         parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1, "Absolute manual threshold value that will be applied to all pixels."));
         parameters.add(new BooleanP(USE_GLOBAL_Z,this,false, "When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting."));
         parameters.add(new BooleanP(WHITE_BACKGROUND, this,true, "Controls the logic of the output image in terms of what is considered foreground and background."));
-        parameters.add(new BooleanP(STORE_THRESHOLD_AS_MEASUREMENT, this,false, "Add applied threshold value as a measurement to the output image."));
 
     }
 
@@ -375,7 +381,6 @@ public class ThresholdImage extends Module {
             case ThresholdTypes.GLOBAL:
                 returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.add(parameters.getParameter(GLOBAL_ALGORITHM));
-                returnedParameters.add(parameters.getParameter(STORE_THRESHOLD_AS_MEASUREMENT));
                 break;
 
             case ThresholdTypes.LOCAL:
@@ -395,7 +400,7 @@ public class ThresholdImage extends Module {
         // If using an automatic threshold algorithm, we can set a lower threshold limit
         if (!parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.MANUAL)) {
             returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-            if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+            if ((boolean) parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
                 returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
             }
         }
@@ -410,8 +415,7 @@ public class ThresholdImage extends Module {
     public ImageMeasurementRefCollection updateAndGetImageMeasurementRefs() {
         ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
-        if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
-                && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
+        if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)) {
             String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);

@@ -237,7 +237,7 @@ public class ActiveContourObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(NUMBER_OF_ITERATIONS));
 
         returnedParameters.add(parameters.getParameter(USE_MOTION_THRESHOLD));
-        if (parameters.getValue(USE_MOTION_THRESHOLD)) {
+        if ((boolean) parameters.getValue(USE_MOTION_THRESHOLD)) {
             returnedParameters.add(parameters.getParameter(MOTION_THRESHOLD_PX));
         }
         returnedParameters.add(parameters.getParameter(SHOW_CONTOURS_REALTIME));

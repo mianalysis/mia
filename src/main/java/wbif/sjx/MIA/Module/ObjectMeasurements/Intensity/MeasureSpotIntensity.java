@@ -91,15 +91,15 @@ public class MeasureSpotIntensity extends Module {
         // Checking if there are any objects to measure
         if (inputObjects.size() == 0) {
             for (Obj inputObject:inputObjects.values()) {
-                if (parameters.getValue(MEASURE_MEAN))
+                if ((boolean) parameters.getValue(MEASURE_MEAN))
                     inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), Double.NaN));
-                if (parameters.getValue(MEASURE_MIN))
+                if ((boolean) parameters.getValue(MEASURE_MIN))
                     inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MIN), Double.NaN));
-                if (parameters.getValue(MEASURE_MAX))
+                if ((boolean) parameters.getValue(MEASURE_MAX))
                     inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MAX), Double.NaN));
-                if (parameters.getValue(MEASURE_STDEV))
+                if ((boolean) parameters.getValue(MEASURE_STDEV))
                     inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.STDEV), Double.NaN));
-                if (parameters.getValue(MEASURE_SUM))
+                if ((boolean) parameters.getValue(MEASURE_SUM))
                     inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), Double.NaN));
 
             }
@@ -121,15 +121,15 @@ public class MeasureSpotIntensity extends Module {
                 cs.addMeasure(ipl.getProcessor().getPixelValue(point.x,point.y));
             }
 
-            if (parameters.getValue(MEASURE_MEAN))
+            if ((boolean) parameters.getValue(MEASURE_MEAN))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
-            if (parameters.getValue(MEASURE_MIN))
+            if ((boolean) parameters.getValue(MEASURE_MIN))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
-            if (parameters.getValue(MEASURE_MAX))
+            if ((boolean) parameters.getValue(MEASURE_MAX))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
-            if (parameters.getValue(MEASURE_STDEV))
+            if ((boolean) parameters.getValue(MEASURE_STDEV))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
-            if (parameters.getValue(MEASURE_SUM))
+            if ((boolean) parameters.getValue(MEASURE_SUM))
                 inputObject.addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
 
         }
@@ -200,35 +200,35 @@ public class MeasureSpotIntensity extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        if (parameters.getValue(MEASURE_MEAN)) {
+        if ((boolean) parameters.getValue(MEASURE_MEAN)) {
             String name = getFullName(inputImageName, Measurements.MEAN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(MEASURE_MIN)) {
+        if ((boolean) parameters.getValue(MEASURE_MIN)) {
             String name = getFullName(inputImageName, Measurements.MIN);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(MEASURE_MAX)) {
+        if ((boolean) parameters.getValue(MEASURE_MAX)) {
             String name = getFullName(inputImageName, Measurements.MAX);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(MEASURE_STDEV)) {
+        if ((boolean) parameters.getValue(MEASURE_STDEV)) {
             String name = getFullName(inputImageName, Measurements.STDEV);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);
             returnedRefs.add(reference);
         }
 
-        if (parameters.getValue(MEASURE_SUM)) {
+        if ((boolean) parameters.getValue(MEASURE_SUM)) {
             String name = getFullName(inputImageName, Measurements.SUM);
             ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setObjectsName(inputObjectsName);

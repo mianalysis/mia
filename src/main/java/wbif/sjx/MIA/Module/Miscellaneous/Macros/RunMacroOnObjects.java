@@ -203,7 +203,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
-        if (parameters.getValue(PROVIDE_INPUT_IMAGE)) {
+        if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         }
 

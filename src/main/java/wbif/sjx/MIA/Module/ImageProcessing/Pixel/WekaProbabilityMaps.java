@@ -232,7 +232,7 @@ public class WekaProbabilityMaps extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
 
         returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
-        if (parameters.getValue(OUTPUT_SINGLE_CLASS)) {
+        if ((boolean) parameters.getValue(OUTPUT_SINGLE_CLASS)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
         }
 

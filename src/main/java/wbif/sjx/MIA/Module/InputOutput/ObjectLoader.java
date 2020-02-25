@@ -530,7 +530,7 @@ public class ObjectLoader extends Module {
 
         returnedParameters.add(parameters.get(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.get(CREATE_PARENTS));
-        if (parameters.getValue(CREATE_PARENTS)) {
+        if ((boolean) parameters.getValue(CREATE_PARENTS)) {
             returnedParameters.add(parameters.get(PARENT_TYPE));
             switch ((String) parameters.getValue(PARENT_TYPE)) {
                 case ParentTypes.CLUSTER:
@@ -569,7 +569,7 @@ public class ObjectLoader extends Module {
     public RelationshipRefCollection updateAndGetRelationships() {
         RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
 
-        if (parameters.getValue(CREATE_PARENTS)) {
+        if ((boolean) parameters.getValue(CREATE_PARENTS)) {
             String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
             String parentObjectsName = null;
             switch ((String) parameters.getValue(PARENT_TYPE)) {

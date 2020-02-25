@@ -55,7 +55,7 @@ public class FocusStack extends Module {
         // Getting the image type
         int type = getImageType(ipr);
 
-        // Initialising the stack focuser.  This requires an example stack.
+        // Initialising the stack focusser.  This requires an example stack.
         int nSlices = inputIpl.getNSlices();
         ImagePlus stack = SubHyperstackMaker.makeSubhyperstack(inputIpl,"1-1","1-"+nSlices,"1-1");
         Stack_Focuser_ focuser = new Stack_Focuser_();
@@ -178,7 +178,7 @@ public class FocusStack extends Module {
 
         // If necessary, processing the height image
         if (addHeightMap) {
-            if (parameters.getValue(SHOW_HEIGHT_IMAGE)) {
+            if ((boolean) parameters.getValue(SHOW_HEIGHT_IMAGE)) {
                 outputImages[1].showImage();
             }
 
@@ -213,7 +213,7 @@ public class FocusStack extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_FOCUSED_IMAGE));
 
         returnedParameters.add(parameters.getParameter(USE_EXISTING_HEIGHT_IMAGE));
-        if (parameters.getValue(USE_EXISTING_HEIGHT_IMAGE)) {
+        if ((boolean) parameters.getValue(USE_EXISTING_HEIGHT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_HEIGHT_IMAGE));
 
         } else {
@@ -221,7 +221,7 @@ public class FocusStack extends Module {
             returnedParameters.add(parameters.getParameter(SMOOTH_HEIGHT_MAP));
 
             returnedParameters.add(parameters.getParameter(ADD_HEIGHT_MAP_TO_WORKSPACE));
-            if (parameters.getValue(ADD_HEIGHT_MAP_TO_WORKSPACE)) {
+            if ((boolean) parameters.getValue(ADD_HEIGHT_MAP_TO_WORKSPACE)) {
                 returnedParameters.add(parameters.getParameter(OUTPUT_HEIGHT_IMAGE));
                 returnedParameters.add(parameters.getParameter(SHOW_HEIGHT_IMAGE));
             }

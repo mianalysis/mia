@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -39,6 +40,7 @@ public class ConvertObjectsToImage extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String SINGLE_COLOUR_MODE = "Single colour mode";
     public static final String MEASUREMENT = "Measurement";
 
     public ConvertObjectsToImage(ModuleCollection modules) {
@@ -62,6 +64,14 @@ public class ConvertObjectsToImage extends Module {
     }
 
     public interface ColourModes extends Overlay.ColourModes  {}
+
+    public interface SingleColourModes {
+        String B_ON_W = "Black objects, white background";
+        String W_ON_B = "White objects, black background";
+
+        String[] ALL = new String[]{B_ON_W,W_ON_B};
+
+    }
 
     public interface VolumeTypes extends Image.VolumeTypes {}
 
@@ -102,6 +112,7 @@ public class ConvertObjectsToImage extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             String outputMode = parameters.getValue(OUTPUT_MODE);
             String colourMode = parameters.getValue(COLOUR_MODE);
+            String singleColourMode = parameters.getValue(SINGLE_COLOUR_MODE);
             String measurementForColour = parameters.getValue(MEASUREMENT);
             String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
@@ -150,8 +161,13 @@ public class ConvertObjectsToImage extends Module {
                     outputImage = inputObjects.convertCentroidsToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
                     break;
                 case OutputModes.WHOLE_OBJECT:
+                default:
                     outputImage = inputObjects.convertToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
                     break;
+            }
+
+            if (colourMode.equals(ColourModes.SINGLE_COLOUR) && singleColourMode.equals(SingleColourModes.B_ON_W)) {
+                InvertIntensity.process(outputImage);
             }
 
             // Applying spatial calibration from template image
@@ -197,17 +213,18 @@ public class ConvertObjectsToImage extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new ChoiceP(CONVERSION_MODE, this,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
+        parameters.add(new ChoiceP(CONVERSION_MODE, this, ConversionModes.OBJECTS_TO_IMAGE, ConversionModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this,VolumeTypes.POINTLIST,VolumeTypes.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
-        parameters.add(new ChoiceP(COLOUR_MODE, this,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
+        parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
+        parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
+        parameters.add(new ChoiceP(SINGLE_COLOUR_MODE, this, SingleColourModes.W_ON_B, SingleColourModes.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
 
@@ -265,6 +282,10 @@ public class ConvertObjectsToImage extends Module {
                         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
                     }
 
+                    break;
+
+                case ColourModes.SINGLE_COLOUR:
+                    returnedParameters.add(parameters.getParameter(SINGLE_COLOUR_MODE));
                     break;
             }
         }

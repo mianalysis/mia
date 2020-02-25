@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modules.html" class="nav1">Modules</a>
+    <a href="../modulelist.html" class="nav2">List of modules</a>
+    <a href="../macros.html" class="nav1">Macros</a>
+    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Manual threshold</h1>
+<h2>Description</h2>
+
+<h2>Parameters</h2>
+<ul><li>Input image<ul><li>Description: Image to apply threshold to.</li><li>Type: InputImageP</li></ul><br><li>Apply to input image<ul><li>Description: Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</li><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Output image<ul><li>Description: Name of the output image created during the thresholding process.  This image will be added to the workspace.</li><li>Type: OutputImageP</li></ul><br><li>Threshold source<ul><li>Type: ChoiceP</li><li>Default value: Fixed value</li><li>Choices: <ul><li>Fixed value</li><li>Image measurement</li></ul></li></ul><br><li>Threshold value<ul><li>Description: Absolute manual threshold value that will be applied to all pixels.</li><li>Type: IntegerP</li><li>Default value: 1</li></ul><br><li>Measurement<ul><li>Type: ImageMeasurementP</li></ul><br><li>Black objects/white background<ul><li>Description: Controls the logic of the output image in terms of what is considered foreground and background.</li><li>Type: BooleanP</li><li>Default value: true</li></ul><br></ul>
+
+</div>
+</body>
