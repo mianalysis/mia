@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.text.DecimalFormat;
@@ -23,7 +22,7 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -56,7 +55,7 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -88,7 +87,7 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -121,7 +120,7 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -154,7 +153,7 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -190,7 +189,7 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);

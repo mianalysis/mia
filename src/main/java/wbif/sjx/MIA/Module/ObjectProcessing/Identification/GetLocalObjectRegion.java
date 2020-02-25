@@ -126,7 +126,7 @@ public class GetLocalObjectRegion extends Module {
 
     public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, @Nullable String measurementName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
         // Creating store for output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
 
         if (inputObjects.values().size() == 0) return outputObjects;
 

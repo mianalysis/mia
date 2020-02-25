@@ -54,7 +54,7 @@ public class ResolveCoOccurrence extends Module {
 
     ObjCollection calculateSpatialOverlap(ObjCollection inputObjects1, ObjCollection inputObjects2,
                                           String outputObjectsName, double minOverlap1, double minOverlap2) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCal());
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
         HashMap<Integer,Double[]> overlaps1 = initialiseOverlapStore(inputObjects1,-Double.MAX_VALUE);
@@ -97,7 +97,7 @@ public class ResolveCoOccurrence extends Module {
 
     ObjCollection calculateCentroidSeparation(ObjCollection inputObjects1, ObjCollection inputObjects2,
                                               String outputObjectsName, double maxSeparation) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCal());
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
         HashMap<Integer,Double[]> overlaps1 = initialiseOverlapStore(inputObjects1,Double.MAX_VALUE);
@@ -236,7 +236,7 @@ public class ResolveCoOccurrence extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCalibration()));
+            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCal()));
             return true;
         }
 

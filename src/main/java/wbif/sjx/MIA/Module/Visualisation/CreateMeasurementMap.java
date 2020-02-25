@@ -60,28 +60,24 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    public static Indexer initialiseIndexer(Image image, boolean averageZ, boolean averageT) {
-        ImagePlus ipl = image.getImagePlus();
-
+    public static Indexer initialiseIndexer(TSpatCal calibration, boolean averageZ, boolean averageT) {
         // Get final CumStat[] dimensions
-        int width = ipl.getWidth();
-        int height = ipl.getHeight();
-        int nSlices = averageZ ? 1 : ipl.getNSlices();
-        int nFrames = averageT ? 1 : ipl.getNFrames();
+        int width = calibration.getWidth();
+        int height = calibration.getHeight();
+        int nSlices = averageZ ? 1 : calibration.getnSlices();
+        int nFrames = averageT ? 1 : calibration.getnFrames();
 
         // Create Indexer
         return new Indexer(new int[]{width,height,nSlices,nFrames});
 
     }
 
-    public static CumStat[] initialiseCumStats(Image image, boolean averageZ, boolean averageT) {
-        ImagePlus ipl = image.getImagePlus();
-
+    public static CumStat[] initialiseCumStats(TSpatCal calibration, boolean averageZ, boolean averageT) {
         // Get final CumStat[] dimensions
-        int width = ipl.getWidth();
-        int height = ipl.getHeight();
-        int nSlices = averageZ ? 1 : ipl.getNSlices();
-        int nFrames = averageT ? 1 : ipl.getNFrames();
+        int width = calibration.getWidth();
+        int height = calibration.getHeight();
+        int nSlices = averageZ ? 1 : calibration.getnSlices();
+        int nFrames = averageT ? 1 : calibration.getnFrames();
 
         // Create CumStat[]
         CumStat[] cumStats =  new CumStat[width*height*nSlices*nFrames];
@@ -299,8 +295,9 @@ public class CreateMeasurementMap extends Module {
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
         // Initialising stores
-        CumStat[] cumStats = initialiseCumStats(templateImage,averageZ,averageT);
-        Indexer indexer = initialiseIndexer(templateImage,averageZ,averageT);
+        TSpatCal calibration = inputObjects.getCal();
+        CumStat[] cumStats = initialiseCumStats(calibration,averageZ,averageT);
+        Indexer indexer = initialiseIndexer(calibration,averageZ,averageT);
 
         // Compressing relevant measures
         switch (measurementMode) {
@@ -317,8 +314,8 @@ public class CreateMeasurementMap extends Module {
         CumStat[] blurCumStats = applyBlur(cumStats,indexer,range,statistic);
 
         // Converting statistic array to Image
-        Calibration calibration = templateImage.getImagePlus().getCalibration();
-        Image outputImage = convertToImage(blurCumStats,indexer,outputImageName,calibration);
+        Calibration imagecalibration = templateImage.getImagePlus().getCalibration();
+        Image outputImage = convertToImage(blurCumStats,indexer,outputImageName,imagecalibration);
 
         workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();

@@ -168,7 +168,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects.getCalibration()) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects.getCal()) : null;
         Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
         int count = filter(inputObjects,outputObjects,remove,displayImage);

@@ -20,7 +20,6 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -102,7 +101,7 @@ public class HoughObjectDetection extends Module {
         int labelSize = parameters.getValue(LABEL_SIZE);
 
         // Storing the image calibration
-        VolumeCalibration cal = VolumeCalibration.getFromImage(ipl);
+        TSpatCal cal = TSpatCal.getFromImage(ipl);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal);
 
         int nThreads = multithread ? Prefs.getThreads() : 1;

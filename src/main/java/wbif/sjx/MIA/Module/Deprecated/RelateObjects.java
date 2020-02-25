@@ -392,7 +392,7 @@ public class RelateObjects extends Module {
 
     public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName) {
         Obj exampleParent = parentObjects.getFirst();
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName,parentObjects.getCalibration());
+        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName,parentObjects.getCal());
 
         if (exampleParent == null) return relatedObjects;
 

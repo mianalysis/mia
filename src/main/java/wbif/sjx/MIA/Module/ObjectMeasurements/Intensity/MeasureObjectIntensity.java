@@ -193,7 +193,7 @@ public class MeasureObjectIntensity extends Module {
         for (int i=0;i<nMeasurements;i++) cumStats.put(bins[i],new CumStat());
 
         // Creating an object image
-        ImagePlus objIpl = object.convertObjToImage("Inside dist", new Image("Intensity",intensityIpl)).getImagePlus();
+        ImagePlus objIpl = object.convertObjToImage("Inside dist").getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
         ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);

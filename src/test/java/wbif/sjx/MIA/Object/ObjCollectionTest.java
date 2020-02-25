@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +20,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         ObjCollection collection = new ObjCollection("TestObj",calibration);
 
@@ -46,7 +45,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         ObjCollection collection = new ObjCollection("TestObj",calibration);
         Obj firstObj = collection.getFirst();
@@ -61,7 +60,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,10,3,12);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,10,3,12);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -100,7 +99,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -132,7 +131,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -182,7 +181,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,10,4,12);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,10,4,12);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);

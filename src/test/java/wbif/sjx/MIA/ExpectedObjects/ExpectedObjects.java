@@ -5,9 +5,9 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.TSpatCal;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.*;
@@ -28,20 +28,22 @@ public abstract class ExpectedObjects {
     private final int width;
     private final int height;
     private final int nSlices;
+    private final int nFrames;
 
     public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
 
-    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices) {
+    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices, int nFrames) {
         this.volumeType = volumeType;
         this.width = width;
         this.height = height;
         this.nSlices = nSlices;
+        this.nFrames = nFrames;
     }
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
     public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,width,height,nSlices);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices,nFrames);
 
         // Initialising object store
         ObjCollection testObjects = new ObjCollection(objectName,calibration);

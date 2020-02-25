@@ -62,7 +62,7 @@ public class ShowObjectsTest extends ModuleTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
-        Image testImage = testObjects.convertToImage("Test image",new Image("Image",ipl),hues,32,false);
+        Image testImage = testObjects.convertToImage("Test image",hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -115,7 +115,7 @@ public class ShowObjectsTest extends ModuleTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
-        Image testImage = testObjects.convertToImage("Test image",new Image("Image",ipl),hues,32,false);
+        Image testImage = testObjects.convertToImage("Test image",hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();

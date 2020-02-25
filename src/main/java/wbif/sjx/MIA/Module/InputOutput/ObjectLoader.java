@@ -19,7 +19,6 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
@@ -165,16 +164,17 @@ public class ObjectLoader extends Module {
         Image image = workspace.getImage(referenceImageName);
         ImagePlus ipl = image.getImagePlus();
 
-        return new int[]{ipl.getWidth(),ipl.getHeight(),ipl.getNSlices()};
+        return new int[]{ipl.getWidth(),ipl.getHeight(),ipl.getNSlices(),ipl.getNFrames()};
 
     }
 
     int[] getLimitsFromManualValues() {
-        int[] limits = new int[3];
+        int[] limits = new int[4];
 
         limits[0] = parameters.getValue(WIDTH);
         limits[1] = parameters.getValue(HEIGHT);
         limits[2] = parameters.getValue(N_SLICES);
+        limits[4] = parameters.getValue(N_FRAMES);
 
         return limits;
 
@@ -184,6 +184,7 @@ public class ObjectLoader extends Module {
         int xIdx = parameters.getValue(X_COLUMN_INDEX);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX);
+        int tIdx = parameters.getValue(T_COLUMN_INDEX);
 
         BufferedReader reader;
         try {
@@ -194,7 +195,7 @@ public class ObjectLoader extends Module {
         }
 
         // Initialising the limits array
-        int[] limits = new int[]{0,0,0};
+        int[] limits = new int[]{0,0,0,0};
 
         // Iterating over each row, adding as a new Obj
         CSVReader csvReader = new CSVReader(reader);
@@ -206,9 +207,11 @@ public class ObjectLoader extends Module {
                     int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
                     int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
                     int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    int t = Integer.parseInt(row[tIdx]);
                     limits[0] = Math.max(limits[0],x);
                     limits[1] = Math.max(limits[1],y);
                     limits[2] = Math.max(limits[2],z);
+                    limits[3] = Math.max(limits[3],t);
 
                 } catch (NumberFormatException e) {}
 
@@ -288,7 +291,7 @@ public class ObjectLoader extends Module {
                     int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
                     // Creating the object and setting the coordinates
-                    Obj obj = new Obj(type,outputObjects.getName(),ID,outputObjects.getCalibration());
+                    Obj obj = new Obj(type,outputObjects.getName(),ID,outputObjects.getCal());
                     try {
                         obj.add(x,y,z);
                     } catch (PointOutOfRangeException e) {
@@ -396,7 +399,7 @@ public class ObjectLoader extends Module {
         if (cal == null) return false;
 
         String units = Units.getOMEUnits().getSymbol();
-        VolumeCalibration calibration = new VolumeCalibration(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
+        TSpatCal calibration = new TSpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2],limits[3]);
 
         // Creating output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);

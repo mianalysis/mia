@@ -3,8 +3,6 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import sc.fiji.analyzeSkeleton.SkeletonResult;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -99,13 +97,13 @@ public class FitSpline extends Module {
     }
 
 
-    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, Image templateImage) {
+    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject) {
         // Converting object to image, then inverting, so we have a black object on a white background
         ObjCollection tempObjects = new ObjCollection("Backbone",inputObject.getCalibration());
         tempObjects.add(inputObject);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
-        Image objectImage = tempObjects.convertToImage("Objects",templateImage,hues,8,false);
+        Image objectImage = tempObjects.convertToImage("Objects",hues,8,false);
         InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
@@ -399,7 +397,7 @@ public class FitSpline extends Module {
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
         if (!objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+            outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
             workspace.addObjects(outputObjects);
         }
 
@@ -424,7 +422,7 @@ public class FitSpline extends Module {
             initialiseObjectMeasurements(inputObject,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, new Image("Template",templateIpl));
+            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;

@@ -6,21 +6,17 @@ import javax.swing.*;
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.common.Object.LUTs;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -404,7 +400,7 @@ public class FilterObjects extends Module implements ActionListener {
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
         ObjCollection outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
-                ? new ObjCollection(outputObjectsName,inputObjects.getCalibration()) : null;
+                ? new ObjCollection(outputObjectsName,inputObjects.getCal()) : null;
 
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 

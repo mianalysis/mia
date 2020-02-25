@@ -22,7 +22,6 @@ import wbif.sjx.common.Object.Point;
 
 public class CreateObjectDensityMap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String TEMPLATE_IMAGE = "Template image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String RANGE = "Range";
     public static final String AVERAGE_SLICES = "Average slices";
@@ -103,10 +102,6 @@ public class CreateObjectDensityMap extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        // Getting template image
-        String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
-        Image templateImage = workspace.getImage(templateImageName);
-
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         int range = parameters.getValue(RANGE);
@@ -114,16 +109,17 @@ public class CreateObjectDensityMap extends Module {
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
         // Initialising stores
-        CumStat[] cumStats = CreateMeasurementMap.initialiseCumStats(templateImage,averageZ,averageT);
-        Indexer indexer = CreateMeasurementMap.initialiseIndexer(templateImage,averageZ,averageT);
+        TSpatCal calibration = inputObjects.getCal();
+        CumStat[] cumStats = CreateMeasurementMap.initialiseCumStats(calibration,averageZ,averageT);
+        Indexer indexer = CreateMeasurementMap.initialiseIndexer(calibration,averageZ,averageT);
 
         // Compressing relevant measures
         process(cumStats,indexer,inputObjects,getName());
 
         // Converting statistic array to Image
         writeMessage("Creating output image");
-        Calibration calibration = templateImage.getImagePlus().getCalibration();
-        Image outputImage = convertToImage(cumStats,indexer,outputImageName,calibration);
+        Calibration imageCalibration = calibration.createImageCalibration();
+        Image outputImage = convertToImage(cumStats,indexer,outputImageName,imageCalibration);
 
         // Applying blur
         FilterImage.runGaussian2DFilter(outputImage.getImagePlus(),range);
@@ -138,7 +134,6 @@ public class CreateObjectDensityMap extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(TEMPLATE_IMAGE,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new IntegerP(RANGE,this,3));
         parameters.add(new BooleanP(AVERAGE_SLICES,this,true));

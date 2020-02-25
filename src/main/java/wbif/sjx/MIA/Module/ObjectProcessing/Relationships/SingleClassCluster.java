@@ -209,7 +209,7 @@ public class SingleClassCluster extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
@@ -299,7 +299,7 @@ public class SingleClassCluster extends Module {
         if (showOutput) {
             // Generating colours
             HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
-            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName,null,hues,8,true).getImagePlus();
+            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName,hues,8,true).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

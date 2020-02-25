@@ -158,11 +158,11 @@ public class ConvertObjectsToImage extends Module {
             Image outputImage = null;
             switch (outputMode) {
                 case OutputModes.CENTROID:
-                    outputImage = inputObjects.convertCentroidsToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+                    outputImage = inputObjects.convertCentroidsToImage(outputImageName, hues, bitDepth, nanBackground);
                     break;
                 case OutputModes.WHOLE_OBJECT:
                 default:
-                    outputImage = inputObjects.convertToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
+                    outputImage = inputObjects.convertToImage(outputImageName, hues, bitDepth, nanBackground);
                     break;
             }
 

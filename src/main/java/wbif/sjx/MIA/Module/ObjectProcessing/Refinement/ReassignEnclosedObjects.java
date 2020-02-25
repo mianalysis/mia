@@ -37,7 +37,7 @@ public class ReassignEnclosedObjects extends Module {
             if (object.getID() == -1) continue;
 
             // Creating a binary image of the input object
-            Image binaryImage = object.convertObjToImage("Binary",templateImage);
+            Image binaryImage = object.convertObjToImage("Binary");
             ImagePlus binaryIpl = binaryImage.getImagePlus();
 
             // Filling holes in the binary image
@@ -64,7 +64,7 @@ public class ReassignEnclosedObjects extends Module {
                 if (val == 255) continue;
 
                 // Expanding the test object by 1 px to fill the gap
-                Obj expanded = ExpandShrinkObjects.processObject(testObject,templateImage,ExpandShrinkObjects.Methods.EXPAND_2D,1);
+                Obj expanded = ExpandShrinkObjects.processObject(testObject,ExpandShrinkObjects.Methods.EXPAND_2D,1);
 
                 if (expanded == null) expanded = testObject;
 

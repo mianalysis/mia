@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -12,12 +11,8 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.Volume;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.HashMap;
 
 public class GetObjectSurface extends Module {
     public static final String INPUT_SEPARATOR = "Image input, object output";
@@ -57,7 +52,7 @@ public class GetObjectSurface extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
 
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = getSurface(inputObject,outputObjectsName,outputObjects.getAndIncrementID());

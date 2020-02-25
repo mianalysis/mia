@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -12,9 +11,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -23,16 +20,17 @@ import java.util.*;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
-    private VolumeCalibration calibration;
+    private TSpatCal cal;
 
-    public ObjCollection(String name, VolumeCalibration calibration) {
+    public ObjCollection(String name, TSpatCal cal) {
         this.name = name;
-        this.calibration = calibration;
+        this.cal = cal;
+
     }
 
-    public ObjCollection(String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
+    public ObjCollection(String name, int ID, int width, int height, int nSlices, int nFrames, double dppXY, double dppZ, String calibratedUnits) {
         this.name = name;
-        this.calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,width,height,nSlices);
+        this.cal = new TSpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices,nFrames);
 
     }
 
@@ -45,8 +43,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public VolumeCalibration getCalibration() {
-        return calibration;
+    public TSpatCal getCal() {
+        return cal;
     }
 
     public int getAndIncrementID() {
@@ -95,11 +93,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
-        ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
-
-        // Create output image
-        ImagePlus ipl = createImage(templateIpl,outputName,bitDepth);
+    public Image convertToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
+                // Create output image
+        ImagePlus ipl = createImage(outputName,bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
         if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
@@ -127,8 +123,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             }
         }
 
-        // Assigning the spatial calibration from the template image
-        setCalibration(templateIpl,ipl);
+        // Assigning the spatial cal from the cal
+        setCal(ipl);
 
         return new Image(outputName,ipl);
 
@@ -136,7 +132,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public Image convertToImageRandomColours() {
         HashMap<Integer,Float> hues = ColourFactory.getRandomHues(this);
-        Image dispImage = convertToImage(name,null,hues,8,false);
+        Image dispImage = convertToImage(name,hues,8,false);
 
         if (dispImage == null) return null;
         if (dispImage.getImagePlus() == null) return null;
@@ -150,11 +146,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertCentroidsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
-        ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
-
+    public Image convertCentroidsToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         // Create output image
-        ImagePlus ipl = createImage(templateIpl,outputName,bitDepth);
+        ImagePlus ipl = createImage(outputName,bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
         if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
@@ -180,8 +174,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             }
         }
 
-        // Assigning the spatial calibration from the template image
-        setCalibration(templateIpl,ipl);
+        // Assigning the spatial cal from the cal
+        setCal(ipl);
 
         return new Image(outputName,ipl);
 
@@ -199,20 +193,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    ImagePlus createImage(ImagePlus templateIpl, String outputName, int bitDepth) {
-        if (templateIpl == null) {
-            if (size() == 0) return null;
-
-            // Getting range of object pixels
-            int[][] sLim = getSpatialLimits();
+    ImagePlus createImage(String outputName, int bitDepth) {
             int[] tLim = getTemporalLimits();
 
             // Creating a new image
-            return IJ.createHyperStack(outputName,sLim[0][1]+1,sLim[1][1]+1,1,sLim[2][1]+1,tLim[1]+1,bitDepth);
-        } else {
-            return IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),
-                    templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
-        }
+            return IJ.createHyperStack(outputName, cal.getWidth(), cal.getHeight(),1, cal.getnSlices(),tLim[1]+1,bitDepth);
+
     }
 
     void setNaNBackground(ImagePlus ipl) {
@@ -230,19 +216,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
     }
 
-    void setCalibration(ImagePlus templateIpl, ImagePlus ipl) {
-        if (templateIpl != null) {
-            ipl.getCalibration().pixelWidth = templateIpl.getCalibration().getX(1);
-            ipl.getCalibration().pixelHeight = templateIpl.getCalibration().getY(1);
-            ipl.getCalibration().pixelDepth = templateIpl.getCalibration().getZ(1);
-            ipl.getCalibration().setUnit(templateIpl.getCalibration().getUnit());
-        } else if (getFirst() != null) {
-            Obj first = getFirst();
-            ipl.getCalibration().pixelWidth = first.getDppXY();
-            ipl.getCalibration().pixelHeight = first.getDppXY();
-            ipl.getCalibration().pixelDepth = first.getDppZ();
-            ipl.getCalibration().setUnit(first.getUnits());
-        }
+    void setCal(ImagePlus ipl) {
+            ipl.getCalibration().pixelWidth = cal.getDppXY();
+            ipl.getCalibration().pixelHeight = cal.getDppXY();
+            ipl.getCalibration().pixelDepth = cal.getDppZ();
+            ipl.getCalibration().setUnit(cal.getUnits());
     }
 
     /*

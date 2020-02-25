@@ -157,7 +157,7 @@ public class MeasureIntensityDistribution extends Module {
     public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
-        Image objectsImage = inputObjects.convertToImage("Objects", inputImage, hues, 8,false);
+        Image objectsImage = inputObjects.convertToImage("Objects", hues, 8,false);
 
         // Calculaing the distance map
         ImagePlus distIpl = DistanceMap.getDistanceMap(objectsImage.getImagePlus(),true);
@@ -214,7 +214,7 @@ public class MeasureIntensityDistribution extends Module {
     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
-        Image objectsImage = inputObjects.convertToImage("Objects", inputImage, hues, 8,false);
+        Image objectsImage = inputObjects.convertToImage("Objects", hues, 8,false);
 
         ImagePlus distIpl = null;
         switch (edgeMode) {

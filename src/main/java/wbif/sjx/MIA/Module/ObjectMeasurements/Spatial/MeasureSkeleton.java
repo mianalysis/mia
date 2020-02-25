@@ -110,7 +110,7 @@ public class MeasureSkeleton extends Module {
 
         ObjCollection outputObjects = null;
         if (addToWorkspace) {
-            outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+            outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
             workspace.addObjects(outputObjects);
         }
 

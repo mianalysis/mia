@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -49,7 +48,7 @@ public class MergeSingleClass extends Module {
         }
 
         // Adding output objects to a new ObjCollection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
         for (Obj outputObject:objects.values()) outputObjects.add(outputObject);
 
         return outputObjects;

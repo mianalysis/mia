@@ -1,17 +1,13 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
-import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.FitEllipse;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -24,9 +20,6 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-
-import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -107,7 +100,7 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // If necessary, creating an output object collection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
         switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
                 workspace.addObjects(outputObjects);

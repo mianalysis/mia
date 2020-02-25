@@ -120,7 +120,7 @@ public class ExtractObjectEdges extends Module {
 
     static void showObjects(ObjCollection objects, String parentObjectsName, LUT lut) {
         HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(objects,parentObjectsName,true);
-        Image dispImage = objects.convertToImage(objects.getName(),null,hues,8,false);
+        Image dispImage = objects.convertToImage(objects.getName(),hues,8,false);
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(lut);
         dispIpl.setPosition(1,1,1);
@@ -159,7 +159,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection edgeObjects = null;
         if (createEdgeObjects) {
             edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            edgeObjects = new ObjCollection(edgeObjectName,inputObjects.getCalibration());
+            edgeObjects = new ObjCollection(edgeObjectName,inputObjects.getCal());
             workspace.addObjects(edgeObjects);
         }
 
@@ -168,7 +168,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection interiorObjects = null;
         if (createInteriorObjects) {
             interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            interiorObjects = new ObjCollection(interiorObjectName,inputObjects.getCalibration());
+            interiorObjects = new ObjCollection(interiorObjectName,inputObjects.getCal());
             workspace.addObjects(interiorObjects);
         }
 

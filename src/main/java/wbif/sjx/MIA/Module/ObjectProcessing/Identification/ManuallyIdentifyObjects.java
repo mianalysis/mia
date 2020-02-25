@@ -22,7 +22,6 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.swing.*;
@@ -54,7 +53,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private String outputObjectsName;
     private ObjCollection outputObjects;
 
-    private VolumeCalibration calibration;
+    private TSpatCal calibration;
     private boolean overflow = false;
 
     private int elementHeight = 40;
@@ -245,10 +244,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode, String type) throws IntegerOverflowException {
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, String interpolationMode, String type) throws IntegerOverflowException {
         // Create a binary image of the objects
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
-        Image binaryImage = outputObjects.convertToImage("Binary",templateImage,hues,8,false);
+        Image binaryImage = outputObjects.convertToImage("Binary",hues,8,false);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
 
         switch (interpolationMode) {
@@ -348,7 +347,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-        calibration = VolumeCalibration.getFromImage(inputImagePlus);
+        calibration = TSpatCal.getFromImage(inputImagePlus);
 
         setSelector(selectorType);
 
@@ -392,7 +391,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             case InterpolationModes.TEMPORAL:
             case InterpolationModes.SPATIAL_AND_TEMPORAL:
                 try {
-                    outputObjects = applyInterpolation(outputObjects,inputImage,interpolationMode,type);
+                    outputObjects = applyInterpolation(outputObjects,interpolationMode,type);
                 } catch (IntegerOverflowException e) {
                     return false;
                 }

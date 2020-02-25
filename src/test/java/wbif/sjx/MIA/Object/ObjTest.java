@@ -269,15 +269,16 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        Obj obj1 = new Obj(volumeType,parentObjectsName,1,1,1,1,0.02,0.1,"µm");
-        Obj obj2 = new Obj(volumeType,childObjectsName,12,1,1,1,0.02,0.1,"µm");
-        Obj obj3 = new Obj(volumeType,childObjectsName,2,1,1,1,0.02,0.1,"µm");
-        Obj obj4 = new Obj(volumeType,childObjectsName,32,1,1,1,0.02,0.1,"µm");
+        TSpatCal calibration = new TSpatCal(0.02,0.1,"µm",1,1,1);
+        Obj obj1 = new Obj(volumeType,parentObjectsName,1,calibration);
+        Obj obj2 = new Obj(volumeType,childObjectsName,12,calibration);
+        Obj obj3 = new Obj(volumeType,childObjectsName,2,calibration);
+        Obj obj4 = new Obj(volumeType,childObjectsName,32,calibration);
 
         assertEquals(0,obj1.getChildren().size());
 
         // Creating a new collection of child objects
-        ObjCollection children = new ObjCollection(childObjectsName);
+        ObjCollection children = new ObjCollection(childObjectsName,calibration);
         children.add(obj2);
         children.add(obj3);
         children.add(obj4);

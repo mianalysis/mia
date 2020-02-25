@@ -10,7 +10,6 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +30,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
@@ -68,7 +67,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
@@ -109,7 +108,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
@@ -146,7 +145,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
@@ -186,7 +185,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -256,7 +255,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -347,7 +346,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -438,7 +437,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -530,7 +529,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -620,7 +619,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -710,7 +709,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -794,7 +793,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -879,7 +878,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
@@ -988,7 +987,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,calibratedUnits,60,50,50);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
         ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);

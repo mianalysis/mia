@@ -2,7 +2,6 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -13,10 +12,6 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-
-import java.util.HashMap;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -60,7 +55,7 @@ public class CombineObjectSets extends Module {
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCalibration());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects1.getCal());
 
         // Doing object merging
         combine(inputObjects1,outputObjects);

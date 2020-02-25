@@ -83,13 +83,13 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, Image templateImage) {
+    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject) {
         // Converting object to image, then inverting, so we have a black object on a white background
         ObjCollection tempObjects = new ObjCollection("Backbone",inputObject.getCalibration());
         tempObjects.add(inputObject);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
-        Image objectImage = tempObjects.convertToImage("Objects",templateImage,hues,8,false);
+        Image objectImage = tempObjects.convertToImage("Objects",hues,8,false);
         InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
@@ -359,7 +359,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, new Image("Template",templateIpl));
+            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;

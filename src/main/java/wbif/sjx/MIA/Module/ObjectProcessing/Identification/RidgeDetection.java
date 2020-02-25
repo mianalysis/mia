@@ -7,7 +7,6 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -16,7 +15,6 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
@@ -150,7 +148,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static VolumeCalibration getCalibration(Image referenceImage) {
+    public static TSpatCal getCalibration(Image referenceImage) {
         ImagePlus inputIpl = referenceImage.getImagePlus();
         Calibration calibration = inputIpl.getCalibration();
         double dppXY = calibration.getX(1);
@@ -160,15 +158,16 @@ public class RidgeDetection extends Module {
         int imWidth = inputIpl.getWidth();
         int imHeight = inputIpl.getHeight();
         int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
 
-        return new VolumeCalibration(dppXY,dppZ,units,imWidth,imHeight,nSlices);
+        return new TSpatCal(dppXY,dppZ,units,imWidth,imHeight,nSlices,nFrames);
 
     }
 
     public static Obj initialiseObject(ObjCollection outputObjects, int t) {
         int ID = outputObjects.getAndIncrementID();
 
-        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjects.getName(),ID,outputObjects.getCalibration());
+        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjects.getName(),ID,outputObjects.getCal());
         outputObject.setT(t);
         outputObjects.add(outputObject);
 
@@ -275,7 +274,7 @@ public class RidgeDetection extends Module {
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         LineDetector lineDetector = new LineDetector();
-        VolumeCalibration calibration = getCalibration(inputImage);
+        TSpatCal calibration = getCalibration(inputImage);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
         workspace.addObjects(outputObjects);
 

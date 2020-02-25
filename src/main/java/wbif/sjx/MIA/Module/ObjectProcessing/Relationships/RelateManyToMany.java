@@ -95,15 +95,11 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 
 import java.util.*;
 
@@ -276,7 +272,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj,Integer> assignments, VolumeCalibration calibration) {
+    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj,Integer> assignments, TSpatCal calibration) {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
         for (Obj object:assignments.keySet()) {
             int groupID = assignments.get(object);
@@ -352,7 +348,7 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCalibration()));
+            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCal()));
             return true;
         }
 
@@ -413,13 +409,13 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName,false);
             }
 
-            ObjCollection outputObjects = createClusters(outputObjectsName, assignments, inputObjects1.getCalibration());
+            ObjCollection outputObjects = createClusters(outputObjectsName, assignments, inputObjects1.getCal());
             workspace.addObjects(outputObjects);
 
             if (showOutput) {
                 // Generating colours
                 HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects1,outputObjectsName,true);
-                ImagePlus dispIpl = inputObjects1.convertToImage(outputObjectsName,null,hues,8,true).getImagePlus();
+                ImagePlus dispIpl = inputObjects1.convertToImage(outputObjectsName,hues,8,true).getImagePlus();
                 dispIpl.setLut(LUTs.Random(true));
                 dispIpl.setPosition(1,1,1);
                 dispIpl.updateChannelAndDraw();
@@ -428,7 +424,7 @@ public class RelateManyToMany extends Module {
                 if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
                     // Generating colours
                     hues = ColourFactory.getParentIDHues(inputObjects2,outputObjectsName,true);
-                    dispIpl = inputObjects2.convertToImage(outputObjectsName,null,hues,8,true).getImagePlus();
+                    dispIpl = inputObjects2.convertToImage(outputObjectsName,hues,8,true).getImagePlus();
                     dispIpl.setLut(LUTs.Random(true));
                     dispIpl.setPosition(1,1,1);
                     dispIpl.updateChannelAndDraw();

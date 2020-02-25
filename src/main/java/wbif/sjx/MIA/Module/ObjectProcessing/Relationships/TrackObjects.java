@@ -449,7 +449,7 @@ public class TrackObjects extends Module {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects,trackObjectsName,true);
 
         // Creating a parent-ID encoded image of the objects
-        Image dispImage = spotObjects.convertToImage(spotObjects.getName(),null,hues,32,false);
+        Image dispImage = spotObjects.convertToImage(spotObjects.getName(),hues,32,false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();
@@ -496,7 +496,7 @@ public class TrackObjects extends Module {
 
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName,inputObjects.getCalibration());
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName,inputObjects.getCal());
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module

@@ -38,10 +38,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -55,8 +56,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -94,10 +95,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -111,8 +113,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -153,10 +155,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -170,8 +173,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -218,10 +221,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -235,8 +239,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -279,10 +283,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -296,8 +301,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -345,10 +350,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
+        
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -362,8 +368,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -451,10 +457,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -468,8 +475,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -560,10 +567,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -577,8 +585,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -670,10 +678,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -687,8 +696,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -781,10 +790,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
         object1_1.add(10,13,32);
@@ -798,8 +808,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);
         object2_1.add(20,12,33);
@@ -895,10 +905,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,30,30,50);
 
         // Creating a single test object
-        ObjCollection objects1 = new ObjCollection(objectsName1);
-        Obj object1_1 = new Obj(volumeType,objectsName1,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects1 = new ObjCollection(objectsName1,calibration);
+        Obj object1_1 = new Obj(volumeType,objectsName1,1,calibration);
         object1_1.setT(2);
         object1_1.add(10,12,32);
         object1_1.add(11,12,32);
@@ -913,8 +924,8 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         objects1.add(object1_1);
 
         // Creating a collection of multiple objects to test against
-        ObjCollection objects2 = new ObjCollection(objectsName2);
-        Obj object2_1 = new Obj(volumeType,objectsName2,1,30,30,50,dppXY,dppZ,calibratedUnits);
+        ObjCollection objects2 = new ObjCollection(objectsName2,calibration);
+        Obj object2_1 = new Obj(volumeType,objectsName2,1,calibration);
         object2_1.setT(2);
         object2_1.add(20,12,32);
         object2_1.add(20,11,32);

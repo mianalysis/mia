@@ -1,9 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -13,13 +11,8 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.Volume;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
-
-import java.util.HashMap;
 
 /**
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
@@ -69,8 +62,8 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        VolumeCalibration calIn = inputObjects.getCalibration();
-        VolumeCalibration calOut = new VolumeCalibration(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1);
+        TSpatCal calIn = inputObjects.getCal();
+        TSpatCal calOut = new TSpatCal(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1,calIn.getnFrames());
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut);
 
         for (Obj inputObject:inputObjects.values()) {

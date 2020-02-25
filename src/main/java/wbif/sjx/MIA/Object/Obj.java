@@ -5,7 +5,6 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -22,6 +21,7 @@ import java.util.LinkedHashMap;
  */
 public class Obj extends Volume {
     private String name;
+    private TSpatCal cal;
 
     /**
      * Unique instance ID for this object
@@ -50,7 +50,7 @@ public class Obj extends Volume {
 
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, VolumeCalibration calibration) {
+    public Obj(VolumeType volumeType, String name, int ID, TSpatCal calibration) {
         super(volumeType,calibration);
 
         this.name = name;
@@ -118,6 +118,10 @@ public class Obj extends Volume {
     public Obj setT(int t) {
         T = t;
         return this;
+    }
+
+    public TSpatCal getCalibration() {
+        return cal;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -204,7 +208,7 @@ public class Obj extends Volume {
         }
 
         // Going through each child in the current set, then adding all their children to the output set
-        ObjCollection outputChildren = new ObjCollection(name,allChildren.getCalibration());
+        ObjCollection outputChildren = new ObjCollection(name,allChildren.getCal());
         for (Obj child:allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
@@ -281,8 +285,8 @@ public class Obj extends Volume {
         if (rois.containsKey(slice)) return (Roi) rois.get(slice).clone();
 
         // Getting the image corresponding to this slice
-        VolumeCalibration newCal = new VolumeCalibration(cal.getDppXY(),cal.getDppZ(),cal.getUnits(),cal.getWidth(),cal.getHeight(),1);
-        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,cal.duplicate());
+        TSpatCal newCal = new TSpatCal(cal.getDppXY(),cal.getDppZ(),cal.getUnits(),cal.getWidth(),cal.getHeight(),1,cal.nFrames);
+        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,cal);
         setSlicePoints(sliceObj.coordinateSet,slice);
 
         // Checking if the object exists in this slice
@@ -294,7 +298,7 @@ public class Obj extends Volume {
         ImagePlus sliceIpl = IJ.createImage("SliceIm",newCal.getWidth(),newCal.getHeight(),1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
+        Image objectImage = objectCollection.convertToImage("Output", hues, 8,false);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -355,17 +359,6 @@ public class Obj extends Volume {
         for (Point<Integer> point:coordinateSet) if (point.getZ()==slice) sliceCoordinateSet.add(point);
     }
 
-    public Image convertObjToImage(String outputName, @Nullable Image templateImage) {
-        // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName,cal);
-        tempObj.add(this);
-
-        // Getting the image
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertToImage(outputName,templateImage,hues,8,false);
-
-    }
-
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to hold this image
         ObjCollection tempObj = new ObjCollection(outputName,cal);
@@ -373,7 +366,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertToImage(outputName,null,hues,8,false);
+        return tempObj.convertToImage(outputName,hues,8,false);
 
     }
 

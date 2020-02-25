@@ -16,7 +16,6 @@ import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-//import org.apache.spark.util.SizeEstimator;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
@@ -25,7 +24,6 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -109,7 +107,7 @@ public class Image <T extends RealType<T> & NativeType<T>> {
         int nChannels = imagePlus.getNChannels();
 
         // Need to get coordinates and convert to a HCObject
-        VolumeCalibration calibration = new VolumeCalibration(dppXY,dppZ,units,w,h,nSlices);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,units,w,h,nSlices,nFrames);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
 
         // Will return null if optimised

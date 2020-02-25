@@ -24,7 +24,6 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeCalibration;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -80,7 +79,7 @@ public class RunTrackMate extends Module {
         super("Run TrackMate",modules);
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, VolumeCalibration calibration) {
+    public Settings initialiseSettings(ImagePlus ipl, TSpatCal calibration) {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
@@ -137,7 +136,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection getSpots(Model model, VolumeCalibration calibration) throws IntegerOverflowException {
+    public ObjCollection getSpots(Model model, TSpatCal calibration) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         // Getting trackObjects and adding them to the output trackObjects
@@ -175,7 +174,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection[] getSpotsAndTracks(Model model, VolumeCalibration calibration) throws IntegerOverflowException {
+    public ObjCollection[] getSpotsAndTracks(Model model, TSpatCal calibration) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
 
@@ -307,7 +306,7 @@ public class RunTrackMate extends Module {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Storing, then removing calibration.  This will be reapplied after the detection.
-        VolumeCalibration calibration = VolumeCalibration.getFromImage(ipl);
+        TSpatCal calibration = TSpatCal.getFromImage(ipl);
         Calibration cal = ipl.getCalibration();
         ipl.setCalibration(null);
 
