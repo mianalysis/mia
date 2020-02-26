@@ -20,7 +20,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         ObjCollection collection = new ObjCollection("TestObj",calibration);
 
@@ -45,7 +45,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         ObjCollection collection = new ObjCollection("TestObj",calibration);
         Obj firstObj = collection.getFirst();
@@ -60,7 +60,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,10,3,12);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,10,3,12,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -99,7 +99,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -131,7 +131,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -181,7 +181,7 @@ public class ObjCollectionTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,10,4,12);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,10,4,12,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);

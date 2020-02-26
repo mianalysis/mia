@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.TSpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.awt.*;
@@ -23,7 +24,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -54,7 +55,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -86,7 +87,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -124,7 +125,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -162,7 +163,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -200,7 +201,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -238,7 +239,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -274,7 +275,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -310,7 +311,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -342,7 +343,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -375,7 +376,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -414,7 +415,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -453,7 +454,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -492,7 +493,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -525,7 +526,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);
@@ -562,7 +563,7 @@ public class ColourFactoryTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Creating the ObjCollection
         ObjCollection collection = new ObjCollection("Obj",calibration);

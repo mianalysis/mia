@@ -39,7 +39,7 @@ public class Tracks3D {
      * @return
      */
     public ObjCollection getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,127,90,13,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,127,90,13,10);
 
         // Initialising object store
         ObjCollection trackObjects = new ObjCollection(tracksName,calibration);

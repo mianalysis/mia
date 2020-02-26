@@ -28,7 +28,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -85,7 +85,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -145,7 +145,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -198,7 +198,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -251,7 +251,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -311,7 +311,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -363,7 +363,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);

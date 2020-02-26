@@ -11,10 +11,7 @@ import wbif.sjx.MIA.ExpectedObjects.*;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Units;
-import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.*;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.Arrays;
@@ -380,7 +377,6 @@ public class RelateObjectsTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,64, 76, 12);
 
         // Creating objects and adding to workspace
         ObjCollection proxObj1 = new ProxCubes1(volumeType).getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);

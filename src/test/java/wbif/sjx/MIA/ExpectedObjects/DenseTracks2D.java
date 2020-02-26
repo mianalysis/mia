@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DenseTracks2D extends ExpectedObjects {
     public DenseTracks2D(VolumeType volumeType) {
-        super(volumeType, 600, 600, 1);
+        super(volumeType, 600, 600, 1, 100);
     }
 
     @Override
