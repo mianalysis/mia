@@ -7,6 +7,7 @@ import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -36,13 +37,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -85,7 +86,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -93,14 +94,14 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration);
-        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
+        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -145,7 +146,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -153,13 +154,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -198,7 +199,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -206,13 +207,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -251,7 +252,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -259,14 +260,14 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration);
-        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
+        ObjCollection expectedFailObjects = new ObjCollection("FailOutput",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -311,7 +312,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -319,13 +320,13 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -363,7 +364,7 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Getting test objects
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
@@ -371,12 +372,12 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration);
+        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration);
+                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

@@ -10,6 +10,7 @@ import wbif.sjx.common.Analysis.Volume.SurfaceSeparationCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 
 import java.util.HashMap;
 
@@ -20,7 +21,6 @@ public class MeasureRelativeOrientation extends Module {
     public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in XY/Z measurement";
     public static final String MEASUREMENT_RANGE = "Measurement range";
     public static final String REFERENCE_MODE = "Reference mode";
-    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String REFERENCE_OBJECTS = "Reference objects";
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
     public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
@@ -77,8 +77,7 @@ public class MeasureRelativeOrientation extends Module {
         String reference = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
-                String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-                reference = referenceImageName+" IM_CENTRE";
+                reference = "IM_CENTRE";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
                 String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
@@ -103,12 +102,11 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer,Point<Double>> getImageCentreRefs(Image image, String orientationMode) {
+    static HashMap<Integer,Point<Double>> getImageCentreRefs(SpatCal cal, int nFrames, String orientationMode) {
         boolean useZ = !orientationMode.equals(OrientationModes.X_Y_PLANE);
-        double width = image.getImagePlus().getWidth();
-        double height = image.getImagePlus().getHeight();
-        double nSlices = image.getImagePlus().getNSlices();
-        double nFrames = image.getImagePlus().getNFrames();
+        double width = cal.getWidth();
+        double height = cal.getHeight();
+        double nSlices = cal.getNSlices();
 
         double xc = width/2 - 0.5;
         double yc = height/2 - 0.5;
@@ -304,7 +302,6 @@ public class MeasureRelativeOrientation extends Module {
         String xzOriMeasName = parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT);
         String measurementRange = parameters.getValue(MEASUREMENT_RANGE);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
         String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
         boolean mustBeSameFrame = parameters.getValue(MUST_BE_SAME_FRAME);
@@ -316,8 +313,7 @@ public class MeasureRelativeOrientation extends Module {
         HashMap<Integer,Point<Double>> referencePoints = null;
         switch (referenceMode) {
             case ReferenceModes.IMAGE_CENTRE:
-                Image referenceImage = workspace.getImage(referenceImageName);
-                referencePoints = getImageCentreRefs(referenceImage,orientationMode);
+                referencePoints = getImageCentreRefs(inputObjects.getSpatialCalibration(),inputObjects.getNFrames(),orientationMode);
                 break;
 
             case ReferenceModes.OBJECT_CENTROID:
@@ -372,7 +368,6 @@ public class MeasureRelativeOrientation extends Module {
         parameters.add(new ObjectMeasurementP(ORIENTATION_IN_XY_Z_MEASUREMENT,this));
         parameters.add(new ChoiceP(MEASUREMENT_RANGE,this,MeasurementRanges.ZERO_NINETY,MeasurementRanges.ALL));
         parameters.add(new ChoiceP(REFERENCE_MODE,this,ReferenceModes.IMAGE_CENTRE,ReferenceModes.ALL));
-        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
         parameters.add(new InputObjectsP(REFERENCE_OBJECTS,this));
         parameters.add(new ChoiceP(OBJECT_CHOICE_MODE,this,ObjectChoiceModes.LARGEST_OBJECT,ObjectChoiceModes.ALL));
         parameters.add(new BooleanP(MUST_BE_SAME_FRAME,this,true));
@@ -410,10 +405,6 @@ public class MeasureRelativeOrientation extends Module {
 
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
-            case ReferenceModes.IMAGE_CENTRE:
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
-                break;
-
             case ReferenceModes.OBJECT_CENTROID:
             case ReferenceModes.OBJECT_SURFACE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_OBJECTS));
@@ -444,8 +435,7 @@ public class MeasureRelativeOrientation extends Module {
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
-                String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-                referenceDescription = "the centre of the image \""+referenceImageName+"\"";
+                referenceDescription = "the centre of the image";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
                 String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);

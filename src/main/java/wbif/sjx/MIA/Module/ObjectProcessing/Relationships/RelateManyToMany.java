@@ -349,7 +349,7 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getCal(),inputObjects1.getnFrames()));
+            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getSpatialCalibration(),inputObjects1.getNFrames()));
             return true;
         }
 
@@ -410,7 +410,7 @@ public class RelateManyToMany extends Module {
                 workspace.removeObjects(outputObjectsName,false);
             }
 
-            ObjCollection outputObjects = createClusters(outputObjectsName, assignments, inputObjects1.getCal(), inputObjects1.getnFrames());
+            ObjCollection outputObjects = createClusters(outputObjectsName, assignments, inputObjects1.getSpatialCalibration(), inputObjects1.getNFrames());
             workspace.addObjects(outputObjects);
 
             if (showOutput) {

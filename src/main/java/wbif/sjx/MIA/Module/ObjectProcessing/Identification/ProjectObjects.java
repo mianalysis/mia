@@ -63,9 +63,9 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        SpatCal calIn = inputObjects.getCal();
+        SpatCal calIn = inputObjects.getSpatialCalibration();
         SpatCal calOut = new SpatCal(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut,inputObjects.getnFrames());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut,inputObjects.getNFrames());
 
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;

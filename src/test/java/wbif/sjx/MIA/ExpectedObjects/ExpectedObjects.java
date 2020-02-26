@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.*;
@@ -42,10 +43,10 @@ public abstract class ExpectedObjects {
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
     public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices,nFrames);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices);
 
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName,calibration);
+        ObjCollection testObjects = new ObjCollection(objectName,calibration,nFrames);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -71,10 +72,10 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,calibration));
+            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,calibration,nFrames));
 
             Obj testObject = testObjects.get(ID);
-            System.err.println("OBJ "+testObject.getCalibration());
+
             try {
                 testObject.add(x,y,z);
             } catch (PointOutOfRangeException e) {}

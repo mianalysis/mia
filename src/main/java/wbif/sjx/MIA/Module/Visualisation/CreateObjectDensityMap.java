@@ -110,8 +110,8 @@ public class CreateObjectDensityMap extends Module {
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
         // Initialising stores
-        SpatCal calibration = inputObjects.getCal();
-        int nFrames = inputObjects.getnFrames();
+        SpatCal calibration = inputObjects.getSpatialCalibration();
+        int nFrames = inputObjects.getNFrames();
         CumStat[] cumStats = CreateMeasurementMap.initialiseCumStats(calibration,nFrames,averageZ,averageT);
         Indexer indexer = CreateMeasurementMap.initialiseIndexer(calibration,nFrames,averageZ,averageT);
 

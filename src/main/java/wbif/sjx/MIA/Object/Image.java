@@ -1,11 +1,9 @@
 package wbif.sjx.MIA.Object;
 
 import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
@@ -20,9 +18,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -138,7 +134,7 @@ public class Image <T extends RealType<T> & NativeType<T>> {
                                 VolumeType outType = link.getVolumeType();
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, outputObjects.getCal(),outputObjects.getnFrames()).setT(finalT));
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, outputObjects.getSpatialCalibration(),outputObjects.getNFrames()).setT(finalT));
                                 try {
                                     outputObjects.get(outID).add(x, y, z);
                                 } catch (PointOutOfRangeException e) {}

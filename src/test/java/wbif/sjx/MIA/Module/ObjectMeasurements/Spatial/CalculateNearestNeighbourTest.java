@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,24 +30,24 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
+        ObjCollection objects1 = new ObjCollection("Objects 1",calibration,1);
 
-        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -66,28 +67,28 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
+        ObjCollection objects1 = new ObjCollection("Objects 1",calibration,1);
 
-        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
-        Obj obj5 = new Obj(volumeType,"Objects 1",5,calibration);
+        Obj obj5 = new Obj(volumeType,"Objects 1",5,calibration,1);
         obj5.add(10,20,40);
         objects1.add(obj5);
 
@@ -107,24 +108,24 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
+        ObjCollection objects1 = new ObjCollection("Objects 1",calibration,1);
 
-        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -144,24 +145,24 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection("Objects 1",calibration);
+        ObjCollection objects1 = new ObjCollection("Objects 1",calibration,1);
 
-        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration);
+        Obj obj1 = new Obj(volumeType,"Objects 1",1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration);
+        Obj obj2 = new Obj(volumeType,"Objects 1",2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration);
+        Obj obj3 = new Obj(volumeType,"Objects 1",3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration);
+        Obj obj4 = new Obj(volumeType,"Objects 1",4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -184,21 +185,21 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -254,25 +255,25 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
 
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -345,25 +346,25 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
 
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -436,25 +437,25 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
 
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
 
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
 
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
 
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
@@ -528,29 +529,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName,calibration);
+        ObjCollection parents = new ObjCollection(parentObjectsName,calibration,1);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration,1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -559,7 +560,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration,1);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -618,29 +619,29 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName,calibration);
+        ObjCollection parents = new ObjCollection(parentObjectsName,calibration,1);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration,1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -649,7 +650,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj4);
         obj4.addParent(parent1);
 
-        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration,1);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -708,34 +709,34 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration);
+        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration,1);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration,1);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration,1);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration,1);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -792,34 +793,34 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration);
+        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration,1);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration,1);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration,1);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration,1);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
@@ -877,42 +878,42 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration);
+        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration,1);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration,1);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration,1);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration,1);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName,calibration);
+        ObjCollection parents = new ObjCollection(parentObjectsName,calibration,1);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration,1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -921,7 +922,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration,1);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);
@@ -986,42 +987,42 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "um";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,60,50,50);
 
         // Creating first object set
-        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration);
+        ObjCollection objects1 = new ObjCollection(inputObjectsName,calibration,1);
         workspace.addObjects(objects1);
-        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration);
+        Obj obj1 = new Obj(volumeType,inputObjectsName,1,calibration,1);
         obj1.add(10,20,40);
         objects1.add(obj1);
-        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration);
+        Obj obj2 = new Obj(volumeType,inputObjectsName,2,calibration,1);
         obj2.add(20,30,10);
         objects1.add(obj2);
-        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration);
+        Obj obj3 = new Obj(volumeType,inputObjectsName,3,calibration,1);
         obj3.add(20,20,30);
         objects1.add(obj3);
-        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration);
+        Obj obj4 = new Obj(volumeType,inputObjectsName,4,calibration,1);
         obj4.add(50,20,10);
         objects1.add(obj4);
 
         // Creating second object set
-        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration);
+        ObjCollection objects2 = new ObjCollection(secondObjectsName,calibration,1);
         workspace.addObjects(objects2);
-        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration);
+        Obj obj5 = new Obj(volumeType,secondObjectsName,5,calibration,1);
         obj5.add(12,25,40);
         objects2.add(obj5);
-        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration);
+        Obj obj6 = new Obj(volumeType,secondObjectsName,6,calibration,1);
         obj6.add(20,35,10);
         objects2.add(obj6);
-        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration);
+        Obj obj7 = new Obj(volumeType,secondObjectsName,7,calibration,1);
         obj7.add(35,20,20);
         objects2.add(obj7);
 
         // Creating the parent object set
-        ObjCollection parents = new ObjCollection(parentObjectsName,calibration);
+        ObjCollection parents = new ObjCollection(parentObjectsName,calibration,1);
         workspace.addObjects(parents);
 
-        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration);
+        Obj parent1 = new Obj(volumeType,parentObjectsName,1,calibration,1);
         parents.add(parent1);
         parent1.addChild(obj1);
         obj1.addParent(parent1);
@@ -1030,7 +1031,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         parent1.addChild(obj7);
         obj7.addParent(parent1);
 
-        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration);
+        Obj parent2 = new Obj(volumeType,parentObjectsName,2,calibration,1);
         parents.add(parent2);
         parent2.addChild(obj3);
         obj3.addParent(parent2);

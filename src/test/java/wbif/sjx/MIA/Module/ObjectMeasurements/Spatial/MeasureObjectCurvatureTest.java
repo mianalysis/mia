@@ -59,7 +59,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Initialising FilterObjects module
         MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.N_NEIGHBOURS,10);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ITERATIONS,100);
@@ -102,9 +102,6 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
 
         // Getting test objects
         ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
-        System.err.println(inputObj.getCal());
-        System.err.println(inputObj.getCal().getWidth());
-        System.err.println(inputObj.getFirst().getCalibration());
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -116,7 +113,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Initialising FilterObjects module
         MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.N_NEIGHBOURS,10);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ITERATIONS,100);
@@ -179,7 +176,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Initialising FilterObjects module
         MeasureObjectCurvature measureObjectCurvature = new MeasureObjectCurvature(new ModuleCollection());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_OBJECTS,"Input_obj");
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.REFERENCE_IMAGE,"Ref_image");
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.INPUT_IMAGE,"Ref_image");
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SPLINE_FITTING_METHOD, MeasureObjectCurvature.SplineFittingMethods.LOESS);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.N_NEIGHBOURS,10);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ITERATIONS,100);

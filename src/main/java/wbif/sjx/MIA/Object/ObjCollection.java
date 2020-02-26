@@ -22,25 +22,25 @@ import java.util.*;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
-    private final SpatCal cal;
+    private final SpatCal spatCal;
     private final int nFrames;
 
     public ObjCollection(String name, SpatCal cal, int nFrames) {
         this.name = name;
-        this.cal = cal;
+        this.spatCal = cal;
         this.nFrames = nFrames;
 
     }
 
     public ObjCollection(String name, ObjCollection exampleCollection) {
         this.name = name;
-        this.cal = exampleCollection.getCal();
-        this.nFrames = exampleCollection.getnFrames();
+        this.spatCal = exampleCollection.getSpatialCalibration();
+        this.nFrames = exampleCollection.getNFrames();
 
     }
 
     public Obj createAndAddNewObject(VolumeType volumeType) {
-        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), cal, nFrames);
+        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), spatCal, nFrames);
         add(newObject);
 
         return newObject;
@@ -56,8 +56,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public SpatCal getCal() {
-        return cal;
+    public SpatCal getSpatialCalibration() {
+        return spatCal;
     }
 
     public int getAndIncrementID() {
@@ -137,7 +137,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Assigning the spatial cal from the cal
-        setCal(ipl);
+        setSpatCal(ipl);
 
         return new Image(outputName,ipl);
 
@@ -188,7 +188,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Assigning the spatial cal from the cal
-        setCal(ipl);
+        setSpatCal(ipl);
 
         return new Image(outputName,ipl);
 
@@ -208,7 +208,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     ImagePlus createImage(String outputName, int bitDepth) {
             // Creating a new image
-            return IJ.createHyperStack(outputName, cal.getWidth(), cal.getHeight(),1, cal.getnSlices(),nFrames,bitDepth);
+            return IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(),1, spatCal.getNSlices(),nFrames,bitDepth);
 
     }
 
@@ -227,11 +227,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
     }
 
-    void setCal(ImagePlus ipl) {
-            ipl.getCalibration().pixelWidth = cal.getDppXY();
-            ipl.getCalibration().pixelHeight = cal.getDppXY();
-            ipl.getCalibration().pixelDepth = cal.getDppZ();
-            ipl.getCalibration().setUnit(cal.getUnits());
+    void setSpatCal(ImagePlus ipl) {
+            ipl.getCalibration().pixelWidth = spatCal.getDppXY();
+            ipl.getCalibration().pixelHeight = spatCal.getDppXY();
+            ipl.getCalibration().pixelDepth = spatCal.getNSlices() == 1? 1 : spatCal.getDppZ();
+            ipl.getCalibration().setUnit(spatCal.getUnits());
     }
 
     /*
@@ -398,7 +398,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public int getnFrames() {
+    public int getNFrames() {
         return nFrames;
     }
 }

@@ -18,9 +18,9 @@ import wbif.sjx.common.Object.Volume.Volume;
  */
 public class FitEllipsoid extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String TEMPLATE_IMAGE = "Template image";
     public static final String FITTING_MODE = "Fitting mode";
     public static final String USE_INTENSITY_WEIGHTING = "Use intensity weighting";
+    public static final String INPUT_IMAGE = "Input image";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
@@ -106,12 +106,12 @@ public class FitEllipsoid extends Module {
                 Obj ellipsoidObject = createNewObject(inputObject,ellipsoid,outputObjects);
                 if (ellipsoidObject != null) {
                     outputObjects.add(ellipsoidObject);
-                    ellipsoidObject.cropToImageSize(templateImage);
+                    ellipsoidObject.removeOutOfBoundsCoords();
                 }
                 break;
             case OutputModes.UPDATE_INPUT:
                 updateInputObject(inputObject,ellipsoid);
-                inputObject.cropToImageSize(templateImage);
+                inputObject.removeOutOfBoundsCoords();
                 break;
         }
     }
@@ -193,7 +193,7 @@ public class FitEllipsoid extends Module {
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
+        String templateImageName = parameters.getValue(INPUT_IMAGE);
         String fittingMode = parameters.getValue(FITTING_MODE);
         boolean useIntensityWeighting = parameters.getValue(USE_INTENSITY_WEIGHTING);
         boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
@@ -230,9 +230,9 @@ public class FitEllipsoid extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(TEMPLATE_IMAGE,this));
         parameters.add(new ChoiceP(FITTING_MODE,this,FittingModes.FIT_TO_SURFACE,FittingModes.ALL));
         parameters.add(new BooleanP(USE_INTENSITY_WEIGHTING,this,false));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE,this, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
         parameters.add(new BooleanP(LIMIT_AXIS_LENGTH,this,false));
@@ -245,9 +245,11 @@ public class FitEllipsoid extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
         returnedParameters.add(parameters.getParameter(FITTING_MODE));
         returnedParameters.add(parameters.getParameter(USE_INTENSITY_WEIGHTING));
+        if ((boolean) parameters.getValue(USE_INTENSITY_WEIGHTING)) {
+            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        }
 
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {

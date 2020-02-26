@@ -29,7 +29,7 @@ public class ConvexHull2D extends Module {
 
         // We have to explicitly define this, as the number of slices is 1 (potentially unlike the input object)
         SpatCal cal = new SpatCal(inputObject.getDppXY(),inputObject.getDppZ(),inputObject.getUnits(),inputObject.getWidth(),inputObject.getHeight(),inputObject.getNSlices());
-        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,outputID,cal,inputObject.getnFrames());
+        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,outputID,cal,inputObject.getNFrames());
         try {outputObject.addPointsFromPolygon(polygon,0);}
         catch (PointOutOfRangeException e) {}
 

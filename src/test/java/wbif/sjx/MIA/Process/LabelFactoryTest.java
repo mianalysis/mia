@@ -5,6 +5,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.text.DecimalFormat;
@@ -21,19 +22,19 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration);
+        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration);
+        obj = new Obj(volumeType,"Obj",1,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration);
+        obj = new Obj(volumeType,"Obj",2,calibration,1);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,true);
@@ -54,19 +55,19 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration);
+        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration);
+        obj = new Obj(volumeType,"Obj",1,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration);
+        obj = new Obj(volumeType,"Obj",2,calibration,1);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(0,false);
@@ -86,19 +87,19 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration);
+        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration);
+        obj = new Obj(volumeType,"Obj",1,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration);
+        obj = new Obj(volumeType,"Obj",2,calibration,1);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(1,false);
@@ -119,19 +120,19 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration);
+        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration);
+        obj = new Obj(volumeType,"Obj",1,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration);
+        obj = new Obj(volumeType,"Obj",2,calibration,1);
         collection.add(obj);
 
         DecimalFormat df = LabelFactory.getDecimalFormat(2,false);
@@ -152,22 +153,22 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration);
-        Obj parent = new Obj(volumeType,"Parent",6,calibration);
+        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
+        Obj parent = new Obj(volumeType,"Parent",6,calibration,1);
         obj.addParent(parent);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration);
+        obj = new Obj(volumeType,"Obj",1,calibration,1);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration);
-        parent = new Obj(volumeType,"Parent",5,calibration);
+        obj = new Obj(volumeType,"Obj",2,calibration,1);
+        parent = new Obj(volumeType,"Parent",5,calibration,1);
         obj.addParent(parent);
         collection.add(obj);
 
@@ -188,23 +189,23 @@ public class LabelFactoryTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
 
         // Creating the ObjCollection
-        ObjCollection collection = new ObjCollection("Obj",calibration);
+        ObjCollection collection = new ObjCollection("Obj",calibration,1);
 
         // Adding objects
-        Obj obj = new Obj(volumeType,"Obj",0,calibration);
+        Obj obj = new Obj(volumeType,"Obj",0,calibration,1);
         Measurement meas = new Measurement("Meas",3.2);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",1,calibration);
+        obj = new Obj(volumeType,"Obj",1,calibration,1);
         meas = new Measurement("Meas",-0.1);
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        obj = new Obj(volumeType,"Obj",2,calibration);
+        obj = new Obj(volumeType,"Obj",2,calibration,1);
         meas = new Measurement("Meas",Double.NaN);
         obj.addMeasurement(meas);
         collection.add(obj);

@@ -10,7 +10,6 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.*;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -61,7 +60,7 @@ public class Obj extends Volume {
     }
 
     public Obj(String name, int ID, Volume exampleVolume, int nFrames) {
-        super(exampleVolume.getVolumeType(),exampleVolume.getCalibration());
+        super(exampleVolume.getVolumeType(),exampleVolume.getSpatialCalibration());
 
         this.name = name;
         this.ID = ID;
@@ -70,16 +69,16 @@ public class Obj extends Volume {
     }
 
     public Obj(String name, int ID, Obj exampleObj) {
-        super(exampleObj.getVolumeType(),exampleObj.getCalibration());
+        super(exampleObj.getVolumeType(),exampleObj.getSpatialCalibration());
 
         this.name = name;
         this.ID = ID;
-        this.nFrames = exampleObj.getnFrames();
+        this.nFrames = exampleObj.getNFrames();
 
     }
 
     public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume, int nFrames) {
-        super(volumeType,exampleVolume.getCalibration());
+        super(volumeType,exampleVolume.getSpatialCalibration());
 
         this.name = name;
         this.ID = ID;
@@ -88,11 +87,11 @@ public class Obj extends Volume {
     }
 
     public Obj(VolumeType volumeType, String name, int ID, Obj exampleObj) {
-        super(volumeType,exampleObj.getCalibration());
+        super(volumeType,exampleObj.getSpatialCalibration());
 
         this.name = name;
         this.ID = ID;
-        this.nFrames = exampleObj.getnFrames();
+        this.nFrames = exampleObj.getNFrames();
 
     }
 
@@ -143,7 +142,7 @@ public class Obj extends Volume {
         return this;
     }
 
-    public int getnFrames() {
+    public int getNFrames() {
         return nFrames;
     }
 
@@ -218,7 +217,7 @@ public class Obj extends Volume {
 
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
-        if (allChildren == null) return new ObjCollection(elements[0],cal,nFrames);
+        if (allChildren == null) return new ObjCollection(elements[0],spatCal,nFrames);
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1) return allChildren;
@@ -231,7 +230,7 @@ public class Obj extends Volume {
         }
 
         // Going through each child in the current set, then adding all their children to the output set
-        ObjCollection outputChildren = new ObjCollection(name,allChildren.getCal(),nFrames);
+        ObjCollection outputChildren = new ObjCollection(name,allChildren.getSpatialCalibration(),nFrames);
         for (Obj child:allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
@@ -256,7 +255,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName,child.cal,nFrames));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName,child.getSpatialCalibration(),nFrames));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -308,8 +307,8 @@ public class Obj extends Volume {
         if (rois.containsKey(slice)) return (Roi) rois.get(slice).clone();
 
         // Getting the image corresponding to this slice
-        SpatCal newCal = new SpatCal(cal.getDppXY(),cal.getDppZ(),cal.getUnits(),cal.getWidth(),cal.getHeight(),1);
-        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,cal,nFrames);
+        SpatCal newCal = new SpatCal(spatCal.getDppXY(),spatCal.getDppZ(),spatCal.getUnits(),spatCal.getWidth(),spatCal.getHeight(),1);
+        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,newCal,nFrames);
         setSlicePoints(sliceObj.coordinateSet,slice);
 
         // Checking if the object exists in this slice
@@ -384,7 +383,7 @@ public class Obj extends Volume {
 
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName,cal,nFrames);
+        ObjCollection tempObj = new ObjCollection(outputName,spatCal,nFrames);
         tempObj.add(this);
 
         // Getting the image
@@ -393,10 +392,10 @@ public class Obj extends Volume {
 
     }
 
-    public void cropToImageSize(Image templateImage) {
-        int width = templateImage.getImagePlus().getWidth();
-        int height = templateImage.getImagePlus().getHeight();
-        int nSlices = templateImage.getImagePlus().getNSlices();
+    public void removeOutOfBoundsCoords() {
+        int width = spatCal.getWidth();
+        int height = spatCal.getHeight();
+        int nSlices = spatCal.getNSlices();
 
         getPoints().removeIf(point -> point.getX() < 0 || point.getX() >= width
                 || point.getY() < 0 || point.getY() >= height

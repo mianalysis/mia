@@ -31,7 +31,6 @@ public class FilterObjects extends Module implements ActionListener {
 
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
-    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String PARENT_OBJECT = "Parent object";
@@ -166,13 +165,13 @@ public class FilterObjects extends Module implements ActionListener {
 
     }
 
-    public void filterObjectsOnImageEdge(ObjCollection inputObjects, Image inputImage, @Nullable ObjCollection outputObjects, boolean remove, boolean includeZ) {
+    public void filterObjectsOnImageEdge(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, boolean includeZ) {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
-        int maxX = inputImage.getImagePlus().getWidth()-1;
-        int maxY = inputImage.getImagePlus().getHeight()-1;
-        int maxZ = inputImage.getImagePlus().getNSlices()-1;
+        int maxX = inputObjects.getSpatialCalibration().getWidth()-1;
+        int maxY = inputObjects.getSpatialCalibration().getHeight()-1;
+        int maxZ = inputObjects.getSpatialCalibration().getNSlices()-1;
 
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -383,8 +382,6 @@ public class FilterObjects extends Module implements ActionListener {
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String method = parameters.getValue(FILTER_METHOD);
-        String inputImageName = parameters.getValue(REFERENCE_IMAGE);
-        Image inputImage = workspace.getImage(inputImageName);
         boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
         String measurement = parameters.getValue(MEASUREMENT);
         String parentObjectName = parameters.getValue(PARENT_OBJECT);
@@ -407,7 +404,7 @@ public class FilterObjects extends Module implements ActionListener {
         // Removing objects with a missing measurement (i.e. value set to null)
         switch (method) {
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
-                filterObjectsOnImageEdge(inputObjects,inputImage,outputObjects,remove,includeZ);
+                filterObjectsOnImageEdge(inputObjects,outputObjects,remove,includeZ);
                 break;
 
             case FilterMethods.MISSING_MEASUREMENTS:
@@ -490,7 +487,6 @@ public class FilterObjects extends Module implements ActionListener {
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
@@ -531,7 +527,6 @@ public class FilterObjects extends Module implements ActionListener {
                 break;
 
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
-                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 returnedParameters.add(parameters.getParameter(INCLUDE_Z_POSITION));
                 break;
 

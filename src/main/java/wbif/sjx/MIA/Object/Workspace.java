@@ -57,7 +57,7 @@ public class Workspace {
      */
     public void addObject(Obj obj) {
         String objectName = obj.getName();
-        objects.putIfAbsent(objectName,new ObjCollection(objectName,obj.getCalibration(),obj.getnFrames()));
+        objects.putIfAbsent(objectName,new ObjCollection(objectName,obj.getSpatialCalibration(),obj.getNFrames()));
         objects.get(objectName).add(obj);
 
     }

@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

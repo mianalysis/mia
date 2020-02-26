@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 public class CreateMeasurementMap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String TEMPLATE_IMAGE = "Template image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MEASUREMENT_MODE = "Measurement mode";
     public static final String PARENT_OBJECT = "Parent object";
@@ -65,7 +64,7 @@ public class CreateMeasurementMap extends Module {
         // Get final CumStat[] dimensions
         int width = calibration.getWidth();
         int height = calibration.getHeight();
-        int nSlices = averageZ ? 1 : calibration.getnSlices();
+        int nSlices = averageZ ? 1 : calibration.getNSlices();
         nFrames = averageT ? 1 : nFrames;
 
         // Create Indexer
@@ -77,7 +76,7 @@ public class CreateMeasurementMap extends Module {
         // Get final CumStat[] dimensions
         int width = calibration.getWidth();
         int height = calibration.getHeight();
-        int nSlices = averageZ ? 1 : calibration.getnSlices();
+        int nSlices = averageZ ? 1 : calibration.getNSlices();
          nFrames = averageT ? 1 : nFrames;
 
         // Create CumStat[]
@@ -281,10 +280,6 @@ public class CreateMeasurementMap extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        // Getting template image
-        String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
-        Image templateImage = workspace.getImage(templateImageName);
-
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String measurementMode = parameters.getValue(MEASUREMENT_MODE);
@@ -296,8 +291,8 @@ public class CreateMeasurementMap extends Module {
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
         // Initialising stores
-        SpatCal calibration = inputObjects.getCal();
-        int nFrames = inputObjects.getnFrames();
+        SpatCal calibration = inputObjects.getSpatialCalibration();
+        int nFrames = inputObjects.getNFrames();
         CumStat[] cumStats = initialiseCumStats(calibration,nFrames,averageZ,averageT);
         Indexer indexer = initialiseIndexer(calibration,nFrames,averageZ,averageT);
 
@@ -316,7 +311,7 @@ public class CreateMeasurementMap extends Module {
         CumStat[] blurCumStats = applyBlur(cumStats,indexer,range,statistic);
 
         // Converting statistic array to Image
-        Calibration imagecalibration = templateImage.getImagePlus().getCalibration();
+        Calibration imagecalibration = inputObjects.getSpatialCalibration().createImageCalibration();
         Image outputImage = convertToImage(blurCumStats,indexer,outputImageName,imagecalibration);
 
         workspace.addImage(outputImage);
@@ -329,7 +324,6 @@ public class CreateMeasurementMap extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(TEMPLATE_IMAGE,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(MEASUREMENT_MODE,this,MeasurementModes.MEASUREMENT,MeasurementModes.ALL));
         parameters.add(new ChoiceP(STATISTIC,this,Statistics.MEAN,Statistics.ALL));
@@ -348,7 +342,6 @@ public class CreateMeasurementMap extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_MODE));
