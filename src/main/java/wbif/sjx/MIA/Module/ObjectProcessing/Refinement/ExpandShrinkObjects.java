@@ -46,7 +46,7 @@ public class ExpandShrinkObjects extends Module {
 
     public static Obj processObject(Obj inputObject, String method, int radiusChangePx) throws IntegerOverflowException {
         // Convert each object to an image, do the dilation/erosion, then convert back to an object
-        ObjCollection objectCollection = new ObjCollection("ObjectToMorph",inputObject.getCalibration());
+        ObjCollection objectCollection = new ObjCollection("ObjectToMorph",inputObject.getCalibration(),inputObject.getnFrames());
         objectCollection.add(inputObject);
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
         Image objectImage = objectCollection.convertToImage("Object image", hues, 8, false);
@@ -105,7 +105,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);

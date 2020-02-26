@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
  */
 public class Obj extends Volume {
     private String name;
-    private TSpatCal cal;
 
     /**
      * Unique instance ID for this object
@@ -34,6 +33,7 @@ public class Obj extends Volume {
      */
     private int T = 0;
 
+    private final int nFrames;
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjCollection> children = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
@@ -42,37 +42,60 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
-    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String units) {
+    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, int nFrames, double dppXY, double dppZ, String units) {
         super(volumeType,width,height,nSlices,dppXY,dppZ,units);
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = nFrames;
 
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, TSpatCal calibration) {
+    public Obj(VolumeType volumeType, String name, int ID, SpatCal calibration, int nFrames) {
         super(volumeType,calibration);
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = nFrames;
 
     }
 
-    public Obj(String name, int ID, Volume exampleVolume) {
-        super(exampleVolume.getVolumeType(),exampleVolume.getCalibration().duplicate());
+    public Obj(String name, int ID, Volume exampleVolume, int nFrames) {
+        super(exampleVolume.getVolumeType(),exampleVolume.getCalibration());
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = nFrames;
 
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume) {
-        super(volumeType,exampleVolume.getCalibration().duplicate());
+    public Obj(String name, int ID, Obj exampleObj) {
+        super(exampleObj.getVolumeType(),exampleObj.getCalibration());
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = exampleObj.getnFrames();
 
     }
+
+    public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume, int nFrames) {
+        super(volumeType,exampleVolume.getCalibration());
+
+        this.name = name;
+        this.ID = ID;
+        this.nFrames = nFrames;
+
+    }
+
+    public Obj(VolumeType volumeType, String name, int ID, Obj exampleObj) {
+        super(volumeType,exampleObj.getCalibration());
+
+        this.name = name;
+        this.ID = ID;
+        this.nFrames = exampleObj.getnFrames();
+
+    }
+
 
     // PUBLIC METHODS
 
@@ -120,8 +143,8 @@ public class Obj extends Volume {
         return this;
     }
 
-    public TSpatCal getCalibration() {
-        return cal;
+    public int getnFrames() {
+        return nFrames;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -195,7 +218,7 @@ public class Obj extends Volume {
 
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
-        if (allChildren == null) return new ObjCollection(elements[0],cal);
+        if (allChildren == null) return new ObjCollection(elements[0],cal,nFrames);
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1) return allChildren;
@@ -208,7 +231,7 @@ public class Obj extends Volume {
         }
 
         // Going through each child in the current set, then adding all their children to the output set
-        ObjCollection outputChildren = new ObjCollection(name,allChildren.getCal());
+        ObjCollection outputChildren = new ObjCollection(name,allChildren.getCal(),nFrames);
         for (Obj child:allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
@@ -233,7 +256,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName,child.cal));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName,child.cal,nFrames));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -285,14 +308,14 @@ public class Obj extends Volume {
         if (rois.containsKey(slice)) return (Roi) rois.get(slice).clone();
 
         // Getting the image corresponding to this slice
-        TSpatCal newCal = new TSpatCal(cal.getDppXY(),cal.getDppZ(),cal.getUnits(),cal.getWidth(),cal.getHeight(),1,cal.nFrames);
-        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,cal);
+        SpatCal newCal = new SpatCal(cal.getDppXY(),cal.getDppZ(),cal.getUnits(),cal.getWidth(),cal.getHeight(),1);
+        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,cal,nFrames);
         setSlicePoints(sliceObj.coordinateSet,slice);
 
         // Checking if the object exists in this slice
         if (sliceObj.size() == 0) return null;
 
-        ObjCollection objectCollection = new ObjCollection("SliceObjects",newCal);
+        ObjCollection objectCollection = new ObjCollection("SliceObjects",newCal,nFrames);
         objectCollection.add(sliceObj);
 
         ImagePlus sliceIpl = IJ.createImage("SliceIm",newCal.getWidth(),newCal.getHeight(),1,8);
@@ -361,7 +384,7 @@ public class Obj extends Volume {
 
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName,cal);
+        ObjCollection tempObj = new ObjCollection(outputName,cal,nFrames);
         tempObj.add(this);
 
         // Getting the image

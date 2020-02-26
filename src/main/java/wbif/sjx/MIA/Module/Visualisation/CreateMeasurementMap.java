@@ -19,6 +19,7 @@ import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.SpatCal;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -60,24 +61,24 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    public static Indexer initialiseIndexer(TSpatCal calibration, boolean averageZ, boolean averageT) {
+    public static Indexer initialiseIndexer(SpatCal calibration, int nFrames, boolean averageZ, boolean averageT) {
         // Get final CumStat[] dimensions
         int width = calibration.getWidth();
         int height = calibration.getHeight();
         int nSlices = averageZ ? 1 : calibration.getnSlices();
-        int nFrames = averageT ? 1 : calibration.getnFrames();
+        nFrames = averageT ? 1 : nFrames;
 
         // Create Indexer
         return new Indexer(new int[]{width,height,nSlices,nFrames});
 
     }
 
-    public static CumStat[] initialiseCumStats(TSpatCal calibration, boolean averageZ, boolean averageT) {
+    public static CumStat[] initialiseCumStats(SpatCal calibration, int nFrames, boolean averageZ, boolean averageT) {
         // Get final CumStat[] dimensions
         int width = calibration.getWidth();
         int height = calibration.getHeight();
         int nSlices = averageZ ? 1 : calibration.getnSlices();
-        int nFrames = averageT ? 1 : calibration.getnFrames();
+         nFrames = averageT ? 1 : nFrames;
 
         // Create CumStat[]
         CumStat[] cumStats =  new CumStat[width*height*nSlices*nFrames];
@@ -295,9 +296,10 @@ public class CreateMeasurementMap extends Module {
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
         // Initialising stores
-        TSpatCal calibration = inputObjects.getCal();
-        CumStat[] cumStats = initialiseCumStats(calibration,averageZ,averageT);
-        Indexer indexer = initialiseIndexer(calibration,averageZ,averageT);
+        SpatCal calibration = inputObjects.getCal();
+        int nFrames = inputObjects.getnFrames();
+        CumStat[] cumStats = initialiseCumStats(calibration,nFrames,averageZ,averageT);
+        Indexer indexer = initialiseIndexer(calibration,nFrames,averageZ,averageT);
 
         // Compressing relevant measures
         switch (measurementMode) {

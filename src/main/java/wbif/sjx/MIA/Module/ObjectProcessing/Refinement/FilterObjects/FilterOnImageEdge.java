@@ -107,7 +107,7 @@ public class FilterOnImageEdge extends CoreFilter {
 
         boolean[] removalEdges = new boolean[]{removeTop,removeLeft,removeBottom,removeRight};
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects.getCal()) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
 
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();

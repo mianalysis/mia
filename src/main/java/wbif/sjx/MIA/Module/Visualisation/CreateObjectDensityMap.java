@@ -18,6 +18,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.SpatCal;
 
 
 public class CreateObjectDensityMap extends Module {
@@ -109,9 +110,10 @@ public class CreateObjectDensityMap extends Module {
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
         // Initialising stores
-        TSpatCal calibration = inputObjects.getCal();
-        CumStat[] cumStats = CreateMeasurementMap.initialiseCumStats(calibration,averageZ,averageT);
-        Indexer indexer = CreateMeasurementMap.initialiseIndexer(calibration,averageZ,averageT);
+        SpatCal calibration = inputObjects.getCal();
+        int nFrames = inputObjects.getnFrames();
+        CumStat[] cumStats = CreateMeasurementMap.initialiseCumStats(calibration,nFrames,averageZ,averageT);
+        Indexer indexer = CreateMeasurementMap.initialiseIndexer(calibration,nFrames,averageZ,averageT);
 
         // Compressing relevant measures
         process(cumStats,indexer,inputObjects,getName());

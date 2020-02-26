@@ -24,6 +24,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -107,8 +108,8 @@ public class Image <T extends RealType<T> & NativeType<T>> {
         int nChannels = imagePlus.getNChannels();
 
         // Need to get coordinates and convert to a HCObject
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,units,w,h,nSlices,nFrames);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,units,w,h,nSlices);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
 
         // Will return null if optimised
         VolumeType volumeType = getVolumeType(type);
@@ -137,7 +138,7 @@ public class Image <T extends RealType<T> & NativeType<T>> {
                                 VolumeType outType = link.getVolumeType();
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, w, h, nSlices, dppXY, dppZ, units).setT(finalT));
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, outputObjects.getCal(),outputObjects.getnFrames()).setT(finalT));
                                 try {
                                     outputObjects.get(outID).add(x, y, z);
                                 } catch (PointOutOfRangeException e) {}

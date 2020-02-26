@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.Volume;
 
 /**
@@ -28,7 +29,7 @@ public class ProjectObjects extends Module {
     public static Obj process(Obj inputObject, String outputObjectsName, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),projected);
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),inputObject);
         outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 
@@ -62,9 +63,9 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        TSpatCal calIn = inputObjects.getCal();
-        TSpatCal calOut = new TSpatCal(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1,calIn.getnFrames());
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut);
+        SpatCal calIn = inputObjects.getCal();
+        SpatCal calOut = new SpatCal(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut,inputObjects.getnFrames());
 
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;

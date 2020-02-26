@@ -11,6 +11,8 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.*;
 
@@ -20,17 +22,28 @@ import java.util.*;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
-    private TSpatCal cal;
+    private final SpatCal cal;
+    private final int nFrames;
 
-    public ObjCollection(String name, TSpatCal cal) {
+    public ObjCollection(String name, SpatCal cal, int nFrames) {
         this.name = name;
         this.cal = cal;
+        this.nFrames = nFrames;
 
     }
 
-    public ObjCollection(String name, int ID, int width, int height, int nSlices, int nFrames, double dppXY, double dppZ, String calibratedUnits) {
+    public ObjCollection(String name, ObjCollection exampleCollection) {
         this.name = name;
-        this.cal = new TSpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices,nFrames);
+        this.cal = exampleCollection.getCal();
+        this.nFrames = exampleCollection.getnFrames();
+
+    }
+
+    public Obj createAndAddNewObject(VolumeType volumeType) {
+        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), cal, nFrames);
+        add(newObject);
+
+        return newObject;
 
     }
 
@@ -43,7 +56,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public TSpatCal getCal() {
+    public SpatCal getCal() {
         return cal;
     }
 
@@ -194,10 +207,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     ImagePlus createImage(String outputName, int bitDepth) {
-            int[] tLim = getTemporalLimits();
-
             // Creating a new image
-            return IJ.createHyperStack(outputName, cal.getWidth(), cal.getHeight(),1, cal.getnSlices(),tLim[1]+1,bitDepth);
+            return IJ.createHyperStack(outputName, cal.getWidth(), cal.getHeight(),1, cal.getnSlices(),nFrames,bitDepth);
 
     }
 
@@ -385,5 +396,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         return referenceObject;
 
+    }
+
+    public int getnFrames() {
+        return nFrames;
     }
 }

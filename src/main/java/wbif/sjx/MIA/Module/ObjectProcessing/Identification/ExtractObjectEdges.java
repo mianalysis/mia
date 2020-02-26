@@ -159,7 +159,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection edgeObjects = null;
         if (createEdgeObjects) {
             edgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            edgeObjects = new ObjCollection(edgeObjectName,inputObjects.getCal());
+            edgeObjects = new ObjCollection(edgeObjectName,inputObjects);
             workspace.addObjects(edgeObjects);
         }
 
@@ -168,7 +168,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection interiorObjects = null;
         if (createInteriorObjects) {
             interiorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            interiorObjects = new ObjCollection(interiorObjectName,inputObjects.getCal());
+            interiorObjects = new ObjCollection(interiorObjectName,inputObjects);
             workspace.addObjects(interiorObjects);
         }
 

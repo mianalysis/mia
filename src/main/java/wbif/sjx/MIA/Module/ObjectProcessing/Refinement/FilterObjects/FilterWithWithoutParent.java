@@ -74,7 +74,7 @@ public class FilterWithWithoutParent extends CoreFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects.getCal()) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
 
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();

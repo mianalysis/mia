@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.swing.*;
@@ -53,7 +54,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private String outputObjectsName;
     private ObjCollection outputObjects;
 
-    private TSpatCal calibration;
+    private SpatCal calibration;
+    private int nFrames;
     private boolean overflow = false;
 
     private int elementHeight = 40;
@@ -347,7 +349,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-        calibration = TSpatCal.getFromImage(inputImagePlus);
+        calibration = SpatCal.getFromImage(inputImagePlus);
+        nFrames = inputImagePlus.getNFrames();
 
         setSelector(selectorType);
 
@@ -366,7 +369,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         listModel.clear();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName,calibration);
+        outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
 
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
@@ -568,7 +571,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = getVolumeType(type);
-            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,calibration);
+            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,calibration,nFrames);
             outputObjects.add(outputObject);
 
             for (ObjRoi objRoi:currentRois) {

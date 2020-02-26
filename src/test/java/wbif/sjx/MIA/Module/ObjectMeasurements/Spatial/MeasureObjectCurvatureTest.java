@@ -102,6 +102,9 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
 
         // Getting test objects
         ObjCollection inputObj = new Rings2D(volumeType).getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        System.err.println(inputObj.getCal());
+        System.err.println(inputObj.getCal().getWidth());
+        System.err.println(inputObj.getFirst().getCalibration());
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace

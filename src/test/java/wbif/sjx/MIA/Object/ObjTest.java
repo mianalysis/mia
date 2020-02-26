@@ -269,7 +269,7 @@ public class ObjTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        TSpatCal calibration = new TSpatCal(0.02,0.1,"µm",1,1,1,1);
+        SpatCal calibration = new SpatCal(0.02,0.1,"µm",1,1,1,1);
         Obj obj1 = new Obj(volumeType,parentObjectsName,1,calibration);
         Obj obj2 = new Obj(volumeType,childObjectsName,12,calibration);
         Obj obj3 = new Obj(volumeType,childObjectsName,2,calibration);

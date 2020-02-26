@@ -100,7 +100,7 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // If necessary, creating an output object collection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
         switch (outputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
                 workspace.addObjects(outputObjects);

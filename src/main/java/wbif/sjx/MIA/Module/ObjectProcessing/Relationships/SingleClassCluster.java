@@ -73,7 +73,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),outputObjects.getCal(),outputObjects.getnFrames());
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -92,7 +92,7 @@ public class SingleClassCluster extends Module {
             if (obj.getParent(outputObjectsName) == null) {
                 int ID = outputObjects.getAndIncrementID();
                 VolumeType type = VolumeType.POINTLIST;
-                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getCal(),outputObjects.getnFrames());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -119,7 +119,7 @@ public class SingleClassCluster extends Module {
         for (Cluster<LocationWrapper> cluster:clusters) {
             int ID = outputObjects.getAndIncrementID();
             VolumeType type = VolumeType.POINTLIST;
-            Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getCal(),outputObjects.getnFrames());
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -138,7 +138,7 @@ public class SingleClassCluster extends Module {
             if (obj.getParent(outputObjectsName) == null) {
                 int ID = outputObjects.getAndIncrementID();
                 VolumeType type = VolumeType.POINTLIST;
-                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getCal(),outputObjects.getnFrames());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -209,7 +209,7 @@ public class SingleClassCluster extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);

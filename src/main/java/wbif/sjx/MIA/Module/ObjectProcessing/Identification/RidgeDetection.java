@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
@@ -148,7 +149,7 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static TSpatCal getCalibration(Image referenceImage) {
+    public static SpatCal getCalibration(Image referenceImage) {
         ImagePlus inputIpl = referenceImage.getImagePlus();
         Calibration calibration = inputIpl.getCalibration();
         double dppXY = calibration.getX(1);
@@ -158,18 +159,14 @@ public class RidgeDetection extends Module {
         int imWidth = inputIpl.getWidth();
         int imHeight = inputIpl.getHeight();
         int nSlices = inputIpl.getNSlices();
-        int nFrames = inputIpl.getNFrames();
 
-        return new TSpatCal(dppXY,dppZ,units,imWidth,imHeight,nSlices,nFrames);
+        return new SpatCal(dppXY,dppZ,units,imWidth,imHeight,nSlices);
 
     }
 
     public static Obj initialiseObject(ObjCollection outputObjects, int t) {
-        int ID = outputObjects.getAndIncrementID();
-
-        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjects.getName(),ID,outputObjects.getCal());
+        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
         outputObject.setT(t);
-        outputObjects.add(outputObject);
 
         return outputObject;
 
@@ -274,8 +271,9 @@ public class RidgeDetection extends Module {
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         LineDetector lineDetector = new LineDetector();
-        TSpatCal calibration = getCalibration(inputImage);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
+        SpatCal calibration = getCalibration(inputImage);
+        int nFrames = inputIpl.getNFrames();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack

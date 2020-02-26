@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -54,9 +55,10 @@ public class IdentifyObjects extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = inputImagePlus.duplicate();
 
-        TSpatCal cal = TSpatCal.getFromImage(inputImagePlus);
+        SpatCal cal = SpatCal.getFromImage(inputImagePlus);
+        int nFrames = inputImagePlus.getNFrames();
 
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal,nFrames);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());

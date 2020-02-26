@@ -20,6 +20,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -101,8 +102,9 @@ public class HoughObjectDetection extends Module {
         int labelSize = parameters.getValue(LABEL_SIZE);
 
         // Storing the image calibration
-        TSpatCal cal = TSpatCal.getFromImage(ipl);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal);
+        SpatCal cal = SpatCal.getFromImage(ipl);
+        int nFrames = ipl.getNFrames();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal,nFrames);
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
 
@@ -157,7 +159,7 @@ public class HoughObjectDetection extends Module {
                     for (double[] circle : circles) {
                         // Initialising the object
                         int ID = outputObjects.getAndIncrementID();
-                        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,ID,cal);
+                        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,ID,cal,nFrames);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0])*samplingRate;

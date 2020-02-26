@@ -52,7 +52,7 @@ public class GetObjectSurface extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.getCal());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
 
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = getSurface(inputObject,outputObjectsName,outputObjects.getAndIncrementID());

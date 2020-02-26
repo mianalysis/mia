@@ -4,7 +4,6 @@ import util.opencsv.CSVReader;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.TSpatCal;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
@@ -39,7 +38,7 @@ public class Tracks3D {
      * @return
      */
     public ObjCollection getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
-        TSpatCal calibration = new TSpatCal(dppXY,dppZ,calibratedUnits,127,90,13,10);
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,127,90,13,10);
 
         // Initialising object store
         ObjCollection trackObjects = new ObjCollection(tracksName,calibration);

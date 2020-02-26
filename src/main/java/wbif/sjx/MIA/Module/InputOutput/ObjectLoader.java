@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
@@ -291,7 +292,7 @@ public class ObjectLoader extends Module {
                     int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
                     // Creating the object and setting the coordinates
-                    Obj obj = new Obj(type,outputObjects.getName(),ID,outputObjects.getCal());
+                    Obj obj = outputObjects.createAndAddNewObject(type);
                     try {
                         obj.add(x,y,z);
                     } catch (PointOutOfRangeException e) {
@@ -399,16 +400,16 @@ public class ObjectLoader extends Module {
         if (cal == null) return false;
 
         String units = Units.getOMEUnits().getSymbol();
-        TSpatCal calibration = new TSpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2],limits[3]);
+        SpatCal calibration = new SpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
 
         // Creating output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,limits[3]);
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
         ObjCollection parentObjects = null;
         if (createParents) {
-            parentObjects = new ObjCollection(parentObjectsName,calibration);
+            parentObjects = new ObjCollection(parentObjectsName,calibration,limits[3]);
             workspace.addObjects(parentObjects);
         }
 
