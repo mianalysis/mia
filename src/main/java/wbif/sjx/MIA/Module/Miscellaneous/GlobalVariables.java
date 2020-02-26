@@ -93,7 +93,7 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static boolean containsMetadata(String string) {
+    public static boolean containsValue(String string) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
 

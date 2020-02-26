@@ -5,7 +5,6 @@ import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-import wbif.sjx.MIA.Process.Logging.Log;
 
 public class DoubleP extends TextType {
     protected String value;
@@ -36,7 +35,7 @@ public class DoubleP extends TextType {
 
     public void setValue(String value) throws NumberFormatException {
         // Checking this is valid
-        if (GlobalVariables.containsMetadata(value)) {
+        if (GlobalVariables.containsValue(value)) {
             this.value = value;
         } else {
             try {
