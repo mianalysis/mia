@@ -72,25 +72,29 @@ public class FitEllipsoid extends Module {
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage,
-                              String fittingMode, boolean useIntensityWeighting, double maxAxisLength) throws IntegerOverflowException {
-        ImagePlus templateImagePlus = templateImage.getImagePlus();
-        templateImagePlus.setPosition(1,1,inputObject.getT());
-        ImageStack imageStack = templateImagePlus.getStack();
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, String fittingMode,
+                              Image inputImage, double maxAxisLength) throws IntegerOverflowException {
+
+        ImageStack imageStack = null;
+        if (inputImage != null) {
+            ImagePlus inputImagePlus = inputImage.getImagePlus();
+            inputImagePlus.setPosition(1, 1, inputObject.getT());
+            imageStack = inputImagePlus.getStack();
+        }
 
         EllipsoidCalculator calculator = null;
         switch (fittingMode) {
             case FittingModes.FIT_TO_WHOLE:
-                calculator = useIntensityWeighting
-                        ? new EllipsoidCalculator(inputObject, maxAxisLength, imageStack)
-                        : new EllipsoidCalculator(inputObject, maxAxisLength);
+                calculator = imageStack == null
+                        ? new EllipsoidCalculator(inputObject, maxAxisLength)
+                        : new EllipsoidCalculator(inputObject, maxAxisLength, imageStack);
                 break;
 
             case FittingModes.FIT_TO_SURFACE:
                 Obj edgeObject = GetObjectSurface.getSurface(inputObject,"Edge",1);
-                calculator = useIntensityWeighting
-                        ? new EllipsoidCalculator(edgeObject, maxAxisLength, imageStack)
-                        : new EllipsoidCalculator(edgeObject, maxAxisLength);
+                calculator = imageStack == null
+                        ? new EllipsoidCalculator(edgeObject, maxAxisLength)
+                        : new EllipsoidCalculator(edgeObject, maxAxisLength, imageStack);
                 break;
         }
 
@@ -193,7 +197,7 @@ public class FitEllipsoid extends Module {
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String templateImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         String fittingMode = parameters.getValue(FITTING_MODE);
         boolean useIntensityWeighting = parameters.getValue(USE_INTENSITY_WEIGHTING);
         boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
@@ -207,14 +211,15 @@ public class FitEllipsoid extends Module {
         }
 
         // Getting template image
-        Image templateImage = workspace.getImage(templateImageName);
+        Image inputImage = null;
+        if (useIntensityWeighting) inputImage = workspace.getImage(inputImageName);
 
         // Running through each object, taking measurements and adding new object to the workspace where necessary
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
             try {
-                processObject(inputObject,outputObjects,objectOutputMode,templateImage,fittingMode,useIntensityWeighting,maxAxisLength);
+                processObject(inputObject,outputObjects,objectOutputMode,fittingMode,inputImage,maxAxisLength);
             } catch (IntegerOverflowException e) {
                 return false;
             }
