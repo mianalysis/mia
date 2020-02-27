@@ -27,6 +27,7 @@ public class MeasureObjectShape extends Module {
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
     public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
 
+
     public MeasureObjectShape(ModuleCollection modules) {
         super("Measure object shape",modules);
     }
