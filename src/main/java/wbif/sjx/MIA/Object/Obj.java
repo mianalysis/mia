@@ -356,21 +356,11 @@ public class Obj extends Volume {
     }
 
     public Image getAsImage(String imageName) {
-        double[][] range = getExtents(true,false);
-        int width = (int) (range[0][1]-range[0][0]+1);
-        int height = (int) (range[1][1]-range[1][0]+1);
-        int depth = (int) (range[2][1]-range[2][0]+1);
-
-        ImagePlus ipl = IJ.createImage(imageName,width,height,depth,8);
+        ImagePlus ipl = IJ.createImage(imageName,spatCal.width,spatCal.height,spatCal.nSlices,8);
 
         for (Point<Integer> point:getPoints()) {
-            int x = point.getX()- (int) range[0][0];
-            int y = point.getY()- (int) range[1][0];
-            int z = point.getZ()- (int) range[2][0];
-
-            ipl.setPosition(z+1);
-            ipl.getProcessor().putPixel(x,y,255);
-
+            ipl.setPosition(point.getZ()+1);
+            ipl.getProcessor().putPixel(point.getX(),point.getY(),255);
         }
 
         return new Image(imageName,ipl);
