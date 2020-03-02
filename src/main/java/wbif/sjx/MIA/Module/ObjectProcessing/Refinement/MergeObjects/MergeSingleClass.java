@@ -48,7 +48,7 @@ public class MergeSingleClass extends Module {
         }
 
         // Adding output objects to a new ObjCollection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
         for (Obj outputObject:objects.values()) outputObjects.add(outputObject);
 
         return outputObjects;

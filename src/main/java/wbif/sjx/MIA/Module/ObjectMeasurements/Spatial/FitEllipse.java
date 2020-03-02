@@ -17,7 +17,6 @@ import wbif.sjx.common.Object.Volume.Volume;
  */
 public class FitEllipse extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String TEMPLATE_IMAGE = "Template image";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String FITTING_MODE = "Fitting mode";
@@ -61,7 +60,7 @@ public class FitEllipse extends Module {
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength, String fittingMode) throws IntegerOverflowException {
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
         switch (fittingMode) {
             case FitEllipsoid.FittingModes.FIT_TO_WHOLE:
@@ -85,12 +84,12 @@ public class FitEllipse extends Module {
                 Obj ellipseObject = createNewObject(inputObject,ellipse,outputObjects);
                 if (ellipseObject != null) {
                     outputObjects.add(ellipseObject);
-                    ellipseObject.cropToImageSize(templateImage);
+                    ellipseObject.removeOutOfBoundsCoords();
                 }
                 break;
             case OutputModes.UPDATE_INPUT:
                 updateInputObject(inputObject,ellipse);
-                inputObject.cropToImageSize(templateImage);
+                inputObject.removeOutOfBoundsCoords();
                 break;
         }
     }
@@ -185,7 +184,6 @@ public class FitEllipse extends Module {
         // Getting parameters
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
         String fittingMode = parameters.getValue(FITTING_MODE);
         boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
         double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
@@ -193,19 +191,16 @@ public class FitEllipse extends Module {
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
         if (objectOutputMode.equals(OutputModes.CREATE_NEW_OBJECT)) {
-            outputObjects = new ObjCollection(outputObjectsName);
+            outputObjects = new ObjCollection(outputObjectsName,inputObjects);
             workspace.addObjects(outputObjects);
         }
-
-        // Getting template image
-        Image templateImage = workspace.getImage(templateImageName);
 
         // Running through each object, taking measurements and adding new object to the workspace where necessary
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
             try {
-                processObject(inputObject,outputObjects,objectOutputMode,templateImage,maxAxisLength,fittingMode);
+                processObject(inputObject,outputObjects,objectOutputMode,maxAxisLength,fittingMode);
             } catch (IntegerOverflowException e) {
                 return false;
             }
@@ -226,7 +221,6 @@ public class FitEllipse extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(TEMPLATE_IMAGE,this));
         parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE,this, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
         parameters.add(new ChoiceP(FITTING_MODE,this,FittingModes.FIT_TO_SURFACE,FittingModes.ALL));
@@ -240,7 +234,6 @@ public class FitEllipse extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
 
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {

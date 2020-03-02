@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Sphere3D extends ExpectedObjects {
     public Sphere3D(VolumeType volumeType) {
-        super(volumeType, 64,76,12);
+        super(volumeType, 64,76,12,1);
     }
 
     @Override

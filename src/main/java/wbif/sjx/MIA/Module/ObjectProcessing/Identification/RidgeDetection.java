@@ -7,7 +7,6 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -16,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 import wbif.sjx.common.Process.SkeletonTools.BreakFixer;
@@ -149,23 +149,24 @@ public class RidgeDetection extends Module {
 
     }
 
-    public static Obj initialiseObject(ObjCollection outputObjects, int t, Image referenceImage) {
+    public static SpatCal getCalibration(Image referenceImage) {
         ImagePlus inputIpl = referenceImage.getImagePlus();
         Calibration calibration = inputIpl.getCalibration();
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
-        String calibrationUnits = calibration.getUnits();
+        String units = calibration.getUnits();
         boolean twoD = inputIpl.getNSlices()==1;
         int imWidth = inputIpl.getWidth();
         int imHeight = inputIpl.getHeight();
-        int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
 
-        int ID = outputObjects.getAndIncrementID();
+        return new SpatCal(dppXY,dppZ,units,imWidth,imHeight,nSlices);
 
-        Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjects.getName(),ID,imWidth,imHeight,nSlices,dppXY, dppZ,calibrationUnits);
+    }
+
+    public static Obj initialiseObject(ObjCollection outputObjects, int t) {
+        Obj outputObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
         outputObject.setT(t);
-        outputObjects.add(outputObject);
 
         return outputObject;
 
@@ -270,7 +271,9 @@ public class RidgeDetection extends Module {
 
         ImagePlus inputIpl = inputImage.getImagePlus();
         LineDetector lineDetector = new LineDetector();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        SpatCal calibration = getCalibration(inputImage);
+        int nFrames = inputIpl.getNFrames();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
         workspace.addObjects(outputObjects);
 
         // Iterating over each image in the stack
@@ -307,7 +310,7 @@ public class RidgeDetection extends Module {
                     // Getting the unique LineGroups and converting them to Obj
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
-                        Obj outputObject = initialiseObject(outputObjects,t,inputImage);
+                        Obj outputObject = initialiseObject(outputObjects,t);
 
                         double estimatedLength = 0;
                         if (estimateWidth) width = new CumStat();

@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.*;
@@ -27,21 +28,25 @@ public abstract class ExpectedObjects {
     private final int width;
     private final int height;
     private final int nSlices;
+    private final int nFrames;
 
     public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
 
-    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices) {
+    public ExpectedObjects(VolumeType volumeType, int width, int height, int nSlices, int nFrames) {
         this.volumeType = volumeType;
         this.width = width;
         this.height = height;
         this.nSlices = nSlices;
+        this.nFrames = nFrames;
     }
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
     public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,width,height,nSlices);
+
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName);
+        ObjCollection testObjects = new ObjCollection(objectName,calibration,nFrames);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -67,9 +72,10 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits));
+            testObjects.putIfAbsent(ID,new Obj(volumeType,objectName,ID,calibration,nFrames));
 
             Obj testObject = testObjects.get(ID);
+
             try {
                 testObject.add(x,y,z);
             } catch (PointOutOfRangeException e) {}

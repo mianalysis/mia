@@ -20,6 +20,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -82,11 +83,8 @@ public class HoughObjectDetection extends Module {
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
-        // Getting output image name
+        // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
-
-        // Getting output image name
         boolean outputTransformImage = parameters.getValue(OUTPUT_TRANSFORM_IMAGE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
@@ -104,13 +102,9 @@ public class HoughObjectDetection extends Module {
         int labelSize = parameters.getValue(LABEL_SIZE);
 
         // Storing the image calibration
-        Calibration calibration = ipl.getCalibration();
-        int width = ipl.getWidth();
-        int height = ipl.getHeight();
-        int nSlices = ipl.getNSlices();
-        double dppXY = calibration.getX(1);
-        double dppZ = calibration.getZ(1);
-        String calibrationUnits = calibration.getUnits();
+        SpatCal cal = SpatCal.getFromImage(ipl);
+        int nFrames = ipl.getNFrames();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal,nFrames);
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
 
@@ -165,7 +159,7 @@ public class HoughObjectDetection extends Module {
                     for (double[] circle : circles) {
                         // Initialising the object
                         int ID = outputObjects.getAndIncrementID();
-                        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,ID,width,height,nSlices,dppXY, dppZ,calibrationUnits);
+                        Obj outputObject = new Obj(VolumeType.QUADTREE,outputObjectsName,ID,cal,nFrames);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0])*samplingRate;

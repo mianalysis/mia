@@ -1,9 +1,6 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
-import ij.IJ;
-import ij.ImagePlus;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
@@ -11,13 +8,10 @@ import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.net.URLDecoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -143,17 +137,10 @@ public class FilterObjectsTest extends ModuleTest {
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
         // Initialising FilterObjects module
         FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
-        filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
 
         // Running the module
         filterObjects.execute(workspace);
@@ -179,17 +166,10 @@ public class FilterObjectsTest extends ModuleTest {
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
         // Initialising FilterObjects module
         FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
-        filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,false);
 
         // Running the module
@@ -216,17 +196,10 @@ public class FilterObjectsTest extends ModuleTest {
         ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
         // Initialising FilterObjects module
         FilterObjects filterObjects = new FilterObjects(new ModuleCollection());
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.REMOVE_ON_IMAGE_EDGE_2D);
-        filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,true);
 
         // Running the module
@@ -257,12 +230,12 @@ public class FilterObjectsTest extends ModuleTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children");
+        ObjCollection childObjects = new ObjCollection("Children",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -307,12 +280,12 @@ public class FilterObjectsTest extends ModuleTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children");
+        ObjCollection childObjects = new ObjCollection("Children",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),1,1,1,dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj(volumeType,"Children", childObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
                 childObjects.add(childObject);
 
                 testObject.addChild(childObject);
@@ -356,12 +329,12 @@ public class FilterObjectsTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,true};
-        ObjCollection parentObjects = new ObjCollection("Parents");
+        ObjCollection parentObjects = new ObjCollection("Parents",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -402,12 +375,12 @@ public class FilterObjectsTest extends ModuleTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents");
+        ObjCollection parentObjects = new ObjCollection("Parents",testObjects);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),1,1,1, dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj(volumeType,"Parents", parentObjects.getAndIncrementID(),testObjects.getSpatialCalibration(),testObjects.getNFrames());
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);

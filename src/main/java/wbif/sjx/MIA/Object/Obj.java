@@ -5,16 +5,11 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume.CoordinateSet;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.Volume;
-import wbif.sjx.common.Object.Volume.VolumeType;
+import wbif.sjx.common.Object.Volume.*;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +32,7 @@ public class Obj extends Volume {
      */
     private int T = 0;
 
+    private final int nFrames;
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjCollection> children = new LinkedHashMap<>();
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
@@ -45,29 +41,60 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
-    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, double dppXY, double dppZ, String calibratedUnits) {
-        super(volumeType,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+    public Obj(VolumeType volumeType, String name, int ID, int width, int height, int nSlices, int nFrames, double dppXY, double dppZ, String units) {
+        super(volumeType,width,height,nSlices,dppXY,dppZ,units);
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = nFrames;
 
     }
 
-    public Obj(String name, int ID, Volume exampleVolume) {
-        super(exampleVolume.getVolumeType(),exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
+    public Obj(VolumeType volumeType, String name, int ID, SpatCal calibration, int nFrames) {
+        super(volumeType,calibration);
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = nFrames;
 
     }
 
-    public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume) {
-        super(volumeType,exampleVolume.getWidth(),exampleVolume.getHeight(),exampleVolume.getnSlices(),exampleVolume.getDppXY(),exampleVolume.getDppZ(),exampleVolume.getCalibratedUnits());
+    public Obj(String name, int ID, Volume exampleVolume, int nFrames) {
+        super(exampleVolume.getVolumeType(),exampleVolume.getSpatialCalibration());
 
         this.name = name;
         this.ID = ID;
+        this.nFrames = nFrames;
 
     }
+
+    public Obj(String name, int ID, Obj exampleObj) {
+        super(exampleObj.getVolumeType(),exampleObj.getSpatialCalibration());
+
+        this.name = name;
+        this.ID = ID;
+        this.nFrames = exampleObj.getNFrames();
+
+    }
+
+    public Obj(VolumeType volumeType, String name, int ID, Volume exampleVolume, int nFrames) {
+        super(volumeType,exampleVolume.getSpatialCalibration());
+
+        this.name = name;
+        this.ID = ID;
+        this.nFrames = nFrames;
+
+    }
+
+    public Obj(VolumeType volumeType, String name, int ID, Obj exampleObj) {
+        super(volumeType,exampleObj.getSpatialCalibration());
+
+        this.name = name;
+        this.ID = ID;
+        this.nFrames = exampleObj.getNFrames();
+
+    }
+
 
     // PUBLIC METHODS
 
@@ -113,6 +140,10 @@ public class Obj extends Volume {
     public Obj setT(int t) {
         T = t;
         return this;
+    }
+
+    public int getNFrames() {
+        return nFrames;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
@@ -186,7 +217,7 @@ public class Obj extends Volume {
 
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
-        if (allChildren == null) return new ObjCollection(elements[0]);
+        if (allChildren == null) return new ObjCollection(elements[0],spatCal,nFrames);
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1) return allChildren;
@@ -199,7 +230,7 @@ public class Obj extends Volume {
         }
 
         // Going through each child in the current set, then adding all their children to the output set
-        ObjCollection outputChildren = new ObjCollection(name);
+        ObjCollection outputChildren = new ObjCollection(name,allChildren.getSpatialCalibration(),nFrames);
         for (Obj child:allChildren.values()) {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
@@ -224,7 +255,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName,child.getSpatialCalibration(),nFrames));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -276,19 +307,20 @@ public class Obj extends Volume {
         if (rois.containsKey(slice)) return (Roi) rois.get(slice).clone();
 
         // Getting the image corresponding to this slice
-        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+        SpatCal newCal = new SpatCal(spatCal.getDppXY(),spatCal.getDppZ(),spatCal.getUnits(),spatCal.getWidth(),spatCal.getHeight(),1);
+        Obj sliceObj = new Obj(getVolumeType(),"Slice",ID,newCal,nFrames);
         setSlicePoints(sliceObj.coordinateSet,slice);
 
         // Checking if the object exists in this slice
         if (sliceObj.size() == 0) return null;
 
-        ObjCollection objectCollection = new ObjCollection("SliceObjects");
+        ObjCollection objectCollection = new ObjCollection("SliceObjects",newCal,nFrames);
         objectCollection.add(sliceObj);
 
-        ImagePlus sliceIpl = IJ.createImage("SliceIm",width,height,1,8);
+        ImagePlus sliceIpl = IJ.createImage("SliceIm",newCal.getWidth(),newCal.getHeight(),1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
+        Image objectImage = objectCollection.convertToImage("Output", hues, 8,false);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -324,21 +356,11 @@ public class Obj extends Volume {
     }
 
     public Image getAsImage(String imageName) {
-        double[][] range = getExtents(true,false);
-        int width = (int) (range[0][1]-range[0][0]+1);
-        int height = (int) (range[1][1]-range[1][0]+1);
-        int depth = (int) (range[2][1]-range[2][0]+1);
-
-        ImagePlus ipl = IJ.createImage(imageName,width,height,depth,8);
+        ImagePlus ipl = IJ.createImage(imageName,spatCal.width,spatCal.height,spatCal.nSlices,8);
 
         for (Point<Integer> point:getPoints()) {
-            int x = point.getX()- (int) range[0][0];
-            int y = point.getY()- (int) range[1][0];
-            int z = point.getZ()- (int) range[2][0];
-
-            ipl.setPosition(z+1);
-            ipl.getProcessor().putPixel(x,y,255);
-
+            ipl.setPosition(point.getZ()+1);
+            ipl.getProcessor().putPixel(point.getX(),point.getY(),255);
         }
 
         return new Image(imageName,ipl);
@@ -349,32 +371,21 @@ public class Obj extends Volume {
         for (Point<Integer> point:coordinateSet) if (point.getZ()==slice) sliceCoordinateSet.add(point);
     }
 
-    public Image convertObjToImage(String outputName, @Nullable Image templateImage) {
-        // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName);
-        tempObj.add(this);
-
-        // Getting the image
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertToImage(outputName,templateImage,hues,8,false);
-
-    }
-
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName);
+        ObjCollection tempObj = new ObjCollection(outputName,spatCal,nFrames);
         tempObj.add(this);
 
         // Getting the image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertToImage(outputName,null,hues,8,false);
+        return tempObj.convertToImage(outputName,hues,8,false);
 
     }
 
-    public void cropToImageSize(Image templateImage) {
-        int width = templateImage.getImagePlus().getWidth();
-        int height = templateImage.getImagePlus().getHeight();
-        int nSlices = templateImage.getImagePlus().getNSlices();
+    public void removeOutOfBoundsCoords() {
+        int width = spatCal.getWidth();
+        int height = spatCal.getHeight();
+        int nSlices = spatCal.getNSlices();
 
         getPoints().removeIf(point -> point.getX() < 0 || point.getX() >= width
                 || point.getY() < 0 || point.getY() >= height

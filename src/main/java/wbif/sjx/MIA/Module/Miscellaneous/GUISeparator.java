@@ -49,7 +49,7 @@ public class GUISeparator extends Module {
 
             // If this module is a visible GUISeparator, stop recording and return the available modules
             if (module instanceof GUISeparator) {
-                if (module.getParameterValue(GUISeparator.SHOW_BASIC)) {
+                if ((boolean) module.getParameterValue(GUISeparator.SHOW_BASIC)) {
                     return basicModules;
                 }
             }

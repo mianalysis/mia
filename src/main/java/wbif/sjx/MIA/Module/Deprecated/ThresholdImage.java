@@ -416,7 +416,7 @@ public class ThresholdImage extends Module {
         ImageMeasurementRefCollection returnedRefs = new ImageMeasurementRefCollection();
 
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)) {
-            String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
+            String imageName = (boolean) parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 

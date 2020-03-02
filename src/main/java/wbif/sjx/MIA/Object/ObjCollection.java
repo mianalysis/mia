@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -12,8 +11,9 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -22,9 +22,29 @@ import java.util.*;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
+    private final SpatCal spatCal;
+    private final int nFrames;
 
-    public ObjCollection(String name) {
+    public ObjCollection(String name, SpatCal cal, int nFrames) {
         this.name = name;
+        this.spatCal = cal;
+        this.nFrames = nFrames;
+
+    }
+
+    public ObjCollection(String name, ObjCollection exampleCollection) {
+        this.name = name;
+        this.spatCal = exampleCollection.getSpatialCalibration();
+        this.nFrames = exampleCollection.getNFrames();
+
+    }
+
+    public Obj createAndAddNewObject(VolumeType volumeType) {
+        Obj newObject = new Obj(volumeType, name, getAndIncrementID(), spatCal, nFrames);
+        add(newObject);
+
+        return newObject;
+
     }
 
     public String getName() {
@@ -34,6 +54,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     synchronized public void add(Obj object) {
         put(object.getID(),object);
 
+    }
+
+    public SpatCal getSpatialCalibration() {
+        return spatCal;
     }
 
     public int getAndIncrementID() {
@@ -52,7 +76,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Taking limits from the first object, otherwise returning null
         if (size() == 0) return null;
 
-        return new int[][]{{0,getFirst().getWidth()-1},{0,getFirst().getHeight()-1},{0,getFirst().getnSlices()-1}};
+        return new int[][]{{0,getFirst().getWidth()-1},{0,getFirst().getHeight()-1},{0,getFirst().getNSlices()-1}};
 
     }
 
@@ -82,11 +106,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
-        ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
-
-        // Create output image
-        ImagePlus ipl = createImage(templateIpl,outputName,bitDepth);
+    public Image convertToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
+                // Create output image
+        ImagePlus ipl = createImage(outputName,bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
         if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
@@ -114,8 +136,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             }
         }
 
-        // Assigning the spatial calibration from the template image
-        setCalibration(templateIpl,ipl);
+        // Assigning the spatial cal from the cal
+        setSpatCal(ipl);
 
         return new Image(outputName,ipl);
 
@@ -123,7 +145,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public Image convertToImageRandomColours() {
         HashMap<Integer,Float> hues = ColourFactory.getRandomHues(this);
-        Image dispImage = convertToImage(name,null,hues,8,false);
+        Image dispImage = convertToImage(name,hues,8,false);
 
         if (dispImage == null) return null;
         if (dispImage.getImagePlus() == null) return null;
@@ -137,11 +159,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertCentroidsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
-        ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
-
+    public Image convertCentroidsToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         // Create output image
-        ImagePlus ipl = createImage(templateIpl,outputName,bitDepth);
+        ImagePlus ipl = createImage(outputName,bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
         if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
@@ -167,8 +187,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             }
         }
 
-        // Assigning the spatial calibration from the template image
-        setCalibration(templateIpl,ipl);
+        // Assigning the spatial cal from the cal
+        setSpatCal(ipl);
 
         return new Image(outputName,ipl);
 
@@ -182,24 +202,14 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         calibration.pixelWidth = obj.getDppXY();
         calibration.pixelHeight = obj.getDppXY();
         calibration.pixelDepth = obj.getDppZ();
-        calibration.setUnit(obj.getCalibratedUnits());
+        calibration.setUnit(obj.getUnits());
 
     }
 
-    ImagePlus createImage(ImagePlus templateIpl, String outputName, int bitDepth) {
-        if (templateIpl == null) {
-            if (size() == 0) return null;
-
-            // Getting range of object pixels
-            int[][] sLim = getSpatialLimits();
-            int[] tLim = getTemporalLimits();
-
+    ImagePlus createImage(String outputName, int bitDepth) {
             // Creating a new image
-            return IJ.createHyperStack(outputName,sLim[0][1]+1,sLim[1][1]+1,1,sLim[2][1]+1,tLim[1]+1,bitDepth);
-        } else {
-            return IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),
-                    templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
-        }
+            return IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(),1, spatCal.getNSlices(),nFrames,bitDepth);
+
     }
 
     void setNaNBackground(ImagePlus ipl) {
@@ -217,19 +227,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
     }
 
-    void setCalibration(ImagePlus templateIpl, ImagePlus ipl) {
-        if (templateIpl != null) {
-            ipl.getCalibration().pixelWidth = templateIpl.getCalibration().getX(1);
-            ipl.getCalibration().pixelHeight = templateIpl.getCalibration().getY(1);
-            ipl.getCalibration().pixelDepth = templateIpl.getCalibration().getZ(1);
-            ipl.getCalibration().setUnit(templateIpl.getCalibration().getUnit());
-        } else if (getFirst() != null) {
-            Obj first = getFirst();
-            ipl.getCalibration().pixelWidth = first.getDppXY();
-            ipl.getCalibration().pixelHeight = first.getDppXY();
-            ipl.getCalibration().pixelDepth = first.getDppZ();
-            ipl.getCalibration().setUnit(first.getCalibratedUnits());
-        }
+    void setSpatCal(ImagePlus ipl) {
+            ipl.getCalibration().pixelWidth = spatCal.getDppXY();
+            ipl.getCalibration().pixelHeight = spatCal.getDppXY();
+            ipl.getCalibration().pixelDepth = spatCal.getNSlices() == 1? 1 : spatCal.getDppZ();
+            ipl.getCalibration().setUnit(spatCal.getUnits());
     }
 
     /*
@@ -394,5 +396,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         return referenceObject;
 
+    }
+
+    public int getNFrames() {
+        return nFrames;
     }
 }

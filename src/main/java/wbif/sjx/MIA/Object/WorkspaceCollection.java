@@ -60,7 +60,7 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
             for (String objName:currObjects.keySet()) {
                 // If this is the first time these objects have been added, create a blank ObjCollection
                 if (metadataWorkspace.getObjectSet(objName) == null) {
-                    metadataWorkspace.addObjects(new ObjCollection(objName));
+                    metadataWorkspace.addObjects(new ObjCollection(objName,null));
                 }
 
                 // If a collection of these objects already exists, addRef to this

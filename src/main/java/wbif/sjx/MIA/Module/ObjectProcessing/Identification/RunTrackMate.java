@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -79,7 +80,7 @@ public class RunTrackMate extends Module {
         super("Run TrackMate",modules);
     }
 
-    public Settings initialiseSettings(ImagePlus ipl, Calibration calibration) {
+    public Settings initialiseSettings(ImagePlus ipl, SpatCal calibration) {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
@@ -94,9 +95,9 @@ public class RunTrackMate extends Module {
 
         // Applying conversion to parameters
         if (calibratedUnits) {
-            radius = calibration.getRawX(radius);
-            maxLinkDist = calibration.getRawX(maxLinkDist);
-            maxGapDist = calibration.getRawX(maxGapDist);
+            radius = radius/calibration.getDppXY();
+            maxLinkDist = maxLinkDist/calibration.getDppXY();
+            maxGapDist = maxGapDist/calibration.getDppXY();
         }
 
         // Initialising settings for TrackMate
@@ -136,21 +137,21 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection getSpots(Model model, Calibration calibration, int width, int height, int nSlices) throws IntegerOverflowException {
+    public ObjCollection getSpots(Model model, SpatCal calibration, int nFrames) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         // Getting trackObjects and adding them to the output trackObjects
         writeMessage("Processing detected objects");
 
         // Getting calibration
-        double dppXY = calibration.getX(1);
-        double dppZ = calibration.getZ(1);
+        double dppXY = calibration.getDppXY();
+        double dppZ = calibration.getDppZ();
         String calibrationUnits = calibration.getUnits();
 
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName,calibration,nFrames);
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
-            Obj spotObject = new Obj(VolumeType.POINTLIST,spotObjectsName,spot.ID(),width,height,nSlices,dppXY,dppZ,calibrationUnits);
+            Obj spotObject = new Obj(VolumeType.POINTLIST,spotObjectsName,spot.ID(),calibration,nFrames);
             try {
                 spotObject.add((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             } catch (PointOutOfRangeException e) {
@@ -174,26 +175,25 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection[] getSpotsAndTracks(Model model, Calibration calibration, int width, int height, int nSlices) throws IntegerOverflowException {
+    public ObjCollection[] getSpotsAndTracks(Model model, SpatCal calibration, int nFrames) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
 
         // Getting calibration
-        double dppXY = calibration.getX(1);
-        double dppZ = calibration.getZ(1);
-        String calibrationUnits = calibration.getUnits();
-
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName, calibration, nFrames);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName, calibration, nFrames);
 
         // Converting tracks to local track model
         writeMessage("Converting tracks to local track model");
         TrackModel trackModel = model.getTrackModel();
         Set<Integer> trackIDs = trackModel.trackIDs(false);
 
+        double dppXY = calibration.getDppXY();
+        double dppZ = calibration.getDppZ();
+
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = new Obj(VolumeType.POINTLIST,trackObjectsName, trackID, width,height,nSlices,dppXY, dppZ, calibrationUnits);
+            Obj trackObject = new Obj(VolumeType.POINTLIST,trackObjectsName, trackID, calibration, nFrames);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -307,11 +307,10 @@ public class RunTrackMate extends Module {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Storing, then removing calibration.  This will be reapplied after the detection.
-        Calibration calibration = ipl.getCalibration();
+        SpatCal calibration = SpatCal.getFromImage(ipl);
+        Calibration cal = ipl.getCalibration();
         ipl.setCalibration(null);
-        int width = ipl.getWidth();
-        int height = ipl.getHeight();
-        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
 
         // Getting parameters
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
@@ -321,7 +320,7 @@ public class RunTrackMate extends Module {
         // Initialising TrackMate model to store data
         Model model = new Model();
         model.setLogger(Logger.VOID_LOGGER);
-        Settings settings = initialiseSettings(ipl,calibration);
+        Settings settings = initialiseSettings(ipl, calibration);
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Resetting ipl to the input image
@@ -333,7 +332,7 @@ public class RunTrackMate extends Module {
                 writeMessage("Running detection and tracking");
                 if (!trackmate.process()) MIA.log.writeError(trackmate.getErrorMessage());
 
-                ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration,width,height,nSlices);
+                ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration, nFrames);
                 spotObjects = spotsAndTracks[0];
                 ObjCollection trackObjects = spotsAndTracks[1];
 
@@ -349,7 +348,7 @@ public class RunTrackMate extends Module {
                 if (!trackmate.execDetection()) MIA.log.writeError(trackmate.getErrorMessage());
                 if (!trackmate.computeSpotFeatures(false)) MIA.log.writeError(trackmate.getErrorMessage());
 
-                spotObjects = getSpots(model,calibration,width,height,nSlices);
+                spotObjects = getSpots(model,calibration, nFrames);
 
                 if (estimateSize) estimateSpotSize(spotObjects, ipl);
 
@@ -364,7 +363,7 @@ public class RunTrackMate extends Module {
         if (showOutput) showObjects(ipl,spotObjects);
 
         // Reapplying calibration to input image
-        inputImage.getImagePlus().setCalibration(calibration);
+        inputImage.getImagePlus().setCalibration(cal);
 
         return true;
 

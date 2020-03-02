@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.io.BufferedReader;
@@ -38,8 +39,10 @@ public class Tracks3D {
      * @return
      */
     public ObjCollection getObjects(VolumeType volumeType, String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
+        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,127,90,13);
+
         // Initialising object store
-        ObjCollection trackObjects = new ObjCollection(tracksName);
+        ObjCollection trackObjects = new ObjCollection(tracksName,calibration,10);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -52,13 +55,13 @@ public class Tracks3D {
             int t = coordinate[6];
 
             spotID = spotID+(t*65536);
-            Obj spotObject = new Obj(volumeType,spotsName,spotID,127,90,13,dppXY,dppZ,calibratedUnits);
+            Obj spotObject = new Obj(volumeType,spotsName,spotID,calibration,10);
             try {
                 spotObject.add(x,y,z);
             } catch (PointOutOfRangeException e) {}
             spotObject.setT(t);
 
-            trackObjects.putIfAbsent(trackID,new Obj(volumeType,tracksName,trackID,127,90,13,dppXY,dppZ,calibratedUnits));
+            trackObjects.putIfAbsent(trackID,new Obj(volumeType,tracksName,trackID,calibration,10));
             Obj track = trackObjects.get(trackID);
             track.addChild(spotObject);
             spotObject.addParent(track);

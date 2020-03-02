@@ -24,6 +24,7 @@ public class Workspace {
     private int ID;
     private double progress = 0;
     private boolean analysisFailed = false;
+    private boolean exportWorkspace = true;
 
 
     // CONSTRUCTOR
@@ -56,7 +57,7 @@ public class Workspace {
      */
     public void addObject(Obj obj) {
         String objectName = obj.getName();
-        objects.putIfAbsent(objectName,new ObjCollection(objectName));
+        objects.putIfAbsent(objectName,new ObjCollection(objectName,obj.getSpatialCalibration(),obj.getNFrames()));
         objects.get(objectName).add(obj);
 
     }
@@ -241,6 +242,14 @@ public class Workspace {
 
     public void setAnalysisFailed(boolean analysisFailed) {
         this.analysisFailed = analysisFailed;
+    }
+
+    public boolean exportWorkspace() {
+        return exportWorkspace;
+    }
+
+    public void setExportWorkspace(boolean exportWorkspace) {
+        this.exportWorkspace = exportWorkspace;
     }
 
     @Override

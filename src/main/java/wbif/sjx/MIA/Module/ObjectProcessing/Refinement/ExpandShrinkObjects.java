@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
-import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DilateErode;
@@ -24,7 +23,6 @@ import java.util.Iterator;
  * Created by sc13967 on 16/01/2018.
  */
 public class ExpandShrinkObjects extends Module {
-    public static final String INPUT_IMAGE = "Template image (sets object limits)";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -46,14 +44,12 @@ public class ExpandShrinkObjects extends Module {
     }
 
 
-    public static Obj processObject(Obj inputObject, Image templateImage, String method, int radiusChangePx) throws IntegerOverflowException {
-        ImagePlus templateImagePlus = templateImage.getImagePlus();
-
+    public static Obj processObject(Obj inputObject, String method, int radiusChangePx) throws IntegerOverflowException {
         // Convert each object to an image, do the dilation/erosion, then convert back to an object
-        ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
+        ObjCollection objectCollection = new ObjCollection("ObjectToMorph",inputObject.getSpatialCalibration(),inputObject.getNFrames());
         objectCollection.add(inputObject);
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertToImage("Object image", templateImage, hues, 8, false);
+        Image objectImage = objectCollection.convertToImage("Object image", hues, 8, false);
         InvertIntensity.process(objectImage);
 
         Prefs.blackBackground = false;
@@ -103,17 +99,13 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     public boolean process(Workspace workspace) {
-        // Getting input image
-        String templateImageName = parameters.getValue(INPUT_IMAGE);
-        Image templateImage = workspace.getImage(templateImageName);
-
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
@@ -135,7 +127,7 @@ public class ExpandShrinkObjects extends Module {
 
             Obj newObject = null;
             try {
-                newObject = processObject(inputObject,templateImage,method,radiusChangePx);
+                newObject = processObject(inputObject,method,radiusChangePx);
             } catch (IntegerOverflowException e) {
                 return false;
             }
@@ -176,7 +168,6 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new BooleanP(UPDATE_INPUT_OBJECTS,this,true));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
@@ -189,7 +180,6 @@ public class ExpandShrinkObjects extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 

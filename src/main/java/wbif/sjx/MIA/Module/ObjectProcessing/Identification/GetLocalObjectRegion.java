@@ -51,7 +51,7 @@ public class GetLocalObjectRegion extends Module {
             int yMin = Math.max((int) Math.floor(yCent - radius/dppXY),0);
             int yMax = Math.min((int) Math.ceil(yCent + radius/dppXY),inputObject.getHeight()-1);
             int zMin = Math.max((int) Math.floor(zCent - radius/dppZ),0);
-            int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ),inputObject.getnSlices()-1);
+            int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ),inputObject.getNSlices()-1);
 
             for (int x=xMin; x<xMax; x++) {
                 double xx = (xCent - x) * dppXY;
@@ -83,7 +83,7 @@ public class GetLocalObjectRegion extends Module {
             int yMin = Math.max((int) Math.floor(yCent - radius), 0);
             int yMax = Math.min((int) Math.ceil(yCent + radius), inputObject.getHeight()-1);
             int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),0);
-            int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getnSlices()-1);
+            int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), inputObject.getNSlices()-1);
 
             for (int x=xMin; x<xMax; x++) {
                 double xx = xCent - x;
@@ -126,7 +126,7 @@ public class GetLocalObjectRegion extends Module {
 
     public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, @Nullable String measurementName, double radius, boolean calibrated, boolean addRelationship) throws IntegerOverflowException {
         // Creating store for output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
 
         if (inputObjects.values().size() == 0) return outputObjects;
 

@@ -73,7 +73,7 @@ public class SingleClassCluster extends Module {
 
         // Assigning relationships between points and clusters
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(VolumeType.POINTLIST,outputObjectsName,outputObjects.getAndIncrementID(),outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -92,7 +92,7 @@ public class SingleClassCluster extends Module {
             if (obj.getParent(outputObjectsName) == null) {
                 int ID = outputObjects.getAndIncrementID();
                 VolumeType type = VolumeType.POINTLIST;
-                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -119,7 +119,7 @@ public class SingleClassCluster extends Module {
         for (Cluster<LocationWrapper> cluster:clusters) {
             int ID = outputObjects.getAndIncrementID();
             VolumeType type = VolumeType.POINTLIST;
-            Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
@@ -138,7 +138,7 @@ public class SingleClassCluster extends Module {
             if (obj.getParent(outputObjectsName) == null) {
                 int ID = outputObjects.getAndIncrementID();
                 VolumeType type = VolumeType.POINTLIST;
-                Obj outputObject = new Obj(type,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibratedUnits);
+                Obj outputObject = new Obj(type,outputObjectsName,ID,outputObjects.getSpatialCalibration(),outputObjects.getNFrames());
                 outputObject.setT(obj.getT());
 
                 obj.addParent(outputObject);
@@ -209,7 +209,7 @@ public class SingleClassCluster extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
 
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
@@ -230,10 +230,10 @@ public class SingleClassCluster extends Module {
         // Getting object parameters
         int width = firstObject.getWidth();
         int height = firstObject.getHeight();
-        int nSlices = firstObject.getnSlices();
+        int nSlices = firstObject.getNSlices();
         double dppXY = firstObject.getDppXY();
         double dppZ = firstObject.getDppZ();
-        String calibratedUnits = firstObject.getCalibratedUnits();
+        String calibratedUnits = firstObject.getUnits();
         boolean twoD = firstObject.is2D();
 
         int[] temporalLimits = inputObjects.getTemporalLimits();
@@ -299,7 +299,7 @@ public class SingleClassCluster extends Module {
         if (showOutput) {
             // Generating colours
             HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
-            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName,null,hues,8,true).getImagePlus();
+            ImagePlus dispIpl = inputObjects.convertToImage(outputObjectsName,hues,8,true).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
@@ -632,10 +632,10 @@ public class SingleClassCluster extends Module {
 //        // Getting object parameters
 //        int width = firstObject.getWidth();
 //        int height = firstObject.getHeight();
-//        int nSlices = firstObject.getnSlices();
+//        int nSlices = firstObject.getNSlices();
 //        double dppXY = firstObject.getDppXY();
 //        double dppZ = firstObject.getDppZ();
-//        String calibratedUnits = firstObject.getCalibratedUnits();
+//        String calibratedUnits = firstObject.getUnits();
 //        boolean twoD = firstObject.is2D();
 //
 //        int[] temporalLimits = inputObjects.getTemporalLimits();

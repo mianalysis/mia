@@ -117,7 +117,7 @@
 //        }
 //
 //        // Storing the image calibration
-//        Calibration calibration = inputImagePlus.getCalibration();
+//        Calibration calibration = inputImagePlus.getCal();
 //        dppXY = calibration.getX(1);
 //        dppZ = calibration.getZ(1);
 //        calibrationUnits = calibration.getUnits();

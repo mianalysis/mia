@@ -63,7 +63,7 @@ public class MeasureRadialIntensityProfile extends Module {
                 return CreateDistanceMap.getCentroidDistanceMap(inputImage,inputObjects,"Distance map");
 
             case ReferenceModes.DISTANCE_FROM_EDGE:
-                return CreateDistanceMap.getEdgeDistanceMap(inputImage,inputObjects,"Distance map",false);
+                return CreateDistanceMap.getEdgeDistanceMap(inputObjects,"Distance map",false);
         }
 
         return null;
