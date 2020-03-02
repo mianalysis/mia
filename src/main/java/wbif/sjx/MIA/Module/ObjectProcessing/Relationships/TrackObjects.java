@@ -640,7 +640,7 @@ public class TrackObjects extends Module {
 
         returnedParamters.add(parameters.getParameter(WEIGHTS_SEPARATOR));
         returnedParamters.add(parameters.getParameter(USE_VOLUME));
-        if (returnedParamters.getValue(USE_VOLUME)) {
+        if ((boolean) returnedParamters.getValue(USE_VOLUME)) {
             returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
             returnedParamters.add(parameters.getParameter(MAXIMUM_VOLUME_CHANGE));
         }
@@ -660,7 +660,7 @@ public class TrackObjects extends Module {
         }
 
         returnedParamters.add(parameters.getParameter(USE_MEASUREMENT));
-        if (returnedParamters.getValue(USE_MEASUREMENT)) {
+        if ((boolean) returnedParamters.getValue(USE_MEASUREMENT)) {
             returnedParamters.add(parameters.getParameter(MEASUREMENT));
             returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
             returnedParamters.add(parameters.getParameter(MAXIMUM_MEASUREMENT_CHANGE));

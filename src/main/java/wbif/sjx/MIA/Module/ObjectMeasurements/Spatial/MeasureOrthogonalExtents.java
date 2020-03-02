@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
-import javafx.geometry.Point3D;
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import wbif.sjx.MIA.MIA;

@@ -252,7 +252,7 @@ public class MeasureObjectIntensity extends Module {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<nDigits;i++) stringBuilder.append("0");
         DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
-        String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
+        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
         DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
 
@@ -509,7 +509,7 @@ public class MeasureObjectIntensity extends Module {
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
             double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
-            String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
+            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
             // Bin names must be in alphabetical order (for the ObjMeasurementRefCollection TreeMap)
             int nDigits = (int) Math.log10(bins.length)+1;
