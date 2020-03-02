@@ -4,7 +4,6 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.Parameters.TextAreaP;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
@@ -14,7 +13,7 @@ import java.awt.event.FocusListener;
 public class TextAreaParameter extends ParameterControl implements FocusListener {
     protected TextAreaP parameter;
     protected JPanel control;
-    private  JEditorPane textArea;
+    private  JTextArea textArea;
     private JScrollPane objectsScrollPane;
     private String prevString = "";
 
@@ -30,7 +29,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        textArea = new JEditorPane();
+        textArea = new JTextArea();
         Document document = textArea.getDocument();
         if (document instanceof PlainDocument) {
             document.putProperty(PlainDocument.tabSizeAttribute,4);
@@ -41,6 +40,8 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
         textArea.setText(parameter.getRawStringValue());
         textArea.addFocusListener(this);
         textArea.setCaretPosition(0);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);            
 
         objectsScrollPane = new JScrollPane(textArea);
         control.setPreferredSize(new Dimension(0,250));

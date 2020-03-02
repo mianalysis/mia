@@ -27,6 +27,8 @@ import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
@@ -591,6 +593,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
         String comment = metadata.getComment();
         String filename = compileGenericFilename(genericFormat, metadata);
+
+        // If name includes "*" get first instance of wildcard
+        if (filename.contains("*")) {
+            String[] filenames = new File(path).list(new WildcardFileFilter(filename));
+            if (filenames.length > 0) filename = filenames[0];
+        }
+
         return path + filename;
 
     }
@@ -623,6 +632,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             sb.append("}");
             sb.append("\r\n");
         }
+
+        sb.append("\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).\r\n");
 
         return sb.toString();
 
