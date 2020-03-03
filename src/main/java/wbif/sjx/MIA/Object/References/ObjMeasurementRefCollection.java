@@ -3,10 +3,10 @@ package wbif.sjx.MIA.Object.References;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.Units;
 
-import java.io.Serializable;
+
 import java.util.TreeMap;
 
-public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRef> implements RefCollection<ObjMeasurementRef>, Serializable {
+public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRef> implements RefCollection<ObjMeasurementRef> {
     public void updateImageObjectName(String measurementName, String objectsName) {
         get(measurementName).setObjectsName(objectsName);
     }

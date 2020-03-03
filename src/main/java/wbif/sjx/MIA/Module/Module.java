@@ -15,7 +15,6 @@ import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
@@ -27,7 +26,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module extends Ref implements Comparable, Serializable {
+public abstract class Module extends Ref implements Comparable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
