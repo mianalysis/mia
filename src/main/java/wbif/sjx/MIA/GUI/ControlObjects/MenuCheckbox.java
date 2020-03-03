@@ -1,14 +1,18 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
+
+import wbif.sjx.MIA.GUI.GUI;
+
 public class MenuCheckbox extends JCheckBoxMenuItem implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7792919077297685894L;
     public static final String TOGGLE_HELP_NOTES = "Show help and notes panel";
     public static final String TOGGLE_HELP = "Show help panel";
     public static final String TOGGLE_NOTES = "Show notes panel";

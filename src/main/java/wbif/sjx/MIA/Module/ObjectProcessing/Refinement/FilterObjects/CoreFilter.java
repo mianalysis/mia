@@ -1,16 +1,11 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import ij.ImagePlus;
+import java.util.Iterator;
+
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 public abstract class CoreFilter extends Module {
     protected CoreFilter(String name, ModuleCollection modules) {

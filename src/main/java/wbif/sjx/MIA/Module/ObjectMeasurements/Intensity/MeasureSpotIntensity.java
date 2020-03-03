@@ -81,7 +81,6 @@ public class MeasureSpotIntensity extends Module {
         double radius = parameters.getValue(FIXED_VALUE);
         boolean calibrated = parameters.getValue(CALIBRATED_UNITS);
         String radiusSource = parameters.getValue(RADIUS_SOURCE);
-        double fixedValue = parameters.getValue(FIXED_VALUE);
         String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
         boolean useMeasurement = radiusSource.equals(RadiusSources.MEASUREMENT);
 

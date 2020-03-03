@@ -94,7 +94,6 @@ public class Image <T extends RealType<T> & NativeType<T>> {
         double dppXY = imagePlus.getCalibration().getX(1);
         double dppZ = imagePlus.getCalibration().getZ(1);
         String units = imagePlus.getCalibration().getUnits();
-        boolean twoD = getImagePlus().getNSlices() == 1;
         ImageProcessor ipr = imagePlus.getProcessor();
 
         int h = imagePlus.getHeight();

@@ -9,7 +9,12 @@ import java.awt.*;
 public class StatusPanel extends JLayeredPane {
 //    ImageIcon logo = new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_fade_35.png"),"");
 
-    public StatusPanel() {
+    /**
+ *
+ */
+private static final long serialVersionUID = -5685268881319325735L;
+
+public StatusPanel() {
         int statusHeight = GUI.getStatusHeight();
 
         setLayout(new GridBagLayout());

@@ -182,8 +182,6 @@ public class MeasureObjectIntensity extends Module {
         double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
         boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
         int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
-        boolean onlyOnMask = parameters.getValue(ONLY_MEASURE_ON_MASK);
-        String maskImageName = parameters.getValue(MASK_IMAGE);
         double distPerPxXY = object.getDppXY();
 
         // Setting up CumStats to hold results

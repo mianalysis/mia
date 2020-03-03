@@ -102,7 +102,6 @@ public class Tracks3D {
 
             String[] coord = csvReader.readNext();
             while (coord != null) {
-                int spotID = Integer.parseInt(coord[0]);
                 int trackID = Integer.parseInt(coord[1]);
                 double x = Double.parseDouble(coord[2]);
                 double y = Double.parseDouble(coord[3]);

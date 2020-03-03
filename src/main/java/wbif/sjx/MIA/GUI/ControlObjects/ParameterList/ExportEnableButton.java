@@ -13,10 +13,12 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ExportEnableButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6348882867766257110L;
     private ExportableRef ref;
-    private boolean state = true;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_strike_12px.png"), "");
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
 
     public ExportEnableButton(ExportableRef ref) {

@@ -1,16 +1,15 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import wbif.sjx.MIA.GUI.GUI;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
-
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -75,7 +74,6 @@ public class Analysis {
         if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
-            ZonedDateTime zonedDateTime = ZonedDateTime.now();
             String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
 
             DecimalFormat df = new DecimalFormat("#.0");
@@ -109,7 +107,7 @@ public class Analysis {
     }
 
     public void shutdown() {
-        shutdown = true;
+        this.shutdown = true;
 
     }
 

@@ -452,7 +452,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     public ImagePlus getAllInFolder(File rootFile, int[] crop, @Nullable double[] intRange, boolean manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
-        String rootPath = rootFile.getParent();
 
         // Creating a FileCrawler to get all the valid files in this folder
         FileCrawler fileCrawler = new FileCrawler(rootFile.getParentFile());
@@ -554,8 +553,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         };
 
         File[] listOfFiles = parentFile.listFiles(filter);
-        String[] dimRanges = new String[]{"1", "1", "1"};
-
         if (listOfFiles == null) return null;
 
         return listOfFiles[0].getAbsolutePath();
@@ -590,8 +587,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
-        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
-        String comment = metadata.getComment();
         String filename = compileGenericFilename(genericFormat, metadata);
 
         // If name includes "*" get first instance of wildcard
@@ -682,13 +677,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int finalIndex = parameters.getValue(FINAL_INDEX);
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
-        String ext = parameters.getValue(EXTENSION);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
         String channels = parameters.getValue(CHANNELS);
         String slices = parameters.getValue(SLICES);
         String frames = parameters.getValue(FRAMES);
-        int channel = parameters.getValue(CHANNEL);
         String cropMode = parameters.getValue(CROP_MODE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int left = parameters.getValue(LEFT);

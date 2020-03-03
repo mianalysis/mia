@@ -54,9 +54,6 @@ public class CalculateStatsForChildren extends Module {
             }
         }
 
-        // Adding measurements to parent object
-        Measurement summaryMeasurement;
-
         if (statsToCalculate[0]) {
             String name = getFullName(childObjectsName,measurement,Measurements.MEAN);
             parentObject.addMeasurement(new Measurement(name, cs.getMean()));

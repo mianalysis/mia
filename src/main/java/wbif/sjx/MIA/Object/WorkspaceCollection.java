@@ -1,17 +1,20 @@
 package wbif.sjx.MIA.Object;
 
-import wbif.sjx.common.MathFunc.CumStat;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Set;
+
+import wbif.sjx.common.MathFunc.CumStat;
 
 /**
  * Created by sc13967 on 27/10/2016.
  */
 public class WorkspaceCollection extends LinkedHashSet<Workspace> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2388993934322564718L;
     private int maxID = 0;
 
 

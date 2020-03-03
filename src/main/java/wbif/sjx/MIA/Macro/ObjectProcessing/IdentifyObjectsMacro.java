@@ -6,7 +6,6 @@ import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Process.Logging.Log;
 
 public class IdentifyObjectsMacro extends MacroOperation {
     public IdentifyObjectsMacro(MacroExtension theHandler) {

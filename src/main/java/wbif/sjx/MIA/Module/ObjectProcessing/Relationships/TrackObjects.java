@@ -484,14 +484,8 @@ public class TrackObjects extends Module {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        String linkingMethod = parameters.getValue(LINKING_METHOD);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
-        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
         boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
-        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
-        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
-        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
         String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
         // Getting objects

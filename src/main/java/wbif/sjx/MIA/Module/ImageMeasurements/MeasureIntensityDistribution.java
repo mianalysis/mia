@@ -1,40 +1,54 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
-import ij.ImagePlus;
-import ij.gui.Plot;
-import ij.measure.Calibration;
-import ij.plugin.Duplicator;
-import ij.process.StackStatistics;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityProfile;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Metadata;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
+import ij.ImagePlus;
+import ij.gui.Plot;
+import ij.measure.Calibration;
+import ij.plugin.Duplicator;
+import ij.process.StackStatistics;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityProfile;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.StringP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Metadata;
 
 /**
  * Created by Stephen on 17/11/2017.
@@ -371,7 +385,6 @@ public class MeasureIntensityDistribution extends Module {
             outputStream.close();
         } catch(FileNotFoundException e) {
             try {
-                ZonedDateTime zonedDateTime = ZonedDateTime.now();
                 String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
                 String rootPath = FilenameUtils.removeExtension(path);
                 String newOutPath = rootPath + "_("+ dateTime + ").xlsx";
@@ -450,9 +463,7 @@ public class MeasureIntensityDistribution extends Module {
 
                 // Processing each object
                 CumStat[] cumStats = measureDistanceProfile(inputImage, distanceMap, distanceBins);
-
                 double[] mean = Arrays.stream(cumStats).mapToDouble(CumStat::getMean).toArray();
-                double[] n = Arrays.stream(cumStats).mapToDouble(CumStat::getMean).toArray();
 
                 switch (saveProfileMode) {
                     case SaveProfileModes.INDIVIDUAL_FILES:

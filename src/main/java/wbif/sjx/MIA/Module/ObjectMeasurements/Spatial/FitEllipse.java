@@ -135,7 +135,6 @@ public class FitEllipse extends Module {
         }
 
         double dppXY = inputObject.getDppXY();
-        double dppZ = inputObject.getDppZ();
 
         double xCent = calculator.getXCentre();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent));

@@ -15,6 +15,10 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class SeparatorButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4790928465048201014L;
     private Module module;
     private boolean left;
     private static final ImageIcon expandedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_darkblue_12px.png"), "");

@@ -14,7 +14,12 @@ import java.awt.dnd.DragSource;
  * Handles drag and drop row reordering
  */
 public class DraggableTransferHandler extends TransferHandler {
-    private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, "application/x-java-Integer;class=java.lang.Integer", "Integer Row Index");
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2203844820269362427L;
+    private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class,
+            "application/x-java-Integer;class=java.lang.Integer", "Integer Row Index");
     private JTable table = null;
 
     public DraggableTransferHandler(JTable table) {

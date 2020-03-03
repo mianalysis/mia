@@ -25,9 +25,6 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     public static void testEnclosed(ObjCollection objects) throws IntegerOverflowException {
-        int count = 0;
-        int total = objects.size();
-
         for (Obj object:objects.values()) {
             // If this object has already been removed (i.e. ID = -1), skip it
             if (object.getID() == -1) continue;

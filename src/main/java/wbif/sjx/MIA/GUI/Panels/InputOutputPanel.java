@@ -9,6 +9,11 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class InputOutputPanel extends JPanel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2844341750453225769L;
+
     private ModuleButton button;
 
     private static final int minimumWidth = 310;

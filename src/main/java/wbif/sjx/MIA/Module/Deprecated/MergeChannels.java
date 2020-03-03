@@ -1,5 +1,8 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -17,16 +20,19 @@ import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 22/02/2018.
@@ -264,7 +270,6 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE:
-                int idx = parameters.getValue(IMAGE_INDEX_TO_OVERWRITE);
                 inputImages[i-1].setImagePlus(mergedImage.getImagePlus());
                 break;
 

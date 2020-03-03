@@ -1,17 +1,21 @@
 package wbif.sjx.MIA.GUI;
 
-import ij.IJ;
-import wbif.sjx.MIA.MIA;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
 
 public class Splash extends JFrame {
-    private int height = 192;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6710454328949590953L;
     private int width = 231;
     private JLabel image;
 

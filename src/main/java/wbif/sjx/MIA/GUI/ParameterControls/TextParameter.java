@@ -1,16 +1,15 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
+import javax.swing.JComponent;
+import javax.swing.JTextField;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 /**
  * Created by Stephen on 20/05/2017.

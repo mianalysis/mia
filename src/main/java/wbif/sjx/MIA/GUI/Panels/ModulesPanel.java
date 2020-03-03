@@ -1,24 +1,38 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.DraggableTableModel;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleTable;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.border.EtchedBorder;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.DraggableTableModel;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleTable;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
+
 public class ModulesPanel extends JScrollPane {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -8916783536735299254L;
+
     private JPanel panel;
 
     private static final int minimumWidth = 310;
@@ -51,9 +65,6 @@ public class ModulesPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        Analysis analysis = GUI.getAnalysis();
-        int moduleButtonWidth = GUI.getModuleButtonWidth();
-
         panel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();

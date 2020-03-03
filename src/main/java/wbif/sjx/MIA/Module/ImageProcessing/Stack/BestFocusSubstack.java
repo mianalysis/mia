@@ -1,5 +1,39 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MAX;
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MIN;
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.Stat.MEAN;
+import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.Stat.STDEV;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.LUT;
@@ -12,41 +46,26 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.apache.commons.math3.stat.descriptive.rank.Median;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.Stat.MEAN;
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.Stat.STDEV;
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MAX;
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.BestFocusSubstack.MinMaxMode.MIN;
-
 public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module implements ActionListener {
     private JFrame frame;
-    private JTextField objectNumberField;
     private DefaultListModel<Ref> listModel = new DefaultListModel<>();
     private JList<Ref> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);

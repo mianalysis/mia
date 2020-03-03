@@ -7,6 +7,11 @@ import wbif.sjx.MIA.Object.Units;
 import java.util.TreeMap;
 
 public class ObjMeasurementRefCollection extends TreeMap<String,ObjMeasurementRef> implements RefCollection<ObjMeasurementRef> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 225316245096553320L;
+
     public void updateImageObjectName(String measurementName, String objectsName) {
         get(measurementName).setObjectsName(objectsName);
     }

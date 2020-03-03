@@ -145,8 +145,6 @@ public class RunTrackMate extends Module {
 
         // Getting calibration
         double dppXY = calibration.getDppXY();
-        double dppZ = calibration.getDppZ();
-        String calibrationUnits = calibration.getUnits();
 
         ObjCollection spotObjects = new ObjCollection(spotObjectsName,calibration,nFrames);
         SpotCollection spots = model.getSpots();
@@ -313,7 +311,6 @@ public class RunTrackMate extends Module {
         int nFrames = ipl.getNFrames();
 
         // Getting parameters
-        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         boolean doTracking = parameters.getValue(DO_TRACKING);
         boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
 

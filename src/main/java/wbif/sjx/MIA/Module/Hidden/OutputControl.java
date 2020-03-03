@@ -166,12 +166,8 @@ public class OutputControl extends Module {
     }
 
     public String getGroupOutputPath(File inputFile) {
-        String seriesMode = modules.getInputControl().getParameterValue(InputControl.SERIES_MODE);
-        String seriesList = modules.getInputControl().getParameterValue(InputControl.SERIES_LIST);
         String saveLocation = getParameterValue(GROUP_SAVE_LOCATION);
         String saveFilePath = getParameterValue(SAVE_FILE_PATH);
-        String saveNameMode = getParameterValue(SAVE_NAME_MODE);
-        String saveFileName = getParameterValue(SAVE_FILE_NAME);
 
         // Determining the file path
         String path = "";

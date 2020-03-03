@@ -13,6 +13,10 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ShowOutputButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -5640712162795245225L;
     private Module module;
     private boolean state = true;
     private static final ImageIcon blackClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");

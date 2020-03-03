@@ -1,20 +1,17 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
-import wbif.sjx.MIA.GUI.ParameterControls.RefSelectorParameter;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
+import wbif.sjx.MIA.GUI.ParameterControls.RefSelectorParameter;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 /**
  * Created by Stephen Cross on 18/02/2020.

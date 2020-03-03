@@ -727,6 +727,10 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
     }
 
     private class Param extends FloatArray2DSIFT.Param {
+        /**
+         *
+         */
+        private static final long serialVersionUID = -9039231442503621671L;
         String transformationMode = TransformationModes.RIGID;
         float rod = 0.92f;
         float maxEpsilon = 25.0f;

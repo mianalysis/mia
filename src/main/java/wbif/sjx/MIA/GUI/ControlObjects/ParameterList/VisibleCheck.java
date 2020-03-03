@@ -13,8 +13,11 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 06/06/2017.
  */
 public class VisibleCheck extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3462766918524878171L;
     private Parameter parameter;
-    private boolean state = true;
 
     private static final ImageIcon closedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
     private static final ImageIcon openIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");

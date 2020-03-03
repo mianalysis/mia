@@ -7,6 +7,10 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import javax.swing.table.DefaultTableModel;
 
 public class DraggableTableModel extends DefaultTableModel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3569731151635741445L;
     private ModuleCollection modules;
 
     public DraggableTableModel(Object[][] data, Object[] columnNames, ModuleCollection modules) {

@@ -8,6 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class FileListColumnSelectorMenu extends JPopupMenu implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3296812915065763133L;
     private final FileListPanel panel;
     private final JCheckBoxMenuItem showJobID;
     private final JCheckBoxMenuItem showFilename;

@@ -10,6 +10,11 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class HelpPanel extends JPanel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3704479016316750858L;
+
     public HelpPanel() {
         // Initialising the panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));

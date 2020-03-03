@@ -13,6 +13,11 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
 
     // PUBLIC METHODS
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = -1104212695371396327L;
+
     public boolean add(Parameter parameter) {
         put(parameter.getName(),parameter);
         return true;

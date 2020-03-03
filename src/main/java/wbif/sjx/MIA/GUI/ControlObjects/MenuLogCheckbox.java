@@ -10,6 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuLogCheckbox extends JCheckBoxMenuItem implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -114208262023653742L;
     private final LogRenderer.Level level;
 
     public MenuLogCheckbox(LogRenderer.Level level, boolean state) {

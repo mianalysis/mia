@@ -6,6 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ProgressBarPanel extends JProgressBar {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8268143348160546845L;
+
     public ProgressBarPanel() {
         super(0,100);
 

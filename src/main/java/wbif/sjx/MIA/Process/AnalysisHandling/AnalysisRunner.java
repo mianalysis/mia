@@ -3,19 +3,6 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
 
-import ij.Prefs;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.WorkspaceCollection;
-import wbif.sjx.MIA.Process.Exporting.Exporter;
-import wbif.sjx.MIA.Process.Logging.Log;
-import wbif.sjx.common.System.FileCrawler;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -24,6 +11,18 @@ import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import ij.Prefs;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
+import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
+import wbif.sjx.MIA.Process.Exporting.Exporter;
+import wbif.sjx.common.System.FileCrawler;
 
 /**
  * Created by sc13967 on 21/10/2016.

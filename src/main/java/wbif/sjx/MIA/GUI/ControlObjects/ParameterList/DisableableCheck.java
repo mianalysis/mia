@@ -8,6 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class DisableableCheck extends JCheckBox implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 4959776467163361296L;
     private Module module;
 
     public DisableableCheck(Module module) {

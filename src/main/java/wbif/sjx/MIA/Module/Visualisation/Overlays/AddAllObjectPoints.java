@@ -51,9 +51,7 @@ public class AddAllObjectPoints extends Overlay {
         double[] xx = object.getX(true);
         double[] yy = object.getY(true);
         double[] zz = object.getZ(true,false);
-        double zMean = object.getZMean(true,false);
 
-        int z = (int) Math.round(zMean+1);
         int t = object.getT()+1;
 
         if (renderInAllFrames) t = 0;

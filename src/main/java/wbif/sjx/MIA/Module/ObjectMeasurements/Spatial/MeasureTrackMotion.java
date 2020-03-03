@@ -189,7 +189,6 @@ public class MeasureTrackMotion extends Module {
             // Calculating track motion
             double distPerPxXY = trackObject.getDppXY();
             double distPerPxZ = trackObject.getDppZ();
-            double ratio = distPerPxZ/distPerPxXY;
 
             TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
             TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();

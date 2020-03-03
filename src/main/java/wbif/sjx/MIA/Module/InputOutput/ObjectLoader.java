@@ -258,7 +258,6 @@ public class ObjectLoader extends Module {
     }
 
     void loadObjects(ObjCollection outputObjects, File inputFile, @Nullable ObjCollection parentObjects) {
-        int idIdx = parameters.getValue(ID_COLUMN_INDEX);
         int xIdx = parameters.getValue(X_COLUMN_INDEX);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX);
@@ -285,7 +284,6 @@ public class ObjectLoader extends Module {
                 // If any of these fields can't be read (e.g. for the title row) we get a NumberFormatException and the row is skipped
                 try {
                     // Comparing the coordinates
-                    int ID = (int) Math.round((double) Double.parseDouble(row[idIdx]));
                     int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
                     int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
                     int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
@@ -354,7 +352,6 @@ public class ObjectLoader extends Module {
         String calSource = parameters.getValue(CALIBRATION_SOURCE);
         boolean createParents = parameters.getValue(CREATE_PARENTS);
         String parentType = parameters.getValue(PARENT_TYPE);
-        int parentsIdx = parameters.getValue(PARENTS_COLUMN_INDEX);
 
         String parentObjectsName = null;
         switch (parentType) {

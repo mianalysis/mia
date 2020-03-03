@@ -1,9 +1,15 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.HorizontalCylinderR22;
 import wbif.sjx.MIA.ExpectedObjects.VerticalCylinderR5;
@@ -14,10 +20,6 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class FitLongestChordTest extends ModuleTest {
     private double tolerance = 1E-2;

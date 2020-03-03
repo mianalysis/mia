@@ -97,7 +97,6 @@ public class FilterOnImageEdge extends CoreFilter {
         boolean removeBottom = parameters.getValue(REMOVE_ON_BOTTOM);
         boolean removeRight = parameters.getValue(REMOVE_ON_RIGHT);
         boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
-        boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -155,8 +154,6 @@ public class FilterOnImageEdge extends CoreFilter {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));

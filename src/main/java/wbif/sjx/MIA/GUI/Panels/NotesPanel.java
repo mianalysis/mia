@@ -1,15 +1,28 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.GUI.ControlObjects.NotesArea;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextPane;
+import javax.swing.border.EtchedBorder;
+
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.NotesArea;
 import wbif.sjx.MIA.Module.Module;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
-
 public class NotesPanel extends JPanel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3629896187837314617L;
+
     public NotesPanel() {
         // Initialising the panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));

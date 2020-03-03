@@ -1,19 +1,33 @@
 package wbif.sjx.MIA.GUI.Panels.MainPanels;
 
-import ij.Prefs;
-import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.Panels.*;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.awt.*;
+
+import ij.Prefs;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
+import wbif.sjx.MIA.GUI.Panels.BasicControlPanel;
+import wbif.sjx.MIA.GUI.Panels.FileListPanel;
+import wbif.sjx.MIA.GUI.Panels.HelpNotesPanel;
+import wbif.sjx.MIA.GUI.Panels.ParametersPanel;
+import wbif.sjx.MIA.GUI.Panels.ProgressBarPanel;
+import wbif.sjx.MIA.GUI.Panels.StatusPanel;
+import wbif.sjx.MIA.Module.Module;
 
 public class BasicPanel extends MainPanel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -1825169366002822113L;
     private static int frameHeight = GUI.getFrameHeight();
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
@@ -21,8 +35,6 @@ public class BasicPanel extends MainPanel {
     private static final BasicControlPanel controlPanel = new BasicControlPanel();
     private static final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
     private final HelpNotesPanel helpNotesPanel = new HelpNotesPanel();
-    private static final HelpPanel helpPanel = new HelpPanel();
-    private static final NotesPanel notesPanel = new NotesPanel();
     private final FileListPanel fileListPanel = new FileListPanel(GUI.getAnalysisRunner().getWorkspaces());
     private final JSplitPane splitPane1;
     private final JSplitPane splitPane2;
@@ -100,7 +112,6 @@ public class BasicPanel extends MainPanel {
 
     private static JPanel initialiseBasicControlPanel() {
         int bigButtonSize = GUI.getBigButtonSize();
-        int frameHeight = GUI.getFrameHeight();
         int frameWidth = GUI.getFrameHeight();
 
         JPanel basicControlPanel = new JPanel();

@@ -1,29 +1,42 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
-import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.GUI.ControlObjects.RenameListMenu;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
 
-import javax.swing.*;
-import javax.swing.border.Border;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
+
+import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
+import wbif.sjx.MIA.GUI.ControlObjects.RenameListMenu;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 
 public class ModuleTable extends JTable implements ActionListener, MouseListener, TableCellRenderer {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3722736203899254351L;
     private ModuleCollection modules;
 
     public ModuleTable(TableModel tableModel, ModuleCollection modules, HashMap<Module,Boolean> expandedStatus) {

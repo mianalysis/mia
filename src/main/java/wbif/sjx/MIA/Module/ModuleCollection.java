@@ -21,6 +21,10 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2862089290555674650L;
     private WorkflowParameters workflowParameters = new WorkflowParameters(this);
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);

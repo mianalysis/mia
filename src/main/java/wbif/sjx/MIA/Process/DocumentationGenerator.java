@@ -1,21 +1,5 @@
 package wbif.sjx.MIA.Process;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Macro.MacroHandler;
-import wbif.sjx.MIA.Macro.MacroOperation;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -26,7 +10,29 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.TreeSet;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Macro.MacroHandler;
+import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationGenerator {
     public static void main(String[]args){

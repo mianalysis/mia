@@ -1,20 +1,30 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleListMenu;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.border.EtchedBorder;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.AnalysisControlButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleControlButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleListMenu;
+import wbif.sjx.MIA.Module.Module;
+
 public class EditingControlPanel extends JPanel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 2461857783317770626L;
     private ModuleControlButton addModuleButton = null;
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
 

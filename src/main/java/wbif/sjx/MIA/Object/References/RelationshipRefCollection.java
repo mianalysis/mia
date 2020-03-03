@@ -14,6 +14,11 @@ import java.util.TreeSet;
  * different types of children these are stored in an ArrayList.
  */
 public class RelationshipRefCollection extends TreeMap<String, RelationshipRef> implements RefCollection<RelationshipRef> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6633110280044918217L;
+
     public RelationshipRef getOrPut(String parent, String child) {
         String key = parent+" // "+child;
         putIfAbsent((String) key,new RelationshipRef(parent,child));

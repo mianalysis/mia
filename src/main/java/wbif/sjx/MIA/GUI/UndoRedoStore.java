@@ -1,10 +1,8 @@
 package wbif.sjx.MIA.GUI;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ModuleCollection;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 public class UndoRedoStore {
     private int limit = 100;

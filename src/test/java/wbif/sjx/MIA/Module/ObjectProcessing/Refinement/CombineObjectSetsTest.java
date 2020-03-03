@@ -1,11 +1,14 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import wbif.sjx.MIA.ExpectedObjects.MergedObjects3D;
+
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.MIA.ExpectedObjects.MergedObjects3D;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.ExpectedObjects.Spots3D;
 import wbif.sjx.MIA.Module.Module;
@@ -15,8 +18,6 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CombineObjectSetsTest extends ModuleTest {
     @BeforeAll

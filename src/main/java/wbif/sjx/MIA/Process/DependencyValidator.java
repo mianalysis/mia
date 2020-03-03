@@ -1,22 +1,23 @@
 package wbif.sjx.MIA.Process;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+
+import org.scijava.util.AppUtils;
+import org.xml.sax.SAXException;
+
 import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.FilesCollection;
 import net.imagej.updater.Installer;
 import net.imagej.updater.UpdateSite;
 import net.imagej.updater.util.AvailableSites;
-import org.scijava.util.AppUtils;
-import org.xml.sax.SAXException;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Process.Logging.Log;
-
-import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
 
 public class DependencyValidator {
     public static boolean run() {
@@ -47,7 +48,6 @@ public class DependencyValidator {
 
         if (toInstall[0] | toInstall[1]) {
             String message = "Missing dependencies Biomedgroup and/or IJPB-plugins\nClick \"Yes\" to install";
-            String title = "Dependencies missing";
             int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependencies missing", JOptionPane.YES_NO_OPTION);
             if (dialogResult == JOptionPane.YES_OPTION) {
                 update(toInstall);

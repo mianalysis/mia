@@ -190,7 +190,6 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
-        int bitDepth = inputIpl.getBitDepth();
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 

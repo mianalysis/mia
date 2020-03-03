@@ -124,7 +124,6 @@ public class FocusStack extends Module {
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
         int nChannels = inputImagePlus.getNChannels();
-        int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
 
         return IJ.createHyperStack(outputImageName,width,height,nChannels,1,nFrames,bitDepth);

@@ -85,7 +85,6 @@ public class FilterByMeasurement extends CoreFilter {
         String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
         double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
-        boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
@@ -266,7 +265,6 @@ public class FilterByMeasurement extends CoreFilter {
             String refParent = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
             String refImageMeas = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
             String refParentMeas = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
-            double refMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
 
             String metadataName = "";
             switch (referenceMode) {

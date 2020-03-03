@@ -1,19 +1,15 @@
 package wbif.sjx.MIA.Process;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.common.MathFunc.CumStat;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
+
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationCoverageChecker {
     public static void main(String[] args) {

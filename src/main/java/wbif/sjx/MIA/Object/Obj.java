@@ -317,8 +317,6 @@ public class Obj extends Volume {
         ObjCollection objectCollection = new ObjCollection("SliceObjects",newCal,nFrames);
         objectCollection.add(sliceObj);
 
-        ImagePlus sliceIpl = IJ.createImage("SliceIm",newCal.getWidth(),newCal.getHeight(),1,8);
-
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
         Image objectImage = objectCollection.convertToImage("Output", hues, 8,false);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");

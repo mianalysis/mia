@@ -268,7 +268,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         // Converting binary image back to objects
-        VolumeType volumeType = getVolumeType(type);
         return binaryImage.convertImageToObjects(type,outputObjects.getName(),false);
 
     }
@@ -523,7 +522,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             return;
         }
 
-        Point[] points = roi.getContainedPoints();
         int ID = Integer.parseInt(objectNumberField.getText());
 
         // Adding the ROI to our current collection

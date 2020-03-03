@@ -1,18 +1,22 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.TreeSet;
+
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+
+import wbif.sjx.MIA.Module.Module;
 
 /**
  * Created by Stephen on 28/07/2017.
  */
 public class ModuleListMenu extends JMenu implements Comparable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4618976421020237449L;
     private final JPopupMenu topLevelMenu;
     private TreeSet<ModuleListMenu> children = new TreeSet<>();
 

@@ -163,7 +163,6 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
         String measName = parameters.getValue(MEASUREMENT);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
-        boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);

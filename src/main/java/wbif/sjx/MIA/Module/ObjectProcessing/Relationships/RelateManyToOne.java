@@ -475,7 +475,6 @@ public class RelateManyToOne extends Module {
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
         String referencePoint = parameters.getValue(REFERENCE_POINT);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);

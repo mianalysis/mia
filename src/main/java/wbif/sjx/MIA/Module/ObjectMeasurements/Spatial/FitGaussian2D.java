@@ -1,27 +1,44 @@
 // TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the processAutomatic is working correctly
 
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
+
+import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
+
+import java.util.Iterator;
+
+import javax.annotation.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
-
-import javax.annotation.Nullable;
-import java.util.Iterator;
-
-import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
 
 /**
  * Created by sc13967 on 05/06/2017.
@@ -206,10 +223,6 @@ public class FitGaussian2D extends Module {
         // be added later on.
         Iterator<Obj> iterator = objects.values().iterator();
         addGaussianProfile(iterator.next(),image,true);
-
-        // Iterate overall subsequent objects, adding the images
-        String calculationMethod = ImageCalculator.CalculationMethods.ADD;
-        String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
 
         int count = 0;
         int total = objects.size();

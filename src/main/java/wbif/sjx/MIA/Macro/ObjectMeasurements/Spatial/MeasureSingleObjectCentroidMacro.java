@@ -4,7 +4,6 @@ import ij.macro.MacroExtension;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;

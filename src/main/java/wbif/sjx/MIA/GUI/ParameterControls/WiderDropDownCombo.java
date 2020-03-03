@@ -6,7 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class WiderDropDownCombo extends JComboBox {
-    private String type;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6268185303269647377L;
     private boolean layingOut = false;
     private int widestLengh = 0;
     private boolean wide = false;

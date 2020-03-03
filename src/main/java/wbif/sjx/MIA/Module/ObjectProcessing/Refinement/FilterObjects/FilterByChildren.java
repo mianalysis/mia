@@ -55,7 +55,6 @@ public class FilterByChildren extends CoreFilter {
         String filterMethod = parameters.getValue(FILTER_METHOD);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
-        boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);

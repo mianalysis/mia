@@ -53,7 +53,6 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         dimsIn[xIdx] = width;
         dimsIn[yIdx] = height;
 
-        long[] offsetOut = new long[inputImg.numDimensions()];
         long[] dimsOut = new long[inputImg.numDimensions()];
         for (int i=0;i<inputImg.numDimensions();i++) dimsOut[i] = inputImg.dimension(i);
         dimsOut[xIdx] = width;

@@ -1,17 +1,22 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import jdk.nashorn.internal.scripts.JO;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 public class RenameListMenu extends JPopupMenu implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3459551119073952948L;
     private final Ref reference;
     private final JMenuItem renameMenuItem;
     private final JMenuItem resetMenuItem;

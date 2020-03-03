@@ -214,10 +214,7 @@ public class SingleClassCluster extends Module {
         // Getting parameters
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
         String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
-        int kClusters = parameters.getValue(K_CLUSTERS);
-        int maxIterations = parameters.getValue(MAX_ITERATIONS);
         double eps = parameters.getValue(EPS);
-        int minPoints = parameters.getValue(MIN_POINTS);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         // If there are no input objects skipping this module
@@ -234,7 +231,6 @@ public class SingleClassCluster extends Module {
         double dppXY = firstObject.getDppXY();
         double dppZ = firstObject.getDppZ();
         String calibratedUnits = firstObject.getUnits();
-        boolean twoD = firstObject.is2D();
 
         int[] temporalLimits = inputObjects.getTemporalLimits();
         if (linkInSameFrame) {

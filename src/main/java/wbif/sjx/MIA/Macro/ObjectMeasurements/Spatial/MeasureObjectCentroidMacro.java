@@ -4,7 +4,6 @@ import ij.macro.MacroExtension;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
-import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.MeasureObjectOverlap;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class MeasureObjectCentroidMacro extends MacroOperation {

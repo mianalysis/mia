@@ -20,6 +20,10 @@ import java.util.*;
  * Created by sc13967 on 12/05/2017.
  */
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7383226061156796558L;
     private String name;
     private int maxID = 0;
     private final SpatCal spatCal;

@@ -1,19 +1,23 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Module;
 
 /**
  * Created by Stephen on 28/07/2017.
  */
 public class NotesArea extends JTextArea implements FocusListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2361836535673525320L;
     Module module;
 
     public NotesArea(Module module) {

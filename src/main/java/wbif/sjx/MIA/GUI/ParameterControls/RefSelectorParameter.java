@@ -1,15 +1,21 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.TreeMap;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
 
 /**
  * Created by Stephen Cross on 18/02/2020.

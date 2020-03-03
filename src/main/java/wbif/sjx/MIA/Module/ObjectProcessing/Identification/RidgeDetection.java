@@ -155,7 +155,6 @@ public class RidgeDetection extends Module {
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
         String units = calibration.getUnits();
-        boolean twoD = inputIpl.getNSlices()==1;
         int imWidth = inputIpl.getWidth();
         int imHeight = inputIpl.getHeight();
         int nSlices = inputIpl.getNSlices();

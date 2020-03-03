@@ -1,7 +1,5 @@
 package wbif.sjx.MIA.Process.Logging;
 
-import java.util.HashMap;
-
 public interface LogRenderer {
     public enum Level {
         MESSAGE, WARNING, ERROR, DEBUG, MEMORY, STATUS;

@@ -130,8 +130,6 @@ public class GetLocalObjectRegion extends Module {
 
         if (inputObjects.values().size() == 0) return outputObjects;
 
-        int count = 0;
-        int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
             if (measurementName != null) radius = inputObject.getMeasurement(measurementName).getValue();

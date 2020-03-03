@@ -1,22 +1,25 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JToggleButton;
+
+import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 
 /**
  * Created by Stephen on 20/05/2017.
  */
 public class ModuleButton extends JToggleButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7386345086449867288L;
     private Module module;
 
 
