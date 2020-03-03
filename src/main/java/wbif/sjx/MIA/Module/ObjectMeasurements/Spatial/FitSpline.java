@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;

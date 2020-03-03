@@ -1,9 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;

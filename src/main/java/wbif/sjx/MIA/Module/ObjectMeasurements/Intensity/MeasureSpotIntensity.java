@@ -8,11 +8,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
-
-import java.util.ArrayList;
 
 /**
  * Similar to MeasureObjectIntensity, but performed on circular (or spherical) regions of interest around each point in
