@@ -39,7 +39,7 @@ public class ShowMetadata extends Module {
 
     @Override
     protected boolean process(Workspace workspace) {
-        workspace.showMetadata();
+        if (showOutput) workspace.showMetadata();
 
         return true;
 

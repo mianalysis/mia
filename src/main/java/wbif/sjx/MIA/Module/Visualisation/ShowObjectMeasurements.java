@@ -41,7 +41,7 @@ public class ShowObjectMeasurements extends Module {
     protected boolean process(Workspace workspace) {
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
-        workspace.getObjectSet(inputObjects).showAllMeasurements();
+        if (showOutput) workspace.getObjectSet(inputObjects).showAllMeasurements();
 
         return true;
 
