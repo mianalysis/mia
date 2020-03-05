@@ -198,14 +198,17 @@ public class ParameterGroup extends Parameter {
             for (int j=0;j<newParametersNodes.getLength();j++) {
                 Node newParametersNode = newParametersNodes.item(j);
 
-                String parameterName = newParametersNode.getAttributes().getNamedItem("NAME").getNodeValue();
+                NamedNodeMap attributes = newParametersNode.getAttributes();
+                String parameterName = attributes.getNamedItem("NAME").getNodeValue();
+                String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
+                Parameter parameter = newParameters.getParameter(parameterName);
 
-                if (newParameters.getParameter(parameterName) == null) {
-                    MIA.log.writeWarning("Parameter \""+parameterName+"\" not found for module \""+module.getName()+"\", skipping.");
+                if (parameter == null) {
+                    MIA.log.writeWarning("Parameter \""+parameterName+"\" (value = \""+parameterValue+"\") not found for module \""+module.getName()+"\", skipping.");
                     continue;
                 }
 
-                newParameters.getParameter(parameterName).setAttributesFromXML(newParametersNode);
+                parameter.setAttributesFromXML(newParametersNode);
 
             }
         }

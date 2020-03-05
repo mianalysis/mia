@@ -192,10 +192,11 @@ public class AnalysisReader {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String parameterName = attributes.getNamedItem("NAME").getNodeValue();
+            String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
             Parameter parameter = module.getParameter(parameterName);
 
             if (parameter == null) {
-                MIA.log.writeWarning("Parameter \""+parameterName+"\" not found for module \""+module.getName()+"\", skipping.");
+                MIA.log.writeWarning("Parameter \""+parameterName+"\" (value = \""+parameterValue+"\") not found for module \""+module.getName()+"\", skipping.");
                 continue;
             }
 

@@ -360,35 +360,35 @@ public class MeasureSpecificWidth extends Module {
         final String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         final String prefix = parameters.getValue(MEASUREMENT_PREFIX);
         
-        ObjMeasurementRef ref = new ObjMeasurementRef(getFullName(Measurements.WIDTH_PX,prefix));
+        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.WIDTH_PX,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(Units.replace(getFullName(Measurements.WIDTH_CAL,prefix)));
+        ref = objectMeasurementRefs.getOrPut(Units.replace(getFullName(Measurements.WIDTH_CAL,prefix)));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(getFullName(Measurements.X1_PX,prefix));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.X1_PX,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(getFullName(Measurements.Y1_PX,prefix));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.Y1_PX,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(getFullName(Measurements.Z1_SLICE,prefix));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.Z1_SLICE,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(getFullName(Measurements.X2_PX,prefix));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.X2_PX,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(getFullName(Measurements.Y2_PX,prefix));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.Y2_PX,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
-        ref = new ObjMeasurementRef(getFullName(Measurements.Z2_SLICE,prefix));
+        ref = objectMeasurementRefs.getOrPut(getFullName(Measurements.Z2_SLICE,prefix));
         ref.setObjectsName(inputObjectsName);
         returnedRefs.add(ref);
         
@@ -443,9 +443,6 @@ class WidthMeasurementResult {
         final double ratio = dppZ/dppXY;
         
         if (pixelDistances) {
-            MIA.log.writeDebug("Start");
-            MIA.log.writeDebug(end1.x+"_"+end1.y+"_"+end1.z);
-            MIA.log.writeDebug(end2.x+"_"+end2.y+"_"+end2.z);
             final Point<Double> p1 = new Point<Double>((double) end1.x, (double) end1.y,end1.z*ratio);
             final Point<Double> p2 = new Point<Double>(end2.x*dppXY,end2.y*dppXY,end2.z*ratio);
             

@@ -398,7 +398,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         
     }
     
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int frameInterval, int finalIndex, int[] crop, @Nullable double[] intRange, boolean manualCal)
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int[] seqRange, String channels, int[] crop, @Nullable double[] intRange, boolean manualCal)
     throws ServiceException, DependencyException, FormatException, IOException {
         // Number format
         StringBuilder stringBuilder = new StringBuilder();
@@ -411,6 +411,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int numStart = FilenameUtils.removeExtension(rootName).length() - numberOfZeroes;
         rootName = rootFile.getName().substring(0, numStart);
         String extension = FilenameUtils.getExtension(rootFile.getName());
+
+        int startingIndex = seqRange[0];
+        int frameInterval = seqRange[1];
+        int finalIndex = seqRange[2];
         
         // Determining the number of images to load
         int count = 0;
@@ -422,7 +426,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
         
         // Determining the dimensions of the input image
-        String[] dimRanges = new String[]{"1-end", "1", "1"};
+        String[] dimRanges = new String[]{channels, "1", "1"};
         ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(), 1, dimRanges, crop, intRange, manualCal, false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
@@ -440,7 +444,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             writeMessage("Loading image " + (i + 1) + " of " + count);
             String currentPath = rootPath + rootName + df.format(i * frameInterval + startingIndex) + "." + extension;
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, intRange, manualCal, false);
-                    
+            tempIpl.updateChannelAndDraw();
+            
             for (int c=0;c<nChannels;c++) {
                 outputIpl.setPosition(c+1,i+1,1);
                 if (tempIpl.isComposite()) {
@@ -775,7 +780,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     return false;
                 }
                 
-                ipl = getImageSequence(file, numberOfZeroes, startingIndex, frameInterval, finalIndex, crop, intRange, setCalibration);
+                int[] seqRange = new int[]{startingIndex,frameInterval,finalIndex};
+                ipl = getImageSequence(file, numberOfZeroes, seqRange, channels, crop, intRange, setCalibration);
                 
                 break;
                 
@@ -992,6 +998,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
         
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
+        || parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)
         || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)
         || parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)) {
             returnedParameters.add(parameters.getParameter(READER));
@@ -1006,6 +1013,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 returnedParameters.add(parameters.getParameter(SLICES));
                 returnedParameters.add(parameters.getParameter(FRAMES));
             }
+        }
+
+        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)) {
+            returnedParameters.add(parameters.getParameter(CHANNELS));
         }
         
         returnedParameters.add(parameters.getParameter(THREE_D_MODE));
