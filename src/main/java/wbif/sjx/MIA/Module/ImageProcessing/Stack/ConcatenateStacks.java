@@ -1,5 +1,10 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+
+import javax.annotation.Nonnull;
+
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
 import ij.process.LUT;
@@ -19,18 +24,21 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.ImageRendering.SetLookupTable;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Process.ImgPlusTools;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 
 public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";

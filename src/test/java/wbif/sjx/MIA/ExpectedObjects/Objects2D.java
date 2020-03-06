@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Objects2D extends ExpectedObjects {
     public Objects2D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 1);
+        super(volumeType, 64, 76, 1, 1);
     }
 
     public enum Measures {

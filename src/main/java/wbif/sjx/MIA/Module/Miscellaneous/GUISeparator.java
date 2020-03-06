@@ -1,25 +1,21 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
 /**
  * Created by sc13967 on 14/03/2018.
  */
 public class GUISeparator extends Module {
-    private static boolean verbose = false;
-
     public static final String VISIBILITY_SEPARATOR = "Separator visibility";
     public static final String SHOW_BASIC = "Show basic";
     public static final String EXPANDED_BASIC = "Expanded basic GUI";
@@ -49,7 +45,7 @@ public class GUISeparator extends Module {
 
             // If this module is a visible GUISeparator, stop recording and return the available modules
             if (module instanceof GUISeparator) {
-                if (module.getParameterValue(GUISeparator.SHOW_BASIC)) {
+                if ((boolean) module.getParameterValue(GUISeparator.SHOW_BASIC)) {
                     return basicModules;
                 }
             }

@@ -1,9 +1,14 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.TreeMap;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
 import wbif.sjx.MIA.ExpectedObjects.Tracks3D;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
@@ -11,10 +16,6 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.TreeMap;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 09/08/2018.

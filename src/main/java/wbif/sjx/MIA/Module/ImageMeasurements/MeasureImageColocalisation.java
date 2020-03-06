@@ -1,21 +1,28 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
+import java.util.HashMap;
+
 import ij.ImagePlus;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
-
-import java.util.HashMap;
 
 public class MeasureImageColocalisation extends Module {
     public static final String INPUT_IMAGE_1 = "Input image 1";
@@ -42,19 +49,19 @@ public class MeasureImageColocalisation extends Module {
     }
 
 
-    public static Image getMaskImage(ObjCollection objects, Image templateImage, String maskingMode) {
+    public static Image getMaskImage(ObjCollection objects, String maskingMode) {
         switch (maskingMode) {
             case MaskingModes.MEASURE_INSIDE_OBJECTS:
                 // Creating the new Obj
                 HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objects,ColourFactory.SingleColours.WHITE);
-                Image image = objects.convertToImage("Mask",templateImage,hues,8,false);
+                Image image = objects.convertToImage("Mask",hues,8,false);
                 InvertIntensity.process(image.getImagePlus());
                 return image;
 
             case MaskingModes.MEASURE_OUTSIDE_OBJECTS:
                 // Creating the new Obj
                 hues = ColourFactory.getSingleColourHues(objects,ColourFactory.SingleColours.WHITE);
-                return objects.convertToImage("Mask",templateImage,hues,8,false);
+                return objects.convertToImage("Mask",hues,8,false);
 
             case MaskingModes.NONE:
                 return null;
@@ -123,7 +130,7 @@ public class MeasureImageColocalisation extends Module {
         String maskingMode = parameters.getValue(MASKING_MODE);
 
         // If objects are to be used as a mask a binary image is created.  Otherwise, null is returned
-        Image mask = getMaskImage(objects,image1,maskingMode);
+        Image mask = getMaskImage(objects,maskingMode);
 
         // Running measurements
         measurePCC(image1,image2,mask);
@@ -198,7 +205,6 @@ public class MeasureImageColocalisation extends Module {
         return true;
     }
 }
-
 
 //package wbif.sjx.MIA.Module.ImageMeasurements;
 //

@@ -15,6 +15,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class CustomMenuBar extends JMenuBar implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 779793751255990466L;
     private static MenuItem undo = new MenuItem(MenuItem.UNDO);
     private static MenuItem redo = new MenuItem(MenuItem.REDO);
     private static MenuCheckbox helpCheckbox = new MenuCheckbox(MenuCheckbox.TOGGLE_HELP);

@@ -12,6 +12,10 @@ import java.awt.event.*;
  * Created by Stephen on 06/09/2017.
  */
 public class ExportName extends JLabel implements MouseListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5017487558283084852L;
     private Ref reference;
     private RenameListMenu renameListMenu ;
 

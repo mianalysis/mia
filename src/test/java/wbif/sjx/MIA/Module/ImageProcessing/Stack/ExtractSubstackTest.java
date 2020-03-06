@@ -1,14 +1,14 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ExtractSubstackTest extends ModuleTest {
 

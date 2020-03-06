@@ -1,17 +1,15 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.GUI.ParameterControls.WiderDropDownCombo;
+import javax.annotation.Nonnull;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 
-import javax.annotation.Nonnull;
-
 public class ChildObjectsP extends ChoiceType {
     private String parentObjectsName = "";
-    private WiderDropDownCombo control;
 
     public ChildObjectsP(String name, Module module) {
         super(name, module);

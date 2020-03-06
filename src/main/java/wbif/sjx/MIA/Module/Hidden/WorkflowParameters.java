@@ -1,18 +1,20 @@
 package wbif.sjx.MIA.Module.Hidden;
 
+import java.util.LinkedHashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Object.Workspace;
-
-import java.util.LinkedHashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class WorkflowParameters extends Module {
     public static final String GLOBAL_VARIABLES_SEPARATOR = "Global variables";

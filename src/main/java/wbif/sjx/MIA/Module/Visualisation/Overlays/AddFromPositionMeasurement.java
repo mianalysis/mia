@@ -34,40 +34,49 @@ public class AddFromPositionMeasurement extends Overlay {
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String RENDERING_SEPARATOR = "Overlay rendering";
+    public static final String POSITION_SEPARATOR = "Overlay position";
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
     public static final String USE_RADIUS = "Use radius measurement";
     public static final String MEASUREMENT_FOR_RADIUS = "Measurement for radius";
+
+    public static final String RENDERING_SEPARATOR = "Overlay rendering";
     public static final String LINE_WIDTH = "Line width";
+    public static final String POINT_SIZE = "Point size";
+    public static final String POINT_TYPE = "Point type";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    public interface PointSizes extends AddObjectCentroid.PointSizes {}
+
+    public interface PointTypes extends AddObjectCentroid.PointTypes {}
 
     public AddFromPositionMeasurement(ModuleCollection modules) {
         super("Add from position measurement",modules);
     }
 
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
         double yMean = object.getMeasurement(posMeasurements[1]).getValue();
         double zMean = object.getMeasurement(posMeasurements[2]).getValue();
 
-        // Getting coordinates to plot
+        // Getting coordinates and settings for plotting
         int z = (int) Math.round(zMean+1);
         int t = object.getT()+1;
+        int sizeVal = AddObjectCentroid.getSize(size);
+        int typeVal = AddObjectCentroid.getType(type);
 
         if (renderInAllFrames) t = 0;
-
-        if (posMeasurements[3].equals("")) {
+        if (posMeasurements[3] == null) {
             PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
-            pointRoi.setPointType(PointRoi.NORMAL);
+            pointRoi.setPointType(typeVal);
+            pointRoi.setSize(sizeVal);
             if (ipl.isHyperStack()) {
                 pointRoi.setPosition(1, z, t);
             } else {
@@ -75,7 +84,6 @@ public class AddFromPositionMeasurement extends Overlay {
                 pointRoi.setPosition(pos);
             }
             pointRoi.setStrokeColor(colour);
-            pointRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(pointRoi);
 
         } else {
@@ -126,7 +134,9 @@ public class AddFromPositionMeasurement extends Overlay {
         boolean useRadius = parameters.getValue(USE_RADIUS);
         String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
 
-        double opacity = parameters.getValue(OPACITY);
+        double opacity = parameters.getValue(OPACITY);        
+        String pointSize = parameters.getValue(POINT_SIZE);
+        String pointType = parameters.getValue(POINT_TYPE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -161,9 +171,9 @@ public class AddFromPositionMeasurement extends Overlay {
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue,opacity);
-
-                    addOverlay(object, finalIpl, colour, lineWidth, posMeasurements, renderInAllFrames);
-
+                
+                    addOverlay(object, finalIpl, colour, pointSize, pointType, lineWidth, posMeasurements, renderInAllFrames);
+        
                     writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
                 };
                 pool.submit(task);
@@ -199,13 +209,17 @@ public class AddFromPositionMeasurement extends Overlay {
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(POSITION_SEPARATOR,this));
         parameters.add(new ObjectMeasurementP(X_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
         parameters.add(new BooleanP(USE_RADIUS, this,true));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_RADIUS, this));
+
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new DoubleP(LINE_WIDTH,this,1));
+        parameters.add(new ChoiceP(POINT_SIZE,this,PointSizes.SMALL,PointSizes.ALL));
+        parameters.add(new ChoiceP(POINT_TYPE,this,PointTypes.CIRCLE,PointTypes.ALL));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
@@ -234,7 +248,7 @@ public class AddFromPositionMeasurement extends Overlay {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(POSITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
         returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
         returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
@@ -247,6 +261,12 @@ public class AddFromPositionMeasurement extends Overlay {
         if ((boolean) parameters.getValue(USE_RADIUS)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
             ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
+            returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
+            returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+        } else {
+            returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
+            returnedParameters.add(parameters.getParameter(POINT_SIZE));
+            returnedParameters.add(parameters.getParameter(POINT_TYPE));
         }
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));

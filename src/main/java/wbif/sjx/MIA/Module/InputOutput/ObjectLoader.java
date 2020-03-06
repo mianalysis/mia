@@ -19,6 +19,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.annotation.Nullable;
@@ -164,16 +165,17 @@ public class ObjectLoader extends Module {
         Image image = workspace.getImage(referenceImageName);
         ImagePlus ipl = image.getImagePlus();
 
-        return new int[]{ipl.getWidth(),ipl.getHeight(),ipl.getNSlices()};
+        return new int[]{ipl.getWidth(),ipl.getHeight(),ipl.getNSlices(),ipl.getNFrames()};
 
     }
 
     int[] getLimitsFromManualValues() {
-        int[] limits = new int[3];
+        int[] limits = new int[4];
 
         limits[0] = parameters.getValue(WIDTH);
         limits[1] = parameters.getValue(HEIGHT);
         limits[2] = parameters.getValue(N_SLICES);
+        limits[4] = parameters.getValue(N_FRAMES);
 
         return limits;
 
@@ -183,6 +185,7 @@ public class ObjectLoader extends Module {
         int xIdx = parameters.getValue(X_COLUMN_INDEX);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX);
+        int tIdx = parameters.getValue(T_COLUMN_INDEX);
 
         BufferedReader reader;
         try {
@@ -193,7 +196,7 @@ public class ObjectLoader extends Module {
         }
 
         // Initialising the limits array
-        int[] limits = new int[]{0,0,0};
+        int[] limits = new int[]{0,0,0,0};
 
         // Iterating over each row, adding as a new Obj
         CSVReader csvReader = new CSVReader(reader);
@@ -205,9 +208,11 @@ public class ObjectLoader extends Module {
                     int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
                     int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
                     int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
+                    int t = Integer.parseInt(row[tIdx]);
                     limits[0] = Math.max(limits[0],x);
                     limits[1] = Math.max(limits[1],y);
                     limits[2] = Math.max(limits[2],z);
+                    limits[3] = Math.max(limits[3],t);
 
                 } catch (NumberFormatException e) {}
 
@@ -252,8 +257,7 @@ public class ObjectLoader extends Module {
 
     }
 
-    void loadObjects(ObjCollection outputObjects, File inputFile, int[] limits, double[] cal, @Nullable ObjCollection parentObjects) {
-        int idIdx = parameters.getValue(ID_COLUMN_INDEX);
+    void loadObjects(ObjCollection outputObjects, File inputFile, @Nullable ObjCollection parentObjects) {
         int xIdx = parameters.getValue(X_COLUMN_INDEX);
         int yIdx = parameters.getValue(Y_COLUMN_INDEX);
         int zIdx = parameters.getValue(Z_COLUMN_INDEX);
@@ -270,7 +274,6 @@ public class ObjectLoader extends Module {
 
         // Iterating over each row, adding as a new Obj
         VolumeType type = VolumeType.POINTLIST;
-        String units = Units.getOMEUnits().getSymbol();
         int outOfRangeCount = 0;
         try {
             CSVReader csvReader = new CSVReader(reader);
@@ -281,14 +284,13 @@ public class ObjectLoader extends Module {
                 // If any of these fields can't be read (e.g. for the title row) we get a NumberFormatException and the row is skipped
                 try {
                     // Comparing the coordinates
-                    int ID = (int) Math.round((double) Double.parseDouble(row[idIdx]));
                     int x = (int) Math.round((double) Double.parseDouble(row[xIdx]));
                     int y = (int) Math.round((double) Double.parseDouble(row[yIdx]));
                     int z = zIdx == -1 ? 0 : (int) Math.round((double) Double.parseDouble(row[xIdx]));
                     int t = (int) Math.round((double) Double.parseDouble(row[tIdx]));
 
                     // Creating the object and setting the coordinates
-                    Obj obj = new Obj(type,outputObjects.getName(),ID,limits[0],limits[1],limits[2],cal[0],cal[1],units);
+                    Obj obj = outputObjects.createAndAddNewObject(type);
                     try {
                         obj.add(x,y,z);
                     } catch (PointOutOfRangeException e) {
@@ -350,7 +352,6 @@ public class ObjectLoader extends Module {
         String calSource = parameters.getValue(CALIBRATION_SOURCE);
         boolean createParents = parameters.getValue(CREATE_PARENTS);
         String parentType = parameters.getValue(PARENT_TYPE);
-        int parentsIdx = parameters.getValue(PARENTS_COLUMN_INDEX);
 
         String parentObjectsName = null;
         switch (parentType) {
@@ -395,19 +396,22 @@ public class ObjectLoader extends Module {
         }
         if (cal == null) return false;
 
+        String units = Units.getOMEUnits().getSymbol();
+        SpatCal calibration = new SpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
+
         // Creating output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,limits[3]);
         workspace.addObjects(outputObjects);
 
         // Creating parent objects
         ObjCollection parentObjects = null;
         if (createParents) {
-            parentObjects = new ObjCollection(parentObjectsName);
+            parentObjects = new ObjCollection(parentObjectsName,calibration,limits[3]);
             workspace.addObjects(parentObjects);
         }
 
         // Loading objects to the specified collections
-        loadObjects(outputObjects,inputFile,limits,cal,parentObjects);
+        loadObjects(outputObjects,inputFile,parentObjects);
 
         if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 

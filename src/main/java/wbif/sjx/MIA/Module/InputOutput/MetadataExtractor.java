@@ -1,23 +1,42 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.common.MetadataExtractors.*;
-import wbif.sjx.common.Object.Metadata;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FilePathP;
+import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.RefreshButtonP;
+import wbif.sjx.MIA.Object.Parameters.StringP;
+import wbif.sjx.MIA.Object.Parameters.TextAreaP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.CellVoyagerFilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.CellVoyagerFoldernameExtractor;
+import wbif.sjx.common.MetadataExtractors.FileExtractor;
+import wbif.sjx.common.MetadataExtractors.GenericExtractor;
+import wbif.sjx.common.MetadataExtractors.IncuCyteLongFilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.KeywordExtractor;
+import wbif.sjx.common.MetadataExtractors.NameExtractor;
+import wbif.sjx.common.MetadataExtractors.OperaFileExtractor;
+import wbif.sjx.common.MetadataExtractors.OperaFilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.OperaFoldernameExtractor;
+import wbif.sjx.common.Object.Metadata;
 
 /**
  * Created by sc13967 on 05/05/2017.

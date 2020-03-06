@@ -1,10 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import sc.fiji.analyzeSkeleton.SkeletonResult;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
@@ -31,7 +28,6 @@ public class FitSpline extends Module {
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String EXPORT_EVERY_N_POINTS = "Export every N points";
-    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String RELATE_TO_REFERENCE_POINT = "Relate to reference point";
     public static final String X_REF_MEASUREMENT = "X-axis reference measurement";
     public static final String Y_REF_MEASUREMENT = "Y-axis reference measurement";
@@ -42,9 +38,11 @@ public class FitSpline extends Module {
     public static final String ABSOLUTE_CURVATURE = "Measure absolute curvature";
     public static final String SIGNED_CURVATURE = "Measure signed curvature";
     public static final String DRAW_SPLINE = "Draw spline";
+    public static final String INPUT_IMAGE = "Input image";
+    public static final String APPLY_TO_IMAGE = "Apply to image";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String LINE_WIDTH = "Line width";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
-    public static final String APPLY_TO_IMAGE = "Apply to image";
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
@@ -99,13 +97,13 @@ public class FitSpline extends Module {
     }
 
 
-    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, Image templateImage) {
+    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject) {
         // Converting object to image, then inverting, so we have a black object on a white background
-        ObjCollection tempObjects = new ObjCollection("Backbone");
+        ObjCollection tempObjects = new ObjCollection("Backbone",inputObject.getSpatialCalibration(),inputObject.getNFrames());
         tempObjects.add(inputObject);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
-        Image objectImage = tempObjects.convertToImage("Objects",templateImage,hues,8,false);
+        Image objectImage = tempObjects.convertToImage("Objects",hues,8,false);
         InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
@@ -374,12 +372,6 @@ public class FitSpline extends Module {
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         int exportEveryNPoints = parameters.getValue(EXPORT_EVERY_N_POINTS);
-
-        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        Image referenceImage = workspace.getImage(referenceImageName);
-        ImagePlus referenceImageImagePlus = referenceImage.getImagePlus();
-
-        // Getting parameters
         boolean useReference = parameters.getValue(RELATE_TO_REFERENCE_POINT);
         String xReference = parameters.getValue(X_REF_MEASUREMENT);
         String yReference = parameters.getValue(Y_REF_MEASUREMENT);
@@ -390,7 +382,9 @@ public class FitSpline extends Module {
         boolean absoluteCurvature = parameters.getValue(ABSOLUTE_CURVATURE);
         boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE);
         boolean drawSpline = parameters.getValue(DRAW_SPLINE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         double maxCurvature = parameters.getValue(MAX_CURVATURE);
         boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
@@ -399,7 +393,7 @@ public class FitSpline extends Module {
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
         if (!objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
-            outputObjects = new ObjCollection(outputObjectsName);
+            outputObjects = new ObjCollection(outputObjectsName,inputObjects);
             workspace.addObjects(outputObjects);
         }
 
@@ -412,11 +406,10 @@ public class FitSpline extends Module {
             signedCurvature = false;
         }
 
-        if (drawSpline &! applyToImage) {
-            referenceImageImagePlus = new Duplicator().run(referenceImageImagePlus);
-        }
+        Image inputImage = workspace.getImage(inputImageName);
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        if (drawSpline &! applyToImage) inputIpl = new Duplicator().run(inputIpl);
 
-        ImagePlus templateIpl = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
@@ -424,7 +417,7 @@ public class FitSpline extends Module {
             initialiseObjectMeasurements(inputObject,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, new Image("Template",templateIpl));
+            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;
@@ -453,8 +446,8 @@ public class FitSpline extends Module {
 
             if (drawSpline) {
                 int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
-                referenceImageImagePlus.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
-                calculator.showOverlay(referenceImageImagePlus, maxCurvature, position, lineWidth);
+                inputIpl.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
+                calculator.showOverlay(inputIpl, maxCurvature, position, lineWidth);
             }
 
             if (calculateEndEndAngle) measureHeadTailAngle(inputObject, longestPath, fittingRange);
@@ -469,12 +462,10 @@ public class FitSpline extends Module {
             }
         }
 
-        if (showOutput && drawSpline) {
-            new Image("Spline",referenceImageImagePlus).showImage();
-        }
+        if (drawSpline &! applyToImage) workspace.addImage(new Image(outputImageName,inputIpl));
 
+        if (showOutput && drawSpline) new Image("Spline",inputIpl).showImage();
         if (showOutput) inputObjects.showMeasurements(this,modules);
-
         if (showOutput &! objectOutputMode.equals(ObjectOutputModes.DO_NOT_STORE)) {
             outputObjects.convertToImageRandomColours().showImage();
         }
@@ -489,7 +480,6 @@ public class FitSpline extends Module {
         parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE,this,ObjectOutputModes.DO_NOT_STORE,ObjectOutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
         parameters.add(new IntegerP(EXPORT_EVERY_N_POINTS,this,1));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new BooleanP(RELATE_TO_REFERENCE_POINT,this,false));
         parameters.add(new ObjectMeasurementP(X_REF_MEASUREMENT,this));
         parameters.add(new ObjectMeasurementP(Y_REF_MEASUREMENT,this));
@@ -500,7 +490,9 @@ public class FitSpline extends Module {
         parameters.add(new BooleanP(ABSOLUTE_CURVATURE,this,true));
         parameters.add(new BooleanP(SIGNED_CURVATURE,this,true));
         parameters.add(new BooleanP(DRAW_SPLINE, this,false));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_IMAGE, this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new DoubleP(LINE_WIDTH,this,1d));
         parameters.add(new DoubleP(MAX_CURVATURE,this,1d));
         parameters.add(new BooleanP(CALCULATE_END_END_ANGLE, this,true));
@@ -522,8 +514,6 @@ public class FitSpline extends Module {
 
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
 
         returnedParameters.add(parameters.getParameter(RELATE_TO_REFERENCE_POINT));
         if ((boolean) parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
@@ -550,7 +540,11 @@ public class FitSpline extends Module {
 
         returnedParameters.add(parameters.getParameter(DRAW_SPLINE));
         if ((boolean) parameters.getValue(DRAW_SPLINE)) {
+            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
+            if (!(boolean) parameters.getValue(APPLY_TO_IMAGE)) {
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+            }
             returnedParameters.add(parameters.getParameter(LINE_WIDTH));
             returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
         }

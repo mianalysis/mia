@@ -15,6 +15,10 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ModuleEnabledButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 6135822183769524507L;
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_strike_12px.png"), "");
     private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");

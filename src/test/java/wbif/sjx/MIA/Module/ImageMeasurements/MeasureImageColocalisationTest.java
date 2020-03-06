@@ -1,10 +1,17 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -12,10 +19,6 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MeasureImageColocalisationTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -40,12 +43,7 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         String calibratedUnits = "µm";
         ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
-        // Loading images
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl1 = IJ.openImage(pathToImage);
-        Image image1 = new Image("Im1",ipl1);
-
-        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.NONE);
+        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,MeasureImageColocalisation.MaskingModes.NONE);
 
         assertNull(actual);
 
@@ -61,15 +59,11 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Loading images
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl1 = IJ.openImage(pathToImage);
-        Image image1 = new Image("Im1",ipl1);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus expectedIpl = IJ.openImage(pathToImage);
         Image expectedImage = new Image("Expected",expectedIpl);
 
-        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_INSIDE_OBJECTS);
+        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,MeasureImageColocalisation.MaskingModes.MEASURE_INSIDE_OBJECTS);
 
         assertEquals(expectedImage,actual);
 
@@ -84,16 +78,11 @@ public class MeasureImageColocalisationTest extends ModuleTest {
         String calibratedUnits = "µm";
         ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
-        // Loading images
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl1 = IJ.openImage(pathToImage);
-        Image image1 = new Image("Im1",ipl1);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus expectedIpl = IJ.openImage(pathToImage);
         Image expectedImage = new Image("Expected",expectedIpl);
 
-        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_OUTSIDE_OBJECTS);
+        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,MeasureImageColocalisation.MaskingModes.MEASURE_OUTSIDE_OBJECTS);
 
         assertEquals(expectedImage,actual);
 

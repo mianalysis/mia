@@ -1,18 +1,18 @@
 package wbif.sjx.MIA.Process.Exporting;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.WorkspaceCollection;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 public class XLSXExporter {
 
@@ -23,7 +23,6 @@ public class XLSXExporter {
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Summary");
-        Row titleRow = sheet.createRow(0);
 
         LinkedHashMap<Integer,Workspace> workspacesMap = createRowList(sheet,workspaces);
 
@@ -40,7 +39,6 @@ public class XLSXExporter {
 
     public void addMetadataSummary(Sheet sheet, LinkedHashMap<Integer,Workspace> workspaces, ModuleCollection modules) {
         MetadataRefCollection metadataRefs = modules.getMetadataRefs(null);
-        Row titleRow = sheet.getRow(0);
 
         // Iterating over each metadata value, adding values
         for (SpreadsheetWriter ref:metadataRefs.values()) ref.addSummaryXLSX(sheet,workspaces);

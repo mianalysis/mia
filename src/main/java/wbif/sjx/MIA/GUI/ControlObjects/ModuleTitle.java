@@ -9,6 +9,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class ModuleTitle extends JTextField implements MouseListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5328769382022849737L;
     private final Module module;
 
     public ModuleTitle(Module module) {

@@ -9,12 +9,15 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
@@ -63,7 +66,7 @@ public class MeasureRadialIntensityProfile extends Module {
                 return CreateDistanceMap.getCentroidDistanceMap(inputImage,inputObjects,"Distance map");
 
             case ReferenceModes.DISTANCE_FROM_EDGE:
-                return CreateDistanceMap.getEdgeDistanceMap(inputImage,inputObjects,"Distance map",false);
+                return CreateDistanceMap.getEdgeDistanceMap(inputObjects,"Distance map",false);
         }
 
         return null;

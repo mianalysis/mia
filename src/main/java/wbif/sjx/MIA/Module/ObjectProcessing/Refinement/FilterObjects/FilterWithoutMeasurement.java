@@ -66,12 +66,11 @@ public class FilterWithoutMeasurement extends CoreFilter {
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
         String filterMethod = parameters.getValue(FILTER_METHOD);
         String measName = parameters.getValue(MEASUREMENT);
-        boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
 
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();

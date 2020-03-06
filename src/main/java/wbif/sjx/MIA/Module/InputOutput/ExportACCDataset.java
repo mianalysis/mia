@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class ExportACCDataset extends Module {

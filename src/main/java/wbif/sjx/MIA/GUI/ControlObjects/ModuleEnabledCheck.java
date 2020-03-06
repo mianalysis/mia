@@ -11,6 +11,10 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 8062481771337922484L;
     private Module module;
 
     public ModuleEnabledCheck(Module module) {

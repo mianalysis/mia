@@ -1,30 +1,43 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
-import ij.IJ;
-import ij.ImagePlus;
-import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.common.MathFunc.CumStat;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.Collection;
-import java.util.Iterator;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import ij.IJ;
+import ij.ImagePlus;
+import wbif.sjx.MIA.GUI.Colours;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputTrackObjectsP;
+import wbif.sjx.MIA.Object.Parameters.MessageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 public class MergeTracks extends Module implements ActionListener, WindowListener {
     public static final String INPUT_SEPARATOR = "Objects input";

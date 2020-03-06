@@ -123,9 +123,7 @@ public class AddObjectsOverlay extends Module {
         double[] xx = object.getX(true);
         double[] yy = object.getY(true);
         double[] zz = object.getZ(true,false);
-        double zMean = object.getZMean(true,false);
 
-        int z = (int) Math.round(zMean+1);
         int t = object.getT()+1;
 
         if (renderInAllFrames) t = 0;
@@ -211,9 +209,6 @@ public class AddObjectsOverlay extends Module {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         // Still need to get mean coords for label
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true, false);
         int t = object.getT() + 1;
 
         if (renderInAllFrames) t = 0;

@@ -1,7 +1,5 @@
 package wbif.sjx.MIA.Object;
 
-import wbif.sjx.MIA.Module.Module;
-
 /**
  * Measurement that holds a single value for an object
  */

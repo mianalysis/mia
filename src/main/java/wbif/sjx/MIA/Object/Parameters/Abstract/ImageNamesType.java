@@ -1,11 +1,9 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
-import wbif.sjx.MIA.GUI.GUI;
+import java.util.LinkedHashSet;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-
-import java.util.LinkedHashSet;
-import java.util.stream.Collectors;
 
 public abstract class ImageNamesType extends ChoiceType {
     public ImageNamesType(String name, Module module) {

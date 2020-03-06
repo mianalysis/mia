@@ -1,22 +1,35 @@
 package wbif.sjx.MIA.GUI.Panels.MainPanels;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JSplitPane;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+
 import ij.Prefs;
-import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.Panels.EditingControlPanel;
+import wbif.sjx.MIA.GUI.Panels.FileListPanel;
+import wbif.sjx.MIA.GUI.Panels.HelpNotesPanel;
+import wbif.sjx.MIA.GUI.Panels.InputOutputPanel;
+import wbif.sjx.MIA.GUI.Panels.ModulesPanel;
+import wbif.sjx.MIA.GUI.Panels.ParametersPanel;
+import wbif.sjx.MIA.GUI.Panels.ProgressBarPanel;
+import wbif.sjx.MIA.GUI.Panels.StatusPanel;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.Panels.*;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.awt.*;
-
 public class EditingPanel extends MainPanel {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6063268799004206526L;
     private static int frameHeight = GUI.getFrameHeight();
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 

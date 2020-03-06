@@ -35,8 +35,6 @@ public class FilterWithWithoutParent extends CoreFilter {
 
 
     public static String getMetadataName(String inputObjectsName, String filterMethod, String parentObjectsName) {
-        String filterMethodSymbol = getFilterMethodSymbol(filterMethod);
-
         switch (filterMethod) {
             case FilterMethods.WITH_PARENT:
                 return "FILTER // NUM_" + inputObjectsName + " WITH " + parentObjectsName + " PARENT";
@@ -74,7 +72,7 @@ public class FilterWithWithoutParent extends CoreFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
 
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();
@@ -82,7 +80,6 @@ public class FilterWithWithoutParent extends CoreFilter {
             Obj inputObject = iterator.next();
 
             LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
-            boolean toRemove = false;
             switch (filterMethod) {
                 case FilterMethods.WITH_PARENT:
                     if (parents.get(parentObjectName) != null) {

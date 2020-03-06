@@ -2,32 +2,38 @@
 
 package wbif.sjx.MIA.Module;
 
-import ij.Prefs;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.Ref;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
-
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.LinkedHashSet;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import ij.Prefs;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRef;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module extends Ref implements Comparable, Serializable {
+public abstract class Module extends Ref implements Comparable {
     protected ModuleCollection modules;
 
     protected ParameterCollection parameters = new ParameterCollection();
@@ -39,7 +45,6 @@ public abstract class Module extends Ref implements Comparable, Serializable {
     private static boolean verbose = false;
     private String notes = "";
     private boolean enabled = true;
-    private String packageName;
     private boolean canBeDisabled = false;
     protected boolean showOutput = false;
     private boolean runnable = true;
@@ -107,7 +112,6 @@ public abstract class Module extends Ref implements Comparable, Serializable {
         if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
-            ZonedDateTime zonedDateTime = ZonedDateTime.now();
             String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
 
             DecimalFormat df = new DecimalFormat("#.0");

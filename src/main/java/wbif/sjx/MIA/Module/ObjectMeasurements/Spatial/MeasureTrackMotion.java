@@ -3,9 +3,12 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Timepoint;
@@ -186,7 +189,6 @@ public class MeasureTrackMotion extends Module {
             // Calculating track motion
             double distPerPxXY = trackObject.getDppXY();
             double distPerPxZ = trackObject.getDppZ();
-            double ratio = distPerPxZ/distPerPxXY;
 
             TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
             TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();

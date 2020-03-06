@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ProxCubes2 extends ExpectedObjects {
     public ProxCubes2(VolumeType volumeType) {
-        super(volumeType, 64, 76, 12);
+        super(volumeType, 64, 76, 12, 1);
     }
 
     @Override

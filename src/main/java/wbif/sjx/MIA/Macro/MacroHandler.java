@@ -1,18 +1,17 @@
 package wbif.sjx.MIA.Macro;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ClassHunter;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class MacroHandler implements MacroExtension {
     private static MacroHandler macroHandler = null;

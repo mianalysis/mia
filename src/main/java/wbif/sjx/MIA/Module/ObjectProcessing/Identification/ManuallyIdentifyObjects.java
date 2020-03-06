@@ -22,6 +22,7 @@ import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import javax.swing.*;
@@ -53,12 +54,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private String outputObjectsName;
     private ObjCollection outputObjects;
 
-    private int width;
-    private int height;
-    private int nSlices;
-    private double dppXY;
-    private double dppZ;
-    private String calibrationUnits;
+    private SpatCal calibration;
+    private int nFrames;
     private boolean overflow = false;
 
     private int elementHeight = 40;
@@ -249,10 +246,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode, String type) throws IntegerOverflowException {
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, String interpolationMode, String type) throws IntegerOverflowException {
         // Create a binary image of the objects
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
-        Image binaryImage = outputObjects.convertToImage("Binary",templateImage,hues,8,false);
+        Image binaryImage = outputObjects.convertToImage("Binary",hues,8,false);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
 
         switch (interpolationMode) {
@@ -271,7 +268,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         // Converting binary image back to objects
-        VolumeType volumeType = getVolumeType(type);
         return binaryImage.convertImageToObjects(type,outputObjects.getName(),false);
 
     }
@@ -352,12 +348,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-
-        width = inputImagePlus.getWidth();
-        height = inputImagePlus.getHeight();
-        nSlices = inputImagePlus.getNSlices();
-        dppXY = inputImagePlus.getCalibration().pixelWidth;
-        dppZ = inputImagePlus.getCalibration().pixelDepth;
+        calibration = SpatCal.getFromImage(inputImagePlus);
+        nFrames = inputImagePlus.getNFrames();
 
         setSelector(selectorType);
 
@@ -376,7 +368,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         listModel.clear();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName);
+        outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
 
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
@@ -401,7 +393,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             case InterpolationModes.TEMPORAL:
             case InterpolationModes.SPATIAL_AND_TEMPORAL:
                 try {
-                    outputObjects = applyInterpolation(outputObjects,inputImage,interpolationMode,type);
+                    outputObjects = applyInterpolation(outputObjects,interpolationMode,type);
                 } catch (IntegerOverflowException e) {
                     return false;
                 }
@@ -530,7 +522,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             return;
         }
 
-        Point[] points = roi.getContainedPoints();
         int ID = Integer.parseInt(objectNumberField.getText());
 
         // Adding the ROI to our current collection
@@ -578,7 +569,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = getVolumeType(type);
-            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,width,height,nSlices,dppXY,dppZ,calibrationUnits);
+            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,calibration,nFrames);
             outputObjects.add(outputObject);
 
             for (ObjRoi objRoi:currentRois) {

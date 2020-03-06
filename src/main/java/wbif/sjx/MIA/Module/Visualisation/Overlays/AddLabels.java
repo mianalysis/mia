@@ -1,36 +1,46 @@
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.Prefs;
-import ij.gui.TextRoi;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.MIA.Process.LabelFactory;
-import wbif.sjx.common.Object.Point;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.gui.TextRoi;
+import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.LabelFactory;
+import wbif.sjx.common.Object.Point;
 
 public class AddLabels extends Overlay {
     TextRoi textRoi = null;
@@ -125,7 +135,6 @@ public class AddLabels extends Overlay {
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            AtomicInteger count = new AtomicInteger();
             for (Obj object:inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 

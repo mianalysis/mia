@@ -2,10 +2,10 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
@@ -96,13 +96,6 @@ public class FitLongestChord extends Module {
     }
 
     public void addEndpointsOverlay(Obj object, ImagePlus imagePlus) {
-        int x1 = (int) object.getMeasurement(Measurements.X1_PX).getValue();
-        int y1 = (int) object.getMeasurement(Measurements.Y1_PX).getValue();
-        int z1 = (int) object.getMeasurement(Measurements.Z1_SLICE).getValue();
-        int x2 = (int) object.getMeasurement(Measurements.X2_PX).getValue();
-        int y2 = (int) object.getMeasurement(Measurements.Y2_PX).getValue();
-        int z2 = (int) object.getMeasurement(Measurements.Z2_SLICE).getValue();
-
         String[] pos1 = new String[]{Measurements.X1_PX,Measurements.Y1_PX,Measurements.Z1_SLICE,""};
         String[] pos2 = new String[]{Measurements.X2_PX,Measurements.Y2_PX,Measurements.Z2_SLICE,""};
 
@@ -167,6 +160,7 @@ public class FitLongestChord extends Module {
             // If the user requested, the output image can be added to the workspace
             if (!applyToInput && addToWorkspace) {
                 Image outputImage = new Image(outputImageName, inputImagePlus);
+                workspace.addImage(outputImage);
             }
         }
 

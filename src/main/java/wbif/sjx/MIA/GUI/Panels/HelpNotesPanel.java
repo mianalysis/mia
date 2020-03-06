@@ -1,14 +1,18 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Module;
+import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.awt.*;
+
+import wbif.sjx.MIA.Module.Module;
 
 public class HelpNotesPanel extends JSplitPane {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5990832671522949490L;
     private static final int minimumWidth = 200;
     private static final int preferredWidth = 300;
 

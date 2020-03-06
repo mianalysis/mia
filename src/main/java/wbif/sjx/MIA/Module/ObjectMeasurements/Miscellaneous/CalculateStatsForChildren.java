@@ -3,9 +3,12 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.MathFunc.CumStat;
 
 public class CalculateStatsForChildren extends Module {
@@ -50,9 +53,6 @@ public class CalculateStatsForChildren extends Module {
                 }
             }
         }
-
-        // Adding measurements to parent object
-        Measurement summaryMeasurement;
 
         if (statsToCalculate[0]) {
             String name = getFullName(childObjectsName,measurement,Measurements.MEAN);

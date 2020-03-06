@@ -1,18 +1,16 @@
 package wbif.sjx.MIA.Object;
 
-import ij.measure.ResultsTable;
-import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.References.MetadataRef;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.common.Object.Metadata;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+
+import org.apache.commons.io.FilenameUtils;
+
+import ij.measure.ResultsTable;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.common.Object.Metadata;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -57,7 +55,7 @@ public class Workspace {
      */
     public void addObject(Obj obj) {
         String objectName = obj.getName();
-        objects.putIfAbsent(objectName,new ObjCollection(objectName));
+        objects.putIfAbsent(objectName,new ObjCollection(objectName,obj.getSpatialCalibration(),obj.getNFrames()));
         objects.get(objectName).add(obj);
 
     }

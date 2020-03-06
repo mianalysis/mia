@@ -449,7 +449,7 @@ public class TrackObjects extends Module {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects,trackObjectsName,true);
 
         // Creating a parent-ID encoded image of the objects
-        Image dispImage = spotObjects.convertToImage(spotObjects.getName(),null,hues,32,false);
+        Image dispImage = spotObjects.convertToImage(spotObjects.getName(),hues,32,false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();
@@ -484,19 +484,13 @@ public class TrackObjects extends Module {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        String linkingMethod = parameters.getValue(LINKING_METHOD);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
-        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
         boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
-        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
-        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
-        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
         String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName,inputObjects);
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
@@ -640,7 +634,7 @@ public class TrackObjects extends Module {
 
         returnedParamters.add(parameters.getParameter(WEIGHTS_SEPARATOR));
         returnedParamters.add(parameters.getParameter(USE_VOLUME));
-        if (returnedParamters.getValue(USE_VOLUME)) {
+        if ((boolean) returnedParamters.getValue(USE_VOLUME)) {
             returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
             returnedParamters.add(parameters.getParameter(MAXIMUM_VOLUME_CHANGE));
         }
@@ -660,7 +654,7 @@ public class TrackObjects extends Module {
         }
 
         returnedParamters.add(parameters.getParameter(USE_MEASUREMENT));
-        if (returnedParamters.getValue(USE_MEASUREMENT)) {
+        if ((boolean) returnedParamters.getValue(USE_MEASUREMENT)) {
             returnedParamters.add(parameters.getParameter(MEASUREMENT));
             returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
             returnedParamters.add(parameters.getParameter(MAXIMUM_MEASUREMENT_CHANGE));

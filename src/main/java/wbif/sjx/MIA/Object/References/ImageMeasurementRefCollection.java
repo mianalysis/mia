@@ -3,10 +3,15 @@ package wbif.sjx.MIA.Object.References;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.Units;
 
-import java.io.Serializable;
+
 import java.util.TreeMap;
 
-public class ImageMeasurementRefCollection extends TreeMap<String,ImageMeasurementRef> implements RefCollection<ImageMeasurementRef>, Serializable {
+public class ImageMeasurementRefCollection extends TreeMap<String,ImageMeasurementRef> implements RefCollection<ImageMeasurementRef> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6103343888627280588L;
+
     public void updateImageObjectName(String measurementName, String imageObjectName) {
         get(measurementName).setImageName(imageObjectName);
     }

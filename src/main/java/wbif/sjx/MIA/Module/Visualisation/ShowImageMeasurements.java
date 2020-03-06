@@ -41,7 +41,7 @@ public class ShowImageMeasurements extends Module {
     protected boolean process(Workspace workspace) {
         String inputImage = parameters.getValue(INPUT_IMAGE);
 
-        workspace.getImage(inputImage).showAllMeasurements();
+        if (showOutput) workspace.getImage(inputImage).showAllMeasurements();
 
         return true;
 

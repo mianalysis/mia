@@ -1,6 +1,17 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-import fiji.plugin.trackmate.util.Version;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
@@ -9,28 +20,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
+
+import fiji.plugin.trackmate.util.Version;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.RelationshipRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.Log;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -139,7 +142,6 @@ public class AnalysisReader {
 
                 // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
-                boolean foundParameters = false;
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
                         case "PARAMETERS":
@@ -190,10 +192,11 @@ public class AnalysisReader {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String parameterName = attributes.getNamedItem("NAME").getNodeValue();
+            String parameterValue = attributes.getNamedItem("VALUE").getNodeValue();
             Parameter parameter = module.getParameter(parameterName);
 
             if (parameter == null) {
-                MIA.log.writeWarning("Parameter \""+parameterName+"\" not found for module \""+module.getName()+"\", skipping.");
+                MIA.log.writeWarning("Parameter \""+parameterName+"\" (value = \""+parameterValue+"\") not found for module \""+module.getName()+"\", skipping.");
                 continue;
             }
 

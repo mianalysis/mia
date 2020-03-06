@@ -2,23 +2,25 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
-import ij.process.ImageProcessor;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Analysis.IntensityCalculator;
-import wbif.sjx.common.MathFunc.CumStat;
 
 public class WhiteBalanceCorrection extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";

@@ -93,9 +93,6 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
-import fiji.plugin.trackmate.tracking.sparselap.linker.LAPJV;
-import fiji.plugin.trackmate.tracking.sparselap.linker.SparseCostMatrix;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
@@ -214,7 +211,7 @@ public class RelateOneToOne extends Module {
 
     static ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, DefaultCostMatrixCreator<Integer,Integer> creator, @Nullable String outputObjectsName) {
         ObjCollection outputObjects = null;
-        if (outputObjectsName != null) outputObjects = new ObjCollection(outputObjectsName);
+        if (outputObjectsName != null) outputObjects = new ObjCollection(outputObjectsName,inputObjects1);
 
         JaqamanLinker<Integer,Integer> linker = new JaqamanLinker<>(creator);
         if (!linker.checkInput() || !linker.process()) return null;
@@ -314,7 +311,7 @@ public class RelateOneToOne extends Module {
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             addMissingLinks(inputObjects1,inputObjects2);
-            workspace.addObjects(new ObjCollection(outputObjectsName));
+            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1));
             return true;
         }
 
@@ -347,7 +344,7 @@ public class RelateOneToOne extends Module {
         addMissingLinks(inputObjects1,inputObjects2);
 
         // Creating an empty output objects collection if one hasn't already been created
-        if (outputObjects == null) outputObjects = new ObjCollection(outputObjectsName);
+        if (outputObjects == null) outputObjects = new ObjCollection(outputObjectsName,inputObjects1);
 
         if (createClusterObjects) workspace.addObjects(outputObjects);
 

@@ -16,6 +16,10 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class BasicControlPanel extends JScrollPane {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7620575044877199413L;
     private static GUISeparator globalVariablesSeparator;
     private static GUISeparator loadSeparator;
     private JPanel panel;

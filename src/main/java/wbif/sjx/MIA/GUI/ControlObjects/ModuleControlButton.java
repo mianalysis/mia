@@ -1,20 +1,25 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JPopupMenu;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
 
 /**
  * Created by Stephen on 28/07/2017.
  */
 public class ModuleControlButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -8671884116762686858L;
     public static final String ADD_MODULE = "+";
     public static final String REMOVE_MODULE = "-";
     public static final String MOVE_MODULE_UP = "▲";

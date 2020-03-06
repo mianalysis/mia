@@ -392,7 +392,7 @@ public class RelateObjects extends Module {
 
     public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName) {
         Obj exampleParent = parentObjects.getFirst();
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
+        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName,parentObjects);
 
         if (exampleParent == null) return relatedObjects;
 
@@ -453,10 +453,6 @@ public class RelateObjects extends Module {
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
-        String referencePoint = parameters.getValue(REFERENCE_POINT);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
-        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
         double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
         boolean mergeRelatedObjects = parameters.getValue(MERGE_RELATED_OBJECTS);

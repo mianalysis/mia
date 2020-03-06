@@ -1,13 +1,17 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-import wbif.sjx.MIA.Object.Parameters.MessageP;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-import javax.swing.*;
-import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import wbif.sjx.MIA.Object.Parameters.MessageP;
+import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 public class MessageArea extends ParameterControl {
     protected TextType parameter;

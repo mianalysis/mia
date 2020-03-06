@@ -156,8 +156,6 @@ public class LocalAutoThreshold extends Module {
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
 
-        int threshold = 0;
-
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
         }

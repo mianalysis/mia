@@ -3,31 +3,60 @@
 
 package wbif.sjx.MIA.Process.Exporting;
 
-import org.apache.commons.lang.SystemUtils;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.MIA.Process.Logging.Log;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
-import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Metadata;
-
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.SystemUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRef;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Metadata;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -150,7 +179,6 @@ public class Exporter {
     }
 
     private static String appendDateTime(String inputName) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now();
         String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
         return inputName + "_("+ dateTime + ").xlsx";
     }

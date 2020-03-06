@@ -1,9 +1,11 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
-import wbif.sjx.MIA.Module.ModuleCollection;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 
-import java.awt.datatransfer.*;
-import java.io.IOException;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 public class ModuleCollectionTransfer implements Transferable, ClipboardOwner {
     private ModuleCollection modules;

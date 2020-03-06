@@ -1,29 +1,49 @@
 package wbif.sjx.MIA.GUI;
 
-import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.EvalButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.SeparatorButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ShowOutputButton;
-import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.*;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
-import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.LinkedHashSet;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+
+import wbif.sjx.MIA.GUI.ControlObjects.ExportCheck;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleTitle;
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.DisableRefsButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.DisableableCheck;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.EnableRefsButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ExportEnableButton;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ExportName;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.ResetExport;
+import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.VisibleCheck;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.MessageP;
+import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.TextAreaP;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 /**
  * Created by Stephen on 23/06/2017.
@@ -395,7 +415,6 @@ public class ComponentFactory {
         ParameterCollection outputParameters = GUI.getModules().getOutputControl().updateAndGetParameters();
         String exportMode = outputParameters.getValue(OutputControl.EXPORT_MODE);
         BooleanP exportIndividual = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        BooleanP exportSummary = (BooleanP) outputParameters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200,25));

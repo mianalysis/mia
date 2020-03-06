@@ -5,7 +5,7 @@ DISTANCES AS CENTROID-CENTROID.  Closest surface will be 1px less
 
 pc1 ID25
 	- related to pc2 ID89, 4px (0.8um)
-	- NOT closest to pc2 ID12 (vertically above, but further during calibration)
+	- NOT closest to pc2 ID12 (vertically above, but further during cal)
 	
 pc1 ID43
 	- inside pc2 ID65

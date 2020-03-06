@@ -1,31 +1,37 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.commons.io.FilenameUtils;
+
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.AVI_Writer;
 import ij.process.ImageConverter;
-import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FolderPathP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 /**
  * Created by sc13967 on 26/06/2017.
@@ -148,7 +154,6 @@ public class ImageSaver extends Module {
             case AppendDateTimeModes.ALWAYS:
                 String nameWithoutExtension = FilenameUtils.removeExtension(inputName);
                 String extension = FilenameUtils.getExtension(inputName);
-                ZonedDateTime zonedDateTime = ZonedDateTime.now();
                 String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
                 return  nameWithoutExtension+ "_("+ dateTime + ")."+extension;
             case AppendDateTimeModes.NEVER:

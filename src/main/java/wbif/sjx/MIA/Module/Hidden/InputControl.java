@@ -1,11 +1,8 @@
 package wbif.sjx.MIA.Module.Hidden;
 
 import loci.common.DebugTools;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
-import loci.formats.FormatException;
 import loci.formats.MissingLibraryException;
 import loci.formats.UnknownFormatException;
 import loci.formats.meta.MetadataStore;
@@ -16,14 +13,17 @@ import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnObjects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -32,10 +32,10 @@ import wbif.sjx.common.FileConditions.ParentContainsString;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.System.FileCrawler;
 
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.TreeMap;
 
 /**
  * Created by Stephen on 29/07/2017.

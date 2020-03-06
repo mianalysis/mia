@@ -3,11 +3,14 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Volume.Volume;
 
 /**
@@ -41,7 +44,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2, boolean linkInSameFrame) {
-        Volume overlap = new Volume(inputObject1);
+        Volume overlap = new Volume(inputObject1.getVolumeType(),inputObject1.getSpatialCalibration());
 
         // Running through each object, getting a list of overlapping pixels
         for (Obj obj2:inputObjects2.values()) {

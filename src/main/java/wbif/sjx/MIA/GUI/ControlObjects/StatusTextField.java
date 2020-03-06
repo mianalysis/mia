@@ -1,19 +1,24 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.JLabel;
+
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Module;
 
 /**
  * Created by sc13967 on 19/01/2018.
  */
 public class StatusTextField extends JLabel implements MouseListener{
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5602369416510484361L;
+
     public StatusTextField() {
         addMouseListener(this);
     }

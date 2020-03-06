@@ -12,7 +12,6 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +20,11 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module>, Serializable {
+public class ModuleCollection extends ArrayList<Module> implements RefCollection<Module> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2862089290555674650L;
     private WorkflowParameters workflowParameters = new WorkflowParameters(this);
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);

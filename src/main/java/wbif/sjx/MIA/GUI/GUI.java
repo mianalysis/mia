@@ -4,41 +4,41 @@
 
 package wbif.sjx.MIA.GUI;
 
-import ij.IJ;
-import wbif.sjx.MIA.GUI.ControlObjects.*;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
-import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
-import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Parameters.SeriesListSelectorP;
-import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
-import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
-import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
-import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.Logging.ConsoleRenderer;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
-import wbif.sjx.MIA.Process.Logging.StatusPanelRenderer;
-import wbif.sjx.common.System.FileCrawler;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.io.File;
-import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.ControlObjects.CustomMenuBar;
+import wbif.sjx.MIA.GUI.ControlObjects.StatusTextField;
+import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
+import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
+import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
+import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
+import wbif.sjx.MIA.Process.Logging.StatusPanelRenderer;
+import wbif.sjx.common.System.FileCrawler;
 
 /**
  * Created by Stephen on 20/05/2017.

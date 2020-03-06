@@ -1,9 +1,8 @@
 package wbif.sjx.MIA.Module.Hidden;
 
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Module.ModuleTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import wbif.sjx.MIA.Module.ModuleTest;
 
 /**
  * Created by sc13967 on 26/06/2018.

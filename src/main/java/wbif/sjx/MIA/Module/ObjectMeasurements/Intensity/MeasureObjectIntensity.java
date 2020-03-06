@@ -162,7 +162,7 @@ public class MeasureObjectIntensity extends Module {
         String imageName = parameters.getValue(INPUT_IMAGE);
         String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
-        ObjCollection collection = new ObjCollection(object.getName());
+        ObjCollection collection = new ObjCollection(object.getName(),object.getSpatialCalibration(),object.getNFrames());
         collection.add(object);
         CumStat cs = MeasureIntensityDistribution.measureIntensityWeightedProximity(collection,image,edgeDistanceMode);
 
@@ -182,8 +182,6 @@ public class MeasureObjectIntensity extends Module {
         double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
         boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
         int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
-        boolean onlyOnMask = parameters.getValue(ONLY_MEASURE_ON_MASK);
-        String maskImageName = parameters.getValue(MASK_IMAGE);
         double distPerPxXY = object.getDppXY();
 
         // Setting up CumStats to hold results
@@ -193,7 +191,7 @@ public class MeasureObjectIntensity extends Module {
         for (int i=0;i<nMeasurements;i++) cumStats.put(bins[i],new CumStat());
 
         // Creating an object image
-        ImagePlus objIpl = object.convertObjToImage("Inside dist", new Image("Intensity",intensityIpl)).getImagePlus();
+        ImagePlus objIpl = object.convertObjToImage("Inside dist").getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
         ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
@@ -252,7 +250,7 @@ public class MeasureObjectIntensity extends Module {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<nDigits;i++) stringBuilder.append("0");
         DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
-        String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
+        String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
         DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
 
@@ -509,7 +507,7 @@ public class MeasureObjectIntensity extends Module {
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
             double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
-            String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
+            String units = (boolean) parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
             // Bin names must be in alphabetical order (for the ObjMeasurementRefCollection TreeMap)
             int nDigits = (int) Math.log10(bins.length)+1;

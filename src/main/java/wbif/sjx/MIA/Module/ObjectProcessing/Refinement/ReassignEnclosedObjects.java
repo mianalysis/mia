@@ -7,7 +7,6 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
@@ -18,26 +17,20 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
-import java.util.Iterator;
-
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String TEMPLATE_IMAGE = "Template image";
 
     public ReassignEnclosedObjects(ModuleCollection modules) {
         super("Reassign enclosed objects",modules);
     }
 
-    public void testEncloses(ObjCollection objects, Image templateImage) throws IntegerOverflowException {
-        int count = 0;
-        int total = objects.size();
-
+    public static void testEnclosed(ObjCollection objects) throws IntegerOverflowException {
         for (Obj object:objects.values()) {
             // If this object has already been removed (i.e. ID = -1), skip it
             if (object.getID() == -1) continue;
 
             // Creating a binary image of the input object
-            Image binaryImage = object.convertObjToImage("Binary",templateImage);
+            Image binaryImage = object.convertObjToImage("Binary");
             ImagePlus binaryIpl = binaryImage.getImagePlus();
 
             // Filling holes in the binary image
@@ -64,7 +57,7 @@ public class ReassignEnclosedObjects extends Module {
                 if (val == 255) continue;
 
                 // Expanding the test object by 1 px to fill the gap
-                Obj expanded = ExpandShrinkObjects.processObject(testObject,templateImage,ExpandShrinkObjects.Methods.EXPAND_2D,1);
+                Obj expanded = ExpandShrinkObjects.processObject(testObject,ExpandShrinkObjects.Methods.EXPAND_2D,1);
 
                 if (expanded == null) expanded = testObject;
 
@@ -101,11 +94,8 @@ public class ReassignEnclosedObjects extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
-        String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
-        Image templateImage = workspace.getImage(templateImageName);
-
         try {
-            testEncloses(inputObjects, templateImage);
+            testEnclosed(inputObjects);
         } catch (IntegerOverflowException e) {
             return false;
         }
@@ -117,7 +107,6 @@ public class ReassignEnclosedObjects extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(TEMPLATE_IMAGE,this));
     }
 
     @Override

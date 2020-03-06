@@ -136,9 +136,6 @@ public class RunMacroOnObjects extends CoreMacroRunner {
             Image inputImage = provideInputImage ? workspace.getImage(inputImageName) : null;
             ImagePlus inputImagePlus = (inputImage != null) ? inputImage.getImagePlus().duplicate() : null;
 
-            // Creating argument string (objectsName, ID)
-            String arg = inputObjectsName + "," +inputObject.getID();
-
             // Running the macro
             CustomInterpreter interpreter = new CustomInterpreter();
             try {

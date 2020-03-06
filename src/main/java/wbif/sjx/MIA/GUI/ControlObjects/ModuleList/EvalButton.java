@@ -17,6 +17,11 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 08/06/2017.
  */
 public class EvalButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5495286052011521092L;
+
     private static Thread t;
 
     private Module module;

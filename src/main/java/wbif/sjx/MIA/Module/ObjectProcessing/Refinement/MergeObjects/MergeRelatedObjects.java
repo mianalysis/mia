@@ -1,7 +1,5 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
-import ij.ImagePlus;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -13,12 +11,6 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.common.Object.LUTs;
-import wbif.sjx.common.Object.Point;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class MergeRelatedObjects extends Module {
     public final static String INPUT_SEPARATOR = "Object input";
@@ -46,7 +38,7 @@ public class MergeRelatedObjects extends Module {
 
     public static ObjCollection mergeRelatedObjects(ObjCollection parentObjects, String childObjectsName, String relatedObjectsName, String mergeMode) {
         Obj exampleParent = parentObjects.getFirst();
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
+        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName,parentObjects);
 
         if (exampleParent == null) return relatedObjects;
 

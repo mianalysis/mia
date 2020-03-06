@@ -8,11 +8,8 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
-
-import java.util.ArrayList;
 
 /**
  * Similar to MeasureObjectIntensity, but performed on circular (or spherical) regions of interest around each point in
@@ -84,7 +81,6 @@ public class MeasureSpotIntensity extends Module {
         double radius = parameters.getValue(FIXED_VALUE);
         boolean calibrated = parameters.getValue(CALIBRATED_UNITS);
         String radiusSource = parameters.getValue(RADIUS_SOURCE);
-        double fixedValue = parameters.getValue(FIXED_VALUE);
         String radiusMeasurement = parameters.getValue(RADIUS_MEASUREMENT);
         boolean useMeasurement = radiusSource.equals(RadiusSources.MEASUREMENT);
 

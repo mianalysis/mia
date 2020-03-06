@@ -131,7 +131,6 @@ public class AddTracks extends Overlay {
 
         double opacity = parameters.getValue(OPACITY);
         double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Only add output to workspace if not applying to input
         if (applyToInput) addOutputToWorkspace = false;

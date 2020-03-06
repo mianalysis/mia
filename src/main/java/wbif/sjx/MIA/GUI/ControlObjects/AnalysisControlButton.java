@@ -11,6 +11,10 @@ import java.awt.event.ActionListener;
  * Created by steph on 28/07/2017.
  */
 public class AnalysisControlButton extends JButton implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 258574628718719585L;
     public static final String LOAD_ANALYSIS = "Load";
     public static final String SAVE_ANALYSIS = "Save";
     public static final String START_ANALYSIS = "Run";

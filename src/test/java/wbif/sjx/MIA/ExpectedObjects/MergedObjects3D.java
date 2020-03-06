@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MergedObjects3D extends ExpectedObjects {
     public MergedObjects3D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 12);
+        super(volumeType, 64, 76, 12, 1);
     }
 
     @Override

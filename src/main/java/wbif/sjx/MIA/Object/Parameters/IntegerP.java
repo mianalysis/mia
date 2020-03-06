@@ -5,7 +5,6 @@ import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-import wbif.sjx.MIA.Process.Logging.Log;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 public class IntegerP extends TextType {
@@ -37,7 +36,7 @@ public class IntegerP extends TextType {
 
     public void setValue(String value) {
         // Checking this is valid
-        if (GlobalVariables.containsMetadata(value)) {
+        if (GlobalVariables.containsValue(value)) {
             this.value = value;
         } else {
             try {

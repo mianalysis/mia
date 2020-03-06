@@ -158,8 +158,6 @@ public class FilterImage extends Module {
             ImageTypeConverter.applyConversion(inputImagePlus,32,ImageTypeConverter.ScalingModes.CLIP);
         }
 
-        int count = 0;
-        int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
         for (int c=1;c<=nChannels;c++) {
             for (int t = 1; t <=nFrames; t++) {
                 ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c+"-"+c, "1-"+nSlices, t+"-"+t);
@@ -185,8 +183,6 @@ public class FilterImage extends Module {
     }
 
     public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
-        int count = 0;
-        int total = imagePlus.getNChannels()*imagePlus.getNSlices()*imagePlus.getNFrames();
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
@@ -200,8 +196,6 @@ public class FilterImage extends Module {
 
     public static void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
         DiskStrel strel = DiskStrel.fromRadius((int) Math.round(sigma));
-        int count = 0;
-        int total = imagePlus.getNChannels()*imagePlus.getNSlices()*imagePlus.getNFrames();
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
             for (int c = 1; c <= imagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= imagePlus.getNFrames(); t++) {
@@ -221,7 +215,6 @@ public class FilterImage extends Module {
         ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
 
         // Running through each frame, calculating the local average
-        int count = 0;
         for (int f=1;f<=inputImagePlus.getNFrames();f++) {
             int firstFrame = 0;
             int lastFrame = 0;

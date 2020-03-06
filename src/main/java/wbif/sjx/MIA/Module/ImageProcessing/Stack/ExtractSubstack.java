@@ -1,32 +1,43 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nullable;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.plugin.SubHyperstackMaker;
-import ij.plugin.SubstackMaker;
-import net.imagej.ImageJ;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * Created by sc13967 on 18/01/2018.
@@ -162,8 +173,6 @@ public class ExtractSubstack extends Module implements ActionListener {
         List<Integer> tList = java.util.Arrays.stream(framesList).boxed().collect(Collectors.toList());
 
         if (!checkLimits(inputImage,cList,zList,tList)) return null;
-
-        ImageJ ij = new ImageJ();
 
         // Generating the substack and adding to the workspace
         ImagePlus outputImagePlus = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();

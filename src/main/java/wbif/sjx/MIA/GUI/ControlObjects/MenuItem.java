@@ -1,20 +1,23 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
-import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.Panels.DocumentationPanel;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JMenuItem;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.GUIAnalysisHandler;
+import wbif.sjx.MIA.GUI.Panels.DocumentationPanel;
 
 /**
  * Created by stephen on 28/07/2017.
  */
 public class MenuItem extends JMenuItem implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -1055282940194950277L;
     public static final String NEW_PIPELINE = "New pipeline";
     public static final String LOAD_PIPELINE = "Load pipeline";
     public static final String SAVE_PIPELINE = "Save pipeline";

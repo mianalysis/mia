@@ -1,18 +1,26 @@
 package wbif.sjx.MIA.Module.Hidden;
 
+import java.io.File;
+
 import org.apache.commons.io.FilenameUtils;
+
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FolderPathP;
+import wbif.sjx.MIA.Object.Parameters.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.StringP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.common.Object.Metadata;
-
-import java.io.File;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -158,12 +166,8 @@ public class OutputControl extends Module {
     }
 
     public String getGroupOutputPath(File inputFile) {
-        String seriesMode = modules.getInputControl().getParameterValue(InputControl.SERIES_MODE);
-        String seriesList = modules.getInputControl().getParameterValue(InputControl.SERIES_LIST);
         String saveLocation = getParameterValue(GROUP_SAVE_LOCATION);
         String saveFilePath = getParameterValue(SAVE_FILE_PATH);
-        String saveNameMode = getParameterValue(SAVE_NAME_MODE);
-        String saveFileName = getParameterValue(SAVE_FILE_NAME);
 
         // Determining the file path
         String path = "";

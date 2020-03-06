@@ -16,6 +16,10 @@ import java.lang.reflect.InvocationTargetException;
  * Created by Stephen on 20/05/2017.
  */
 public class PopupMenuItem extends JMenuItem implements ActionListener {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1887880493849213179L;
     private JPopupMenu moduleListMenu;
     private Module module;
 

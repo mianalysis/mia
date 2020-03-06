@@ -1,9 +1,8 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import ij.ImageJ;
-import wbif.sjx.MIA.Module.ModuleTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import wbif.sjx.MIA.Module.ModuleTest;
 
 public class ColourDeconvolutionTest extends ModuleTest {
 

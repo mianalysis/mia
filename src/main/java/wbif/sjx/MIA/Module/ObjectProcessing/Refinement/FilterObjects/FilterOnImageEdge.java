@@ -16,7 +16,6 @@ public class FilterOnImageEdge extends CoreFilter {
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
 
     public static final String FILTER_SEPARATOR = "Object filtering";
-    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String MAXIMUM_CONTACT = "Maximum permitted contact";
     public static final String REMOVE_ON_TOP = "Remove on top";
     public static final String REMOVE_ON_LEFT = "Remove on left";
@@ -31,22 +30,22 @@ public class FilterOnImageEdge extends CoreFilter {
     }
 
 
-    public String getMetadataName(String inputObjectsName, String referenceImagename, boolean includeZ) {
+    public String getMetadataName(String inputObjectsName, boolean includeZ) {
         if (includeZ) {
-            return "FILTER // NUM_" + inputObjectsName + " TOUCHING " + referenceImagename + " EDGE (3D)";
+            return "FILTER // NUM_" + inputObjectsName + " TOUCHING_IM_EDGE (3D)";
         } else {
-            return "FILTER // NUM_" + inputObjectsName + " TOUCHING " + referenceImagename + " EDGE (2D)";
+            return "FILTER // NUM_" + inputObjectsName + " TOUCHING_IM_EDGE (2D)";
         }
     }
 
 
-    public static boolean hasContactWithEdge(Obj obj, Image image, int maxContact, boolean[] removalEdges, boolean includeZ) {
+    public static boolean hasContactWithEdge(Obj obj, int maxContact, boolean[] removalEdges, boolean includeZ) {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
-        int maxX = image.getImagePlus().getWidth()-1;
-        int maxY = image.getImagePlus().getHeight()-1;
-        int maxZ = image.getImagePlus().getNSlices()-1;
+        int maxX = obj.getSpatialCalibration().getWidth()-1;
+        int maxY = obj.getSpatialCalibration().getHeight()-1;
+        int maxZ = obj.getSpatialCalibration().getNSlices()-1;
 
         if (!removalEdges[0]) minY = -Integer.MAX_VALUE;
         if (!removalEdges[1]) minX = -Integer.MAX_VALUE;
@@ -92,22 +91,19 @@ public class FilterOnImageEdge extends CoreFilter {
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String inputImageName = parameters.getValue(REFERENCE_IMAGE);
-        Image inputImage = workspace.getImage(inputImageName);
         int maxContact = parameters.getValue(MAXIMUM_CONTACT);
         boolean removeTop = parameters.getValue(REMOVE_ON_TOP);
         boolean removeLeft = parameters.getValue(REMOVE_ON_LEFT);
         boolean removeBottom = parameters.getValue(REMOVE_ON_BOTTOM);
         boolean removeRight = parameters.getValue(REMOVE_ON_RIGHT);
         boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
-        boolean storeResults = parameters.getValue(STORE_RESULTS);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         boolean[] removalEdges = new boolean[]{removeTop,removeLeft,removeBottom,removeRight};
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
 
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();
@@ -115,7 +111,7 @@ public class FilterOnImageEdge extends CoreFilter {
             Obj inputObject = iterator.next();
 
             // If the following is negative, there's no need to remove the object
-            if (!hasContactWithEdge(inputObject,inputImage,maxContact,removalEdges,includeZ)) continue;
+            if (!hasContactWithEdge(inputObject,maxContact,removalEdges,includeZ)) continue;
 
             if (remove) processRemoval(inputObject,outputObjects,iterator);
 
@@ -128,7 +124,7 @@ public class FilterOnImageEdge extends CoreFilter {
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,inputImageName,includeZ);
+        String metadataName = getMetadataName(inputObjectsName,includeZ);
         workspace.getMetadata().put(metadataName,count);
 
         // Showing objects
@@ -146,7 +142,6 @@ public class FilterOnImageEdge extends CoreFilter {
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(MAXIMUM_CONTACT, this,0));
         parameters.add(new BooleanP(REMOVE_ON_TOP, this,true));
         parameters.add(new BooleanP(REMOVE_ON_LEFT, this,true));
@@ -159,8 +154,6 @@ public class FilterOnImageEdge extends CoreFilter {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -170,7 +163,6 @@ public class FilterOnImageEdge extends CoreFilter {
         }
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
         returnedParameters.add(parameters.getParameter(MAXIMUM_CONTACT));
         returnedParameters.add(parameters.getParameter(REMOVE_ON_TOP));
         returnedParameters.add(parameters.getParameter(REMOVE_ON_LEFT));
@@ -219,10 +211,9 @@ public class FilterOnImageEdge extends CoreFilter {
         // Filter results are stored as a metadata item since they apply to the whole set
         if ((boolean) parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
             boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
 
-            String metadataName = getMetadataName(inputObjectsName,referenceImageName,includeZ);
+            String metadataName = getMetadataName(inputObjectsName,includeZ);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
 

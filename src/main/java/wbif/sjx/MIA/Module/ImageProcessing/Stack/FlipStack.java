@@ -119,7 +119,6 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);

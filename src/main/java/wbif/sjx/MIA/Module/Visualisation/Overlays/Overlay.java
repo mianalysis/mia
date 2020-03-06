@@ -102,8 +102,6 @@ public abstract class Overlay extends Module {
     }
 
     public ParameterCollection updateAndGetParameters(String inputObjectsName) {
-        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));

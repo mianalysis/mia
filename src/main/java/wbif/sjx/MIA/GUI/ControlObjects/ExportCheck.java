@@ -16,7 +16,14 @@ import java.awt.event.ActionListener;
  * Created by Stephen Cross on 02/12/2017.
  */
 public class ExportCheck extends JCheckBox implements ActionListener {
-    public enum Statistic {INDIVIDUAL, MEAN, MIN, MAX, SUM, STD}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3315897527281360540L;
+
+    public enum Statistic {
+        INDIVIDUAL, MEAN, MIN, MAX, SUM, STD
+    }
     public enum Type {SINGLE, ALL};
 
 

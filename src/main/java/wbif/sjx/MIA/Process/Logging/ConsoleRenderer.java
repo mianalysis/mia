@@ -1,18 +1,21 @@
 package wbif.sjx.MIA.Process.Logging;
 
-import org.scijava.ui.UIService;
-import org.scijava.ui.console.ConsolePane;
-import org.scijava.ui.swing.console.ConsolePanel;
-import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.MIA;
+import java.awt.Color;
+import java.util.HashMap;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import java.awt.*;
-import java.util.HashMap;
+
+import org.scijava.ui.UIService;
+import org.scijava.ui.console.ConsolePane;
+import org.scijava.ui.swing.console.ConsolePanel;
+
+import wbif.sjx.MIA.GUI.Colours;
 
 /**
  * Created by Stephen Cross on 14/06/2019.

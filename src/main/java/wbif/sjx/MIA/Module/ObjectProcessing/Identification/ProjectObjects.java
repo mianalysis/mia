@@ -1,9 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -13,12 +11,9 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.Volume;
-
-import java.util.HashMap;
 
 /**
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
@@ -34,7 +29,7 @@ public class ProjectObjects extends Module {
     public static Obj process(Obj inputObject, String outputObjectsName, boolean addRelationship) throws IntegerOverflowException {
         Volume projected = inputObject.getProjected();
 
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),projected);
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),inputObject);
         outputObject.setCoordinateSet(projected.getCoordinateSet());
         outputObject.setT(inputObject.getT());
 
@@ -68,7 +63,9 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        SpatCal calIn = inputObjects.getSpatialCalibration();
+        SpatCal calOut = new SpatCal(calIn.getDppXY(),calIn.getDppZ(),calIn.getUnits(),calIn.getWidth(),calIn.getHeight(),1);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calOut,inputObjects.getNFrames());
 
         for (Obj inputObject:inputObjects.values()) {
             Obj outputObject = null;

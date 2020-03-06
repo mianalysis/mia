@@ -1,23 +1,41 @@
 package wbif.sjx.MIA.GUI.Panels;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.MouseInfo;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
+import java.util.HashSet;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
 import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Metadata;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public class FileListPanel extends JPanel implements MouseListener, TableCellRenderer {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2538934848503043479L;
     private final WorkspaceCollection workspaces;
     private final JTable table;
     private final DefaultTableModel model = new DefaultTableModel();

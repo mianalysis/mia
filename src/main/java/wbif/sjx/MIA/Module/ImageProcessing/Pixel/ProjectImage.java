@@ -361,7 +361,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //
 //        ImagePlus outputImagePlus = ImageJFunctions.wrap(proj,outputImageName);
 //        ImgPlusTools.applyAxes(proj,outputImagePlus);
-//        outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
+//        outputImagePlus.setCalibration(inputImage.getImagePlus().getCal());
 //
 //        return new Image<T>(outputImageName,outputImagePlus);
 //

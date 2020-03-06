@@ -1,16 +1,17 @@
 package wbif.sjx.MIA.Object.References;
 
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-
-import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MetadataRefCollection extends TreeMap<String,MetadataRef> implements RefCollection<MetadataRef>, Serializable {
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+
+public class MetadataRefCollection extends TreeMap<String,MetadataRef> implements RefCollection<MetadataRef> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 952279509862406698L;
+
     public String[] getMetadataNames() {
         return keySet().toArray(new String[0]);
     }

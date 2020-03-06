@@ -1,30 +1,45 @@
 package wbif.sjx.MIA.GUI.Panels;
 
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.LinkedHashSet;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextPane;
+import javax.swing.border.EtchedBorder;
+
 import wbif.sjx.MIA.GUI.ComponentFactory;
-import wbif.sjx.MIA.GUI.ParameterControls.RemoveParametersButton;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
-import java.util.LinkedHashSet;
-
 public class ParametersPanel extends JScrollPane {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1455273666893303846L;
     private static final int minimumWidth = 400;
     private static final int preferredWidth = 600;
 
@@ -182,7 +197,6 @@ public class ParametersPanel extends JScrollPane {
     public void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
         ComponentFactory componentFactory = GUI.getComponentFactory();
         Module activeModule = GUI.getFirstSelectedModule();
-        int elementHeight = GUI.getElementHeight();
 
         c.insets = new Insets(2, 5, 0, 0);
         c.gridx = 0;

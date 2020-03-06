@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ProxSquares2 extends ExpectedObjects {
     public ProxSquares2(VolumeType volumeType) {
-        super(volumeType, 64, 76, 1);
+        super(volumeType, 64, 76, 1, 1);
     }
 
     public enum Measures {

@@ -1,12 +1,17 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.TreeSet;
+
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
+import wbif.sjx.MIA.ExpectedObjects.Objects3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
@@ -14,10 +19,6 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.TreeSet;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 03/09/2017.

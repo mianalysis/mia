@@ -1,17 +1,20 @@
 package wbif.sjx.MIA.Object;
 
-import wbif.sjx.common.MathFunc.CumStat;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Set;
+
+import wbif.sjx.common.MathFunc.CumStat;
 
 /**
  * Created by sc13967 on 27/10/2016.
  */
 public class WorkspaceCollection extends LinkedHashSet<Workspace> {
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2388993934322564718L;
     private int maxID = 0;
 
 
@@ -60,7 +63,7 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
             for (String objName:currObjects.keySet()) {
                 // If this is the first time these objects have been added, create a blank ObjCollection
                 if (metadataWorkspace.getObjectSet(objName) == null) {
-                    metadataWorkspace.addObjects(new ObjCollection(objName));
+                    metadataWorkspace.addObjects(new ObjCollection(objName,null));
                 }
 
                 // If a collection of these objects already exists, addRef to this

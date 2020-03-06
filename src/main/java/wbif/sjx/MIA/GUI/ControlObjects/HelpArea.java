@@ -1,19 +1,23 @@
 package wbif.sjx.MIA.GUI.ControlObjects;
 
+import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
+
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 public class HelpArea extends JTextPane {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1232662621405470033L;
+
     public HelpArea(Module module, ModuleCollection modules) {
         setContentType("text/html");
 

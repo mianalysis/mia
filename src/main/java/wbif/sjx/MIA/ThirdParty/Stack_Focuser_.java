@@ -602,9 +602,7 @@ public class Stack_Focuser_ implements PlugInFilter
 
         int offset, i;
         int copy_i, copy_x, copy_y;
-        int pix;
 
-        float[] curr_pixels;
         for (int y=0; y<n_height; y++)
         {
             offset = n_width*y;

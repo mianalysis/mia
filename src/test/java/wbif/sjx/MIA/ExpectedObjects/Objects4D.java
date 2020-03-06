@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Objects4D extends ExpectedObjects {
     public Objects4D(VolumeType volumeType) {
-        super(volumeType, 64, 76, 12);
+        super(volumeType, 64, 76, 12, 4);
     }
 
     @Override
