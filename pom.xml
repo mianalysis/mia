@@ -1,398 +1,398 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.scijava</groupId>
-        <artifactId>pom-scijava</artifactId>
-        <version>27.0.1</version>
-        <relativePath />
-    </parent>
+<parent>
+    <groupId>org.scijava</groupId>
+    <artifactId>pom-scijava</artifactId>
+    <version>27.0.1</version>
+    <relativePath />
+</parent>
 
-    <groupId>wbif.sjx</groupId>
-    <artifactId>MIA_</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>MIA_</name>
-    <url>https://github.com/SJCross/MIA</url>
-    <inceptionYear>2017</inceptionYear>
-    <description>Image/object analysis using modularised components</description>
-    <organization>
-        <name>University of Bristol</name>
-    </organization>
+<groupId>wbif.sjx</groupId>
+<artifactId>MIA_</artifactId>
+<version>0.12.0</version>
+<packaging>jar</packaging>
+<name>MIA_</name>
+<url>https://github.com/SJCross/MIA</url>
+<inceptionYear>2017</inceptionYear>
+<description>Image/object analysis using modularised components</description>
+<organization>
+    <name>University of Bristol</name>
+</organization>
 
-    <licenses>
-        <license>
-            <name>GNU General Public License v3+</name>
-            <url>http://www.gnu.org/licenses/gpl.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+<licenses>
+    <license>
+        <name>GNU General Public License v3+</name>
+        <url>http://www.gnu.org/licenses/gpl.html</url>
+        <distribution>repo</distribution>
+    </license>
+</licenses>
 
-    <developers>
-        <developer>
-            <id>sjcross</id>
-            <name>Stephen Cross</name>
-            <roles>
-                <role>lead</role>
-                <role>developer</role>
-                <role>debugger</role>
-                <role>reviewer</role>
-                <role>support</role>
-                <role>maintainer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>jdjfisher</id>
-            <name>Jordan Fisher</name>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
+<developers>
+    <developer>
+        <id>sjcross</id>
+        <name>Stephen Cross</name>
+        <roles>
+            <role>lead</role>
+            <role>developer</role>
+            <role>debugger</role>
+            <role>reviewer</role>
+            <role>support</role>
+            <role>maintainer</role>
+        </roles>
+    </developer>
+    <developer>
+        <id>jdjfisher</id>
+        <name>Jordan Fisher</name>
+        <roles>
+            <role>developer</role>
+        </roles>
+    </developer>
+</developers>
 
-    <contributors>
-        <contributor>
-            <name>Gemma Fisher</name>
-            <roles><role>support</role></roles>
-            <properties><id>glmfisher</id></properties>
-        </contributor>
-    </contributors>
+<contributors>
+    <contributor>
+        <name>Gemma Fisher</name>
+        <roles><role>support</role></roles>
+        <properties><id>glmfisher</id></properties>
+    </contributor>
+</contributors>
 
-    <issueManagement>
-        <system>GitHub Issues</system>
-        <url>https://github.com/SJCross/ModularImageAnalysis/issues</url>
-    </issueManagement>
+<issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/SJCross/ModularImageAnalysis/issues</url>
+</issueManagement>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dependency.locations.selected>false</dependency.locations.selected>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <myscope>compile</myscope>
-        <license.licenseName>GNU General Public License v3+</license.licenseName>
-        <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
-    </properties>
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <dependency.locations.selected>false</dependency.locations.selected>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <myscope>compile</myscope>
+    <license.licenseName>GNU General Public License v3+</license.licenseName>
+    <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
+</properties>
 
-    <mailingLists>
-        <mailingList>
-            <name>ImageJ Forum</name>
-            <archive>http://forum.imagej.net/</archive>
-        </mailingList>
-    </mailingLists>
+<mailingLists>
+    <mailingList>
+        <name>ImageJ Forum</name>
+        <archive>http://forum.imagej.net/</archive>
+    </mailingList>
+</mailingLists>
 
-    <scm>
-        <connection>scm:git:git://github.com/SJCross/ModularImageAnalysis</connection>
-        <developerConnection>scm:git:git@github.com:SJCross/ModularImageAnalysis</developerConnection>
-        <tag>HEAD</tag>
-        <url>https://github.com/SJCross/ModularImageAnalysis</url>
-    </scm>
+<scm>
+    <connection>scm:git:git://github.com/SJCross/ModularImageAnalysis</connection>
+    <developerConnection>scm:git:git@github.com:SJCross/ModularImageAnalysis</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/SJCross/ModularImageAnalysis</url>
+</scm>
 
-    <ciManagement>
-        <system>Travis</system>
-        <url>https://travis-ci.org/</url>
-    </ciManagement>
+<ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/</url>
+</ciManagement>
 
-    <repositories>
-        <repository>
-            <id>scijava.public</id>
-            <url>https://maven.scijava.org/content/groups/public</url>
-        </repository>
+<repositories>
+    <repository>
+        <id>scijava.public</id>
+        <url>https://maven.scijava.org/content/groups/public</url>
+    </repository>
+    
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+    
+    <repository>
+        <id>ome-web-prod.lifesci.dundee.ac.uk</id>
+        <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
+        <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
+    </repository>
+</repositories>
 
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.5.2</version>
+        <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>5.5.2</version>
+        <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.9</version>
+        <type>maven-plugin</type>
+        <scope>compile</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.maven.reporting</groupId>
+                <artifactId>maven-reporting-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch.agentproxy.connector-factory</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>3.0.4</version>
+        <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>3.16</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>3.16</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.xmlbeans</groupId>
+        <artifactId>xmlbeans</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>net.imagej</groupId>
+        <artifactId>imagej</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>net.imagej</groupId>
+        <artifactId>imagej-ui-swing</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>net.imagej</groupId>
+        <artifactId>imagej-legacy</artifactId>
+        <version>0.35.0</version>
+    </dependency>
+    <dependency>
+        <groupId>net.imagej</groupId>
+        <artifactId>imagej-ops</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>AnalyzeSkeleton_</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>Auto_Local_Threshold</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>bUnwarpJ_</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>Colocalisation_Analysis</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>Colour_Deconvolution</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>CorrectBleach_</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>TrackMate_</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    <dependency>
+        <groupId>sc.fiji</groupId>
+        <artifactId>Trainable_Segmentation</artifactId>
+        <scope>${myscope}</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>mpicbg</groupId>
+        <artifactId>mpicbg</artifactId>
+        <version>1.1.1</version>
+        <scope>${myscope}</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>fr.inra.ijpb</groupId>
+        <artifactId>MorphoLibJ_</artifactId>
+        <version>1.3.2</version>
+        <scope>${myscope}</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>de.biomedical-imaging.imagej</groupId>
+        <artifactId>ij_ridge_detect</artifactId>
+        <version>1.4.0</version>
+        <scope>${myscope}</scope>
+    </dependency>
+    
+    <dependency>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>4.8.54</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>com.atlassian.commonmark</groupId>
+        <artifactId>commonmark</artifactId>
+        <version>0.12.1</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>com.github.SJCross</groupId>
+        <artifactId>Common</artifactId>
+        <version>v1.6.0</version>
+        <!-- <groupId>wbif.sjx</groupId>
+        <artifactId>Common</artifactId>
+        <version>1.6.0</version> -->
+    </dependency>
+</dependencies>
 
-        <repository>
-            <id>ome-web-prod.lifesci.dundee.ac.uk</id>
-            <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
-            <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
-        </repository>
-    </repositories>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.22.2</version>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <classpathScope>compile</classpathScope>
+                <mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>
+            </configuration>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+                <finalName>MIA_-${project.version}</finalName>
+                <archive>
+                    <manifest>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        <mainClass>wbif.sjx.MIA.MIA</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.1</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <minimizeJar>true</minimizeJar>
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                        <filters>
+                            <filter>
+                                <artifact>org.apache.xmlbeans</artifact>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </filter>
+                            <filter>
+                                <artifact>org.apache.poi</artifact>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </filter>
+                            <filter>
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/*.SF</exclude>
+                                    <exclude>META-INF/*.DSA</exclude>
+                                    <exclude>META-INF/*.RSA</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.7.1</version>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
+            <version>4.1.0</version>
+        </plugin>
+    </plugins>
+</build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.5.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>5.5.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
+<reporting>
+    <plugins>
+        <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.9</version>
-            <type>maven-plugin</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.maven.reporting</groupId>
-                    <artifactId>maven-reporting-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.jcraft</groupId>
-                    <artifactId>jsch.agentproxy.connector-factory</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>3.0.4</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.16</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.16</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
             <version>3.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-ui-swing</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-legacy</artifactId>
-            <version>0.35.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-ops</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>AnalyzeSkeleton_</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Auto_Local_Threshold</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>bUnwarpJ_</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Colocalisation_Analysis</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Colour_Deconvolution</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>CorrectBleach_</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>TrackMate_</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Trainable_Segmentation</artifactId>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>mpicbg</groupId>
-            <artifactId>mpicbg</artifactId>
-            <version>1.1.1</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inra.ijpb</groupId>
-            <artifactId>MorphoLibJ_</artifactId>
-            <version>1.3.2</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.biomedical-imaging.imagej</groupId>
-            <artifactId>ij_ridge_detect</artifactId>
-            <version>1.4.0</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.8.54</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.atlassian.commonmark</groupId>
-            <artifactId>commonmark</artifactId>
-            <version>0.12.1</version>
-        </dependency>
-
-        <dependency>
-<!--            <groupId>com.github.SJCross</groupId>-->
-<!--            <artifactId>Common</artifactId>-->
-<!--            <version>v1.5.15</version>-->
-            <groupId>wbif.sjx</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <classpathScope>compile</classpathScope>
-                    <mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <finalName>MIA_-${project.version}</finalName>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>wbif.sjx.MIA.MIA</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <filters>
-                                <filter>
-                                    <artifact>org.apache.xmlbeans</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.poi</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.7.1</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.1.0</version>
-            </plugin>
-        </plugins>
-    </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>dependencies</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
+            <configuration>
+                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+            </configuration>
+            <reportSets>
+                <reportSet>
+                    <reports>
+                        <report>dependencies</report>
+                    </reports>
+                </reportSet>
+            </reportSets>
+        </plugin>
+    </plugins>
+</reporting>
 </project>
