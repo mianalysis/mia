@@ -17,16 +17,49 @@ import wbif.sjx.MIA.Object.Workspace;
  * Created by Stephen Cross on 19/03/2019.
  */
 public class ObjectMeasurementCalculator extends Module {
+    public static final String INPUT_SEPARATOR  = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
+
+    public static final String VALUE_SEPARATOR_1  = "Value 1 selection";
+    public static final String VALUE_MODE_1 = "Value mode 1";
     public static final String MEASUREMENT_1 = "Measurement 1";
+    public static final String FIXED_VALUE_1 = "Fixed value 1";
+    public static final String REFERENCE_OBJECTS_1 = "Reference objects 1";
+    public static final String REFERENCE_MEASUREMENT_1 = "Reference measurement 1";
+    public static final String STATISTIC_MODE_1 = "Statistic mode 1";
+
+    public static final String VALUE_SEPARATOR_2  = "Value 2 selection";
+    public static final String VALUE_MODE_2 = "Value mode 2";
     public static final String MEASUREMENT_2 = "Measurement 2";
+    public static final String FIXED_VALUE_2 = "Fixed value 2";
+    public static final String REFERENCE_OBJECTS_2 = "Reference objects 2";
+    public static final String REFERENCE_MEASUREMENT_2 = "Reference measurement 2";
+    public static final String STATISTIC_MODE_2 = "Statistic mode 2";
+
+    public static final String CALCULATION_SEPARATOR = "Measurement calculation";
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
     public static final String CALCULATION_MODE = "Calculation mode";
 
-    public ObjectMeasurementCalculator(ModuleCollection modules) {
-        super("Object measurement calculator",modules);
+    public interface ValueModes {
+        String FIXED = "Fixed";
+        String MEASUREMENT = "Measurement";
+        String OBJECT_COLLECTION_STATISTIC = "Object collection statistic";
+
+        String[] ALL = new String[]{FIXED,MEASUREMENT,OBJECT_COLLECTION_STATISTIC};
+
     }
 
+    public interface StatisticModes {
+        String MIN = "Minimum";
+        String MEAN = "Mean";
+        String MAX = "Maximum";
+        String RANGE = "Range";
+        String STDEV = "Standard deviation";
+        String SUM = "Sum";
+
+        String[] ALL = new String[]{MIN,MEAN,MAX,RANGE,STDEV,SUM};
+
+    }
 
     public interface CalculationModes {
         String ADD = "Add measurement 1 and measurement 2";
@@ -38,6 +71,9 @@ public class ObjectMeasurementCalculator extends Module {
 
     }
 
+    public ObjectMeasurementCalculator(ModuleCollection modules) {
+        super("Object measurement calculator",modules);
+    }
 
     public static void doCalculation(Obj object, String calculationMode, String measurementName1, String measurementName2, String outputMeasurement) {
         Measurement measurement1 = object.getMeasurement(measurementName1);
@@ -114,13 +150,36 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_1,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_1, this));
+
+        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_2,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_2, this));
+
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new StringP(OUTPUT_MEASUREMENT, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.ADD, CalculationModes.ALL));
 
-    }
+
+
+    public static final String VALUE_MODE_1 = "Value mode 1";
+    public static final String MEASUREMENT_1 = "Measurement 1";
+    public static final String FIXED_VALUE_1 = "Fixed value 1";
+    public static final String REFERENCE_OBJECTS_1 = "Reference objects 1";
+    public static final String REFERENCE_MEASUREMENT_1 = "Reference measurement 1";
+    public static final String STATISTIC_MODE_1 = "Statistic mode 1";
+
+    public static final String VALUE_MODE_2 = "Value mode 2";
+    public static final String MEASUREMENT_2 = "Measurement 2";
+    public static final String FIXED_VALUE_2 = "Fixed value 2";
+    public static final String REFERENCE_OBJECTS_2 = "Reference objects 2";
+    public static final String REFERENCE_MEASUREMENT_2 = "Reference measurement 2";
+    public static final String STATISTIC_MODE_2 = "Statistic mode 2";
+
+}
 
     @Override
     public ParameterCollection updateAndGetParameters() {
