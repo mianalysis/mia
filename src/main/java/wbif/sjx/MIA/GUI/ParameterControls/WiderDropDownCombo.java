@@ -11,16 +11,18 @@ public class WiderDropDownCombo extends JComboBox {
      */
     private static final long serialVersionUID = 6268185303269647377L;
     private boolean layingOut = false;
-    private int widestLengh = 0;
+    private int widestLength = 0;
     private boolean wide = false;
 
     public WiderDropDownCombo() {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setMaximumRowCount(20);
     }
 
     public WiderDropDownCombo(Object[] objs) {
         super(objs);
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        setMaximumRowCount(20);
     }
 
     public boolean isWide() {
@@ -30,13 +32,13 @@ public class WiderDropDownCombo extends JComboBox {
     // Setting the JComboBox wide
     public void setWide(boolean wide) {
         this.wide = wide;
-        widestLengh = getWidestItemWidth();
+        widestLength = getWidestItemWidth();
     }
 
     public Dimension getSize() {
         Dimension dim = super.getSize();
-        if (!layingOut && isWide())
-            dim.width = Math.max(widestLengh, dim.width);
+        if (!layingOut && isWide()) dim.width = Math.max(widestLength, dim.width);
+
         return dim;
     }
 

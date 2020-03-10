@@ -138,7 +138,7 @@ public class Obj extends Volume {
     }
 
     public Obj setT(int t) {
-        T = t;
+        this.T = t;
         return this;
     }
 
