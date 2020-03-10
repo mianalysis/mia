@@ -102,6 +102,8 @@ public class ConvertObjectsToImage extends Module {
                 return false;
             }
 
+            if (showOutput) objects.convertToImageRandomColours().showImage();
+
             workspace.addObjects(objects);
 
         } else if (conversionMode.equals(ConversionModes.OBJECTS_TO_IMAGE)) {

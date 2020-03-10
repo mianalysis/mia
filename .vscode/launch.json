@@ -6,17 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug (Launch) - Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
             "name": "Debug (Launch)-MIA<MIA_>",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.MIA",
             "projectName": "MIA_"
         },
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },        
         {
             "type": "java",
             "name": "Debug (Launch)-DocumentationCoverageChecker<MIA_>",

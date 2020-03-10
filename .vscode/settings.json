@@ -6,6 +6,7 @@
         "**/.factorypath": true
     },
     "maven.view": "hierarchical",
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "editor.formatOnType": true
     
 }

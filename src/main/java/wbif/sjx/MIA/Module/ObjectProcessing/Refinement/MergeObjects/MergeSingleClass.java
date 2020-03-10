@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -35,21 +36,21 @@ public class MergeSingleClass extends Module {
         // Creating a HashMap to store each timepoint object instance
         HashMap<Integer,Obj> objects = new HashMap<>();
 
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
+
         // Iterating over all input objects, adding their coordinates to the relevant object
         for (Obj inputObject:inputObjects.values()) {
             // Getting the current timepoint instance
             int t = inputObject.getT();
-            objects.computeIfAbsent(t, v -> new Obj(outputObjectsName,1,inputObject).setT(t));
+            MIA.log.writeDebug("Obj "+inputObject.getID()+"_"+t);
+            objects.putIfAbsent(t, outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
 
             // Adding coordinates to this object
             Obj outputObject = objects.get(t);
+            MIA.log.writeDebug("Output "+outputObject.getID()+"_"+t);
             outputObject.getCoordinateSet().addAll(inputObject.getCoordinateSet());
 
         }
-
-        // Adding output objects to a new ObjCollection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects);
-        for (Obj outputObject:objects.values()) outputObjects.add(outputObject);
 
         return outputObjects;
 
