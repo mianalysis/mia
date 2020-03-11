@@ -1059,10 +1059,8 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
-        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_INDEX,0);
-        imageFileLoader.updateParameterValue(ImageLoader.FRAME_INTERVAL,1);
-        imageFileLoader.updateParameterValue(ImageLoader.LIMIT_FRAMES,false);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"0-end");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
 
         // Running module
@@ -1099,10 +1097,8 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
-        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_INDEX,3);
-        imageFileLoader.updateParameterValue(ImageLoader.FRAME_INTERVAL,2);
-        imageFileLoader.updateParameterValue(ImageLoader.LIMIT_FRAMES,false);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3-end-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
 
         // Running module
@@ -1139,11 +1135,8 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
-        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_INDEX,4);
-        imageFileLoader.updateParameterValue(ImageLoader.FRAME_INTERVAL,2);
-        imageFileLoader.updateParameterValue(ImageLoader.LIMIT_FRAMES,true);
-        imageFileLoader.updateParameterValue(ImageLoader.FINAL_INDEX,8);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"4-8-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
 
         // Running module

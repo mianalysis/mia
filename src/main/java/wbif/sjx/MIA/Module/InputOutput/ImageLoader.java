@@ -68,10 +68,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String IMPORT_MODE = "Import mode";
     public static final String READER = "Reader";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
-    public static final String STARTING_INDEX = "Starting index";
-    public static final String FRAME_INTERVAL = "Frame interval";
-    public static final String LIMIT_FRAMES = "Limit frames";
-    public static final String FINAL_INDEX = "Final index";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
     public static final String EXTENSION = "Extension";
@@ -415,7 +411,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     reader.close();
                     return ipl;
                 }
-                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit)/scaleFactors[0];
+                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit) / scaleFactors[0];
                 ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
                 MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName()
@@ -426,7 +422,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             if (meta.getPixelsPhysicalSizeY(seriesNumber - 1) != null) {
                 Length physicalSizeY = meta.getPixelsPhysicalSizeY(seriesNumber - 1);
-                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(unit)/scaleFactors[1];
+                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(unit) / scaleFactors[1];
                 ipl.getCalibration().setYUnit(unit.getSymbol());
             } else {
                 ipl.getCalibration().pixelHeight = 1.0;
@@ -452,7 +448,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int[] seqRange, String channels, int[] crop,
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, String channels, String frames, int[] crop,
             double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
         // Number format
@@ -468,18 +464,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         rootName = rootFile.getName().substring(0, numStart);
         String extension = FilenameUtils.getExtension(rootFile.getName());
 
-        int startingIndex = seqRange[0];
-        int frameInterval = seqRange[1];
-        int finalIndex = seqRange[2];
-
         // Determining the number of images to load
-        int count = 0;
-        int idx = startingIndex;
-        while (new File(rootPath + rootName + df.format(idx) + "." + extension).exists()) {
-            if (idx > finalIndex)
-                break;
-            count++;
-            idx = idx + frameInterval;
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true);
+
+        if (framesList[framesList.length - 1] == Integer.MAX_VALUE) {
+            int idx = framesList[0];
+            while (new File(rootPath + rootName + df.format(idx) + "." + extension).exists())
+                idx++;
+
+            framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, idx - 1);
         }
 
         // Determining the dimensions of the input image
@@ -497,10 +490,14 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Creating the new image
+        int i = 0;
+        int count = framesList.length;
         ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, count, 1, bitDepth);
-        for (int i = 0; i < count; i++) {
+
+        for (int frame : framesList) {
             writeMessage("Loading image " + (i + 1) + " of " + count);
-            String currentPath = rootPath + rootName + df.format(i * frameInterval + startingIndex) + "." + extension;
+            String currentPath = rootPath + rootName + df.format(frame) + "." + extension;
+
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
             tempIpl.updateChannelAndDraw();
@@ -515,6 +512,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     outputIpl.setProcessor(tempIpl.getProcessor());
                 }
             }
+            i++;
         }
 
         outputIpl.setPosition(1, 1, 1);
@@ -753,10 +751,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
         int numberOfZeroes = parameters.getValue(NUMBER_OF_ZEROES);
-        int startingIndex = parameters.getValue(STARTING_INDEX);
-        int frameInterval = parameters.getValue(FRAME_INTERVAL);
-        boolean limitFrames = parameters.getValue(LIMIT_FRAMES);
-        int finalIndex = parameters.getValue(FINAL_INDEX);
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
@@ -848,8 +842,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
 
                 case ImportModes.IMAGE_SEQUENCE:
-                    if (!limitFrames)
-                        finalIndex = Integer.MAX_VALUE;
                     file = workspace.getMetadata().getFile();
                     if (!file.exists()) {
                         MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.",
@@ -857,8 +849,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                         return false;
                     }
 
-                    int[] seqRange = new int[] { startingIndex, frameInterval, finalIndex };
-                    ipl = getImageSequence(file, numberOfZeroes, seqRange, channels, crop, scaleFactors, scaleMode,
+                    ipl = getImageSequence(file, numberOfZeroes, channels, frames, crop, scaleFactors, scaleMode,
                             intRange, setCalibration);
 
                     break;
@@ -995,11 +986,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                         + "\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).<br>"
                         + "<br>- \"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader."));
         parameters.add(new IntegerP(NUMBER_OF_ZEROES, this, 4, "Number of digits in image sequence suffix."));
-        parameters.add(new IntegerP(STARTING_INDEX, this, 0, "First number in sequence to load."));
-        parameters.add(new IntegerP(FRAME_INTERVAL, this, 1, "Frame interval to use for loading."));
-        parameters.add(new BooleanP(LIMIT_FRAMES, this, false,
-                "When \"true\" this will load a pre-determined number of frames.  When \"false\" it will load all the available images."));
-        parameters.add(new IntegerP(FINAL_INDEX, this, 1, "Final number in sequence to load."));
         parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL,
                 "Method to use for generation of the input filename.<br>" + "<br>- \"" + NameFormats.GENERIC
                         + "\" (default) will generate a name from metadata values stored in the current workspace.<br>"
@@ -1083,12 +1069,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             case ImportModes.IMAGE_SEQUENCE:
                 returnedParameters.add(parameters.getParameter(NUMBER_OF_ZEROES));
-                returnedParameters.add(parameters.getParameter(STARTING_INDEX));
-                returnedParameters.add(parameters.getParameter(FRAME_INTERVAL));
-                returnedParameters.add(parameters.getParameter(LIMIT_FRAMES));
-                if ((boolean) parameters.getValue(LIMIT_FRAMES)) {
-                    returnedParameters.add(parameters.getParameter(FINAL_INDEX));
-                }
                 break;
 
             case ImportModes.MATCHING_FORMAT:
@@ -1135,6 +1115,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)) {
             returnedParameters.add(parameters.getParameter(CHANNELS));
+            returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
         returnedParameters.add(parameters.getParameter(THREE_D_MODE));
