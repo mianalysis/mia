@@ -11,7 +11,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
 <groupId>wbif.sjx</groupId>
 <artifactId>MIA_</artifactId>
-<version>0.12.3</version>
+<version>0.12.4-SNAPSHOT</version>
 <packaging>jar</packaging>
 <name>MIA_</name>
 <url>https://github.com/SJCross/MIA</url>
