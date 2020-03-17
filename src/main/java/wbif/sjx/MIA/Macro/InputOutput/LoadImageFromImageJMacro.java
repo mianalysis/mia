@@ -30,10 +30,6 @@ public class LoadImageFromImageJMacro extends MacroOperation {
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,(String) objects[0]);
         imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE,ImageLoader.ImportModes.IMAGEJ);
         imageLoader.updateParameterValue(ImageLoader.NUMBER_OF_ZEROES,0);
-        imageLoader.updateParameterValue(ImageLoader.STARTING_INDEX,0);
-        imageLoader.updateParameterValue(ImageLoader.FRAME_INTERVAL,0);
-        imageLoader.updateParameterValue(ImageLoader.LIMIT_FRAMES,false);
-        imageLoader.updateParameterValue(ImageLoader.FINAL_INDEX,0);
         imageLoader.updateParameterValue(ImageLoader.NAME_FORMAT,ImageLoader.NameFormats.HUYGENS);
         imageLoader.updateParameterValue(ImageLoader.COMMENT,"");
         imageLoader.updateParameterValue(ImageLoader.EXTENSION,"");

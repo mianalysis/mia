@@ -111,16 +111,19 @@ public class CommaSeparatedStringInterpreter {
             values.add(end);
         } else {
             // Adding the explicitly-named values
-            for (int i = 0; i < inputRange.length - 3; i++) values.add(inputRange[i]);
+            for (int i = 0; i < inputRange.length - 3; i++)
+                values.add(inputRange[i]);
 
             // Adding the range values
             int start = inputRange[inputRange.length - 3];
             int interval = inputRange[inputRange.length - 2] - start;
-            for (int i = start; i <= end; i = i + interval) values.add(i);
+            for (int i = start; i <= end; i = i + interval)
+                values.add(i);
 
         }
 
         return values.stream().mapToInt(Integer::intValue).toArray();
 
     }
+
 }

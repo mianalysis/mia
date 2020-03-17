@@ -216,11 +216,16 @@ public class RidgeDetection extends Module {
         object.addMeasurement(new Measurement(Measurements.LENGTH_PX, estimatedLength));
         object.addMeasurement(new Measurement(Measurements.LENGTH_CAL, estimatedLength*dppXY));
 
-        if (width != null) {
+        if (width == null) {
             object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_PX, Double.NaN));
             object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_PX, Double.NaN));
             object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_CAL, Double.NaN));
             object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_CAL, Double.NaN));
+        } else {
+            object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_PX, width.getMean()));
+            object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_PX, width.getStd()));
+            object.addMeasurement(new Measurement(Measurements.MEAN_HALFWIDTH_CAL, width.getMean()*dppXY));
+            object.addMeasurement(new Measurement(Measurements.STDEV_HALFWIDTH_CAL, width.getStd()*dppXY));
         }
     }
 

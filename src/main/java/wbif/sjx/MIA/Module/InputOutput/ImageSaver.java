@@ -21,6 +21,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.IntegerP;
@@ -56,6 +57,7 @@ public class ImageSaver extends Module {
     public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String COMPRESSION_MODE = "Compression mode";
     public static final String QUALITY = "Quality (0-100)";
+    public static final String FRAME_RATE = "Frame rate (fps)";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public ImageSaver(ModuleCollection modules) {
@@ -173,9 +175,10 @@ public class ImageSaver extends Module {
         }
     }
 
-    public static void saveVideo(ImagePlus inputImagePlus, String compressionMode, int jpegQuality, String path) {
+    public static void saveVideo(ImagePlus inputImagePlus, String compressionMode, int frameRate, int jpegQuality, String path) {
         AVI_Writer writer = new AVI_Writer();
         int compressionType = getVideoCompressionType(compressionMode);
+        inputImagePlus.getCalibration().fps = frameRate;
 
         try {
             writer.writeImage(inputImagePlus,path,compressionType,jpegQuality);
@@ -224,6 +227,7 @@ public class ImageSaver extends Module {
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
         String compressionMode = parameters.getValue(COMPRESSION_MODE);
         int quality = parameters.getValue(QUALITY);
+        int frameRate = parameters.getValue(FRAME_RATE);
         boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
 
         // Loading the image to save
@@ -327,7 +331,7 @@ public class ImageSaver extends Module {
         switch (fileFormat) {
             case FileFormats.AVI:
                 path = path + suffix + ".avi";
-                saveVideo(inputImagePlus,compressionMode,quality,path);
+                saveVideo(inputImagePlus,compressionMode,frameRate,quality,path);
                 break;
             case FileFormats.TIF:
             case FileFormats.ZIP:
@@ -367,7 +371,8 @@ public class ImageSaver extends Module {
         parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL,"Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode."));
         parameters.add(new BooleanP(SAVE_AS_RGB, this,false,"Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ."));
         parameters.add(new ChoiceP(COMPRESSION_MODE,this,CompressionModes.NONE,CompressionModes.ALL));
-        parameters.add(new IntegerP(QUALITY,this,100));
+        parameters.add(new IntegerP(QUALITY, this, 100));
+        parameters.add(new IntegerP(FRAME_RATE, this, 25));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false,"Flatten any overlay elements onto the image prior to saving."));
 
     }
@@ -422,6 +427,7 @@ public class ImageSaver extends Module {
                 if ((boolean) parameters.getValue(COMPRESSION_MODE).equals(CompressionModes.JPEG)) {
                     returnedParameters.add(parameters.getParameter(QUALITY));
                 }
+                returnedParameters.add(parameters.getParameter(FRAME_RATE));
                 returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
                 break;
         }
