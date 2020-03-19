@@ -103,23 +103,6 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    public static ArrayList<Vertex> getSkeletonBackbone(Obj inputObject) {
-        // Converting object to image, then inverting, so we have a black object on a white background
-        ObjCollection tempObjects = new ObjCollection("Backbone",inputObject.getSpatialCalibration(),inputObject.getNFrames());
-        tempObjects.add(inputObject);
-
-        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
-        Image objectImage = tempObjects.convertToImage("Objects",hues,8,false);
-        InvertIntensity.process(objectImage);
-
-        // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
-
-        // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        return new Skeleton(objectImage.getImagePlus()).getLongestPath();
-
-    }
-
     /*
      * Checks if the longest path (skeleton backbone) needs to be inverted to have the first point closer to the
      * reference than the last point.
@@ -376,7 +359,8 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            ArrayList<Vertex> longestPath = getSkeletonBackbone(inputObject);
+            Object[] results = FitSpline.getSkeletonBackbone(inputObject);
+            ArrayList<Vertex> longestPath = (ArrayList<Vertex>) results[0];
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;

@@ -1,17 +1,25 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.TreeMap;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import inra.ijpb.binary.ChamferWeights;
+import inra.ijpb.measure.region2d.GeodesicDiameter;
+import inra.ijpb.measure.region2d.GeodesicDiameter.Result;
+import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Object.Image;
@@ -43,7 +51,6 @@ import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Vertex;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
-import wbif.sjx.common.Process.SkeletonTools.Skeleton;
 
 /**
  * Created by sc13967 on 24/01/2018.
@@ -133,23 +140,47 @@ public class FitSpline extends Module {
 
         // Skeletonise fish to get single backbone
         BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
+        InvertIntensity.process(objectImage);
 
-        // Using the Common library's Skeleton tools to extract the longest branch. This
-        // requires coordinates for the
-        Skeleton skeleton = new Skeleton(objectImage.getImagePlus());
-        ArrayList<Vertex> longestPath = skeleton.getLongestPath();
+        ImagePlus objectIpl = objectImage.getImagePlus();
 
-        // If the object was a closed loop, remove a random point and try again
-        boolean isLoop = false;
-        if (longestPath.size() < 2) {
-            isLoop = true;
-            Vertex removedVertex = skeleton.addBreak();
-            longestPath = skeleton.getLongestPath();
+        objectIpl.show();
+        IJ.runMacro("waitForUser");
 
-            // Adding the removed vertex to the end of the path
-            longestPath.add(removedVertex);
+        // Using AnalyzeSkeleton_ to remove loops
+        AnalyzeSkeleton_ analyzeSkeleton_ = new AnalyzeSkeleton_();
+        analyzeSkeleton_.setup("", objectIpl);
+        analyzeSkeleton_.run(AnalyzeSkeleton_.SHORTEST_BRANCH, false, false, null, true, false);
+        ImagePlus looplessObjectIpl = new ImagePlus("Loopless", analyzeSkeleton_.getLabeledSkeletons());
+        
+        // We compare the input to output to check if it was looped
+        String calculationMethod = ImageCalculator.CalculationMethods.DIFFERENCE;
+        String overwriteMethod = ImageCalculator.OverwriteModes.CREATE_NEW;
+        ImagePlus outputIpl = ImageCalculator.process(objectIpl, looplessObjectIpl, calculationMethod,
+                overwriteMethod, false, false);
 
+        outputIpl.show();
+        IJ.runMacro("waitForUser");
+
+        boolean isLoop = outputIpl.getProcessor().getStatistics().max == 255;
+
+        // Updating the image for processing
+        objectIpl.setProcessor(looplessObjectIpl.getProcessor());
+
+        // Using MorphoLibJ to identify longest path
+        GeodesicDiameter geodesicDiameter = new GeodesicDiameter(ChamferWeights.BORGEFORS);
+        geodesicDiameter.setComputePaths(true);
+        Map<Integer, Result> results = geodesicDiameter.analyzeRegions(objectIpl);
+
+        // Converting coordinates to expected format
+        ArrayList<Vertex> longestPath = new ArrayList<>();
+        for (Result result : results.values()) {
+            for (Point2D point : result.path) {
+                longestPath.add(new Vertex((int) Math.round(point.getX()), (int) Math.round(point.getY()), 0));
+            }
         }
+
+        MIA.log.writeDebug(isLoop);
 
         return new Object[] { longestPath, isLoop };
 
@@ -389,7 +420,7 @@ public class FitSpline extends Module {
 
         // If a loop, connect the ends
         if (isLoop) {
-            addLineSegment(splineObject, spline.get(0), spline.get(spline.size()-2), everyNPoints);
+            addLineSegment(splineObject, spline.get(0), spline.get(spline.size() - 2), everyNPoints);
         }
 
         splineObject.setT(inputObject.getT());
@@ -548,7 +579,7 @@ public class FitSpline extends Module {
 
             switch (objectOutputMode) {
                 case ObjectOutputModes.FULL_CONTOUR:
-                    createFullContour(inputObject, outputObjects, calculator.getSpline(),exportEveryNPoints,isLoop);
+                    createFullContour(inputObject, outputObjects, calculator.getSpline(), exportEveryNPoints, isLoop);
 
                     break;
                 case ObjectOutputModes.CONTROL_POINTS:
