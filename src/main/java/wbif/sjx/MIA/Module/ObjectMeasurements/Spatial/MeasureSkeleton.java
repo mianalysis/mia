@@ -21,6 +21,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -28,11 +29,6 @@ import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputSkeletonObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -363,7 +359,7 @@ public class MeasureSkeleton extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -372,13 +368,18 @@ public class MeasureSkeleton extends Module {
         String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
         String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        returnedRefs.add(ParentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
-        returnedRefs.add(ParentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
-        returnedRefs.add(ParentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-        returnedRefs.add(ParentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
 
         return returnedRefs;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

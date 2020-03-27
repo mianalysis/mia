@@ -31,6 +31,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -42,12 +43,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRef;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.BresenhamLine;
@@ -862,7 +857,7 @@ public class FitSpline extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection refCollection = new ParentChildRefCollection();
 
         if (!parameters.getValue(OBJECT_OUTPUT_MODE).equals(ObjectOutputModes.DO_NOT_STORE)) {
@@ -873,6 +868,11 @@ public class FitSpline extends Module {
 
         return refCollection;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

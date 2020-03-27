@@ -17,10 +17,7 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
@@ -445,7 +442,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

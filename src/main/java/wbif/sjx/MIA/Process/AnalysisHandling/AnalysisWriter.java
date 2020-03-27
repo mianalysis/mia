@@ -133,7 +133,7 @@ public class AnalysisWriter {
 
             // Adding relationship references from this module
             Element relationshipElement = doc.createElement("RELATIONSHIPS");
-            ParentChildRefCollection ParentChildRefs = module.updateAndGetRelationships();
+            ParentChildRefCollection ParentChildRefs = module.updateAndGetParentChildRefs();
             relationshipElement = prepareRefsXML(doc, relationshipElement,ParentChildRefs,"PARENT_CHILD");
             moduleElement.appendChild(relationshipElement);
 

@@ -14,7 +14,6 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -171,7 +170,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
     void addParentChildRefs(Module module, ParentChildRefCollection ParentChildRefs) {
         if (!module.isEnabled()) return;
 
-        ParentChildRefCollection currentParentChildRefs = module.updateAndGetRelationships();
+        ParentChildRefCollection currentParentChildRefs = module.updateAndGetParentChildRefs();
         if (currentParentChildRefs == null) return;
 
         ParentChildRefs.putAll(currentParentChildRefs);

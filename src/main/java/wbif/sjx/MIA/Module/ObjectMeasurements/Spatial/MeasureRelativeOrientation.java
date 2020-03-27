@@ -479,7 +479,12 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -48,7 +48,7 @@ public class MeasureSpecificWidth extends Module {
     
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous controls";
     public static final String MEASUREMENT_PREFIX = "Measurement prefix";
-    
+
     public interface ReferenceModes {
         String CENTROID = "Object centroid";
         String IMAGE_MEASUREMENT = "Image measurement";
@@ -402,10 +402,15 @@ public class MeasureSpecificWidth extends Module {
     }
     
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         return null;
     }
-    
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
+    }
+
     @Override
     public boolean verify() {
         String refMode1 = parameters.getValue(REFERENCE_MODE_1);

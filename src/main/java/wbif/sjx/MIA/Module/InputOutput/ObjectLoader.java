@@ -20,10 +20,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -577,7 +574,7 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         if ((boolean) parameters.getValue(CREATE_PARENTS)) {
@@ -594,11 +591,16 @@ public class ObjectLoader extends Module {
                     parentObjectsName = parameters.getValue(PARENT_TRACKS_NAME);
                     break;
             }
-            returnedRelationships.add(ParentChildRefs.getOrPut(parentObjectsName,childObjectsName));
+            returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName,childObjectsName));
         }
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

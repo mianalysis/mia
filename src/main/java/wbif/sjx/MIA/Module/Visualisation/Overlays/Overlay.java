@@ -162,7 +162,7 @@ public abstract class Overlay extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         return null;
     }
 

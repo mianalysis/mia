@@ -22,10 +22,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.SeriesListSelectorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
@@ -404,7 +401,12 @@ public class InputControl extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

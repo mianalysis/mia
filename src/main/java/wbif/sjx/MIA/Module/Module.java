@@ -15,18 +15,11 @@ import org.w3c.dom.Node;
 
 import ij.Prefs;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRef;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRef;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
@@ -40,7 +33,8 @@ public abstract class Module extends Ref implements Comparable {
     protected ImageMeasurementRefCollection imageMeasurementRefs = new ImageMeasurementRefCollection();
     protected ObjMeasurementRefCollection objectMeasurementRefs = new ObjMeasurementRefCollection();
     protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
-    protected ParentChildRefCollection ParentChildRefs = new ParentChildRefCollection();
+    protected ParentChildRefCollection parentChildRefs = new ParentChildRefCollection();
+    protected PartnerRefCollection partnerRefs = new PartnerRefCollection();
 
     private static boolean verbose = false;
     private String notes = "";
@@ -86,7 +80,9 @@ public abstract class Module extends Ref implements Comparable {
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
-    public abstract ParentChildRefCollection updateAndGetRelationships();
+    public abstract ParentChildRefCollection updateAndGetParentChildRefs();
+
+    public abstract PartnerRefCollection updateAndGetPartnerRefs();
 
     public abstract boolean verify();
 
@@ -154,11 +150,11 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public ParentChildRef getParentChildRef(String parentName, String childName) {
-        return ParentChildRefs.getOrPut(parentName,childName);
+        return parentChildRefs.getOrPut(parentName,childName);
     }
 
     public void addParentChildRef(ParentChildRef ref) {
-        ParentChildRefs.add(ref);
+        parentChildRefs.add(ref);
     }
 
     public <T extends Parameter> T getParameter(String name) {
@@ -341,8 +337,8 @@ public abstract class Module extends Ref implements Comparable {
             newMetadataRefs.add(newRef);
         }
 
-        ParentChildRefCollection newParentChildRefs = newModule.ParentChildRefs;
-        for (ParentChildRef ref:ParentChildRefs.values()) {
+        ParentChildRefCollection newParentChildRefs = newModule.parentChildRefs;
+        for (ParentChildRef ref: parentChildRefs.values()) {
             ParentChildRef newRef = ref.duplicate();
             if (newRef == null) continue;
             newParentChildRefs.add(newRef);

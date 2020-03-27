@@ -23,10 +23,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -365,16 +362,21 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        returnedRelationships.add(ParentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
+        returnedRelationships.add(parentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override
@@ -777,13 +779,13 @@ public class SingleClassCluster extends Module {
 //    }
 //
 //    @Override
-//    public ParentChildRefCollection updateAndGetRelationships() {
+//    public ParentChildRefCollection updateAndGetParentChildRefs() {
 //        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 //
 //        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 //        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 //
-//        returnedRelationships.add(ParentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
+//        returnedRelationships.add(parentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
 //
 //        return returnedRelationships;
 //

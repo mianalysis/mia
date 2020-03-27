@@ -722,16 +722,21 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        returnedRelationships.add(ParentChildRefs.getOrPut(trackObjectsName,inputObjectsName));
+        returnedRelationships.add(parentChildRefs.getOrPut(trackObjectsName,inputObjectsName));
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

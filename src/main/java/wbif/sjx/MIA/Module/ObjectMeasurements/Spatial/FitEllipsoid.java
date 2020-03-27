@@ -368,20 +368,25 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
-    public ParentChildRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-                returnedRelationships.add(ParentChildRefs.getOrPut(inputObjectsName,outputObjectsName));
+                returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName,outputObjectsName));
 
                 break;
         }
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override
