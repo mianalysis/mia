@@ -278,7 +278,7 @@ public class FilterSpecificObjectIDs extends CoreFilter implements ActionListene
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -478,11 +478,11 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         if ((boolean) parameters.getValue(DO_TRACKING)) {
-            returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS)));
+            returnedRelationships.add(ParentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS)));
 
         }
 

@@ -1202,7 +1202,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

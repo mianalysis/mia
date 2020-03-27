@@ -45,7 +45,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Metadata;
@@ -707,7 +707,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

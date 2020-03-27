@@ -16,7 +16,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.ThirdParty.Stack_Focuser_;
 
 public class FocusStack extends Module {
@@ -247,7 +247,7 @@ public class FocusStack extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

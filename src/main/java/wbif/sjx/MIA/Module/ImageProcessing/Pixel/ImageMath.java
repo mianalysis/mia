@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 
 /**
  * Created by sc13967 on 19/09/2017.
@@ -229,7 +229,7 @@ public class ImageMath extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

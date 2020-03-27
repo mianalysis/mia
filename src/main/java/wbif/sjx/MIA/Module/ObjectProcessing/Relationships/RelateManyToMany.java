@@ -548,19 +548,19 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
             // Getting input objects
             String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 
-            returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects1Name));
+            returnedRefs.add(ParentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
 
             String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
             if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
                 String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-                returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects2Name));
+                returnedRefs.add(ParentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
             }
 
         return returnedRefs;

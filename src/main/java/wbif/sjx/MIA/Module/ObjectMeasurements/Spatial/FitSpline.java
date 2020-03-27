@@ -46,8 +46,8 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRef;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRef;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.BresenhamLine;
@@ -862,13 +862,13 @@ public class FitSpline extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection refCollection = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection refCollection = new ParentChildRefCollection();
 
         if (!parameters.getValue(OBJECT_OUTPUT_MODE).equals(ObjectOutputModes.DO_NOT_STORE)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            refCollection.add(new RelationshipRef(inputObjectsName, outputObjectsName));
+            refCollection.add(new ParentChildRef(inputObjectsName, outputObjectsName));
         }
 
         return refCollection;

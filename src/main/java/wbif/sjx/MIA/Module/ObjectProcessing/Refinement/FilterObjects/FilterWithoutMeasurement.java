@@ -185,7 +185,7 @@ public class FilterWithoutMeasurement extends CoreFilter {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 }

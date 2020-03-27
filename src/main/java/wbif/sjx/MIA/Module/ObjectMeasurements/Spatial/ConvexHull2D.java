@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -115,12 +115,12 @@ public class ConvexHull2D extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        returnedRelationships.add(relationshipRefs.getOrPut(inputObjectsName,outputObjectsName));
+        returnedRelationships.add(ParentChildRefs.getOrPut(inputObjectsName,outputObjectsName));
 
         return returnedRelationships;
 

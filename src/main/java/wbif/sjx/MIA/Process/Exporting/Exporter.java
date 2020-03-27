@@ -51,8 +51,8 @@ import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRef;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRef;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -498,8 +498,8 @@ public class Exporter {
                 }
 
                 // Running through all the object's children
-                RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
-                for (RelationshipRef ref:relationshipRefs.getChildren(availableObjectName,false)) {
+                ParentChildRefCollection ParentChildRefs = modules.getParentChildRefs();
+                for (ParentChildRef ref:ParentChildRefs.getChildren(availableObjectName,false)) {
                     if (!ref.isExportGlobal()) continue;
                     if (!ref.isExportIndividual()) continue;
 
@@ -694,8 +694,8 @@ public class Exporter {
             }
 
             // Running through all the object's children
-            RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
-            for (RelationshipRef ref:relationshipRefs.getChildren(objSetName,false)) {
+            ParentChildRefCollection ParentChildRefs = modules.getParentChildRefs();
+            for (ParentChildRef ref:ParentChildRefs.getChildren(objSetName,false)) {
                 if (!ref.isExportGlobal()) continue;
                 if (!ref.isExportIndividual()) continue;
 
@@ -897,11 +897,11 @@ public class Exporter {
             }
 
             // Adding parent IDs
-            RelationshipRefCollection relationships = modules.getRelationshipRefs();
+            ParentChildRefCollection relationships = modules.getParentChildRefs();
             String[] parents = relationships.getParentNames(objectName,false);
             if (parents != null) {
                 for (String parent : parents) {
-                    RelationshipRef ref = relationships.getOrPut(parent,objectName);
+                    ParentChildRef ref = relationships.getOrPut(parent,objectName);
                     if (!ref.isExportGlobal()) continue;
                     if (!ref.isExportIndividual()) continue;
 
@@ -917,7 +917,7 @@ public class Exporter {
             String[] children = relationships.getChildNames(objectName,false);
             if (children != null) {
                 for (String child : children) {
-                    RelationshipRef ref = relationships.getOrPut(objectName,child);
+                    ParentChildRef ref = relationships.getOrPut(objectName,child);
                     if (!ref.isExportGlobal()) continue;
                     if (!ref.isExportIndividual()) continue;
 

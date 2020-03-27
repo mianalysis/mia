@@ -690,10 +690,10 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
-        returnedRelationships.add(relationshipRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS)));
+        returnedRelationships.add(ParentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS)));
 
         return returnedRelationships;
 

@@ -372,7 +372,7 @@ public class FilterByMeasurement extends CoreFilter {
     }
     
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 }

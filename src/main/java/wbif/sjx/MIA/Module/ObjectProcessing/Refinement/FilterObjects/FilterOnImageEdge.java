@@ -225,7 +225,7 @@ public class FilterOnImageEdge extends CoreFilter {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 }

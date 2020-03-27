@@ -621,7 +621,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

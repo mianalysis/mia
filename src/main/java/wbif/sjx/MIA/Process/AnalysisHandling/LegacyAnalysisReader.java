@@ -54,7 +54,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.RelationshipRef;
+import wbif.sjx.MIA.Object.References.ParentChildRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
 /**
@@ -190,7 +190,7 @@ public class LegacyAnalysisReader {
                             break;
 
                         case "RELATIONSHIPS":
-                            populateModuleRelationshipRefs(moduleChildNodes.item(j), module);
+                            populateModuleParentChildRefs(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -404,13 +404,13 @@ public class LegacyAnalysisReader {
         }
     }
 
-    public static void populateModuleRelationshipRefs(Node moduleNode, Module module) {
+    public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
         for (int j=0;j<referenceNodes.getLength();j++) {
-            RelationshipRef ref = new RelationshipRef(referenceNodes.item(j));
-            module.addRelationshipRef(ref);
+            ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
+            module.addParentChildRef(ref);
 
         }
     }

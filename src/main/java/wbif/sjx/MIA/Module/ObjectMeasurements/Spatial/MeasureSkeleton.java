@@ -32,7 +32,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -363,8 +363,8 @@ public class MeasureSkeleton extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
@@ -372,10 +372,10 @@ public class MeasureSkeleton extends Module {
         String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
         String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        returnedRefs.add(relationshipRefs.getOrPut(inputObjectsName, skeletonObjectsName));
-        returnedRefs.add(relationshipRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
-        returnedRefs.add(relationshipRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-        returnedRefs.add(relationshipRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        returnedRefs.add(ParentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+        returnedRefs.add(ParentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
+        returnedRefs.add(ParentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
+        returnedRefs.add(ParentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
 
         return returnedRefs;
 

@@ -26,7 +26,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -365,13 +365,13 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        returnedRelationships.add(relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName));
+        returnedRelationships.add(ParentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
 
         return returnedRelationships;
 
@@ -408,7 +408,7 @@ public class SingleClassCluster extends Module {
 //import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 //import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 //import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-//import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+//import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 //import wbif.sjx.MIA.Process.ColourFactory;
 //import wbif.sjx.common.Exceptions.IntegerOverflowException;
 //import wbif.sjx.common.Object.LUTs;
@@ -777,13 +777,13 @@ public class SingleClassCluster extends Module {
 //    }
 //
 //    @Override
-//    public RelationshipRefCollection updateAndGetRelationships() {
-//        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+//    public ParentChildRefCollection updateAndGetRelationships() {
+//        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 //
 //        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 //        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 //
-//        returnedRelationships.add(relationshipRefs.getOrPut(clusterObjectsName,inputObjectsName));
+//        returnedRelationships.add(ParentChildRefs.getOrPut(clusterObjectsName,inputObjectsName));
 //
 //        return returnedRelationships;
 //

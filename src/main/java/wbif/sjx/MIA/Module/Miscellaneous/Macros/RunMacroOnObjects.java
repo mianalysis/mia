@@ -259,7 +259,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 

@@ -347,14 +347,14 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetRelationships() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-                returnedRelationships.add(relationshipRefs.getOrPut(inputObjectsName,outputObjectsName));
+                returnedRelationships.add(ParentChildRefs.getOrPut(inputObjectsName,outputObjectsName));
 
                 break;
         }

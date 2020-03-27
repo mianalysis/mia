@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class ParamTest extends Module {
@@ -50,8 +50,8 @@ public class ParamTest extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        return relationshipRefs;
+    public ParentChildRefCollection updateAndGetRelationships() {
+        return ParentChildRefs;
     }
 
     @Override

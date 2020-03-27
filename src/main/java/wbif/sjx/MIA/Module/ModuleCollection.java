@@ -145,36 +145,36 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     }
 
-    public RelationshipRefCollection getRelationshipRefs() {
-        return getRelationshipRefs(null);
+    public ParentChildRefCollection getParentChildRefs() {
+        return getParentChildRefs(null);
 
     }
 
-    public RelationshipRefCollection getRelationshipRefs(Module cutoffModule) {
-        RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
+    public ParentChildRefCollection getParentChildRefs(Module cutoffModule) {
+        ParentChildRefCollection ParentChildRefs = new ParentChildRefCollection();
 
-        addRelationshipRefs(inputControl, relationshipRefs);
-        addRelationshipRefs(outputControl, relationshipRefs);
+        addParentChildRefs(inputControl, ParentChildRefs);
+        addParentChildRefs(outputControl, ParentChildRefs);
 
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled() |! module.isRunnable()) continue;
 
-            addRelationshipRefs(module,relationshipRefs);
+            addParentChildRefs(module,ParentChildRefs);
 
         }
 
-        return relationshipRefs;
+        return ParentChildRefs;
 
     }
 
-    void addRelationshipRefs(Module module, RelationshipRefCollection relationshipRefs) {
+    void addParentChildRefs(Module module, ParentChildRefCollection ParentChildRefs) {
         if (!module.isEnabled()) return;
 
-        RelationshipRefCollection currentRelationshipRefs = module.updateAndGetRelationships();
-        if (currentRelationshipRefs == null) return;
+        ParentChildRefCollection currentParentChildRefs = module.updateAndGetRelationships();
+        if (currentParentChildRefs == null) return;
 
-        relationshipRefs.putAll(currentRelationshipRefs);
+        ParentChildRefs.putAll(currentParentChildRefs);
 
     }
 

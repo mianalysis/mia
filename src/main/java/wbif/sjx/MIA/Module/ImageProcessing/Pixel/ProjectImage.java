@@ -15,7 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 
 //import ij.plugin.ZProjector;
 
@@ -186,7 +186,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetRelationships() {
         return null;
     }
 
@@ -227,7 +227,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 //import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 //import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-//import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+//import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 //import wbif.sjx.common.Process.ImgPlusTools;
 //
 //import java.io.IOException;
@@ -529,7 +529,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    }
 //
 //    @Override
-//    public RelationshipRefCollection updateAndGetRelationships() {
+//    public ParentChildRefCollection updateAndGetRelationships() {
 //        return null;
 //    }
 //
