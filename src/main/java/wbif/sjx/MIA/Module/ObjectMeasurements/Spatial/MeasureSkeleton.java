@@ -164,7 +164,7 @@ public class MeasureSkeleton extends Module {
         String outputEdgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
         String outputJunctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
         String outputLoopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
-        final double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH);
+        double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
@@ -203,13 +203,14 @@ public class MeasureSkeleton extends Module {
         // skeletonize plugin to ensure it has 4-way connectivity. Finally, it is
         // processed with the AnalyzeSkeleton
         // plugin.
+        final double minLengthFinal = minLength;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
                 Image projectedImage = getProjectedImage(inputObject);
 
                 AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
                 analyzeSkeleton.setup("", projectedImage.getImagePlus());
-                SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLength, false,
+                SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal, false,
                         projectedImage.getImagePlus(), true, false);
                 // skeletons has edges and junctions
                 // what is the relationship between them
