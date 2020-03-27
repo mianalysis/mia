@@ -49,6 +49,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <role>developer</role>
         </roles>
     </developer>
+    <developer>
+        <id>glmfisher</id>
+        <name>Gemma Fisher</name>
+        <roles>
+            <role>reviewer</role>
+            <role>support</role>
+        </roles>
+    </developer>
 </developers>
 
 <contributors>

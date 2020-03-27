@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.Parameters.TextAreaP;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 
 import javax.swing.*;
 import javax.swing.text.Document;

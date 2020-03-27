@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Object.Parameters;
+package wbif.sjx.MIA.Object.Parameters.Text;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.SeriesSelector;

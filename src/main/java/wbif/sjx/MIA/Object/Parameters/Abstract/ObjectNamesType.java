@@ -3,7 +3,7 @@ package wbif.sjx.MIA.Object.Parameters.Abstract;
 import java.util.LinkedHashSet;
 
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 
 public abstract class ObjectNamesType extends ChoiceType {
     public ObjectNamesType(String name, Module module) {

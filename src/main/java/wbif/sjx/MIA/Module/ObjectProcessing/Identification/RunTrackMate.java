@@ -20,6 +20,10 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectCentroid;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -390,7 +394,7 @@ public class RunTrackMate extends Module {
         parameters.add(new DoubleP(INITIAL_SEARCH_RADIUS,this,10.0, "Minimum spot separation required for creation of a new track."));
         parameters.add(new DoubleP(SEARCH_RADIUS,this,10.0, "Maximum distance between predicted spot location and location of spot in current frame."));
         parameters.add(new IntegerP(MAX_FRAME_GAP, this,3, "Maximum number of frames a spot can go undetected before it will be classed as a new track upon reappearance."));
-        parameters.add(new OutputTrackObjectP(OUTPUT_TRACK_OBJECTS, this, "", "Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements."));
+        parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this, "", "Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements."));
 
     }
 

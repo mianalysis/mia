@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
- * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
+ * Extension of a TreeMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
 public class RelationshipRefCollection extends TreeMap<String, RelationshipRef> implements RefCollection<RelationshipRef> {

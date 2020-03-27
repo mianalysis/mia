@@ -34,14 +34,14 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -131,7 +131,16 @@ public class FitSpline extends Module {
 
     }
 
-    public static Object[] getSkeletonBackbone(Obj inputObject) {
+    public static ArrayList<Vertex> getSkeletonBackbone(Obj inputObject) {
+        Image objectImage = getInitialSkeleton(inputObject);
+
+        eliminateLoops(objectImage);
+
+        return getLongestPath(objectImage);
+
+    }
+
+    static Image getInitialSkeleton(Obj inputObject) {
         // Converting object to image, then inverting, so we have a black object on a
         // white background
         ObjCollection tempObjects = new ObjCollection("Backbone", inputObject.getSpatialCalibration(),
@@ -147,32 +156,11 @@ public class FitSpline extends Module {
         BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
         InvertIntensity.process(objectImage);
 
-        eliminateLoops(objectImage);
-
-        // Using MorphoLibJ to identify longest path
-        GeodesicDiameter geodesicDiameter = new GeodesicDiameter(ChamferWeights.BORGEFORS);
-        geodesicDiameter.setComputePaths(true);
-        Map<Integer, Result> results = geodesicDiameter.analyzeRegions(objectImage.getImagePlus());
-
-        // Converting coordinates to expected format
-        ArrayList<Vertex> longestPath = new ArrayList<>();
-        for (Result result : results.values()) {
-            for (Point2D point : result.path) {
-                longestPath.add(new Vertex((int) Math.round(point.getX()), (int) Math.round(point.getY()), 0));
-            }
-        }
-
-        // Determining if it was a loop based on the proximity of the longest path ends
-        Vertex firstPoint = longestPath.get(0);
-        Vertex finalPoint = longestPath.get(longestPath.size() - 1);
-
-        boolean isLoop = firstPoint.getEdgeLength(finalPoint) < 6;
-
-        return new Object[] { longestPath, isLoop };
+        return objectImage;
 
     }
 
-    public static void eliminateLoops(Image image) {
+    static void eliminateLoops(Image image) {
         String calculationMode = ImageCalculator.CalculationMethods.SUBTRACT;
         String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
 
@@ -197,6 +185,33 @@ public class FitSpline extends Module {
         ManualThreshold.applyThreshold(connIpl, 1);
         InvertIntensity.process(connIpl);
         ImageCalculator.process(objectIpl, connIpl, calculationMode, overwriteMode, false, false);
+
+    }
+
+    static ArrayList<Vertex> getLongestPath(Image image) {
+        // Using MorphoLibJ to identify longest path
+        GeodesicDiameter geodesicDiameter = new GeodesicDiameter(ChamferWeights.BORGEFORS);
+        geodesicDiameter.setComputePaths(true);
+        Map<Integer, Result> results = geodesicDiameter.analyzeRegions(image.getImagePlus());
+
+        // Converting coordinates to expected format
+        ArrayList<Vertex> longestPath = new ArrayList<>();
+        for (Result result : results.values()) {
+            for (Point2D point : result.path) {
+                longestPath.add(new Vertex((int) Math.round(point.getX()), (int) Math.round(point.getY()), 0));
+            }
+        }
+
+        return longestPath;
+
+    }
+
+    static boolean checkForLoop(ArrayList<Vertex> longestPath) {
+        // Determining if it was a loop based on the proximity of the longest path ends
+        Vertex firstPoint = longestPath.get(0);
+        Vertex finalPoint = longestPath.get(longestPath.size() - 1);
+
+        return firstPoint.getEdgeLength(finalPoint) <= 6;
 
     }
 
@@ -434,7 +449,7 @@ public class FitSpline extends Module {
 
         // If a loop, connect the ends
         if (isLoop) {
-            addLineSegment(splineObject, spline.get(0), spline.get(spline.size() - 2), everyNPoints);
+            addLineSegment(splineObject, spline.get(0), spline.get(spline.size() - 1), everyNPoints);
         }
 
         splineObject.setT(inputObject.getT());
@@ -459,6 +474,10 @@ public class FitSpline extends Module {
             for (int i = 0; i < line.length; i = i + everyNPoints) {
                 splineObject.add(line[i][0], line[i][1], 0);
             }
+
+            // It seems to sometimes mis the final point
+            splineObject.add(x2, y2, 0);
+
         } catch (PointOutOfRangeException e) {
         }
     }
@@ -549,9 +568,8 @@ public class FitSpline extends Module {
             initialiseObjectMeasurements(inputObject, absoluteCurvature, signedCurvature, useReference);
 
             // Getting the backbone of the object
-            Object[] skeletonOutput = getSkeletonBackbone(inputObject);
-            ArrayList<Vertex> longestPath = (ArrayList<Vertex>) skeletonOutput[0];
-            boolean isLoop = (boolean) skeletonOutput[1];
+            ArrayList<Vertex> longestPath = getSkeletonBackbone(inputObject);
+            boolean isLoop = checkForLoop(longestPath);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3)
@@ -581,7 +599,7 @@ public class FitSpline extends Module {
 
             if (curvature == null)
                 continue;
-                
+
             measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
             measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
 
