@@ -863,7 +863,7 @@ public class FitSpline extends Module {
         if (!parameters.getValue(OBJECT_OUTPUT_MODE).equals(ObjectOutputModes.DO_NOT_STORE)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            refCollection.add(new ParentChildRef(inputObjectsName, outputObjectsName));
+            refCollection.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
         }
 
         return refCollection;

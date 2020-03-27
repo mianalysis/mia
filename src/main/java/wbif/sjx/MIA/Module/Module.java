@@ -156,6 +156,10 @@ public abstract class Module extends Ref implements Comparable {
     public void addParentChildRef(ParentChildRef ref) {
         parentChildRefs.add(ref);
     }
+    
+    public void addPartnerRef(PartnerRef ref) {
+        partnerRefs.add(ref);
+    }
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);
@@ -364,7 +368,7 @@ public abstract class Module extends Ref implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return getName().compareTo(((Module) o).getNotes());
+        return getName().compareTo(((Module) o).getName());
 
     }
 

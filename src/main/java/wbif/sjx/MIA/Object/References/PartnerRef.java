@@ -5,7 +5,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
-public class PartnerRef extends SummaryRef {
+public class PartnerRef extends SummaryRef implements Comparable {
     private final String object1Name;
     private final String object2Name;
     private String description = "";
@@ -42,6 +42,16 @@ public class PartnerRef extends SummaryRef {
     public void setAttributesFromXML(Node node) {
         super.setAttributesFromXML(node);
 
+    }
+
+    public String getPartnerName(String objectName) {
+        if (objectName.equals(object1Name)) {
+            return object2Name;
+        } else if (objectName.equals(object2Name)) {
+            return object1Name;
+        } else {
+            return "";
+        }
     }
 
     public String getObject1Name() {
@@ -84,38 +94,47 @@ public class PartnerRef extends SummaryRef {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 1;
-
-        // Using smallest hash first, so it doesn't matter which way round names are specified
-        int hash1 = object1Name.hashCode();
-        int hash2 = object2Name.hashCode();
-
-        if (hash1 <= hash2) {
-            hash = 31 * hash + hash1;
-            return 31 * hash + hash2;
-        } else {
-            hash = 31 * hash + hash2;
-            return 31 * hash + hash1;
-        }       
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (!(obj instanceof PartnerRef)) return false;
-
-        PartnerRef ref2 = (PartnerRef) obj;
+    public int compareTo(Object o) {
+        String namePair1 = object1Name+object2Name;
+        String namePair2 = ((PartnerRef) o).getObject1Name() + ((PartnerRef) o).getObject2Name();
         
-        // Same names in the same order
-        if (object1Name.equals(ref2.getObject1Name()) && object2Name.equals(ref2.getObject2Name()))
-            return true;
-
-        // Same names in the opposite order
-        if (object1Name.equals(ref2.getObject2Name()) && object2Name.equals(ref2.getObject1Name()))
-                return true;
-            
-        return false;
+        return namePair1.compareTo(namePair2);
 
     }
+
+    // @Override
+    // public int hashCode() {
+    //     int hash = 1;
+
+    //     // Using smallest hash first, so it doesn't matter which way round names are specified
+    //     int hash1 = object1Name.hashCode();
+    //     int hash2 = object2Name.hashCode();
+
+    //     if (hash1 <= hash2) {
+    //         hash = 31 * hash + hash1;
+    //         return 31 * hash + hash2;
+    //     } else {
+    //         hash = 31 * hash + hash2;
+    //         return 31 * hash + hash1;
+    //     }       
+    // }
+
+    // @Override
+    // public boolean equals(Object obj) {
+    //     if (obj == this) return true;
+    //     if (!(obj instanceof PartnerRef)) return false;
+
+    //     PartnerRef ref2 = (PartnerRef) obj;
+        
+    //     // Same names in the same order
+    //     if (object1Name.equals(ref2.getObject1Name()) && object2Name.equals(ref2.getObject2Name()))
+    //         return true;
+
+    //     // Same names in the opposite order
+    //     if (object1Name.equals(ref2.getObject2Name()) && object2Name.equals(ref2.getObject1Name()))
+    //             return true;
+            
+    //     return false;
+
+    // }
 }

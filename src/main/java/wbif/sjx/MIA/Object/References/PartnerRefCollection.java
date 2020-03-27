@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object.References;
 
+import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
@@ -30,6 +31,18 @@ public class PartnerRefCollection extends TreeSet<PartnerRef> implements RefColl
 
         // Return new reference
         return ref;
+
+    }
+    
+    public LinkedHashSet<PartnerRef> getPartners(String objectName) {
+        TreeSet<String> partnerNames = getPartnerNames(objectName);
+
+        LinkedHashSet<PartnerRef> ParentChildRefs = new LinkedHashSet<>();
+        for (String partnerName : partnerNames) {
+            ParentChildRefs.add(getOrPut(objectName, partnerName));
+        }
+
+        return ParentChildRefs;
 
     }
     

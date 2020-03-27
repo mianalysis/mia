@@ -13,8 +13,9 @@ public class LabelFactory {
         String MEASUREMENT_VALUE = "Measurement value";
         String PARENT_ID = "Parent ID";
         String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
+        String PARTNER_COUNT = "Partner count";
 
-        String[] ALL = new String[]{CHILD_COUNT,ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE};
+        String[] ALL = new String[]{CHILD_COUNT,ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE,PARTNER_COUNT};
 
     }
 
@@ -103,18 +104,37 @@ public class LabelFactory {
 
     }
 
-    public static HashMap<Integer,String> getParentMeasurementLabels(ObjCollection objects, String parentObjectsName, String measurementName, DecimalFormat df) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-        if (objects == null) return IDs;
+    public static HashMap<Integer, String> getParentMeasurementLabels(ObjCollection objects, String parentObjectsName,
+            String measurementName, DecimalFormat df) {
+        HashMap<Integer, String> IDs = new HashMap<>();
+        if (objects == null)
+            return IDs;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             Obj parentObj = object.getParent(parentObjectsName);
-            if (parentObj == null) break;
+            if (parentObj == null)
+                break;
 
             if (Double.isNaN(parentObj.getMeasurement(measurementName).getValue())) {
                 IDs.put(parentObj.getID(), "NA");
             } else {
                 IDs.put(parentObj.getID(), df.format(parentObj.getMeasurement(measurementName).getValue()));
+            }
+        }
+
+        return IDs;
+
+    }
+    
+    public static HashMap<Integer,String> getPartnerCountLabels(ObjCollection objects, String partnerObjectsName, DecimalFormat df) {
+        HashMap<Integer,String> IDs = new HashMap<>();
+        if (objects == null) return IDs;
+
+        for (Obj object:objects.values()) {
+            if (object.getPartners(partnerObjectsName) == null) {
+                IDs.put(object.getID(), "NA");
+            } else {
+                IDs.put(object.getID(), df.format(object.getPartners(partnerObjectsName).size()));
             }
         }
 

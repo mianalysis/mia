@@ -30,6 +30,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
@@ -132,9 +133,12 @@ public class ParametersPanel extends JScrollPane {
                 addSummaryRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c);
             }
 
-            ParentChildRefCollection ParentChildRefs = modules.getParentChildRefs();
-            addSummaryRefExportControls(ParentChildRefs,"Number of children",componentFactory,c);
+            ParentChildRefCollection parentChildRefs = modules.getParentChildRefs();
+            addSummaryRefExportControls(parentChildRefs, "Number of children", componentFactory, c);
 
+            PartnerRefCollection partnerRefs = modules.getPartnerRefs();
+            addSummaryRefExportControls(partnerRefs, "Number of partners", componentFactory, c);
+            
         }
 
         JSeparator separator = new JSeparator();

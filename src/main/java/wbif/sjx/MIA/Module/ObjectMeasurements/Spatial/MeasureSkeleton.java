@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +12,7 @@ import sc.fiji.analyzeSkeleton.Edge;
 import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
+import sc.fiji.analyzeSkeleton.Vertex;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -21,7 +23,6 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -29,6 +30,12 @@ import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputSkeletonObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
@@ -96,13 +103,27 @@ public class MeasureSkeleton extends Module {
         skeletonObject.addParent(inputObject);
         skeletonObjects.add(skeletonObject);
 
-        // Iterating over all edges, creating objects and adding to relevant
-        // collection
+        // For the purpose of linking edges and junctions, these are stored in a
+        // HashMap.
+        HashMap<Edge, Obj> edgeObjs = new HashMap<>();
+        HashMap<Vertex, Obj> junctionObjs = new HashMap<>();
+
+        // Creating objects
         for (Graph graph : result.getGraph()) {
             for (Edge edge : graph.getEdges()) {
-                createEdgeObject(skeletonObject, edgeObjects, edge);
+                Obj edgeObj = createEdgeObject(skeletonObject, edgeObjects, edge);
+                edgeObjs.put(edge, edgeObj);
+            }
+
+            for (Vertex junction : graph.getVertices()) {
+                Obj junctionObj = createJunctionObject(skeletonObject, junctionObjects, junction);
+                junctionObjs.put(junction, junctionObj);
             }
         }
+
+        // Applying partnerships between edges and junctions
+        applyPartnerships(edgeObjs, junctionObjs);
+
     }
 
     static Obj createEdgeObject(Obj skeletonObject, ObjCollection edgeObjects, Edge edge) {
@@ -116,12 +137,55 @@ public class MeasureSkeleton extends Module {
             try {
                 edgeObject.add(point.x, point.y, 0);
             } catch (PointOutOfRangeException e) {
-
             }
         }
 
         return edgeObject;
 
+    }
+
+    static Obj createJunctionObject(Obj skeletonObject, ObjCollection junctionObjects, Vertex junction) {
+        Obj junctionObject = junctionObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        junctionObject.setT(skeletonObject.getT());
+        skeletonObject.addChild(junctionObject);
+        junctionObject.addParent(skeletonObject);
+
+        // Adding coordinates
+        for (Point point : junction.getPoints()) {
+            try {
+                junctionObject.add(point.x, point.y, 0);
+            } catch (PointOutOfRangeException e) {
+            }
+        }
+
+        return junctionObject;
+
+    }
+
+    static void applyPartnerships(HashMap<Edge, Obj> edgeObjs, HashMap<Vertex, Obj> junctionObjs) {
+        // Iterating over each edge, adding the two vertices at either end as partners
+        for (Edge edge : edgeObjs.keySet()) {
+            Obj edgeObject = edgeObjs.get(edge);
+            Obj junction1 = junctionObjs.get(edge.getV1());
+            Obj junction2 = junctionObjs.get(edge.getV2());
+
+            edgeObject.addPartner(junction1);
+            junction1.addPartner(edgeObject);
+            edgeObject.addPartner(junction2);
+            junction2.addPartner(edgeObject);
+
+        }
+
+        // // Iterating over each junction, adding all relevant edges
+        // for (Vertex junction : junctionObjs.keySet()) {
+        // Obj junctionObject = junctionObjs.get(junction);
+
+        // for (Edge edge : junction.getBranches()) {
+        // Obj edgeObject = edgeObjs.get(edge);
+
+        // }
+
+        // }
     }
 
     static void addMeasurements(Obj inputObject, SkeletonResult skeletonResult) {
@@ -195,10 +259,8 @@ public class MeasureSkeleton extends Module {
         AtomicInteger count = new AtomicInteger();
 
         // For each object, create a child projected object, then generate a binary
-        // image. This is run through ImageJ's
-        // skeletonize plugin to ensure it has 4-way connectivity. Finally, it is
-        // processed with the AnalyzeSkeleton
-        // plugin.
+        // image. This is run through ImageJ's skeletonize plugin to ensure it has 4-way
+        // connectivity. Finally, it is processed with the AnalyzeSkeleton plugin.
         final double minLengthFinal = minLength;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
@@ -208,11 +270,6 @@ public class MeasureSkeleton extends Module {
                 analyzeSkeleton.setup("", projectedImage.getImagePlus());
                 SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal, false,
                         projectedImage.getImagePlus(), true, false);
-                // skeletons has edges and junctions
-                // what is the relationship between them
-                // Junction a single point with any number of edges
-                // Edge is the path between two junction
-                // Pathy - collection of coordinates
 
                 // Adding the skeleton to the input object
                 if (addToWorkspace) {
@@ -379,7 +436,18 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
+        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+
+        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+
+        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
+        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
+        returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+
+        return returnedRefs;
+
     }
 
     @Override

@@ -33,6 +33,7 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ParentChildRef;
+import wbif.sjx.MIA.Object.References.PartnerRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
 /**
@@ -282,17 +283,19 @@ public class AnalysisReader {
         // Iterating over all references of this type
         for (int i = 0; i < referenceNodes.getLength(); i++) {
             Node node = referenceNodes.item(i);
-            MIA.log.writeDebug("Node " + node.getNodeName());
+
             switch (node.getNodeName()) {
                 case "RELATIONSHIP":
                 case "PARENT_CHILD":
                     // Getting relationship properties
-                    ParentChildRef ref = new ParentChildRef(node);
-                    module.addParentChildRef(ref);
+                    ParentChildRef parentChildRef = new ParentChildRef(node);
+                    module.addParentChildRef(parentChildRef);
                     break;
 
-                case "PARTNERS":
-
+                case "PARTNER":
+                    // Getting relationship properties
+                    PartnerRef partnerRef = new PartnerRef(node);
+                    module.addPartnerRef(partnerRef);
                     break;
             }
         }
