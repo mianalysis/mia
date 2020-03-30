@@ -227,7 +227,6 @@ public class MeasureSkeleton extends Module {
         // Linking junctions and loops with surfaces separated by 1px or less
         for (Obj loopObject : loopObjects.values()) {
             for (Obj junctionObject : junctionObjects.values()) {
-                MIA.log.writeDebug(loopObject.getSurfaceSeparation(junctionObject, true));
                 if (loopObject.getSurfaceSeparation(junctionObject, true) <= 1) {
                     loopObject.addPartner(junctionObject);
                 }
@@ -236,14 +235,18 @@ public class MeasureSkeleton extends Module {
 
         // Linking edges with both junctions linked to the loop
         for (Obj loopObject : loopObjects.values()) {
+            MIA.log.writeDebug("Loop "+loopObject.getID()+"_"+loopObjects.size());
             for (Obj edgeObject : edgeObjects.values()) {
+                MIA.log.writeDebug("    Edge "+edgeObject.getID()+"_"+edgeObjects.size());
                 ObjCollection junctionPartners = edgeObject.getPartners(junctionObjects.getName());
                 boolean matchFound = true;
+
                 for (Obj junctionPartnerObject : junctionPartners.values()) {
+                    MIA.log.writeDebug("            Junction "+junctionPartnerObject.getID()+"_"+junctionPartners.size());
                     ObjCollection loopPartners = junctionPartnerObject.getPartners(loopObject.getName());
+                    MIA.log.writeDebug("    "+loopPartners.values().contains(loopObject));
                     if (!loopPartners.values().contains(loopObject)) {
                         matchFound = false;
-                        break;
                     }
                 }
 
@@ -321,6 +324,7 @@ public class MeasureSkeleton extends Module {
                                 skeletonObject);
                         workspace.addObjects(loopObjects);
 
+                        applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
                     } catch (IntegerOverflowException e) {
                         e.printStackTrace();
                     }
