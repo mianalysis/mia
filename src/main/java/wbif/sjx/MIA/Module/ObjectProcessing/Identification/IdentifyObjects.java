@@ -46,9 +46,10 @@ public class IdentifyObjects extends Module {
     public interface VolumeTypes extends Image.VolumeTypes {}
 
 
-    private ObjCollection importFromImage(Image inputImage, String outputObjectsName, boolean whiteBackground,
+    public static ObjCollection process(Image inputImage, String outputObjectsName, boolean whiteBackground,
                                           boolean singleObject, int connectivity, String type)
             throws IntegerOverflowException, RuntimeException {
+        String name = new IdentifyObjects(null).getName();
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = inputImagePlus.duplicate();
@@ -59,7 +60,7 @@ public class IdentifyObjects extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,cal,nFrames);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
+            writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames(),name);
 
             // Creating a copy of the input image
             ImagePlus currStack;
@@ -146,7 +147,7 @@ public class IdentifyObjects extends Module {
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
-        ObjCollection outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, type);
+        ObjCollection outputObjects = process(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, type);
 
         // Adding objects to workspace
         writeMessage("Adding objects ("+outputObjectsName+") to workspace");

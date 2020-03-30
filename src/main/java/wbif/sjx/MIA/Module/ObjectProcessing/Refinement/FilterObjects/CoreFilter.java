@@ -2,6 +2,8 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
 import java.util.Iterator;
 
+import com.drew.lang.annotations.Nullable;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
@@ -73,7 +75,7 @@ public abstract class CoreFilter extends Module {
 
     }
 
-    static void processRemoval(Obj inputObject, ObjCollection outputObjects, Iterator<Obj> iterator) {
+    static void processRemoval(Obj inputObject, @Nullable ObjCollection outputObjects, Iterator<Obj> iterator) {
         inputObject.removeRelationships();
         if (outputObjects != null) {
             inputObject.setName(outputObjects.getName());
