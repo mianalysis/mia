@@ -12,10 +12,7 @@ import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -31,7 +28,8 @@ public class ConvertObjectsToImage extends Module {
     public static final String CONVERSION_MODE = "Conversion mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String VOLUME_TYPE = "Volume type";public static final String INPUT_OBJECTS = "Input objects";
+    public static final String VOLUME_TYPE = "Volume type";
+    public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String RENDERING_SEPARATOR = "Rendering controls";
@@ -39,18 +37,19 @@ public class ConvertObjectsToImage extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String PARTNER_OBJECTS_FOR_COLOUR = "Partner objects for colour";
     public static final String SINGLE_COLOUR_MODE = "Single colour mode";
     public static final String MEASUREMENT = "Measurement";
 
     public ConvertObjectsToImage(ModuleCollection modules) {
-        super("Convert objects to image",modules);
+        super("Convert objects to image", modules);
     }
 
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
         String OBJECTS_TO_IMAGE = "Objects to image";
 
-        String[] ALL = new String[]{IMAGE_TO_OBJECTS, OBJECTS_TO_IMAGE};
+        String[] ALL = new String[] { IMAGE_TO_OBJECTS, OBJECTS_TO_IMAGE };
 
     }
 
@@ -58,22 +57,23 @@ public class ConvertObjectsToImage extends Module {
         String CENTROID = "Object centroid";
         String WHOLE_OBJECT = "Whole object";
 
-        String[] ALL = new String[]{CENTROID,WHOLE_OBJECT};
+        String[] ALL = new String[] { CENTROID, WHOLE_OBJECT };
 
     }
 
-    public interface ColourModes extends Overlay.ColourModes  {}
+    public interface ColourModes extends Overlay.ColourModes {
+    }
 
     public interface SingleColourModes {
         String B_ON_W = "Black objects, white background";
         String W_ON_B = "White objects, black background";
 
-        String[] ALL = new String[]{B_ON_W,W_ON_B};
+        String[] ALL = new String[] { B_ON_W, W_ON_B };
 
     }
 
-    public interface VolumeTypes extends Image.VolumeTypes {}
-
+    public interface VolumeTypes extends Image.VolumeTypes {
+    }
 
     @Override
     public String getPackageName() {
@@ -98,12 +98,13 @@ public class ConvertObjectsToImage extends Module {
 
             ObjCollection objects = null;
             try {
-                objects = inputImage.convertImageToObjects(volumeType,outputObjectsName);
+                objects = inputImage.convertImageToObjects(volumeType, outputObjectsName);
             } catch (IntegerOverflowException e) {
                 return false;
             }
 
-            if (showOutput) objects.convertToImageRandomColours().showImage();
+            if (showOutput)
+                objects.convertToImageRandomColours().showImage();
 
             workspace.addObjects(objects);
 
@@ -116,6 +117,7 @@ public class ConvertObjectsToImage extends Module {
             String measurementForColour = parameters.getValue(MEASUREMENT);
             String childObjectsForColour = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+            String partnerForColour = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR);
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
 
@@ -125,11 +127,11 @@ public class ConvertObjectsToImage extends Module {
             int bitDepth = 8;
             switch (colourMode) {
                 case ColourModes.CHILD_COUNT:
-                    hues = ColourFactory.getChildCountHues(inputObjects,childObjectsForColour,false);
+                    hues = ColourFactory.getChildCountHues(inputObjects, childObjectsForColour, false);
                     bitDepth = 32;
                     break;
                 case ColourModes.ID:
-                    hues = ColourFactory.getIDHues(inputObjects,false);
+                    hues = ColourFactory.getIDHues(inputObjects, false);
                     bitDepth = 32;
                     break;
                 case ColourModes.RANDOM_COLOUR:
@@ -137,20 +139,25 @@ public class ConvertObjectsToImage extends Module {
                     break;
                 case ColourModes.MEASUREMENT_VALUE:
                     nanBackground = true;
-                    hues = ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,false);
+                    hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, false);
                     bitDepth = 32;
                     break;
                 case ColourModes.PARENT_ID:
-                    hues = ColourFactory.getParentIDHues(inputObjects,parentForColour,false);
+                    hues = ColourFactory.getParentIDHues(inputObjects, parentForColour, false);
                     bitDepth = 32;
                     break;
                 case ColourModes.PARENT_MEASUREMENT_VALUE:
-                    hues = ColourFactory.getParentMeasurementValueHues(inputObjects,parentForColour,measurementForColour,false);
+                    hues = ColourFactory.getParentMeasurementValueHues(inputObjects, parentForColour,
+                            measurementForColour, false);
+                    bitDepth = 32;
+                    break;
+                case ColourModes.PARTNER_COUNT:
+                    hues = ColourFactory.getPartnerCountHues(inputObjects, partnerForColour, false);
                     bitDepth = 32;
                     break;
                 case ColourModes.SINGLE_COLOUR:
                 default:
-                    hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
+                    hues = ColourFactory.getSingleColourHues(inputObjects, ColourFactory.SingleColours.WHITE);
                     break;
             }
 
@@ -193,12 +200,12 @@ public class ConvertObjectsToImage extends Module {
                         break;
 
                     case ColourModes.SINGLE_COLOUR:
-                        IJ.run(dispIpl,"Grays","");
+                        IJ.run(dispIpl, "Grays", "");
                         break;
                 }
 
-                IntensityMinMax.run(dispIpl,dispIpl.getNSlices() > 1);
-                dispIpl.setPosition(1,1,1);
+                IntensityMinMax.run(dispIpl, dispIpl.getNSlices() > 1);
+                dispIpl.setPosition(1, 1, 1);
                 dispIpl.updateChannelAndDraw();
                 dispIpl.show();
 
@@ -211,20 +218,21 @@ public class ConvertObjectsToImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new ChoiceP(CONVERSION_MODE, this, ConversionModes.OBJECTS_TO_IMAGE, ConversionModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
         parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
         parameters.add(new ChoiceP(SINGLE_COLOUR_MODE, this, SingleColourModes.W_ON_B, SingleColourModes.ALL));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
+        parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_COLOUR, this));
 
     }
 
@@ -243,7 +251,7 @@ public class ConvertObjectsToImage extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
             returnedParameters.add(parameters.getParameter(VOLUME_TYPE));
 
-        } else if(parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
+        } else if (parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
@@ -255,7 +263,8 @@ public class ConvertObjectsToImage extends Module {
                 case ColourModes.CHILD_COUNT:
                     returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
                     if (parameters.getValue(INPUT_OBJECTS) != null) {
-                        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
+                        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR))
+                                .setParentObjectsName(inputObjectsName);
                     }
                     break;
                 case ColourModes.MEASUREMENT_VALUE:
@@ -267,18 +276,28 @@ public class ConvertObjectsToImage extends Module {
 
                 case ColourModes.PARENT_ID:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
+                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
+                            .setChildObjectsName(inputObjectsName);
                     break;
 
                 case ColourModes.PARENT_MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
+                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
+                            .setChildObjectsName(inputObjectsName);
 
                     returnedParameters.add(parameters.getParameter(MEASUREMENT));
                     if (parentObjectsName != null) {
                         ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
                     }
 
+                    break;
+
+                case ColourModes.PARTNER_COUNT:
+                    returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
+                    if (parameters.getValue(INPUT_OBJECTS) != null) {
+                        ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
+                                .setPartnerObjectsName(inputObjectsName);
+                    }
                     break;
 
                 case ColourModes.SINGLE_COLOUR:
@@ -306,7 +325,12 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

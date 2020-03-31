@@ -1,26 +1,32 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ij.IJ;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
 import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
+import sc.fiji.analyzeSkeleton.Vertex;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterOnImageEdge;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -32,8 +38,10 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -52,17 +60,8 @@ public class MeasureSkeleton extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
-        String nBranches = "SKELETON // NUM_BRANCHES";
-        String nJunctions = "SKELETON // NUM_JUNCTIONS";
-        String nEndPoints = "SKELETON // NUM_END_POINT_VOXELS";
-        String nJunctionVoxels = "SKELETON // NUM_JUNCTION_VOXELS";
-        String nSlabVoxels = "SKELETON // NUM_SLAB_VOXELS";
-        String nTriplePoints = "SKELETON // NUM_TRIPLE_POINTS";
-        String nQuadruplePoints = "SKELETON // NUM_QUADRUPLE_POINTS";
-        String avBranchLengthPx = "SKELETON // AV_BRANCH_LENGTH (PX)";
-        String avBranchLengthCal = "SKELETON // AV_BRANCH_LENGTH (${CAL})";
-        String maxBranchLengthPx = "SKELETON // MAX_BRANCH_LENGTH (PX)";
-        String maxBranchLengthCal = "SKELETON // MAX_BRANCH_LENGTH (${CAL})";
+        String edgeLengthPx = "SKELETON // LENGTH_(PX)";
+        String edgeLengthCal = "SKELETON // LENGTH_(${CAL})";
 
     }
 
@@ -90,8 +89,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static void createObjects(Obj inputObject, SkeletonResult result, ObjCollection skeletonObjects,
-            ObjCollection edgeObjects, ObjCollection junctionObjects, ObjCollection loopObjects) {
+    static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, ObjCollection skeletonObjects,
+            ObjCollection edgeObjects, ObjCollection junctionObjects) {
         // The Skeleton object doesn't contain any coordinate data, it just links
         // branches, junctions and loops.
         Obj skeletonObject = new Obj(VolumeType.POINTLIST, skeletonObjects.getName(), inputObject.getID(), inputObject);
@@ -100,12 +99,74 @@ public class MeasureSkeleton extends Module {
         skeletonObject.addParent(inputObject);
         skeletonObjects.add(skeletonObject);
 
-        // Iterating over all edges, creating objects and adding to relevant
-        // collection
+        // For the purpose of linking edges and junctions, these are stored in a
+        // HashMap.
+        HashMap<Edge, Obj> edgeObjs = new HashMap<>();
+        HashMap<Vertex, Obj> junctionObjs = new HashMap<>();
+
+        // Creating objects
+        double dppXY = inputObject.getDppXY();
         for (Graph graph : result.getGraph()) {
             for (Edge edge : graph.getEdges()) {
-                createEdgeObject(skeletonObject, edgeObjects, edge);
+                Obj edgeObj = createEdgeObject(skeletonObject, edgeObjects, edge);
+                edgeObjs.put(edge, edgeObj);
+
+                // Adding edge length measurements
+                Measurement lengthPx = new Measurement(Measurements.edgeLengthPx, edge.getLength());
+                edgeObj.addMeasurement(lengthPx);
+                Measurement lengthCal = new Measurement(Units.replace(Measurements.edgeLengthCal),
+                        edge.getLength() * dppXY);
+                edgeObj.addMeasurement(lengthCal);
             }
+
+            for (Vertex junction : graph.getVertices()) {
+                Obj junctionObj = createJunctionObject(skeletonObject, junctionObjects, junction);
+                junctionObjs.put(junction, junctionObj);
+            }
+        }
+
+        // Applying partnerships between edges and junctions
+        applyEdgeJunctionPartnerships(edgeObjs, junctionObjs);
+
+        // Returning skeleton (linking) object
+        return skeletonObject;
+
+    }
+
+    static void createLoopObjects(ObjCollection loopObjects, ObjCollection edgeObjects,
+            ObjCollection junctionObjects, String loopObjectsName, Obj skeletonObject) {
+        // Creating an object for the entire skeleton
+        Obj tempObject = new Obj("Temp", 1, skeletonObject);
+        CoordinateSet coords = tempObject.getCoordinateSet();
+
+        // Adding all points from edges and junctions
+        for (Obj edgeObject : edgeObjects.values()) {
+            coords.addAll(edgeObject.getCoordinateSet());
+        }
+        for (Obj junctionObject : junctionObjects.values()) {
+            coords.addAll(junctionObject.getCoordinateSet());
+        }
+
+        // Creating a binary image of all the points
+        Image binaryImage = tempObject.convertObjToImage("outputName");
+
+        // Converting binary image to loop objects
+        ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
+                Image.VolumeTypes.QUADTREE);
+
+        // Removing any objects on the image edge, as these aren't loops
+        FilterOnImageEdge.process(tempLoopObjects, 0, null, false, true, null);
+
+        int ID = 1;
+        for (Obj tempLoopObject : tempLoopObjects.values()) {
+            tempLoopObject.setID(ID++);
+            loopObjects.add(tempLoopObject);
+        }
+
+        // Adding relationship for every loop to the parent skeleton object
+        for (Obj loopObject : loopObjects.values()) {
+            loopObject.addParent(skeletonObject);
+            skeletonObject.addChild(loopObject);
         }
     }
 
@@ -120,7 +181,6 @@ public class MeasureSkeleton extends Module {
             try {
                 edgeObject.add(point.x, point.y, 0);
             } catch (PointOutOfRangeException e) {
-
             }
         }
 
@@ -128,26 +188,76 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static void addMeasurements(Obj inputObject, SkeletonResult skeletonResult) {
-        double dppXY = inputObject.getDppXY();
+    static Obj createJunctionObject(Obj skeletonObject, ObjCollection junctionObjects, Vertex junction) {
+        Obj junctionObject = junctionObjects.createAndAddNewObject(VolumeType.POINTLIST);
+        junctionObject.setT(skeletonObject.getT());
+        skeletonObject.addChild(junctionObject);
+        junctionObject.addParent(skeletonObject);
 
-        inputObject.addMeasurement(new Measurement(Measurements.nBranches, skeletonResult.getBranches()[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.nJunctions, skeletonResult.getJunctions()[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.nEndPoints, skeletonResult.getEndPoints()[0]));
-        inputObject
-                .addMeasurement(new Measurement(Measurements.nJunctionVoxels, skeletonResult.getJunctionVoxels()[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.nSlabVoxels, skeletonResult.getSlabs()[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.nTriplePoints, skeletonResult.getTriples()[0]));
-        inputObject.addMeasurement(new Measurement(Measurements.nQuadruplePoints, skeletonResult.getQuadruples()[0]));
-        inputObject.addMeasurement(
-                new Measurement(Measurements.avBranchLengthPx, skeletonResult.getAverageBranchLength()[0] / dppXY));
-        inputObject.addMeasurement(
-                new Measurement(Measurements.avBranchLengthCal, skeletonResult.getAverageBranchLength()[0]));
-        inputObject.addMeasurement(
-                new Measurement(Measurements.maxBranchLengthPx, skeletonResult.getMaximumBranchLength()[0] / dppXY));
-        inputObject.addMeasurement(
-                new Measurement(Measurements.maxBranchLengthCal, skeletonResult.getMaximumBranchLength()[0]));
+        // Adding coordinates
+        for (Point point : junction.getPoints()) {
+            try {
+                junctionObject.add(point.x, point.y, 0);
+            } catch (PointOutOfRangeException e) {
+            }
+        }
 
+        return junctionObject;
+
+    }
+
+    static void applyEdgeJunctionPartnerships(HashMap<Edge, Obj> edgeObjs, HashMap<Vertex, Obj> junctionObjs) {
+        // Iterating over each edge, adding the two vertices at either end as partners
+        for (Edge edge : edgeObjs.keySet()) {
+            Obj edgeObject = edgeObjs.get(edge);
+            Obj junction1 = junctionObjs.get(edge.getV1());
+            Obj junction2 = junctionObjs.get(edge.getV2());
+
+            edgeObject.addPartner(junction1);
+            junction1.addPartner(edgeObject);
+            edgeObject.addPartner(junction2);
+            junction2.addPartner(edgeObject);
+
+        }
+    }
+
+    static void applyLoopPartnerships(ObjCollection loopObjects, ObjCollection edgeObjects,
+            ObjCollection junctionObjects) {
+        // Linking junctions and loops with surfaces separated by 1px or less
+        for (Obj loopObject : loopObjects.values()) {
+            for (Obj junctionObject : junctionObjects.values()) {
+                if (loopObject.getSurfaceSeparation(junctionObject, true) <= 1) {
+                    loopObject.addPartner(junctionObject);
+                    junctionObject.addPartner(loopObject);
+                }
+            }
+        }
+
+        // Linking edges with both junctions linked to the loop
+        for (Obj loopObject : loopObjects.values()) {
+            for (Obj edgeObject : edgeObjects.values()) {
+                ObjCollection junctionPartners = edgeObject.getPartners(junctionObjects.getName());
+                boolean matchFound = true;
+
+                for (Obj junctionPartnerObject : junctionPartners.values()) {
+                    ObjCollection loopPartners = junctionPartnerObject.getPartners(loopObjects.getName());
+
+                    if (loopPartners == null) {
+                        matchFound = false;
+                        continue;
+                    }
+
+                    if (!loopPartners.values().contains(loopObject)) {
+                        matchFound = false;
+                    }
+                }
+
+                if (matchFound) {
+                    loopObject.addPartner(edgeObject);
+                    edgeObject.addPartner(loopObject);
+                }
+            }
+        }
     }
 
     @Override
@@ -160,10 +270,10 @@ public class MeasureSkeleton extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
         boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE);
-        String outputSkeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
-        String outputEdgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-        String outputJunctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
-        String outputLoopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+        String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
+        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
         double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -173,16 +283,13 @@ public class MeasureSkeleton extends Module {
             minLength = minLength / inputObjects.getFirst().getDppXY();
 
         // Creating empty output object collections
-        final ObjCollection skeletonObjects = addToWorkspace
-                ? new ObjCollection(outputSkeletonObjectsName, inputObjects)
+        final ObjCollection skeletonObjects = addToWorkspace ? new ObjCollection(skeletonObjectsName, inputObjects)
                 : null;
-        final ObjCollection edgeObjects = addToWorkspace ? new ObjCollection(outputEdgeObjectsName, inputObjects)
+        final ObjCollection edgeObjects = addToWorkspace ? new ObjCollection(edgeObjectsName, inputObjects) : null;
+        final ObjCollection junctionObjects = addToWorkspace ? new ObjCollection(junctionObjectsName, inputObjects)
                 : null;
-        final ObjCollection junctionObjects = addToWorkspace
-                ? new ObjCollection(outputJunctionObjectsName, inputObjects)
-                : null;
-        final ObjCollection loopObjects = addToWorkspace ? new ObjCollection(outputLoopObjectsName, inputObjects)
-                : null;
+        final ObjCollection loopObjects = addToWorkspace ? new ObjCollection(loopObjectsName, inputObjects) : null;
+
         if (addToWorkspace) {
             workspace.addObjects(skeletonObjects);
             workspace.addObjects(edgeObjects);
@@ -199,10 +306,8 @@ public class MeasureSkeleton extends Module {
         AtomicInteger count = new AtomicInteger();
 
         // For each object, create a child projected object, then generate a binary
-        // image. This is run through ImageJ's
-        // skeletonize plugin to ensure it has 4-way connectivity. Finally, it is
-        // processed with the AnalyzeSkeleton
-        // plugin.
+        // image. This is run through ImageJ's skeletonize plugin to ensure it has 4-way
+        // connectivity. Finally, it is processed with the AnalyzeSkeleton plugin.
         final double minLengthFinal = minLength;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
@@ -212,26 +317,22 @@ public class MeasureSkeleton extends Module {
                 analyzeSkeleton.setup("", projectedImage.getImagePlus());
                 SkeletonResult skeletonResult = analyzeSkeleton.run(AnalyzeSkeleton_.NONE, minLengthFinal, false,
                         projectedImage.getImagePlus(), true, false);
-                // skeletons has edges and junctions
-                // what is the relationship between them
-                // Junction a single point with any number of edges
-                // Edge is the path between two junction
-                // Pathy - collection of coordinates
 
                 // Adding the skeleton to the input object
                 if (addToWorkspace) {
                     try {
-                        createObjects(inputObject, skeletonResult, skeletonObjects, edgeObjects, junctionObjects,
-                                loopObjects);
+                        Obj skeletonObject = createEdgeJunctionObjects(inputObject, skeletonResult, skeletonObjects,
+                                edgeObjects, junctionObjects);
 
+                        // Creating loop objects
+                        createLoopObjects(loopObjects, edgeObjects, junctionObjects, loopObjectsName, skeletonObject);
+                        workspace.addObjects(loopObjects);
+
+                        applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
                     } catch (IntegerOverflowException e) {
                         e.printStackTrace();
                     }
                 }
-
-                // Taking the first result for each (in the event there was more than one
-                // isolated region)
-                // addMeasurements(inputObject,skeletonResult);
 
                 writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
 
@@ -307,51 +408,22 @@ public class MeasureSkeleton extends Module {
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
 
-        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.nBranches);
-        ref.setObjectsName(inputObjectsName);
+        ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(Measurements.edgeLengthPx);
+        ref.setObjectsName(edgeObjectsName);
+        returnedRefs.add(ref);
+        ref = objectMeasurementRefs.getOrPut(Units.replace(Measurements.edgeLengthCal));
+        ref.setObjectsName(edgeObjectsName);
         returnedRefs.add(ref);
 
-        ref = objectMeasurementRefs.getOrPut(Measurements.nJunctions);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
+        // ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthPx);
+        // ref.setObjectsName(inputObjectsName);
+        // returnedRefs.add(ref);
 
-        ref = objectMeasurementRefs.getOrPut(Measurements.nEndPoints);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.nJunctionVoxels);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.nSlabVoxels);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.nTriplePoints);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.nQuadruplePoints);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.avBranchLengthPx);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.avBranchLengthCal);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthPx);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
-
-        ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthCal);
-        ref.setObjectsName(inputObjectsName);
-        returnedRefs.add(ref);
+        // ref = objectMeasurementRefs.getOrPut(Measurements.maxBranchLengthCal);
+        // ref.setObjectsName(inputObjectsName);
+        // returnedRefs.add(ref);
 
         return returnedRefs;
 
@@ -363,8 +435,8 @@ public class MeasureSkeleton extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
@@ -372,10 +444,26 @@ public class MeasureSkeleton extends Module {
         String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
         String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
-        returnedRefs.add(relationshipRefs.getOrPut(inputObjectsName, skeletonObjectsName));
-        returnedRefs.add(relationshipRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
-        returnedRefs.add(relationshipRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-        returnedRefs.add(relationshipRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
+        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+
+        return returnedRefs;
+
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+
+        String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
+        String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+        String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
+
+        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
+        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
+        returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
 
         return returnedRefs;
 

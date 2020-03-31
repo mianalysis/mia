@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.ColourFactory;
 
@@ -20,8 +20,8 @@ public abstract class Overlay extends Module {
     public static final String CHILD_OBJECTS_FOR_COLOUR = "Child objects for colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String PARTNER_OBJECTS_FOR_COLOUR = "Partner objects for colour";
     public static final String OPACITY = "Opacity (%)";
-
 
     public Overlay(String name, ModuleCollection modules) {
         super(name, modules);
@@ -38,52 +38,59 @@ public abstract class Overlay extends Module {
         String MEASUREMENT_VALUE = "Measurement value";
         String PARENT_ID = "Parent ID";
         String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
+        String PARTNER_COUNT = "Partner count";
         String RANDOM_COLOUR = "Random colour";
         String SINGLE_COLOUR = "Single colour";
 
-        String[] ALL = new String[]{CHILD_COUNT,ID,MEASUREMENT_VALUE,PARENT_ID,PARENT_MEASUREMENT_VALUE,RANDOM_COLOUR,SINGLE_COLOUR};
+        String[] ALL = new String[] { CHILD_COUNT, ID, MEASUREMENT_VALUE, PARENT_ID, PARENT_MEASUREMENT_VALUE,
+                PARTNER_COUNT, RANDOM_COLOUR, SINGLE_COLOUR };
 
     }
 
-    public interface SingleColours extends ColourFactory.SingleColours {}
+    public interface SingleColours extends ColourFactory.SingleColours {
+    }
 
-    
-    public HashMap<Integer,Float> getHues(ObjCollection inputObjects) {
+    public HashMap<Integer, Float> getHues(ObjCollection inputObjects) {
         // Getting colour settings
         String colourMode = parameters.getValue(COLOUR_MODE);
         String singleColour = parameters.getValue(SINGLE_COLOUR);
         String childObjectsForColourName = parameters.getValue(CHILD_OBJECTS_FOR_COLOUR);
         String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+        String partnerObjectsForColourName = parameters.getValue(PARTNER_OBJECTS_FOR_COLOUR);
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
 
         // Generating colours for each object
         switch (colourMode) {
             case ColourModes.SINGLE_COLOUR:
             default:
-                return ColourFactory.getSingleColourHues(inputObjects,singleColour);
+                return ColourFactory.getSingleColourHues(inputObjects, singleColour);
             case ColourModes.CHILD_COUNT:
-                return ColourFactory.getChildCountHues(inputObjects,childObjectsForColourName,true);
+                return ColourFactory.getChildCountHues(inputObjects, childObjectsForColourName, true);
             case ColourModes.ID:
-                return ColourFactory.getIDHues(inputObjects,true);
+                return ColourFactory.getIDHues(inputObjects, true);
             case ColourModes.RANDOM_COLOUR:
                 return ColourFactory.getRandomHues(inputObjects);
             case ColourModes.MEASUREMENT_VALUE:
-                return ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,true);
+                return ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, true);
             case ColourModes.PARENT_ID:
-                return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
+                return ColourFactory.getParentIDHues(inputObjects, parentObjectsForColourName, true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
-                return ColourFactory.getParentMeasurementValueHues(inputObjects,parentObjectsForColourName,measurementForColour,true);
+                return ColourFactory.getParentMeasurementValueHues(inputObjects, parentObjectsForColourName,
+                        measurementForColour, true);
+            case ColourModes.PARTNER_COUNT:
+                return ColourFactory.getPartnerCountHues(inputObjects, partnerObjectsForColourName, true);
         }
     }
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ChoiceP(COLOUR_MODE,this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
-        parameters.add(new ChoiceP(SINGLE_COLOUR,this,SingleColours.WHITE,SingleColours.ALL));
-        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR,this));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR,this));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR,this));
-        parameters.add(new DoubleP(OPACITY,this,100));
+        parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
+        parameters.add(new ChoiceP(SINGLE_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
+        parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_COLOUR, this));
+        parameters.add(new DoubleP(OPACITY, this, 100));
 
     }
 
@@ -109,7 +116,8 @@ public abstract class Overlay extends Module {
         switch ((String) parameters.getValue(COLOUR_MODE)) {
             case ColourModes.CHILD_COUNT:
                 returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
-                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
+                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR))
+                        .setParentObjectsName(inputObjectsName);
                 break;
 
             case ColourModes.SINGLE_COLOUR:
@@ -126,17 +134,25 @@ public abstract class Overlay extends Module {
 
             case ColourModes.PARENT_ID:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
+                        .setChildObjectsName(inputObjectsName);
                 break;
 
             case ColourModes.PARENT_MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
+                        .setChildObjectsName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
                 colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR));
 
+                break;
+
+            case ColourModes.PARTNER_COUNT:
+                returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
+                ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
+                        .setPartnerObjectsName(inputObjectsName);
                 break;
         }
 
@@ -162,7 +178,7 @@ public abstract class Overlay extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         return null;
     }
 

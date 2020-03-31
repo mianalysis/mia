@@ -16,7 +16,7 @@ import wbif.sjx.MIA.Object.Workspace;
  */
 public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String RELATIONSHIP_MODE = "RelationshipRef mode";
+    public static final String RELATIONSHIP_MODE = "ParentChildRef mode";
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
@@ -264,7 +264,12 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

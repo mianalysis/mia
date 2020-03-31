@@ -459,8 +459,8 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
         if ((boolean) parameters.getValue(CREATE_CLUSTER_OBJECTS)) {
             // Getting input objects
@@ -468,13 +468,18 @@ public class RelateOneToOne extends Module {
             String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 
-            returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects1Name));
-            returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects2Name));
+            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
+            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
 
         }
 
         return returnedRefs;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

@@ -14,7 +14,8 @@ import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -133,8 +134,10 @@ public class AnalysisWriter {
 
             // Adding relationship references from this module
             Element relationshipElement = doc.createElement("RELATIONSHIPS");
-            RelationshipRefCollection relationshipRefs = module.updateAndGetRelationships();
-            relationshipElement = prepareRefsXML(doc, relationshipElement,relationshipRefs,"RELATIONSHIP");
+            ParentChildRefCollection parentChildRefs = module.updateAndGetParentChildRefs();
+            relationshipElement = prepareRefsXML(doc, relationshipElement,parentChildRefs,"PARENT_CHILD");
+            PartnerRefCollection partnerRefs = module.updateAndGetPartnerRefs();
+            relationshipElement = prepareRefsXML(doc, relationshipElement,partnerRefs,"PARTNER");
             moduleElement.appendChild(relationshipElement);
 
             // Adding current module to modules

@@ -359,7 +359,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     public boolean containsPoint(int x, int y, int z) {
-        Point<Integer> point = new Point<>(x,y,z);
+        Point<Integer> point = new Point<>(x, y, z);
 
         return containsPoint(point);
 

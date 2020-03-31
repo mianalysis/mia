@@ -142,26 +142,29 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer,Float> getChildCountHues(ObjCollection objects, String childObjectsName, boolean normalised) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getChildCountHues(ObjCollection objects, String childObjectsName,
+            boolean normalised) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
-        for (Obj obj:objects.values()) {
-            if (obj.getChildren(childObjectsName) == null) continue;
+        for (Obj obj : objects.values()) {
+            if (obj.getChildren(childObjectsName) == null)
+                continue;
             cs.addMeasure(obj.getChildren(childObjectsName).size());
         }
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
             float H = 0f;
 
             ObjCollection childObjects = object.getChildren(childObjectsName);
-            if (childObjects== null) {
-                hues.put(ID,H);
+            if (childObjects == null) {
+                hues.put(ID, H);
                 continue;
             }
             H = (float) object.getChildren(childObjectsName).size();
@@ -171,7 +174,47 @@ public class ColourFactory {
                 H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
             }
 
-            hues.put(ID,H);
+            hues.put(ID, H);
+
+        }
+
+        return hues;
+
+    }
+
+    public static HashMap<Integer, Float> getPartnerCountHues(ObjCollection objects, String partnerObjectsName,
+            boolean normalised) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
+
+        // Getting minimum and maximum values from measurement (if required)
+        CumStat cs = new CumStat();
+        for (Obj obj : objects.values()) {
+            if (obj.getPartners(partnerObjectsName) == null)
+                continue;
+            cs.addMeasure(obj.getPartners(partnerObjectsName).size());
+        }
+
+        for (Obj object : objects.values()) {
+            int ID = object.getID();
+
+            // Default hue value in case none is assigned
+            float H = 0f;
+
+            ObjCollection partnerObjects = object.getPartners(partnerObjectsName);
+            if (partnerObjects == null) {
+                hues.put(ID, H);
+                continue;
+            }
+            H = (float) object.getPartners(partnerObjectsName).size();
+            if (normalised) {
+                double startH = 0;
+                double endH = 120d / 255d;
+                H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+            }
+
+            hues.put(ID, H);
 
         }
 

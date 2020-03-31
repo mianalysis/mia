@@ -31,6 +31,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -42,12 +43,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRef;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.BresenhamLine;
@@ -359,8 +354,7 @@ public class FitSpline extends Module {
         int pathLength = longestPath.size();
 
         // If the path is too short for the fitting range
-        if (pathLength < nPoints)
-            return;
+        if (pathLength < nPoints) return;
 
         int count = 0;
         for (Vertex vertex : longestPath) {
@@ -434,7 +428,6 @@ public class FitSpline extends Module {
 
         Obj splineObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
-        // The first vertex is the
         Vertex previousVertex = null;
         for (Vertex currentVertex : spline) {
             if (previousVertex == null) {
@@ -572,8 +565,7 @@ public class FitSpline extends Module {
             boolean isLoop = checkForLoop(longestPath);
 
             // If the object is too small to be fit
-            if (longestPath.size() < 3)
-                continue;
+            if (longestPath.size() < 3) continue;
 
             // If necessary, inverting the longest path so the first point is closest to the
             // reference
@@ -597,8 +589,9 @@ public class FitSpline extends Module {
                     iterations, accuracy, isLoop);
             TreeMap<Double, Double> curvature = calculator.getCurvature();
 
-            if (curvature == null)
+            if (curvature == null) {
                 continue;
+            }
 
             measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
             measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
@@ -862,17 +855,22 @@ public class FitSpline extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection refCollection = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection refCollection = new ParentChildRefCollection();
 
         if (!parameters.getValue(OBJECT_OUTPUT_MODE).equals(ObjectOutputModes.DO_NOT_STORE)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            refCollection.add(new RelationshipRef(inputObjectsName, outputObjectsName));
+            refCollection.add(parentChildRefs.getOrPut(inputObjectsName, outputObjectsName));
         }
 
         return refCollection;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

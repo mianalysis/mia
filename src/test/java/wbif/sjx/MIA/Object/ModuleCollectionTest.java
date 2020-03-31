@@ -21,7 +21,7 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 
 import java.util.LinkedHashSet;
 
@@ -422,7 +422,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(singleClassCluster);
 
         // Getting actual relationships
-        RelationshipRefCollection actualRelationships = modules.getRelationshipRefs();
+        ParentChildRefCollection actualRelationships = modules.getParentChildRefs();
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
@@ -550,7 +550,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         modules.add(singleClassCluster);
 
         // Getting actual relationships
-        RelationshipRefCollection actualRelationships = modules.getRelationshipRefs(singleClassCluster);
+        ParentChildRefCollection actualRelationships = modules.getParentChildRefs(singleClassCluster);
 
         // Getting actual relationships for spots
         String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
