@@ -128,6 +128,7 @@ public class InputControl extends Module {
 
         // Adding a filter to specifically remove OSX temp files
         fileCrawler.addFileCondition(new NameContainsString("._", NameContainsString.Mode.EXC_PARTIAL));
+        fileCrawler.addFileCondition(new NameContainsString(".DS_Store", NameContainsString.Mode.EXC_COMPLETE));
 
     }
 

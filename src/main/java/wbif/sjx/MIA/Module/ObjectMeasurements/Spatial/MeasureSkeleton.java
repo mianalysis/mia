@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ij.IJ;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
@@ -13,7 +14,6 @@ import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -60,10 +60,6 @@ public class MeasureSkeleton extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
-        // String avBranchLengthPx = "SKELETON // AV_BRANCH_LENGTH (PX)";
-        // String avBranchLengthCal = "SKELETON // AV_BRANCH_LENGTH (${CAL})";
-        // String maxBranchLengthPx = "SKELETON // MAX_BRANCH_LENGTH (PX)";
-        // String maxBranchLengthCal = "SKELETON // MAX_BRANCH_LENGTH (${CAL})";
         String edgeLengthPx = "SKELETON // LENGTH_(PX)";
         String edgeLengthCal = "SKELETON // LENGTH_(${CAL})";
 
@@ -137,8 +133,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static ObjCollection createLoopObjects(ObjCollection edgeObjects, ObjCollection junctionObjects,
-            String loopObjectsName, Obj skeletonObject) {
+    static void createLoopObjects(ObjCollection loopObjects, ObjCollection edgeObjects,
+            ObjCollection junctionObjects, String loopObjectsName, Obj skeletonObject) {
         // Creating an object for the entire skeleton
         Obj tempObject = new Obj("Temp", 1, skeletonObject);
         CoordinateSet coords = tempObject.getCoordinateSet();
@@ -155,20 +151,23 @@ public class MeasureSkeleton extends Module {
         Image binaryImage = tempObject.convertObjToImage("outputName");
 
         // Converting binary image to loop objects
-        ObjCollection loopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
+        ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
                 Image.VolumeTypes.QUADTREE);
 
         // Removing any objects on the image edge, as these aren't loops
-        FilterOnImageEdge.process(loopObjects, 0, null, false, true, null);
+        FilterOnImageEdge.process(tempLoopObjects, 0, null, false, true, null);
+
+        int ID = 1;
+        for (Obj tempLoopObject : tempLoopObjects.values()) {
+            tempLoopObject.setID(ID++);
+            loopObjects.add(tempLoopObject);
+        }
 
         // Adding relationship for every loop to the parent skeleton object
         for (Obj loopObject : loopObjects.values()) {
             loopObject.addParent(skeletonObject);
             skeletonObject.addChild(loopObject);
         }
-
-        return loopObjects;
-
     }
 
     static Obj createEdgeObject(Obj skeletonObject, ObjCollection edgeObjects, Edge edge) {
@@ -229,22 +228,25 @@ public class MeasureSkeleton extends Module {
             for (Obj junctionObject : junctionObjects.values()) {
                 if (loopObject.getSurfaceSeparation(junctionObject, true) <= 1) {
                     loopObject.addPartner(junctionObject);
+                    junctionObject.addPartner(loopObject);
                 }
             }
         }
 
         // Linking edges with both junctions linked to the loop
         for (Obj loopObject : loopObjects.values()) {
-            MIA.log.writeDebug("Loop "+loopObject.getID()+"_"+loopObjects.size());
             for (Obj edgeObject : edgeObjects.values()) {
-                MIA.log.writeDebug("    Edge "+edgeObject.getID()+"_"+edgeObjects.size());
                 ObjCollection junctionPartners = edgeObject.getPartners(junctionObjects.getName());
                 boolean matchFound = true;
 
                 for (Obj junctionPartnerObject : junctionPartners.values()) {
-                    MIA.log.writeDebug("            Junction "+junctionPartnerObject.getID()+"_"+junctionPartners.size());
-                    ObjCollection loopPartners = junctionPartnerObject.getPartners(loopObject.getName());
-                    MIA.log.writeDebug("    "+loopPartners.values().contains(loopObject));
+                    ObjCollection loopPartners = junctionPartnerObject.getPartners(loopObjects.getName());
+
+                    if (loopPartners == null) {
+                        matchFound = false;
+                        continue;
+                    }
+
                     if (!loopPartners.values().contains(loopObject)) {
                         matchFound = false;
                     }
@@ -252,6 +254,7 @@ public class MeasureSkeleton extends Module {
 
                 if (matchFound) {
                     loopObject.addPartner(edgeObject);
+                    edgeObject.addPartner(loopObject);
                 }
             }
         }
@@ -285,11 +288,13 @@ public class MeasureSkeleton extends Module {
         final ObjCollection edgeObjects = addToWorkspace ? new ObjCollection(edgeObjectsName, inputObjects) : null;
         final ObjCollection junctionObjects = addToWorkspace ? new ObjCollection(junctionObjectsName, inputObjects)
                 : null;
+        final ObjCollection loopObjects = addToWorkspace ? new ObjCollection(loopObjectsName, inputObjects) : null;
 
         if (addToWorkspace) {
             workspace.addObjects(skeletonObjects);
             workspace.addObjects(edgeObjects);
             workspace.addObjects(junctionObjects);
+            workspace.addObjects(loopObjects);
         }
 
         // Configuring multithreading
@@ -320,8 +325,7 @@ public class MeasureSkeleton extends Module {
                                 edgeObjects, junctionObjects);
 
                         // Creating loop objects
-                        ObjCollection loopObjects = createLoopObjects(edgeObjects, junctionObjects, loopObjectsName,
-                                skeletonObject);
+                        createLoopObjects(loopObjects, edgeObjects, junctionObjects, loopObjectsName, skeletonObject);
                         workspace.addObjects(loopObjects);
 
                         applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
@@ -329,10 +333,6 @@ public class MeasureSkeleton extends Module {
                         e.printStackTrace();
                     }
                 }
-
-                // Taking the first result for each (in the event there was more than one
-                // isolated region)
-                // addMeasurements(inputObject,skeletonResult);
 
                 writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
 

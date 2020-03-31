@@ -354,8 +354,7 @@ public class FitSpline extends Module {
         int pathLength = longestPath.size();
 
         // If the path is too short for the fitting range
-        if (pathLength < nPoints)
-            return;
+        if (pathLength < nPoints) return;
 
         int count = 0;
         for (Vertex vertex : longestPath) {
@@ -429,7 +428,6 @@ public class FitSpline extends Module {
 
         Obj splineObject = outputObjects.createAndAddNewObject(VolumeType.POINTLIST);
 
-        // The first vertex is the
         Vertex previousVertex = null;
         for (Vertex currentVertex : spline) {
             if (previousVertex == null) {
@@ -567,8 +565,7 @@ public class FitSpline extends Module {
             boolean isLoop = checkForLoop(longestPath);
 
             // If the object is too small to be fit
-            if (longestPath.size() < 3)
-                continue;
+            if (longestPath.size() < 3) continue;
 
             // If necessary, inverting the longest path so the first point is closest to the
             // reference
@@ -592,8 +589,9 @@ public class FitSpline extends Module {
                     iterations, accuracy, isLoop);
             TreeMap<Double, Double> curvature = calculator.getCurvature();
 
-            if (curvature == null)
+            if (curvature == null) {
                 continue;
+            }
 
             measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
             measureRelativeCurvature(inputObject, longestPath, curvature, useReference);

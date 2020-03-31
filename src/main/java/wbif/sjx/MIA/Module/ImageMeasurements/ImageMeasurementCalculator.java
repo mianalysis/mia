@@ -5,28 +5,48 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 /**
  * Created by Stephen Cross on 19/03/2019.
  */
 public class ImageMeasurementCalculator extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
+
+    public static final String VALUE_SEPARATOR_1 = "Value 1 selection";
+    public static final String VALUE_MODE_1 = "Value mode 1";
+    public static final String FIXED_VALUE_1 = "Fixed value 1";
     public static final String MEASUREMENT_1 = "Measurement 1";
+
+    public static final String VALUE_SEPARATOR_2 = "Value 2 selection";
+    public static final String VALUE_MODE_2 = "Value mode 2";
+    public static final String FIXED_VALUE_2 = "Fixed value 2";
     public static final String MEASUREMENT_2 = "Measurement 2";
+
+    public static final String CALCULATION_SEPARATOR = "Measurement calculation";
     public static final String OUTPUT_MEASUREMENT = "Output measurement";
     public static final String CALCULATION_MODE = "Calculation mode";
 
-    public ImageMeasurementCalculator(ModuleCollection modules) {
-        super("Image measurement calculator",modules);
-    }
+    public interface ValueModes {
+        String FIXED = "Fixed";
+        String MEASUREMENT = "Measurement";
 
+        String[] ALL = new String[] { FIXED, MEASUREMENT };
+
+    }
 
     public interface CalculationModes {
         String ADD = "Add measurement 1 and measurement 2";
@@ -34,52 +54,32 @@ public class ImageMeasurementCalculator extends Module {
         String MULTIPLY = "Multiply measurement 1 and measurement 2";
         String SUBTRACT = "Subtract measurement 2 from measurement 1";
 
-        String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[] { ADD, DIVIDE, MULTIPLY, SUBTRACT };
 
     }
 
+    public ImageMeasurementCalculator(ModuleCollection modules) {
+        super("Image measurement calculator", modules);
+    }
 
-    public static void doCalculation(Image image, String calculationMode, String measurementName1, String measurementName2, String outputMeasurement) {
-        Measurement measurement1 = image.getMeasurement(measurementName1);
-        Measurement measurement2 = image.getMeasurement(measurementName2);
-
-        // If either measurement is missing, assign Double.NaN
-        if (measurement1 == null || measurement2 == null) {
-            image.addMeasurement(new Measurement(outputMeasurement,Double.NaN));
-            return;
-        }
-
-        double measurementValue1 = measurement1.getValue();
-        double measurementValue2 = measurement2.getValue();
-        double outputMeasurementValue = Double.NaN;
-
+    public static double doCalculation(double value1, double value2, String calculationMode) {
         switch (calculationMode) {
+            default:
+                return Double.NaN;
             case CalculationModes.ADD:
-                outputMeasurementValue = measurementValue1 + measurementValue2;
-                break;
-
+                return value1 + value2;
             case CalculationModes.DIVIDE:
-                outputMeasurementValue = measurementValue1 / measurementValue2;
-                break;
-
+                return value1 / value2;
             case CalculationModes.MULTIPLY:
-                outputMeasurementValue = measurementValue1 * measurementValue2;
-                break;
-
+                return value1 * value2;
             case CalculationModes.SUBTRACT:
-                outputMeasurementValue = measurementValue1 - measurementValue2;
-                break;
+                return value1 - value2;
         }
-
-        // Adding the new measurement
-        image.addMeasurement(new Measurement(outputMeasurement,outputMeasurementValue));
-
     }
 
     public static String getFullName(String measurementName) {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
-
 
     @Override
     public String getPackageName() {
@@ -95,16 +95,49 @@ public class ImageMeasurementCalculator extends Module {
     protected boolean process(Workspace workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
+
+        String valueMode1 = parameters.getValue(VALUE_MODE_1);
+        double fixedValue1 = parameters.getValue(FIXED_VALUE_1);
         String measurementName1 = parameters.getValue(MEASUREMENT_1);
+
+        String valueMode2 = parameters.getValue(VALUE_MODE_2);
+        double fixedValue2 = parameters.getValue(FIXED_VALUE_2);
         String measurementName2 = parameters.getValue(MEASUREMENT_2);
+
         String outputMeasurementName = getFullName(parameters.getValue(OUTPUT_MEASUREMENT));
         String calculationMode = parameters.getValue(CALCULATION_MODE);
 
-        // Getting measurements
-        doCalculation(inputImage,calculationMode,measurementName1,measurementName2,outputMeasurementName);
+        // Getting value 1
+        double value1 = 0;
+        switch (valueMode1) {
+            case ValueModes.FIXED:
+                value1 = fixedValue1;
+                break;
+            case ValueModes.MEASUREMENT:
+                value1 = inputImage.getMeasurement(measurementName1).getValue();
+                break;
+        }
+
+        // Getting value 2
+        double value2 = 0;
+        switch (valueMode2) {
+            case ValueModes.FIXED:
+                value2 = fixedValue2;
+                break;
+            case ValueModes.MEASUREMENT:
+                value2 = inputImage.getMeasurement(measurementName2).getValue();
+                break;
+        }
+
+        // Performing calculation
+        double result = doCalculation(value1, value2, calculationMode);
+
+        // Adding the new measurement
+        inputImage.addMeasurement(new Measurement(outputMeasurementName, result));
 
         // Showing results
-        if (showOutput) inputImage.showMeasurements(this);
+        if (showOutput)
+            inputImage.showMeasurements(this);
 
         return true;
 
@@ -112,9 +145,20 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_1, this));
+        parameters.add(new ChoiceP(VALUE_MODE_1, this, ValueModes.MEASUREMENT, ValueModes.ALL));
+        parameters.add(new DoubleP(FIXED_VALUE_1, this, 0));
         parameters.add(new ImageMeasurementP(MEASUREMENT_1, this));
+
+        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_2, this));
+        parameters.add(new ChoiceP(VALUE_MODE_2, this, ValueModes.MEASUREMENT, ValueModes.ALL));
+        parameters.add(new DoubleP(FIXED_VALUE_2, this, 0));
         parameters.add(new ImageMeasurementP(MEASUREMENT_2, this));
+
+        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new StringP(OUTPUT_MEASUREMENT, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.ADD, CalculationModes.ALL));
 
@@ -122,15 +166,44 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        ParameterCollection returnedParams = new ParameterCollection();
+
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        ImageMeasurementP measurement1 = parameters.getParameter(MEASUREMENT_1);
-        measurement1.setImageName(inputImageName);
+        returnedParams.add(parameters.getParameter(INPUT_SEPARATOR));
+        returnedParams.add(parameters.getParameter(INPUT_IMAGE));
 
-        ImageMeasurementP measurement2 = parameters.getParameter(MEASUREMENT_2);
-        measurement2.setImageName(inputImageName);
+        returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_1));
+        returnedParams.add(parameters.getParameter(VALUE_MODE_1));
+        switch ((String) parameters.getValue(VALUE_MODE_1)) {
+            case ValueModes.FIXED:
+                returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
+                break;
 
-        return parameters;
+            case ValueModes.MEASUREMENT:
+                returnedParams.add(parameters.getParameter(MEASUREMENT_1));
+                ((ImageMeasurementP) parameters.getParameter(MEASUREMENT_1)).setImageName(inputImageName);
+                break;
+        }
+
+        returnedParams.add(parameters.getParameter(VALUE_SEPARATOR_2));
+        returnedParams.add(parameters.getParameter(VALUE_MODE_2));
+        switch ((String) parameters.getValue(VALUE_MODE_2)) {
+            case ValueModes.FIXED:
+                returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
+                break;
+
+            case ValueModes.MEASUREMENT:
+                returnedParams.add(parameters.getParameter(MEASUREMENT_2));
+                ((ImageMeasurementP) parameters.getParameter(MEASUREMENT_2)).setImageName(inputImageName);
+                break;
+        }
+
+        returnedParams.add(parameters.getParameter(CALCULATION_SEPARATOR));
+        returnedParams.add(parameters.getParameter(OUTPUT_MEASUREMENT));
+        returnedParams.add(parameters.getParameter(CALCULATION_MODE));
+
+        return returnedParams;
 
     }
 

@@ -58,7 +58,10 @@ public class Watershed extends Module {
 
     }
 
-    public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity, boolean multithread) throws InterruptedException {
+    public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic,
+            int connectivity, boolean multithread) throws InterruptedException {
+        String name = new Watershed(null).getName();
+
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
@@ -104,7 +107,7 @@ public class Watershed extends Module {
 
                     //  Replacing the maskIpl intensity
                     getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
-                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
+                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks", name);
 
                 };
                 pool.submit(task);
