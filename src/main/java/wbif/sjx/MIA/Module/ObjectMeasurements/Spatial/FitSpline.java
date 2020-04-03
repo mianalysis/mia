@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.filter.Convolver;
@@ -16,22 +17,17 @@ import inra.ijpb.binary.ChamferWeights;
 import inra.ijpb.measure.region2d.GeodesicDiameter;
 import inra.ijpb.measure.region2d.GeodesicDiameter.Result;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.ThresholdImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.ManualThreshold;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -43,6 +39,12 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.BresenhamLine;
@@ -187,7 +189,12 @@ public class FitSpline extends Module {
         // Using MorphoLibJ to identify longest path
         GeodesicDiameter geodesicDiameter = new GeodesicDiameter(ChamferWeights.BORGEFORS);
         geodesicDiameter.setComputePaths(true);
-        Map<Integer, Result> results = geodesicDiameter.analyzeRegions(image.getImagePlus());
+
+        // Removing calibration, as GeodesicDiameter will output calibrated units
+        ImagePlus ipl = image.getImagePlus();
+        ipl.setCalibration(null);
+
+        Map<Integer, Result> results = geodesicDiameter.analyzeRegions(ipl);
 
         // Converting coordinates to expected format
         ArrayList<Vertex> longestPath = new ArrayList<>();

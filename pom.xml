@@ -11,7 +11,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
 <groupId>wbif.sjx</groupId>
 <artifactId>MIA_</artifactId>
-<version>0.12.4-SNAPSHOT</version>
+<version>0.13.0</version>
 <packaging>jar</packaging>
 <name>MIA_</name>
 <url>https://github.com/SJCross/MIA</url>
@@ -280,12 +280,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     </dependency>
     
     <dependency>
-        <!-- <groupId>com.github.SJCross</groupId>
+        <groupId>com.github.SJCross</groupId>
         <artifactId>Common</artifactId>
-        <version>v1.6.0</version> -->
-        <groupId>wbif.sjx</groupId>
+        <version>v1.6.1</version>
+        <!-- <groupId>wbif.sjx</groupId>
         <artifactId>Common</artifactId>
-        <version>1.6.1-SNAPSHOT</version>
+        <version>1.6.1-SNAPSHOT</version> -->
     </dependency>
 </dependencies>
 
