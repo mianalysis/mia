@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Object.Parameters;
+package wbif.sjx.MIA.Object.Parameters.Text;
 
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;

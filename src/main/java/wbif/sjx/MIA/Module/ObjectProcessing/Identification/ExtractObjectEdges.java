@@ -11,10 +11,9 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
@@ -268,23 +267,28 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
         if ((boolean) parameters.getValue(CREATE_EDGE_OBJECTS)) {
             String outputEdgeObjects = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            returnedRelationships.add(relationshipRefs.getOrPut(inputObjects, outputEdgeObjects));
+            returnedRelationships.add(parentChildRefs.getOrPut(inputObjects, outputEdgeObjects));
         }
 
         if ((boolean) parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
             String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            returnedRelationships.add(relationshipRefs.getOrPut(inputObjects,outputInteriorObjects));
+            returnedRelationships.add(parentChildRefs.getOrPut(inputObjects,outputInteriorObjects));
         }
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

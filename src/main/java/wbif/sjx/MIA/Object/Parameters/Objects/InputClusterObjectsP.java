@@ -1,6 +1,7 @@
-package wbif.sjx.MIA.Object.Parameters;
+package wbif.sjx.MIA.Object.Parameters.Objects;
 
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;

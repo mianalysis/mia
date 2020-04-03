@@ -21,15 +21,16 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
@@ -132,9 +133,12 @@ public class ParametersPanel extends JScrollPane {
                 addSummaryRefExportControls(measurementReferences,objectName+" (Object)",componentFactory,c);
             }
 
-            RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
-            addSummaryRefExportControls(relationshipRefs,"Number of children",componentFactory,c);
+            ParentChildRefCollection parentChildRefs = modules.getParentChildRefs();
+            addSummaryRefExportControls(parentChildRefs, "Number of children", componentFactory, c);
 
+            PartnerRefCollection partnerRefs = modules.getPartnerRefs();
+            addSummaryRefExportControls(partnerRefs, "Number of partners", componentFactory, c);
+            
         }
 
         JSeparator separator = new JSeparator();

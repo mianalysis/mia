@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import wbif.sjx.MIA.Object.Parameters.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
+import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 
 public class MessageArea extends ParameterControl {
     protected TextType parameter;

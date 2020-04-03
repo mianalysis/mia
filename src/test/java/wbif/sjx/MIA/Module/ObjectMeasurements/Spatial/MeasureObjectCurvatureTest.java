@@ -1,23 +1,29 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Rings2D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -53,7 +59,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         // Loading the reference image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Ref_image",ipl);
+        Image image = new Image("Ref_image", ipl);
         workspace.addImage(image);
 
         // Initialising FilterObjects module

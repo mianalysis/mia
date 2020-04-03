@@ -13,10 +13,8 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
@@ -186,20 +184,25 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-                returnedRelationships.add(relationshipRefs.getOrPut(inputObjectsName,outputObjectsName));
+                returnedRelationships.add(parentChildRefs.getOrPut(inputObjectsName,outputObjectsName));
 
                 break;
         }
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

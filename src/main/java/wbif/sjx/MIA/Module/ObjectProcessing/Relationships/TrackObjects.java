@@ -18,6 +18,9 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
@@ -584,7 +587,7 @@ public class TrackObjects extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new OutputTrackObjectP(TRACK_OBJECTS,this));
+        parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS,this));
 
         parameters.add(new ParamSeparatorP(TRACKING_SEPARATOR,this));
         parameters.add(new IntegerP(MAXIMUM_MISSING_FRAMES,this,0));
@@ -719,16 +722,21 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        returnedRelationships.add(relationshipRefs.getOrPut(trackObjectsName,inputObjectsName));
+        returnedRelationships.add(parentChildRefs.getOrPut(trackObjectsName,inputObjectsName));
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

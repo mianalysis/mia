@@ -15,18 +15,11 @@ import org.w3c.dom.Node;
 
 import ij.Prefs;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRef;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRef;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
@@ -40,7 +33,8 @@ public abstract class Module extends Ref implements Comparable {
     protected ImageMeasurementRefCollection imageMeasurementRefs = new ImageMeasurementRefCollection();
     protected ObjMeasurementRefCollection objectMeasurementRefs = new ObjMeasurementRefCollection();
     protected MetadataRefCollection metadataRefs = new MetadataRefCollection();
-    protected RelationshipRefCollection relationshipRefs = new RelationshipRefCollection();
+    protected ParentChildRefCollection parentChildRefs = new ParentChildRefCollection();
+    protected PartnerRefCollection partnerRefs = new PartnerRefCollection();
 
     private static boolean verbose = false;
     private String notes = "";
@@ -86,7 +80,9 @@ public abstract class Module extends Ref implements Comparable {
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
-    public abstract RelationshipRefCollection updateAndGetRelationships();
+    public abstract ParentChildRefCollection updateAndGetParentChildRefs();
+
+    public abstract PartnerRefCollection updateAndGetPartnerRefs();
 
     public abstract boolean verify();
 
@@ -153,12 +149,16 @@ public abstract class Module extends Ref implements Comparable {
         metadataRefs.add(ref);
     }
 
-    public RelationshipRef getRelationshipRef(String parentName, String childName) {
-        return relationshipRefs.getOrPut(parentName,childName);
+    public ParentChildRef getParentChildRef(String parentName, String childName) {
+        return parentChildRefs.getOrPut(parentName,childName);
     }
 
-    public void addRelationshipRef(RelationshipRef ref) {
-        relationshipRefs.add(ref);
+    public void addParentChildRef(ParentChildRef ref) {
+        parentChildRefs.add(ref);
+    }
+    
+    public void addPartnerRef(PartnerRef ref) {
+        partnerRefs.add(ref);
     }
 
     public <T extends Parameter> T getParameter(String name) {
@@ -341,11 +341,11 @@ public abstract class Module extends Ref implements Comparable {
             newMetadataRefs.add(newRef);
         }
 
-        RelationshipRefCollection newRelationshipRefs = newModule.relationshipRefs;
-        for (RelationshipRef ref:relationshipRefs.values()) {
-            RelationshipRef newRef = ref.duplicate();
+        ParentChildRefCollection newParentChildRefs = newModule.parentChildRefs;
+        for (ParentChildRef ref: parentChildRefs.values()) {
+            ParentChildRef newRef = ref.duplicate();
             if (newRef == null) continue;
-            newRelationshipRefs.add(newRef);
+            newParentChildRefs.add(newRef);
         }
 
         return newModule;
@@ -368,7 +368,7 @@ public abstract class Module extends Ref implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return getName().compareTo(((Module) o).getNotes());
+        return getName().compareTo(((Module) o).getName());
 
     }
 

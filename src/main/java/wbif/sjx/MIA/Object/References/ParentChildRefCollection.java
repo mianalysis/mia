@@ -10,23 +10,23 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
- * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
+ * Extension of a TreeMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class RelationshipRefCollection extends TreeMap<String, RelationshipRef> implements RefCollection<RelationshipRef> {
+public class ParentChildRefCollection extends TreeMap<String, ParentChildRef> implements RefCollection<ParentChildRef> {
     /**
      *
      */
     private static final long serialVersionUID = 6633110280044918217L;
 
-    public RelationshipRef getOrPut(String parent, String child) {
+    public ParentChildRef getOrPut(String parent, String child) {
         String key = parent+" // "+child;
-        putIfAbsent((String) key,new RelationshipRef(parent,child));
-        return (RelationshipRef) super.get(key);
+        putIfAbsent((String) key,new ParentChildRef(parent,child));
+        return (ParentChildRef) super.get(key);
 
     }
 
-    public boolean add(RelationshipRef ref) {
+    public boolean add(ParentChildRef ref) {
         put(ref.getParentName()+" // "+ref.getChildName(),ref);
         return true;
     }
@@ -61,15 +61,15 @@ public class RelationshipRefCollection extends TreeMap<String, RelationshipRef> 
 
     }
 
-    public LinkedHashSet<RelationshipRef> getChildren(String parentName, boolean useHierarchy) {
+    public LinkedHashSet<ParentChildRef> getChildren(String parentName, boolean useHierarchy) {
         TreeSet<String> childNames = getChildNames(parentName,useHierarchy,"");
 
-        LinkedHashSet<RelationshipRef> relationshipRefs = new LinkedHashSet<>();
+        LinkedHashSet<ParentChildRef> ParentChildRefs = new LinkedHashSet<>();
         for (String childName:childNames) {
-            relationshipRefs.add(getOrPut(parentName,childName));
+            ParentChildRefs.add(getOrPut(parentName,childName));
         }
 
-        return relationshipRefs;
+        return ParentChildRefs;
 
     }
 
@@ -106,22 +106,22 @@ public class RelationshipRefCollection extends TreeMap<String, RelationshipRef> 
 
     }
 
-    private static TreeSet<String> getChildNames(RelationshipRefCollection relationships, String parentName) {
+    private static TreeSet<String> getChildNames(ParentChildRefCollection relationships, String parentName) {
         TreeSet<String> childNames = new TreeSet<>();
 
-        for (RelationshipRef relationshipRef :relationships.values()) {
-            if (relationshipRef.getParentName().equals(parentName)) childNames.add(relationshipRef.getChildName());
+        for (ParentChildRef ParentChildRef :relationships.values()) {
+            if (ParentChildRef.getParentName().equals(parentName)) childNames.add(ParentChildRef.getChildName());
         }
 
         return childNames;
 
     }
 
-    private static TreeSet<String> getParentNames(RelationshipRefCollection relationships, String childName) {
+    private static TreeSet<String> getParentNames(ParentChildRefCollection relationships, String childName) {
         TreeSet<String> parentNames = new TreeSet<>();
 
-        for (RelationshipRef relationshipRef :relationships.values()) {
-            if (relationshipRef.getChildName().equals(childName)) parentNames.add(relationshipRef.getParentName());
+        for (ParentChildRef ParentChildRef :relationships.values()) {
+            if (ParentChildRef.getChildName().equals(childName)) parentNames.add(ParentChildRef.getParentName());
         }
 
         return parentNames;

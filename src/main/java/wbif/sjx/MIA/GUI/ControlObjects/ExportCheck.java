@@ -4,7 +4,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
@@ -93,8 +93,8 @@ public class ExportCheck extends JCheckBox implements ActionListener {
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs();
                 for (ExportableRef ref:metadataRefs.values()) ref.setExportIndividual(isSelected());
 
-                RelationshipRefCollection relationshipRefs = modules.getRelationshipRefs();
-                for (SummaryRef ref:relationshipRefs.values()) setStates(ref);
+                ParentChildRefCollection ParentChildRefs = modules.getParentChildRefs();
+                for (SummaryRef ref:ParentChildRefs.values()) setStates(ref);
 
                 break;
         }

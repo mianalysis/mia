@@ -1,6 +1,7 @@
-package wbif.sjx.MIA.Object.Parameters;
+package wbif.sjx.MIA.Object.Parameters.Objects;
 
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
@@ -20,7 +21,7 @@ public class InputTrackObjectsP extends InputObjectsP {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,OutputTrackObjectP.class);
+        LinkedHashSet<OutputObjectsP> objects = module.getModules().getAvailableObjects(module,OutputTrackObjectsP.class);
         return objects.stream().map(OutputObjectsP::getObjectsName).distinct().toArray(String[]::new);
     }
 }

@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Object.Parameters;
+package wbif.sjx.MIA.Object.Parameters.Objects;
 
 import wbif.sjx.MIA.Module.Module;
 

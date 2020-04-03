@@ -19,7 +19,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.StringP;
+import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -48,7 +48,7 @@ public class MeasureSpecificWidth extends Module {
     
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous controls";
     public static final String MEASUREMENT_PREFIX = "Measurement prefix";
-    
+
     public interface ReferenceModes {
         String CENTROID = "Object centroid";
         String IMAGE_MEASUREMENT = "Image measurement";
@@ -402,10 +402,15 @@ public class MeasureSpecificWidth extends Module {
     }
     
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
         return null;
     }
-    
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
+    }
+
     @Override
     public boolean verify() {
         String refMode1 = parameters.getValue(REFERENCE_MODE_1);

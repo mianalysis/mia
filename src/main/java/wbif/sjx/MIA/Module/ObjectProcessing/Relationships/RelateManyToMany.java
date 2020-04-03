@@ -97,6 +97,8 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
@@ -546,23 +548,28 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRefs = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
             // Getting input objects
             String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 
-            returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects1Name));
+            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
 
             String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
             if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
                 String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-                returnedRefs.add(relationshipRefs.getOrPut(outputObjectsName, inputObjects2Name));
+                returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
             }
 
         return returnedRefs;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

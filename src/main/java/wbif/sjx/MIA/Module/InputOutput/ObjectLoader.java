@@ -13,10 +13,14 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
+import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -459,7 +463,7 @@ public class ObjectLoader extends Module {
         parameters.add(new ChoiceP(PARENT_TYPE,this,ParentTypes.NORMAL,ParentTypes.ALL));
         parameters.add(new OutputClusterObjectsP(PARENT_CLUSTERS_NAME,this));
         parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME,this));
-        parameters.add(new OutputTrackObjectP(PARENT_TRACKS_NAME,this));
+        parameters.add(new OutputTrackObjectsP(PARENT_TRACKS_NAME,this));
         parameters.add(new IntegerP(PARENTS_COLUMN_INDEX,this,5));
 
     }
@@ -570,8 +574,8 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
-        RelationshipRefCollection returnedRelationships = new RelationshipRefCollection();
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
 
         if ((boolean) parameters.getValue(CREATE_PARENTS)) {
             String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -587,11 +591,16 @@ public class ObjectLoader extends Module {
                     parentObjectsName = parameters.getValue(PARENT_TRACKS_NAME);
                     break;
             }
-            returnedRelationships.add(relationshipRefs.getOrPut(parentObjectsName,childObjectsName));
+            returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName,childObjectsName));
         }
 
         return returnedRelationships;
 
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
+        return null;
     }
 
     @Override

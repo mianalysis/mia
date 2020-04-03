@@ -1,23 +1,39 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.TreeMap;
+
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Vertex;
-import wbif.sjx.common.Process.SkeletonTools.Skeleton;
-
-import java.util.*;
 
 /**
  * Created by sc13967 on 24/01/2018.
@@ -83,28 +99,11 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject) {
-        // Converting object to image, then inverting, so we have a black object on a white background
-        ObjCollection tempObjects = new ObjCollection("Backbone",inputObject.getSpatialCalibration(),inputObject.getNFrames());
-        tempObjects.add(inputObject);
-
-        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
-        Image objectImage = tempObjects.convertToImage("Objects",hues,8,false);
-        InvertIntensity.process(objectImage);
-
-        // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1, 1);
-
-        // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        return new Skeleton(objectImage.getImagePlus()).getLongestPath();
-
-    }
-
     /*
      * Checks if the longest path (skeleton backbone) needs to be inverted to have the first point closer to the
      * reference than the last point.
      */
-    public static boolean testForPathInversion(LinkedHashSet<Vertex> longestPath, double xRef, double yRef) {
+    public static boolean testForPathInversion(ArrayList<Vertex> longestPath, double xRef, double yRef) {
         Point<Integer> referencePoint = new Point<Integer>((int) xRef,(int) yRef, 0);
         Iterator<Vertex> iterator = longestPath.iterator();
 
@@ -124,10 +123,10 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    public static CurvatureCalculator getCurvatureCalculator(LinkedHashSet<Vertex> longestPath, String splineFittingMethod,
+    public static CurvatureCalculator getCurvatureCalculator(ArrayList<Vertex> longestPath, String splineFittingMethod,
                                                              int nNeighbours, int iterations, double accuracy) {
         // Calculating local curvature along the path
-        CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath);
+        CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath,false);
         switch (splineFittingMethod) {
             case SplineFittingMethods.LOESS:
                 curvatureCalculator.setLoessNNeighbours(nNeighbours);
@@ -181,7 +180,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public static void measureRelativeCurvature(Obj inputObject, LinkedHashSet<Vertex> longestPath,
+    public static void measureRelativeCurvature(Obj inputObject, ArrayList<Vertex> longestPath,
                                                 TreeMap<Double,Double> curvature, boolean useReference) {
         double pathLength = 0;
         double posMin = 0;
@@ -223,7 +222,7 @@ public class MeasureObjectCurvature extends Module {
         }
     }
 
-    public static void measureHeadTailAngle(Obj inputObject, LinkedHashSet<Vertex> longestPath, int nPoints) {
+    public static void measureHeadTailAngle(Obj inputObject, ArrayList<Vertex> longestPath, int nPoints) {
         // Getting starting and ending points for comparison
         double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
         int pathLength = longestPath.size();
@@ -356,7 +355,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject);
+            ArrayList<Vertex> longestPath = FitSpline.getSkeletonBackbone(inputObject);
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;
@@ -371,7 +370,7 @@ public class MeasureObjectCurvature extends Module {
                     LinkedList<Vertex> temporaryPathList = new LinkedList<>(longestPath);
                     Iterator<Vertex> reverseIterator = temporaryPathList.descendingIterator();
 
-                    longestPath = new LinkedHashSet<>();
+                    longestPath = new ArrayList<>();
                     while (reverseIterator.hasNext()) {
                         longestPath.add(reverseIterator.next());
                     }
@@ -592,7 +591,12 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

@@ -5,13 +5,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
-public class RelationshipRef extends SummaryRef {
+public class ParentChildRef extends SummaryRef {
     private final String parentName;
     private final String childName;
     private String description = "";
 
 
-    public RelationshipRef(Node node) {
+    public ParentChildRef(Node node) {
         super(node);
 
         NamedNodeMap map = node.getAttributes();
@@ -22,7 +22,7 @@ public class RelationshipRef extends SummaryRef {
 
     }
 
-    public RelationshipRef(String parentName, String childName) {
+    public ParentChildRef(String parentName, String childName) {
         super(createName(parentName,childName));
         this.parentName = parentName;
         this.childName = childName;
@@ -65,8 +65,8 @@ public class RelationshipRef extends SummaryRef {
         this.description = description;
     }
 
-    public RelationshipRef duplicate() {
-        RelationshipRef ref = new RelationshipRef(parentName,childName);
+    public ParentChildRef duplicate() {
+        ParentChildRef ref = new ParentChildRef(parentName,childName);
 
         ref.setDescription(description);
         ref.setNickname(getNickname());

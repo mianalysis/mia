@@ -4,7 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 
 import javax.annotation.Nonnull;
 
@@ -44,7 +44,7 @@ public class ParentObjectsP extends ChoiceType {
         if (childObjectsName == null) return null;
 
         ModuleCollection modules = module.getModules();
-        RelationshipRefCollection relationships = modules.getRelationshipRefs(module);
+        ParentChildRefCollection relationships = modules.getParentChildRefs(module);
         return relationships.getParentNames(childObjectsName,true);
 
     }

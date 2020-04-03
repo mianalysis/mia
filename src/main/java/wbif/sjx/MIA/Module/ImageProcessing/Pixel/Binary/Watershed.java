@@ -13,10 +13,8 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.RelationshipRefCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.*;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -60,7 +58,10 @@ public class Watershed extends Module {
 
     }
 
-    public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity, boolean multithread) throws InterruptedException {
+    public static void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic,
+            int connectivity, boolean multithread) throws InterruptedException {
+        String name = new Watershed(null).getName();
+
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
@@ -106,7 +107,7 @@ public class Watershed extends Module {
 
                     //  Replacing the maskIpl intensity
                     getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
-                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
+                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks", name);
 
                 };
                 pool.submit(task);
@@ -278,7 +279,12 @@ public class Watershed extends Module {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 

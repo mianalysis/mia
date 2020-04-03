@@ -31,30 +31,30 @@ import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
-import wbif.sjx.MIA.Object.Parameters.RemovedObjectsP;
-import wbif.sjx.MIA.Object.Parameters.StringP;
-import wbif.sjx.MIA.Object.Parameters.TextAreaP;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.RemovedObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.RelationshipRef;
+import wbif.sjx.MIA.Object.References.ParentChildRef;
 import wbif.sjx.MIA.Process.ClassHunter;
 
 /**
@@ -190,7 +190,7 @@ public class LegacyAnalysisReader {
                             break;
 
                         case "RELATIONSHIPS":
-                            populateModuleRelationshipRefs(moduleChildNodes.item(j), module);
+                            populateModuleParentChildRefs(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -404,13 +404,13 @@ public class LegacyAnalysisReader {
         }
     }
 
-    public static void populateModuleRelationshipRefs(Node moduleNode, Module module) {
+    public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
         for (int j=0;j<referenceNodes.getLength();j++) {
-            RelationshipRef ref = new RelationshipRef(referenceNodes.item(j));
-            module.addRelationshipRef(ref);
+            ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
+            module.addParentChildRef(ref);
 
         }
     }

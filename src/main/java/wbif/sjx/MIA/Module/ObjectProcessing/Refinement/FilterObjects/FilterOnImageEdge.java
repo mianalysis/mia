@@ -4,10 +4,14 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import com.drew.lang.annotations.Nullable;
 
 public class FilterOnImageEdge extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
@@ -24,11 +28,9 @@ public class FilterOnImageEdge extends CoreFilter {
     public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String STORE_RESULTS = "Store filter results";
 
-
     public FilterOnImageEdge(ModuleCollection modules) {
-        super("Remove on image edge",modules);
+        super("Remove on image edge", modules);
     }
-
 
     public String getMetadataName(String inputObjectsName, boolean includeZ) {
         if (includeZ) {
@@ -38,33 +40,65 @@ public class FilterOnImageEdge extends CoreFilter {
         }
     }
 
+    public static int process(ObjCollection inputObjects, int maxContact, @Nullable boolean[] removalEdges,
+            boolean includeZ, boolean remove, @Nullable ObjCollection outputObjects) {
+        if (removalEdges == null)
+            removalEdges = new boolean[] { true, true, true, true };
+            
+        int count = 0;
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            // If the following is negative, there's no need to remove the object
+            if (!hasContactWithEdge(inputObject, maxContact, removalEdges, includeZ))
+                continue;
+
+            if (remove)
+                processRemoval(inputObject, outputObjects, iterator);
+
+            // Incrementing the counter
+            count++;
+
+        }
+
+        return count;
+
+    }
 
     public static boolean hasContactWithEdge(Obj obj, int maxContact, boolean[] removalEdges, boolean includeZ) {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
-        int maxX = obj.getSpatialCalibration().getWidth()-1;
-        int maxY = obj.getSpatialCalibration().getHeight()-1;
-        int maxZ = obj.getSpatialCalibration().getNSlices()-1;
+        int maxX = obj.getSpatialCalibration().getWidth() - 1;
+        int maxY = obj.getSpatialCalibration().getHeight() - 1;
+        int maxZ = obj.getSpatialCalibration().getNSlices() - 1;
 
-        if (!removalEdges[0]) minY = -Integer.MAX_VALUE;
-        if (!removalEdges[1]) minX = -Integer.MAX_VALUE;
-        if (!removalEdges[2]) maxY = Integer.MAX_VALUE;
-        if (!removalEdges[3]) maxX = Integer.MAX_VALUE;
+        if (!removalEdges[0])
+            minY = -Integer.MAX_VALUE;
+        if (!removalEdges[1])
+            minX = -Integer.MAX_VALUE;
+        if (!removalEdges[2])
+            maxY = Integer.MAX_VALUE;
+        if (!removalEdges[3])
+            maxX = Integer.MAX_VALUE;
 
         ArrayList<Integer> x = obj.getXCoords();
         ArrayList<Integer> y = obj.getYCoords();
         ArrayList<Integer> z = obj.getZCoords();
 
         int count = 0;
-        for (int i=0;i<x.size();i++) {
-            if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) count++;
+        for (int i = 0; i < x.size(); i++) {
+            if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY)
+                count++;
 
             // Only consider Z if the user requested this
-            if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ)) count++;
+            if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ))
+                count++;
 
             // Check if the maximum number of contacts with the edge has been made
-            if (count > maxContact) return true;
+            if (count > maxContact)
+                return true;
 
         }
 
@@ -101,34 +135,23 @@ public class FilterOnImageEdge extends CoreFilter {
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        boolean[] removalEdges = new boolean[]{removeTop,removeLeft,removeBottom,removeRight};
+        boolean[] removalEdges = new boolean[] { removeTop, removeLeft, removeBottom, removeRight };
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName, inputObjects) : null;
 
-        int count = 0;
-        Iterator<Obj> iterator = inputObjects.values().iterator();
-        while (iterator.hasNext()) {
-            Obj inputObject = iterator.next();
-
-            // If the following is negative, there's no need to remove the object
-            if (!hasContactWithEdge(inputObject,maxContact,removalEdges,includeZ)) continue;
-
-            if (remove) processRemoval(inputObject,outputObjects,iterator);
-
-            // Incrementing the counter
-            count++;
-
-        }
+        int count = process(inputObjects, maxContact, removalEdges, includeZ, remove, outputObjects);
 
         // If moving objects, addRef them to the workspace
-        if (moveObjects) workspace.addObjects(outputObjects);
+        if (moveObjects)
+            workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,includeZ);
-        workspace.getMetadata().put(metadataName,count);
+        String metadataName = getMetadataName(inputObjectsName, includeZ);
+        workspace.getMetadata().put(metadataName, count);
 
         // Showing objects
-        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
+        if (showOutput)
+            inputObjects.convertToImageRandomColours().showImage();
 
         return true;
 
@@ -138,16 +161,16 @@ public class FilterOnImageEdge extends CoreFilter {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
+        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
-        parameters.add(new IntegerP(MAXIMUM_CONTACT, this,0));
-        parameters.add(new BooleanP(REMOVE_ON_TOP, this,true));
-        parameters.add(new BooleanP(REMOVE_ON_LEFT, this,true));
-        parameters.add(new BooleanP(REMOVE_ON_BOTTOM, this,true));
-        parameters.add(new BooleanP(REMOVE_ON_RIGHT, this,true));
-        parameters.add(new BooleanP(INCLUDE_Z_POSITION, this,false));
+        parameters.add(new IntegerP(MAXIMUM_CONTACT, this, 0));
+        parameters.add(new BooleanP(REMOVE_ON_TOP, this, true));
+        parameters.add(new BooleanP(REMOVE_ON_LEFT, this, true));
+        parameters.add(new BooleanP(REMOVE_ON_BOTTOM, this, true));
+        parameters.add(new BooleanP(REMOVE_ON_RIGHT, this, true));
+        parameters.add(new BooleanP(INCLUDE_Z_POSITION, this, false));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
     }
@@ -184,16 +207,18 @@ public class FilterOnImageEdge extends CoreFilter {
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
-        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
+        // If the filtered objects are to be moved to a new class, assign them the
+        // measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName, this);
 
-            for (ObjMeasurementRef reference:references.values()) {
-                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
+            for (ObjMeasurementRef reference : references.values()) {
+                returnedRefs
+                        .add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
             }
 
             return returnedRefs;
@@ -208,12 +233,13 @@ public class FilterOnImageEdge extends CoreFilter {
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        // Filter results are stored as a metadata item since they apply to the whole set
+        // Filter results are stored as a metadata item since they apply to the whole
+        // set
         if ((boolean) parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
 
-            String metadataName = getMetadataName(inputObjectsName,includeZ);
+            String metadataName = getMetadataName(inputObjectsName, includeZ);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
 
@@ -223,7 +249,12 @@ public class FilterOnImageEdge extends CoreFilter {
     }
 
     @Override
-    public RelationshipRefCollection updateAndGetRelationships() {
+    public ParentChildRefCollection updateAndGetParentChildRefs() {
+        return null;
+    }
+
+    @Override
+    public PartnerRefCollection updateAndGetPartnerRefs() {
         return null;
     }
 }
