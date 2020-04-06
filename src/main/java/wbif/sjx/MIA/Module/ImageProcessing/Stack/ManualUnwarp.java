@@ -344,7 +344,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public String getDescription() {
-        return "";
+        return "Uses the bUnwarpJ_ plugin by Ignacio Arganda-Carreras.  Arganda-Carreras, I., et al., CVAMIA: Computer Vision Approaches to Medical Image Analysis (2006), 85-95";
     }
 
     @Override
