@@ -63,10 +63,10 @@ public class FitEllipsoid extends Module {
         String RADIUS_2_CAL = "ELLIPSOID // RADIUS_2 (${CAL})";
         String RADIUS_3_PX = "ELLIPSOID // RADIUS_3 (PX)";
         String RADIUS_3_CAL = "ELLIPSOID // RADIUS_3 (${CAL})";
-        String SURFACE_AREA_PX = "ELLIPSOID // SURFACE_AREA (PX^2)";
-        String SURFACE_AREA_CAL = "ELLIPSOID // SURFACE_AREA (${CAL}^2)";
-        String VOLUME_PX = "ELLIPSOID // VOLUME (PX^3)";
-        String VOLUME_CAL = "ELLIPSOID // VOLUME (${CAL}^3)";
+        String SURFACE_AREA_PX = "ELLIPSOID // SURFACE_AREA (PX²)";
+        String SURFACE_AREA_CAL = "ELLIPSOID // SURFACE_AREA (${CAL}²)";
+        String VOLUME_PX = "ELLIPSOID // VOLUME (PX³)";
+        String VOLUME_CAL = "ELLIPSOID // VOLUME (${CAL}³)";
         String ORIENTATION_1 = "ELLIPSOID // ORIENTATION_1 (DEGS)";
         String ORIENTATION_2 = "ELLIPSOID // ORIENTATION_2 (DEGS)";
         String SPHERICITY = "ELLIPSOID // SPHERICITY";

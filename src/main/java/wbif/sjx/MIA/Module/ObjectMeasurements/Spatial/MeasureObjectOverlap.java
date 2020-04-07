@@ -28,12 +28,12 @@ public class MeasureObjectOverlap extends Module {
 
     public interface Measurements {
         String OVERLAP_VOX_1 = "OVERLAP_VOXELS_1";
-        String OVERLAP_VOL_PX_1 = "OVERLAP_VOLUME_(PX^3)_1";
-        String OVERLAP_VOL_CAL_1 = "OVERLAP_VOLUME_(${CAL}^3)_1";
+        String OVERLAP_VOL_PX_1 = "OVERLAP_VOLUME_(PX³)_1";
+        String OVERLAP_VOL_CAL_1 = "OVERLAP_VOLUME_(${CAL}³)_1";
         String OVERLAP_PERCENT_1 = "OVERLAP_PERCENT_1";
         String OVERLAP_VOX_2 = "OVERLAP_VOXELS_2";
-        String OVERLAP_VOL_PX_2 = "OVERLAP_VOLUME_(PX^3)_2";
-        String OVERLAP_VOL_CAL_2 = "OVERLAP_VOLUME_(${CAL}^3)_2";
+        String OVERLAP_VOL_PX_2 = "OVERLAP_VOLUME_(PX³)_2";
+        String OVERLAP_VOL_CAL_2 = "OVERLAP_VOLUME_(${CAL}³)_2";
         String OVERLAP_PERCENT_2 = "OVERLAP_PERCENT_2";
 
     }

@@ -35,14 +35,14 @@ public class MeasureObjectShape extends Module {
 
     public interface Measurements {
         String N_VOXELS = "SHAPE // N_VOXELS";
-        String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
-        String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
-        String BASE_AREA_PX = "SHAPE // BASE_AREA_(PX^2)";
-        String BASE_AREA_CAL = "SHAPE // BASE_AREA_(${CAL}^2)";
+        String VOLUME_PX = "SHAPE // VOLUME_(PX³)";
+        String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}³)";
+        String BASE_AREA_PX = "SHAPE // BASE_AREA_(PX²)";
+        String BASE_AREA_CAL = "SHAPE // BASE_AREA_(${CAL}²)";
         String HEIGHT_SLICE = "SHAPE // HEIGHT_(SLICE)";
         String HEIGHT_CAL = "SHAPE // HEIGHT_(${CAL})";
-        String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
-        String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
+        String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX²)";
+        String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}²)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
         String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${CAL})";
         String PROJ_PERIM_PX = "SHAPE // PROJ_PERIM_(PX)";
@@ -62,7 +62,7 @@ public class MeasureObjectShape extends Module {
             if (point.getZ() == baseZ) count++;
         }
 
-        // The area in px^2 is simply the number of pixels
+        // The area in px² is simply the number of pixels
                     return count;
 
     }
