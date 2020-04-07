@@ -315,6 +315,10 @@ public class Obj extends Volume {
 
     }
 
+    public void removePartner(String name) {
+        partners.remove(name);
+    }
+
     /**
      * Removes itself from any other objects as a parent or child.
      */

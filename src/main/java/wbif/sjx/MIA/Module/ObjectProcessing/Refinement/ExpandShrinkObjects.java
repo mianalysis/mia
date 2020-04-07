@@ -14,6 +14,7 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.CoordinateSet;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -140,7 +141,8 @@ public class ExpandShrinkObjects extends Module {
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
             if (updateInputObjects) {
-                inputObject.setCoordinateSet(newObject.getCoordinateSet());
+                inputObject.getCoordinateSet().clear();
+                inputObject.getCoordinateSet().addAll(newObject.getCoordinateSet());
                 inputObject.clearSurface();
                 inputObject.clearCentroid();
                 inputObject.clearProjected();

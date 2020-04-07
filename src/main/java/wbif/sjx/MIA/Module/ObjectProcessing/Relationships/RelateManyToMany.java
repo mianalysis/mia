@@ -91,20 +91,36 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+
 import ij.ImagePlus;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Volume.SpatCal;
-
-import java.util.*;
 
 public class RelateManyToMany extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
@@ -130,12 +146,11 @@ public class RelateManyToMany extends Module {
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous settings";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-
     public interface ObjectSourceModes {
         String DIFFERENT_CLASSES = "Different classes";
         String SAME_CLASS = "Same class";
 
-        String[] ALL = new String[]{DIFFERENT_CLASSES,SAME_CLASS};
+        String[] ALL = new String[] { DIFFERENT_CLASSES, SAME_CLASS };
 
     }
 
@@ -145,7 +160,7 @@ public class RelateManyToMany extends Module {
         String SPATIAL_OVERLAP = "Spatial overlap";
         String SURFACE_SEPARATION = "Surface separation";
 
-        String[] ALL = new String[]{NONE,CENTROID_SEPARATION,SPATIAL_OVERLAP, SURFACE_SEPARATION};
+        String[] ALL = new String[] { NONE, CENTROID_SEPARATION, SPATIAL_OVERLAP, SURFACE_SEPARATION };
 
     }
 
@@ -153,7 +168,7 @@ public class RelateManyToMany extends Module {
         String DIFFERENCE = "Difference";
         String SUM = "Sum";
 
-        String[] ALL = new String[]{DIFFERENCE,SUM};
+        String[] ALL = new String[] { DIFFERENCE, SUM };
 
     }
 
@@ -162,19 +177,18 @@ public class RelateManyToMany extends Module {
 
     }
 
-
     public static String getFullName(String objectName, String measurement) {
-        return "RELATE_ONE_TO_ONE // "+measurement.substring(0,measurement.length()-1)+"_"+objectName;
+        return "RELATE_ONE_TO_ONE // " + measurement.substring(0, measurement.length() - 1) + "_" + objectName;
 
     }
 
-
     static boolean testCentroidSeparation(Obj object1, Obj object2, double maxSeparation) {
         // If comparing objects in the same class they will eventually test themselves
-        if (object1 == object2) return false;
+        if (object1 == object2)
+            return false;
 
         // Calculating the separation between the two objects
-        double overlap = object1.getCentroidSeparation(object2,true);
+        double overlap = object1.getCentroidSeparation(object2, true);
 
         // Test if this point is within linking distance
         return overlap <= maxSeparation;
@@ -183,13 +197,15 @@ public class RelateManyToMany extends Module {
 
     static boolean testSpatialOverlap(Obj object1, Obj object2, double minOverlap1, double minOverlap2) {
         // If comparing objects in the same class they will eventually test themselves
-        if (object1 == object2) return false;
+        if (object1 == object2)
+            return false;
 
         // Calculate the overlap between the two objects
         double overlap = object1.getOverlap(object2);
 
         // We want large overlaps to be large when they're bad, so taking the inverse
-        if (overlap == 0) return false;
+        if (overlap == 0)
+            return false;
 
         double overlapPercentage1 = 100 * overlap / object1.size();
         double overlapPercentage2 = 100 * overlap / object2.size();
@@ -201,28 +217,35 @@ public class RelateManyToMany extends Module {
 
     static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation) {
         // If comparing objects in the same class they will eventually test themselves
-        if (object1 == object2) return false;
+        if (object1 == object2)
+            return false;
 
         // Calculating the separation between the two objects
-        double overlap = object1.getSurfaceSeparation(object2,true);
+        double overlap = object1.getSurfaceSeparation(object2, true);
 
         // Test if this point is within linking distance
         return overlap <= maxSeparation;
 
     }
 
-    static boolean testGeneric(Obj object1, Obj object2, String measurement, String calculation, double measurementLimit) {
+    static boolean testGeneric(Obj object1, Obj object2, String measurement, String calculation,
+            double measurementLimit) {
         // If comparing objects in the same class they will eventually test themselves
-        if (object1 == object2) return false;
+        if (object1 == object2)
+            return false;
 
         // Getting measurements
-        if (object1.getMeasurement(measurement) == null) return false;
+        if (object1.getMeasurement(measurement) == null)
+            return false;
         double measurement1 = object1.getMeasurement(measurement).getValue();
-        if (Double.isNaN(measurement1)) return false;
+        if (Double.isNaN(measurement1))
+            return false;
 
-        if (object2.getMeasurement(measurement) == null) return false;
+        if (object2.getMeasurement(measurement) == null)
+            return false;
         double measurement2 = object2.getMeasurement(measurement).getValue();
-        if (Double.isNaN(measurement2)) return false;
+        if (Double.isNaN(measurement2))
+            return false;
 
         // Perform calculation
         double value;
@@ -230,10 +253,10 @@ public class RelateManyToMany extends Module {
             default:
                 return false;
             case Calculations.DIFFERENCE:
-                value = Math.abs(measurement1-measurement2);
+                value = Math.abs(measurement1 - measurement2);
                 break;
             case Calculations.SUM:
-                value = measurement1+measurement2;
+                value = measurement1 + measurement2;
                 break;
         }
 
@@ -242,49 +265,60 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static int updateAssignments(Obj object1, Obj object2, HashMap<Obj,Integer> assignments, int maxGroupID) {
-        // Any pairs that got this far can be linked.  First, checking if their are already part of a group
-        if (assignments.containsKey(object1) &! assignments.containsKey(object2)) {
-            // Object1 is present, but object2 isn't.  Object 2 inherits assignment from object 1.
+    static int updateAssignments(Obj object1, Obj object2, HashMap<Obj, Integer> assignments, int maxGroupID) {
+        // Any pairs that got this far can be linked. First, checking if they are
+        // already part of a group
+        if (assignments.containsKey(object1) & !assignments.containsKey(object2)) {
+            // Object1 is present, but object2 isn't. Object 2 inherits assignment from
+            // object 1.
             int groupID = assignments.get(object1);
-            assignments.put(object2,groupID);
+            assignments.put(object2, groupID);
 
         } else if (!assignments.containsKey(object1) && assignments.containsKey(object2)) {
-            // Object2 is present, but object1 isn't.  Object 1 inherits assignment from object 2.
+            // Object2 is present, but object1 isn't. Object 1 inherits assignment from
+            // object 2.
             int groupID = assignments.get(object2);
-            assignments.put(object1,groupID);
+            assignments.put(object1, groupID);
 
         } else if (assignments.containsKey(object1) && assignments.containsKey(object2)) {
-            // Both object 1 and 2 are present.  Object 2 inherits assignment from object 1, as do all other
+            // Both object 1 and 2 are present. Object 2 inherits assignment from object 1,
+            // as do all other
             // objects previous in the same group as object 2.
             int groupID1 = assignments.get(object1);
             int groupID2 = assignments.get(object2);
-            for (Obj object:assignments.keySet()) {
-                if (assignments.get(object) == groupID2) assignments.put(object,groupID1);
+            for (Obj object : assignments.keySet()) {
+                if (assignments.get(object) == groupID2)
+                    assignments.put(object, groupID1);
             }
 
         } else {
-            // Neither object 1 nor object 2 are present.  Both are assigned the next available ID.
+            // Neither object 1 nor object 2 are present. Both are assigned the next
+            // available ID.
             int groupID = ++maxGroupID;
-            assignments.put(object1,groupID);
-            assignments.put(object2,groupID);
+            assignments.put(object1, groupID);
+            assignments.put(object2, groupID);
 
         }
+
+        // Adding partnership between the two objects
+        object1.addPartner(object2);
+        object2.addPartner(object1);
 
         return maxGroupID;
 
     }
 
-    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj,Integer> assignments, SpatCal calibration, int nFrames) {
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
-        for (Obj object:assignments.keySet()) {
+    static ObjCollection createClusters(String outputObjectsName, HashMap<Obj, Integer> assignments,
+            SpatCal calibration, int nFrames) {
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames);
+        for (Obj object : assignments.keySet()) {
             int groupID = assignments.get(object);
 
             // Getting cluster object
             if (!outputObjects.containsKey(groupID)) {
-                Obj outputObject = new Obj(outputObjectsName,groupID,object);
+                Obj outputObject = new Obj(outputObjectsName, groupID, object);
                 outputObject.setT(object.getT());
-                outputObjects.put(groupID,outputObject);
+                outputObjects.put(groupID, outputObject);
             }
             Obj outputObject = outputObjects.get(groupID);
 
@@ -298,12 +332,13 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static void applyMeasurements(ObjCollection objCollection, HashMap<Obj,Integer> assignments, String linkedObjectName) {
-        for (Obj object:objCollection.values()) {
+    static void applyMeasurements(ObjCollection objCollection, HashMap<Obj, Integer> assignments,
+            String linkedObjectName) {
+        for (Obj object : objCollection.values()) {
             if (assignments.containsKey(object)) {
-                object.addMeasurement(new Measurement(getFullName(linkedObjectName,Measurements.WAS_LINKED),1));
+                object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 1));
             } else {
-                object.addMeasurement(new Measurement(getFullName(linkedObjectName,Measurements.WAS_LINKED),0));
+                object.addMeasurement(new Measurement(getFullName(linkedObjectName, Measurements.WAS_LINKED), 0));
             }
         }
     }
@@ -331,10 +366,19 @@ public class RelateManyToMany extends Module {
 
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
         ObjCollection inputObjects2;
-        if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
-            inputObjects2 = workspace.getObjects().get(inputObjects2Name);
-        } else {
-            inputObjects2 = inputObjects1;
+        switch (objectSourceMode) {
+            default:
+                MIA.log.writeError("Unknown object source mode");
+                return false;
+            case ObjectSourceModes.DIFFERENT_CLASSES:
+                inputObjects2 = workspace.getObjects().get(inputObjects2Name);
+                inputObjects1.removePartners(inputObjects2Name);
+                inputObjects2.removePartners(inputObjects1Name);
+                break;
+            case ObjectSourceModes.SAME_CLASS:
+                inputObjects2 = inputObjects1;
+                inputObjects1.removePartners(inputObjects1Name);
+                break;
         }
 
         // Getting parameters
@@ -351,85 +395,94 @@ public class RelateManyToMany extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.getSpatialCalibration(),inputObjects1.getNFrames()));
+            workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1.getSpatialCalibration(),
+                    inputObjects1.getNFrames()));
             return true;
         }
 
         Obj firstObj = inputObjects1.getFirst();
-        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDppXY();
+        if (calibratedUnits)
+            maximumSeparation = maximumSeparation / firstObj.getDppXY();
 
         // Creating a HashMap to store the group ID that each object was assigned to
-        HashMap<Obj,Integer> assignments = new HashMap<>();
+        HashMap<Obj, Integer> assignments = new HashMap<>();
         int maxGroupID = 0;
 
         // Iterating over all object pairs
-        for (Obj object1:inputObjects1.values()) {
-            for (Obj object2:inputObjects2.values()) {
-                if (linkInSameFrame && object1.getT() != object2.getT()) continue;
+        for (Obj object1 : inputObjects1.values()) {
+            for (Obj object2 : inputObjects2.values()) {
+                if (linkInSameFrame && object1.getT() != object2.getT())
+                    continue;
 
                 boolean linkable = true;
 
                 // Testing spatial separation
                 switch (spatialSeparationMode) {
                     case SpatialSeparationModes.CENTROID_SEPARATION:
-                        if (!testCentroidSeparation(object1,object2,maximumSeparation)) linkable = false;
+                        if (!testCentroidSeparation(object1, object2, maximumSeparation))
+                            linkable = false;
                         break;
                     case SpatialSeparationModes.SPATIAL_OVERLAP:
-                        if (!testSpatialOverlap(object1,object2,minOverlap1,minOverlap2)) linkable = false;
+                        if (!testSpatialOverlap(object1, object2, minOverlap1, minOverlap2))
+                            linkable = false;
                         break;
                     case SpatialSeparationModes.SURFACE_SEPARATION:
-                        if (!testSurfaceSeparation(object1,object2,maximumSeparation)) linkable = false;
+                        if (!testSurfaceSeparation(object1, object2, maximumSeparation))
+                            linkable = false;
                         break;
                 }
 
                 // Testing additional measurements
-                for (ParameterCollection collection:parameterCollections) {
+                for (ParameterCollection collection : parameterCollections) {
                     String measurement = collection.getValue(MEASUREMENT);
                     String calculation = collection.getValue(CALCULATION);
                     double measurementLimit = collection.getValue(MEASUREMENT_LIMIT);
-                    if (!testGeneric(object1,object2,measurement,calculation,measurementLimit)) linkable = false;
+                    if (!testGeneric(object1, object2, measurement, calculation, measurementLimit))
+                        linkable = false;
                 }
 
                 if (linkable) {
                     // Assigning the same groupID to these two objects
-                    maxGroupID = updateAssignments(object1,object2,assignments,maxGroupID);
+                    maxGroupID = updateAssignments(object1, object2, assignments, maxGroupID);
                 } else {
-                    // If these objects haven't been previously assigned a group, giving them the next available IDs
-                    assignments.putIfAbsent(object1,++maxGroupID);
-                    assignments.putIfAbsent(object2,++maxGroupID);
+                    // If these objects haven't been previously assigned a group, giving them the
+                    // next available IDs
+                    assignments.putIfAbsent(object1, ++maxGroupID);
+                    assignments.putIfAbsent(object2, ++maxGroupID);
                 }
             }
         }
 
-        applyMeasurements(inputObjects1,assignments,inputObjects2Name);
-        applyMeasurements(inputObjects2,assignments,inputObjects1Name);
+        applyMeasurements(inputObjects1, assignments, inputObjects2Name);
+        applyMeasurements(inputObjects2, assignments, inputObjects1Name);
 
         if (createClusterObjects) {
             // Remove any previously-assigned relationships (from previous runs)
             if (workspace.getObjectSet(outputObjectsName) != null) {
                 inputObjects1.removeParents(outputObjectsName);
                 inputObjects2.removeParents(outputObjectsName);
-                workspace.removeObjects(outputObjectsName,false);
+                workspace.removeObjects(outputObjectsName, false);
             }
 
-            ObjCollection outputObjects = createClusters(outputObjectsName, assignments, inputObjects1.getSpatialCalibration(), inputObjects1.getNFrames());
+            ObjCollection outputObjects = createClusters(outputObjectsName, assignments,
+                    inputObjects1.getSpatialCalibration(), inputObjects1.getNFrames());
             workspace.addObjects(outputObjects);
 
             if (showOutput) {
                 // Generating colours
-                HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects1,outputObjectsName,true);
-                ImagePlus dispIpl = inputObjects1.convertToImage(outputObjectsName,hues,8,true).getImagePlus();
+                HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(inputObjects1, outputObjectsName, true);
+                ImagePlus dispIpl = inputObjects1.convertToImage(outputObjectsName, hues, 8, true).getImagePlus();
                 dispIpl.setLut(LUTs.Random(true));
-                dispIpl.setPosition(1,1,1);
+                dispIpl.setPosition(1, 1, 1);
                 dispIpl.updateChannelAndDraw();
                 dispIpl.show();
 
                 if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
                     // Generating colours
-                    hues = ColourFactory.getParentIDHues(inputObjects2,outputObjectsName,true);
-                    dispIpl = inputObjects2.convertToImage(outputObjectsName,hues,8,true).getImagePlus();
+                    hues = ColourFactory.getParentIDHues(inputObjects2, outputObjectsName, true);
+                    dispIpl = inputObjects2.convertToImage(outputObjectsName, hues, 8, true).getImagePlus();
                     dispIpl.setLut(LUTs.Random(true));
-                    dispIpl.setPosition(1,1,1);
+                    dispIpl.setPosition(1, 1, 1);
                     dispIpl.updateChannelAndDraw();
                     dispIpl.show();
                 }
@@ -442,29 +495,31 @@ public class RelateManyToMany extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new ChoiceP(OBJECT_SOURCE_MODE,this,ObjectSourceModes.DIFFERENT_CLASSES,ObjectSourceModes.ALL));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
-        parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS,this,true));
-        parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters
+                .add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
+        parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS, this, true));
+        parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME, this));
 
-        parameters.add(new ParamSeparatorP(SPATIAL_LINKING_SEPARATOR,this));
-        parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE,this, SpatialSeparationModes.SPATIAL_OVERLAP, SpatialSeparationModes.ALL));
-        parameters.add(new DoubleP(MAXIMUM_SEPARATION,this,1.0));
-        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
-        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1,this,50.0));
-        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2,this,50.0));
+        parameters.add(new ParamSeparatorP(SPATIAL_LINKING_SEPARATOR, this));
+        parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE, this, SpatialSeparationModes.SPATIAL_OVERLAP,
+                SpatialSeparationModes.ALL));
+        parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
+        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
 
-        parameters.add(new ParamSeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new ObjectMeasurementP(MEASUREMENT,this));
-        collection.add(new ChoiceP(CALCULATION,this,Calculations.DIFFERENCE,Calculations.ALL));
-        collection.add(new DoubleP(MEASUREMENT_LIMIT,this,1));
-        parameters.add(new ParameterGroup(ADD_MEASUREMENT,this,collection,0));
+        collection.add(new ObjectMeasurementP(MEASUREMENT, this));
+        collection.add(new ChoiceP(CALCULATION, this, Calculations.DIFFERENCE, Calculations.ALL));
+        collection.add(new DoubleP(MEASUREMENT_LIMIT, this, 1));
+        parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection, 0));
 
-        parameters.add(new ParamSeparatorP(MISCELLANEOUS_SEPARATOR,this));
-        parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
+        parameters.add(new ParamSeparatorP(MISCELLANEOUS_SEPARATOR, this));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
 
     }
 
@@ -491,7 +546,7 @@ public class RelateManyToMany extends Module {
 
         returnedParameters.add(parameters.getParameter(SPATIAL_LINKING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SPATIAL_SEPARATION_MODE));
-        switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE)){
+        switch ((String) parameters.getValue(SPATIAL_SEPARATION_MODE)) {
             case SpatialSeparationModes.CENTROID_SEPARATION:
             case SpatialSeparationModes.SURFACE_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
@@ -509,7 +564,7 @@ public class RelateManyToMany extends Module {
         // Updating measurement sources
         String objectName = parameters.getValue(INPUT_OBJECTS_1);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-        for (ParameterCollection collection:parameterGroup.getCollections()) {
+        for (ParameterCollection collection : parameterGroup.getCollections()) {
             ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(objectName);
         }
 
@@ -536,7 +591,8 @@ public class RelateManyToMany extends Module {
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName1);
         returnedRefs.add(reference);
-        reference.setDescription("Was this \""+inputObjectsName1+"\" object linked with a \""+inputObjectsName2+"\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+        reference.setDescription("Was this \"" + inputObjectsName1 + "\" object linked with a \"" + inputObjectsName2
+                + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
 
         return returnedRefs;
 
@@ -551,17 +607,17 @@ public class RelateManyToMany extends Module {
     public ParentChildRefCollection updateAndGetParentChildRefs() {
         ParentChildRefCollection returnedRefs = new ParentChildRefCollection();
 
-            // Getting input objects
-            String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
-            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
+        // Getting input objects
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 
-            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
+        returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects1Name));
 
-            String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
-            if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
-                String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
-                returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
-            }
+        String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
+        if (objectSourceMode.equals(ObjectSourceModes.DIFFERENT_CLASSES)) {
+            String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+            returnedRefs.add(parentChildRefs.getOrPut(outputObjectsName, inputObjects2Name));
+        }
 
         return returnedRefs;
 
@@ -569,7 +625,22 @@ public class RelateManyToMany extends Module {
 
     @Override
     public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
+        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+
+        switch ((String) parameters.getValue(OBJECT_SOURCE_MODE)) {
+            case ObjectSourceModes.DIFFERENT_CLASSES:
+                returnedRefs.add(partnerRefs.getOrPut(inputObjects1Name, inputObjects2Name));
+                break;
+            case ObjectSourceModes.SAME_CLASS:
+                returnedRefs.add(partnerRefs.getOrPut(inputObjects1Name, inputObjects1Name));
+                break;
+        }
+
+        return returnedRefs;
+
     }
 
     @Override
