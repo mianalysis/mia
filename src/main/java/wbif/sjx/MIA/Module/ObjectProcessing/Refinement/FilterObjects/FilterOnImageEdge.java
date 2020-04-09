@@ -117,7 +117,7 @@ public class FilterOnImageEdge extends CoreFilter {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -153,7 +153,7 @@ public class FilterOnImageEdge extends CoreFilter {
         if (showOutput)
             inputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

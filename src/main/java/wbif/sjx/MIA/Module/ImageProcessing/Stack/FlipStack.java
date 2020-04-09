@@ -112,7 +112,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -127,7 +127,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Applying flip
         Image outputImage = applyFlip(inputImage, axisMode, outputImageName);
-        if (outputImage == null) return false;
+        if (outputImage == null) return Status.FAIL;
 
         if (showOutput) outputImage.showImage();
         if (applyToInput) {
@@ -136,7 +136,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
             workspace.addImage(outputImage);
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

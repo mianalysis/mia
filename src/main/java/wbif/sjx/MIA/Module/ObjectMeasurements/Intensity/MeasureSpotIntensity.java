@@ -75,7 +75,7 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting image to measure spot intensity for
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -114,7 +114,7 @@ public class MeasureSpotIntensity extends Module {
 
             }
 
-            return true;
+            return Status.PASS;
 
         }
 
@@ -164,7 +164,7 @@ public class MeasureSpotIntensity extends Module {
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

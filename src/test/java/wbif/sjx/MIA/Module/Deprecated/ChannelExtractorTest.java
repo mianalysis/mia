@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ChannelExtractorTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override
@@ -34,11 +34,6 @@ public class ChannelExtractorTest extends ModuleTest {
     public void testRun8bit5DChannel1() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -75,11 +70,6 @@ public class ChannelExtractorTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -114,11 +104,6 @@ public class ChannelExtractorTest extends ModuleTest {
     public void testRun16bit5DChannel1() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_16bit.tif").getPath(),"UTF-8");
@@ -155,11 +140,6 @@ public class ChannelExtractorTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -195,11 +175,6 @@ public class ChannelExtractorTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -234,11 +209,6 @@ public class ChannelExtractorTest extends ModuleTest {
     public void testRun32bit5DChannel2() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_32bit.tif").getPath(),"UTF-8");

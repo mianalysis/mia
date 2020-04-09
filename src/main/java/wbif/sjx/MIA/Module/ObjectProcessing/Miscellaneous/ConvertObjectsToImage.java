@@ -86,7 +86,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String conversionMode = parameters.getValue(CONVERSION_MODE);
 
         if (conversionMode.equals(ConversionModes.IMAGE_TO_OBJECTS)) {
@@ -100,7 +100,7 @@ public class ConvertObjectsToImage extends Module {
             try {
                 objects = inputImage.convertImageToObjects(volumeType, outputObjectsName);
             } catch (IntegerOverflowException e) {
-                return false;
+                return Status.FAIL;
             }
 
             if (showOutput)
@@ -212,7 +212,7 @@ public class ConvertObjectsToImage extends Module {
             }
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

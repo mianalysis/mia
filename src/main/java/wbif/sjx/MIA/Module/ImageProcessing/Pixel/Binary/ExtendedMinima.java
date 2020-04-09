@@ -121,7 +121,7 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -139,7 +139,7 @@ public class ExtendedMinima extends Module {
             outputImage = process(inputImage,outputImageName,dynamic,connectivity, multithread);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return false;
+            return Status.FAIL;
         }
 
         // If the image is being saved as a new image, adding it to the workspace
@@ -152,7 +152,7 @@ public class ExtendedMinima extends Module {
 
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

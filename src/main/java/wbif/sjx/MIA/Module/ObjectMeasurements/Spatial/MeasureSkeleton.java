@@ -6,7 +6,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ij.IJ;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
@@ -22,6 +21,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterOnImageEdge;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -266,7 +266,7 @@ public class MeasureSkeleton extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
         boolean addToWorkspace = parameters.getValue(ADD_SKELETONS_TO_WORKSPACE);
@@ -346,13 +346,13 @@ public class MeasureSkeleton extends Module {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return false;
+            return Status.FAIL;
         }
 
         if (showOutput)
             inputObjects.showMeasurements(this, modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

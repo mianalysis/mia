@@ -465,7 +465,7 @@ public class RelateManyToOne extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
@@ -531,7 +531,7 @@ public class RelateManyToOne extends Module {
             parentObjects.showMeasurements(this,modules);
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

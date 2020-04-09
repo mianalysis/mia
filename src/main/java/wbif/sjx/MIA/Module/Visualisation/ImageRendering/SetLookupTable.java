@@ -7,14 +7,19 @@ import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Object.LUTs;
 
 public class SetLookupTable extends Module {
@@ -146,7 +151,7 @@ public class SetLookupTable extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -158,10 +163,10 @@ public class SetLookupTable extends Module {
         String displayMode = parameters.getValue(DISPLAY_MODE);
 
         // If this image doesn't exist, skip this module.  This returns true, because this isn't terminal for the analysis.
-        if (inputImage == null) return true;
+        if (inputImage == null) return Status.PASS;
 
         // If this image has fewer channels than the specified channel, skip the module (but return true)
-        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels()) return true;
+        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels()) return Status.PASS;
 
         LUT lut = getLUT(lookupTableName);
 
@@ -176,7 +181,7 @@ public class SetLookupTable extends Module {
 
         if (showOutput) inputImage.showImage(inputImageName,null,false,true);
 
-        return true;
+        return Status.PASS;
 
     }
 

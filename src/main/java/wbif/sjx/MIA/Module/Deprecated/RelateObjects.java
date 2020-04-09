@@ -444,7 +444,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
@@ -493,7 +493,7 @@ public class RelateObjects extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

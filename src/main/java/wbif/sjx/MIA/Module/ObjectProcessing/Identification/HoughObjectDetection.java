@@ -13,11 +13,11 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -27,6 +27,12 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -86,7 +92,7 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -190,7 +196,7 @@ public class HoughObjectDetection extends Module {
                                     outputObject.add(xx[i] + x, yy[i] + y, z);
                                 } catch (PointOutOfRangeException e) {}
                             } catch (IntegerOverflowException e) {
-                                return false;
+                                return Status.FAIL;
                             }
                         }
 
@@ -233,7 +239,7 @@ public class HoughObjectDetection extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

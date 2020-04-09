@@ -30,6 +30,17 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
 
+    public Module getModuleByID(String ID) {
+        for (Module module : this) {
+            if (module.getModuleID().equals(ID))
+                return module;
+        }
+
+        // Return null if no module found
+        return null;
+
+    }
+
     public ImageMeasurementRefCollection getImageMeasurementRefs(String imageName) {
         return getImageMeasurementRefs(imageName, null);
     }
@@ -119,14 +130,14 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         }
 
         for (PartnerRef ref : getPartnerRefs()) {
-            if ((ref.getObject1Name().equals(objectName) || ref.getObject2Name().equals(objectName)) && ref.isExportGlobal() && ref.isExportIndividual())
+            if ((ref.getObject1Name().equals(objectName) || ref.getObject2Name().equals(objectName))
+                    && ref.isExportGlobal() && ref.isExportIndividual())
                 return true;
         }
 
         return false;
 
     }
-    
 
     void addObjectMeasurementRefs(Module module, ObjMeasurementRefCollection measurementRefs, String objectName) {
         if (!module.isEnabled())

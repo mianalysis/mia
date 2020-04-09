@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AddObjectsOverlayTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Test @Disabled
@@ -67,8 +67,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-        Module.setVerbose(true);
-
+        
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         String trackObjectsName = "Tracks";

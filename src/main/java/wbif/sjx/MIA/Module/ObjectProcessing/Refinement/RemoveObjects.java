@@ -32,13 +32,13 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         boolean retainMeasurements = parameters.getValue(RETAIN_MEASUREMENTS);
 
         workspace.removeObjects(inputObjectsName,retainMeasurements);
 
-        return true;
+        return Status.PASS;
 
     }
 

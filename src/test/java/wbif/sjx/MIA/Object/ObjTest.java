@@ -80,9 +80,6 @@ public class ObjTest {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
         Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
@@ -99,9 +96,6 @@ public class ObjTest {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
         Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
@@ -125,9 +119,6 @@ public class ObjTest {
         String childObjectsName = "Children";
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents1";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
         Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
@@ -155,9 +146,6 @@ public class ObjTest {
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
         String parentObjectsName3 = "Parents3";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
         Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
@@ -192,9 +180,6 @@ public class ObjTest {
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
         String parentObjectsName3 = "Parents3";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
         Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
@@ -230,9 +215,6 @@ public class ObjTest {
         String parentObjectsName1 = "Parents1";
         String parentObjectsName2 = "Parents2";
         String parentObjectsName3 = "Parents3";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         Obj obj1 = new Obj(volumeType,childObjectsName,1,1,1,1,1,0.02,0.1,"µm");
         Obj obj2 = new Obj(volumeType,parentObjectsName1,12,1,1,1,1,0.02,0.1,"µm");
@@ -266,9 +248,6 @@ public class ObjTest {
     public void testAddChildren(VolumeType volumeType) {
         String parentObjectsName = "Parent";
         String childObjectsName = "Children";
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         SpatCal calibration = new SpatCal(0.02,0.1,"µm",1,1,1);
         Obj obj1 = new Obj(volumeType,parentObjectsName,1,calibration,1);

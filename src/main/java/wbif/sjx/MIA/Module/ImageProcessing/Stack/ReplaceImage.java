@@ -30,7 +30,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
@@ -41,7 +41,7 @@ public class ReplaceImage extends Module {
 
         inputImage1.setImagePlus(inputImagePlus2);
 
-        return true;
+        return Status.PASS;
 
     }
 

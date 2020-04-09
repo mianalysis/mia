@@ -32,7 +32,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -60,7 +60,7 @@ public class CombingCorrection extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

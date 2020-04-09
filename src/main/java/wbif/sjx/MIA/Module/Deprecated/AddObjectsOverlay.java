@@ -3,27 +3,8 @@
 
 package wbif.sjx.MIA.Module.Deprecated;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import ij.ImagePlus;
-import ij.Prefs;
-import ij.gui.*;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.ColourFactory;
-import wbif.sjx.MIA.Process.LabelFactory;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -31,6 +12,47 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.gui.Arrow;
+import ij.gui.Line;
+import ij.gui.OvalRoi;
+import ij.gui.PointRoi;
+import ij.gui.Roi;
+import ij.gui.TextRoi;
+import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.LabelFactory;
 
 /**
  * Created by sc13967 on 17/05/2017.
@@ -633,7 +655,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -722,7 +744,7 @@ public class AddObjectsOverlay extends Module {
                     break;
             }
         } catch (InterruptedException e) {
-            return false;
+            return Status.FAIL;
         }
 
         Image outputImage = new Image(outputImageName,ipl);
@@ -731,7 +753,7 @@ public class AddObjectsOverlay extends Module {
         if (addOutputToWorkspace) workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

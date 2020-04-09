@@ -303,7 +303,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -358,7 +358,7 @@ public class RunTrackMate extends Module {
 
             }
         } catch (IntegerOverflowException e) {
-            return false;
+            return Status.FAIL;
         }
 
         // Displaying objects (if selected)
@@ -367,7 +367,7 @@ public class RunTrackMate extends Module {
         // Reapplying calibration to input image
         inputImage.getImagePlus().setCalibration(cal);
 
-        return true;
+        return Status.PASS;
 
     }
 

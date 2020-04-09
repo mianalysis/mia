@@ -91,24 +91,37 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.Workspace;
-
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.stream.Collectors;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 public class RelateOneToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input/output";
@@ -293,7 +306,7 @@ public class RelateOneToOne extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);
@@ -314,7 +327,7 @@ public class RelateOneToOne extends Module {
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             addMissingLinks(inputObjects1,inputObjects2);
             workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1));
-            return true;
+            return Status.PASS;
         }
 
         if (!createClusterObjects) outputObjectsName = null;
@@ -350,7 +363,7 @@ public class RelateOneToOne extends Module {
 
         if (createClusterObjects) workspace.addObjects(outputObjects);
 
-        return true;
+        return Status.PASS;
 
     }
 

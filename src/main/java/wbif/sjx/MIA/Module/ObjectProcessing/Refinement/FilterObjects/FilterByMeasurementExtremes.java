@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -15,6 +15,12 @@ import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 public class FilterByMeasurementExtremes extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
@@ -86,7 +92,7 @@ public class FilterByMeasurementExtremes extends CoreFilter {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -129,7 +135,7 @@ public class FilterByMeasurementExtremes extends CoreFilter {
         // Showing objects
         // if (showOutput) showRemainingObjects(inputObjects);
 
-        return true;
+        return Status.PASS;
 
     }
 

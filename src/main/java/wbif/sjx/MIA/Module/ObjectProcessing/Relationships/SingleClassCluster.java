@@ -6,35 +6,47 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
-import ij.ImagePlus;
-import ij.process.ImageProcessor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+
+import ij.ImagePlus;
+import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.LocationWrapper;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.CoordinateSet;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by sc13967 on 21/06/2017.
@@ -202,7 +214,7 @@ public class SingleClassCluster extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -221,7 +233,7 @@ public class SingleClassCluster extends Module {
         Obj firstObject = inputObjects.getFirst();
         if (firstObject == null) {
             workspace.addObjects(outputObjects);
-            return true;
+            return Status.PASS;
         }
 
         // Getting object parameters
@@ -283,7 +295,7 @@ public class SingleClassCluster extends Module {
                 try {
                     applyClusterVolume(outputObject, inputObjects, eps);
                 } catch (IntegerOverflowException e) {
-                    return false;
+                    return Status.FAIL;
                 }
             }
         }
@@ -302,7 +314,7 @@ public class SingleClassCluster extends Module {
             dispIpl.show();
         }
 
-        return true;
+        return Status.PASS;
 
     }
 
@@ -605,7 +617,7 @@ public class SingleClassCluster extends Module {
 //    }
 //
 //    @Override
-//    public boolean process(Workspace workspace) {
+//    public Status process(Workspace workspace) {
 //        // Getting objects to measure
 //        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 //        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);

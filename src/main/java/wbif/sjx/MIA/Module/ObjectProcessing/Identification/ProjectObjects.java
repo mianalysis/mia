@@ -3,11 +3,18 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.Volume;
@@ -55,7 +62,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -69,7 +76,7 @@ public class ProjectObjects extends Module {
             try {
                 outputObject = process(inputObject,outputObjectsName, true);
             } catch (IntegerOverflowException e) {
-                return false;
+                return Status.FAIL;
             }
             outputObjects.put(outputObject.getID(),outputObject);
         }
@@ -79,7 +86,7 @@ public class ProjectObjects extends Module {
         // Showing objects
         if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -12,8 +12,6 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjCollectionTest {
-    private double tolerance = 1E-2;
-
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testGetFirstPresent(VolumeType volumeType) {

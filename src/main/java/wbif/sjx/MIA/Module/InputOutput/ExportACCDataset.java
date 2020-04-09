@@ -1,5 +1,11 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.TreeMap;
+
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
@@ -7,18 +13,25 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.TreeMap;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.FolderPathP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
+import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 public class ExportACCDataset extends Module {
     public static final String INPUT_SEPARATOR = "Image/objects input";
@@ -48,13 +61,21 @@ public class ExportACCDataset extends Module {
 
     }
 
-    static String getFileName(String plateName, String rowLetter, int columnNumber, int seriesNumber, String seriesName,
-            String extension) {
+    static String getFileName(String plateName, String rowLetter, int columnNumber, int seriesNumber, String fileName,
+            String seriesName, String extension) {
         DecimalFormat df = new DecimalFormat("00");
         StringBuilder builder = new StringBuilder();
 
         builder.append(plateName).append("_w").append(rowLetter).append(df.format(columnNumber)).append("_s")
-                .append(seriesNumber).append("_n").append(seriesName).append(".").append(extension);
+                .append(seriesNumber).append("_n").append(fileName);
+
+        // If from a series file (e.g. LIF file), add series name as well
+        if (!seriesName.equals(fileName)) {
+            builder.append("_").append(seriesName);
+        }
+
+        // Adding file extension
+        builder.append(".").append(extension);
 
         return builder.toString();
 
@@ -168,7 +189,7 @@ public class ExportACCDataset extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
         String inputRawImageName = parameters.getValue(INPUT_RAW_IMAGE);
@@ -185,25 +206,26 @@ public class ExportACCDataset extends Module {
         TreeMap<String, Boolean> states = parameters.getValue(MEASUREMENTS);
 
         // Constructing filename (also removing any slash characters from seriesName)
+        String fileName = workspace.getMetadata().getFilename();
         int seriesNumber = workspace.getMetadata().getSeriesNumber();
         String seriesName = workspace.getMetadata().getSeriesName();
         seriesName = seriesName.replace("\\", "_");
         seriesName = seriesName.replace("/", "_");
-        String imageFilename = getFileName(plateName, rowLetter, columnNumber, seriesNumber, seriesName, "png");
-        String textFilename = getFileName(plateName, rowLetter, columnNumber, seriesNumber, seriesName, "txt");
-
-
+        String imageFilename = getFileName(plateName, rowLetter, columnNumber, seriesNumber, fileName, seriesName,
+                "png");
+        String textFilename = getFileName(plateName, rowLetter, columnNumber, seriesNumber, fileName, seriesName,
+                "txt");
 
         // Storing raw image
         String folderName1 = getFolderName(rootFolder, "anal1", plateName);
         if (!saveImage(inputOverlayImage, folderName1, imageFilename)) {
             MIA.log.writeWarning("Could not write overlay image to file");
-            return false;
+            return Status.FAIL;
         }
         String folderName3 = getFolderName(rootFolder, "anal3", plateName);
         if (!saveImage(inputRawImage, folderName3, imageFilename)) {
             MIA.log.writeWarning("Could not write raw image to file");
-            return false;
+            return Status.FAIL;
         }
 
         // Getting measurements for input objects
@@ -211,16 +233,16 @@ public class ExportACCDataset extends Module {
         ObjMeasurementRefCollection measurementRefs = modules.getObjectMeasurementRefs(inputObjectsName);
         if (!saveFeatureNames(measurementRefs, states, folderName2)) {
             MIA.log.writeWarning("Could not write feature names to file");
-            return false;
+            return Status.FAIL;
         }
 
         // Writing object features to file
         if (!saveFeatures(inputObjects, measurementRefs, states, folderName2, textFilename)) {
             MIA.log.writeWarning("Could not write features to file");
-            return false;
+            return Status.FAIL;
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

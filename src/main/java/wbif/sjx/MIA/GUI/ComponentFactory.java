@@ -74,7 +74,7 @@ public class ComponentFactory {
         JComponent parameterComponent = parameterControl.getComponent();
 
         if (parameter instanceof MessageP || parameter instanceof ObjMeasurementSelectorP) {
-            String value = parameter.getRawStringValue();
+            String value = parameter.getAlternativeString();
             parameterComponent.setToolTipText(value == null ? "" : value);
             c.insets = new Insets(10,3,5,5);
             paramPanel.add(parameterComponent,c);
@@ -103,7 +103,7 @@ public class ComponentFactory {
             c.weightx=1;
             c.anchor = GridBagConstraints.EAST;
             if (parameterComponent != null) {
-                String value = parameter.getRawStringValue();
+                String value = parameter.getAlternativeString();
                 parameterComponent.setToolTipText(value == null ? "" : value);
                 if (!(parameter instanceof TextAreaP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
                 paramPanel.add(parameterComponent, c);

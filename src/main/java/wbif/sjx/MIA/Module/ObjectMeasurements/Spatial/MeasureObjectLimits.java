@@ -45,7 +45,7 @@ public class MeasureObjectLimits extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
@@ -75,7 +75,8 @@ public class MeasureObjectLimits extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
+        
     }
 
     @Override

@@ -45,7 +45,7 @@ public class CombineObjectSets extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);
@@ -63,7 +63,7 @@ public class CombineObjectSets extends Module {
 
         if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

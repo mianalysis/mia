@@ -16,8 +16,8 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -27,6 +27,11 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 /**
  * Created by sc13967 on 22/03/2018.
@@ -161,7 +166,7 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -192,7 +197,7 @@ public class WekaProbabilityMaps extends Module {
         ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize,bitDepth,outputClass);
 
         // If the classification failed, a null object is returned
-        if (probabilityMaps == null) return false;
+        if (probabilityMaps == null) return Status.FAIL;
 
         // Adding the probability maps to the Workspace
         Image probabilityImage = new Image(outputImageName,probabilityMaps);
@@ -200,7 +205,7 @@ public class WekaProbabilityMaps extends Module {
 
         if (showOutput) probabilityImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

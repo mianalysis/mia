@@ -22,7 +22,7 @@ public class FilterImageTest extends ModuleTest {
 
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
 
@@ -56,10 +56,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunGaussian2DFilter2DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -98,11 +94,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -139,10 +130,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunGaussian2DFilter2DStackCalibrated() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -188,10 +175,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -229,11 +212,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -270,10 +248,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunGaussian3DFilter2DStackCalibrated() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -315,10 +289,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -354,11 +324,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMax2DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -397,11 +362,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -439,10 +399,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -478,11 +434,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMean2DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -521,10 +472,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -560,11 +507,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMedian2DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -603,10 +545,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -642,11 +580,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMin2DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -685,10 +618,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -725,11 +654,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunVariance2DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -771,10 +695,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -813,11 +733,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -854,10 +769,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMax3DFilter2DStackCalibrated() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -897,11 +808,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -940,10 +846,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -981,11 +883,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1022,11 +919,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMean3DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -1070,10 +962,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1110,11 +998,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMedian3DFilter3DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -1153,11 +1036,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects4D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1194,11 +1072,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMedian3DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -1237,10 +1110,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1278,11 +1147,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1319,11 +1183,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunMin3DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -1363,10 +1222,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1405,11 +1260,6 @@ public class FilterImageTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -1446,11 +1296,6 @@ public class FilterImageTest extends ModuleTest {
     public void testRunVar3DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");

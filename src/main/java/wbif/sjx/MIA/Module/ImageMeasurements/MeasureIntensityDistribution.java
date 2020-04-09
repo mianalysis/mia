@@ -29,10 +29,10 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityProfile;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -42,6 +42,12 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Metadata;
@@ -415,7 +421,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementType = parameters.getValue(MEASUREMENT_TYPE);
@@ -496,7 +502,7 @@ public class MeasureIntensityDistribution extends Module {
                     inputImage.addMeasurement(
                             new Measurement(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE), Double.NaN));
 
-                    return true;
+                    return Status.PASS;
                 }
 
                 CumStat[] css = measureFractionProximal(inputObjects, inputImage, proximalDistance, ignoreOnObjects);
@@ -536,7 +542,7 @@ public class MeasureIntensityDistribution extends Module {
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
                     name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL);
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
-                    return true;
+                    return Status.PASS;
                 }
 
                 CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, edgeDistanceMode);
@@ -557,7 +563,7 @@ public class MeasureIntensityDistribution extends Module {
 
         if (showOutput) inputImage.showMeasurements(this);
 
-        return true;
+        return Status.PASS;
 
     }
 

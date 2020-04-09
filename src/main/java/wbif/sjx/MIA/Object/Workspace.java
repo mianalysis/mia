@@ -21,7 +21,8 @@ public class Workspace {
     private Metadata metadata = new Metadata();
     private int ID;
     private double progress = 0;
-    private boolean analysisFailed = false;
+    private Status status = Status.PASS;
+    // private boolean analysisFailed = false;
     private boolean exportWorkspace = true;
 
 
@@ -234,12 +235,12 @@ public class Workspace {
         this.progress = progress;
     }
 
-    public boolean isAnalysisFailed() {
-        return analysisFailed;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setAnalysisFailed(boolean analysisFailed) {
-        this.analysisFailed = analysisFailed;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public boolean exportWorkspace() {

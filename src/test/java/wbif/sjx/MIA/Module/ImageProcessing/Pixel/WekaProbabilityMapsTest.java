@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
@@ -14,13 +13,14 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 
 public class WekaProbabilityMapsTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override
@@ -32,10 +32,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     public void testRun2D8Bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_2D_8bit.tif").getPath(),"UTF-8");
@@ -72,10 +68,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_2D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -110,10 +102,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     public void testRun2D32Bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_2D_32bit.tif").getPath(),"UTF-8");
@@ -150,10 +138,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -188,10 +172,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     public void testRun4D8Bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_8bit.tif").getPath(),"UTF-8");
@@ -228,10 +208,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -266,10 +242,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     public void testRun3DChannels8Bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_3D_channels_8bit.tif").getPath(),"UTF-8");
@@ -306,10 +278,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_3D_channels_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -344,10 +312,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     public void testRun4DChannelsSlice8Bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
@@ -385,10 +349,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -424,10 +384,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
     public void testRun4DChannelsSlice8Bit3Block() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-slice_8bit.tif").getPath(),"UTF-8");
@@ -465,10 +421,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-time_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -504,10 +456,6 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-time_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -525,10 +473,10 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        boolean status = wekaProbabilityMaps.execute(workspace);
+        Status status = wekaProbabilityMaps.execute(workspace);
 
         // Checking the module failed to generateModuleList (returned false)
-        assertFalse(status);
+        assertEquals(Status.FAIL,status);
 
     }
 }

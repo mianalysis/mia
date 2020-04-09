@@ -86,10 +86,6 @@ public class MeasureTrackMotionTest extends ModuleTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         double zScaling = dppZ/dppXY;
-        String calibratedUnits = "µm";
-
-        String trackObjectsName = "Tracks";
-        String spotObjectsName = "Spots";
 
         // Getting input objects and expected values
         TreeMap<Integer,Track> rawTracks = new Tracks3D().getRawTracks(zScaling);

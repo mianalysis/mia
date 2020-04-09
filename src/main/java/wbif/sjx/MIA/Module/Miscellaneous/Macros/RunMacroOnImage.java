@@ -79,7 +79,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -124,7 +124,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
             IJ.runMacro("setBatchMode(false)");
             if (provideInputImage) for (ImagePlus openImage:openImages) openImage.show();
             MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
-            return false;
+            return Status.FAIL;
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows
@@ -150,7 +150,7 @@ public class RunMacroOnImage extends CoreMacroRunner {
             }
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

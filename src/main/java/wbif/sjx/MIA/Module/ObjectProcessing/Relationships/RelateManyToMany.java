@@ -99,6 +99,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -357,7 +358,7 @@ public class RelateManyToMany extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         String objectSourceMode = parameters.getValue(OBJECT_SOURCE_MODE);
 
         // Getting input objects
@@ -369,7 +370,7 @@ public class RelateManyToMany extends Module {
         switch (objectSourceMode) {
             default:
                 MIA.log.writeError("Unknown object source mode");
-                return false;
+                return Status.FAIL;
             case ObjectSourceModes.DIFFERENT_CLASSES:
                 inputObjects2 = workspace.getObjects().get(inputObjects2Name);
                 inputObjects1.removePartners(inputObjects2Name);
@@ -397,7 +398,7 @@ public class RelateManyToMany extends Module {
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1.getSpatialCalibration(),
                     inputObjects1.getNFrames()));
-            return true;
+            return Status.PASS;
         }
 
         Obj firstObj = inputObjects1.getFirst();
@@ -489,7 +490,7 @@ public class RelateManyToMany extends Module {
             }
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -116,7 +116,7 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -166,7 +166,7 @@ public class FitLongestChord extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

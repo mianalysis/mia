@@ -85,7 +85,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
@@ -163,7 +163,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

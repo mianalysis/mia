@@ -112,7 +112,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -157,7 +157,7 @@ public class MeasureObjectShape extends Module {
                     projectedObject = ProjectObjects.process(inputObject, "Projected",false);
                 } catch (IntegerOverflowException e) {
                     MIA.log.writeWarning(e);
-                    return false;
+                    return Status.FAIL;
                 }
             }
 
@@ -193,7 +193,7 @@ public class MeasureObjectShape extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

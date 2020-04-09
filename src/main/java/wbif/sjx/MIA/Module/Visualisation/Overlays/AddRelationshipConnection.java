@@ -14,6 +14,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -398,7 +399,7 @@ public class AddRelationshipConnection extends Overlay {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -469,7 +470,7 @@ public class AddRelationshipConnection extends Overlay {
         if (showOutput)
             outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

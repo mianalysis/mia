@@ -483,7 +483,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
@@ -497,8 +497,8 @@ public class TrackObjects extends Module {
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
-        if (inputObjects == null) return true;
-        if (inputObjects.size() == 0) return true;
+        if (inputObjects == null) return Status.PASS;
+        if (inputObjects.size() == 0) return Status.PASS;
 
         // Clearing previous relationships and measurements (in case module has been generateModuleList before)
         for (Obj inputObj:inputObjects.values()) {
@@ -545,11 +545,11 @@ public class TrackObjects extends Module {
                     JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
                     if (!linker.checkInput()) {
                         MIA.log.writeError(linker.getErrorMessage());
-                        return false;
+                        return Status.FAIL;
                     }
                     if (!linker.process()) {
                         MIA.log.writeError(linker.getErrorMessage());
-                        return false;
+                        return Status.FAIL;
                     }
                     Map<Integer, Integer> assignment = linker.getResult();
 
@@ -579,7 +579,7 @@ public class TrackObjects extends Module {
         // Adding track objects to the workspace
         writeMessage("Assigned "+trackObjects.size()+" tracks");
 
-        return true;
+        return Status.PASS;
 
     }
 

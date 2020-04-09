@@ -4,6 +4,7 @@ import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -12,7 +13,6 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
@@ -126,7 +126,7 @@ public class DuplicateAcrossTime extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -169,7 +169,7 @@ public class DuplicateAcrossTime extends Module {
         if (showOutput)
             outputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

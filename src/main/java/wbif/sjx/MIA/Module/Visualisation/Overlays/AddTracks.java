@@ -3,25 +3,37 @@
 
 package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import ij.ImagePlus;
-import ij.gui.*;
+import ij.gui.Line;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
-
-import java.awt.*;
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by sc13967 on 17/05/2017.
@@ -110,7 +122,7 @@ public class AddTracks extends Overlay {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -167,7 +179,7 @@ public class AddTracks extends Overlay {
         if (addOutputToWorkspace) workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

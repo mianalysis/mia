@@ -50,7 +50,12 @@ public abstract class Parameter extends Ref {
     // PUBLIC METHODS
 
     public String getNameAsString() {
-        return name.toString().replace("_"," ");
+        return name.toString().replace("_", " ");
+    }
+
+    // Can be used to display a different name if the raw name isn't useful for the GUI
+    public String getAlternativeString() {
+        return getRawStringValue();
     }
 
 

@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Module.ImageMeasurements;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Workspace;
@@ -92,7 +93,7 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
 
@@ -139,7 +140,7 @@ public class ImageMeasurementCalculator extends Module {
         if (showOutput)
             inputImage.showMeasurements(this);
 
-        return true;
+        return Status.PASS;
 
     }
 

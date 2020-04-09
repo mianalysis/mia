@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import java.util.HashMap;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.LUT;
@@ -9,17 +11,26 @@ import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-
-import java.util.HashMap;
 
 /**
  * Created by sc13967 on 01/08/2017.
@@ -140,7 +151,7 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -172,7 +183,7 @@ public class ExtractObjectEdges extends Module {
         }
 
         // Checking there are objects to process
-        if (inputObjects.size() == 0) return true;
+        if (inputObjects.size() == 0) return Status.PASS;
 
         // If necessary, converting calibrated edge distance to pixels
         if (calibratedDistances) edgeDistance = edgeDistance/inputObjects.getFirst().getDppXY();
@@ -203,7 +214,7 @@ public class ExtractObjectEdges extends Module {
         if (showOutput && createEdgeObjects) showObjects(edgeObjects,inputObjectsName,randomLUT);
         if (showOutput && createInteriorObjects) showObjects(interiorObjects,inputObjectsName,randomLUT);
 
-        return true;
+        return Status.PASS;
 
     }
 

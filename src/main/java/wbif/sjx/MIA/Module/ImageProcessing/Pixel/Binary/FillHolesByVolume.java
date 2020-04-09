@@ -1,23 +1,33 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.LongOverflowException;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class FillHolesByVolume extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -122,7 +132,7 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -153,7 +163,7 @@ public class FillHolesByVolume extends Module {
                 process(inputImagePlus,minVolume,maxVolume,calibratedUnits,32);
             }
         } catch (LongOverflowException e) {
-            return false;
+            return Status.FAIL;
         }
 
         // If filling black holes, need to invert image back to original
@@ -171,7 +181,7 @@ public class FillHolesByVolume extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

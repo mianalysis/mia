@@ -87,17 +87,17 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
         try {
             testEnclosed(inputObjects);
         } catch (IntegerOverflowException e) {
-            return false;
+            return Status.FAIL;
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

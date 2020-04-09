@@ -2,17 +2,29 @@
 
 package wbif.sjx.MIA.Module.Deprecated;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
-
-import java.util.HashMap;
-import java.util.Iterator;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 public class ResolveCoOccurrence extends Module {
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
@@ -220,7 +232,7 @@ public class ResolveCoOccurrence extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);
@@ -239,7 +251,7 @@ public class ResolveCoOccurrence extends Module {
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
             workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1));
-            return true;
+            return Status.PASS;
         }
 
         Obj firstObj = inputObjects1.getFirst();
@@ -258,7 +270,7 @@ public class ResolveCoOccurrence extends Module {
 
         workspace.addObjects(outputObjects);
 
-        return true;
+        return Status.PASS;
 
     }
 

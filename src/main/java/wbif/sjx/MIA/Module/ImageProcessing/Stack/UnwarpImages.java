@@ -322,7 +322,7 @@ public class UnwarpImages extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -369,14 +369,14 @@ public class UnwarpImages extends Module {
             process(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return false;
+            return Status.FAIL;
         }
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
         if (showOutput) inputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

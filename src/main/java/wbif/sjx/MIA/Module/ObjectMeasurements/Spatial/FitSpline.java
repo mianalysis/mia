@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.filter.Convolver;
@@ -24,6 +22,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold.ManualThreshold;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -511,7 +510,7 @@ public class FitSpline extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -545,7 +544,7 @@ public class FitSpline extends Module {
 
         // If there are no objects, exit the module
         if (inputObjects.size() == 0)
-            return true;
+            return Status.PASS;
 
         // If no reference is provided there's nothing to tell the sign of the curvature
         if (!useReference) {
@@ -635,7 +634,7 @@ public class FitSpline extends Module {
             outputObjects.convertToImageRandomColours().showImage();
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

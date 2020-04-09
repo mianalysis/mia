@@ -101,7 +101,7 @@ public class SetDisplayRange extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -117,7 +117,7 @@ public class SetDisplayRange extends Module {
         double maxRange = parameters.getValue(MAX_RANGE);
 
         // If this image doesn't exist, skip this module.  This returns true, because this isn't terminal for the analysis.
-        if (inputImage == null) return true;
+        if (inputImage == null) return Status.PASS;
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -153,7 +153,7 @@ public class SetDisplayRange extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

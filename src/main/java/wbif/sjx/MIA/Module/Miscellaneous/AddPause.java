@@ -39,7 +39,7 @@ public class AddPause extends Module {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting parameters
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -69,14 +69,14 @@ public class AddPause extends Module {
 
         switch ((String) optionPane.getValue()) {
             case RESUME:
-                return true;
+                return Status.PASS;
 
             case TERMINATE:
-                return false;
+                return Status.TERMINATE;
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

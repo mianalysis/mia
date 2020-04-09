@@ -2,13 +2,27 @@
 
 package wbif.sjx.MIA.Module.InputOutput;
 
+import java.awt.Rectangle;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
-import ij.plugin.Scaler;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import loci.common.DebugTools;
@@ -21,29 +35,41 @@ import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
-import net.imagej.ImageJ;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import ome.units.quantity.Length;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import ome.xml.model.primitives.Color;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FilePathP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
@@ -51,17 +77,6 @@ import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.System.FileCrawler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Stephen on 15/05/2017.
@@ -669,7 +684,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
-        String filename = compileGenericFilename(genericFormat, metadata);
+        String filename = metadata.insertMetadataValues(genericFormat);
 
         // If name includes "*" get first instance of wildcard
         if (filename.contains("*")) {
@@ -718,26 +733,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public static String compileGenericFilename(String genericFormat, Metadata metadata) {
-        String outputName = genericFormat;
-
-        // Use regex to find instances of "M{ }" and replace the contents with the
-        // appropriate metadata value
-        Pattern pattern = Pattern.compile("M\\{([^{}]+)}");
-        Matcher matcher = pattern.matcher(genericFormat);
-        while (matcher.find()) {
-            String fullName = matcher.group(0);
-            String metadataName = matcher.group(1);
-            String metadataValue = metadata.getAsString(metadataName);
-
-            outputName = outputName.replace(fullName, metadataValue);
-
-        }
-
-        return outputName;
-
-    }
-
     @Override
     public String getPackageName() {
         return PackageNames.INPUT_OUTPUT;
@@ -749,7 +744,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String importMode = parameters.getValue(IMPORT_MODE);
@@ -818,12 +813,12 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     file = workspace.getMetadata().getFile();
                     if (file == null) {
                         MIA.log.writeWarning("No input file/folder selected.");
-                        return false;
+                        return Status.FAIL;
                     }
 
                     if (!file.exists()) {
                         MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
-                        return false;
+                        return Status.FAIL;
                     }
 
                     switch (reader) {
@@ -841,7 +836,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     ipl = IJ.getImage().duplicate();
                     if (ipl == null) {
                         MIA.log.writeWarning("No image open in ImageJ.  Skipping.");
-                        return false;
+                        return Status.FAIL;
                     }
                     break;
 
@@ -850,7 +845,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     if (!file.exists()) {
                         MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.",
                                 LogRenderer.Level.WARNING);
-                        return false;
+                        return Status.FAIL;
                     }
 
                     ipl = getImageSequence(file, numberOfZeroes, channels, frames, crop, scaleFactors, scaleMode,
@@ -887,7 +882,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                     if (!file.exists()) {
                         MIA.log.writeWarning("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.");
-                        return false;
+                        return Status.FAIL;
                     }
 
                     switch (reader) {
@@ -905,7 +900,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 case ImportModes.SPECIFIC_FILE:
                     if (!(new File(filePath)).exists()) {
                         MIA.log.writeWarning("File \"" + filePath + "\" not found.  Skipping file.");
-                        return false;
+                        return Status.FAIL;
                     }
 
                     switch (reader) {
@@ -921,11 +916,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
             MIA.log.writeWarning(e);
-            return false;
+            return Status.FAIL;
         }
 
         if (ipl == null)
-            return false;
+            return Status.FAIL;
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
@@ -968,7 +963,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

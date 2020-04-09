@@ -1,15 +1,31 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import wbif.sjx.MIA.MIA;
+import java.util.Iterator;
+
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
-
-import java.util.Iterator;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 public class FilterByMeasurement extends CoreFilter {
     public static final String INPUT_SEPARATOR = "Object input";
@@ -90,7 +106,7 @@ public class FilterByMeasurement extends CoreFilter {
     }
     
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -142,7 +158,7 @@ public class FilterByMeasurement extends CoreFilter {
                 refValue = parentObject.getMeasurement(refParentMeas).getValue();
                 break;
                 default:
-                return false;
+                return Status.FAIL;
             }
             refValue = refValue*refMultiplier;
             
@@ -198,7 +214,7 @@ public class FilterByMeasurement extends CoreFilter {
         // Showing objects
         if (showOutput) inputObjects.convertToImageRandomColours().showImage();
         
-        return true;
+        return Status.PASS;
         
     }
     

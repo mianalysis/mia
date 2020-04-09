@@ -61,7 +61,7 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
         String titleMode = parameters.getValue(TITLE_MODE);
@@ -86,7 +86,7 @@ public class ShowImage extends Module {
 
         if (showOutput) image.showImage(title,null,normalisation,composite);
 
-        return true;
+        return Status.PASS;
 
     }
 

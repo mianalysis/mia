@@ -9,7 +9,7 @@ public class BasicLogRenderer implements LogRenderer {
         levelStatus.put(Level.DEBUG,false);
         levelStatus.put(Level.ERROR,true);
         levelStatus.put(Level.MEMORY,false);
-        levelStatus.put(Level.MESSAGE,false);
+        levelStatus.put(Level.MESSAGE,true);
         levelStatus.put(Level.STATUS,true);
         levelStatus.put(Level.WARNING,true);
 

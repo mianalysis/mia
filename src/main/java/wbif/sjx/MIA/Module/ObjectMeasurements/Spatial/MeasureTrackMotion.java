@@ -1,21 +1,30 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import java.util.TreeMap;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Timepoint;
 import wbif.sjx.common.Object.Track;
-
-import java.util.TreeMap;
 
 /**
  * Created by steph on 24/05/2017.
@@ -382,7 +391,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ObjCollection trackObjects = workspace.getObjects().get(inputTrackObjectsName);
@@ -415,7 +424,7 @@ public class MeasureTrackMotion extends Module {
         if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this,modules);
         if (showOutput) trackObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

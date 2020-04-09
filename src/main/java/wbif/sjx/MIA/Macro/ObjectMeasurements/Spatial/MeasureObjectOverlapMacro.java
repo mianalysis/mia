@@ -31,7 +31,7 @@ public class MeasureObjectOverlapMacro extends MacroOperation {
         measureObjectOverlap.setShowOutput((double) objects[3] == 1);
 
         measureObjectOverlap.process(workspace);
-
+        
         return null;
 
     }
