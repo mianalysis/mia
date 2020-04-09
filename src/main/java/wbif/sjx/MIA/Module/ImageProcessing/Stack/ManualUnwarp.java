@@ -1,5 +1,18 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import java.awt.Point;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Stack;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import com.drew.lang.annotations.Nullable;
+
 import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
@@ -12,33 +25,29 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-
-import com.drew.lang.annotations.Nullable;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.Interactable.Interactable;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 import wbif.sjx.MIA.ThirdParty.bUnwarpJ_Mod;
-
-import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
@@ -344,11 +353,11 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
     @Override
     public String getDescription() {
-        return "";
+        return "Uses the bUnwarpJ_ plugin by Ignacio Arganda-Carreras.  Arganda-Carreras, I., et al., CVAMIA: Computer Vision Approaches to Medical Image Analysis (2006), 85-95";
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         IJ.setBackgroundColor(255,255,255);
 
         // Getting input image
@@ -407,17 +416,17 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
 
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return false;
+            return Status.FAIL;
         }
 
         // Failure to unwarp the image will result in a null
-        if (outputImage == null) return false;
+        if (outputImage == null) return Status.FAIL;
 
         // Dealing with module outputs
         workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

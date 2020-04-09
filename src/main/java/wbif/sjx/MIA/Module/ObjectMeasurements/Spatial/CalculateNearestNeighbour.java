@@ -3,13 +3,23 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 /**
  * Created by sc13967 on 22/06/2017.
@@ -109,7 +119,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -124,9 +134,9 @@ public class CalculateNearestNeighbour extends Module {
         boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE);
 
         // If there are no input objects skip the module
-        if (inputObjects == null) return true;
+        if (inputObjects == null) return Status.PASS;
         Obj firstObj = inputObjects.getFirst();
-        if (firstObj == null) return true;
+        if (firstObj == null) return Status.PASS;
 
         // If the maximum linking distance was specified in calibrated units convert it to pixels
         if (limitLinkingDistance && calibratedDistance) maxLinkingDist = maxLinkingDist/firstObj.getDppXY();
@@ -169,7 +179,7 @@ public class CalculateNearestNeighbour extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

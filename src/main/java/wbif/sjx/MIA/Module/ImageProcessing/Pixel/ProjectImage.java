@@ -131,7 +131,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Loading image into workspace
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -148,7 +148,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 
@@ -473,7 +473,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //    }
 //
 //    @Override
-//    public boolean process(Workspace workspace) {
+//    public Status process(Workspace workspace) {
 //        // Loading image into workspace
 //        String inputImageName = parameters.getValue(INPUT_IMAGE);
 //        Image inputImage = workspace.getImages().get(inputImageName);

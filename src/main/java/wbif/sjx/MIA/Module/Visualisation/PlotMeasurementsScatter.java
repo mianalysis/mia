@@ -66,7 +66,7 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -162,7 +162,7 @@ public class PlotMeasurementsScatter extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

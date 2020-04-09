@@ -1,5 +1,3 @@
-// TODO: Module to plot histograms of measurements (e.g. mean intensity for objects)
-
 package wbif.sjx.MIA.Module;
 
 import java.lang.reflect.Constructor;
@@ -15,11 +13,21 @@ import org.w3c.dom.Node;
 
 import ij.Prefs;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRef;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRef;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
@@ -36,13 +44,14 @@ public abstract class Module extends Ref implements Comparable {
     protected ParentChildRefCollection parentChildRefs = new ParentChildRefCollection();
     protected PartnerRefCollection partnerRefs = new PartnerRefCollection();
 
+    private String moduleID = String.valueOf(System.currentTimeMillis()); // Using the system time to create a unique ID
     private static boolean verbose = false;
     private String notes = "";
     private boolean enabled = true;
     private boolean canBeDisabled = false;
-    protected boolean showOutput = false;
     private boolean runnable = true;
-
+    protected boolean showOutput = false;
+    protected Module redirectModule = null; // After this module, can redirect to another module
 
     // CONSTRUCTOR
 
@@ -52,25 +61,27 @@ public abstract class Module extends Ref implements Comparable {
         initialiseParameters();
     }
 
-
     // ABSTRACT METHODS
 
     public abstract String getPackageName();
 
-    protected abstract boolean process(Workspace workspace);
+    protected abstract Status process(Workspace workspace);
 
     /*
-     * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
-     * the ParameterCollection, rather than just setting the local variable directly, which helps ensure the correct
-     * operation is included in the method.
+     * Get a ParameterCollection of all the possible parameters this class requires
+     * (not all may be used). This returns the ParameterCollection, rather than just
+     * setting the local variable directly, which helps ensure the correct operation
+     * is included in the method.
      */
     protected abstract void initialiseParameters();
 
     /*
-     * Return a ParameterCollection of the currently active parameters.  This is generateModuleList each time a parameter is changed.
-     * For example, if "Export XML" is set to "false" a sub-parameter specifying the measurements to export won't be
-     * included in the ParameterCollection.  A separate rendering class will take this ParameterCollection and generate
-     * an appropriate GUI panel.
+     * Return a ParameterCollection of the currently active parameters. This is
+     * generateModuleList each time a parameter is changed. For example, if
+     * "Export XML" is set to "false" a sub-parameter specifying the measurements to
+     * export won't be included in the ParameterCollection. A separate rendering
+     * class will take this ParameterCollection and generate an appropriate GUI
+     * panel.
      */
     public abstract ParameterCollection updateAndGetParameters();
 
@@ -86,22 +97,27 @@ public abstract class Module extends Ref implements Comparable {
 
     public abstract boolean verify();
 
-
     // PUBLIC METHODS
 
-    public boolean execute(Workspace workspace) {
+    public Status execute(Workspace workspace) {
         writeMessage("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
 
         // Running the main module code
-        boolean status = process(workspace);
+        Status status = process(workspace);
 
-        if (status) {
-            writeMessage("Completed");
-        } else {
-            writeMessage("Did not complete");
+        switch (status) {
+            case PASS:
+                writeMessage("Completed");
+                break;
+            case TERMINATE:
+                writeMessage("Completed (ending analysis early)");
+                break;
+            case FAIL:
+                writeMessage("Did not complete");
+                break;
         }
 
         // If enabled, write the current memory usage to the console
@@ -112,10 +128,9 @@ public abstract class Module extends Ref implements Comparable {
 
             DecimalFormat df = new DecimalFormat("#.0");
 
-            String memoryMessage = df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB" +
-                    ", module \""+getName()+"\"" +
-                    ", file \""+workspace.getMetadata().getFile() +
-                    ", time "+dateTime;
+            String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
+                    + ", module \"" + getName() + "\"" + ", file \"" + workspace.getMetadata().getFile() + ", time "
+                    + dateTime;
 
             MIA.log.writeMemory(memoryMessage);
 
@@ -150,13 +165,13 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public ParentChildRef getParentChildRef(String parentName, String childName) {
-        return parentChildRefs.getOrPut(parentName,childName);
+        return parentChildRefs.getOrPut(parentName, childName);
     }
 
     public void addParentChildRef(ParentChildRef ref) {
         parentChildRefs.add(ref);
     }
-    
+
     public void addPartnerRef(PartnerRef ref) {
         partnerRefs.add(ref);
     }
@@ -166,7 +181,7 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public Module updateParameterValue(String name, Object value) {
-        parameters.updateValue(name,value);
+        parameters.updateValue(name, value);
         return this;
 
     }
@@ -176,7 +191,7 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public void setParameterVisibility(String name, boolean visible) {
-        parameters.updateVisible(name,visible);
+        parameters.updateVisible(name, visible);
     }
 
     public ParameterCollection getAllParameters() {
@@ -184,8 +199,9 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public boolean invalidParameterIsVisible() {
-        for (Parameter parameter:updateAndGetParameters().values()) {
-            if (!parameter.isValid() && parameter.isVisible()) return true;
+        for (Parameter parameter : updateAndGetParameters().values()) {
+            if (!parameter.isValid() && parameter.isVisible())
+                return true;
         }
 
         return false;
@@ -193,10 +209,13 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
-        // If the current module is the cutoff the loop terminates.  This prevents the system offering measurements
+        // If the current module is the cutoff the loop terminates. This prevents the
+        // system offering measurements
         // that are created after this module or are currently unavailable.
-        if (!isEnabled()) return null;
-        if (!isRunnable()) return null;
+        if (!isEnabled())
+            return null;
+        if (!isRunnable())
+            return null;
 
         // Running through all parameters, adding all images to the list
         LinkedHashSet<T> parameters = new LinkedHashSet<>();
@@ -206,7 +225,7 @@ public abstract class Module extends Ref implements Comparable {
                 parameters.add((T) currParameter);
             }
             if (currParameter instanceof ParameterGroup) {
-                addParameterGroupParameters((ParameterGroup) currParameter,type,parameters);
+                addParameterGroupParameters((ParameterGroup) currParameter, type, parameters);
             }
         }
 
@@ -214,15 +233,16 @@ public abstract class Module extends Ref implements Comparable {
 
     }
 
-    public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type, LinkedHashSet<T> parameters) {
+    public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
+            LinkedHashSet<T> parameters) {
         LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
-        for (ParameterCollection collection:collections) {
+        for (ParameterCollection collection : collections) {
             for (Parameter currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);
                 }
                 if (currParameter instanceof ParameterGroup) {
-                    addParameterGroupParameters((ParameterGroup) currParameter,type,parameters);
+                    addParameterGroupParameters((ParameterGroup) currParameter, type, parameters);
                 }
             }
         }
@@ -238,6 +258,14 @@ public abstract class Module extends Ref implements Comparable {
 
     public boolean hasParameter(String parameterName) {
         return parameters.keySet().contains(parameterName);
+    }
+
+    public String getModuleID() {
+        return moduleID;
+    }
+
+    public void setModuleID(String moduleID) {
+        this.moduleID = moduleID;
     }
 
     public String getNotes() {
@@ -290,6 +318,14 @@ public abstract class Module extends Ref implements Comparable {
         this.runnable = runnable;
     }
 
+    public Module getRedirectModule() {
+        return this.redirectModule;
+    }
+
+    public void setRedirectModule(Module module) {
+        this.redirectModule = module;
+    }
+
     public boolean hasVisibleParameters() {
         return updateAndGetParameters().hasVisibleParameters();
 
@@ -301,11 +337,13 @@ public abstract class Module extends Ref implements Comparable {
         try {
             constructor = this.getClass().getDeclaredConstructor(ModuleCollection.class);
             newModule = (Module) constructor.newInstance(newModules);
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
+                | InvocationTargetException e) {
             e.printStackTrace();
             return null;
         }
 
+        newModule.setModuleID(getModuleID());
         newModule.setNickname(getNickname());
         newModule.setEnabled(enabled);
         newModule.setShowOutput(showOutput);
@@ -313,38 +351,43 @@ public abstract class Module extends Ref implements Comparable {
         newModule.setCanBeDisabled(canBeDisabled);
 
         ParameterCollection newParameters = newModule.getAllParameters();
-        for (Parameter parameter:parameters.values()) {
+        for (Parameter parameter : parameters.values()) {
             Parameter newParameter = parameter.duplicate(newModule);
-            if (newParameter == null) continue;
+            if (newParameter == null)
+                continue;
             newParameter.setModule(newModule);
             newParameters.add(newParameter);
         }
 
         ObjMeasurementRefCollection newObjMeasurementRefs = newModule.objectMeasurementRefs;
-        for (ObjMeasurementRef ref:objectMeasurementRefs.values()) {
+        for (ObjMeasurementRef ref : objectMeasurementRefs.values()) {
             ObjMeasurementRef newRef = ref.duplicate();
-            if (newRef == null) continue;
+            if (newRef == null)
+                continue;
             newObjMeasurementRefs.add(newRef);
         }
 
         ImageMeasurementRefCollection newImageMeasurementRefs = newModule.imageMeasurementRefs;
-        for (ImageMeasurementRef ref:imageMeasurementRefs.values()) {
+        for (ImageMeasurementRef ref : imageMeasurementRefs.values()) {
             ImageMeasurementRef newRef = ref.duplicate();
-            if (newRef == null) continue;
+            if (newRef == null)
+                continue;
             newImageMeasurementRefs.add(newRef);
         }
 
         MetadataRefCollection newMetadataRefs = newModule.metadataRefs;
-        for (MetadataRef ref:metadataRefs.values()) {
+        for (MetadataRef ref : metadataRefs.values()) {
             MetadataRef newRef = ref.duplicate();
-            if (newRef == null) continue;
+            if (newRef == null)
+                continue;
             newMetadataRefs.add(newRef);
         }
 
         ParentChildRefCollection newParentChildRefs = newModule.parentChildRefs;
-        for (ParentChildRef ref: parentChildRefs.values()) {
+        for (ParentChildRef ref : parentChildRefs.values()) {
             ParentChildRef newRef = ref.duplicate();
-            if (newRef == null) continue;
+            if (newRef == null)
+                continue;
             newParentChildRefs.add(newRef);
         }
 
@@ -352,17 +395,17 @@ public abstract class Module extends Ref implements Comparable {
 
     }
 
-
     // PROTECTED METHODS
 
     public void writeMessage(String message) {
-        if (verbose) MIA.log.writeStatus("[" + name + "] "+message);
+        if (verbose)
+            MIA.log.writeStatus("[" + name + "] " + message);
     }
 
     protected static void writeMessage(String message, String name) {
-        if (verbose) MIA.log.writeStatus("[" + name + "] "+message);
+        if (verbose)
+            MIA.log.writeStatus("[" + name + "] " + message);
     }
-
 
     // OVER-RIDDEN METHODS
 
@@ -376,11 +419,12 @@ public abstract class Module extends Ref implements Comparable {
     public void appendXMLAttributes(Element element) {
         super.appendXMLAttributes(element);
 
-        element.setAttribute("CLASSNAME",getClass().getName());
-        element.setAttribute("ENABLED",String.valueOf(enabled));
-        element.setAttribute("DISABLEABLE",String.valueOf(canBeDisabled));
-        element.setAttribute("SHOW_OUTPUT",String.valueOf(showOutput));
-        element.setAttribute("NOTES",notes);
+        element.setAttribute("ID", moduleID);
+        element.setAttribute("CLASSNAME", getClass().getName());
+        element.setAttribute("ENABLED", String.valueOf(enabled));
+        element.setAttribute("DISABLEABLE", String.valueOf(canBeDisabled));
+        element.setAttribute("SHOW_OUTPUT", String.valueOf(showOutput));
+        element.setAttribute("NOTES", notes);
 
     }
 
@@ -390,6 +434,16 @@ public abstract class Module extends Ref implements Comparable {
 
         NamedNodeMap map = node.getAttributes();
 
+        if (map.getNamedItem("ID") == null) {
+            MIA.log.writeDebug("Missing");
+            this.moduleID = String.valueOf(System.currentTimeMillis());
+            try {
+                Thread.sleep(5);  // This prevents the next module ID clashing with this one
+            } catch (InterruptedException e) {
+            }
+        } else {
+            this.moduleID = map.getNamedItem("ID").getNodeValue();
+        }
         this.enabled = Boolean.parseBoolean(map.getNamedItem("ENABLED").getNodeValue());
         this.canBeDisabled = Boolean.parseBoolean(map.getNamedItem("DISABLEABLE").getNodeValue());
         this.showOutput = Boolean.parseBoolean(map.getNamedItem("SHOW_OUTPUT").getNodeValue());

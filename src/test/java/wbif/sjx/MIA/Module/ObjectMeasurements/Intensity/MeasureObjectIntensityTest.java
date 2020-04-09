@@ -31,7 +31,7 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 public class MeasureObjectIntensityTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override

@@ -1,23 +1,33 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 
+import java.text.DecimalFormat;
+import java.util.TreeMap;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Analysis.PeriodogramCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
-
-import java.text.DecimalFormat;
-import java.util.TreeMap;
 
 /**
  * Created by sc13967 on 22/05/2018.
@@ -166,7 +176,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
@@ -202,7 +212,7 @@ public class CalculateMeasurementPeriodogram extends Module {
 
         if (showOutput) trackObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

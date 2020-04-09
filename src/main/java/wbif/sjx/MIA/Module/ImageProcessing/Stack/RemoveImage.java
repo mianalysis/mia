@@ -34,7 +34,7 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         ParameterGroup parameterGroup = parameters.getParameter(REMOVE_ANOTHER_IMAGE);
         LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
@@ -49,7 +49,7 @@ public class RemoveImage extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

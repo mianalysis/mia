@@ -4,17 +4,27 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Analysis.TextureCalculator;
 
 /**
  * Created by Stephen on 09/05/2017.
  */
 public class MeasureImageTexture extends Module {
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String X_OFFSET = "X-offset";
     public static final String Y_OFFSET = "Y-offset";
@@ -44,7 +54,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);
@@ -78,12 +88,13 @@ public class MeasureImageTexture extends Module {
 
         if (showOutput) inputImage.showMeasurements(this);
 
-        return true;
+        return Status.PASS;
 
     }
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new IntegerP(X_OFFSET, this,1));
         parameters.add(new IntegerP(Y_OFFSET, this,0));

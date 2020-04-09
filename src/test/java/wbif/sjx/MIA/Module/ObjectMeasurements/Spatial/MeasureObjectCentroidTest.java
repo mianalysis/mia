@@ -24,7 +24,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
 
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override

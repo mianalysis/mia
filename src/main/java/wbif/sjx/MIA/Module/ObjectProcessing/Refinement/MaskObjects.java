@@ -9,13 +9,21 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
@@ -84,7 +92,7 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -116,7 +124,8 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
                     maskedObject.addParent(inputObject);
                     break;
                 case OutputModes.UPDATE_INPUT:
-                    inputObject.setCoordinateSet(maskedObject.getCoordinateSet());
+                    inputObject.getCoordinateSet().clear();
+                    inputObject.getCoordinateSet().addAll(maskedObject.getCoordinateSet());
                     inputObject.clearSurface();
                     inputObject.clearCentroid();
                     inputObject.clearProjected();
@@ -135,7 +144,7 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
             }
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

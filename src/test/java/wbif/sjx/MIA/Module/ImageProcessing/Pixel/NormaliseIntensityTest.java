@@ -15,11 +15,9 @@ import java.net.URLDecoder;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NormaliseIntensityTest extends ModuleTest {
-    private float tolerance = 1E-6f;
-
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override
@@ -31,10 +29,6 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit2D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -70,10 +64,6 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -107,10 +97,6 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit4D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
@@ -146,10 +132,6 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -183,10 +165,6 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity16bit3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_16bit.tif").getPath(),"UTF-8");
@@ -222,10 +200,6 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/LightNoisyGradient3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -259,10 +233,6 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity32bitUnderOne3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_32bit.tif").getPath(),"UTF-8");
@@ -298,10 +268,6 @@ public class NormaliseIntensityTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -333,10 +299,6 @@ public class NormaliseIntensityTest extends ModuleTest {
     public void testNormaliseIntensity8bit2DClipPrecise() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradientClip2D_8bit.tif").getPath(),"UTF-8");

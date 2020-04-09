@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BinaryOperationsTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override
@@ -33,10 +33,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithDilate2DOperation2DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -75,11 +71,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -117,11 +108,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -157,11 +143,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithDilate2DOperation5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -200,10 +181,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -239,10 +216,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithDilate2DOperationZeroIters2DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -281,10 +254,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -321,11 +290,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithErode2DOperationFiveIters3DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -364,11 +328,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -405,11 +364,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithErode2DOperationFiveIters5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -452,10 +406,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -496,11 +446,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithErode2DOperationHundredIters3DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -543,11 +488,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -589,11 +529,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -631,10 +566,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -670,11 +601,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithFillHoles2DOperation3DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -712,11 +638,6 @@ public class BinaryOperationsTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -752,11 +673,6 @@ public class BinaryOperationsTest extends ModuleTest {
     public void testRunWithFillHoles2DOperation5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");

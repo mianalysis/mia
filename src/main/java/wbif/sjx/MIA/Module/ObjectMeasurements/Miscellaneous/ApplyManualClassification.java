@@ -44,7 +44,7 @@
 //    }
 //
 //    @Override
-//    public boolean process(Workspace workspace) {
+//    public Status process(Workspace workspace) {
 //        // Getting input objects
 //        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
 //        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);

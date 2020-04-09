@@ -57,7 +57,7 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);
@@ -76,7 +76,7 @@ public class MeasureObjectColocalisation extends Module {
 
         if (showOutput) objects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

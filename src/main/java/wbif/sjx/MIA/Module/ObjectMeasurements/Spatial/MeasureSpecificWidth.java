@@ -11,7 +11,13 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -20,7 +26,12 @@ import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.SpatCal;
 
@@ -177,7 +188,7 @@ public class MeasureSpecificWidth extends Module {
     }
     
     @Override
-    protected boolean process(final Workspace workspace) {
+    protected Status process(final Workspace workspace) {
         final String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         
         final String refMode1 = parameters.getValue(REFERENCE_MODE_1);
@@ -253,7 +264,7 @@ public class MeasureSpecificWidth extends Module {
         
         if (showOutput) inputObjects.showMeasurements(this, modules);
         
-        return true;
+        return Status.PASS;
         
     }
     

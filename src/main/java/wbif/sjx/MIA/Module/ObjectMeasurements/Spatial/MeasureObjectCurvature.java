@@ -10,6 +10,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -310,7 +311,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -336,7 +337,7 @@ public class MeasureObjectCurvature extends Module {
         int fittingRange = parameters.getValue(FITTING_RANGE_PX);
 
         // If there are no objects, exit the module
-        if (inputObjects.size() == 0) return true;
+        if (inputObjects.size() == 0) return Status.PASS;
 
         // If no reference is provided there's nothing to tell the sign of the curvature
         if (!useReference) {
@@ -402,7 +403,7 @@ public class MeasureObjectCurvature extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

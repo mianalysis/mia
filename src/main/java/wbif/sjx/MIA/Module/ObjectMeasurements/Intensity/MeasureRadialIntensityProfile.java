@@ -3,24 +3,32 @@
 
 package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
 
+import static wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution.getDistanceBins;
+
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
-
-import static wbif.sjx.MIA.Module.ImageMeasurements.MeasureIntensityDistribution.getDistanceBins;
 
 public class MeasureRadialIntensityProfile extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -123,7 +131,7 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -194,7 +202,7 @@ public class MeasureRadialIntensityProfile extends Module {
 
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

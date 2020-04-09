@@ -1,21 +1,24 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-import ij.IJ;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Units;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.net.URLDecoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.CropImage;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
 
 /**
  * Created by Stephen on 29/08/2017.
@@ -23,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ImageLoaderTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @BeforeEach
@@ -342,9 +345,9 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        boolean status = imageFileLoader.execute(workspace);
+        Status status = imageFileLoader.execute(workspace);
 
-        assertFalse(status);
+        assertEquals(Status.FAIL,status);
 
     }
 
@@ -369,9 +372,9 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        boolean status = imageFileLoader.execute(workspace);
+        Status status = imageFileLoader.execute(workspace);
 
-        assertFalse(status);
+        assertEquals(Status.FAIL,status);
 
     }
 
@@ -445,9 +448,9 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        boolean status = imageFileLoader.execute(workspace);
+        Status status = imageFileLoader.execute(workspace);
 
-        assertFalse(status);
+        assertEquals(Status.FAIL,status);
 
     }
 
@@ -472,9 +475,9 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        boolean status = imageFileLoader.execute(workspace);
+        Status status = imageFileLoader.execute(workspace);
 
-        assertFalse(status);
+        assertEquals(Status.FAIL, status);
 
     }
 
@@ -548,9 +551,9 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        boolean status = imageFileLoader.execute(workspace);
+        Status status = imageFileLoader.execute(workspace);
 
-        assertFalse(status);
+        assertEquals(Status.FAIL,status);
 
     }
 
@@ -575,9 +578,9 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        boolean status = imageFileLoader.execute(workspace);
+        Status status = imageFileLoader.execute(workspace);
 
-        assertFalse(status);
+        assertEquals(Status.FAIL,status);
 
     }
 
@@ -705,10 +708,6 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_Output_Image");
@@ -1073,10 +1072,6 @@ public class ImageLoaderTest extends ModuleTest {
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_Output_Image");
         assertEquals(expectedImage,outputImage);
@@ -1111,10 +1106,6 @@ public class ImageLoaderTest extends ModuleTest {
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_Output_Image");
         assertEquals(expectedImage,outputImage);
@@ -1148,10 +1139,6 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_Output_Image");

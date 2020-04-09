@@ -3,14 +3,20 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Object.Volume.Volume;
 
 /**
@@ -28,12 +34,12 @@ public class MeasureObjectOverlap extends Module {
 
     public interface Measurements {
         String OVERLAP_VOX_1 = "OVERLAP_VOXELS_1";
-        String OVERLAP_VOL_PX_1 = "OVERLAP_VOLUME_(PX^3)_1";
-        String OVERLAP_VOL_CAL_1 = "OVERLAP_VOLUME_(${CAL}^3)_1";
+        String OVERLAP_VOL_PX_1 = "OVERLAP_VOLUME_(PX³)_1";
+        String OVERLAP_VOL_CAL_1 = "OVERLAP_VOLUME_(${CAL}³)_1";
         String OVERLAP_PERCENT_1 = "OVERLAP_PERCENT_1";
         String OVERLAP_VOX_2 = "OVERLAP_VOXELS_2";
-        String OVERLAP_VOL_PX_2 = "OVERLAP_VOLUME_(PX^3)_2";
-        String OVERLAP_VOL_CAL_2 = "OVERLAP_VOLUME_(${CAL}^3)_2";
+        String OVERLAP_VOL_PX_2 = "OVERLAP_VOLUME_(PX³)_2";
+        String OVERLAP_VOL_CAL_2 = "OVERLAP_VOLUME_(${CAL}³)_2";
         String OVERLAP_PERCENT_2 = "OVERLAP_PERCENT_2";
 
     }
@@ -73,7 +79,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);
@@ -133,7 +139,7 @@ public class MeasureObjectOverlap extends Module {
         if (showOutput) inputObjects1.showMeasurements(this,modules);
         if (showOutput) inputObjects2.showMeasurements(this,modules);
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -252,8 +252,9 @@ public class RunTrackMate extends Module {
         // Replacing spot volumes with explicit volume
         for (Obj spotObject:spotObjects.values()) {
             double radius = spotObject.getMeasurement(Measurements.RADIUS_PX).getValue();
-            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject,"SpotVolume",radius,false,false);
-            spotObject.setCoordinateSet(volumeObject.getCoordinateSet());
+            Obj volumeObject = GetLocalObjectRegion.getLocalRegion(spotObject, "SpotVolume", radius, false, false);
+            spotObject.getCoordinateSet().clear();
+            spotObject.getCoordinateSet().addAll(volumeObject.getCoordinateSet());
             spotObject.clearSurface();
             spotObject.clearCentroid();
             spotObject.clearProjected();
@@ -302,7 +303,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -357,7 +358,7 @@ public class RunTrackMate extends Module {
 
             }
         } catch (IntegerOverflowException e) {
-            return false;
+            return Status.FAIL;
         }
 
         // Displaying objects (if selected)
@@ -366,7 +367,7 @@ public class RunTrackMate extends Module {
         // Reapplying calibration to input image
         inputImage.getImagePlus().setCalibration(cal);
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public abstract class ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Test

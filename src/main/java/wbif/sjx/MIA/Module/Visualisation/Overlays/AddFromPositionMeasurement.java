@@ -111,7 +111,7 @@ public class AddFromPositionMeasurement extends Overlay {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -181,7 +181,7 @@ public class AddFromPositionMeasurement extends Overlay {
         try {
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         } catch (InterruptedException e) {
-            return false;
+            return Status.FAIL;
         }
 
         Image outputImage = new Image(outputImageName,ipl);
@@ -190,7 +190,7 @@ public class AddFromPositionMeasurement extends Overlay {
         if (addOutputToWorkspace) workspace.addImage(outputImage);
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -1,19 +1,21 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
+import org.junit.jupiter.api.Test;
+
 import ij.IJ;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
-import org.junit.jupiter.api.Test;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 28/02/2019.
@@ -413,11 +415,6 @@ public class BestFocusSubstackTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -454,11 +451,6 @@ public class BestFocusSubstackTest extends ModuleTest {
     public void testRunSecondChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -497,11 +489,6 @@ public class BestFocusSubstackTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -537,11 +524,6 @@ public class BestFocusSubstackTest extends ModuleTest {
     public void testRunFirstChannelBothBelow5D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -580,11 +562,6 @@ public class BestFocusSubstackTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -621,11 +598,6 @@ public class BestFocusSubstackTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAboveIndicesInverted5D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -664,11 +636,6 @@ public class BestFocusSubstackTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -706,11 +673,6 @@ public class BestFocusSubstackTest extends ModuleTest {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus4D_T1_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -747,11 +709,6 @@ public class BestFocusSubstackTest extends ModuleTest {
     public void testRunFirstChannelBelowAndAbove3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus3D_8bit.tif").getPath(),"UTF-8");

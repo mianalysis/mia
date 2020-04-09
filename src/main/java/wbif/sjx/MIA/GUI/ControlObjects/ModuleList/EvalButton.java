@@ -6,6 +6,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 
 import javax.swing.*;
@@ -25,20 +26,25 @@ public class EvalButton extends JButton implements ActionListener {
     private static Thread t;
 
     private Module module;
-    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
-    private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
-    private static final ImageIcon redOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_red_12px.png"), "");
-    private static final ImageIcon redClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_red_12px.png"), "");
-    private static final ImageIcon redStopIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/x-mark-3-12.png"), "");
-
+    private static final ImageIcon blackIcon = new ImageIcon(
+            ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
+    private static final ImageIcon amberIcon = new ImageIcon(
+            ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(
+            ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
+    private static final ImageIcon redOpenIcon = new ImageIcon(
+            ModuleEnabledCheck.class.getResource("/Icons/arrowopen_red_12px.png"), "");
+    private static final ImageIcon redClosedIcon = new ImageIcon(
+            ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_red_12px.png"), "");
+    private static final ImageIcon redStopIcon = new ImageIcon(
+            ModuleEnabledCheck.class.getResource("/Icons/x-mark-3-12.png"), "");
 
     // CONSTRUCTOR
 
     public EvalButton(Module module) {
         this.module = module;
 
-        setMargin(new Insets(0,0,0,0));
+        setMargin(new Insets(0, 0, 0, 0));
         setFocusPainted(false);
         setSelected(false);
         setName("EvalButton");
@@ -80,7 +86,6 @@ public class EvalButton extends JButton implements ActionListener {
 
     }
 
-
     // GETTERS
 
     public Module getModule() {
@@ -94,8 +99,9 @@ public class EvalButton extends JButton implements ActionListener {
 
         // If this is the first (non-GUI separator) module, reset the workspace
         int firstIdx = 0;
-        for (Module module:modules.values()) {
-            if (!(module instanceof GUISeparator)) break;
+        for (Module module : modules.values()) {
+            if (!(module instanceof GUISeparator))
+                break;
             firstIdx++;
         }
 
@@ -119,7 +125,8 @@ public class EvalButton extends JButton implements ActionListener {
         if (idx <= GUI.getLastModuleEval()) {
             t = new Thread(() -> {
                 try {
-                    // For some reason it's necessary to have a brief pause here to prevent the module executing twice
+                    // For some reason it's necessary to have a brief pause here to prevent the
+                    // module executing twice
                     Thread.sleep(1);
                     evaluateModule(module);
                 } catch (Exception e1) {
@@ -134,13 +141,14 @@ public class EvalButton extends JButton implements ActionListener {
             t = new Thread(() -> {
                 for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
                     Module module = GUI.getModules().get(i);
-                    if (module.isEnabled() && module.isRunnable()) try {
-                        evaluateModule(module);
-                    } catch (Exception e1) {
-                        GUI.setModuleBeingEval(-1);
-                        e1.printStackTrace();
-                        Thread.currentThread().getThreadGroup().interrupt();
-                    }
+                    if (module.isEnabled() && module.isRunnable())
+                        try {
+                            evaluateModule(module);
+                        } catch (Exception e1) {
+                            GUI.setModuleBeingEval(-1);
+                            e1.printStackTrace();
+                            Thread.currentThread().getThreadGroup().interrupt();
+                        }
                 }
             });
             t.start();
@@ -151,14 +159,31 @@ public class EvalButton extends JButton implements ActionListener {
         ModuleCollection modules = GUI.getAnalysis().getModules();
         Workspace testWorkspace = GUI.getTestWorkspace();
 
-        // Setting the index to the previous module.  This will make the currently-evaluated module go red
+        // Setting the index to the previous module. This will make the
+        // currently-evaluated module go red
         GUI.setLastModuleEval(modules.indexOf(module) - 1);
         GUI.setModuleBeingEval(modules.indexOf(module));
         GUI.updateModuleStates(false);
 
         Module.setVerbose(true);
-        boolean success = module.execute(testWorkspace);
-        if (success) GUI.setLastModuleEval(modules.indexOf(module));
+        Status success = module.execute(testWorkspace);
+        switch (success) {
+            case PASS:
+                GUI.setLastModuleEval(modules.indexOf(module));
+                break;
+            case REDIRECT:
+                // Getting index of module before one to move to
+                Module redirectModule = module.getRedirectModule();
+                if (redirectModule == null)
+                    break;
+
+                GUI.setLastModuleEval(modules.indexOf(redirectModule) - 1);
+                break;
+            case FAIL:
+            case TERMINATE:
+                break;
+        }
+
         GUI.setModuleBeingEval(-1);
 
         GUI.updateModuleStates(false);

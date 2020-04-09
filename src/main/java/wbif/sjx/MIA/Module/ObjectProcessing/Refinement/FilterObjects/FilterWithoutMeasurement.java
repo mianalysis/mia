@@ -57,7 +57,7 @@ public class FilterWithoutMeasurement extends CoreFilter {
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -96,7 +96,7 @@ public class FilterWithoutMeasurement extends CoreFilter {
         // Showing objects
         if (showOutput) inputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

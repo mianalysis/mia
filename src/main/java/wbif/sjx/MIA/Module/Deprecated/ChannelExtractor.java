@@ -38,7 +38,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         writeMessage("Loading image ("+inputImageName+") into workspace");
@@ -60,7 +60,7 @@ public class ChannelExtractor extends Module {
 
         if (showOutput) outputImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

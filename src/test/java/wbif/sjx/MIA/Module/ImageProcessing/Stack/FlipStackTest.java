@@ -1,16 +1,19 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
-import ij.IJ;
-import ij.ImagePlus;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
 
 /**
  * Created by Stephen Cross on 07/03/2019.
@@ -29,11 +32,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip2D8bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -69,11 +67,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -108,11 +101,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -126,8 +114,8 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        boolean passed = flipStack.execute(workspace);
-        assertFalse(passed);
+        Status status = flipStack.execute(workspace);
+        assertEquals(Status.FAIL,status);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -139,11 +127,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip2D8bitZ() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -158,8 +141,8 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Z);
 
         // Running Module
-        boolean passed = flipStack.execute(workspace);
-        assertFalse(passed);
+        Status status = flipStack.execute(workspace);
+        assertEquals(Status.FAIL,status);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -171,11 +154,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip2D8bitT() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -190,8 +168,8 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.TIME);
 
         // Running Module
-        boolean passed = flipStack.execute(workspace);
-        assertFalse(passed);
+        Status status = flipStack.execute(workspace);
+        assertEquals(Status.FAIL,status);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -206,11 +184,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip3D8bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -246,11 +219,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -285,11 +253,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -303,8 +266,8 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        boolean passed = flipStack.execute(workspace);
-        assertFalse(passed);
+        Status status = flipStack.execute(workspace);
+        assertEquals(Status.FAIL,status);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -316,11 +279,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip3D8bitZ() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -356,11 +314,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -374,8 +327,8 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.TIME);
 
         // Running Module
-        boolean passed = flipStack.execute(workspace);
-        assertFalse(passed);
+        Status status = flipStack.execute(workspace);
+        assertEquals(Status.FAIL,status);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -390,11 +343,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip4D8bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
@@ -430,11 +378,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -468,11 +411,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip4DCT8bitC() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
@@ -508,11 +446,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CZ_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -547,11 +480,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -565,8 +493,8 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        boolean passed = flipStack.execute(workspace);
-        assertFalse(passed);
+        Status status = flipStack.execute(workspace);
+        assertEquals(Status.FAIL,status);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -606,11 +534,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -645,11 +568,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -683,11 +601,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip5D8bitC() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -734,11 +647,6 @@ public class FlipStackTest extends ModuleTest{
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
@@ -772,11 +680,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip5D32bitX() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_32bit.tif").getPath(),"UTF-8");
@@ -813,11 +716,6 @@ public class FlipStackTest extends ModuleTest{
     public void testRunApplyFlip2D8bitXApplyToInput() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");

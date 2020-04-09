@@ -20,8 +20,8 @@ import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -29,6 +29,11 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
@@ -241,7 +246,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String overwriteMode = parameters.getValue(OVERWRITE_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -274,7 +279,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
         if (showOutput) mergedImage.showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

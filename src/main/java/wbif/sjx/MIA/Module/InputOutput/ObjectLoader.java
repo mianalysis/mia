@@ -1,6 +1,14 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.annotation.Nullable;
+
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import loci.common.services.DependencyException;
@@ -11,8 +19,18 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FilePathP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
@@ -20,14 +38,15 @@ import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Object.Metadata;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import javax.annotation.Nullable;
-import java.io.*;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -349,7 +368,7 @@ public class ObjectLoader extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String limitsSource = parameters.getValue(LIMITS_SOURCE);
@@ -386,7 +405,7 @@ public class ObjectLoader extends Module {
                 limits = getLimitsFromMaximumCoordinates(workspace,inputFile);
                 break;
         }
-        if (limits == null) return false;
+        if (limits == null) return Status.FAIL;
 
         // Getting calibration for output objects
         double[] cal = null;
@@ -398,7 +417,7 @@ public class ObjectLoader extends Module {
                 cal = getCalibrationFromManualValues();
                 break;
         }
-        if (cal == null) return false;
+        if (cal == null) return Status.FAIL;
 
         String units = Units.getOMEUnits().getSymbol();
         SpatCal calibration = new SpatCal(cal[0],cal[1],units,limits[0],limits[1],limits[2]);
@@ -419,7 +438,7 @@ public class ObjectLoader extends Module {
 
         if (showOutput) outputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

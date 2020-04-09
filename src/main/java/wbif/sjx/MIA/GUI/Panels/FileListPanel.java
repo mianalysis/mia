@@ -27,6 +27,7 @@ import javax.swing.table.TableRowSorter;
 import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.FileListColumnSelectorMenu;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Metadata;
@@ -63,11 +64,11 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         // Initialising the scroll panel
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setMinimumSize(new Dimension(minimumWidth,1));
-        setPreferredSize(new Dimension(preferredWidth,1));
+        setMinimumSize(new Dimension(minimumWidth, 1));
+        setPreferredSize(new Dimension(preferredWidth, 1));
 
         model.setColumnCount(5);
-        model.setColumnIdentifiers(new String[]{"#","Filename","Ser. name","Ser. #","Progress"});
+        model.setColumnIdentifiers(new String[] { "#", "Filename", "Ser. name", "Ser. #", "Progress" });
 
         table = new JTable(model);
         table.setRowSelectionAllowed(false);
@@ -77,7 +78,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         table.setBorder(BorderFactory.createEmptyBorder());
         table.setAutoCreateRowSorter(true);
         table.setBackground(null);
-        table.setDefaultEditor(Object.class,null);
+        table.setDefaultEditor(Object.class, null);
 
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(COL_JOB_ID).setWidth(10);
@@ -87,8 +88,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         columnModel.getColumn(COL_SERIESNUMBER).setCellRenderer(this);
         columnModel.getColumn(COL_PROGRESS).setCellRenderer(this);
 
-        showColumn(COL_SERIESNAME,false);
-        showColumn(COL_SERIESNUMBER,false);
+        showColumn(COL_SERIESNAME, false);
+        showColumn(COL_SERIESNUMBER, false);
 
         maxWidth = columnModel.getColumn(1).getMaxWidth();
         minWidth = columnModel.getColumn(1).getMinWidth();
@@ -107,7 +108,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
 
-        add(scrollPane,c);
+        add(scrollPane, c);
 
         validate();
         repaint();
@@ -124,13 +125,13 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                     model.removeRow(row);
                 } else {
                     currentWorkspaces.add(workspace);
-                    model.setValueAt(workspace.getProgress(),row,COL_PROGRESS);
+                    model.setValueAt(workspace.getProgress(), row, COL_PROGRESS);
                 }
             }
         }
 
         // Iterating over all current Workspaces, adding any that are missing
-        for (Workspace workspace:workspaces) {
+        for (Workspace workspace : workspaces) {
             if (!currentWorkspaces.contains(workspace)) {
                 JobNumber jobNumber = new JobNumber(++maxJob);
                 Metadata metadata = workspace.getMetadata();
@@ -138,7 +139,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 String seriesNumber = String.valueOf(metadata.getSeriesNumber());
                 double progress = workspace.getProgress();
 
-                model.addRow(new Object[]{jobNumber, workspace, seriesName, seriesNumber, progress});
+                model.addRow(new Object[] { jobNumber, workspace, seriesName, seriesNumber, progress });
 
             }
         }
@@ -152,8 +153,10 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
         TableColumn column = table.getColumnModel().getColumn(columnIndex);
 
         if (show) {
-            if (columnIndex == COL_JOB_ID) column.setPreferredWidth(10);
-            else column.setPreferredWidth(prefWidth);
+            if (columnIndex == COL_JOB_ID)
+                column.setPreferredWidth(10);
+            else
+                column.setPreferredWidth(prefWidth);
             column.setMinWidth(minWidth);
             column.setMaxWidth(maxWidth);
         } else {
@@ -177,7 +180,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     }
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
         switch (column) {
             case COL_JOB_ID:
                 JLabel label = new JLabel();
@@ -189,7 +193,7 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
             case COL_WORKSPACE:
                 Metadata metadata = ((Workspace) value).getMetadata();
                 label = new JLabel();
-                label.setText(" "+metadata.getFilename());
+                label.setText(" " + metadata.getFilename());
                 label.setToolTipText(metadata.getFile().getAbsolutePath());
                 return label;
 
@@ -201,19 +205,31 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
                 return label;
 
             case COL_PROGRESS:
-                int progress = (int) Math.round(((double) value)*100);
-                JProgressBar progressBar = new JProgressBar(0,100);
+                int progress = (int) Math.round(((double) value) * 100);
+                JProgressBar progressBar = new JProgressBar(0, 100);
                 progressBar.setValue(progress);
                 progressBar.setBorderPainted(false);
                 progressBar.setStringPainted(true);
                 progressBar.setString("");
                 progressBar.setToolTipText(String.valueOf((double) value));
-                if (progress ==0) progressBar.setForeground(Colours.ORANGE);
-                else if (progress == 100) progressBar.setForeground(Colours.GREEN);
-                else progressBar.setForeground(Colours.BLUE);
 
                 // Set a special colour if the analysis is marked as having failed
-                if (((Workspace) model.getValueAt(row,COL_WORKSPACE)).isAnalysisFailed()) progressBar.setForeground(Colours.RED);
+                Status status = ((Workspace) model.getValueAt(row, COL_WORKSPACE)).getStatus();
+                switch (status) {
+                    case PASS:
+                    case REDIRECT:
+                        if (progress == 100)
+                            progressBar.setForeground(Colours.GREEN);
+                        else
+                            progressBar.setForeground(Colours.BLUE);
+                        break;
+                    case FAIL:
+                        progressBar.setForeground(Colours.RED);
+                        break;
+                    case TERMINATE:
+                        progressBar.setForeground(Colours.ORANGE);
+                        break;
+                }
 
                 return progressBar;
         }
@@ -225,7 +241,8 @@ public class FileListPanel extends JPanel implements MouseListener, TableCellRen
     @Override
     public void mouseClicked(MouseEvent e) {
         // Only display menu if the right mouse button is clicked
-        if (e.getButton() != MouseEvent.BUTTON3) return;
+        if (e.getButton() != MouseEvent.BUTTON3)
+            return;
 
         // Populating the list containing all available modules
         columnSelectorMenu.show(GUI.getFrame(), 0, 0);

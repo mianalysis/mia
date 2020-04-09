@@ -375,7 +375,7 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -476,7 +476,7 @@ public class FilterObjects extends Module implements ActionListener {
         // Showing objects
         if (showOutput) inputObjects.convertToImageRandomColours().showImage();
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GUISeparatorTest extends ModuleTest {
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override

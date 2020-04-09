@@ -502,7 +502,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         IJ.setBackgroundColor(255,255,255);
 
         // Getting input image
@@ -579,7 +579,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
 
-        return true;
+        return Status.PASS;
 
     }
 

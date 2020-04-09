@@ -177,7 +177,7 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -203,7 +203,7 @@ public class FitEllipse extends Module {
             try {
                 processObject(inputObject,outputObjects,objectOutputMode,maxAxisLength,fittingMode);
             } catch (IntegerOverflowException e) {
-                return false;
+                return Status.FAIL;
             }
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
@@ -215,7 +215,7 @@ public class FitEllipse extends Module {
             }
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

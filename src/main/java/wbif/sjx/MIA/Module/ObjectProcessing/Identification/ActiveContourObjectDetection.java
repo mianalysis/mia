@@ -1,20 +1,34 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import java.awt.Polygon;
+import java.util.Iterator;
+
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Process.IntensityMinMax;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
 import wbif.sjx.common.Process.ActiveContour.Energies.BendingEnergy;
 import wbif.sjx.common.Process.ActiveContour.Energies.ElasticEnergy;
@@ -23,10 +37,6 @@ import wbif.sjx.common.Process.ActiveContour.Energies.PathEnergy;
 import wbif.sjx.common.Process.ActiveContour.Minimisers.GreedyMinimiser;
 import wbif.sjx.common.Process.ActiveContour.PhysicalModel.NodeCollection;
 import wbif.sjx.common.Process.ActiveContour.Visualisation.GridOverlay;
-import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.awt.*;
-import java.util.Iterator;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -62,7 +72,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -79,7 +89,7 @@ public class ActiveContourObjectDetection extends Module {
         // If there are no input objects, creating an empty collection
         if (inputObjects.getFirst() == null) {
             workspace.addObjects(outputObjects);
-            return true;
+            return Status.PASS;
         }
 
         // Getting parameters
@@ -169,7 +179,7 @@ public class ActiveContourObjectDetection extends Module {
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
             try {
                 if (updateInputObjects) {
-                    inputObject.clearPoints();
+                    inputObject.clearAllCoordinates();
                     inputObject.addPointsFromRoi(newRoi,z);
                 } else {
                     Obj outputObject = new Obj(outputObjectsName,outputObjects.getAndIncrementID(),inputObject);
@@ -178,7 +188,7 @@ public class ActiveContourObjectDetection extends Module {
                     outputObjects.add(outputObject);
                 }
             } catch (IntegerOverflowException e) {
-                return false;
+                return Status.FAIL;
             } catch (PointOutOfRangeException e) {
                 
             }
@@ -195,7 +205,7 @@ public class ActiveContourObjectDetection extends Module {
         // If selected, adding new ObjCollection to the Workspace
         if (!updateInputObjects) workspace.addObjects(outputObjects);
 
-        return true;
+        return Status.PASS;
 
     }
 

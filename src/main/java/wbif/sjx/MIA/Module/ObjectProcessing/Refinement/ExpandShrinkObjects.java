@@ -1,22 +1,33 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import ij.Prefs;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DilateErode;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DilateErode;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -97,7 +108,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -113,7 +124,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Storing the image calibration
         Obj firstObject = inputObjects.getFirst();
-        if (firstObject == null) return true;
+        if (firstObject == null) return Status.PASS;
 
         // Iterating over all objects
         int count = 1;
@@ -128,7 +139,7 @@ public class ExpandShrinkObjects extends Module {
             try {
                 newObject = processObject(inputObject,method,radiusChangePx);
             } catch (IntegerOverflowException e) {
-                return false;
+                return Status.FAIL;
             }
 
             // During object shrinking it's possible the object will disappear entirely
@@ -140,7 +151,8 @@ public class ExpandShrinkObjects extends Module {
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
             if (updateInputObjects) {
-                inputObject.setCoordinateSet(newObject.getCoordinateSet());
+                inputObject.getCoordinateSet().clear();
+                inputObject.getCoordinateSet().addAll(newObject.getCoordinateSet());
                 inputObject.clearSurface();
                 inputObject.clearCentroid();
                 inputObject.clearProjected();
@@ -161,7 +173,7 @@ public class ExpandShrinkObjects extends Module {
             else outputObjects.convertToImageRandomColours().showImage();
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

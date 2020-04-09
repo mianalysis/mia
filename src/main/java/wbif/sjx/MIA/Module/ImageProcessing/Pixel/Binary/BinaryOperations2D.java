@@ -104,7 +104,7 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
-    public boolean process(Workspace workspace) {
+    public Status process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -138,7 +138,7 @@ public class BinaryOperations2D extends Module {
 
         }
 
-        return true;
+        return Status.PASS;
 
     }
 

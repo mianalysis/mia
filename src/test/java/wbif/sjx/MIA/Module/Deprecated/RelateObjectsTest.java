@@ -1,5 +1,3 @@
-// TODO: Add calibrated distances to proximity relations
-
 package wbif.sjx.MIA.Module.Deprecated;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +26,7 @@ public class RelateObjectsTest extends ModuleTest {
 
     @BeforeAll
     public static void setVerbose() {
-        Module.setVerbose(true);
+        Module.setVerbose(false);
     }
 
     @Override

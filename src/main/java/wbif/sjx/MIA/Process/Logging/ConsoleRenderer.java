@@ -44,7 +44,7 @@ public class ConsoleRenderer implements LogRenderer {
         Style messageStyle = consoleTextPane.addStyle("Message style", null);
         StyleConstants.setForeground(messageStyle, new Color(44, 38, 37));
         logStyles.put(Level.MESSAGE,messageStyle);
-        levelStatus.put(Level.MESSAGE,false);
+        levelStatus.put(Level.MESSAGE,true);
 
         Style warningStyle = consoleTextPane.addStyle("Warning style", null);
         StyleConstants.setForeground(warningStyle, Colours.ORANGE);

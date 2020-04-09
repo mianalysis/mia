@@ -22,10 +22,10 @@ import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
@@ -34,6 +34,11 @@ import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 public class MergeTracks extends Module implements ActionListener, WindowListener {
@@ -154,7 +159,7 @@ public class MergeTracks extends Module implements ActionListener, WindowListene
     }
 
     @Override
-    protected boolean process(Workspace workspace) {
+    protected Status process(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         trackObjects = workspace.getObjects().get(inputTrackObjectsName);
@@ -188,7 +193,7 @@ public class MergeTracks extends Module implements ActionListener, WindowListene
         frame = null;
         if (ipl != null) ipl.close();
 
-        return true;
+        return Status.PASS;
 
     }
 

@@ -1133,7 +1133,10 @@ public class Exporter {
                     for (Obj object : objects.values()) {
                         // Adding the measurements from this image
                         int col = 0;
-
+                        
+                        if (objectSheets.get(objectName) == null || objectRows.get(objectName) == null)
+                            continue;
+                            
                         Row objectValueRow = objectSheets.get(objectName).createRow(objectRows.get(objectName));
                         objectRows.compute(objectName, (k, v) -> v = v + 1);
 
