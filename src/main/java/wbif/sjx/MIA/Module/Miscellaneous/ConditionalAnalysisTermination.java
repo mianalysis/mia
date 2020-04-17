@@ -49,6 +49,7 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REFERENCE_OBJECT_COUNT_MODE = "Reference object count mode";
     public static final String REFERENCE_METADATA_VALUE = "Reference metadata value";
     public static final String REFERENCE_VALUE = "Reference value";
+    public static final String FIXED_VALUE = "Fixed value";
     public static final String GENERIC_FORMAT = "Generic format";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
 
@@ -70,9 +71,10 @@ public class ConditionalAnalysisTermination extends Module {
         String METADATA_VALUE = "Metadata value";
         String FILE_EXISTS = "File exists";
         String FILE_DOES_NOT_EXIST = "File doesn't exist";
+        String FIXED_VALUE = "Fixed value";
         String OBJECT_COUNT = "Object count";
 
-        String[] ALL = new String[] { FILE_DOES_NOT_EXIST, FILE_EXISTS, IMAGE_MEASUREMENT, METADATA_VALUE,
+        String[] ALL = new String[] { FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT, METADATA_VALUE,
                 OBJECT_COUNT };
 
     }
@@ -158,6 +160,7 @@ public class ConditionalAnalysisTermination extends Module {
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String referenceMetadataValue = parameters.getValue(REFERENCE_METADATA_VALUE);
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
+        double fixedValue = parameters.getValue(FIXED_VALUE);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
@@ -174,6 +177,9 @@ public class ConditionalAnalysisTermination extends Module {
                 break;
             case TestModes.FILE_EXISTS:
                 terminate = testFileExists(workspace.getMetadata(), genericFormat);
+                break;
+            case TestModes.FIXED_VALUE:
+                terminate = fixedValue == referenceValue;
                 break;
             case TestModes.IMAGE_MEASUREMENT:
                 Image inputImage = workspace.getImage(inputImageName);
@@ -220,6 +226,7 @@ public class ConditionalAnalysisTermination extends Module {
         parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT, this));
         parameters.add(new MetadataItemP(REFERENCE_METADATA_VALUE, this));
         parameters.add(new DoubleP(REFERENCE_VALUE, this, 0d));
+        parameters.add(new DoubleP(FIXED_VALUE, this, 0d));
         parameters.add(new StringP(GENERIC_FORMAT, this, "",
                 "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,
@@ -251,6 +258,11 @@ public class ConditionalAnalysisTermination extends Module {
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
                 parameters.getParameter(AVAILABLE_METADATA_FIELDS)
                         .setValue(ImageLoader.getMetadataValues(metadataRefs));
+                break;
+
+            case TestModes.FIXED_VALUE:
+                returnedParameters.add(parameters.getParameter(FIXED_VALUE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
                 break;
 
             case TestModes.IMAGE_MEASUREMENT:

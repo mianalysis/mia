@@ -137,12 +137,11 @@ public class RelateOneToOne extends Module {
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
 
-
     public interface RelationshipModes {
         String CENTROID_SEPARATION = "Centroid separation";
         String SPATIAL_OVERLAP = "Spatial overlap";
 
-        String[] ALL = new String[]{CENTROID_SEPARATION,SPATIAL_OVERLAP};
+        String[] ALL = new String[] { CENTROID_SEPARATION, SPATIAL_OVERLAP };
 
     }
 
@@ -156,21 +155,23 @@ public class RelateOneToOne extends Module {
     }
 
     public static String getFullName(String objectName, String measurement) {
-        return "RELATE_ONE_TO_ONE // "+measurement.substring(0,measurement.length()-1)+"_"+objectName;
+        return "RELATE_ONE_TO_ONE // " + measurement.substring(0, measurement.length() - 1) + "_" + objectName;
 
     }
 
-    static ArrayList<Linkable> getCentroidSeparationLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2, double maxSeparation) {
+    static ArrayList<Linkable> getCentroidSeparationLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2,
+            double maxSeparation) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Getting linkable objects
-        for (Obj object1:inputObjects1.values()) {
-            for (Obj object2:inputObjects2.values()) {
+        for (Obj object1 : inputObjects1.values()) {
+            for (Obj object2 : inputObjects2.values()) {
                 // Calculating the separation between the two objects
-                double overlap = object1.getCentroidSeparation(object2,true);
+                double overlap = object1.getCentroidSeparation(object2, true);
 
                 // Only add if within the linking limit
-                if (overlap <= maxSeparation) linkables.add(new Linkable(overlap,object1.getID(),object2.getID()));
+                if (overlap <= maxSeparation)
+                    linkables.add(new Linkable(overlap, object1.getID(), object2.getID()));
 
             }
         }
@@ -179,24 +180,26 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static ArrayList<Linkable> getSpatialOverlapLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2, double minOverlap1, double minOverlap2) {
+    static ArrayList<Linkable> getSpatialOverlapLinkables(ObjCollection inputObjects1, ObjCollection inputObjects2,
+            double minOverlap1, double minOverlap2) {
         ArrayList<Linkable> linkables = new ArrayList<>();
 
         // Calculating the overlaps
-        for (Obj object1:inputObjects1.values()) {
-            for (Obj object2:inputObjects2.values()) {
+        for (Obj object1 : inputObjects1.values()) {
+            for (Obj object2 : inputObjects2.values()) {
                 // Calculate the overlap between the two objects
                 double overlap = object1.getOverlap(object2);
 
                 // We want large overlaps to be large when they're bad, so taking the inverse
                 if (overlap >= 0) {
-                    double overlapPercentage1 = 100*overlap/object1.size();
-                    double overlapPercentage2 = 100*overlap/object2.size();
+                    double overlapPercentage1 = 100 * overlap / object1.size();
+                    double overlapPercentage2 = 100 * overlap / object2.size();
 
                     // Checking the minimum overlaps have been met
-                    if (overlapPercentage1> minOverlap1 && overlapPercentage2> minOverlap2) {
-                        // Calculated using the raw pixel overlap to prevent small objects being weighted too highly
-                        linkables.add(new Linkable(1/overlap,object1.getID(),object2.getID()));
+                    if (overlapPercentage1 > minOverlap1 && overlapPercentage2 > minOverlap2) {
+                        // Calculated using the raw pixel overlap to prevent small objects being
+                        // weighted too highly
+                        linkables.add(new Linkable(1 / overlap, object1.getID(), object2.getID()));
                     }
                 }
             }
@@ -206,45 +209,58 @@ public class RelateOneToOne extends Module {
 
     }
 
-    static DefaultCostMatrixCreator<Integer,Integer> getCostMatrixCreator(ArrayList<Linkable> linkables) {
-        return getCostMatrixCreator(linkables,1.05,1);
+    static DefaultCostMatrixCreator<Integer, Integer> getCostMatrixCreator(ArrayList<Linkable> linkables) {
+        return getCostMatrixCreator(linkables, 1.05, 1);
     }
 
-    static DefaultCostMatrixCreator<Integer,Integer> getCostMatrixCreator(ArrayList<Linkable> linkables,double alternativeCostFactor,double percentile) {
-        List<Integer> IDs1 = linkables.stream().mapToInt(Linkable::getID1).boxed().collect(Collectors.toCollection(ArrayList::new));
-        List<Integer> IDs2 = linkables.stream().mapToInt(Linkable::getID2).boxed().collect(Collectors.toCollection(ArrayList::new));
+    static DefaultCostMatrixCreator<Integer, Integer> getCostMatrixCreator(ArrayList<Linkable> linkables,
+            double alternativeCostFactor, double percentile) {
+        List<Integer> IDs1 = linkables.stream().mapToInt(Linkable::getID1).boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
+        List<Integer> IDs2 = linkables.stream().mapToInt(Linkable::getID2).boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
         double[] costs = linkables.stream().mapToDouble(Linkable::getCost).toArray();
 
-        // Determining links using TrackMate implementation of Jonker-Volgenant algorithm for linear assignment problems
-        DefaultCostMatrixCreator<Integer,Integer> creator = new DefaultCostMatrixCreator<>(IDs1,IDs2,costs,alternativeCostFactor,percentile);
+        // Determining links using TrackMate implementation of Jonker-Volgenant
+        // algorithm for linear assignment problems
+        DefaultCostMatrixCreator<Integer, Integer> creator = new DefaultCostMatrixCreator<>(IDs1, IDs2, costs,
+                alternativeCostFactor, percentile);
 
-        if (!creator.checkInput() || !creator.process())return null;
+        if (!creator.checkInput() || !creator.process())
+            return null;
 
         return creator;
 
     }
 
-    static ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2, DefaultCostMatrixCreator<Integer,Integer> creator, @Nullable String outputObjectsName) {
+    static ObjCollection assignLinks(ObjCollection inputObjects1, ObjCollection inputObjects2,
+            DefaultCostMatrixCreator<Integer, Integer> creator, @Nullable String outputObjectsName) {
         ObjCollection outputObjects = null;
-        if (outputObjectsName != null) outputObjects = new ObjCollection(outputObjectsName,inputObjects1);
+        if (outputObjectsName != null)
+            outputObjects = new ObjCollection(outputObjectsName, inputObjects1);
 
-        JaqamanLinker<Integer,Integer> linker = new JaqamanLinker<>(creator);
-        if (!linker.checkInput() || !linker.process()) return null;
-        Map<Integer,Integer> assignment = linker.getResult();
+        JaqamanLinker<Integer, Integer> linker = new JaqamanLinker<>(creator);
+        if (!linker.checkInput() || !linker.process())
+            return null;
+        Map<Integer, Integer> assignment = linker.getResult();
 
-        for (Integer ID1:assignment.keySet()) {
+        for (Integer ID1 : assignment.keySet()) {
             int ID2 = assignment.get(ID1);
             Obj object1 = inputObjects1.get(ID1);
             Obj object2 = inputObjects2.get(ID2);
 
             // Adding measurements
-            object1.addMeasurement(new Measurement(getFullName(object2.getName(),Measurements.WAS_LINKED1),1));
-            object2.addMeasurement(new Measurement(getFullName(object1.getName(),Measurements.WAS_LINKED1),1));
+            object1.addMeasurement(new Measurement(getFullName(object2.getName(), Measurements.WAS_LINKED1), 1));
+            object2.addMeasurement(new Measurement(getFullName(object1.getName(), Measurements.WAS_LINKED1), 1));
+
+            // Adding partnerships
+            object1.addPartner(object2);
+            object2.addPartner(object1);
 
             // Creating new object
             if (outputObjectsName != null) {
                 int ID = outputObjects.getAndIncrementID();
-                outputObjects.add(createClusterObject(object1,object2,outputObjectsName,ID));
+                outputObjects.add(createClusterObject(object1, object2, outputObjectsName, ID));
             }
         }
 
@@ -254,19 +270,21 @@ public class RelateOneToOne extends Module {
 
     static void addMissingLinks(ObjCollection inputObjects1, ObjCollection inputObjects2) {
         // Ensuring input objects have "WAS_LINKED" measurements
-        String name = getFullName(inputObjects2.getName(),Measurements.WAS_LINKED1);
-        for (Obj object1:inputObjects1.values()) {
-            if (object1.getMeasurement(name) == null) object1.addMeasurement(new Measurement(name,0));
+        String name = getFullName(inputObjects2.getName(), Measurements.WAS_LINKED1);
+        for (Obj object1 : inputObjects1.values()) {
+            if (object1.getMeasurement(name) == null)
+                object1.addMeasurement(new Measurement(name, 0));
         }
 
-        name = getFullName(inputObjects1.getName(),Measurements.WAS_LINKED1);
-        for (Obj object2:inputObjects2.values()) {
-            if (object2.getMeasurement(name) == null) object2.addMeasurement(new Measurement(name,0));
+        name = getFullName(inputObjects1.getName(), Measurements.WAS_LINKED1);
+        for (Obj object2 : inputObjects2.values()) {
+            if (object2.getMeasurement(name) == null)
+                object2.addMeasurement(new Measurement(name, 0));
         }
     }
 
     static Obj createClusterObject(Obj object1, Obj object2, String outputObjectsName, int ID) {
-        Obj outputObject = new Obj(outputObjectsName,ID,object1);
+        Obj outputObject = new Obj(outputObjectsName, ID, object1);
         outputObject.setT(object1.getT());
 
         // Adding relationships
@@ -274,27 +292,26 @@ public class RelateOneToOne extends Module {
         outputObject.addChild(object2);
         object1.addParent(outputObject);
         object2.addParent(outputObject);
-
+        
         // Adding measurements
         double nPoints1 = (double) object1.size();
         double nPoints2 = (double) object2.size();
         double nTotalPoints = nPoints1 + nPoints2;
-        double fraction1 = nPoints1/nTotalPoints;
-        double fraction2 = nPoints2/nTotalPoints;
+        double fraction1 = nPoints1 / nTotalPoints;
+        double fraction2 = nPoints2 / nTotalPoints;
 
         String name = getFullName(object1.getName(), Measurements.FRACTION_1);
-        outputObject.addMeasurement(new Measurement(name,fraction1));
+        outputObject.addMeasurement(new Measurement(name, fraction1));
         name = getFullName(object1.getName(), Measurements.N_VOXELS1);
-        outputObject.addMeasurement(new Measurement(name,nPoints1));
+        outputObject.addMeasurement(new Measurement(name, nPoints1));
         name = getFullName(object1.getName(), Measurements.FRACTION_2);
-        outputObject.addMeasurement(new Measurement(name,fraction2));
+        outputObject.addMeasurement(new Measurement(name, fraction2));
         name = getFullName(object2.getName(), Measurements.N_VOXELS2);
-        outputObject.addMeasurement(new Measurement(name,nPoints2));
+        outputObject.addMeasurement(new Measurement(name, nPoints2));
 
         return outputObject;
 
     }
-
 
     public RelateOneToOne(ModuleCollection modules) {
         super("Relate one-to-one", modules);
@@ -325,43 +342,49 @@ public class RelateOneToOne extends Module {
 
         // Skipping the module if no objects are present in one collection
         if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
-            addMissingLinks(inputObjects1,inputObjects2);
-            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1));
+            addMissingLinks(inputObjects1, inputObjects2);
+            workspace.addObjects(new ObjCollection(outputObjectsName, inputObjects1));
             return Status.PASS;
         }
 
-        if (!createClusterObjects) outputObjectsName = null;
+        if (!createClusterObjects)
+            outputObjectsName = null;
 
         Obj firstObj = inputObjects1.getFirst();
-        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDppXY();
+        if (calibratedUnits)
+            maximumSeparation = maximumSeparation / firstObj.getDppXY();
 
         // Calculating linking costs
         ArrayList<Linkable> linkables = null;
         switch (relationshipMode) {
             case ResolveCoOccurrence.OverlapModes.CENTROID_SEPARATION:
             default:
-                linkables = getCentroidSeparationLinkables(inputObjects1,inputObjects2,maximumSeparation);
+                linkables = getCentroidSeparationLinkables(inputObjects1, inputObjects2, maximumSeparation);
                 break;
 
             case ResolveCoOccurrence.OverlapModes.SPATIAL_OVERLAP:
-                linkables = getSpatialOverlapLinkables(inputObjects1,inputObjects2,minOverlap1,minOverlap2);
+                linkables = getSpatialOverlapLinkables(inputObjects1, inputObjects2, minOverlap1, minOverlap2);
                 break;
         }
 
         ObjCollection outputObjects = null;
         if (linkables.size() != 0) {
             // Creating cost matrix and checking creator was created
-            DefaultCostMatrixCreator<Integer,Integer> creator = getCostMatrixCreator(linkables);
-            if (creator != null) outputObjects = assignLinks(inputObjects1, inputObjects2, creator, outputObjectsName);
+            DefaultCostMatrixCreator<Integer, Integer> creator = getCostMatrixCreator(linkables);
+            if (creator != null)
+                outputObjects = assignLinks(inputObjects1, inputObjects2, creator, outputObjectsName);
         }
 
         // Assigning missing links
-        addMissingLinks(inputObjects1,inputObjects2);
+        addMissingLinks(inputObjects1, inputObjects2);
 
-        // Creating an empty output objects collection if one hasn't already been created
-        if (outputObjects == null) outputObjects = new ObjCollection(outputObjectsName,inputObjects1);
+        // Creating an empty output objects collection if one hasn't already been
+        // created
+        if (outputObjects == null)
+            outputObjects = new ObjCollection(outputObjectsName, inputObjects1);
 
-        if (createClusterObjects) workspace.addObjects(outputObjects);
+        if (createClusterObjects)
+            workspace.addObjects(outputObjects);
 
         return Status.PASS;
 
@@ -369,18 +392,18 @@ public class RelateOneToOne extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
-        parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS,this,true));
-        parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
+        parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS, this, true));
+        parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME, this));
 
-        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
-        parameters.add(new ChoiceP(RELATIONSHIP_MODE,this, RelationshipModes.SPATIAL_OVERLAP, RelationshipModes.ALL));
-        parameters.add(new DoubleP(MAXIMUM_SEPARATION,this,1.0));
-        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
-        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1,this,50.0));
-        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2,this,50.0));
+        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
+        parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.SPATIAL_OVERLAP, RelationshipModes.ALL));
+        parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
+        parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
 
     }
 
@@ -398,7 +421,7 @@ public class RelateOneToOne extends Module {
 
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
-        switch ((String) parameters.getValue(RELATIONSHIP_MODE)){
+        switch ((String) parameters.getValue(RELATIONSHIP_MODE)) {
             case RelationshipModes.CENTROID_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
                 returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
@@ -430,37 +453,43 @@ public class RelateOneToOne extends Module {
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(outputObjectsName);
         returnedRefs.add(reference);
-        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName1+"\" objects");
+        reference.setDescription(
+                "Fraction of overlap object which is coincident with \"" + inputObjectsName1 + "\" objects");
 
         name = getFullName(inputObjectsName1, Measurements.N_VOXELS1);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(outputObjectsName);
         returnedRefs.add(reference);
-        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName1+"\" objects");
+        reference.setDescription(
+                "Number of voxels in overlap object which are coincident with \"" + inputObjectsName1 + "\" objects");
 
         name = getFullName(inputObjectsName2, Measurements.FRACTION_2);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(outputObjectsName);
         returnedRefs.add(reference);
-        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName2+"\" objects");
+        reference.setDescription(
+                "Fraction of overlap object which is coincident with \"" + inputObjectsName2 + "\" objects");
 
         name = getFullName(inputObjectsName2, Measurements.N_VOXELS2);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(outputObjectsName);
         returnedRefs.add(reference);
-        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName2+"\" objects");
+        reference.setDescription(
+                "Number of voxels in overlap object which are coincident with \"" + inputObjectsName2 + "\" objects");
 
         name = getFullName(inputObjectsName2, Measurements.WAS_LINKED1);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName1);
         returnedRefs.add(reference);
-        reference.setDescription("Was this \""+inputObjectsName1+"\" object linked with a \""+inputObjectsName2+"\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+        reference.setDescription("Was this \"" + inputObjectsName1 + "\" object linked with a \"" + inputObjectsName2
+                + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
 
         name = getFullName(inputObjectsName1, Measurements.WAS_LINKED1);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName2);
         returnedRefs.add(reference);
-        reference.setDescription("Was this \""+inputObjectsName2+"\" object linked with a \""+inputObjectsName1+"\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+        reference.setDescription("Was this \"" + inputObjectsName2 + "\" object linked with a \"" + inputObjectsName1
+                + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
 
         return returnedRefs;
 
@@ -492,7 +521,15 @@ public class RelateOneToOne extends Module {
 
     @Override
     public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
+        PartnerRefCollection returnedRefs = new PartnerRefCollection();
+
+        String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
+        String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
+
+        returnedRefs.add(partnerRefs.getOrPut(inputObjects1Name, inputObjects2Name));
+
+        return returnedRefs;
+
     }
 
     @Override
