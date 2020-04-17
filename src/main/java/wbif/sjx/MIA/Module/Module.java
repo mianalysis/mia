@@ -391,6 +391,14 @@ public abstract class Module extends Ref implements Comparable {
             newParentChildRefs.add(newRef);
         }
 
+        PartnerRefCollection newPartnerRefs = newModule.partnerRefs;
+        for (PartnerRef ref : newPartnerRefs.values()) {
+            PartnerRef newRef = ref.duplicate();
+            if (newRef == null)
+                continue;
+                newPartnerRefs.add(newRef);
+        }
+
         return newModule;
 
     }
