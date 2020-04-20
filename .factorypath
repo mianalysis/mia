@@ -86,6 +86,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/poi/poi-ooxml-schemas/3.16/poi-ooxml-schemas-3.16.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/github/virtuald/curvesapi/1.04/curvesapi-1.04.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/xmlbeans/xmlbeans/3.0.0/xmlbeans-3.0.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/net/objecthunter/exp4j/0.4.8/exp4j-0.4.8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/net/imagej/imagej/2.0.0-rc-71/imagej-2.0.0-rc-71.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/net/imagej/imagej-common/0.28.2/imagej-common-0.28.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/edu/ucar/udunits/4.3.18/udunits-4.3.18.jar" enabled="true" runInBatchMode="false"/>

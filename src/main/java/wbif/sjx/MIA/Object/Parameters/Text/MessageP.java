@@ -1,12 +1,14 @@
 package wbif.sjx.MIA.Object.Parameters.Text;
 
+import java.awt.Color;
+
+import javax.annotation.Nonnull;
+
 import wbif.sjx.MIA.GUI.ParameterControls.MessageArea;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-
-import javax.annotation.Nonnull;
-import java.awt.*;
 
 public class MessageP extends TextAreaP {
     private Color color = Color.BLACK;

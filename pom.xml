@@ -11,7 +11,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
 <groupId>wbif.sjx</groupId>
 <artifactId>MIA_</artifactId>
-<version>0.14.1</version>
+<version>0.14.2</version>
 <packaging>jar</packaging>
 <name>MIA_</name>
 <url>https://github.com/SJCross/MIA</url>
@@ -183,6 +183,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <groupId>org.apache.xmlbeans</groupId>
         <artifactId>xmlbeans</artifactId>
         <version>3.0.0</version>
+    </dependency>
+
+    <dependency>
+        <groupId>net.objecthunter</groupId>
+        <artifactId>exp4j</artifactId>
+        <version>0.4.8</version>
     </dependency>
     
     <dependency>
