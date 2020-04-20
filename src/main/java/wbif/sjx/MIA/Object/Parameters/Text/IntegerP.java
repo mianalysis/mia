@@ -1,11 +1,10 @@
 package wbif.sjx.MIA.Object.Parameters.Text;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 public class IntegerP extends TextType {
     protected String value;
@@ -36,14 +35,18 @@ public class IntegerP extends TextType {
 
     public void setValue(String value) {
         // Checking this is valid
-        if (GlobalVariables.containsValue(value)) {
+        if (GlobalVariables.containsValue(value) || containsCalculation(value)) {
             this.value = value;
         } else {
             try {
                 Integer.parseInt(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                MIA.log.write("Must be an integer-precision number or metadata handle (e.g. ${name})", LogRenderer.Level.WARNING);
+                MIA.log.writeWarning("Module \"" + module.getName() + "\", parameter \"" + getName()
+                        + " \". Must either:" + "\n    - Be an integer number"
+                        + "\n    - Be a global variable handle (e.g. V{name}) "
+                        + "\n    - Contain a calculation (e.g. C{3-6}."
+                        + "\nNote: Global variables and calculations can be combined (e.g. C{V{name1} + V{name2} - 4})");
             }
         }
     }
@@ -60,7 +63,11 @@ public class IntegerP extends TextType {
 
     @Override
     public <T> T getValue() {
-        return (T) (Integer) Integer.parseInt(GlobalVariables.convertString(value,module.getModules()));
+        String converted1 = GlobalVariables.convertString(value, module.getModules());
+        String converted2 = applyCalculation(converted1);
+
+        return (T) (Integer) Integer.parseInt(converted2);
+
     }
 
     @Override

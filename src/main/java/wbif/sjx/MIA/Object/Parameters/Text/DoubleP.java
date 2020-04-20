@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.Object.Parameters.Text;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
@@ -10,22 +10,22 @@ public class DoubleP extends TextType {
     protected String value;
 
     public DoubleP(String name, Module module, double value) {
-        super(name,module);
+        super(name, module);
         this.value = String.valueOf(value);
     }
 
     public DoubleP(String name, Module module, String value) {
-        super(name,module);
+        super(name, module);
         this.value = value;
     }
 
     public DoubleP(String name, Module module, double value, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.value = String.valueOf(value);
     }
 
     public DoubleP(String name, Module module, String value, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.value = value;
     }
 
@@ -35,14 +35,18 @@ public class DoubleP extends TextType {
 
     public void setValue(String value) throws NumberFormatException {
         // Checking this is valid
-        if (GlobalVariables.containsValue(value)) {
+        if (GlobalVariables.containsValue(value) || containsCalculation(value)) {
             this.value = value;
         } else {
             try {
                 Double.parseDouble(value);
                 this.value = value;
             } catch (NumberFormatException e) {
-                MIA.log.writeWarning("Module: \""+module.getName()+"\", parameter: \""+getName()+"\". Must be a double-precision number or global variable handle (e.g. V{name})");
+                MIA.log.writeWarning("Module \"" + module.getName() + "\", parameter \"" + getName()
+                        + " \". Must either:" + "\n    - Be a double-precision number"
+                        + "\n    - Be a global variable handle (e.g. V{name}) "
+                        + "\n    - Contain a calculation (e.g. C{3-6}.  "
+                        + "\nNote: Global variables and calculations can be combined (e.g. C{V{name1} + V{name2} - 4})");
             }
         }
     }
@@ -55,7 +59,7 @@ public class DoubleP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        DoubleP newParameter = new DoubleP(name,newModule,value,getDescription());
+        DoubleP newParameter = new DoubleP(name, newModule, value, getDescription());
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());
         newParameter.setExported(isExported());
@@ -71,7 +75,11 @@ public class DoubleP extends TextType {
 
     @Override
     public <T> T getValue() throws NumberFormatException {
-        return (T) (Double) Double.parseDouble(GlobalVariables.convertString(value,module.getModules()));
+        String converted1 = GlobalVariables.convertString(value, module.getModules());
+        String converted2 = applyCalculation(converted1);
+
+        return (T) (Double) Double.parseDouble(converted2);
+
     }
 
     @Override
