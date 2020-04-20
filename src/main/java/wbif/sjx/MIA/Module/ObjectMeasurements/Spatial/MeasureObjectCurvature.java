@@ -346,8 +346,11 @@ public class MeasureObjectCurvature extends Module {
         }
 
         Image inputImage = workspace.getImage(inputImageName);
-        ImagePlus inputIpl = inputImage.getImagePlus();
-        if (drawSpline &! applyToImage) inputIpl = new Duplicator().run(inputIpl);
+        ImagePlus inputIpl = null;
+        if (drawSpline) {
+            inputIpl = inputImage.getImagePlus();
+            if (!applyToImage) inputIpl = new Duplicator().run(inputIpl);
+        } 
 
         int count = 1;
         int total = inputObjects.size();
