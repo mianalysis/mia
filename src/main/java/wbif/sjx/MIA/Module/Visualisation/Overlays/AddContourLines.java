@@ -8,17 +8,18 @@ import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
+import org.scijava.vecmath.Point2d;
+
 import ij.ImagePlus;
 import ij.gui.Line;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
-import ij.gui.TextRoiMod;
+import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.FloatPolygon;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -80,7 +81,7 @@ public class AddContourLines extends Module {
 
     public static double[] getContourLevels(double minIntensity, double maxIntensity, int nContours) {
         double[] levels = new double[nContours];
-        double intensityWidth = (maxIntensity - minIntensity + 1) / (nContours - 1);
+        double intensityWidth = (maxIntensity - minIntensity) / (nContours - 1);
 
         for (int i = 0; i < nContours; i++)
             levels[i] = minIntensity + i * intensityWidth;
@@ -176,12 +177,10 @@ public class AddContourLines extends Module {
             if (contour.getType() == Roi.COMPOSITE) {
                 ShapeRoi shapeRoi = new ShapeRoi(contour);
                 for (Roi roi : shapeRoi.getRois()) {
-                    float[] offset = new float[] { (float) shapeRoi.getXBase(), (float) shapeRoi.getXBase() };
-                    addSingleLevelContour(ipr, roi, overlay, offset, pos, level, contourColour, lineWidth, new ArrayList<>());
+                    addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, new ArrayList<>());
                 }
             } else {
-                float[] offset = new float[] { (float) contour.getXBase(), (float) contour.getXBase() };
-                addSingleLevelContour(ipr, contour, overlay, offset, pos, level, contourColour, lineWidth, new ArrayList<>());
+                addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, new ArrayList<>());
             }
         }
     }
@@ -201,24 +200,20 @@ public class AddContourLines extends Module {
             if (contour.getType() == Roi.COMPOSITE) {
                 ShapeRoi shapeRoi = new ShapeRoi(contour);
                 for (Roi roi : shapeRoi.getRois()) {
-                    float[] offset = new float[] { (float) roi.getXBase(), (float) roi.getXBase() };
-                    offset = new float[] { 0, 0 };
-                    ArrayList<Integer> labelRegion = getLabelPosition(ipr, roi, offset, pos, level, labelSize);
-                    addSingleLevelContour(ipr, roi, overlay, offset, pos, level, contourColour, lineWidth, labelRegion);
-                    addSingleLevelLabel(ipr, roi, overlay, offset, pos, level, labelColour, labelSize, labelRegion);
+                    ArrayList<Integer> labelRegion = getLabelPosition(ipr, roi, pos, level, labelSize);
+                    addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, labelRegion);
+                    addSingleLevelLabel(ipr, roi, overlay, pos, level, labelColour, labelSize, labelRegion);
                 }
             } else {
-                float[] offset = new float[] { (float) contour.getXBase(), (float) contour.getXBase() };
-                offset = new float[] { 0, 0 };
-                ArrayList<Integer> labelRegion = getLabelPosition(ipr, contour, offset, pos, level, labelSize);
-                addSingleLevelContour(ipr, contour, overlay, offset, pos, level, contourColour, lineWidth, labelRegion);
-                addSingleLevelLabel(ipr, contour, overlay, offset, pos, level, labelColour, labelSize, labelRegion);
+                ArrayList<Integer> labelRegion = getLabelPosition(ipr, contour, pos, level, labelSize);
+                addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, labelRegion);
+                addSingleLevelLabel(ipr, contour, overlay, pos, level, labelColour, labelSize, labelRegion);
             }
         }
     }
 
-    public static ArrayList<Integer> getLabelPosition(ImageProcessor ipr, Roi roi, float[] offset, int[] pos,
-            double level, int labelSize) {
+    public static ArrayList<Integer> getLabelPosition(ImageProcessor ipr, Roi roi, int[] pos, double level,
+            int labelSize) {
 
         DecimalFormat df = new DecimalFormat("0");
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, labelSize);
@@ -227,7 +222,7 @@ public class AddContourLines extends Module {
         int imHeight = ipr.getHeight();
 
         // Creating label, so we know the width
-        TextRoiMod textRoi = new TextRoiMod(0, 0, df.format(level), font);
+        TextRoi textRoi = new TextRoi(0, 0, df.format(level), font);
         double width = textRoi.getFloatWidth();
 
         // Ensuring there are enough points to draw the label
@@ -237,7 +232,7 @@ public class AddContourLines extends Module {
             return new ArrayList<>();
 
         // Ensuring there are enough consecutive non-boundary points to draw the label
-        ArrayList<Integer> longestPath = getLongestNonBoundaryPath(fp, imWidth, imHeight, offset);
+        ArrayList<Integer> longestPath = getLongestNonBoundaryPath(fp, imWidth, imHeight);
         if (longestPath.size() < width * 3)
             return new ArrayList<>();
 
@@ -256,12 +251,12 @@ public class AddContourLines extends Module {
 
     }
 
-    static ArrayList<Integer> getLongestNonBoundaryPath(FloatPolygon fp, int imWidth, int imHeight, float[] offset) {
+    static ArrayList<Integer> getLongestNonBoundaryPath(FloatPolygon fp, int imWidth, int imHeight) {
         ArrayList<Integer> nbp = new ArrayList<>();
         ArrayList<Integer> nbpMax = new ArrayList<>();
         for (int i = 0; i < fp.npoints; i++) {
-            float x = fp.xpoints[i] + offset[0];
-            float y = fp.ypoints[i] + offset[1];
+            float x = fp.xpoints[i];
+            float y = fp.ypoints[i];
 
             if (x >= 1 && x < (imWidth - 1) && y >= 1 && y < (imHeight - 1)) {
                 nbp.add(i);
@@ -279,8 +274,8 @@ public class AddContourLines extends Module {
 
     }
 
-    public static void addSingleLevelContour(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, float[] offset,
-            int[] pos, double level, Color colour, double lineWidth, ArrayList<Integer> labelRegion) {
+    public static void addSingleLevelContour(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos,
+            double level, Color colour, double lineWidth, ArrayList<Integer> labelRegion) {
 
         int imWidth = ipr.getWidth();
         int imHeight = ipr.getHeight();
@@ -291,10 +286,10 @@ public class AddContourLines extends Module {
             if (labelRegion.contains(i))
                 continue;
 
-            float x1 = fp.xpoints[i] + offset[0];
-            float y1 = fp.ypoints[i] + offset[1];
-            float x2 = fp.xpoints[i + 1] + offset[0];
-            float y2 = fp.ypoints[i + 1] + offset[1];
+            float x1 = fp.xpoints[i];
+            float y1 = fp.ypoints[i];
+            float x2 = fp.xpoints[i + 1];
+            float y2 = fp.ypoints[i + 1];
 
             if ((x1 >= 1 && x1 < (imWidth - 1) && y1 >= 1 && y1 < (imHeight - 1))
                     || (x2 >= 1 && x2 < (imWidth - 1) && y2 >= 1 && y2 < (imHeight - 1))) {
@@ -313,8 +308,8 @@ public class AddContourLines extends Module {
         }
     }
 
-    public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, float[] offset,
-            int[] pos, double level, Color colour, int labelSize, ArrayList<Integer> labelRegion) {
+    public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos, double level,
+            Color colour, int labelSize, ArrayList<Integer> labelRegion) {
 
         // If no label region was specified, don't add a label
         if (labelRegion.size() == 0)
@@ -335,11 +330,8 @@ public class AddContourLines extends Module {
         double yCent = csY.getMean();
 
         // Adding text label
-        TextRoiMod textRoi = new TextRoiMod(xCent, yCent, df.format(level), font);
-        double angle = getLabelOrientation(fp, labelRegion, offset);
-        textRoi.setAngle(angle);
-        textRoi.setLocation(offset[0] + textRoi.getXBase() - textRoi.getFloatWidth() / 2 + 1,
-                offset[1] + textRoi.getYBase() - textRoi.getFloatHeight() / 2 + 1);
+        double angle = getLabelOrientation(fp, labelRegion);
+        TextRoi textRoi = createTextRoi(xCent, yCent, angle, df.format(level), font, overlay);
         textRoi.setStrokeColor(colour);
 
         if (pos.length > 1) {
@@ -352,14 +344,53 @@ public class AddContourLines extends Module {
 
     }
 
-    public static double getLabelOrientation(FloatPolygon fp, ArrayList<Integer> labelRegion, float[] offset) {
+    public static TextRoi createTextRoi(double xCent, double yCent, double angle, String text, Font font,
+            ij.gui.Overlay overlay) {
+        TextRoi textRoi = new TextRoi(xCent, yCent, text, font);
+
+        double x0 = textRoi.getXBase();
+        double y0 = textRoi.getYBase();
+        double width = textRoi.getFloatWidth();
+        double height = textRoi.getFloatHeight();
+
+        Point2d p1 = new Point2d(x0, y0);
+        Point2d pCent = new Point2d(x0 + width / 2 - 1, y0 + height / 2 - 1);
+        Point2d pCentR = rotatePoint(pCent, p1, angle);
+
+        double xBaseOffs = 2 * x0 - pCentR.x;
+        double yBaseOffs = 2 * y0 - pCentR.y;
+
+        textRoi.setLocation(xBaseOffs, yBaseOffs);
+        textRoi.setAngle(angle);
+
+        return textRoi;
+
+    }
+
+    public static Point2d rotatePoint(Point2d pIn, Point2d pRot, double angleD) {
+        double angle = -Math.toRadians(angleD);
+
+        double x1 = pIn.x - pRot.x;
+        double y1 = pIn.y - pRot.y;
+
+        double x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+        double y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+
+        pIn.x = x2 + pRot.x;
+        pIn.y = y2 + pRot.y;
+
+        return pIn;
+
+    }
+
+    public static double getLabelOrientation(FloatPolygon fp, ArrayList<Integer> labelRegion) {
         int idx1 = labelRegion.get(0);
         int idx2 = labelRegion.get(labelRegion.size() - 1);
 
-        float x1 = fp.xpoints[idx1] + offset[0];
-        float y1 = fp.ypoints[idx1] + offset[1];
-        float x2 = fp.xpoints[idx2] + offset[0];
-        float y2 = fp.ypoints[idx2] + offset[1];
+        float x1 = fp.xpoints[idx1];
+        float y1 = fp.ypoints[idx1];
+        float x2 = fp.xpoints[idx2];
+        float y2 = fp.ypoints[idx2];
 
         if (x1 > x2) {
             return -Math.toDegrees(Math.atan2(y1 - y2, x1 - x2));
@@ -426,7 +457,7 @@ public class AddContourLines extends Module {
         } else {
             addOverlay(ipl, levels, contourColours, lineWidth);
         }
-        
+
         // If necessary, adding output image to workspace. This also allows us to show
         // it.
         Image outputImage = new Image(outputImageName, ipl);
@@ -539,134 +570,3 @@ public class AddContourLines extends Module {
         return true;
     }
 }
-
-///// THE FOLLOWING IS A START ON ORIENTING THE TEXTROI USING THE STOCK
-///// TEXTROI CLASS.
-// public static void addOverlay(ImageProcessor ipr, ij.gui.Overlay overlay,
-// int[] pos, double[] levels,
-// HashMap<Double, Color> colours, double lineWidth) {
-
-// int labelSize = 12;
-// Font font = new Font(Font.SANS_SERIF, Font.PLAIN, labelSize);
-
-// for (double level : levels) {
-// Roi contour = getContour(ipr, level);
-// if (contour == null)
-// continue;
-
-// ShapeRoi shapeRoi = new ShapeRoi(contour);
-// for (Roi roi : shapeRoi.getRois()) {
-// FloatPolygon fp = roi.getInterpolatedPolygon();
-
-// // Adding text label
-// int idx = (int) Math.round(labelSize * 1.5);
-// double angle = 45;
-
-// // TextRoiMod textRoi = new TextRoiMod(fp.xpoints[idx], fp.ypoints[idx],
-// // String.valueOf(level), font);
-// TextRoi textRoi = new TextRoi(fp.xpoints[idx], fp.ypoints[idx],
-// String.valueOf(level), font);
-// // textRoi.setDrawOffset(true);
-// // textRoi.setDrawStringMode(true);
-// // textRoi.setLocation(textRoi.getXBase() - textRoi.getFloatWidth() / 2 + 1,
-// // textRoi.getYBase() - textRoi.getFloatHeight() / 2 + 1);
-// // textRoi.setRotationCenter(textRoi.getXBase() + textRoi.getFloatWidth() / 2
-// ,
-// // textRoi.getYBase() + textRoi.getFloatHeight() / 2);
-
-// // if (pos.length > 1) {
-// // textRoi.setPosition(pos[0], pos[1], pos[2]);
-// // } else {
-// // textRoi.setPosition(pos[0]);
-// // }
-
-// // textRoi.setLocation(textRoi.getXBase(), textRoi.getYBase() -
-// // textRoi.getFloatHeight() / 2 + 1);
-
-// // double[] cent = textRoi.getContourCentroid();
-// // overlay.add(new PointRoi(cent[0], cent[1]));
-
-// // FloatPolygon fl = textRoi.getInterpolatedPolygon();
-// // overlay.add(new PolygonRoi(fl, PolygonRoi.FREELINE));
-
-// // PointRoi p = new PointRoi(textRoi.getXBase(), textRoi.getYBase());
-// // p.setStrokeColor(Color.CYAN);
-// // overlay.add(p);
-
-// // p = new PointRoi(textRoi.getXBase() + textRoi.getFloatWidth(),
-// textRoi.getYBase());
-// // p.setStrokeColor(Color.CYAN);
-// // overlay.add(p);
-
-// // p = new PointRoi(textRoi.getXBase(), textRoi.getYBase() +
-// textRoi.getFloatHeight());
-// // p.setStrokeColor(Color.CYAN);
-// // overlay.add(p);
-
-// // p = new PointRoi(textRoi.getXBase() + textRoi.getFloatWidth(),
-// // textRoi.getYBase() + textRoi.getFloatHeight());
-// // p.setStrokeColor(Color.CYAN);
-// // overlay.add(p);
-
-// double x0 = textRoi.getXBase();
-// double y0 = textRoi.getYBase();
-// double width = textRoi.getFloatWidth();
-// double height = textRoi.getFloatHeight();
-
-// Point2d p1 = new Point2d(x0,y0);
-// Point2d p2 = new Point2d(x0+width+1,y0);
-// Point2d p3 = new Point2d(x0,y0+height+1);
-// Point2d p4 = new Point2d(x0 + width+1, y0 + height+1);
-
-// Point2d p1R = rotatePoint(p1, p1, 45);
-// Point2d p2R = rotatePoint(p2, p1, 45);
-// Point2d p3R = rotatePoint(p3, p1, 45);
-// Point2d p4R = rotatePoint(p4, p1, 45);
-
-// PointRoi p = new PointRoi(p1R.getX(), p1R.getY());
-// p.setStrokeColor(Color.ORANGE);
-// overlay.add(p);
-
-// p = new PointRoi(p2R.getX(), p2R.getY());
-// p.setStrokeColor(Color.ORANGE);
-// overlay.add(p);
-
-// p = new PointRoi(p3R.getX(), p3R.getY());
-// p.setStrokeColor(Color.ORANGE);
-// overlay.add(p);
-
-// p = new PointRoi(p4R.getX(), p4R.getY());
-// p.setStrokeColor(Color.ORANGE);
-// overlay.add(p);
-
-// // overlay.add(
-// // new PointRoi(textRoi.getRotationCenter().xpoints[0],
-// // textRoi.getRotationCenter().ypoints[0]));
-
-// // Rectangle r = textRoi.getBounds();
-// // overlay.add(new Roi(r.x, r.y, r.width, r.height));
-
-// textRoi.setAngle(45);
-// overlay.addElement(textRoi);
-
-// for (int i = labelSize * 3; i < fp.npoints - 1; i++) {
-// float x1 = fp.xpoints[i];
-// float y1 = fp.ypoints[i];
-// float x2 = fp.xpoints[i + 1];
-// float y2 = fp.ypoints[i + 1];
-
-// Line line = new Line(x1, y1, x2, y2);
-// line.setStrokeWidth(lineWidth);
-// line.setStrokeColor(colours.get(level));
-
-// if (pos.length > 1) {
-// line.setPosition(pos[0], pos[1], pos[2]);
-// } else {
-// line.setPosition(pos[0]);
-// }
-// overlay.addElement(line);
-
-// }
-// }
-// }
-// }
