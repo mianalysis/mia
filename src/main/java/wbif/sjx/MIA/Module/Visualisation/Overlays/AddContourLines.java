@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.Visualisation.Overlays;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.image.IndexColorModel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import javax.annotation.Nullable;
 import org.scijava.vecmath.Point2d;
 
 import ij.ImagePlus;
-import ij.gui.Line;
+import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import ij.gui.TextRoi;
@@ -41,6 +42,7 @@ import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.LUTs;
 
 public class AddContourLines extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -56,6 +58,7 @@ public class AddContourLines extends Module {
     public static final String CONTOUR_COLOUR_MODE = "Contour colour mode";
     public static final String CONTOUR_COLOUR = "Contour colour";
     public static final String LINE_WIDTH = "Line width";
+    public static final String DRAW_EVERY_N_POINTS = "Draw every N points";
 
     public static final String LABEL_SEPARATOR = "Label rendering";
     public static final String SHOW_LABELS = "Show labels";
@@ -64,11 +67,17 @@ public class AddContourLines extends Module {
     public static final String LABEL_SIZE = "Label size";
 
     public interface ColourModes {
+        String BLACK_FIRE = "Black fire";
+        String ICE = "Ice";
+        String PHYSICS = "Physics";
+        String RANDOM = "Random";
         String SINGLE_COLOUR_GRADIENT = "Single colour gradient";
         String SINGLE_COLOUR = "Single colour";
         String SPECTRUM = "Spectrum";
+        String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, SPECTRUM };
+        String[] ALL = new String[] { BLACK_FIRE, ICE, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, SPECTRUM,
+                THERMAL };
 
     }
 
@@ -97,20 +106,48 @@ public class AddContourLines extends Module {
         double maxIntensity = levels[levels.length - 1];
         double range = maxIntensity - minIntensity;
 
+        IndexColorModel cm = null;
+        switch (colourMode) {
+            case ColourModes.BLACK_FIRE:
+                cm = LUTs.BlackFire().getColorModel();
+                break;
+            case ColourModes.ICE:
+                cm = LUTs.Ice().getColorModel();
+                break;
+            case ColourModes.PHYSICS:
+                cm = LUTs.Physics().getColorModel();
+                break;
+            case ColourModes.RANDOM:
+                cm = LUTs.Random(false).getColorModel();
+                break;
+            case ColourModes.SPECTRUM:
+                cm = LUTs.Spectrum().getColorModel();
+                break;
+            case ColourModes.THERMAL:
+                cm = LUTs.Thermal().getColorModel();
+                break;
+        }
+
         for (double level : levels) {
             // Finding normalised position within range
             float norm = ((float) (level - minIntensity)) / ((float) range);
+            int idx = (int) Math.round(norm * 255);
 
             switch (colourMode) {
+                case ColourModes.BLACK_FIRE:
+                case ColourModes.ICE:
+                case ColourModes.PHYSICS:
+                case ColourModes.RANDOM:
+                case ColourModes.SPECTRUM:
+                case ColourModes.THERMAL:
+                    colours.put(level, new Color(cm.getRed(idx), cm.getGreen(idx), cm.getBlue(idx)));
+                    break;
                 case ColourModes.SINGLE_COLOUR:
                     colours.put(level, ColourFactory.getColour(singleColour));
                     break;
                 case ColourModes.SINGLE_COLOUR_GRADIENT:
                     float hue = ColourFactory.getHue(singleColour);
                     colours.put(level, Color.getHSBColor(hue, 1 - norm, 1f));
-                    break;
-                case ColourModes.SPECTRUM:
-                    colours.put(level, Color.getHSBColor(norm, 1f, 1f));
                     break;
             }
         }
@@ -132,13 +169,13 @@ public class AddContourLines extends Module {
     }
 
     public static void addOverlay(ImagePlus ipl, double[] levels, HashMap<Double, Color> contourColours,
-            double lineWidth) {
-        addOverlay(ipl, levels, contourColours, lineWidth, null, 0);
+            double lineWidth, int drawEveryNPoints) {
+        addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints, null, 0);
 
     }
 
     public static void addOverlay(ImagePlus ipl, double[] levels, HashMap<Double, Color> contourColours,
-            double lineWidth, @Nullable HashMap<Double, Color> labelColours, int labelSize) {
+            double lineWidth, int drawEveryNPoints, @Nullable HashMap<Double, Color> labelColours, int labelSize) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
 
@@ -155,10 +192,11 @@ public class AddContourLines extends Module {
                     }
 
                     if (labelColours == null) {
-                        addOverlay(ipl.getProcessor(), ipl.getOverlay(), pos, levels, contourColours, lineWidth);
+                        addOverlay(ipl.getProcessor(), ipl.getOverlay(), pos, levels, contourColours, lineWidth,
+                                drawEveryNPoints);
                     } else {
                         addOverlay(ipl.getProcessor(), ipl.getOverlay(), pos, levels, contourColours, lineWidth,
-                                labelColours, labelSize);
+                                drawEveryNPoints, labelColours, labelSize);
                     }
                 }
             }
@@ -166,7 +204,7 @@ public class AddContourLines extends Module {
     }
 
     public static void addOverlay(ImageProcessor ipr, ij.gui.Overlay overlay, int[] pos, double[] levels,
-            HashMap<Double, Color> contourColours, double lineWidth) {
+            HashMap<Double, Color> contourColours, double lineWidth, int drawEveryNPoints) {
         for (double level : levels) {
             Roi contour = getContour(ipr, level);
             Color contourColour = contourColours.get(level);
@@ -177,17 +215,19 @@ public class AddContourLines extends Module {
             if (contour.getType() == Roi.COMPOSITE) {
                 ShapeRoi shapeRoi = new ShapeRoi(contour);
                 for (Roi roi : shapeRoi.getRois()) {
-                    addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, new ArrayList<>());
+                    addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, drawEveryNPoints,
+                            new ArrayList<>());
                 }
             } else {
-                addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, new ArrayList<>());
+                addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, drawEveryNPoints,
+                        new ArrayList<>());
             }
         }
     }
 
     public static void addOverlay(ImageProcessor ipr, ij.gui.Overlay overlay, int[] pos, double[] levels,
-            HashMap<Double, Color> contourColours, double lineWidth, HashMap<Double, Color> labelColours,
-            int labelSize) {
+            HashMap<Double, Color> contourColours, double lineWidth, int drawEveryNPoints,
+            HashMap<Double, Color> labelColours, int labelSize) {
 
         for (double level : levels) {
             Roi contour = getContour(ipr, level);
@@ -201,12 +241,14 @@ public class AddContourLines extends Module {
                 ShapeRoi shapeRoi = new ShapeRoi(contour);
                 for (Roi roi : shapeRoi.getRois()) {
                     ArrayList<Integer> labelRegion = getLabelPosition(ipr, roi, pos, level, labelSize);
-                    addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, labelRegion);
+                    addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, drawEveryNPoints,
+                            labelRegion);
                     addSingleLevelLabel(ipr, roi, overlay, pos, level, labelColour, labelSize, labelRegion);
                 }
             } else {
                 ArrayList<Integer> labelRegion = getLabelPosition(ipr, contour, pos, level, labelSize);
-                addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, labelRegion);
+                addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, drawEveryNPoints,
+                        labelRegion);
                 addSingleLevelLabel(ipr, contour, overlay, pos, level, labelColour, labelSize, labelRegion);
             }
         }
@@ -228,12 +270,12 @@ public class AddContourLines extends Module {
         // Ensuring there are enough points to draw the label
         FloatPolygon fp = roi.getInterpolatedPolygon();
 
-        if (fp.npoints < width * 3)
+        if (fp.npoints < width * 4)
             return new ArrayList<>();
 
         // Ensuring there are enough consecutive non-boundary points to draw the label
         ArrayList<Integer> longestPath = getLongestNonBoundaryPath(fp, imWidth, imHeight);
-        if (longestPath.size() < width * 3)
+        if (longestPath.size() < width * 4)
             return new ArrayList<>();
 
         // Finding a location on the longest continuous part of the contour,
@@ -275,37 +317,66 @@ public class AddContourLines extends Module {
     }
 
     public static void addSingleLevelContour(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos,
-            double level, Color colour, double lineWidth, ArrayList<Integer> labelRegion) {
+            double level, Color colour, double lineWidth, int drawEveryNPoints, ArrayList<Integer> labelRegion) {
 
         int imWidth = ipr.getWidth();
         int imHeight = ipr.getHeight();
 
         FloatPolygon fp = roi.getInterpolatedPolygon();
-        for (int i = 0; i < fp.npoints - 1; i++) {
+        FloatPolygon fpPlot = new FloatPolygon();
+        for (int i = 0; i < fp.npoints - drawEveryNPoints; i = i + drawEveryNPoints) {
             // Skip any points on the label region
-            if (labelRegion.contains(i))
+            if (labelRegion.contains(i)) {
+                addContourFragment(fpPlot, overlay, pos, colour, lineWidth);
+                fpPlot = new FloatPolygon();
                 continue;
+            }
 
             float x1 = fp.xpoints[i];
             float y1 = fp.ypoints[i];
-            float x2 = fp.xpoints[i + 1];
-            float y2 = fp.ypoints[i + 1];
+            float x2 = fp.xpoints[i + drawEveryNPoints];
+            float y2 = fp.ypoints[i + drawEveryNPoints];
+            if (i >= fp.npoints - 2 * drawEveryNPoints) {
+                x2 = fp.xpoints[0];
+                y2 = fp.ypoints[0];
+            }
 
             if ((x1 >= 1 && x1 < (imWidth - 1) && y1 >= 1 && y1 < (imHeight - 1))
                     || (x2 >= 1 && x2 < (imWidth - 1) && y2 >= 1 && y2 < (imHeight - 1))) {
 
-                Line line = new Line(x1, y1, x2, y2);
-                line.setStrokeWidth(lineWidth);
-                line.setStrokeColor(colour);
+                fpPlot.addPoint(x1, y1);
+                if (i >= fp.npoints - 2 * drawEveryNPoints)
+                    fpPlot.addPoint(x2, y2);
 
-                if (pos.length > 1) {
-                    line.setPosition(pos[0], pos[1], pos[2]);
-                } else {
-                    line.setPosition(pos[0]);
-                }
-                overlay.addElement(line);
+            } else {
+                addContourFragment(fpPlot, overlay, pos, colour, lineWidth);
+                fpPlot = new FloatPolygon();
             }
         }
+
+        addContourFragment(fpPlot, overlay, pos, colour, lineWidth);
+
+    }
+    // new array, x=no~rows of array list items, y = no columns of array list
+    // items#generate good
+
+    public static void addContourFragment(FloatPolygon fp, ij.gui.Overlay overlay, int[] pos, Color colour,
+            double lineWidth) {
+
+        if (fp.npoints == 0)
+            return;
+
+        PolygonRoi line = new PolygonRoi(fp, PolygonRoi.FREELINE);
+        line.setStrokeWidth(lineWidth);
+        line.setStrokeColor(colour);
+
+        if (pos.length > 1) {
+            line.setPosition(pos[0], pos[1], pos[2]);
+        } else {
+            line.setPosition(pos[0]);
+        }
+        overlay.addElement(line);
+
     }
 
     public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos, double level,
@@ -427,6 +498,7 @@ public class AddContourLines extends Module {
         String contourColourMode = parameters.getValue(CONTOUR_COLOUR_MODE);
         String contourColour = parameters.getValue(CONTOUR_COLOUR);
         double lineWidth = parameters.getValue(LINE_WIDTH);
+        int drawEveryNPoints = parameters.getValue(DRAW_EVERY_N_POINTS);
 
         boolean showLabels = parameters.getValue(SHOW_LABELS);
         String labelColourMode = parameters.getValue(LABEL_COLOUR_MODE);
@@ -453,9 +525,9 @@ public class AddContourLines extends Module {
 
         if (showLabels) {
             HashMap<Double, Color> labelColours = getColours(levels, labelColourMode, labelColour);
-            addOverlay(ipl, levels, contourColours, lineWidth, labelColours, labelSize);
+            addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints, labelColours, labelSize);
         } else {
-            addOverlay(ipl, levels, contourColours, lineWidth);
+            addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints);
         }
 
         // If necessary, adding output image to workspace. This also allows us to show
@@ -481,14 +553,15 @@ public class AddContourLines extends Module {
         parameters.add(new ParamSeparatorP(CONTOUR_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_INTENSITY, this, 0));
         parameters.add(new DoubleP(MAXIMUM_INTENSITY, this, 255));
-        parameters.add(new IntegerP(NUMBER_OF_CONTOURS, this, 0));
-        parameters.add(new ChoiceP(CONTOUR_COLOUR_MODE, this, ColourModes.SPECTRUM, ColourModes.ALL));
+        parameters.add(new IntegerP(NUMBER_OF_CONTOURS, this, 9));
+        parameters.add(new ChoiceP(CONTOUR_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(CONTOUR_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
+        parameters.add(new IntegerP(DRAW_EVERY_N_POINTS, this, 1));
 
         parameters.add(new ParamSeparatorP(LABEL_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_LABELS, this, true));
-        parameters.add(new ChoiceP(LABEL_COLOUR_MODE, this, ColourModes.SPECTRUM, ColourModes.ALL));
+        parameters.add(new ChoiceP(LABEL_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(LABEL_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new IntegerP(LABEL_SIZE, this, 12));
 
@@ -522,6 +595,7 @@ public class AddContourLines extends Module {
                 break;
         }
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+        returnedParameters.add(parameters.getParameter(DRAW_EVERY_N_POINTS));
 
         returnedParameters.add(parameters.getParameter(LABEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_LABELS));
