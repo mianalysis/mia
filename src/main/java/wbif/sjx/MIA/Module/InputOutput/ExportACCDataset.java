@@ -126,7 +126,7 @@ public class ExportACCDataset extends Module {
             if (!states.get(ref.getName()))
                 continue;
 
-            builder.append(ref.getFinalName().replace(" ", "_")).append("\n");
+            builder.append(ref.getName().replace(" ", "_")).append("\n");
         }
 
         // Writing the feature names to file
