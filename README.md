@@ -10,8 +10,6 @@ MIA is a Fiji plugin which provides a modular framework for assembling image and
 
 MIA is developed in the [Wolfson Bioimaging Facility](http://www.bristol.ac.uk/wolfson-bioimaging/) at the University of Bristol.
 
-Version: ${version}
-
 Installation
 ------------
 - The latest version of the plugin can be downloaded from the [Releases](https://github.com/SJCross/ModularImageAnalysis/releases) page.
