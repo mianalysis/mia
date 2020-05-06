@@ -23,21 +23,22 @@ public class ColourFactory {
         String VIOLET = "Violet";
         String MAGENTA = "Magenta";
 
-        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
+        String[] ALL = new String[] { WHITE, BLACK, RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, VIOLET, MAGENTA };
 
     }
 
-    public static HashMap<Integer,Float> getRandomHues(ObjCollection objects) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getRandomHues(ObjCollection objects) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
             float H = new Random().nextFloat();
 
-            hues.put(ID,H);
+            hues.put(ID, H);
 
         }
 
@@ -45,18 +46,20 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer,Float> getIDHues(ObjCollection objects, boolean normalised) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getIDHues(ObjCollection objects, boolean normalised) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
             float H = (float) object.getID();
-            if (normalised) H = (H* 1048576 % 255) / 255;
+            if (normalised)
+                H = (H * 1048576 % 255) / 255;
 
-            hues.put(ID,H);
+            hues.put(ID, H);
 
         }
 
@@ -64,11 +67,13 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer,Float> getParentIDHues(ObjCollection objects, String parentObjectsName, boolean normalised) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getParentIDHues(ObjCollection objects, String parentObjectsName,
+            boolean normalised) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -80,9 +85,10 @@ public class ColourFactory {
                 H = (float) object.getParent(parentObjectsName).getID();
             }
 
-            if (normalised & object.getParent(parentObjectsName) != null) H = (H* 1048576 % 255) / 255;
+            if (normalised & object.getParent(parentObjectsName) != null)
+                H = (H * 1048576 % 255) / 255;
 
-            hues.put(ID,H);
+            hues.put(ID, H);
 
         }
 
@@ -90,11 +96,12 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer,Float> getSingleColourHues(ObjCollection objects, String colour) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getSingleColourHues(ObjCollection objects, String colour) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -134,7 +141,7 @@ public class ColourFactory {
                     break;
             }
 
-            hues.put(ID,H);
+            hues.put(ID, H);
 
         }
 
@@ -222,18 +229,21 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer,Float> getMeasurementValueHues(ObjCollection objects, String measurementName, boolean normalised) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getMeasurementValueHues(ObjCollection objects, String measurementName,
+            boolean normalised) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
-        for (Obj obj:objects.values()) {
-            if (obj.getMeasurement(measurementName) == null) continue;
+        for (Obj obj : objects.values()) {
+            if (obj.getMeasurement(measurementName) == null)
+                continue;
             cs.addMeasure(obj.getMeasurement(measurementName).getValue());
         }
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -241,7 +251,7 @@ public class ColourFactory {
 
             Measurement measurement = object.getMeasurement(measurementName);
             if (measurement == null) {
-                hues.put(ID,H);
+                hues.put(ID, H);
                 continue;
             }
             H = (float) object.getMeasurement(measurementName).getValue();
@@ -251,7 +261,7 @@ public class ColourFactory {
                 H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
             }
 
-            hues.put(ID,H);
+            hues.put(ID, H);
 
         }
 
@@ -259,20 +269,24 @@ public class ColourFactory {
 
     }
 
-    public static HashMap<Integer,Float> getParentMeasurementValueHues(ObjCollection objects, String parentObjectsName, String measurementName, boolean normalised) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-        if (objects == null) return hues;
+    public static HashMap<Integer, Float> getParentMeasurementValueHues(ObjCollection objects, String parentObjectsName,
+            String measurementName, boolean normalised) {
+        HashMap<Integer, Float> hues = new HashMap<>();
+        if (objects == null)
+            return hues;
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
-        for (Obj obj:objects.values()) {
+        for (Obj obj : objects.values()) {
             Obj parentObj = obj.getParent(parentObjectsName);
-            if (parentObj == null) continue;
-            if (parentObj.getMeasurement(measurementName) == null) continue;
+            if (parentObj == null)
+                continue;
+            if (parentObj.getMeasurement(measurementName) == null)
+                continue;
             cs.addMeasure(parentObj.getMeasurement(measurementName).getValue());
         }
 
-        for (Obj object:objects.values()) {
+        for (Obj object : objects.values()) {
             int ID = object.getID();
 
             // Default hue value in case none is assigned
@@ -280,11 +294,11 @@ public class ColourFactory {
 
             Obj parentObj = object.getParent(parentObjectsName);
             if (parentObj == null) {
-                hues.put(ID,H);
+                hues.put(ID, H);
                 continue;
             }
             if (parentObj.getMeasurement(measurementName) == null) {
-                hues.put(ID,H);
+                hues.put(ID, H);
                 continue;
             }
 
@@ -295,7 +309,7 @@ public class ColourFactory {
                 H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
             }
 
-            hues.put(ID,H);
+            hues.put(ID, H);
 
         }
 
@@ -324,43 +338,53 @@ public class ColourFactory {
             case SingleColours.BLUE:
                 return Color.BLUE;
             case SingleColours.VIOLET:
-                return Color.getHSBColor(0.706f,1,1);
+                return Color.getHSBColor(0.706f, 1, 1);
             case SingleColours.MAGENTA:
                 return Color.MAGENTA;
         }
     }
 
-    public static Color getColour(float hue) {
-        return getColour(hue,0);
+    public static float getHue(String colour) {
+        Color color = getColour(colour);
+
+        return Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null)[0];
+
     }
 
-    public static Color getColour(float hue,double opacity) {
+    public static Color getColour(float hue) {
+        return getColour(hue, 0);
+    }
+
+    public static Color getColour(float hue, double opacity) {
         Color color;
 
-        // If the hue was assigned as -1 (for example, no parent found), setting the colour to white
+        // If the hue was assigned as -1 (for example, no parent found), setting the
+        // colour to white
         if (hue == Float.MAX_VALUE || hue == -1) {
-            color = Color.getHSBColor(0f,0f,1f);
+            color = Color.getHSBColor(0f, 0f, 1f);
         } else if (hue == Float.MIN_VALUE) {
-            color = Color.getHSBColor(0f,0f,0f);
+            color = Color.getHSBColor(0f, 0f, 0f);
         } else {
-            // Have to addRef 1E-8 to prevent 0 values having a rounding error that makes them negative
-            color = Color.getHSBColor(hue+1E-8f,1f,1f);
+            // Have to addRef 1E-8 to prevent 0 values having a rounding error that makes
+            // them negative
+            color = Color.getHSBColor(hue + 1E-8f, 1f, 1f);
         }
 
-        int alpha = (int) Math.round(opacity*2.55);
+        int alpha = (int) Math.round(opacity * 2.55);
 
-        return new Color(color.getRed(),color.getGreen(),color.getBlue(),alpha);
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
     }
 
-    public static HashMap<Integer,Color> getColours(HashMap<Integer,Float> hues) {
-        return getColours(hues,0);
+    public static HashMap<Integer, Color> getColours(HashMap<Integer, Float> hues) {
+        return getColours(hues, 0);
     }
 
-    public static HashMap<Integer,Color> getColours(HashMap<Integer,Float> hues, double opacity) {
-        HashMap<Integer,Color> colours = new HashMap<>();
+    public static HashMap<Integer, Color> getColours(HashMap<Integer, Float> hues, double opacity) {
+        HashMap<Integer, Color> colours = new HashMap<>();
 
-        for (int key:hues.keySet()) colours.put(key,getColour(hues.get(key),opacity));
+        for (int key : hues.keySet())
+            colours.put(key, getColour(hues.get(key), opacity));
 
         return colours;
 

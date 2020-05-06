@@ -168,7 +168,8 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
-        parameters.add(new TextAreaP(MACRO_TEXT,this,true));
+        parameters.add(new TextAreaP(MACRO_TEXT,this,"// A variable has been pre-defined for the input image name." +
+        "\n\nrun(\"Enable MIA Extensions\");\n\n",true));
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
 

@@ -33,15 +33,14 @@ public class SetLookupTable extends Module {
     public static final String DISPLAY_MODE = "Display mode";
 
     public SetLookupTable(ModuleCollection modules) {
-        super("Set lookup table",modules);
+        super("Set lookup table", modules);
     }
-
 
     public interface ChannelModes {
         String ALL_CHANNELS = "All channels";
         String SPECIFIC_CHANNELS = "Specific channels";
 
-        String[] ALL = new String[]{ALL_CHANNELS,SPECIFIC_CHANNELS};
+        String[] ALL = new String[] { ALL_CHANNELS, SPECIFIC_CHANNELS };
 
     }
 
@@ -49,7 +48,7 @@ public class SetLookupTable extends Module {
         String FULL_RANGE = "Full range";
         String SET_ZERO_TO_BLACK = "Set zero to black";
 
-        String[] ALL = new String[]{FULL_RANGE,SET_ZERO_TO_BLACK};
+        String[] ALL = new String[] { FULL_RANGE, SET_ZERO_TO_BLACK };
 
     }
 
@@ -63,14 +62,15 @@ public class SetLookupTable extends Module {
         String YELLOW = "Yellow";
         String FIRE = "Fire";
         String ICE = "Ice";
+        String PHYSICS = "Physics";
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
         String RANDOM = "Random";
 
-        String[] ALL = new String[]{GREY,RED,GREEN,BLUE,CYAN,MAGENTA,YELLOW,FIRE,ICE,SPECTRUM,THERMAL,RANDOM};
+        String[] ALL = new String[] { GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE, ICE, PHYSICS, SPECTRUM,
+                THERMAL, RANDOM };
 
     }
-
 
     public static LUT getLUT(String lookupTableName) {
         switch (lookupTableName) {
@@ -93,6 +93,8 @@ public class SetLookupTable extends Module {
                 return LUTs.BlackFire();
             case LookupTables.ICE:
                 return LUTs.Ice();
+            case LookupTables.PHYSICS:
+                return LUTs.Physics();
             case LookupTables.SPECTRUM:
                 return LUTs.Spectrum();
             case LookupTables.THERMAL:
@@ -115,7 +117,7 @@ public class SetLookupTable extends Module {
         greens[0] = 0;
         blues[0] = 0;
 
-        return new LUT(reds,greens,blues);
+        return new LUT(reds, greens, blues);
 
     }
 
@@ -128,17 +130,16 @@ public class SetLookupTable extends Module {
 
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
-                for (int c=1;c<=inputImage.getImagePlus().getNChannels();c++) {
-                    ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut,c);
+                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                    ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut, c);
                 }
                 break;
 
             case ChannelModes.SPECIFIC_CHANNELS:
-                ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut,channel);
+                ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut, channel);
                 break;
         }
     }
-
 
     @Override
     public String getPackageName() {
@@ -162,11 +163,15 @@ public class SetLookupTable extends Module {
         int channel = parameters.getValue(CHANNEL);
         String displayMode = parameters.getValue(DISPLAY_MODE);
 
-        // If this image doesn't exist, skip this module.  This returns true, because this isn't terminal for the analysis.
-        if (inputImage == null) return Status.PASS;
+        // If this image doesn't exist, skip this module. This returns true, because
+        // this isn't terminal for the analysis.
+        if (inputImage == null)
+            return Status.PASS;
 
-        // If this image has fewer channels than the specified channel, skip the module (but return true)
-        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels()) return Status.PASS;
+        // If this image has fewer channels than the specified channel, skip the module
+        // (but return true)
+        if (channelMode.equals(ChannelModes.SPECIFIC_CHANNELS) && channel > inputImage.getImagePlus().getNChannels())
+            return Status.PASS;
 
         LUT lut = getLUT(lookupTableName);
 
@@ -176,10 +181,11 @@ public class SetLookupTable extends Module {
                 break;
         }
 
-        setLUT(inputImage,lut,channelMode,channel);
+        setLUT(inputImage, lut, channelMode, channel);
         inputImage.getImagePlus().updateChannelAndDraw();
 
-        if (showOutput) inputImage.showImage(inputImageName,null,false,true);
+        if (showOutput)
+            inputImage.showImage(inputImageName, null, false, true);
 
         return Status.PASS;
 
@@ -187,14 +193,14 @@ public class SetLookupTable extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(LUT_SEPARATOR,this));
-        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.ALL_CHANNELS,ChannelModes.ALL));
-        parameters.add(new IntegerP(CHANNEL,this,1));
-        parameters.add(new ChoiceP(LOOKUP_TABLE,this,LookupTables.GREY,LookupTables.ALL));
-        parameters.add(new ChoiceP(DISPLAY_MODE,this,DisplayModes.FULL_RANGE,DisplayModes.ALL));
+        parameters.add(new ParamSeparatorP(LUT_SEPARATOR, this));
+        parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.ALL_CHANNELS, ChannelModes.ALL));
+        parameters.add(new IntegerP(CHANNEL, this, 1));
+        parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY, LookupTables.ALL));
+        parameters.add(new ChoiceP(DISPLAY_MODE, this, DisplayModes.FULL_RANGE, DisplayModes.ALL));
 
     }
 
