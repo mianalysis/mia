@@ -1,3 +1,5 @@
+.factorypath
+
 target/*
 !target/site
 target/site/*
@@ -6,13 +8,8 @@ target/site/*
 
 \.idea/workspace\.xml
 \.idea/libraries/
-
-
-
 \.idea/
 
 ModularImageAnalysis\.iml
 
 MIA_\.iml
-.factorypath
-.factorypath
