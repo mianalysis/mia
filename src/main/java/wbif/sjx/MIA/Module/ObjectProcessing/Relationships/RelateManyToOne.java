@@ -36,8 +36,8 @@ public class RelateManyToOne extends Module {
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
     public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
     public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
-    public static final String CALCULATE_FRACTIONAL_DISTANCE = "Calculate fractional distance";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+    public static final String CALCULATE_FRACTIONAL_DISTANCE = "Calculate fractional distance";
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
@@ -230,7 +230,7 @@ public class RelateManyToOne extends Module {
     }
 
     public static void linkByCentroidToSurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects,
-            boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, int nThreads) {
+            boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, boolean calcFrac, int nThreads) {
         String moduleName = RelateObjects.class.getSimpleName();
         String measurementNamePx = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
@@ -271,7 +271,7 @@ public class RelateManyToOne extends Module {
 
                 // If using centroid to surface proximity and inside only, calculate the
                 // fractional distance
-                if (minLink != null)
+                if (minLink != null && calcFrac)
                     calculateFractionalDistance(childObject, minLink, minDist);
 
                 // Applying the inside outside mode (doesn't apply for centroid-centroid
@@ -492,6 +492,7 @@ public class RelateManyToOne extends Module {
         String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
         double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
         boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
+        boolean calcFrac = parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         if (!limitLinking)
@@ -522,7 +523,7 @@ public class RelateManyToOne extends Module {
 
                     case ReferencePoints.CENTROID_TO_SURFACE:
                         linkByCentroidToSurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
-                                insideOutsideMode, nThreads);
+                                insideOutsideMode, calcFrac, nThreads);
                         break;
 
                 }
@@ -569,6 +570,7 @@ public class RelateManyToOne extends Module {
                 "Percentage of total child volume overlapping with the parent object."));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP, this, true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
+        parameters.add(new BooleanP(CALCULATE_FRACTIONAL_DISTANCE, this, true));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
@@ -598,6 +600,7 @@ public class RelateManyToOne extends Module {
                 if (referencePoint.equals(ReferencePoints.CENTROID_TO_SURFACE)
                         || referencePoint.equals(ReferencePoints.SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
+                    returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
                 }
 
                 break;
@@ -716,7 +719,8 @@ public class RelateManyToOne extends Module {
                         distCentSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentSurfCal);
 
-                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
+                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY) && 
+                        (boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE)) {
                             measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObjectName);
                             ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
                             distCentSurfFrac.setDescription(
