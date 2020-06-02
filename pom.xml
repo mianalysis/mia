@@ -77,7 +77,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency.locations.selected>false</dependency.locations.selected>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <myscope>compile</myscope>
+    <scp>compile</scp>
     <license.licenseName>GNU General Public License v3+</license.licenseName>
     <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
 </properties>
@@ -194,12 +194,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>net.imagej</groupId>
         <artifactId>imagej</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>net.imagej</groupId>
         <artifactId>imagej-ui-swing</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>net.imagej</groupId>
@@ -209,68 +209,68 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>net.imagej</groupId>
         <artifactId>imagej-ops</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>AnalyzeSkeleton_</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>Auto_Local_Threshold</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>bUnwarpJ_</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>Colocalisation_Analysis</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>Colour_Deconvolution</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>CorrectBleach_</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>TrackMate_</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     <dependency>
         <groupId>sc.fiji</groupId>
         <artifactId>Trainable_Segmentation</artifactId>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     
     <dependency>
         <groupId>mpicbg</groupId>
         <artifactId>mpicbg</artifactId>
         <version>1.1.1</version>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     
     <dependency>
         <groupId>fr.inra.ijpb</groupId>
         <artifactId>MorphoLibJ_</artifactId>
         <version>1.4.1</version>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     
     <dependency>
         <groupId>de.biomedical-imaging.imagej</groupId>
         <artifactId>ij_ridge_detect</artifactId>
         <version>1.4.0</version>
-        <scope>${myscope}</scope>
+        <scope>${scp}</scope>
     </dependency>
     
     <dependency>

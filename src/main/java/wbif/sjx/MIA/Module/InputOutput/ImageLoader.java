@@ -1,5 +1,3 @@
-// TODO: Load colours from LIF file (if possible).  Similarly, colour Flex files blue, green, red (currently RGB)
-
 package wbif.sjx.MIA.Module.InputOutput;
 
 import java.awt.Rectangle;
