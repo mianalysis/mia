@@ -82,6 +82,7 @@ public class RelateManyToOne extends Module {
         String WAS_LINKED = "WAS_LINKED_${PARENT}";
 
     }
+    
 
     public RelateManyToOne(ModuleCollection modules) {
         super("Relate many-to-one", modules);
