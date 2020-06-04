@@ -443,7 +443,6 @@ public abstract class Module extends Ref implements Comparable {
         NamedNodeMap map = node.getAttributes();
 
         if (map.getNamedItem("ID") == null) {
-            MIA.log.writeDebug("Missing");
             this.moduleID = String.valueOf(System.currentTimeMillis());
             try {
                 Thread.sleep(5);  // This prevents the next module ID clashing with this one

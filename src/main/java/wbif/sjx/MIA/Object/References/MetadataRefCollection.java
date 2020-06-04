@@ -34,7 +34,7 @@ public class MetadataRefCollection extends TreeMap<String,MetadataRef> implement
             String metadataName = matcher.group(1);
 
             boolean found = false;
-            for (String name:keySet()) {
+            for (String name : keySet()) {
                 if (name.equals(metadataName)) {
                     found = true;
                     break;
@@ -42,11 +42,32 @@ public class MetadataRefCollection extends TreeMap<String,MetadataRef> implement
             }
 
             // If the current reference wasn't found, return false
-            if (!found) return false;
+            if (!found)
+                return false;
 
         }
 
         return true;
+
+    }
+    
+    public String getMetadataValues() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("The following metadata values are available to use for generation of a filename string.  "
+                + "Each metadata reference should include the \"M{\" and \"}\".\r\n\r\n");
+
+        for (MetadataRef ref : values()) {
+            sb.append("M{");
+            sb.append(ref.getName());
+            sb.append("}");
+            sb.append("\r\n");
+        }
+
+        sb.append(
+                "\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).\r\n");
+
+        return sb.toString();
 
     }
 }

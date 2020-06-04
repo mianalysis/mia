@@ -241,7 +241,6 @@ public class RelateManyToOne extends Module {
 
         // Ensuring all parent objects have a calculated surface
         for (Obj parent : parentObjects.values()) {
-            MIA.log.writeDebug("Preparing parent " + parent.getID());
             if (!parent.hasCalculatedSurface())
                 parent.getCoordinateSet().calculateSurface(parent.is2D(), nThreads);
         }
@@ -249,7 +248,6 @@ public class RelateManyToOne extends Module {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
         
-        MIA.log.writeDebug("Running linking");
         for (Obj childObject : childObjects.values()) {
             Runnable task = () -> {
                 double minDist = Double.MAX_VALUE;

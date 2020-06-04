@@ -216,7 +216,7 @@ public class WekaProbabilityMaps extends Module {
         // If all channels are to be output, set output channel to -1
         if (!outputSingleClass)
             outputClass = -1;
-        
+
         switch (pathType) {
             case PathTypes.MATCHING_FORMAT:
                 Metadata metadata = (Metadata) workspace.getMetadata().clone();
@@ -302,6 +302,8 @@ public class WekaProbabilityMaps extends Module {
             case PathTypes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
             case PathTypes.SPECIFIC_FILE:
                 returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
