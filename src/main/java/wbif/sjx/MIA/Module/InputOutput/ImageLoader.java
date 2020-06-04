@@ -680,18 +680,18 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     public static String getGenericName(Metadata metadata, String genericFormat)
             throws ServiceException, DependencyException, FormatException, IOException {
-        String absolutePath = metadata.getFile().getAbsolutePath();
-        String path = FilenameUtils.getFullPath(absolutePath);
-        String filename = metadata.insertMetadataValues(genericFormat);
-
+        String absolutePath = metadata.insertMetadataValues(genericFormat);
+        String filepath = FilenameUtils.getFullPath(absolutePath);
+        String filename = FilenameUtils.getName(absolutePath);
+        
         // If name includes "*" get first instance of wildcard
         if (filename.contains("*")) {
-            String[] filenames = new File(path).list(new WildcardFileFilter(filename));
+            String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
             if (filenames.length > 0)
                 filename = filenames[0];
         }
 
-        return path + filename;
+        return filepath + filename;
 
     }
 
@@ -709,26 +709,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             obj.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
             obj.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
         }
-    }
-
-    public static String getMetadataValues(MetadataRefCollection metadataRefs) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("The following metadata values are available to use for generation of a filename string.  "
-                + "Each metadata reference should include the \"M{\" and \"}\".\r\n\r\n");
-
-        for (MetadataRef ref : metadataRefs.values()) {
-            sb.append("M{");
-            sb.append(ref.getName());
-            sb.append("}");
-            sb.append("\r\n");
-        }
-
-        sb.append(
-                "\r\nWildcard character \"*\" is also available to match variable content (first matching instance will be loaded).\r\n");
-
-        return sb.toString();
-
     }
 
     @Override
@@ -1082,7 +1062,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                         returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                         returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
                         MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
-                        parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(getMetadataValues(metadataRefs));
+                        parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                         break;
                 }
                 break;

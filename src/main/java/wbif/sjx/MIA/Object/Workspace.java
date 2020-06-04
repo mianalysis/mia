@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -35,9 +36,11 @@ public class Workspace {
         metadata.setSeriesNumber(series);
 
         if (file == null) {
+            metadata.setFilepath("");
             metadata.setFilename("");
             metadata.setExt("");
         } else {
+            metadata.setFilepath(FilenameUtils.getFullPath(file.getAbsolutePath()));
             metadata.setFilename(FilenameUtils.getBaseName(file.getName()));
             metadata.setExt(FilenameUtils.getExtension(file.getName()));
         }
@@ -115,6 +118,7 @@ public class Workspace {
 
     public void clearMetadata() {
         String filename = metadata.getFilename();
+        String filepath = metadata.getFilepath();
         String extension = metadata.getExt();
         File file = metadata.getFile();
         String seriesName = metadata.getSeriesName();
@@ -123,6 +127,7 @@ public class Workspace {
         metadata.clear();
 
         metadata.setFilename(filename);
+        metadata.setFilepath(filepath);
         metadata.setExt(extension);
         metadata.setFile(file);
         metadata.setSeriesName(seriesName);

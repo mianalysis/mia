@@ -18,6 +18,7 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -55,7 +56,7 @@ import wbif.sjx.common.System.FileCrawler;
 public class InputControl extends Module {
     public static final String IMPORT_SEPARATOR = "Core import controls";
     public static final String INPUT_PATH = "Input path";
-//    public static final String FILE_LIST = "File list";
+    // public static final String FILE_LIST = "File list";
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String SIMULTANEOUS_JOBS = "Simultaneous jobs";
     public static final String MACRO_WARNING = "Macro warning";
@@ -70,15 +71,14 @@ public class InputControl extends Module {
     public static final String NO_LOAD_MESSAGE = "No load message";
 
     public InputControl(ModuleCollection modules) {
-        super("Input control",modules);
+        super("Input control", modules);
     }
-
 
     public static interface InputModes {
         String SINGLE_FILE = "Single file";
         String BATCH = "Batch";
 
-        String[] ALL = new String[]{BATCH,SINGLE_FILE};
+        String[] ALL = new String[] { BATCH, SINGLE_FILE };
 
     }
 
@@ -86,7 +86,7 @@ public class InputControl extends Module {
         String ALL_SERIES = "All series";
         String SERIES_LIST = "Series list";
 
-        String[] ALL = new String[]{ALL_SERIES,SERIES_LIST};
+        String[] ALL = new String[] { ALL_SERIES, SERIES_LIST };
 
     }
 
@@ -96,7 +96,7 @@ public class InputControl extends Module {
         String FILEPATH = "Filepath";
         String SERIESNAME = "Seriesname";
 
-        String[] ALL = new String[]{EXTENSION,FILENAME,FILEPATH,SERIESNAME};
+        String[] ALL = new String[] { EXTENSION, FILENAME, FILEPATH, SERIESNAME };
 
     }
 
@@ -106,12 +106,13 @@ public class InputControl extends Module {
         String EXCLUDE_MATCHES_PARTIALLY = "Matches partially (exclude)";
         String EXCLUDE_MATCHES_COMPLETELY = "Matches completely (exclude)";
 
-        String[] ALL = new String[]{INCLUDE_MATCHES_PARTIALLY,INCLUDE_MATCHES_COMPLETELY,EXCLUDE_MATCHES_PARTIALLY,EXCLUDE_MATCHES_COMPLETELY};
+        String[] ALL = new String[] { INCLUDE_MATCHES_PARTIALLY, INCLUDE_MATCHES_COMPLETELY, EXCLUDE_MATCHES_PARTIALLY,
+                EXCLUDE_MATCHES_COMPLETELY };
 
     }
 
-    public static interface SpatialUnits extends Units.SpatialUnits{}
-
+    public static interface SpatialUnits extends Units.SpatialUnits {
+    }
 
     public File getRootFile() {
         return new File((String) parameters.getValue(INPUT_PATH));
@@ -122,7 +123,7 @@ public class InputControl extends Module {
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
 
         // Iterating over each filter
-        for (ParameterCollection collection:collections) {
+        for (ParameterCollection collection : collections) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
@@ -132,7 +133,7 @@ public class InputControl extends Module {
                 case FilterSources.EXTENSION:
                 case FilterSources.FILENAME:
                 case FilterSources.FILEPATH:
-                    fileCrawler.addFileCondition(getFilenameFilter(filterType,filterValue,filterSource));
+                    fileCrawler.addFileCondition(getFilenameFilter(filterType, filterValue, filterSource));
                     break;
             }
         }
@@ -172,7 +173,7 @@ public class InputControl extends Module {
         }
     }
 
-    public TreeMap<Integer,String> getSeriesNumbers(File inputFile) {
+    public TreeMap<Integer, String> getSeriesNumbers(File inputFile) {
         try {
             switch ((String) parameters.getValue(SERIES_MODE)) {
                 case SeriesModes.ALL_SERIES:
@@ -190,18 +191,19 @@ public class InputControl extends Module {
 
     }
 
-    private TreeMap<Integer,String> getAllSeriesNumbers(File inputFile) throws Exception {
+    private TreeMap<Integer, String> getAllSeriesNumbers(File inputFile) throws Exception {
         // Creating the output collection
-        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+        TreeMap<Integer, String> namesAndNumbers = new TreeMap<>();
 
-        if (inputFile == null) return namesAndNumbers;
+        if (inputFile == null)
+            return namesAndNumbers;
 
         // If the input is a tif or video, we can skip this
-        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
-                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
-                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi") ||
-                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
-            namesAndNumbers.put(1,inputFile.getName());
+        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
+            namesAndNumbers.put(1, inputFile.getName());
             return namesAndNumbers;
         }
 
@@ -219,14 +221,14 @@ public class InputControl extends Module {
         try {
             reader.setId(inputFile.getAbsolutePath());
         } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
-            namesAndNumbers.put(1,inputFile.getName());
+            namesAndNumbers.put(1, inputFile.getName());
             return namesAndNumbers;
         }
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
-        for (ParameterCollection collection:collections) {
+        for (ParameterCollection collection : collections) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
@@ -234,23 +236,24 @@ public class InputControl extends Module {
 
             switch (filterSource) {
                 case FilterSources.SERIESNAME:
-                    filters.add(getFilenameFilter(filterType,filterValue,filterSource));
+                    filters.add(getFilenameFilter(filterType, filterValue, filterSource));
                     break;
             }
         }
 
-        for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
+        for (int seriesNumber = 0; seriesNumber < reader.getSeriesCount(); seriesNumber++) {
             String name = meta.getImageName(seriesNumber);
 
             boolean pass = true;
-            for (FileCondition filter:filters) {
-                if (name!= null &! filter.test(new File(name))) {
+            for (FileCondition filter : filters) {
+                if (name != null & !filter.test(new File(name))) {
                     pass = false;
                     break;
                 }
             }
 
-            if (pass)namesAndNumbers.put(seriesNumber+1,name);
+            if (pass)
+                namesAndNumbers.put(seriesNumber + 1, name);
 
         }
 
@@ -260,17 +263,18 @@ public class InputControl extends Module {
 
     }
 
-    private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws Exception {
-        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+    private TreeMap<Integer, String> getSeriesListNumbers(File inputFile) throws Exception {
+        TreeMap<Integer, String> namesAndNumbers = new TreeMap<>();
 
-        if (inputFile == null) return namesAndNumbers;
+        if (inputFile == null)
+            return namesAndNumbers;
 
         // If the input is a tif or video, we can skip this
-        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif") ||
-                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff") ||
-                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi") ||
-                FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
-            namesAndNumbers.put(1,inputFile.getName());
+        if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
+            namesAndNumbers.put(1, inputFile.getName());
             return namesAndNumbers;
         }
 
@@ -287,18 +291,19 @@ public class InputControl extends Module {
         try {
             reader.setId(inputFile.getAbsolutePath());
         } catch (IllegalArgumentException | MissingLibraryException | UnknownFormatException e) {
-            namesAndNumbers.put(1,inputFile.getName());
+            namesAndNumbers.put(1, inputFile.getName());
             return namesAndNumbers;
         }
 
         String seriesListString = parameters.getValue(InputControl.SERIES_LIST);
-        int[] seriesList = CommaSeparatedStringInterpreter.interpretIntegers(seriesListString, true,reader.getSeriesCount());
+        int[] seriesList = CommaSeparatedStringInterpreter.interpretIntegers(seriesListString, true,
+                reader.getSeriesCount());
         for (int aSeriesList : seriesList) {
             if (aSeriesList > reader.getSeriesCount())
                 continue;
 
             namesAndNumbers.put(aSeriesList, meta.getImageName(aSeriesList - 1));
-            
+
         }
 
         reader.close();
@@ -314,14 +319,14 @@ public class InputControl extends Module {
 
     @Override
     public String getDescription() {
-        return "Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone " +
-                "will be processed; however, selecting a folder will cause the system to iterate over all files and " +
-                "sub-folders within that folder.  Each file identified here will initialise its own workspace.  " +
-                "<br><br>" +
-                "It is possible to add filters to limit which files are used.  Multiple filters can be applied." +
-                "<br><br>" +
-                "n.b. This module simply creates the workspace for subsequent analysis; no images are automatically " +
-                "loaded at this point.  To load image data to the workspace use the \"Load image\" module.";
+        return "Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone "
+                + "will be processed; however, selecting a folder will cause the system to iterate over all files and "
+                + "sub-folders within that folder.  Each file identified here will initialise its own workspace.  "
+                + "<br><br>"
+                + "It is possible to add filters to limit which files are used.  Multiple filters can be applied."
+                + "<br><br>"
+                + "n.b. This module simply creates the workspace for subsequent analysis; no images are automatically "
+                + "loaded at this point.  To load image data to the workspace use the \"Load image\" module.";
 
     }
 
@@ -332,26 +337,38 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR,this));
-        parameters.add(new FileFolderPathP(INPUT_PATH,this,"","The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
-//        parameters.add(new FileListP(FILE_LIST,this));
-        parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1,"The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
-        parameters.add(new MessageP(MACRO_WARNING,this,"Analysis can only be run as a single simultaneous job when ImageJ macro module is present.", Colours.RED));
-        parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL,"For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
-        parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1","Comma-separated list of series numbers to be processed."));
-        parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER,this,false));
+        parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR, this));
+        parameters.add(new FileFolderPathP(INPUT_PATH, this, "",
+                "The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
+        // parameters.add(new FileListP(FILE_LIST,this));
+        parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1,
+                "The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
+        parameters.add(new MessageP(MACRO_WARNING, this,
+                "Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",
+                Colours.RED));
+        parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.ALL_SERIES, SeriesModes.ALL,
+                "For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
+        parameters.add(new SeriesListSelectorP(SERIES_LIST, this, "1",
+                "Comma-separated list of series numbers to be processed."));
+        parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
 
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.EXTENSION,FilterSources.ALL,"Type of filter to add."));
-        collection.add(new StringP(FILTER_VALUE,this,"","Value to filter filenames against."));
-        collection.add(new ChoiceP(FILTER_TYPE,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL,"Control how the present filter operates.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source (e.g. filename or extension).  \"Matches completely (include)\" will process an image if the filter value is exactly the same as the source.  \"Matches partially (exclude)\" will not process an image if the filter value is partially present in the source.  \"Matches completely (exclude)\" will not process an image if the filter value is exactly the same as the source."));
-        parameters.add(new ParameterGroup(ADD_FILTER,this,collection,0,"Add another filename filter.  All images to be processed will pass all filters."));
+        collection.add(
+                new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL, "Type of filter to add."));
+        collection.add(new StringP(FILTER_VALUE, this, "", "Value to filter filenames against."));
+        collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL,
+                "Control how the present filter operates.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source (e.g. filename or extension).  \"Matches completely (include)\" will process an image if the filter value is exactly the same as the source.  \"Matches partially (exclude)\" will not process an image if the filter value is partially present in the source.  \"Matches completely (exclude)\" will not process an image if the filter value is exactly the same as the source."));
+        parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0,
+                "Add another filename filter.  All images to be processed will pass all filters."));
 
-        parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
+        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.MICROMETRE, SpatialUnits.ALL,
+                "Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 
-        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Colours.RED));
+        parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
+                "\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",
+                Colours.RED));
 
     }
 
@@ -361,7 +378,7 @@ public class InputControl extends Module {
 
         returnedParameters.add(parameters.getParameter(IMPORT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_PATH));
-//        returnedParameters.add(parameters.getParameter(FILE_LIST));
+        // returnedParameters.add(parameters.getParameter(FILE_LIST));
 
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
         returnedParameters.add(seriesMode);
@@ -374,7 +391,8 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
 
-        // If a the RunMacro module is present, this analysis must be run as a single job
+        // If a the RunMacro module is present, this analysis must be run as a single
+        // job
         if ((int) parameters.getValue(SIMULTANEOUS_JOBS) > 1) {
             for (Module module : modules) {
                 if (module instanceof RunMacroOnImage || module instanceof RunMacroOnObjects) {
@@ -406,8 +424,11 @@ public class InputControl extends Module {
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
+        // The following are added to the MetadataRefCollection during Workspace
+        // construction
         returnedRefs.add(metadataRefs.getOrPut(Metadata.EXTENSION));
         returnedRefs.add(metadataRefs.getOrPut(Metadata.FILE));
+        returnedRefs.add(metadataRefs.getOrPut(Metadata.FILEPATH));
         returnedRefs.add(metadataRefs.getOrPut(Metadata.FILENAME));
         returnedRefs.add(metadataRefs.getOrPut(Metadata.SERIES_NUMBER));
         returnedRefs.add(metadataRefs.getOrPut(Metadata.SERIES_NAME));

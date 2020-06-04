@@ -44,12 +44,10 @@ public class MergeSingleClass extends Module {
         for (Obj inputObject:inputObjects.values()) {
             // Getting the current timepoint instance
             int t = inputObject.getT();
-            MIA.log.writeDebug("Obj "+inputObject.getID()+"_"+t);
             objects.putIfAbsent(t, outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
 
             // Adding coordinates to this object
             Obj outputObject = objects.get(t);
-            MIA.log.writeDebug("Output "+outputObject.getID()+"_"+t);
             outputObject.getCoordinateSet().addAll(inputObject.getCoordinateSet());
 
         }

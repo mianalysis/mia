@@ -256,8 +256,7 @@ public class ConditionalAnalysisTermination extends Module {
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                 returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
                 MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
-                parameters.getParameter(AVAILABLE_METADATA_FIELDS)
-                        .setValue(ImageLoader.getMetadataValues(metadataRefs));
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
 
             case TestModes.FIXED_VALUE:
