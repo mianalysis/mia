@@ -16,6 +16,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 /**
  * Created by Stephen Cross on 28/02/2019.
@@ -413,7 +414,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -450,7 +452,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunSecondChannelBelowAndAbove5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -487,7 +490,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunBothChannelsBelowAndAbove5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -523,7 +527,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBothBelow5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -560,7 +565,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelSinglePlane5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -597,7 +603,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAboveIndicesInverted5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
@@ -634,7 +641,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAboveSingleChannel4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
@@ -671,7 +679,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAboveSingleTimepoint4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus4D_T1_8bit.tif").getPath(),"UTF-8");
@@ -708,7 +717,8 @@ public class BestFocusSubstackTest extends ModuleTest {
     @Test
     public void testRunFirstChannelBelowAndAbove3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus3D_8bit.tif").getPath(),"UTF-8");

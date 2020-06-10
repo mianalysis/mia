@@ -7,7 +7,6 @@ import java.util.LinkedHashMap;
 import org.apache.commons.io.FilenameUtils;
 
 import ij.measure.ResultsTable;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -17,6 +16,7 @@ import wbif.sjx.common.Object.Metadata;
  * Created by sc13967 on 02/05/2017.
  */
 public class Workspace {
+    private WorkspaceCollection workspaces;
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private Metadata metadata = new Metadata();
@@ -29,8 +29,9 @@ public class Workspace {
 
     // CONSTRUCTOR
 
-    public Workspace(int ID, File file, int series) {
+    public Workspace(int ID, File file, int series, WorkspaceCollection workspaces) {
         this.ID = ID;
+        this.workspaces = workspaces;
 
         metadata.setFile(file);
         metadata.setSeriesNumber(series);
@@ -177,27 +178,28 @@ public class Workspace {
      * Creates a structure containing new Workspaces, each of which represent a different time point
      */
     public HashMap<Integer,Workspace> getSingleTimepointWorkspaces() {
-        HashMap<Integer,Workspace> workspaces = new HashMap<>();
+        HashMap<Integer, Workspace> workspaceList = new HashMap<>();
+        WorkspaceCollection workspacesT = new WorkspaceCollection();
 
         for (ObjCollection collection:objects.values()) {
             for (Obj obj:collection.values()) {
                 int t = obj.getT();
 
                 // If there isn't already a Workspace for this time point, addRef one
-                if (!workspaces.containsKey(t)) {
-                    Workspace workspace = new Workspace(ID,null,-1);
+                if (!workspaceList.containsKey(t)) {
+                    Workspace workspace = workspacesT.getNewWorkspace(null, -1);
                     workspace.setMetadata(metadata);
                     workspace.setImages(images);
-                    workspaces.put(t,workspace);
+                    workspaceList.put(t,workspace);
                 }
 
                 // Adding the current Obj to the new Workspace
-                workspaces.get(t).addObject(obj);
+                workspaceList.get(t).addObject(obj);
 
             }
         }
 
-        return workspaces;
+        return workspaceList;
 
     }
 
@@ -254,6 +256,16 @@ public class Workspace {
 
     public void setExportWorkspace(boolean exportWorkspace) {
         this.exportWorkspace = exportWorkspace;
+    }
+
+    public WorkspaceCollection getWorkspaces() {
+        return workspaces;
+
+    }
+
+    public void setWorkspaces(WorkspaceCollection workspaces) {
+        this.workspaces = workspaces;
+        
     }
 
     @Override

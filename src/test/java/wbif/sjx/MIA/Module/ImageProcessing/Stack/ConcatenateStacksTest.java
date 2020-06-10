@@ -1,19 +1,22 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
-import ij.IJ;
-import ij.ImagePlus;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 
 public class ConcatenateStacksTest extends ModuleTest {
 
@@ -28,7 +31,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -71,7 +75,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitY() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -114,7 +119,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitC() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -157,7 +163,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -200,7 +207,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate2D8bitT() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -246,7 +254,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate3D8bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -289,7 +298,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate3D8bitY() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -332,7 +342,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitC() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -375,7 +386,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -418,7 +430,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate3D8bitT() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -464,7 +477,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate4D8bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -507,7 +521,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate4D8bitY() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -550,7 +565,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitC() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
@@ -593,7 +609,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitC() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4DCZ_8bit_C_full.tif").getPath(),"UTF-8");
@@ -636,7 +653,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitC() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
@@ -679,7 +697,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
@@ -722,7 +741,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4DCZ_8bit_C_full.tif").getPath(),"UTF-8");
@@ -765,7 +785,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
@@ -808,7 +829,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCT8bitT() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_CT_8bit.tif").getPath(),"UTF-8");
@@ -851,7 +873,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DCZ8bitT() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4DCZ_8bit_C_full.tif").getPath(),"UTF-8");
@@ -894,7 +917,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate4DZT8bitT() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
@@ -940,7 +964,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -983,7 +1008,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitY() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1026,7 +1052,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate5D8bitC() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -1069,7 +1096,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1112,7 +1140,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test
     public void testRunApplyConcatenate5D8bitT() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -1158,7 +1187,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitXUnequal() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1201,7 +1231,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitYUnequal() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1244,7 +1275,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitCUnequal() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1287,7 +1319,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitZUnequal() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1330,7 +1363,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8bitTUnequal() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1376,7 +1410,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D16bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1419,7 +1454,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D32bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -1462,7 +1498,8 @@ public class ConcatenateStacksTest extends ModuleTest {
     @Test @Disabled
     public void testRunApplyConcatenate5D8and32bitX() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");

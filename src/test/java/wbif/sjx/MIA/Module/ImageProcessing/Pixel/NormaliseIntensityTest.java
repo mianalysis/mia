@@ -1,18 +1,21 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 public class NormaliseIntensityTest extends ModuleTest {
     @BeforeAll
@@ -28,7 +31,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -62,7 +66,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -96,7 +101,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
@@ -130,7 +136,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -164,7 +171,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity16bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_16bit.tif").getPath(),"UTF-8");
@@ -198,7 +206,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity32bitOverOne3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/LightNoisyGradient3D_32bit.tif").getPath(),"UTF-8");
@@ -232,7 +241,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity32bitUnderOne3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_32bit.tif").getPath(),"UTF-8");
@@ -266,7 +276,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testRunDoApply8bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -298,7 +309,8 @@ public class NormaliseIntensityTest extends ModuleTest {
     @Test
     public void testNormaliseIntensity8bit2DClipPrecise() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradientClip2D_8bit.tif").getPath(),"UTF-8");

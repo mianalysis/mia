@@ -1,18 +1,21 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 public class CropImageTest extends ModuleTest {
     @BeforeAll
@@ -28,7 +31,8 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -66,7 +70,8 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -104,7 +109,8 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun16bit2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
@@ -142,7 +148,8 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun32bit2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
@@ -179,7 +186,8 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
@@ -216,7 +224,8 @@ public class CropImageTest extends ModuleTest {
     @Test
     public void testRun8bit5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");

@@ -11,6 +11,7 @@ import ij.macro.MacroExtension;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Process.ClassHunter;
 
 public class MacroHandler implements MacroExtension {
@@ -27,7 +28,7 @@ public class MacroHandler implements MacroExtension {
             macroHandler = new MacroHandler();
             try {
                 if (workspace == null) {
-                    workspace = new Workspace(0, File.createTempFile("Temp", "File"), 0);
+                    workspace = new Workspace(0, File.createTempFile("Temp", "File"), 0, new WorkspaceCollection());
                 }
             } catch (IOException e) {
                 e.printStackTrace();

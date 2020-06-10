@@ -1,19 +1,22 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 /**
  * Created by sc13967 on 13/11/2017.
@@ -55,7 +58,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunGaussian2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -92,7 +96,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunGaussian2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -129,7 +134,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunGaussian2DFilter2DStackCalibrated() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -173,7 +179,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunGaussian3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -210,7 +217,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunGaussian3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -247,7 +255,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunGaussian3DFilter2DStackCalibrated() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -287,7 +296,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -323,7 +333,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -360,7 +371,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax2DFilter5DStackCalibrated() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -397,7 +409,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMean2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -433,7 +446,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMean2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -470,7 +484,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMedian2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -506,7 +521,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMedian2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -543,7 +559,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMin2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -579,7 +596,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMin2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -616,7 +634,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunVariance2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -653,7 +672,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunVariance2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -693,7 +713,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -731,7 +752,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax3DFilter3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -768,7 +790,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax3DFilter2DStackCalibrated() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -806,7 +829,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMax3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -844,7 +868,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMean3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -881,7 +906,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMean3DFilter3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -918,7 +944,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMean3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -960,7 +987,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMedian3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -997,7 +1025,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMedian3DFilter3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -1034,7 +1063,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMedian3DFilter4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects4D_8bit.tif").getPath(),"UTF-8");
@@ -1071,7 +1101,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMedian3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -1108,7 +1139,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMin3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -1145,7 +1177,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMin3DFilter3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -1182,7 +1215,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunMin3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
@@ -1220,7 +1254,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunVar3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
@@ -1258,7 +1293,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunVar3DFilter3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -1295,7 +1331,8 @@ public class FilterImageTest extends ModuleTest {
     @Test
     public void testRunVar3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");

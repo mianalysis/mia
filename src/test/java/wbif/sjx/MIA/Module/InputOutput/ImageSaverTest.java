@@ -1,22 +1,25 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-import ij.IJ;
-import ij.ImagePlus;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URLDecoder;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import ij.IJ;
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 /**
  * Created by sc13967 on 13/11/2017.
@@ -39,7 +42,8 @@ public class ImageSaverTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Load the test image and put in the workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -79,7 +83,8 @@ public class ImageSaverTest extends ModuleTest {
         File temporaryFolder = tempPath.toFile();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Load the test image and put in the workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");

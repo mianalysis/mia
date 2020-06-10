@@ -1,18 +1,21 @@
 package wbif.sjx.MIA.Module.ImageMeasurements;
 
-import ij.IJ;
-import ij.ImagePlus;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 public class MeasureImageIntensityTest extends ModuleTest {
     private double tolerance = 1E-2;
@@ -30,7 +33,8 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun2DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -59,7 +63,8 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun2DImage16bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_16bit.tif").getPath(),"UTF-8");
@@ -88,7 +93,8 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun3DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -117,7 +123,8 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun4DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
@@ -146,7 +153,8 @@ public class MeasureImageIntensityTest extends ModuleTest {
     @Test
     public void testRun5DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");

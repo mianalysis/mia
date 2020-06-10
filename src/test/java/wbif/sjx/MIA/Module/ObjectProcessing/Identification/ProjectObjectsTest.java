@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -41,7 +42,8 @@ public class ProjectObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Input objects";

@@ -1,19 +1,22 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Workspace;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 public class ImageMathTest extends ModuleTest {
     @BeforeAll
@@ -29,7 +32,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -67,7 +71,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive3D8bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -105,7 +110,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive3D16bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
@@ -143,7 +149,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
@@ -181,7 +188,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddPositive4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
@@ -218,7 +226,8 @@ public class ImageMathTest extends ModuleTest {
 
     @Test
     public void testRunAddPositive5D() throws Exception {
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -255,7 +264,8 @@ public class ImageMathTest extends ModuleTest {
 
     @Test
     public void testRunAddPositiveToInput5D() throws Exception {
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -290,7 +300,8 @@ public class ImageMathTest extends ModuleTest {
 
     @Test
     public void testRunAddMeasurement5D() throws Exception {
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
@@ -331,7 +342,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunAddNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -369,7 +381,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunSubtractPositive3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -407,7 +420,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunSubtractNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -445,7 +459,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunMultiplyPositive3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -483,7 +498,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunMultiplyNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -521,7 +537,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunMultiplyNegative3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
@@ -559,7 +576,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRunDividePositive3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -597,7 +615,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRuDivideNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -635,7 +654,8 @@ public class ImageMathTest extends ModuleTest {
     @Test
     public void testRuDivideNegative3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");

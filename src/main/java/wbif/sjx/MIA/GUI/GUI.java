@@ -51,7 +51,7 @@ public class GUI {
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
-    private static Workspace testWorkspace = new Workspace(1,null,1);
+    private static Workspace testWorkspace = new Workspace(1,null,1,new WorkspaceCollection());
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
@@ -281,7 +281,7 @@ public class GUI {
         if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeriesNumber) return;
 
         lastModuleEval = -1;
-        testWorkspace = new Workspace(1,nextFile,nextSeriesNumber);
+        testWorkspace = new Workspace(1,nextFile,nextSeriesNumber,new WorkspaceCollection());
         testWorkspace.getMetadata().setSeriesName(nextSeriesName);
 
     }

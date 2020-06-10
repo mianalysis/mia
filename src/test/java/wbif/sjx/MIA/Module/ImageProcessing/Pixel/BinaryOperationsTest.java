@@ -1,19 +1,22 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import ij.IJ;
-import ij.ImagePlus;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import ij.IJ;
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 /**
  * Created by sc13967 on 13/11/2017.
@@ -32,7 +35,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -69,7 +73,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -106,7 +111,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -142,7 +148,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperation5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -179,7 +186,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithDilateOperation2DStackOnInput() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -215,7 +223,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithDilate2DOperationZeroIters2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -252,7 +261,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -289,7 +299,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -326,7 +337,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -363,7 +375,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationFiveIters5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -404,7 +417,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -445,7 +459,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -486,7 +501,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -527,7 +543,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithErode2DOperationHundredIters5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -564,7 +581,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -600,7 +618,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -636,7 +655,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -672,7 +692,8 @@ public class BinaryOperationsTest extends ModuleTest {
     @Test
     public void testRunWithFillHoles2DOperation5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_whiteBG.tif").getPath(),"UTF-8");

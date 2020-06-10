@@ -24,35 +24,45 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
      * Creates a new workspace and adds it to the collection
      */
     public Workspace getNewWorkspace(File currentFile, int series) {
-        Workspace workspace =  new Workspace(++maxID, currentFile, series);
+        Workspace workspace = new Workspace(++maxID, currentFile, series, this);
 
         add(workspace);
 
         return workspace;
 
     }
+    
+    public Workspace getWorkspace(int ID) {
+        for (Workspace workspace : this) 
+            if (workspace.getID() == ID)
+                return workspace;
+        
+        // If no Workspace had this ID, return null
+        return null;
+
+    }
 
     public HashMap<String, Workspace> getMetadataWorkspaces(String metadataName) {
-        HashMap<String,Workspace> workspaces = new HashMap<>();
+        HashMap<String, Workspace> workspaceList = new HashMap<>();
+        WorkspaceCollection workspacesMeta = new WorkspaceCollection();
 
-        int ID = 0;
         for (Workspace currWorkspace:this) {
             // The metadata value to group on
             String metadataValue = currWorkspace.getMetadata().getAsString(metadataName);
 
             // If no workspace exists for this metadata value, create one
-            if (!workspaces.containsKey(metadataValue)) {
-                Workspace metadataWorkspace = new Workspace(++ID,null,-1);
-
+            if (!workspaceList.containsKey(metadataValue)) {
+                Workspace metadataWorkspace = workspacesMeta.getNewWorkspace(null, -1);
+                
                 // Creating a store for the number of workspaces in this collection
                 metadataWorkspace.getMetadata().put("Count",0);
 
-                workspaces.put(metadataValue,metadataWorkspace);
+                workspaceList.put(metadataValue,metadataWorkspace);
 
             }
 
             // Getting the metadata workspace
-            Workspace metadataWorkspace = workspaces.get(metadataValue);
+            Workspace metadataWorkspace = workspaceList.get(metadataValue);
 
             // Incrementing the workspace count
             metadataWorkspace.getMetadata().put("Count",((int) metadataWorkspace.getMetadata().get("Count")) + 1);
@@ -76,7 +86,7 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
             }
         }
 
-        return workspaces;
+        return workspaceList;
 
     }
 

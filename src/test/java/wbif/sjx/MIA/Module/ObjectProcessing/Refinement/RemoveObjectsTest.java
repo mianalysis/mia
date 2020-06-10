@@ -14,6 +14,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class RemoveObjectsTest extends ModuleTest {
@@ -31,7 +32,8 @@ public class RemoveObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunSingleObjCollection(VolumeType volumeType) throws Exception{
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -59,7 +61,8 @@ public class RemoveObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMultipleObjCollections(VolumeType volumeType) throws Exception{
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
