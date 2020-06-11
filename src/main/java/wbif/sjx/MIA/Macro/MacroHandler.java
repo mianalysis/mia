@@ -26,6 +26,7 @@ public class MacroHandler implements MacroExtension {
     public static MacroHandler getMacroHandler() {
         if (macroHandler == null) {
             macroHandler = new MacroHandler();
+
             try {
                 if (workspace == null) {
                     workspace = new WorkspaceCollection().getNewWorkspace(File.createTempFile("Temp", "File"), 0);
@@ -33,7 +34,9 @@ public class MacroHandler implements MacroExtension {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            
             macroOperations = initialiseMacroOperations(macroHandler);
+            
         }
 
         return macroHandler;
@@ -68,20 +71,30 @@ public class MacroHandler implements MacroExtension {
 
     private static ArrayList<MacroOperation> initialiseMacroOperations(MacroHandler macroHandler) {
         // Using Reflections to get all MacroOperations
-        List<String> clazzes= new ClassHunter<MacroOperation>().getClasses(MacroOperation.class);
+        List<String> clazzes = new ClassHunter<MacroOperation>().getClasses(MacroOperation.class);
 
         // Iterating over each Module, adding MacroOperations to an ArrayList
         ArrayList<MacroOperation> macroOperations = new ArrayList<>();
-        for (String clazz:clazzes) {
+        for (String clazz : clazzes) {
             try {
-                macroOperations.add((MacroOperation) Class.forName(clazz).getDeclaredConstructor(MacroExtension.class).newInstance(macroHandler));
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
+                macroOperations.add((MacroOperation) Class.forName(clazz).getDeclaredConstructor(MacroExtension.class)
+                        .newInstance(macroHandler));
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException
+                    | ClassNotFoundException e) {
                 MIA.log.writeError(e);
             }
         }
 
         return macroOperations;
 
+    }
+
+    public static ModuleCollection getModules() {
+        return modules;
+    }
+
+    public static void setModules(ModuleCollection modules) {
+        MacroHandler.modules = modules;
     }
 
     public static Workspace getWorkspace() {

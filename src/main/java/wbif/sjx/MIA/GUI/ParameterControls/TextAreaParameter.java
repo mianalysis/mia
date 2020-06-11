@@ -1,14 +1,23 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
-
-import javax.swing.*;
-import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 
 public class TextAreaParameter extends ParameterControl implements FocusListener {
     protected TextAreaP parameter;
@@ -86,7 +95,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
 
         parameter.setValueFromString(textArea.getText());
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
         updateControl();
 

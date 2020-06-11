@@ -101,7 +101,7 @@ public class AnalysisRunner {
         }
 
         // Running macro (if enabled)
-        outputControl.runMacro(workspaces);
+        outputControl.runMacro(workspaces.iterator().next());
 
         // Cleaning up
         MIA.log.writeStatus("Complete!");

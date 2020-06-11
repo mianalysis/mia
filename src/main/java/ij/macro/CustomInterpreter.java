@@ -7,7 +7,7 @@ package ij.macro;
  */
 public class CustomInterpreter extends Interpreter {
     private String errorMessage = "";
-
+    
     @Override
     void error(String message){
         wasError = true;

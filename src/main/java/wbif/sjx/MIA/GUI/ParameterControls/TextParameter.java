@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
 /**
@@ -41,7 +42,7 @@ public class TextParameter extends ParameterControl implements FocusListener {
         parameter.setValueFromString(control.getText());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
         if (parameter.getModule().getClass().isInstance(new InputControl(GUI.getModules()))) GUI.updateTestFile(true);
 

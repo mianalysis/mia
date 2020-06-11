@@ -1,12 +1,15 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.Parameters.Abstract.BooleanType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.Abstract.BooleanType;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -38,7 +41,7 @@ public class BooleanParameter extends ParameterControl implements ActionListener
         parameter.setSelected(control.isSelected());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModuleStates(true);
         GUI.updateModules();
