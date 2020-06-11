@@ -1,22 +1,35 @@
 package wbif.sjx.MIA.Module.Hidden;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 
 import org.apache.commons.io.FilenameUtils;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.macro.CustomInterpreter;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.CoreMacroRunner;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage.MacroModes;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -28,6 +41,17 @@ import wbif.sjx.common.Object.Metadata;
  * Created by Stephen on 29/07/2017.
  */
 public class OutputControl extends Module {
+    public static final String POSTPROCESSING_SEPARATOR = "Post-processing";
+    public static final String RUN_MACRO = "Run macro";
+    public static final String VARIABLE_NAME = "Variable name";
+    public static final String VARIABLE_VALUE = "Variable value";
+    public static final String ADD_VARIABLE = "Add variable";
+    public static final String MACRO_MODE = "Macro mode";
+    public static final String MACRO_TEXT = "Macro text";
+    public static final String MACRO_FILE = "Macro file";
+    public static final String REFRESH_BUTTON = "Refresh parameters";
+    public static final String TEST_BUTTON = "Test macro";
+
     public static final String EXPORT_SEPARATOR = "Core export controls";
     public static final String EXPORT_MODE = "Export mode";
     public static final String GROUP_SAVE_LOCATION = "Group save location";
@@ -229,6 +253,45 @@ public class OutputControl extends Module {
 
     }
 
+    public void runMacro(WorkspaceCollection workspaces) {
+        if (!(boolean) parameters.getValue(RUN_MACRO)) {
+            return;
+        }
+
+        if (workspaces.size() == 0) {
+            MIA.log.writeWarning("No workspaces available.  Macro didn't run.");
+            return;
+        }
+        
+        String macroMode = parameters.getValue(MACRO_MODE);
+        String macroText = parameters.getValue(MACRO_TEXT);
+        String macroFile = parameters.getValue(MACRO_FILE);
+
+        // Getting a Map of input variable names and their values
+        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
+        LinkedHashMap<String, String> inputVariables = CoreMacroRunner.inputVariables(variableGroup, VARIABLE_NAME,
+                VARIABLE_VALUE);
+
+        // Setting the MacroHandler to the current workspace
+        MacroHandler.setWorkspace(workspaces.iterator().next());
+
+        // If the macro is stored as a file, load this to the macroText string
+        if (macroMode.equals(MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
+
+        // Appending variables to the front of the macro
+        String finalMacroText = CoreMacroRunner.addVariables(macroText, inputVariables);
+        
+        // Running the macro
+        CustomInterpreter interpreter = new CustomInterpreter();
+        try {
+            interpreter.runBatchMacro(finalMacroText, null);
+            if (interpreter.wasError()) throw new RuntimeException();
+        } catch (RuntimeException e) {
+            IJ.runMacro("setBatchMode(false)");
+            MIA.log.writeError("Macro failed with error \""+interpreter.getErrorMessage()+"\".  Skipping file.");
+        }
+    }
+
     @Override
     public String getPackageName() {
         return "Hidden";
@@ -246,6 +309,20 @@ public class OutputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(POSTPROCESSING_SEPARATOR, this));
+        
+        parameters.add(new BooleanP(RUN_MACRO,this,false));
+        ParameterCollection variableCollection = new ParameterCollection();
+        variableCollection.add(new StringP(VARIABLE_NAME,this));
+        variableCollection.add(new StringP(VARIABLE_VALUE,this));
+        parameters.add(new ParameterGroup(ADD_VARIABLE,this,variableCollection));
+        parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
+        parameters.add(new TextAreaP(MACRO_TEXT,this,"// Get a list of Workspace IDs with Ext.MIA_GetListOfWorkspaceIDs() and set active workspace with Ext.MIA_SetActiveWorkspace(ID)." +
+        "\n\nrun(\"Enable MIA Extensions\");\n\n",true));
+        parameters.add(new FilePathP(MACRO_FILE, this));
+        parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
+        parameters.add(new GenericButtonP(TEST_BUTTON, this, "Test macro", GenericButtonP.DefaultModes.TEST_MACRO));
+        
         parameters.add(new ParamSeparatorP(EXPORT_SEPARATOR,this));
         parameters.add(new ChoiceP(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
         parameters.add(new ChoiceP(INDIVIDUAL_SAVE_LOCATION, this,IndividualSaveLocations.SAVE_WITH_INPUT,IndividualSaveLocations.ALL));
@@ -273,6 +350,23 @@ public class OutputControl extends Module {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(POSTPROCESSING_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(RUN_MACRO));
+        if ((boolean) parameters.getValue(RUN_MACRO)) {
+            returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
+            returnedParameters.add(parameters.getParameter(MACRO_MODE));
+            switch ((String) parameters.getValue(MACRO_MODE)) {
+                case MacroModes.MACRO_FILE:
+                    returnedParameters.add(parameters.getParameter(MACRO_FILE));
+                    break;
+                case MacroModes.MACRO_TEXT:
+                    returnedParameters.add(parameters.getParameter(MACRO_TEXT));
+                    returnedParameters.add(parameters.getParameter(REFRESH_BUTTON));
+                    break;
+            }
+            returnedParameters.add(parameters.getParameter(TEST_BUTTON));
+        }
 
         returnedParameters.add(parameters.getParameter(EXPORT_SEPARATOR));
         ChoiceP exportMode = (ChoiceP) parameters.getParameter(EXPORT_MODE);

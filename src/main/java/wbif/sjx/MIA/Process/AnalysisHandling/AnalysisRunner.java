@@ -97,8 +97,11 @@ public class AnalysisRunner {
         if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
             File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH));
             String name = outputControl.getGroupOutputPath(outputFile);
-            exporter.export(workspaces,analysis,name);
+            exporter.export(workspaces, analysis, name);
         }
+
+        // Running macro (if enabled)
+        outputControl.runMacro(workspaces);
 
         // Cleaning up
         MIA.log.writeStatus("Complete!");
@@ -258,7 +261,8 @@ public class AnalysisRunner {
                 String nComplete = dfInt.format(getCounter());
                 String nTotal = dfInt.format(pool.getTaskCount());
                 String percentageComplete = dfDec.format(((double) getCounter() / (double) pool.getTaskCount()) * 100);
-                MIA.log.writeStatus("Completed " + nComplete + "/" + nTotal + " (" + percentageComplete + "%), " + file.getName());
+                MIA.log.writeStatus(
+                        "Completed " + nComplete + "/" + nTotal + " (" + percentageComplete + "%), " + file.getName());
 
                 if (outputControl.isExportIndividual()) {
                     String name = outputControl.getIndividualOutputPath(workspace.getMetadata());
@@ -267,7 +271,7 @@ public class AnalysisRunner {
                     workspace.clearAllImages(false);
                 } else if (continuousExport && getCounter() % saveNFiles == 0) {
                     String name = outputControl.getGroupOutputPath(inputControl.getRootFile());
-                    exporter.exportResults(workspace,analysis, name);
+                    exporter.exportResults(workspace, analysis, name);
                 }
 
             } catch (Throwable t) {
@@ -275,9 +279,11 @@ public class AnalysisRunner {
 
                 double totalMemory = Runtime.getRuntime().totalMemory();
                 double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
-                String memoryMessage = "Memory: "+df.format(usedMemory*1E-6)+" MB of "+df.format(totalMemory*1E-6)+" MB";
+                String memoryMessage = "Memory: " + df.format(usedMemory * 1E-6) + " MB of "
+                        + df.format(totalMemory * 1E-6) + " MB";
 
-                MIA.log.writeError("Failed for file " + file.getName()+", series "+seriesNumber+" ("+memoryMessage+")");
+                MIA.log.writeError(
+                        "Failed for file " + file.getName() + ", series " + seriesNumber + " (" + memoryMessage + ")");
                 MIA.log.writeError(t);
 
                 workspace.clearAllImages(true);
@@ -289,7 +295,7 @@ public class AnalysisRunner {
         };
     }
 
-    static public void stopAnalysis() {
+    public static void stopAnalysis() {
         MIA.log.writeWarning("STOPPING");
         Prefs.setThreads(origThreads);
         GUI.setModuleBeingEval(-1);

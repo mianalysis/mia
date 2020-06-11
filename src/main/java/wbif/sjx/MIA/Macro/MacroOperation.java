@@ -19,7 +19,10 @@ public abstract class MacroOperation extends ExtensionDescriptor {
         argTypes = getArgumentTypes();
     }
 
-    public abstract String getName();
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+    
     public abstract int[] getArgumentTypes();
     public abstract String action(Object[] objects, Workspace workspace, ModuleCollection modules);
     public abstract String getArgumentsDescription();

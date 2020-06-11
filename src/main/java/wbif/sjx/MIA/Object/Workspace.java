@@ -29,7 +29,7 @@ public class Workspace {
 
     // CONSTRUCTOR
 
-    public Workspace(int ID, File file, int series, WorkspaceCollection workspaces) {
+    protected Workspace(int ID, File file, int series, WorkspaceCollection workspaces) {
         this.ID = ID;
         this.workspaces = workspaces;
 

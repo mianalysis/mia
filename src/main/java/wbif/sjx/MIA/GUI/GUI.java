@@ -1,7 +1,3 @@
-// TODO: Add controls for all parameter types (hashsets, etc.)
-// TODO: If an assigned image/object name is no longer available, flag up the module button in red
-// TODO: Output panel could allow the user to select which objects and images to output to the spreadsheet
-
 package wbif.sjx.MIA.GUI;
 
 import java.awt.Dimension;
@@ -51,7 +47,7 @@ public class GUI {
     private static Module[] selectedModules = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
-    private static Workspace testWorkspace = new Workspace(1,null,1,new WorkspaceCollection());
+    private static Workspace testWorkspace = new WorkspaceCollection().getNewWorkspace(null, 1);
     private static UndoRedoStore undoRedoStore = new UndoRedoStore();
 
     private static int minimumFrameHeight = 600;
@@ -281,7 +277,7 @@ public class GUI {
         if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeriesNumber) return;
 
         lastModuleEval = -1;
-        testWorkspace = new Workspace(1,nextFile,nextSeriesNumber,new WorkspaceCollection());
+        testWorkspace = new WorkspaceCollection().getNewWorkspace(nextFile, nextSeriesNumber);
         testWorkspace.getMetadata().setSeriesName(nextSeriesName);
 
     }
