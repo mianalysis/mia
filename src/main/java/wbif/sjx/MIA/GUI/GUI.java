@@ -65,8 +65,7 @@ public class GUI {
     private static BasicPanel basicPan = new BasicPanel();
     private static EditingPanel editingPan;
     private static MainPanel mainPanel;
-    private static TreeMap<String,Module> availableModules = new TreeMap<>();
-
+    private static TreeMap<String, Module> availableModules = new TreeMap<>();
 
     public GUI() throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -78,7 +77,7 @@ public class GUI {
 
         // Creating main Frame
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frameHeight = Math.min(frameHeight,screenSize.height-50);
+        frameHeight = Math.min(frameHeight, screenSize.height - 50);
 
         Splash splash = new Splash();
         splash.setLocation((screenSize.width - splash.getWidth()) / 2, (screenSize.height - splash.getHeight()) / 2);
@@ -99,15 +98,17 @@ public class GUI {
         analysis.getModules().add(new ImageLoader<>(getModules()));
 
         // Determining which panel should be shown
-        if (MIA.isDebug()) mainPanel = editingPan;
-        else mainPanel = basicPan;
+        if (MIA.isDebug())
+            mainPanel = editingPan;
+        else
+            mainPanel = basicPan;
 
         initialiseStatusTextField();
         frame.setTitle("MIA (version " + MIA.getVersion() + ")");
         frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
-        frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(),mainPanel.getPreferredHeight()));
-        frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"),"").getImage());
+        frame.setPreferredSize(new Dimension(mainPanel.getPreferredWidth(), mainPanel.getPreferredHeight()));
+        frame.setIconImage(new ImageIcon(this.getClass().getResource("/Icons/Logo_wide_32.png"), "").getImage());
 
         mainPanel.updatePanel();
         menuBar.setUndoRedoStatus(undoRedoStore);
@@ -116,7 +117,8 @@ public class GUI {
         // Final bits for listeners
         frame.pack();
         frame.setVisible(true);
-        frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2, (screenSize.height - frameHeight) / 2);
+        frame.setLocation((screenSize.width - mainPanel.getPreferredWidth()) / 2,
+                (screenSize.height - frameHeight) / 2);
 
         updatePanel();
 
@@ -125,16 +127,17 @@ public class GUI {
     }
 
     void initialiseAvailableModules(List<String> detectedModuleNames) {
-        try {
-            // Creating an alphabetically-ordered list of all modules
-            ModuleCollection moduleCollection = new ModuleCollection();
-            availableModules = new TreeMap<>();
+        // Creating an alphabetically-ordered list of all modules
+        ModuleCollection moduleCollection = new ModuleCollection();
+        availableModules = new TreeMap<>();
 
-            for (String detectedModuleName : detectedModuleNames) {
+        for (String detectedModuleName : detectedModuleNames) {
+            try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
                     // Skip any abstract Modules
-                    if (Modifier.isAbstract(clazz.getModifiers())) continue;
+                    if (Modifier.isAbstract(clazz.getModifiers()))
+                        continue;
 
                     Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                     Module module = (Module) constructor.newInstance(moduleCollection);
@@ -143,20 +146,21 @@ public class GUI {
                     availableModules.put(packageName + moduleName, module);
 
                 }
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
+                    | InvocationTargetException | NoClassDefFoundError e) {
+                MIA.log.writeWarning("Module \""+detectedModuleName+"\" incompatible with MIA v"+MIA.getVersion()+".  Module not loaded.");
             }
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            MIA.log.writeError(e);
         }
     }
 
     public static void updatePanel() {
         int preferredWidth = mainPanel.getPreferredWidth();
         int preferredHeight = mainPanel.getPreferredHeight();
-        frame.setPreferredSize(new Dimension(preferredWidth,preferredHeight));
+        frame.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 
         int minimumWidth = mainPanel.getMinimumWidth();
         int minimumHeight = mainPanel.getMinimumHeight();
-        frame.setMinimumSize(new Dimension(minimumWidth,minimumHeight));
+        frame.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
 
         menuBar.setHelpSelected(showHelp());
         menuBar.setNotesSelected(showNotes());
@@ -169,7 +173,7 @@ public class GUI {
     }
 
     private static void initialiseStatusTextField() {
-        textField.setPreferredSize(new Dimension(Integer.MAX_VALUE,statusHeight));
+        textField.setPreferredSize(new Dimension(Integer.MAX_VALUE, statusHeight));
         textField.setBorder(null);
         textField.setText("MIA (version " + MIA.getVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -189,16 +193,19 @@ public class GUI {
         mainPanel.updateHelpNotes();
     }
 
-    public static void updateFileList(){
+    public static void updateFileList() {
         mainPanel.updateFileList();
     }
 
     public static void updateModuleStates(boolean verbose) {
         int nRunnable = AnalysisTester.testModules(getModules());
         int nActive = 0;
-        for (Module module:getModules()) if (module.isEnabled()) nActive++;
+        for (Module module : getModules())
+            if (module.isEnabled())
+                nActive++;
         int nModules = getModules().size();
-        if (verbose && nModules > 0) MIA.log.writeStatus(nRunnable+" of "+nActive+" active modules are runnable");
+        if (verbose && nModules > 0)
+            MIA.log.writeStatus(nRunnable + " of " + nActive + " active modules are runnable");
 
         mainPanel.updateModuleStates();
 
@@ -231,7 +238,7 @@ public class GUI {
     public synchronized static void updateProgressBar() {
         WorkspaceCollection workspaces = analysisRunner.getWorkspaces();
 
-        updateProgressBar((int) Math.round(workspaces.getOverallProgress()*100));
+        updateProgressBar((int) Math.round(workspaces.getOverallProgress() * 100));
 
     }
 
@@ -246,7 +253,8 @@ public class GUI {
     }
 
     public static void updateTestFile(boolean verbose) {
-        // Ensuring the input file specified in the InputControl is active in the test workspace
+        // Ensuring the input file specified in the InputControl is active in the test
+        // workspace
         InputControl inputControl = analysis.getModules().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
@@ -263,11 +271,13 @@ public class GUI {
             }
         }
 
-        if (nextFile == null) return;
+        if (nextFile == null)
+            return;
 
         // Getting the next series
         TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(nextFile);
-        if (seriesNumbers.size() == 0) return;
+        if (seriesNumbers.size() == 0)
+            return;
         int nextSeriesNumber = seriesNumbers.firstEntry().getKey();
         String nextSeriesName = seriesNumbers.get(nextSeriesNumber);
 
@@ -275,7 +285,9 @@ public class GUI {
         File previousFile = testWorkspace.getMetadata().getFile();
         int previousSeries = testWorkspace.getMetadata().getSeriesNumber();
 
-        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath()) && previousSeries == nextSeriesNumber) return;
+        if (previousFile != null && previousFile.getAbsolutePath().equals(nextFile.getAbsolutePath())
+                && previousSeries == nextSeriesNumber)
+            return;
 
         lastModuleEval = -1;
         testWorkspace = new WorkspaceCollection().getNewWorkspace(nextFile, nextSeriesNumber);
@@ -283,12 +295,12 @@ public class GUI {
 
     }
 
-    public static int getLastModuleEval(){
+    public static int getLastModuleEval() {
         return lastModuleEval;
     }
 
     public static void setLastModuleEval(int lastModuleEval) {
-        GUI.lastModuleEval = Math.max(lastModuleEval,-1);
+        GUI.lastModuleEval = Math.max(lastModuleEval, -1);
     }
 
     public static Workspace getTestWorkspace() {
@@ -296,7 +308,7 @@ public class GUI {
     }
 
     public static void setTestWorkspace(Workspace testWorkspace) {
-        GUI.testWorkspace =  testWorkspace;
+        GUI.testWorkspace = testWorkspace;
     }
 
     public static int getModuleBeingEval() {
@@ -308,7 +320,8 @@ public class GUI {
     }
 
     public static Module getFirstSelectedModule() {
-        if (selectedModules == null || selectedModules.length == 0) return null;
+        if (selectedModules == null || selectedModules.length == 0)
+            return null;
         return selectedModules[0];
     }
 
@@ -317,12 +330,13 @@ public class GUI {
     }
 
     public static int[] getSelectedModuleIndices() {
-        if (selectedModules == null || selectedModules.length == 0) return new int[0];
+        if (selectedModules == null || selectedModules.length == 0)
+            return new int[0];
 
         int[] selectedIndices = new int[selectedModules.length];
         ModuleCollection modules = getModules();
 
-        for (int i=0;i<selectedModules.length;i++) {
+        for (int i = 0; i < selectedModules.length; i++) {
             Module selectedModule = selectedModules[i];
             if (selectedModule instanceof InputControl) {
                 selectedIndices[i] = -1;
@@ -338,25 +352,26 @@ public class GUI {
     }
 
     public static void setSelectedModulesByIndex(int[] selectedModuleIndices) {
-        if (selectedModuleIndices == null || selectedModuleIndices.length == 0) return;
+        if (selectedModuleIndices == null || selectedModuleIndices.length == 0)
+            return;
 
         // The input and output controls are special cases
         if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -1) {
-            selectedModules = new Module[]{analysis.getModules().getInputControl()};
+            selectedModules = new Module[] { analysis.getModules().getInputControl() };
             return;
         } else if (selectedModuleIndices.length == 1 && selectedModuleIndices[0] == -2) {
-            selectedModules = new Module[]{analysis.getModules().getOutputControl()};
+            selectedModules = new Module[] { analysis.getModules().getOutputControl() };
             return;
         }
 
         // If the largest index is out of range disable all selections
-        if (selectedModuleIndices[selectedModuleIndices.length-1] >= analysis.getModules().size()) {
+        if (selectedModuleIndices[selectedModuleIndices.length - 1] >= analysis.getModules().size()) {
             selectedModules = new Module[0];
             return;
         }
 
         selectedModules = new Module[selectedModuleIndices.length];
-        for (int i=0;i<selectedModuleIndices.length;i++) {
+        for (int i = 0; i < selectedModuleIndices.length; i++) {
             if (selectedModuleIndices[i] == -1) {
                 selectedModules[i] = analysis.getModules().getInputControl();
             } else {
@@ -411,7 +426,8 @@ public class GUI {
     }
 
     public static boolean showHelp() {
-        if (mainPanel == null) return false;
+        if (mainPanel == null)
+            return false;
         return mainPanel.showHelp();
     }
 
@@ -421,7 +437,8 @@ public class GUI {
     }
 
     public static boolean showNotes() {
-        if (mainPanel == null) return false;
+        if (mainPanel == null)
+            return false;
         return mainPanel.showNotes();
     }
 
@@ -430,7 +447,8 @@ public class GUI {
     }
 
     public static boolean showFileList() {
-        if (mainPanel == null) return false;
+        if (mainPanel == null)
+            return false;
         return mainPanel.showFileList();
     }
 
@@ -452,7 +470,8 @@ public class GUI {
 
         ModuleCollection newModules = undoRedoStore.getNextUndo(analysis.getModules());
 
-        if (newModules == null) return;
+        if (newModules == null)
+            return;
         analysis.setModules(newModules);
 
         // Updating the selected modules
@@ -470,7 +489,8 @@ public class GUI {
         int[] selectedIndices = getSelectedModuleIndices();
 
         ModuleCollection newModules = undoRedoStore.getNextRedo(analysis.getModules());
-        if (newModules == null) return;
+        if (newModules == null)
+            return;
         analysis.setModules(newModules);
 
         // Updating the selected modules
@@ -483,7 +503,6 @@ public class GUI {
         menuBar.setUndoRedoStatus(undoRedoStore);
 
     }
-
 
     // COMPONENT SIZE GETTERS
 
