@@ -119,7 +119,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
 
     public ImageLoader(ModuleCollection modules) {
-        super("Load image", modules);
+        super("Load image", modules);        
     }
 
     public interface ImportModes {

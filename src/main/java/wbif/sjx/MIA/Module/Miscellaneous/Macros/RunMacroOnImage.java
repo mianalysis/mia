@@ -117,7 +117,6 @@ public class RunMacroOnImage extends CoreMacroRunner {
         if (provideInputImage) openImages = hideImages();
 
         // Running the macro
-        IJ.runMacro("run(\"Enable MIA Extensions\")");
         CustomInterpreter interpreter = new CustomInterpreter();
         try {
             inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
@@ -170,7 +169,8 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
         parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
-        parameters.add(new TextAreaP(MACRO_TEXT,this,"// A variable has been pre-defined for the input image name.",true));
+        parameters.add(new TextAreaP(MACRO_TEXT,this,"// A variable has been pre-defined for the input image name." +
+        "\n\nrun(\"Enable MIA Extensions\");\n\n",true));
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
 

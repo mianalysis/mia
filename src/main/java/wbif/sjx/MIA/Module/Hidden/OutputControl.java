@@ -278,12 +278,7 @@ public class OutputControl extends Module {
         String finalMacroText = CoreMacroRunner.addVariables(macroText, inputVariables);
         
         // Running the macro
-        System.err.println("sffdfsdf1");
-        IJ.runMacro("run(\"Enable MIA Extensions\")");
-        System.err.println("sffdfsdf2");
         CustomInterpreter interpreter = new CustomInterpreter();
-        System.err.println("sffdfsdf3");
-
         try {
             interpreter.runBatchMacro(finalMacroText, null);
             if (interpreter.wasError())
@@ -320,7 +315,7 @@ public class OutputControl extends Module {
         variableCollection.add(new StringP(VARIABLE_VALUE,this));
         parameters.add(new ParameterGroup(ADD_VARIABLE,this,variableCollection));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
-        parameters.add(new TextAreaP(MACRO_TEXT,this,"// Get a list of Workspace IDs with Ext.MIA_GetListOfWorkspaceIDs() and set active workspace with Ext.MIA_SetActiveWorkspace(ID).",true));
+        parameters.add(new TextAreaP(MACRO_TEXT,this,"run(\"Enable MIA Extensions\");\n\n// Get a list of Workspace IDs with Ext.MIA_GetListOfWorkspaceIDs() and set active workspace with Ext.MIA_SetActiveWorkspace(ID).",true));
         parameters.add(new FilePathP(MACRO_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
         parameters.add(new GenericButtonP(TEST_BUTTON, this, "Test macro", GenericButtonP.DefaultModes.TEST_MACRO));

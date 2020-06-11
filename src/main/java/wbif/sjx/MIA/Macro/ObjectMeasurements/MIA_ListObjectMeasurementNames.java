@@ -31,7 +31,7 @@ public class MIA_ListObjectMeasurementNames extends MacroOperation {
         for (ObjMeasurementRef measurement:measurements.values()) {
             if (row != 0) rt.incrementCounter();
 
-            rt.setValue("Measurement name",row,measurement.getFinalName());
+            rt.setValue("Measurement name",row,measurement.getName());
             rt.setValue("Measurement nickname",row,measurement.getNickname());
 
             row++;

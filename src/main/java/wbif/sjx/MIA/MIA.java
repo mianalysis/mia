@@ -87,20 +87,20 @@ public class MIA implements Command {
             }
         }
 
-        // try {
-        //     if (!headless) {
-        //         // Before removing the old renderer we want to check the new one can be created
-        //         LogRenderer newRenderer = new ConsoleRenderer(uiService);
-        //         log.removeRenderer(mainRenderer);
+        try {
+            if (!headless) {
+                // Before removing the old renderer we want to check the new one can be created
+                LogRenderer newRenderer = new ConsoleRenderer(uiService);
+                log.removeRenderer(mainRenderer);
 
-        //         mainRenderer = newRenderer;
-        //         mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
-        //         log.addRenderer(mainRenderer);
+                mainRenderer = newRenderer;
+                mainRenderer.setWriteEnabled(LogRenderer.Level.DEBUG, debug);
+                log.addRenderer(mainRenderer);
 
-        //     }
-        // } catch (Exception e) {
-        //     // If any exception was thrown, just don't apply the ConsoleRenderer.
-        // }
+            }
+        } catch (Exception e) {
+            // If any exception was thrown, just don't apply the ConsoleRenderer.
+        }
 
         // Determining the version number from the pom file
         try {
