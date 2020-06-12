@@ -1,12 +1,15 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 
 /**
  * Created by sc13967 on 22/05/2017.
@@ -41,7 +44,7 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
         parameter.setChoice((String) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
         GUI.updateTestFile(true);
         GUI.updateModuleStates(true);

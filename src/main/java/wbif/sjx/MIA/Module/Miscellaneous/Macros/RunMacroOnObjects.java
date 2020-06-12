@@ -113,6 +113,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
+        MacroHandler.setModules(modules);
 
         // If providing the input image direct from the workspace, hide all open windows while the macro runs
         ArrayList<ImagePlus> openImages = new ArrayList<>();
@@ -183,9 +184,10 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT,this,"// Variables have been pre-defined for the input object name " +
-                "(\"objectName\") and its ID number (\"ID\").\n\nrun(\"Enable MIA Extensions\");\n\n",true));
+                "(\"objectName\") and its ID number (\"ID\")." +
+                "\n\nrun(\"Enable MIA Extensions\");\n\n",true));
         parameters.add(new FilePathP(MACRO_FILE,this));
-        parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
+        parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();

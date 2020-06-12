@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
 
 /**
@@ -43,7 +44,7 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
         parameter.setSelectedModule((Module) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
         GUI.updateTestFile(true);
         GUI.updateModuleStates(true);

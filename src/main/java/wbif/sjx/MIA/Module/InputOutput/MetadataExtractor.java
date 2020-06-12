@@ -18,7 +18,7 @@ import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.RefreshButtonP;
+import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
@@ -394,7 +394,7 @@ public class MetadataExtractor extends Module {
         parameters.add(new TextAreaP(IDENTIFIED_GROUPS,this,false));
         parameters.add(new BooleanP(REGEX_SPLITTING,this,false));
         parameters.add(new StringP(METADATA_VALUE_NAME,this));
-        parameters.add(new RefreshButtonP(REFRESH_BUTTON,this));
+        parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
 
     }
 

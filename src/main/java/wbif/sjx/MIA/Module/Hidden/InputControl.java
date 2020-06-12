@@ -298,14 +298,15 @@ public class InputControl extends Module {
         String seriesListString = parameters.getValue(InputControl.SERIES_LIST);
         int[] seriesList = CommaSeparatedStringInterpreter.interpretIntegers(seriesListString, true,
                 reader.getSeriesCount());
-        for (int aSeriesList : seriesList) {
-            if (aSeriesList > reader.getSeriesCount())
+
+        for (int series : seriesList) {
+            if (series > reader.getSeriesCount())
                 continue;
 
-            namesAndNumbers.put(aSeriesList, meta.getImageName(aSeriesList - 1));
+            namesAndNumbers.put(series, meta.getImageName(series - 1));
 
         }
-
+        
         reader.close();
 
         return namesAndNumbers;

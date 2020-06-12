@@ -1,18 +1,21 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ModuleTest;
-import wbif.sjx.MIA.Object.Workspace;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 
 public class MetadataExtractorTest extends ModuleTest {
     @BeforeAll
@@ -31,7 +34,8 @@ public class MetadataExtractorTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, with gaps";
@@ -56,7 +60,8 @@ public class MetadataExtractorTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, with gaps";
@@ -81,7 +86,8 @@ public class MetadataExtractorTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, %$, with gaps";
@@ -106,7 +112,8 @@ public class MetadataExtractorTest extends ModuleTest {
         testFile.createNewFile();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, with gaps";

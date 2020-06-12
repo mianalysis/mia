@@ -1,16 +1,21 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
-import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+
+import org.apache.commons.io.FilenameUtils;
+
+import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -89,7 +94,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
 
         if (module.getClass().isInstance(new InputControl(GUI.getModules()))) GUI.updateTestFile(true);
 

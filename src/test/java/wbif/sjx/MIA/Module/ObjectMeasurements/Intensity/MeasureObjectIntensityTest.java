@@ -23,6 +23,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 /**
@@ -44,7 +45,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun8bit3D(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -109,7 +111,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun16bit3D(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -174,7 +177,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRun32bit3D(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -244,7 +248,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testMeasureWeightedEdgeDistance2pxShellInside(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -288,7 +293,8 @@ public class MeasureObjectIntensityTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testMeasureWeightedEdgeDistance10pxShellOutside(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";

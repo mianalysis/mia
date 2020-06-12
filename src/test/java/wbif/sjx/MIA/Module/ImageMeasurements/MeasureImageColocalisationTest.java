@@ -18,6 +18,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class MeasureImageColocalisationTest extends ModuleTest {
@@ -91,7 +92,8 @@ public class MeasureImageColocalisationTest extends ModuleTest {
     @Test
     public void testMeasurePCCWholeImage() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -119,7 +121,8 @@ public class MeasureImageColocalisationTest extends ModuleTest {
     @Test
     public void testMeasurePCCMaskImage() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading images
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -261,7 +264,8 @@ public class MeasureImageColocalisationTest extends ModuleTest {
 //    @Test
 //    public void testMeasurePCCWholeImage() throws Exception {
 //        // Creating a new workspace
-//        Workspace workspace = new Workspace(0,null,1);
+//        WorkspaceCollection workspaces = new WorkspaceCollection();
+//        Workspace workspace = workspaces.getNewWorkspace(null,1);
 //
 //        // Loading images
 //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
@@ -289,7 +293,8 @@ public class MeasureImageColocalisationTest extends ModuleTest {
 //    @Test
 //    public void testMeasurePCCMaskImage() throws Exception {
 //        // Creating a new workspace
-//        Workspace workspace = new Workspace(0,null,1);
+//        WorkspaceCollection workspaces = new WorkspaceCollection();
+//        Workspace workspace = workspaces.getNewWorkspace(null,1);
 //
 //        // Loading images
 //        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");

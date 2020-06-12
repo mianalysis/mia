@@ -1,16 +1,20 @@
 package wbif.sjx.MIA.Object;
 
-import ij.ImagePlus;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.VolumeType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.ImagePlus;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 public class WorkspaceTest {
     @ParameterizedTest
@@ -22,7 +26,8 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and checking it is empty
-        Workspace workspace = new Workspace(0,null,0);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
         assertEquals(0,workspace.getObjects().size());
 
         // Creating and adding the new object
@@ -39,7 +44,8 @@ public class WorkspaceTest {
 
     @Test
     public void testClearAllImagesDoRetainMeasurements() {
-        Workspace workspace = new Workspace(0,null,0);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
@@ -74,7 +80,8 @@ public class WorkspaceTest {
 
     @Test
     public void testClearAllImagesDontRetainMeasurements() {
-        Workspace workspace = new Workspace(0,null,0);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Adding images
         ImagePlus imagePlus = new ImagePlus();
@@ -113,7 +120,8 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        Workspace workspace = new Workspace(0,null,0);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         Obj obj = new Obj(volumeType,"New obj",0,20,10,5,10,dppXY,dppZ,calibratedUnits);
         obj.add(12,5,2);
@@ -175,7 +183,8 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        Workspace workspace = new Workspace(0,null,0);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         Obj obj = new Obj(volumeType,"New obj",0,20,10,5,10,dppXY,dppZ,calibratedUnits);
         obj.add(12,5,2);
@@ -233,7 +242,8 @@ public class WorkspaceTest {
         String calibratedUnits = "µm";
 
         // Creating a new workspace and populating it with a set of objects
-        Workspace workspace = new Workspace(0,null,0);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         Obj obj = new Obj(volumeType,"New obj",0,20,10,5,10,dppXY,dppZ,calibratedUnits);
         obj.setT(0);

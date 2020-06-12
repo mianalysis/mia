@@ -39,7 +39,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testLinkMatchingIDsOneChild(VolumeType volumeType){
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -105,7 +106,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidLink(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -191,7 +193,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidLink20px(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -279,7 +282,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidResponse2D(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -325,7 +329,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void trial(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -367,7 +372,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceLink(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -427,7 +433,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceLink5px(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -490,7 +497,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceResponse2DInOut(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -537,7 +545,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceResponse2DIn(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -584,7 +593,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximitySurfaceResponse2DOut(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -631,7 +641,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceLink(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -689,7 +700,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceLink5px(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -752,7 +764,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceResponse2DInOut(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -806,7 +819,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceResponse2DIn(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -853,7 +867,8 @@ public class RelateObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testProximityCentroidSurfaceResponse2DOut(VolumeType volumeType) {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";

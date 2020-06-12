@@ -4,7 +4,14 @@
 
 package wbif.sjx.MIA;
 
-import net.imagej.ImageJ;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -15,17 +22,17 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import org.xml.sax.SAXException;
+
+import net.imagej.ImageJ;
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
-import wbif.sjx.MIA.Process.Logging.*;
+import wbif.sjx.MIA.Process.DependencyValidator;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
-import wbif.sjx.MIA.Process.DependencyValidator;
-
-import javax.swing.*;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.util.ArrayList;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
+import wbif.sjx.MIA.Process.Logging.BasicLogRenderer;
+import wbif.sjx.MIA.Process.Logging.ConsoleRenderer;
+import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 
 /**
@@ -106,8 +113,9 @@ public class MIA implements Command {
         }
 
         // Run the dependency validator.  If updates were required, return.
-        if (DependencyValidator.run()) return;
-
+        if (DependencyValidator.run())
+            return;
+    
         try {
             setLookAndFeel();
             new GUI();

@@ -12,6 +12,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.SpatCal;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
@@ -26,7 +27,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunPresentParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -83,7 +85,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunPresentParentMove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -143,7 +146,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunPresentParentRemove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -196,7 +200,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -249,7 +254,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParentMove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -309,7 +315,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParentRemove(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -361,7 +368,8 @@ public class FilterWithWithoutParentTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWithParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

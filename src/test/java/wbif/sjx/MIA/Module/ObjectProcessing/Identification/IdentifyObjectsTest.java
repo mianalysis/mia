@@ -1,12 +1,18 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
-import ij.IJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.IJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
@@ -17,11 +23,8 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Stephen Cross on 29/08/2017.
@@ -43,7 +46,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DPointList(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -92,7 +96,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DQuadTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -141,7 +146,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit2DOcTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -190,7 +196,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DPointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -239,7 +246,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DQuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -288,7 +296,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DOcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -337,7 +346,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DPointList(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -387,7 +397,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DQuadTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -437,7 +448,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit4DOcTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -496,7 +508,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledPointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -545,7 +558,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledQuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -594,7 +608,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DLabelledOcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -643,7 +658,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DPointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -692,7 +708,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DQuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -741,7 +758,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWhiteBackground8Bit3DOcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -790,7 +808,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectPointList(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -840,7 +859,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectQuadTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -890,7 +910,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DSingleObjectOcTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -940,7 +961,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectPointList(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -990,7 +1012,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectQuadTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -1040,7 +1063,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8bit3DLabelledSingleObjectOcTree(VolumeType volumeType) throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -1090,7 +1114,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DPointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),"UTF-8");
@@ -1139,7 +1164,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DQuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),"UTF-8");
@@ -1188,7 +1214,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DOcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),"UTF-8");
@@ -1237,7 +1264,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DPointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),"UTF-8");
@@ -1288,7 +1316,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DQuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),"UTF-8");
@@ -1339,7 +1368,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DOcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),"UTF-8");
@@ -1390,7 +1420,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255PointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),"UTF-8");
@@ -1439,7 +1470,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255QuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),"UTF-8");
@@ -1488,7 +1520,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground8Bit3DNot255OcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),"UTF-8");
@@ -1537,7 +1570,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535PointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),"UTF-8");
@@ -1586,7 +1620,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535QuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),"UTF-8");
@@ -1635,7 +1670,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground16Bit3DNot65535OcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),"UTF-8");
@@ -1684,7 +1720,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1PointList(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),"UTF-8");
@@ -1735,7 +1772,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1QuadTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),"UTF-8");
@@ -1786,7 +1824,8 @@ public class IdentifyObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunBlackBackground32Bit3DNot1OcTree(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),"UTF-8");

@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 /**
@@ -35,7 +36,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMeasurementsLargerThan(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -66,7 +68,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMeasurementsSmallerThan(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -97,7 +100,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingMeasurement(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -128,7 +132,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunObjectsOnImageEdge(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -157,7 +162,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunObjectsOnImageEdgeIgnoreZ(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -187,7 +193,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunObjectsOnImageEdgeIncludeZ(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -217,7 +224,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMinimumNumberOfChildren(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -267,7 +275,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMaximumNumberOfChildren(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -318,7 +327,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunMissingParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -364,7 +374,8 @@ public class FilterObjectsTest extends ModuleTest {
     @EnumSource(VolumeType.class)
     public void testRunWithParent(VolumeType volumeType) throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

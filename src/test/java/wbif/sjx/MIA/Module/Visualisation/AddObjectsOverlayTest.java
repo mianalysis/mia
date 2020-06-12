@@ -1,28 +1,30 @@
 package wbif.sjx.MIA.Module.Visualisation;
 
-import ij.IJ;
-import ij.ImageJ;
-import ij.ImagePlus;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.URLDecoder;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.IJ;
+import ij.ImageJ;
+import ij.ImagePlus;
 import wbif.sjx.MIA.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
+import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.common.Object.Volume.VolumeType;
-
-import java.net.URLDecoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class AddObjectsOverlayTest extends ModuleTest {
     @BeforeAll
@@ -66,7 +68,8 @@ public class AddObjectsOverlayTest extends ModuleTest {
         // THE OBJECTS FOR THIS TEST WILL NEED TO BE RE-CREATED - WE DON'T WANT OBJECTS SPANNING A 512 X 512 IMAGE
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
+        WorkspaceCollection workspaces = new WorkspaceCollection();
+        Workspace workspace = workspaces.getNewWorkspace(null,1);
         
         // Setting object parameters
         String inputObjectsName = "Test_objects";
