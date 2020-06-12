@@ -23,7 +23,8 @@ public class MIA_GetObjectIDs extends MacroOperation {
 
         // Getting the input objects
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-        
+        if (inputObjects == null) return "";
+                
         StringBuilder sb = new StringBuilder();
         for (Obj inputObject:inputObjects.values()){
             if (sb.length() == 0) {

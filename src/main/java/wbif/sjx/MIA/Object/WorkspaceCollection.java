@@ -98,9 +98,11 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
 
     public synchronized double getOverallProgress() {
         CumStat cs = new CumStat();
-        for (Workspace workspace:this) cs.addMeasure(workspace.getProgress());
+        for (Workspace workspace : this)
+            cs.addMeasure(workspace.getProgress());
 
-        return cs.getMean();
+        // Subtracting 1 from the total, so it doesn't hit 100% until exporting is done
+        return cs.getMean()-0.01;
 
     }
 }

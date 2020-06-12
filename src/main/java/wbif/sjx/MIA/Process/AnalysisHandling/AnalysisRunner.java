@@ -95,6 +95,7 @@ public class AnalysisRunner {
 
         // Exporting to Excel for WorkspaceCollection
         if ((outputControl.isExportAllTogether() || outputControl.isExportGroupedByMetadata()) && exporter != null) {
+            MIA.log.writeStatus("Exporting data");
             File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH));
             String name = outputControl.getGroupOutputPath(outputFile);
             exporter.export(workspaces, analysis, name);
@@ -105,6 +106,7 @@ public class AnalysisRunner {
 
         // Cleaning up
         MIA.log.writeStatus("Complete!");
+        GUI.updateProgressBar(100);
 
     }
 

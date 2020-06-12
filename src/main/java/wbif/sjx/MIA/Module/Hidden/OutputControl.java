@@ -258,6 +258,7 @@ public class OutputControl extends Module {
             return;
         }
         
+        MIA.log.writeStatus("Running post-processing macro");
         String macroMode = parameters.getValue(MACRO_MODE);
         String macroText = parameters.getValue(MACRO_TEXT);
         String macroFile = parameters.getValue(MACRO_FILE);
