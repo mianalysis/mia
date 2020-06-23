@@ -400,7 +400,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             countZ++;
         }
 
-        ipl = ipl.duplicate();
+        // ipl = ipl.duplicate();
 
         // Applying LUTs
         HashMap<Integer, LUT> luts = getLUTs(meta, seriesNumber - 1);

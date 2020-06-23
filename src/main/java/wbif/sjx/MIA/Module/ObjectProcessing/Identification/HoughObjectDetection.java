@@ -231,7 +231,7 @@ public class HoughObjectDetection extends Module {
                 AddLabels.addOverlay(dispIpl,outputObjects,AddLabels.LabelPositions.CENTRE,IDs,labelSize,0,0,hues,100,false,false,true);
             }
 
-            AddObjectOutline.addOverlay(dispIpl,outputObjects,1,hues,100,false,true);
+            AddObjectOutline.addOverlay(dispIpl,outputObjects,1,1,hues,100,false,true);
 
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
