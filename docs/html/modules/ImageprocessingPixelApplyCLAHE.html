@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modules.html" class="nav1">Modules</a>
+    <a href="../modulelist.html" class="nav2">List of modules</a>
+    <a href="../macros.html" class="nav1">Macros</a>
+    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Apply CLAHE</h1>
+<h2>Description</h2>
+Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  See https://imagej.net/Enhance_Local_Contrast_(CLAHE)
+<h2>Parameters</h2>
+<ul><li>Input image<ul><li>Description: Image to apply CLAHE to.</li><li>Type: InputImageP</li></ul><br><li>Apply to input image<ul><li>Description: Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</li><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Output image<ul><li>Description: Name of the output image created during the CLAHE process.  This image will be added to the workspace.</li><li>Type: OutputImageP</li></ul><br><li>Blocksize<ul><li>Type: IntegerP</li><li>Default value: 127</li></ul><br><li>Histogram bins<ul><li>Type: IntegerP</li><li>Default value: 256</li></ul><br><li>Maximum slope<ul><li>Type: DoubleP</li><li>Default value: 3.0</li></ul><br><li>Use mask<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Mask image<ul><li>Type: InputImageP</li></ul><br><li>Fast (less accurate)<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Enable multithreading<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br></ul>
+
+</div>
+</body>
