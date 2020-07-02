@@ -17,10 +17,15 @@ public class ChoiceP extends ChoiceType {
     }
 
     public ChoiceP(String name, Module module, @Nonnull String choice, @Nonnull String[] choices, String description) {
-        super(name,module,description);
+        super(name, module, description);
         this.choice = choice;
         this.choices = choices;
 
+    }
+
+    public void setChoices(String[] choices) {
+        this.choices = choices;
+        
     }
 
     @Override

@@ -1,15 +1,16 @@
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
-import ij.measure.ResultsTable;
-import org.apache.commons.lang3.math.NumberUtils;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
+import ij.measure.ResultsTable;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 public abstract class CoreMacroRunner extends Module {
     protected CoreMacroRunner(String name, ModuleCollection modules) {
@@ -23,8 +24,8 @@ public abstract class CoreMacroRunner extends Module {
     public static LinkedHashMap<String,String> inputVariables(ParameterGroup group, String nameHeading, String valueHeading) {
         LinkedHashMap<String,String> variables = new LinkedHashMap<>();
 
-        LinkedHashSet<ParameterCollection> collections = group.getCollections();
-        for (ParameterCollection collection:collections) {
+        LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
+        for (ParameterCollection collection:collections.values()) {
             String name = collection.getValue(nameHeading);
             String value = collection.getValue(valueHeading);
             variables.put(name,value);
@@ -62,8 +63,8 @@ public abstract class CoreMacroRunner extends Module {
     public static LinkedHashSet<String> expectedMeasurements(ParameterGroup group,String measurementHeading) {
         LinkedHashSet<String> addedMeasurements = new LinkedHashSet<>();
 
-        LinkedHashSet<ParameterCollection> collections = group.getCollections();
-        for (ParameterCollection collection:collections) {
+        LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
+        for (ParameterCollection collection:collections.values()) {
             String heading = collection.getValue(measurementHeading);
             addedMeasurements.add(heading);
         }

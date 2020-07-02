@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import javax.swing.BorderFactory;
@@ -215,14 +216,15 @@ public class ParametersPanel extends JScrollPane {
 
     public void addAdvancedParameterGroup(ParameterGroup group, Module module, GridBagConstraints c) {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
-        LinkedHashSet<ParameterCollection> collections = group.getCollections();
+        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(true);
 
-        for (ParameterCollection collection:collections) {
+        for (int collectionIdx : collections.keySet()) {
+            ParameterCollection collection = collections.get(collectionIdx);
             // Adding the individual parameters
             for (Parameter parameter:collection.values()) addAdvancedParameterControl(parameter,c);
 
             c.gridy++;
-            RemoveParameters removeParameters = new RemoveParameters("Remove",module,group,collection);
+            RemoveParameters removeParameters = new RemoveParameters("Remove",module,group,collectionIdx);
             addAdvancedParameterControl(removeParameters,c);
 
             c.gridy++;

@@ -246,8 +246,11 @@ public class GUIAnalysisHandler {
 //            // Creating a new copy of the copyModules to paste in
 //            ModuleCollection pasteModules = copyModules.duplicate();
 
-            // Ensuring the copied modules are linked to the present ModuleCollection
-            for (Module module:pasteModules.values()) module.setModules(modules);
+            // Ensuring the copied modules are linked to the present ModuleCollection and have a unique ID
+            for (Module module : pasteModules.values()) {
+                module.setModules(modules);
+                module.setModuleID(String.valueOf(System.currentTimeMillis()));
+            }
 
             // Adding the new modules
             modules.insert(pasteModules,toIdx);

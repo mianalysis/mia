@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import ij.ImagePlus;
@@ -28,6 +29,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -252,10 +254,10 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Creating a collection of images
-        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
         Image[] inputImages = new Image[collections.size()];
         int i=0;
-        for (ParameterCollection collection:collections) {
+        for (ParameterCollection collection:collections.values()) {
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
         }
 

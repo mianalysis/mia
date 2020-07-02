@@ -127,8 +127,8 @@
 //        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
 //
 //        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-//        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
-//        for (ParameterCollection collection:collections) {
+//        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections();
+//        for (ParameterCollection collection:collections.values()) {
 //            ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 //        }
 //

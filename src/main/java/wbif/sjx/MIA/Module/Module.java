@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.w3c.dom.Element;
@@ -52,7 +53,6 @@ public abstract class Module extends Ref implements Comparable {
     private boolean runnable = true;
     protected boolean showOutput = false;
     protected Module redirectModule = null; // After this module, can redirect to another module
-
     // CONSTRUCTOR
 
     public Module(String name, ModuleCollection modules) {
@@ -235,8 +235,8 @@ public abstract class Module extends Ref implements Comparable {
 
     public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
-        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
-        for (ParameterCollection collection : collections) {
+        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections(false);
+        for (ParameterCollection collection : collections.values()) {
             for (Parameter currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {
                     parameters.add((T) currParameter);

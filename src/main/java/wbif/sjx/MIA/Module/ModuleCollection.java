@@ -4,6 +4,7 @@
 
 package wbif.sjx.MIA.Module;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
@@ -32,6 +33,7 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     public Module getModuleByID(String ID) {
         for (Module module : this) {
+            MIA.log.writeDebug(module.getName()+"_"+module.getModuleID()+"_"+ID);
             if (module.getModuleID().equals(ID))
                 return module;
         }

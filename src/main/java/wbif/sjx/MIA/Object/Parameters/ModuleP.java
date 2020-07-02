@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.ParameterControls.ModuleChoiceParameter;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;

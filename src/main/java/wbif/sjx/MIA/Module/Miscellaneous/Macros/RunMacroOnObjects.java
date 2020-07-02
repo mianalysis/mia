@@ -1,5 +1,9 @@
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -8,16 +12,30 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FilePathP;
+import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
-import wbif.sjx.MIA.Object.References.*;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 /**
  * Created by sc13967 on 31/01/2018.

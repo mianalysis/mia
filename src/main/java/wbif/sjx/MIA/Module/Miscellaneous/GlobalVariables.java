@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -135,8 +135,8 @@ public class GlobalVariables extends Module {
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
         if (group == null) return parameters;
 
-        LinkedHashSet<ParameterCollection> collections = group.getCollections();
-        for (ParameterCollection collection:collections) {
+        LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
+        for (ParameterCollection collection:collections.values()) {
             globalParameters.put(collection.getValue(VARIABLE_NAME),collection.getValue(VARIABLE_VALUE));
         }
 
