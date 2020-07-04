@@ -194,7 +194,7 @@ public class ThresholdImage extends Module {
         if (globalZ) {
             localRadiusZ = inputImagePlus.getNSlices()/2;
         } else {
-            localRadiusZ = localRadius*inputImagePlus.getCalibration().getX(1) / inputImagePlus.getCalibration().getZ(1);
+            localRadiusZ = localRadius*inputImagePlus.getCalibration().pixelWidth / inputImagePlus.getCalibration().pixelDepth;
         }
 
         AutoLocalThreshold3D alt3D = new AutoLocalThreshold3D();

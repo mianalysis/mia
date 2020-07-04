@@ -72,6 +72,7 @@ public class AddContourLines extends Module {
     public interface ColourModes {
         String BLACK_FIRE = "Black fire";
         String ICE = "Ice";
+        String JET = "Jet";
         String PHYSICS = "Physics";
         String RANDOM = "Random";
         String SINGLE_COLOUR_GRADIENT = "Single colour gradient";
@@ -79,8 +80,8 @@ public class AddContourLines extends Module {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, SPECTRUM,
-                THERMAL };
+        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, 
+                SPECTRUM, THERMAL };
 
     }
 
@@ -123,6 +124,9 @@ public class AddContourLines extends Module {
             case ColourModes.RANDOM:
                 cm = LUTs.Random(false).getColorModel();
                 break;
+            case ColourModes.JET:
+                cm = LUTs.Jet().getColorModel();
+                break;
             case ColourModes.SPECTRUM:
                 cm = LUTs.Spectrum().getColorModel();
                 break;
@@ -141,6 +145,7 @@ public class AddContourLines extends Module {
                 case ColourModes.ICE:
                 case ColourModes.PHYSICS:
                 case ColourModes.RANDOM:
+                case ColourModes.JET:
                 case ColourModes.SPECTRUM:
                 case ColourModes.THERMAL:
                     colours.put(level, new Color(cm.getRed(idx), cm.getGreen(idx), cm.getBlue(idx)));
@@ -397,8 +402,8 @@ public class AddContourLines extends Module {
 
     }
 
-    public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos,
-            String label, Color colour, int labelSize, ArrayList<Integer> labelRegion) {
+    public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos, String label,
+            Color colour, int labelSize, ArrayList<Integer> labelRegion) {
 
         // If no label region was specified, don't add a label
         if (labelRegion.size() == 0)

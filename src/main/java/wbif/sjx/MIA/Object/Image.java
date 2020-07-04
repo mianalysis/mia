@@ -91,8 +91,8 @@ public class Image <T extends RealType<T> & NativeType<T>> {
 
     public ObjCollection convertImageToObjects(String type, String outputObjectsName, boolean singleObject) {
         // Getting spatial calibration
-        double dppXY = imagePlus.getCalibration().getX(1);
-        double dppZ = imagePlus.getCalibration().getZ(1);
+        double dppXY = imagePlus.getCalibration().pixelWidth;
+        double dppZ = imagePlus.getCalibration().pixelDepth;
         String units = imagePlus.getCalibration().getUnits();
         ImageProcessor ipr = imagePlus.getProcessor();
 

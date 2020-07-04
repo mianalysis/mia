@@ -142,7 +142,7 @@ public class EvalButton extends JButton implements ActionListener {
                 while (idx > GUI.getLastModuleEval()) {
                     int i = GUI.getLastModuleEval() + 1;
                     Module module = GUI.getModules().get(i);
-                    if (module.isEnabled() && module.isRunnable())
+                    if (module.isEnabled() && module.isRunnable()) {
                         try {
                             if (!evaluateModule(module)) {
                                 GUI.updateModuleStates(false);
@@ -154,6 +154,9 @@ public class EvalButton extends JButton implements ActionListener {
                             e1.printStackTrace();
                             break;
                         }
+                    } else {
+                        GUI.setLastModuleEval(GUI.getLastModuleEval() + 1);
+                    }
                 }
             });
             t.start();

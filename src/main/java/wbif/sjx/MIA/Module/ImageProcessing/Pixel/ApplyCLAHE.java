@@ -6,13 +6,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import mpicbg.ij.clahe.Flat;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -40,6 +40,7 @@ public class ApplyCLAHE extends Module {
 
     public static final String CLAHE_SEPARATOR = "CLAHE controls";
     public static final String BLOCK_SIZE = "Blocksize";
+    public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String HISTOGRAM_BINS = "Histogram bins";
     public static final String MAXIMUM_SLOPE = "Maximum slope";
     public static final String USE_MASK = "Use mask";
@@ -104,7 +105,8 @@ public class ApplyCLAHE extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        int blockSize = parameters.getValue(BLOCK_SIZE);
+        double blockSize = parameters.getValue(BLOCK_SIZE);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         int histogramBins = parameters.getValue(HISTOGRAM_BINS);
         float maxSlope = ((Double) parameters.getValue(MAXIMUM_SLOPE)).floatValue();
         boolean useMask = parameters.getValue(USE_MASK);
@@ -112,7 +114,12 @@ public class ApplyCLAHE extends Module {
         boolean fastMode = parameters.getValue(FAST_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        int blockRadius = (blockSize - 1) / 2;
+        if (calibratedUnits) {
+            double dppXY = inputImagePlus.getCalibration().pixelWidth;
+            blockSize = blockSize / dppXY;
+        }
+            
+        int blockRadius = (((int) Math.round(blockSize)) - 1) / 2;
         histogramBins--;
 
         // If applying to a new image, the input image is duplicated
@@ -155,7 +162,9 @@ public class ApplyCLAHE extends Module {
                 "Name of the output image created during the CLAHE process.  This image will be added to the workspace."));
 
         parameters.add(new ParamSeparatorP(CLAHE_SEPARATOR, this));
-        parameters.add(new IntegerP(BLOCK_SIZE, this, 127));
+        parameters.add(new DoubleP(BLOCK_SIZE, this, 127));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,
+                "Choose if block size is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\"."));
         parameters.add(new IntegerP(HISTOGRAM_BINS, this, 256));
         parameters.add(new DoubleP(MAXIMUM_SLOPE, this, 3d));
         parameters.add(new BooleanP(USE_MASK, this, false));
@@ -181,6 +190,7 @@ public class ApplyCLAHE extends Module {
 
         returnedParameters.add(parameters.getParameter(CLAHE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(BLOCK_SIZE));
+        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(HISTOGRAM_BINS));
         returnedParameters.add(parameters.getParameter(MAXIMUM_SLOPE));
         returnedParameters.add(parameters.getParameter(USE_MASK));

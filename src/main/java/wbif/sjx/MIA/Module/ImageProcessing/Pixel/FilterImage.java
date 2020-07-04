@@ -416,7 +416,7 @@ public class FilterImage extends Module {
         parameters.add(new DoubleP(FILTER_RADIUS, this, 2d,
                 "Range the filter is calculated over.  Often also referred to as \"sigma\".  Value specified in pixel units, unless \"calibrated units\" is enabled."));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,
-                "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\" units.  What units are used are controlled from \"Input control\"."));
+                "Choose if filter radius is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\"."));
         parameters.add(new ChoiceP(ROLLING_METHOD, this, RollingMethods.AVERAGE, RollingMethods.ALL,
                 "Statistic to apply for rolling frame filtering."));
         parameters.add(new IntegerP(WINDOW_HALF_WIDTH, this, 1,

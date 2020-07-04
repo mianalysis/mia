@@ -130,9 +130,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -176,9 +176,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -222,9 +222,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -274,9 +274,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.5,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.5,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.2,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.5,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.5,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.2,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -324,9 +324,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -430,9 +430,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -536,9 +536,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(3,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -642,9 +642,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(2,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
 
     }
 
@@ -688,9 +688,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(6,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(5.55,image.getImagePlus().getCalibration().getX(1),1E-2);
-        assertEquals(5.55,image.getImagePlus().getCalibration().getY(1),1E-2);
-        assertEquals(2.00,image.getImagePlus().getCalibration().getZ(1),1E-2);
+        assertEquals(5.55,image.getImagePlus().getCalibration().pixelWidth,1E-2);
+        assertEquals(5.55,image.getImagePlus().getCalibration().pixelHeight,1E-2);
+        assertEquals(2.00,image.getImagePlus().getCalibration().pixelDepth,1E-2);
 
     }
 
@@ -770,9 +770,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(4,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.5,image.getImagePlus().getCalibration().getX(1),1E-2);
-        assertEquals(0.5,image.getImagePlus().getCalibration().getY(1),1E-2);
-        assertEquals(1.2,image.getImagePlus().getCalibration().getZ(1),1E-2);
+        assertEquals(0.5,image.getImagePlus().getCalibration().pixelWidth,1E-2);
+        assertEquals(0.5,image.getImagePlus().getCalibration().pixelHeight,1E-2);
+        assertEquals(1.2,image.getImagePlus().getCalibration().pixelDepth,1E-2);
 
     }
 
@@ -820,9 +820,9 @@ public class ImageLoaderTest extends ModuleTest {
         String calibratedUnits = "nm";
 
         // Checking the image has the expected calibration
-        assertEquals(dppXY,image.getImagePlus().getCalibration().getX(1),1E-2);
-        assertEquals(dppXY,image.getImagePlus().getCalibration().getY(1),1E-2);
-        assertEquals(dppZ,image.getImagePlus().getCalibration().getZ(1),1E-2);
+        assertEquals(dppXY,image.getImagePlus().getCalibration().pixelWidth,1E-2);
+        assertEquals(dppXY,image.getImagePlus().getCalibration().pixelHeight,1E-2);
+        assertEquals(dppZ,image.getImagePlus().getCalibration().pixelDepth,1E-2);
         assertEquals(calibratedUnits,image.getImagePlus().getCalibration().getUnits());
 
         // Need to return calibration to microns, else the other tests may fail
@@ -874,9 +874,9 @@ public class ImageLoaderTest extends ModuleTest {
         String calibratedUnits = "mm";
 
         // Checking the image has the expected calibration
-        assertEquals(dppXY,image.getImagePlus().getCalibration().getX(1),1E-2);
-        assertEquals(dppXY,image.getImagePlus().getCalibration().getY(1),1E-2);
-        assertEquals(dppZ,image.getImagePlus().getCalibration().getZ(1),1E-2);
+        assertEquals(dppXY,image.getImagePlus().getCalibration().pixelWidth,1E-2);
+        assertEquals(dppXY,image.getImagePlus().getCalibration().pixelHeight,1E-2);
+        assertEquals(dppZ,image.getImagePlus().getCalibration().pixelDepth,1E-2);
         assertEquals(calibratedUnits,image.getImagePlus().getCalibration().getUnits());
 
         // Need to return calibration to microns, else the other tests may fail
@@ -925,9 +925,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(12,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
     }
 
     @Test
@@ -971,9 +971,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
     }
 
     @Test
@@ -1017,9 +1017,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(4,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
     }
 
     @Test
@@ -1063,9 +1063,9 @@ public class ImageLoaderTest extends ModuleTest {
         assertEquals(1,image.getImagePlus().getNFrames());
 
         // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().getX(1),1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().getY(1),1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().getZ(1),1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
     }
 
     @Test
