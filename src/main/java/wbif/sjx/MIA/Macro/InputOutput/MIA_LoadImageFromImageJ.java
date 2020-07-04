@@ -24,7 +24,7 @@ public class MIA_LoadImageFromImageJ extends MacroOperation {
         // Updating parameters
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,(String) objects[0]);
         imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE,ImageLoader.ImportModes.IMAGEJ);
-        imageLoader.updateParameterValue(ImageLoader.NUMBER_OF_ZEROES,0);
+        imageLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME,"");
         imageLoader.updateParameterValue(ImageLoader.NAME_FORMAT,ImageLoader.NameFormats.HUYGENS);
         imageLoader.updateParameterValue(ImageLoader.COMMENT,"");
         imageLoader.updateParameterValue(ImageLoader.EXTENSION,"");
