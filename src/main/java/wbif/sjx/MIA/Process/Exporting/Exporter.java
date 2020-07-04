@@ -296,8 +296,8 @@ public class Exporter {
 
             // If this parameter is a ParameterGroup, also list those parameters
             if (currParam instanceof ParameterGroup) {
-                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
-                for (ParameterCollection collection:collections) rowIdx = appendModuleParameters(sheet,null,collection,rowIdx);
+                LinkedHashMap<Integer,ParameterCollection> collections = ((ParameterGroup) currParam).getCollections(false);
+                for (ParameterCollection collection:collections.values()) rowIdx = appendModuleParameters(sheet,null,collection,rowIdx);
             }
         }
 

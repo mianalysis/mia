@@ -4,6 +4,7 @@
 
 package wbif.sjx.MIA.Module;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;

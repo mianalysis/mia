@@ -1,18 +1,22 @@
 package wbif.sjx.MIA.Module.Hidden;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 public class WorkflowParameters extends Module {
     public static final String GLOBAL_VARIABLES_SEPARATOR = "Global variables";
@@ -36,9 +40,9 @@ public class WorkflowParameters extends Module {
 
             // Iterating over all parameters, finding the one with the matching name
             ParameterGroup group = getParameter(ADD_NEW_VARIABLE);
-            LinkedHashSet<ParameterCollection> collections = group.getCollections();
+            LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
 
-            for (ParameterCollection collection:collections) {
+            for (ParameterCollection collection:collections.values()) {
                 String name = collection.getValue(VARIABLE_NAME);
                 if (name.equals(metadataName)) {
                     String value = collection.getValue(VARIABLE_VALUE);
@@ -61,10 +65,10 @@ public class WorkflowParameters extends Module {
 
             // Iterating over all parameters, finding the one with the matching name
             ParameterGroup group = getParameter(ADD_NEW_VARIABLE);
-            LinkedHashSet<ParameterCollection> collections = group.getCollections();
+            LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
 
             boolean found = false;
-            for (ParameterCollection collection:collections) {
+            for (ParameterCollection collection:collections.values()) {
                 String name = collection.getValue(VARIABLE_NAME);
                 if (name.equals(metadataName)) {
                     found = true;
@@ -149,5 +153,4 @@ public class WorkflowParameters extends Module {
     public boolean verify() {
         return true;
     }
-
 }

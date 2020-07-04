@@ -10,12 +10,12 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
  */
 public class RemoveParameters extends Parameter {
     private ParameterGroup group;
-    private ParameterCollection collection;
+    private int collectionIndex;
 
-    public RemoveParameters(String name, Module module, ParameterGroup group, ParameterCollection collection) {
+    public RemoveParameters(String name, Module module, ParameterGroup group, int collectionIndex) {
         super(name, module);
         this.group = group;
-        this.collection = collection;
+        this.collectionIndex = collectionIndex;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class RemoveParameters extends Parameter {
         return group;
     }
 
-    public ParameterCollection getCollection() {
-        return collection;
+    public int getCollectionIndex() {
+        return collectionIndex;
     }
 }

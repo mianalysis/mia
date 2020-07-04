@@ -62,12 +62,13 @@ public class SetLookupTable extends Module {
         String YELLOW = "Yellow";
         String FIRE = "Fire";
         String ICE = "Ice";
+        String JET = "Jet";
         String PHYSICS = "Physics";
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
         String RANDOM = "Random";
 
-        String[] ALL = new String[] { GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE, ICE, PHYSICS, SPECTRUM,
+        String[] ALL = new String[] { GREY, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, FIRE, ICE, JET, PHYSICS, SPECTRUM,
                 THERMAL, RANDOM };
 
     }
@@ -93,6 +94,8 @@ public class SetLookupTable extends Module {
                 return LUTs.BlackFire();
             case LookupTables.ICE:
                 return LUTs.Ice();
+            case LookupTables.JET:
+                return LUTs.Jet();
             case LookupTables.PHYSICS:
                 return LUTs.Physics();
             case LookupTables.SPECTRUM:

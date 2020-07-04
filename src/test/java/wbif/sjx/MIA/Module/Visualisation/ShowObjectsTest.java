@@ -73,9 +73,9 @@ public class ShowObjectsTest extends ModuleTest {
         assertEquals(1,testImagePlus.getNChannels());
 
         // Testing the spatial calibration of the new image
-        assertEquals(0.02,testImagePlus.getCalibration().getX(1),tolerance);
-        assertEquals(0.02,testImagePlus.getCalibration().getY(1),tolerance);
-        assertEquals(0.1,testImagePlus.getCalibration().getZ(1),tolerance);
+        assertEquals(0.02,testImagePlus.getCalibration().pixelWidth,tolerance);
+        assertEquals(0.02,testImagePlus.getCalibration().pixelHeight,tolerance);
+        assertEquals(0.1,testImagePlus.getCalibration().pixelDepth,tolerance);
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {

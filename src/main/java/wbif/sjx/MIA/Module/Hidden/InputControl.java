@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Module.Hidden;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
@@ -18,7 +18,6 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.Colours;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -120,10 +119,10 @@ public class InputControl extends Module {
 
     public void addFilenameFilters(FileCrawler fileCrawler) {
         // Getting filters
-        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_FILTER);
 
         // Iterating over each filter
-        for (ParameterCollection collection : collections) {
+        for (ParameterCollection collection : collections.values()) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);
@@ -227,8 +226,8 @@ public class InputControl extends Module {
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
-        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
-        for (ParameterCollection collection : collections) {
+        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+        for (ParameterCollection collection : collections.values()) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
             String filterValue = collection.getValue(FILTER_VALUE);

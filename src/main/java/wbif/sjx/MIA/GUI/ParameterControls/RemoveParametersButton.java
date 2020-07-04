@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
 
 /**
@@ -42,7 +43,7 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        parameter.getGroup().removeCollection(parameter.getCollection());
+        parameter.getGroup().removeCollection(parameter.getCollectionIndex());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);

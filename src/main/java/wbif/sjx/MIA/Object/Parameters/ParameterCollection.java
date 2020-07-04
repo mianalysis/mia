@@ -55,7 +55,7 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
             if (parameter.isVisible()) return true;
 
             if (parameter instanceof ParameterGroup) {
-                for (ParameterCollection collection:((ParameterGroup) parameter).getCollections()) {
+                for (ParameterCollection collection:((ParameterGroup) parameter).getCollections(true).values()) {
                     if (collection.hasVisibleParameters()) return true;
                 }
             }

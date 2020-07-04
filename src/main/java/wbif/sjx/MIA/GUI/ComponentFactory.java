@@ -8,7 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -331,8 +331,8 @@ public class ComponentFactory {
     private void addParameters(Module module, ParameterCollection parameters, JPanel modulePanel, GridBagConstraints c, boolean editable) {
         for (Parameter parameter : parameters.values()) {
             if (parameter.getClass() == ParameterGroup.class) {
-                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) parameter).getCollections();
-                for (ParameterCollection collection:collections) addParameters(module,collection,modulePanel,c,editable);
+                LinkedHashMap<Integer,ParameterCollection> collections = ((ParameterGroup) parameter).getCollections(true);
+                for (ParameterCollection collection:collections.values()) addParameters(module,collection,modulePanel,c,editable);
 
             }
 

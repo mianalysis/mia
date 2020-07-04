@@ -1,8 +1,16 @@
 package wbif.sjx.MIA.Module.Miscellaneous.Macros;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
+import ij.Prefs;
+import ij.WindowManager;
 import ij.plugin.Duplicator;
+import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -15,16 +23,19 @@ import wbif.sjx.MIA.Object.References.*;
  * Created by sc13967 on 31/01/2018.
  */
 public class RunSingleMacroCommand extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String MACRO_SEPARATOR = "Macro controls";
     public static final String MACRO_TITLE = "Macro title";
     public static final String ARGUMENTS = "Parameters";
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public RunSingleMacroCommand(ModuleCollection modules) {
         super("Run single macro command", modules);
     }
-
 
     @Override
     public String getPackageName() {
@@ -34,6 +45,33 @@ public class RunSingleMacroCommand extends Module {
     @Override
     public String getDescription() {
         return "";
+    }
+
+    public void runMacroMultithreaded(ImagePlus inputImagePlus, String macroTitle, String arguments) {
+        // Setting up multithreading
+        int nThreads = Prefs.getThreads();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+
+        // Applying the macro
+        ImageStack ist = inputImagePlus.getStack();
+        for (int i = 0; i < ist.size(); i++) {
+            ImageProcessor ipr = ist.getProcessor(i + 1);
+            ImagePlus ipl = new ImagePlus("Temp", ipr);
+            Runnable task = () -> {
+                IJ.run(ipl, macroTitle, arguments);
+            };
+            pool.submit(task);
+        }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        inputImagePlus.updateChannelAndDraw();
     }
 
     @Override
@@ -48,20 +86,28 @@ public class RunSingleMacroCommand extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String macroTitle = parameters.getValue(MACRO_TITLE);
         String arguments = parameters.getValue(ARGUMENTS);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
+        if (!applyToInput) {
+            inputImagePlus = new Duplicator().run(inputImagePlus);
+        }
 
-        // Applying the macro
-        IJ.run(inputImagePlus,macroTitle,arguments);
+        if (multithread) {
+            runMacroMultithreaded(inputImagePlus, macroTitle, arguments);
+        } else {
+            IJ.run(inputImagePlus, macroTitle, arguments);
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput)
+                outputImage.showImage();
         } else {
-            if (showOutput) inputImage.showImage();
+            if (showOutput)
+                inputImage.showImage();
         }
 
         return Status.PASS;
@@ -70,17 +116,22 @@ public class RunSingleMacroCommand extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new StringP(MACRO_TITLE,this));
-        parameters.add(new StringP(ARGUMENTS,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ParamSeparatorP(MACRO_SEPARATOR, this));
+        parameters.add(new StringP(MACRO_TITLE, this));
+        parameters.add(new StringP(ARGUMENTS, this));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -88,8 +139,12 @@ public class RunSingleMacroCommand extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_TITLE));
         returnedParameters.add(parameters.getParameter(ARGUMENTS));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 

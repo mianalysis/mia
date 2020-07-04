@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 
 import javax.annotation.Nonnull;
 
@@ -24,8 +24,8 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.ImageRendering.SetLookupTable;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -86,10 +86,10 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
     }
 
-    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace, LinkedHashSet<ParameterCollection> collections) {
+    static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace, LinkedHashMap<Integer,ParameterCollection> collections) {
         ArrayList<Image<T>> available = new ArrayList<>();
 
-        for (ParameterCollection collection:collections) {
+        for (ParameterCollection collection:collections.values()) {
             Image image = workspace.getImage(collection.getValue(INPUT_IMAGE));
             if (image != null) available.add(image);
         }
@@ -320,7 +320,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         String axisMode = parameters.getValue(AXIS_MODE);
 
         // Creating a collection of images
-        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
         ArrayList<Image<T>> inputImages = getAvailableImages(workspace,collections);
 
         if (!allowMissingImages && collections.size() != inputImages.size()) {
@@ -363,8 +363,8 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     public ParameterCollection updateAndGetParameters() {
         boolean allowMissingImages = parameters.getValue(ALLOW_MISSING_IMAGES);
 
-        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        for (ParameterCollection collection:collections) {
+        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        for (ParameterCollection collection:collections.values()) {
             CustomInputImageP parameter = collection.getParameter(INPUT_IMAGE);
             parameter.setAllowMissingImages(allowMissingImages);
         }
@@ -423,19 +423,23 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         @Override
         public boolean verify() {
-            if (allowMissingImages) return true;
-            else return super.verify();
+            if (allowMissingImages)
+                return true;
+            else
+                return super.verify();
         }
 
         @Override
         public boolean isValid() {
-            if (allowMissingImages) return true;
-            else return super.isValid();
+            if (allowMissingImages)
+                return true;
+            else
+                return super.isValid();
         }
 
         @Override
         public <T extends Parameter> T duplicate(Module newModule) {
-            CustomInputImageP newParameter = new CustomInputImageP(name,module,getImageName(),getDescription());
+            CustomInputImageP newParameter = new CustomInputImageP(name, module, getImageName(), getDescription());
 
             newParameter.setNickname(getNickname());
             newParameter.setVisible(isVisible());

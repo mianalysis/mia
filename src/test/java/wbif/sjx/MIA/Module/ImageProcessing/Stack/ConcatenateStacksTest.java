@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -52,8 +52,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -96,8 +96,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -140,8 +140,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -184,8 +184,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -228,8 +228,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -275,8 +275,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -319,8 +319,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -363,8 +363,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -407,8 +407,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -451,8 +451,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -498,8 +498,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -542,8 +542,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -586,8 +586,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -630,8 +630,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -674,8 +674,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -718,8 +718,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -762,8 +762,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -806,8 +806,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -850,8 +850,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -894,8 +894,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -938,8 +938,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -985,8 +985,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1029,8 +1029,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1073,8 +1073,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1117,8 +1117,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1161,8 +1161,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1208,8 +1208,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1252,8 +1252,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Y);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1296,8 +1296,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.CHANNEL);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1340,8 +1340,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.Z);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1384,8 +1384,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.TIME);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1431,8 +1431,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1475,8 +1475,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
@@ -1519,8 +1519,8 @@ public class ConcatenateStacksTest extends ModuleTest {
         concatenateStacks.updateParameterValue(ConcatenateStacks.OUTPUT_IMAGE,"Test_output");
         concatenateStacks.updateParameterValue(ConcatenateStacks.AXIS_MODE, ConcatenateStacks.AxisModes.X);
 
-        LinkedHashSet<ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
-        Iterator<ParameterCollection> iterator = parameterCollections.iterator();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = concatenateStacks.getParameterValue(ConcatenateStacks.ADD_INPUT_IMAGE);
+        Iterator<ParameterCollection> iterator = parameterCollections.values().iterator();
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image1");
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 

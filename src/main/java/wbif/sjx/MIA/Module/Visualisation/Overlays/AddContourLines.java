@@ -41,6 +41,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.LUTs;
 
@@ -62,6 +63,8 @@ public class AddContourLines extends Module {
 
     public static final String LABEL_SEPARATOR = "Label rendering";
     public static final String SHOW_LABELS = "Show labels";
+    public static final String DECIMAL_PLACES = "Decimal places";
+    public static final String USE_SCIENTIFIC = "Use scientific notation";
     public static final String LABEL_COLOUR_MODE = "Label colour mode";
     public static final String LABEL_COLOUR = "Label colour";
     public static final String LABEL_SIZE = "Label size";
@@ -69,6 +72,7 @@ public class AddContourLines extends Module {
     public interface ColourModes {
         String BLACK_FIRE = "Black fire";
         String ICE = "Ice";
+        String JET = "Jet";
         String PHYSICS = "Physics";
         String RANDOM = "Random";
         String SINGLE_COLOUR_GRADIENT = "Single colour gradient";
@@ -76,8 +80,8 @@ public class AddContourLines extends Module {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, SPECTRUM,
-                THERMAL };
+        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, 
+                SPECTRUM, THERMAL };
 
     }
 
@@ -120,6 +124,9 @@ public class AddContourLines extends Module {
             case ColourModes.RANDOM:
                 cm = LUTs.Random(false).getColorModel();
                 break;
+            case ColourModes.JET:
+                cm = LUTs.Jet().getColorModel();
+                break;
             case ColourModes.SPECTRUM:
                 cm = LUTs.Spectrum().getColorModel();
                 break;
@@ -138,6 +145,7 @@ public class AddContourLines extends Module {
                 case ColourModes.ICE:
                 case ColourModes.PHYSICS:
                 case ColourModes.RANDOM:
+                case ColourModes.JET:
                 case ColourModes.SPECTRUM:
                 case ColourModes.THERMAL:
                     colours.put(level, new Color(cm.getRed(idx), cm.getGreen(idx), cm.getBlue(idx)));
@@ -156,6 +164,20 @@ public class AddContourLines extends Module {
 
     }
 
+    public static HashMap<Double, String> getLabels(double[] levels, int decimalPlaces, boolean useScientific) {
+        HashMap<Double, String> labels = new HashMap<>();
+
+        DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces, useScientific);
+
+        for (double level : levels) {
+            String label = df.format(level);
+            labels.put(level, label);
+        }
+
+        return labels;
+
+    }
+
     public static Roi getContour(ImageProcessor ipr, double level) {
         // We will be thresholding the ImageProcessor, so duplicating it first
         ipr = ipr.duplicate();
@@ -170,12 +192,13 @@ public class AddContourLines extends Module {
 
     public static void addOverlay(ImagePlus ipl, double[] levels, HashMap<Double, Color> contourColours,
             double lineWidth, int drawEveryNPoints) {
-        addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints, null, 0);
+        addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints, null, null, 0);
 
     }
 
     public static void addOverlay(ImagePlus ipl, double[] levels, HashMap<Double, Color> contourColours,
-            double lineWidth, int drawEveryNPoints, @Nullable HashMap<Double, Color> labelColours, int labelSize) {
+            double lineWidth, int drawEveryNPoints, @Nullable HashMap<Double, String> labels,
+            @Nullable HashMap<Double, Color> labelColours, int labelSize) {
         if (ipl.getOverlay() == null)
             ipl.setOverlay(new ij.gui.Overlay());
 
@@ -196,7 +219,7 @@ public class AddContourLines extends Module {
                                 drawEveryNPoints);
                     } else {
                         addOverlay(ipl.getProcessor(), ipl.getOverlay(), pos, levels, contourColours, lineWidth,
-                                drawEveryNPoints, labelColours, labelSize);
+                                drawEveryNPoints, labels, labelColours, labelSize);
                     }
                 }
             }
@@ -227,11 +250,12 @@ public class AddContourLines extends Module {
 
     public static void addOverlay(ImageProcessor ipr, ij.gui.Overlay overlay, int[] pos, double[] levels,
             HashMap<Double, Color> contourColours, double lineWidth, int drawEveryNPoints,
-            HashMap<Double, Color> labelColours, int labelSize) {
+            HashMap<Double, String> labels, HashMap<Double, Color> labelColours, int labelSize) {
 
         for (double level : levels) {
             Roi contour = getContour(ipr, level);
             Color contourColour = contourColours.get(level);
+            String label = labels.get(level);
             Color labelColour = labelColours.get(level);
 
             if (contour == null)
@@ -240,31 +264,30 @@ public class AddContourLines extends Module {
             if (contour.getType() == Roi.COMPOSITE) {
                 ShapeRoi shapeRoi = new ShapeRoi(contour);
                 for (Roi roi : shapeRoi.getRois()) {
-                    ArrayList<Integer> labelRegion = getLabelPosition(ipr, roi, pos, level, labelSize);
+                    ArrayList<Integer> labelRegion = getLabelPosition(ipr, roi, pos, label, labelSize);
                     addSingleLevelContour(ipr, roi, overlay, pos, level, contourColour, lineWidth, drawEveryNPoints,
                             labelRegion);
-                    addSingleLevelLabel(ipr, roi, overlay, pos, level, labelColour, labelSize, labelRegion);
+                    addSingleLevelLabel(ipr, roi, overlay, pos, label, labelColour, labelSize, labelRegion);
                 }
             } else {
-                ArrayList<Integer> labelRegion = getLabelPosition(ipr, contour, pos, level, labelSize);
+                ArrayList<Integer> labelRegion = getLabelPosition(ipr, contour, pos, label, labelSize);
                 addSingleLevelContour(ipr, contour, overlay, pos, level, contourColour, lineWidth, drawEveryNPoints,
                         labelRegion);
-                addSingleLevelLabel(ipr, contour, overlay, pos, level, labelColour, labelSize, labelRegion);
+                addSingleLevelLabel(ipr, contour, overlay, pos, label, labelColour, labelSize, labelRegion);
             }
         }
     }
 
-    public static ArrayList<Integer> getLabelPosition(ImageProcessor ipr, Roi roi, int[] pos, double level,
+    public static ArrayList<Integer> getLabelPosition(ImageProcessor ipr, Roi roi, int[] pos, String label,
             int labelSize) {
 
-        DecimalFormat df = new DecimalFormat("0");
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, labelSize);
 
         int imWidth = ipr.getWidth();
         int imHeight = ipr.getHeight();
 
         // Creating label, so we know the width
-        TextRoi textRoi = new TextRoi(0, 0, df.format(level), font);
+        TextRoi textRoi = new TextRoi(0, 0, label, font);
         double width = textRoi.getFloatWidth();
 
         // Ensuring there are enough points to draw the label
@@ -379,7 +402,7 @@ public class AddContourLines extends Module {
 
     }
 
-    public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos, double level,
+    public static void addSingleLevelLabel(ImageProcessor ipr, Roi roi, ij.gui.Overlay overlay, int[] pos, String label,
             Color colour, int labelSize, ArrayList<Integer> labelRegion) {
 
         // If no label region was specified, don't add a label
@@ -387,7 +410,6 @@ public class AddContourLines extends Module {
             return;
 
         FloatPolygon fp = roi.getInterpolatedPolygon();
-        DecimalFormat df = new DecimalFormat("0");
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, labelSize);
 
         // Getting label centre
@@ -402,7 +424,7 @@ public class AddContourLines extends Module {
 
         // Adding text label
         double angle = getLabelOrientation(fp, labelRegion);
-        TextRoi textRoi = createTextRoi(xCent, yCent, angle, df.format(level), font, overlay);
+        TextRoi textRoi = createTextRoi(xCent, yCent, angle, label, font, overlay);
         textRoi.setStrokeColor(colour);
 
         if (pos.length > 1) {
@@ -501,6 +523,8 @@ public class AddContourLines extends Module {
         int drawEveryNPoints = parameters.getValue(DRAW_EVERY_N_POINTS);
 
         boolean showLabels = parameters.getValue(SHOW_LABELS);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
         String labelColourMode = parameters.getValue(LABEL_COLOUR_MODE);
         String labelColour = parameters.getValue(LABEL_COLOUR);
         int labelSize = parameters.getValue(LABEL_SIZE);
@@ -524,8 +548,9 @@ public class AddContourLines extends Module {
         HashMap<Double, Color> contourColours = getColours(levels, contourColourMode, contourColour);
 
         if (showLabels) {
+            HashMap<Double, String> labels = getLabels(levels, decimalPlaces, useScientific);
             HashMap<Double, Color> labelColours = getColours(levels, labelColourMode, labelColour);
-            addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints, labelColours, labelSize);
+            addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints, labels, labelColours, labelSize);
         } else {
             addOverlay(ipl, levels, contourColours, lineWidth, drawEveryNPoints);
         }
@@ -561,6 +586,8 @@ public class AddContourLines extends Module {
 
         parameters.add(new ParamSeparatorP(LABEL_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_LABELS, this, true));
+        parameters.add(new IntegerP(DECIMAL_PLACES, this, 0));
+        parameters.add(new BooleanP(USE_SCIENTIFIC, this, false));
         parameters.add(new ChoiceP(LABEL_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(LABEL_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new IntegerP(LABEL_SIZE, this, 12));
@@ -600,6 +627,8 @@ public class AddContourLines extends Module {
         returnedParameters.add(parameters.getParameter(LABEL_SEPARATOR));
         returnedParameters.add(parameters.getParameter(SHOW_LABELS));
         if ((boolean) parameters.getValue(SHOW_LABELS)) {
+            returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
+            returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
             returnedParameters.add(parameters.getParameter(LABEL_COLOUR_MODE));
             switch ((String) parameters.getValue(LABEL_COLOUR_MODE)) {
                 case ColourModes.SINGLE_COLOUR:

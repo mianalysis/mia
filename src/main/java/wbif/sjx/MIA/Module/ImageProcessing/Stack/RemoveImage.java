@@ -1,13 +1,22 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
+import java.util.LinkedHashMap;
+
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
-
-import java.util.LinkedHashSet;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
 /**
  * Created by sc13967 on 30/06/2017.
@@ -37,9 +46,9 @@ public class RemoveImage extends Module {
     public Status process(Workspace workspace) {
         // Getting input image
         ParameterGroup parameterGroup = parameters.getParameter(REMOVE_ANOTHER_IMAGE);
-        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
+        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections(false);
 
-        for (ParameterCollection collection:collections) {
+        for (ParameterCollection collection:collections.values()) {
             String inputImageName = collection.getValue(INPUT_IMAGE);
             boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS);
 

@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Module.Miscellaneous;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -26,6 +27,8 @@ import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
@@ -42,6 +45,9 @@ import wbif.sjx.common.Object.Metadata;
 public class ConditionalAnalysisTermination extends Module {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";
+    public static final String CHOICE = "Choice";
+    public static final String ADD_CHOICE = "Add choice";
+    public static final String CHOICE_NAME = "Choice name";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Reference image measurement mode";
@@ -63,10 +69,11 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
     public ConditionalAnalysisTermination(ModuleCollection modules) {
-        super("Conditional analysis handling", modules);
+        super("Workflow handling", modules);
     }
 
     public interface TestModes {
+        String GUI_CHOICE = "GUI choice";
         String IMAGE_MEASUREMENT = "Image measurement";
         String METADATA_VALUE = "Metadata value";
         String FILE_EXISTS = "File exists";
@@ -74,8 +81,8 @@ public class ConditionalAnalysisTermination extends Module {
         String FIXED_VALUE = "Fixed value";
         String OBJECT_COUNT = "Object count";
 
-        String[] ALL = new String[] { FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT, METADATA_VALUE,
-                OBJECT_COUNT };
+        String[] ALL = new String[] { GUI_CHOICE, FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT,
+                METADATA_VALUE, OBJECT_COUNT };
 
     }
 
@@ -87,6 +94,34 @@ public class ConditionalAnalysisTermination extends Module {
         String TERMINATE = "Terminate";
 
         String[] ALL = new String[] { REDIRECT_TO_MODULE, TERMINATE };
+
+    }
+
+    Status processTermination(ParameterCollection params, Workspace workspace) {
+        String continuationMode = params.getValue(CONTINUATION_MODE);
+        boolean showRedirectMessage = params.getValue(SHOW_REDIRECT_MESSAGE);
+        String redirectMessage = params.getValue(REDIRECT_MESSAGE);
+        boolean exportWorkspace = params.getValue(EXPORT_WORKSPACE);
+        boolean removeImages = params.getValue(REMOVE_IMAGES);
+        boolean removeObjects = params.getValue(REMOVE_OBJECTS);
+
+        // If terminate, remove necessary images and objects
+        switch (continuationMode) {
+            case ContinuationModes.REDIRECT_TO_MODULE:
+                redirectModule = params.getValue(REDIRECT_MODULE);
+                if (showRedirectMessage)
+                    MIA.log.writeMessage(workspace.getMetadata().insertMetadataValues(redirectMessage));
+                return Status.REDIRECT;
+            case ContinuationModes.TERMINATE:
+                workspace.setExportWorkspace(exportWorkspace);
+                if (removeImages)
+                    workspace.clearAllImages(false);
+                if (removeObjects)
+                    workspace.clearAllObjects(false);
+                return Status.TERMINATE;
+        }
+
+        return Status.PASS;
 
     }
 
@@ -154,6 +189,8 @@ public class ConditionalAnalysisTermination extends Module {
     protected Status process(Workspace workspace) {
         // Getting parameters
         String testMode = parameters.getValue(TEST_MODE);
+        String choice = parameters.getValue(CHOICE);
+        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String filterMode = parameters.getValue(FILTER_MODE);
@@ -162,16 +199,13 @@ public class ConditionalAnalysisTermination extends Module {
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
         double fixedValue = parameters.getValue(FIXED_VALUE);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
-        String continuationMode = parameters.getValue(CONTINUATION_MODE);
-        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
-        String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
-        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
-        boolean removeImages = parameters.getValue(REMOVE_IMAGES);
-        boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
 
         // Running relevant tests
         boolean terminate = false;
         switch (testMode) {
+            case TestModes.GUI_CHOICE:
+                terminate = true;
+                break;
             case TestModes.FILE_DOES_NOT_EXIST:
                 terminate = !testFileExists(workspace.getMetadata(), genericFormat);
                 break;
@@ -195,20 +229,18 @@ public class ConditionalAnalysisTermination extends Module {
                 break;
         }
 
-        // If terminate, remove necessary images and objects
         if (terminate) {
-            switch (continuationMode) {
-                case ContinuationModes.REDIRECT_TO_MODULE:
-                    if (showRedirectMessage)
-                        MIA.log.writeMessage(workspace.getMetadata().insertMetadataValues(redirectMessage));
-                    return Status.REDIRECT;
-                case ContinuationModes.TERMINATE:
-                    workspace.setExportWorkspace(exportWorkspace);
-                    if (removeImages)
-                        workspace.clearAllImages(false);
-                    if (removeObjects)
-                        workspace.clearAllObjects(false);
-                    return Status.TERMINATE;
+            switch (testMode) {
+                default:
+                    return processTermination(parameters, workspace);
+                case TestModes.GUI_CHOICE:
+                    // Getting choice parameters
+                    for (ParameterCollection collection : collections.values()) {
+                        if (collection.getValue(CHOICE_NAME).equals(choice)) {
+                            return processTermination(collection, workspace);
+                        }
+                    }
+                    MIA.log.writeWarning("Did not find matching termination option");
             }
         }
 
@@ -220,6 +252,21 @@ public class ConditionalAnalysisTermination extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(TEST_MODE, this, TestModes.IMAGE_MEASUREMENT, TestModes.ALL));
+
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new StringP(CHOICE_NAME, this, ""));
+        collection.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
+        collection.add(new ModuleP(REDIRECT_MODULE, this));
+        collection.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
+        collection.add(new StringP(REDIRECT_MESSAGE, this, ""));
+        collection.add(new BooleanP(EXPORT_WORKSPACE, this, true));
+        collection.add(new BooleanP(REMOVE_IMAGES, this, false));
+        collection.add(new BooleanP(REMOVE_OBJECTS, this, false));
+
+        parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
+        parameters.getParameter(CHOICE).setVisible(true);
+        parameters.add(new ParameterGroup(ADD_CHOICE, this, collection, 0, getUpdaterAndGetter()));
+
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.LESS_THAN, FilterModes.ALL));
@@ -251,6 +298,17 @@ public class ConditionalAnalysisTermination extends Module {
 
         returnedParameters.add(parameters.getParameter(TEST_MODE));
         switch ((String) parameters.getValue(TEST_MODE)) {
+            case TestModes.GUI_CHOICE:
+                returnedParameters.add(parameters.getParameter(CHOICE));
+                returnedParameters.add(parameters.getParameter(ADD_CHOICE));
+
+                // Updating options in choice menu
+                ParameterGroup group = (ParameterGroup) parameters.get(ADD_CHOICE);
+                String[] choices = getGUIChoices(group.getCollections(false));
+                ((ChoiceP) parameters.getParameter(CHOICE)).setChoices(choices);
+
+                break;
+
             case TestModes.FILE_EXISTS:
             case TestModes.FILE_DOES_NOT_EXIST:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
@@ -288,23 +346,25 @@ public class ConditionalAnalysisTermination extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
-        switch ((String) parameters.getValue(CONTINUATION_MODE)) {
-            case ContinuationModes.REDIRECT_TO_MODULE:
-                returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
-                redirectModule = parameters.getValue(REDIRECT_MODULE);
-                returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
-                if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
-                    returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
-                }
-                break;
-            case ContinuationModes.TERMINATE:
-                returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
-                returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
-                returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
-                redirectModule = null;
-                break;
+        if (!((String) parameters.getValue(TEST_MODE)).equals(TestModes.GUI_CHOICE)) {
+            returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
+            returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
+            switch ((String) parameters.getValue(CONTINUATION_MODE)) {
+                case ContinuationModes.REDIRECT_TO_MODULE:
+                    returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
+                    redirectModule = parameters.getValue(REDIRECT_MODULE);
+                    returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
+                    if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
+                        returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
+                    }
+                    break;
+                case ContinuationModes.TERMINATE:
+                    returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
+                    returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
+                    returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
+                    redirectModule = null;
+                    break;
+            }
         }
 
         return returnedParameters;
@@ -339,5 +399,49 @@ public class ConditionalAnalysisTermination extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    private ParameterUpdaterAndGetter getUpdaterAndGetter() {
+        return new ParameterUpdaterAndGetter() {
+
+            @Override
+            public ParameterCollection updateAndGet(ParameterCollection params) {
+                ParameterCollection returnedParameters = new ParameterCollection();
+
+                returnedParameters.add(params.getParameter(CHOICE_NAME));
+                returnedParameters.add(params.getParameter(CONTINUATION_MODE));
+                switch ((String) params.getValue(CONTINUATION_MODE)) {
+                    case ContinuationModes.REDIRECT_TO_MODULE:
+                        returnedParameters.add(params.getParameter(REDIRECT_MODULE));
+                        redirectModule = params.getValue(REDIRECT_MODULE);
+                        returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
+                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE)) {
+                            returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
+                        }
+                        break;
+                    case ContinuationModes.TERMINATE:
+                        returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
+                        returnedParameters.add(params.getParameter(REMOVE_IMAGES));
+                        returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
+                        redirectModule = null;
+                        break;
+                }
+
+                return returnedParameters;
+
+            }
+        };
+    }
+
+    String[] getGUIChoices(LinkedHashMap<Integer, ParameterCollection> collections) {
+        String[] choices = new String[collections.size()];
+
+        int i = 0;
+        for (ParameterCollection collection : collections.values()) {
+            choices[i++] = collection.getValue(CHOICE_NAME);
+        }
+
+        return choices;
+
     }
 }

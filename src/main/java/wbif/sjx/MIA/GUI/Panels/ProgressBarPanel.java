@@ -1,10 +1,10 @@
 package wbif.sjx.MIA.GUI.Panels;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.GUI.Colours;
+import java.awt.Dimension;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JProgressBar;
+
+import wbif.sjx.MIA.GUI.Colours;
 
 public class ProgressBarPanel extends JProgressBar {
     /**
@@ -22,13 +22,12 @@ public class ProgressBarPanel extends JProgressBar {
         setStringPainted(true);
         setString("");
         setForeground(Colours.ORANGE);
-
+        
     }
 
     @Override
     public void setValue(int value) {
         super.setValue(value);
-        MIA.log.writeDebug("Progress "+value);
         if (value == 100)
             setForeground(Colours.GREEN);
         else

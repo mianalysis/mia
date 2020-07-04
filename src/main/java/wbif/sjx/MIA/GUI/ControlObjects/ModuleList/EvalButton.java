@@ -139,23 +139,31 @@ public class EvalButton extends JButton implements ActionListener {
         } else {
             // If multiple modules will need to be evaluated first
             t = new Thread(() -> {
-                for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
+                while (idx > GUI.getLastModuleEval()) {
+                    int i = GUI.getLastModuleEval() + 1;
                     Module module = GUI.getModules().get(i);
-                    if (module.isEnabled() && module.isRunnable())
+                    if (module.isEnabled() && module.isRunnable()) {
                         try {
-                            evaluateModule(module);
+                            if (!evaluateModule(module)) {
+                                GUI.updateModuleStates(false);
+                                break;
+                            }
                         } catch (Exception e1) {
                             GUI.setModuleBeingEval(-1);
+                            GUI.updateModuleStates(false);
                             e1.printStackTrace();
-                            Thread.currentThread().getThreadGroup().interrupt();
+                            break;
                         }
+                    } else {
+                        GUI.setLastModuleEval(GUI.getLastModuleEval() + 1);
+                    }
                 }
             });
             t.start();
         }
     }
 
-    public void evaluateModule(Module module) {
+    public boolean evaluateModule(Module module) {
         ModuleCollection modules = GUI.getAnalysis().getModules();
         Workspace testWorkspace = GUI.getTestWorkspace();
 
@@ -166,27 +174,33 @@ public class EvalButton extends JButton implements ActionListener {
         GUI.updateModuleStates(false);
 
         Module.setVerbose(true);
+        boolean status = true;
         Status success = module.execute(testWorkspace);
         switch (success) {
             case PASS:
                 GUI.setLastModuleEval(modules.indexOf(module));
+                status = true;
                 break;
             case REDIRECT:
                 // Getting index of module before one to move to
                 Module redirectModule = module.getRedirectModule();
                 if (redirectModule == null)
-                    break;
+                    status = true;
 
                 GUI.setLastModuleEval(modules.indexOf(redirectModule) - 1);
+                status = true;
                 break;
             case FAIL:
             case TERMINATE:
+                status = false;
+                GUI.setLastModuleEval(GUI.getLastModuleEval() - 1);
                 break;
         }
 
         GUI.setModuleBeingEval(-1);
-
         GUI.updateModuleStates(false);
+
+        return status;
 
     }
 }

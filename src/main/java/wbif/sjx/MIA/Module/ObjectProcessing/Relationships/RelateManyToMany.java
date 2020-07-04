@@ -92,6 +92,7 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import ij.ImagePlus;
@@ -391,7 +392,7 @@ public class RelateManyToMany extends Module {
         double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1);
         double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-        LinkedHashSet<ParameterCollection> parameterCollections = parameterGroup.getCollections();
+        LinkedHashMap<Integer,ParameterCollection> parameterCollections = parameterGroup.getCollections(false);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         // Skipping the module if no objects are present in one collection
@@ -434,7 +435,7 @@ public class RelateManyToMany extends Module {
                 }
 
                 // Testing additional measurements
-                for (ParameterCollection collection : parameterCollections) {
+                for (ParameterCollection collection : parameterCollections.values()) {
                     String measurement = collection.getValue(MEASUREMENT);
                     String calculation = collection.getValue(CALCULATION);
                     double measurementLimit = collection.getValue(MEASUREMENT_LIMIT);
@@ -565,7 +566,7 @@ public class RelateManyToMany extends Module {
         // Updating measurement sources
         String objectName = parameters.getValue(INPUT_OBJECTS_1);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-        for (ParameterCollection collection : parameterGroup.getCollections()) {
+        for (ParameterCollection collection : parameterGroup.getCollections(false).values()) {
             ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(objectName);
         }
 
