@@ -1072,7 +1072,7 @@ public class ImageLoaderTest extends ModuleTest {
     public void testRunImageSequenceFull() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq0000.tif").getPath(),"UTF-8");
-
+        
         // Initialising a blank workspace
         WorkspaceCollection workspaces = new WorkspaceCollection();
         Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
@@ -1080,9 +1080,9 @@ public class ImageLoaderTest extends ModuleTest {
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
         imageFileLoader.initialiseParameters();
-
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+"\\SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"0-end");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
@@ -1118,6 +1118,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+"\\SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3-end-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
@@ -1153,6 +1154,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+"\\SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"4-8-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);

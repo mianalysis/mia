@@ -441,7 +441,7 @@ public class Obj extends Volume {
     }
 
     public Image convertObjToImage(String outputName) {
-        // Creating an ObjCollection to hold this image
+        // Creating an ObjCollection to generate this image
         ObjCollection tempObj = new ObjCollection(outputName, spatCal, nFrames);
         tempObj.add(this);
 

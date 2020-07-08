@@ -1,13 +1,13 @@
-package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
+// package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import wbif.sjx.MIA.Module.ModuleTest;
+// import wbif.sjx.MIA.Module.ModuleTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+// import static org.junit.jupiter.api.Assertions.*;
 
-public class FitEllipseTest extends ModuleTest {
+// public class FitEllipseTest extends ModuleTest {
 
-    @Override
-    public void testGetHelp() {
-        assertNotNull(new FitEllipse(null).getDescription());
-    }
-}
+//     @Override
+//     public void testGetHelp() {
+//         assertNotNull(new FitEllipse(null).getDescription());
+//     }
+// }

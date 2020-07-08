@@ -86,17 +86,21 @@ public class FileParameter extends ParameterControl implements ActionListener {
         if (parameter.getPath() != null) {
             fileChooser.setCurrentDirectory(new File((String) parameter.getPath()));
         }
-        fileChooser.showDialog(null,"Open");
+        fileChooser.showDialog(null, "Open");
 
-        if (fileChooser.getSelectedFile() == null) return;
+        if (fileChooser.getSelectedFile() == null)
+            return;
 
         parameter.setPath(fileChooser.getSelectedFile().getAbsolutePath());
 
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
-        if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
+        if (idx <= GUI.getLastModuleEval() & !(module instanceof OutputControl))
+            GUI.setLastModuleEval(idx - 1);
 
-        if (module.getClass().isInstance(new InputControl(GUI.getModules()))) GUI.updateTestFile(true);
+        if (module.getClass().isInstance(new InputControl(GUI.getModules()))) {
+            new Thread(() -> GUI.updateTestFile(true)).start();
+        }
 
         GUI.updateModuleStates(true);
         GUI.updateModules();

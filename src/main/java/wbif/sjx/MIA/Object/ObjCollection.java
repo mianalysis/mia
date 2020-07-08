@@ -26,8 +26,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private static final long serialVersionUID = 7383226061156796558L;
     private String name;
     private int maxID = 0;
-    private final SpatCal spatCal;
-    private final int nFrames;
+    private SpatCal spatCal;
+    private int nFrames;
 
     public ObjCollection(String name, SpatCal cal, int nFrames) {
         this.name = name;
@@ -64,7 +64,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return spatCal;
     }
 
-    public int getAndIncrementID() {
+    public synchronized int getAndIncrementID() {
         maxID++;
         return maxID;
     }
@@ -220,10 +220,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         for (int z = 1; z <= ipl.getNSlices(); z++) {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
-                    for (int x=0;x<ipl.getWidth();x++) {
-                        for (int y=0;y<ipl.getHeight();y++) {
-                            ipl.setPosition(c,z,t);
-                            ipl.getProcessor().putPixelValue(x,y,Double.NaN);
+                    for (int x = 0; x < ipl.getWidth(); x++) {
+                        for (int y = 0; y < ipl.getHeight(); y++) {
+                            ipl.setPosition(c, z, t);
+                            ipl.getProcessor().putPixelValue(x, y, Double.NaN);
                         }
                     }
                 }
@@ -231,7 +231,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
     }
 
-    void setSpatCal(ImagePlus ipl) {
+    public void setSpatCal(ImagePlus ipl) {
             ipl.getCalibration().pixelWidth = spatCal.getDppXY();
             ipl.getCalibration().pixelHeight = spatCal.getDppXY();
             ipl.getCalibration().pixelDepth = spatCal.getNSlices() == 1? 1 : spatCal.getDppZ();
@@ -410,5 +410,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public int getNFrames() {
         return nFrames;
+    }
+
+    public void setNFrmes(int nFrames) {
+        this.nFrames = nFrames;
     }
 }

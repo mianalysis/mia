@@ -44,11 +44,11 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -63,13 +63,11 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
@@ -506,6 +504,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, "1", "1" };
+
         ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, 1, dimRanges, crop, scaleFactors, scaleMode,
                 intRange, manualCal, false);
         int width = rootIpl.getWidth();

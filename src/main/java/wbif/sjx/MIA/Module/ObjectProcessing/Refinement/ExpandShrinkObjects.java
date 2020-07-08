@@ -1,8 +1,9 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
+import ij.IJ;
+import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -10,14 +11,15 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DilateErode;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -26,16 +28,20 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 
 /**
  * Created by sc13967 on 16/01/2018.
  */
 public class ExpandShrinkObjects extends Module {
+    public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
+
+    public static final String PROCESSING_SEPARATOR = "Processing options";
     public static final String METHOD = "Method";
     public static final String RADIUS_CHANGE_PX = "Radius change (px)";
 
@@ -57,7 +63,30 @@ public class ExpandShrinkObjects extends Module {
             throws IntegerOverflowException {
         // Convert each object to an image, do the dilation/erosion, then convert back
         // to an object
-        Image objectImage = inputObject.convertObjToImage("ObjectToMorph");
+        // Image objectImage = inputObject.convertObjToImage("ObjectToMorph");
+        // Get object limits
+        double[][] extents = inputObject.getExtents(true, false);
+
+        int[][] borderWidths;
+        switch (method) {
+            case Methods.EXPAND_2D:
+                borderWidths = new int[][] { { radiusChangePx, radiusChangePx }, { radiusChangePx, radiusChangePx },
+                        { 0, 0 } };
+                break;
+
+            case Methods.EXPAND_3D:
+            default:
+                borderWidths = new int[][] { { radiusChangePx, radiusChangePx }, { radiusChangePx, radiusChangePx },
+                        { radiusChangePx, radiusChangePx } };
+                break;
+
+            case Methods.SHRINK_2D:
+            case Methods.SHRINK_3D:
+                borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+                break;
+        }
+
+        Image objectImage = getTightImage(inputObject, borderWidths, extents);
         InvertIntensity.process(objectImage);
 
         Prefs.blackBackground = false;
@@ -87,13 +116,59 @@ public class ExpandShrinkObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        ObjCollection newObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
+        ObjCollection tempObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
 
         // During object shrinking it's possible the object will disappear entirely
-        if (newObjects.size() == 0)
+        if (tempObjects.size() == 0)
             return null;
 
-        return newObjects.getFirst();
+        Obj tempObj = tempObjects.getFirst();
+        Obj outputObj = new Obj("ModifiedObj", inputObject.getID(), inputObject);
+
+        transferObjectCoordinates(tempObj, outputObj, borderWidths, extents);
+
+        return outputObj;
+
+    }
+
+    static Image getTightImage(Obj obj, int[][] borderWidths, double[][] extents) {
+        // Create empty image
+        int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
+        int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
+        int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
+
+        int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
+                + borderWidths[0][1] + 1;
+        int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
+                + borderWidths[1][1] + 1;
+        int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
+                + borderWidths[2][1] + 1;
+
+        ImagePlus ipl = IJ.createImage("Temp", width, height, nSlices, 8);
+
+        // Populating ipl
+        for (Point<Integer> point : obj.getCoordinateSet()) {
+            ipl.setPosition(point.z - zOffs + 1);
+            ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
+
+        }
+
+        return new Image("Tight", ipl);
+
+    }
+
+    static void transferObjectCoordinates(Obj fromObj, Obj toObj, int[][] borderWidths, double[][] extents) {
+        // Create empty image
+        int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
+        int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
+        int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
+
+        // Populating ipl
+        for (Point<Integer> point : fromObj.getCoordinateSet())
+            try {
+                toObj.add(point.x + xOffs, point.y + yOffs, point.z + zOffs);
+            } catch (PointOutOfRangeException e) {
+            }
 
     }
 
@@ -187,9 +262,12 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(UPDATE_INPUT_OBJECTS, this, true));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        parameters.add(new ParamSeparatorP(PROCESSING_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.EXPAND_2D, Methods.ALL));
         parameters.add(new IntegerP(RADIUS_CHANGE_PX, this, 1));
 
@@ -199,6 +277,7 @@ public class ExpandShrinkObjects extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(UPDATE_INPUT_OBJECTS));
 
@@ -206,6 +285,7 @@ public class ExpandShrinkObjects extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         }
 
+        returnedParameters.add(parameters.getParameter(PROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(METHOD));
         returnedParameters.add(parameters.getParameter(RADIUS_CHANGE_PX));
 
