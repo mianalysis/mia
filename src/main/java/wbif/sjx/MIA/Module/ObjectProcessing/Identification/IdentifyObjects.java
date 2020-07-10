@@ -86,7 +86,7 @@ public class IdentifyObjects extends Module {
         }
         int sW = tempSW;
 
-        MIA.log.writeDebug("Using "+nThreads+" threads");
+        MIA.log.writeDebug("Using " + nThreads + " threads");
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
@@ -95,7 +95,7 @@ public class IdentifyObjects extends Module {
         HashMap<Integer, HashMap<Double, Fragment>> fragments = new HashMap<>();
 
         MIA.log.writeDebug("Input image shape = " + imW + "_" + imH + "_" + imNSlices + "_" + bitDepth + "_" + sW);
-        MIA.log.writeDebug("Connectivity = "+connectivity);
+        MIA.log.writeDebug("Connectivity = " + connectivity);
 
         MIA.log.writeDebug("Labelling strips");
         for (int stripIdx = 0; stripIdx < nThreads; stripIdx++) {
@@ -247,9 +247,9 @@ public class IdentifyObjects extends Module {
         } catch (InterruptedException e) {
             e.printStackTrace(System.err);
         }
-        
+
         return ist;
-        
+
     }
 
     public static ObjCollection process(Image inputImage, String outputObjectsName, boolean whiteBackground,
@@ -279,24 +279,27 @@ public class IdentifyObjects extends Module {
 
             if (whiteBackground)
                 InvertIntensity.process(currStack);
-
+                    
             // Applying connected components labelling
-            MIA.log.writeDebug("Applying labelling");
-            int nThreads = multithread ? Prefs.getThreads() : 1;
-            MIA.log.writeDebug("N threads = " + Prefs.getThreads());
-            if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
-                MIA.log.writeDebug("Using MT connected components labeling");
-                currStack.setStack(connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
-            } else {
-                MIA.log.writeDebug("Using non-MT connected components labeling");
-                try {
-                    MIA.log.writeDebug("Using 16-bit labeling");
-                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
-                    currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
-                } catch (RuntimeException e2) {
-                    MIA.log.writeDebug("Using 32-bit labeling");
-                    FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
-                    currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+            if (!singleObject) {
+                MIA.log.writeDebug("Applying labelling");
+                int nThreads = multithread ? Prefs.getThreads() : 1;
+                MIA.log.writeDebug("N threads = " + Prefs.getThreads());
+                if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
+                    MIA.log.writeDebug("Using MT connected components labeling");
+                    currStack.setStack(
+                            connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
+                } else {
+                    MIA.log.writeDebug("Using non-MT connected components labeling");
+                    try {
+                        MIA.log.writeDebug("Using 16-bit labeling");
+                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
+                        currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                    } catch (RuntimeException e2) {
+                        MIA.log.writeDebug("Using 32-bit labeling");
+                        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
+                        currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
+                    }
                 }
             }
 
