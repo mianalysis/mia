@@ -53,7 +53,7 @@ public class RemoveImage extends Module {
             boolean retainMeasurements = collection.getValue(RETAIN_MEASUREMENTS);
 
             // Removing the relevant image from the workspace
-            writeMessage("Removing image ("+inputImageName+") from workspace");
+            writeStatus("Removing image ("+inputImageName+") from workspace");
             workspace.removeImage(inputImageName,retainMeasurements);
 
         }

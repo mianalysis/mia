@@ -156,7 +156,7 @@ public class MeasureObjectTexture extends Module {
                     regionObject = GetLocalObjectRegion.getLocalRegion(object, "Centroid", radius, calibrated, false);
                 }
                 processObject(object, regionObject, inputImage, textureCalculator, offs, calibratedOffset);
-                writeMessage("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
+                writeStatus("Processed " + (iter.incrementAndGet()) + " of " + nObjects);
             }
 
         if (showOutput) inputObjects.showMeasurements(this,modules);

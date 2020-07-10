@@ -110,7 +110,7 @@ public class MeasureObjectOverlap extends Module {
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOL_CAL_1),overlapVolCal));
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_PERCENT_1),overlapPC));
 
-            writeMessage("Processed "+(++count)+" objects of "+totalObjects);
+            writeStatus("Processed "+(++count)+" objects of "+totalObjects);
 
         }
 
@@ -132,7 +132,7 @@ public class MeasureObjectOverlap extends Module {
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOL_CAL_2),overlapVolCal));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
 
-            writeMessage("Processed "+(++count)+" objects of "+totalObjects);
+            writeStatus("Processed "+(++count)+" objects of "+totalObjects);
 
         }
 

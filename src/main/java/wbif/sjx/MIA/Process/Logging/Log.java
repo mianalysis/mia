@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
 public class Log {
     static HashMap<Level,String> logHistory = new HashMap<>();
     private HashSet<LogRenderer> renderers = new HashSet<>();
-
+    
     public Log(HashSet<LogRenderer> renderers) {
         this.renderers = renderers;
     }
@@ -22,9 +22,10 @@ public class Log {
 
     public void write(String message, Level level) {
         logHistory.put(level,logHistory.get(level)+message);
-
-        for (LogRenderer renderer:renderers) renderer.write(message,level);
-
+        
+        for (LogRenderer renderer : renderers) 
+            renderer.write(message, level);
+        
     }
 
     public void writeError(String message) {
@@ -88,6 +89,10 @@ public class Log {
 
     public void clearLogHistory() {
         logHistory.clear();
+    }
+
+    public HashSet<LogRenderer> getRenderers() {
+        return renderers;
     }
 
     public void addRenderer(LogRenderer renderer) {

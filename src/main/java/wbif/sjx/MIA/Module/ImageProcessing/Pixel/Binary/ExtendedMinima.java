@@ -77,7 +77,7 @@ public class ExtendedMinima extends Module {
                     //  Replacing the maskIpl intensity
                     getSetStack(outputIpl, finalT, finalC, timepoint);
 
-                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
+                    writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
 
                 };
                 pool.submit(task);
@@ -144,7 +144,7 @@ public class ExtendedMinima extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeMessage("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image ("+outputImageName+") to workspace");
             workspace.addImage(outputImage);
         } else {
             inputImage.setImagePlus(outputImage.getImagePlus());

@@ -78,7 +78,7 @@ public class DuplicateAcrossTime extends Module {
         // Duplicating objects
         int count = 0;
         for (Obj inputObject : inputObjects.values()) {
-            writeMessage("Duplicating object " + (++count) + " of " + inputObjects.size(), name);
+            writeStatus("Duplicating object " + (++count) + " of " + inputObjects.size(), name);
             
             for (int t = startFrame; t <= endFrame; t++) {
                 // Creating object for this timepoint

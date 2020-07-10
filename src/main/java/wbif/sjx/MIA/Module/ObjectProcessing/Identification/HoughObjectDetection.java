@@ -145,11 +145,11 @@ public class HoughObjectDetection extends Module {
                     circleHoughTransform.setnThreads(nThreads);
 
                     // Running the transforms
-                    writeMessage("Running transform (image " + (count) + " of " + total+")");
+                    writeStatus("Running transform (image " + (count) + " of " + total+")");
                     circleHoughTransform.run();
 
                     // Normalising scores based on the number of points in that circle
-                    writeMessage("Normalising scores (image " + (count) + " of " + total+")");
+                    writeStatus("Normalising scores (image " + (count) + " of " + total+")");
                     circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
@@ -168,7 +168,7 @@ public class HoughObjectDetection extends Module {
                     }
 
                     // Getting circle objects and adding to workspace
-                    writeMessage("Detecting objects (image " + (count++) + " of " + total+")");
+                    writeStatus("Detecting objects (image " + (count++) + " of " + total+")");
                     ArrayList<double[]> circles = circleHoughTransform.getObjects(detectionThreshold, exclusionRadius);
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
@@ -209,7 +209,7 @@ public class HoughObjectDetection extends Module {
 
                     }
 
-                    writeMessage(circles.size()+" circles detected in frame C="+c+", Z="+z+", T="+t);
+                    writeStatus(circles.size()+" circles detected in frame C="+c+", Z="+z+", T="+t);
 
                 }
             }

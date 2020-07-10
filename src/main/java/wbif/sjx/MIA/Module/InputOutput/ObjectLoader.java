@@ -336,7 +336,7 @@ public class ObjectLoader extends Module {
 
                     }
 
-                    writeMessage("Loaded object "+(++count));
+                    writeStatus("Loaded object "+(++count));
 
                 } catch (NumberFormatException e) {}
 

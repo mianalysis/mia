@@ -166,7 +166,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeMessage("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
                         moduleName);
 
             };
@@ -231,7 +231,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
-                writeMessage("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
                         moduleName);
             };
             pool.submit(task);
@@ -251,7 +251,7 @@ public class RelateManyToOne extends Module {
         String measurementNameCal = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
 
         // Ensuring all parent objects have a calculated surface
-        writeMessage("Initialising object surfaces", moduleName);
+        writeStatus("Initialising object surfaces", moduleName);
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
         final AtomicInteger count = new AtomicInteger(1);
@@ -263,7 +263,7 @@ public class RelateManyToOne extends Module {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeMessage("Initialised " + count.getAndIncrement()+" of "+total+" objects", moduleName);                   
+                    writeStatus("Initialised " + count.getAndIncrement()+" of "+total+" objects", moduleName);                   
                 };
                 pool.submit(task);
             }
@@ -273,7 +273,7 @@ public class RelateManyToOne extends Module {
             if (!child.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     child.getCoordinateSet().calculateSurface(child.is2D());
-                    writeMessage("Initialised " + count.getAndIncrement()+" of "+total+" objects", moduleName); 
+                    writeStatus("Initialised " + count.getAndIncrement()+" of "+total+" objects", moduleName); 
                 };
                 pool.submit(task);
             }
@@ -290,7 +290,7 @@ public class RelateManyToOne extends Module {
         pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
         count.set(1);
 
-        writeMessage("Processing objects", moduleName);
+        writeStatus("Processing objects", moduleName);
         for (Obj childObject : childObjects.values()) {
             Runnable task = () -> {
                 double minDist = Double.MAX_VALUE;
@@ -333,7 +333,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeMessage("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
                         moduleName);
             };
             pool.submit(task);
@@ -471,7 +471,7 @@ public class RelateManyToOne extends Module {
 
             }
 
-            writeMessage("Compared " + Math.floorDiv(100 * childObjects.size() * ++count, nCombined) + "% of pairs");
+            writeStatus("Compared " + Math.floorDiv(100 * childObjects.size() * ++count, nCombined) + "% of pairs");
 
         }
     }

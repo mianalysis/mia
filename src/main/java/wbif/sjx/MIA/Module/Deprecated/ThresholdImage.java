@@ -121,7 +121,7 @@ public class ThresholdImage extends Module {
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    writeMessage("Processing image " + (++count) + " of " + total);
+                    writeStatus("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c, z, t);
 
                     int[] tempHist = inputImagePlus.getProcessor().getHistogram();
@@ -268,7 +268,7 @@ public class ThresholdImage extends Module {
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL:
-                writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multiplier = "+thrMult+" x)");
+                writeStatus("Applying global "+globalThresholdAlgorithm+" threshold (multiplier = "+thrMult+" x)");
                 threshold = runGlobalThresholdOnStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
 
                 break;
@@ -276,37 +276,37 @@ public class ThresholdImage extends Module {
             case ThresholdTypes.LOCAL:
                 switch (localThresholdAlgorithm) {
                     case LocalAlgorithms.BERNSEN_3D:
-                        writeMessage("Applying local Bernsen threshold (radius = "+localRadius+" px)");
+                        writeStatus("Applying local Bernsen threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.BERNSEN,localRadius,thrMult,
                                 useLowerLim,lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.CONTRAST_3D:
-                        writeMessage("Applying local Contrast threshold (radius = "+localRadius+" px)");
+                        writeStatus("Applying local Contrast threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.CONTRAST,localRadius,thrMult,
                                 useLowerLim,lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.MEAN_3D:
-                        writeMessage("Applying local Mean threshold (radius = "+localRadius+" px)");
+                        writeStatus("Applying local Mean threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEAN,localRadius,thrMult,useLowerLim,
                                 lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.MEDIAN_3D:
-                        writeMessage("Applying local Median threshold (radius = "+localRadius+" px)");
+                        writeStatus("Applying local Median threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEDIAN,localRadius,thrMult,useLowerLim,
                                 lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.PHANSALKAR_3D:
-                        writeMessage("Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                        writeStatus("Applying local Phansalkar threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.PHANSALKAR,localRadius,thrMult,
                                 useLowerLim,lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.PHANSALKAR_SLICE:
-                        writeMessage("Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                        writeStatus("Applying local Phansalkar threshold (radius = "+localRadius+" px)");
                         applyLocalThresholdToStack(inputImagePlus,"Phansalkar",localRadius);
                         break;
 

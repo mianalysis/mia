@@ -173,12 +173,12 @@ public class LocalAutoThreshold extends Module {
 
         switch (thresholdMode) {
             case ThresholdModes.SLICE:
-                writeMessage("Applying "+algorithmSlice+" threshold slice-by-slice");
+                writeStatus("Applying "+algorithmSlice+" threshold slice-by-slice");
                 applyLocalThresholdToStack(inputImagePlus,algorithmSlice,localRadius);
                 break;
 
             case ThresholdModes.THREE_D:
-                writeMessage("Applying "+algorithm3D+" threshold in 3D");
+                writeStatus("Applying "+algorithm3D+" threshold in 3D");
                 applyLocalThreshold3D(inputImagePlus,algorithm3D,localRadius,thrMult,useLowerLim,lowerLim,useGlobalZ);
                 break;
         }

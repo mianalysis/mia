@@ -180,7 +180,7 @@ public class NormaliseIntensity extends Module {
         // Running intensity normalisation
                 switch (regionMode) {
                     case RegionModes.ENTIRE_IMAGE:
-                        writeMessage("Applying entire-image pixel normalisation");
+                        writeStatus("Applying entire-image pixel normalisation");
                         applyNormalisation(inputImagePlus,calculationMode,clipFraction,intRange);
                         break;
 
@@ -189,7 +189,7 @@ public class NormaliseIntensity extends Module {
                         int count = 0;
                         int total = inputObjects.size();
                         for (Obj inputObject:inputObjects.values()) {
-                            writeMessage("Processing "+(++count)+" of "+total+" objects");
+                            writeStatus("Processing "+(++count)+" of "+total+" objects");
                             applyNormalisation(inputImagePlus,calculationMode,clipFraction,intRange,inputObject);
                         }
                         break;

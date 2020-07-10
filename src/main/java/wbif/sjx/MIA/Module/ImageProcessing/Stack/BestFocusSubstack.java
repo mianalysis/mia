@@ -229,7 +229,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
         int[] bestSlices = new int[(int) nFrames];
         for (int f = 0; f < nFrames; f++) {
             bestSlices[f] = getOptimalStatSlice(calculationImage, f, channel, stat, minMax);
-            writeMessage("Best focus for frame " + (f + 1) + " at " + (bestSlices[f] + 1) + " (provisional)");
+            writeStatus("Best focus for frame " + (f + 1) + " at " + (bestSlices[f] + 1) + " (provisional)");
         }
 
         return bestSlices;

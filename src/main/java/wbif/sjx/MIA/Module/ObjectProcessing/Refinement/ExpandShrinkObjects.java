@@ -209,7 +209,7 @@ public class ExpandShrinkObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeMessage("Processing object " + (count++) + " of " + total);
+            writeStatus("Processing object " + (count++) + " of " + total);
 
             Obj newObject = null;
             try {

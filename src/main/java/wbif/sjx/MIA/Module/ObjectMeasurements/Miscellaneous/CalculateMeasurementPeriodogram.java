@@ -193,7 +193,7 @@ public class CalculateMeasurementPeriodogram extends Module {
         int count = 1;
         int nTracks = trackObjects.size();
         for (Obj trackObject:trackObjects.values()) {
-            writeMessage("Processing object "+(count++)+" of "+nTracks);
+            writeStatus("Processing object "+(count++)+" of "+nTracks);
 
             ObjCollection spotObjects = trackObject.getChildren(spotObjectsName);
             double[] signal = getSignal(spotObjects,measurement,missingMode);

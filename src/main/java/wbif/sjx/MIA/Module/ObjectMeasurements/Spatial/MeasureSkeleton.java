@@ -152,7 +152,7 @@ public class MeasureSkeleton extends Module {
 
         // Converting binary image to loop objects
         ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
-                Image.VolumeTypes.QUADTREE,false);
+                Image.VolumeTypes.QUADTREE,false,0);
 
         // Removing any objects on the image edge, as these aren't loops
         FilterOnImageEdge.process(tempLoopObjects, 0, null, false, true, null);
@@ -334,7 +334,7 @@ public class MeasureSkeleton extends Module {
                     }
                 }
 
-                writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
+                writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
 
             };
             pool.submit(task);

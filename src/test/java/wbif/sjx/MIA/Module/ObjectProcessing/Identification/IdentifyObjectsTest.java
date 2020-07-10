@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URLDecoder;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.ExpectedObjects.Objects2D;
 import wbif.sjx.MIA.ExpectedObjects.Objects3D;
@@ -30,9 +32,21 @@ import wbif.sjx.common.Object.Volume.VolumeType;
  * Created by Stephen Cross on 29/08/2017.
  */
 public class IdentifyObjectsTest extends ModuleTest {
+    private static int nThreads = Prefs.getThreads();
+
     @BeforeAll
     public static void setVerbose() {
         Module.setVerbose(false);
+    }
+
+    @BeforeAll
+    public static void setThreadsBefore() {
+        Prefs.setThreads(Math.min(3, nThreads));
+    }
+
+    @AfterAll
+    public static void setThreadsAfter() {
+        Prefs.setThreads(nThreads);
     }
 
     @Override
@@ -722,6 +736,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
         // Running IdentifyObjects
@@ -775,6 +790,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
         // Running IdentifyObjects
@@ -828,6 +844,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, false);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
         // Running IdentifyObjects
@@ -2202,7 +2219,6 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, false);
         identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
-        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
         // Running IdentifyObjects
@@ -2694,6 +2710,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.POINTLIST);
 
         // Running IdentifyObjects
@@ -2747,6 +2764,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.QUADTREE);
 
         // Running IdentifyObjects
@@ -2800,6 +2818,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE, "Test_image");
         identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS, "Test_output_objects");
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND, true);
+        identifyObjects.updateParameterValue(IdentifyObjects.ENABLE_MULTITHREADING, true);
         identifyObjects.updateParameterValue(IdentifyObjects.VOLUME_TYPE, IdentifyObjects.VolumeTypes.OCTREE);
 
         // Running IdentifyObjects

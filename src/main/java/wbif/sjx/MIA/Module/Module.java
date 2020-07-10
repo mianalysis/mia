@@ -100,7 +100,7 @@ public abstract class Module extends Ref implements Comparable {
     // PUBLIC METHODS
 
     public Status execute(Workspace workspace) {
-        writeMessage("Processing");
+        writeStatus("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
@@ -110,13 +110,13 @@ public abstract class Module extends Ref implements Comparable {
 
         switch (status) {
             case PASS:
-                writeMessage("Completed");
+                writeStatus("Completed");
                 break;
             case TERMINATE:
-                writeMessage("Completed (ending analysis early)");
+                writeStatus("Completed (ending analysis early)");
                 break;
             case FAIL:
-                writeMessage("Did not complete");
+                writeStatus("Did not complete");
                 break;
         }
 
@@ -405,12 +405,12 @@ public abstract class Module extends Ref implements Comparable {
 
     // PROTECTED METHODS
 
-    public void writeMessage(String message) {
+    public void writeStatus(String message) {
         if (verbose)
             MIA.log.writeStatus("[" + name + "] " + message);
     }
 
-    protected static void writeMessage(String message, String name) {
+    protected static void writeStatus(String message, String name) {
         if (verbose)
             MIA.log.writeStatus("[" + name + "] " + message);
     }

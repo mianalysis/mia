@@ -389,7 +389,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     ipl.setProcessor(ip);
 
                     if (localVerbose)
-                        writeMessage("Loaded image " + (++count) + " of " + nTotal);
+                        writeStatus("Loaded image " + (++count) + " of " + nTotal);
 
                     countT++;
                 }
@@ -523,7 +523,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, count, 1, bitDepth);
 
         for (int frame : framesList) {
-            writeMessage("Loading image " + (i + 1) + " of " + count);
+            writeStatus("Loading image " + (i + 1) + " of " + count);
             String currentPath = nameBefore + df.format(frame) + nameAfter;
 
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
@@ -540,6 +540,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     outputIpl.setProcessor(tempIpl.getProcessor());
                 }
             }
+
             i++;
         }
 
@@ -907,7 +908,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
-            writeMessage("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
+            writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
@@ -932,7 +933,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Adding image to workspace
-        writeMessage("Adding image (" + outputImageName + ") to workspace");
+        writeStatus("Adding image (" + outputImageName + ") to workspace");
         Image outputImage = new Image(outputImageName, ipl);
         workspace.addImage(outputImage);
 

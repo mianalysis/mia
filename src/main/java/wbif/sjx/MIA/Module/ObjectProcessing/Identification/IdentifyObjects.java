@@ -18,6 +18,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -29,6 +30,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -53,7 +55,7 @@ public class IdentifyObjects extends Module {
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-
+    public static final String MIN_STRIP_WIDTH = "Minimum strip width";
 
     public IdentifyObjects(ModuleCollection modules) {
         super("Identify objects", modules);
@@ -70,15 +72,21 @@ public class IdentifyObjects extends Module {
     public interface VolumeTypes extends Image.VolumeTypes {
     }
 
-    public static void connectedComponentsLabellingMT(ImageStack ist, int connectivity) {
-        int nThreads = Prefs.getThreads();
-
+    public static ImageStack connectedComponentsLabellingMT(ImageStack ist, int connectivity, int minStripWidth) {
         // Calculating strip width
         int imW = ist.getWidth();
         int imH = ist.getHeight();
         int imNSlices = ist.size();
-        int sW = Math.floorDiv(imW, nThreads);
+        int bitDepth = ist.getBitDepth();
+        int nThreads = Prefs.getThreads();
+        int tempSW = Math.floorDiv(imW, nThreads);
+        if (tempSW < minStripWidth) {
+            nThreads = (int) Math.ceil((double) imW / (double) minStripWidth);
+            tempSW = Math.floorDiv(imW, nThreads);
+        }
+        int sW = tempSW;
 
+        MIA.log.writeDebug("Using "+nThreads+" threads");
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
@@ -86,22 +94,25 @@ public class IdentifyObjects extends Module {
         HashMap<Integer, ImageStack> strips = new HashMap<>();
         HashMap<Integer, HashMap<Double, Fragment>> fragments = new HashMap<>();
 
+        MIA.log.writeDebug("Input image shape = " + imW + "_" + imH + "_" + imNSlices + "_" + bitDepth + "_" + sW);
+        MIA.log.writeDebug("Connectivity = "+connectivity);
+
         MIA.log.writeDebug("Labelling strips");
         for (int stripIdx = 0; stripIdx < nThreads; stripIdx++) {
             final int finalStripIdx = stripIdx;
+
+            int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
+            int w;
+            if (finalStripIdx == 0) {
+                w = sW;
+            } else if (finalStripIdx == nThreads - 1) {
+                w = imW - (sW * (nThreads - 1)) + 1;
+            } else {
+                w = sW + 1;
+            }
+
+            ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
             Runnable task = () -> {
-                int x0 = finalStripIdx == 0 ? 0 : (sW * finalStripIdx) - 1;
-                int w;
-                if (finalStripIdx == 0) {
-                    w = sW;
-                } else if (finalStripIdx == nThreads - 1) {
-                    w = imW - (sW * (nThreads - 1)) + 1;
-                } else {
-                    w = sW + 1;
-                }
-
-                ImageStack cropIst = ist.crop(x0, 0, 0, w, imH, imNSlices);
-
                 // Running connected components labelling
                 FloodFillComponentsLabeling3D ffcl3D;
                 try {
@@ -181,8 +192,17 @@ public class IdentifyObjects extends Module {
         }
 
         // If number of groups is greater than 65535, switching stack to 32-bit
-        if (maxGroup > 65535)
-            ist.convertToFloat();
+        if (bitDepth < 32 && maxGroup > 65535) {
+            MIA.log.writeDebug("Converting to 32-bit");
+            ImagePlus tempIpl = new ImagePlus("Temp", ist);
+            ImageTypeConverter.applyConversion(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
+            ist = tempIpl.getImageStack();
+        } else if (bitDepth < 16 && maxGroup > 255) {
+            MIA.log.writeDebug("Converting to 16-bit");
+            ImagePlus tempIpl = new ImagePlus("Temp", ist);
+            ImageTypeConverter.applyConversion(tempIpl, 16, ImageTypeConverter.ScalingModes.CLIP);
+            ist = tempIpl.getImageStack();
+        }
 
         // Restarting the pool
         pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
@@ -190,9 +210,9 @@ public class IdentifyObjects extends Module {
         MIA.log.writeDebug("Labelling image");
         for (int z = 0; z < ist.size(); z++) {
             final int finalZ = z;
+            ImageProcessor ipr = ist.getProcessor(finalZ + 1);
             Runnable task = () -> {
-                ImageProcessor ipr = ist.getProcessor(finalZ + 1);
-                for (int stripIdx = 0; stripIdx < nThreads; stripIdx++) {
+                for (int stripIdx = 0; stripIdx < strips.size(); stripIdx++) {
                     ImageStack strip = strips.get(stripIdx);
                     int x0 = stripIdx == 0 ? 0 : (sW * stripIdx) - 1;
                     HashMap<Double, Fragment> currFragments = fragments.get(stripIdx);
@@ -227,30 +247,29 @@ public class IdentifyObjects extends Module {
         } catch (InterruptedException e) {
             e.printStackTrace(System.err);
         }
-
+        
+        return ist;
+        
     }
 
     public static ObjCollection process(Image inputImage, String outputObjectsName, boolean whiteBackground,
-            boolean singleObject, int connectivity, String type, boolean multithread)
+            boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth)
             throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-        inputImagePlus = inputImagePlus.duplicate();
 
         SpatCal cal = SpatCal.getFromImage(inputImagePlus);
         int nFrames = inputImagePlus.getNFrames();
-
         ObjCollection outputObjects = new ObjCollection(outputObjectsName, cal, nFrames);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            writeMessage("Processing image " + t + " of " + inputImagePlus.getNFrames(), name);
+            writeStatus("Processing image " + t + " of " + inputImagePlus.getNFrames(), name);
 
             // Creating a copy of the input image
             ImagePlus currStack;
             if (inputImagePlus.getNFrames() == 1) {
                 currStack = new Duplicator().run(inputImagePlus);
-
             } else {
                 currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" + inputImagePlus.getNChannels(),
                         "1-" + inputImagePlus.getNSlices(), t + "-" + t);
@@ -262,14 +281,20 @@ public class IdentifyObjects extends Module {
                 InvertIntensity.process(currStack);
 
             // Applying connected components labelling
-            int nThreads = Prefs.getThreads();
-            if (multithread && nThreads > 1) {
-                connectedComponentsLabellingMT(currStack.getStack(), connectivity);
+            MIA.log.writeDebug("Applying labelling");
+            int nThreads = multithread ? Prefs.getThreads() : 1;
+            MIA.log.writeDebug("N threads = " + Prefs.getThreads());
+            if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
+                MIA.log.writeDebug("Using MT connected components labeling");
+                currStack.setStack(connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
             } else {
+                MIA.log.writeDebug("Using non-MT connected components labeling");
                 try {
+                    MIA.log.writeDebug("Using 16-bit labeling");
                     FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
                     currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                 } catch (RuntimeException e2) {
+                    MIA.log.writeDebug("Using 32-bit labeling");
                     FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
                     currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                 }
@@ -335,15 +360,16 @@ public class IdentifyObjects extends Module {
         String type = parameters.getValue(VOLUME_TYPE);
 
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
 
         // Getting options
         int connectivity = getConnectivity(connectivityName);
 
         ObjCollection outputObjects = process(inputImage, outputObjectsName, whiteBackground, singleObject,
-                connectivity, type, multithread);
+                connectivity, type, multithread, minStripWidth);
 
         // Adding objects to workspace
-        writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
+        writeStatus("Adding objects (" + outputObjectsName + ") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing objects
@@ -383,13 +409,35 @@ public class IdentifyObjects extends Module {
                         + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects."));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores."));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true,
+                "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores."));
+        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60,
+                "Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units."));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.get(INPUT_IMAGE));
+        returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
+
+        returnedParameters.add(parameters.get(IDENTIFICATION_SEPARATOR));
+        returnedParameters.add(parameters.get(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.get(SINGLE_OBJECT));
+        returnedParameters.add(parameters.get(CONNECTIVITY));
+        returnedParameters.add(parameters.get(VOLUME_TYPE));
+
+        returnedParameters.add(parameters.get(EXECUTION_SEPARATOR));
+        returnedParameters.add(parameters.get(ENABLE_MULTITHREADING));
+        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING)) {
+            returnedParameters.add(parameters.get(MIN_STRIP_WIDTH));
+        }
+
+        return returnedParameters;
+
     }
 
     @Override

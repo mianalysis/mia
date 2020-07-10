@@ -7,6 +7,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -19,6 +21,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
@@ -30,11 +33,14 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Process.Logging.BasicLogRenderer;
+import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
 import wbif.sjx.common.Exceptions.LongOverflowException;
 
 public class FillHolesByVolume extends Module {
@@ -53,6 +59,7 @@ public class FillHolesByVolume extends Module {
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+    public static final String MIN_STRIP_WIDTH = "Minimum strip width";
 
     public interface BlackWhiteModes {
         String FILL_BLACK_HOLES = "Fill black holes";
@@ -62,48 +69,61 @@ public class FillHolesByVolume extends Module {
 
     }
 
+    public static void main(String[] args) {
+        new ImageJ();
+        ImagePlus ipl = IJ.openImage("C:\\Users\\sc13967\\OneDrive - University of Bristol\\Desktop\\BoneP.tif");
+
+        BasicLogRenderer renderer = new BasicLogRenderer();
+        renderer.setWriteEnabled(Level.DEBUG, true);
+        renderer.setWriteEnabled(Level.STATUS, true);
+        MIA.log.addRenderer(renderer);
+
+        ipl.duplicate().show();
+        FillHolesByVolume.process(ipl, 1000, Float.MAX_VALUE, true, 5000);
+        ipl.duplicate().show();
+
+    }
+
     public FillHolesByVolume(ModuleCollection modules) {
         super("Fill holes by volume", modules);
     }
 
-    public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits, boolean multithread)
-            throws LongOverflowException {
-        // If the units are calibrated, converting them to pixels
-        if (calibratedUnits) {
-            double dppXY = ipl.getCalibration().pixelWidth;
-            double dppZ = ipl.getCalibration().pixelDepth;
-
-            minVolume = minVolume / (dppXY * dppXY * dppZ);
-            maxVolume = maxVolume / (dppXY * dppXY * dppZ);
-
-        }
+    public static void process(ImagePlus ipl, double minVolume, double maxVolume, boolean multithread,
+            int minStripWidth) throws LongOverflowException {
+        String name = new FillHolesByVolume(null).getName();
 
         int count = 0;
         int total = ipl.getNFrames() * ipl.getNChannels();
         int nSlices = ipl.getNSlices();
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             for (int t = 1; t <= ipl.getNFrames(); t++) {
-                writeMessage("Processing stack " + (++count) + " of " + total);
+                writeStatus("Processing stack " + (++count) + " of " + total, name);
 
                 // Creating the current sub-stack
                 MIA.log.writeDebug("Getting substack");
                 ImagePlus currStack;
                 if (ipl.getNFrames() == 1) {
-                    currStack = new Duplicator().run(ipl);
+                    currStack = ipl;
                 } else {
                     currStack = SubHyperstackMaker.makeSubhyperstack(ipl, c + "-" + c, "1-" + nSlices, t + "-" + t);
                 }
+                currStack.updateChannelAndDraw();
 
                 // Applying connected components labelling
                 MIA.log.writeDebug("Applying labelling");
                 int nThreads = multithread ? Prefs.getThreads() : 1;
-                if (multithread && nThreads > 1) {
-                    IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), 26);
+                MIA.log.writeDebug("N threads = " + Prefs.getThreads());
+                if (multithread && nThreads > 1 && minStripWidth < ipl.getWidth()) {
+                    MIA.log.writeDebug("Using MT connected components labeling");
+                    currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), 26, minStripWidth));
                 } else {
+                    MIA.log.writeDebug("Using non-MT connected components labeling");
                     try {
+                        MIA.log.writeDebug("Using 16-bit labeling");
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 16);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     } catch (RuntimeException e2) {
+                        MIA.log.writeDebug("Using 32-bit labeling");
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 32);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     }
@@ -114,7 +134,7 @@ public class FillHolesByVolume extends Module {
                 ImageStack labelIst = currStack.getImageStack();
 
                 ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+                        new LinkedBlockingQueue<>());
 
                 // Storing on a slice-by-slice basis
                 ConcurrentHashMap<Integer, Long> labels = new ConcurrentHashMap<>();
@@ -147,16 +167,16 @@ public class FillHolesByVolume extends Module {
                 } catch (InterruptedException e) {
                     e.printStackTrace(System.err);
                 }
-        
+
                 // Removing pixels with counts outside the limits
                 MIA.log.writeDebug("Identifying holes for removal");
                 Iterator<Integer> iterator = labels.keySet().iterator();
                 while (iterator.hasNext()) {
                     int label = iterator.next();
                     long nPixels = labels.get(label);
-                    if (nPixels >= minVolume && nPixels <= maxVolume) 
+                    if (nPixels >= minVolume && nPixels <= maxVolume)
                         iterator.remove();
-                    
+
                 }
 
                 pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
@@ -164,18 +184,19 @@ public class FillHolesByVolume extends Module {
 
                 // Binarising the input image based on whether the label is still in the list
                 MIA.log.writeDebug("Removing holes");
-                for (int z = 0; z < nSlices; z++) {                    
+                for (int z = 0; z < nSlices; z++) {
                     final int finalZ = z;
                     Runnable task = () -> {
                         final ImageProcessor ipr = ipl.getImageStack().getProcessor(finalZ + 1);
-                        final ImageProcessor labelIpr = labelIst.getProcessor(finalZ+1);
+                        final ImageProcessor labelIpr = labelIst.getProcessor(finalZ + 1);
                         for (int x = 0; x < labelIst.getWidth(); x++) {
                             for (int y = 0; y < labelIst.getHeight(); y++) {
                                 int label = labelIpr.get(x, y);
                                 // int label = (int) labelIst.getVoxel(x, y, finalZ);
                                 if (labels.containsKey(label))
                                     ipr.set(x, y, 0);
-                                    // ipr.setf(x, y, 0);
+                                else if (label > 0)
+                                    ipr.set(x, y, 255);
                             }
                         }
                     };
@@ -190,6 +211,12 @@ public class FillHolesByVolume extends Module {
                 }
                 MIA.log.writeDebug("Hole removal complete");
             }
+        }
+
+        // Ensuring the output is 8-bit
+        if (ipl.getBitDepth() > 8) {
+            MIA.log.writeDebug("Converting back to 8-bit");
+            ImageTypeConverter.applyConversion(ipl, 8, ImageTypeConverter.ScalingModes.CLIP);
         }
     }
 
@@ -220,6 +247,7 @@ public class FillHolesByVolume extends Module {
         double maxVolume = parameters.getValue(MAXIMUM_VOLUME);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+        int minStripWidth = parameters.getValue(MIN_STRIP_WIDTH);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput)
@@ -233,8 +261,19 @@ public class FillHolesByVolume extends Module {
             minVolume = -Float.MAX_VALUE;
         if (!useMaxVolume)
             maxVolume = Float.MAX_VALUE;
+
+        // If the units are calibrated, converting them to pixels
+        if (calibratedUnits) {
+            double dppXY = inputImagePlus.getCalibration().pixelWidth;
+            double dppZ = inputImagePlus.getCalibration().pixelDepth;
+
+            minVolume = minVolume / (dppXY * dppXY * dppZ);
+            maxVolume = maxVolume / (dppXY * dppXY * dppZ);
+
+        }
+
         try {
-            process(inputImagePlus, minVolume, maxVolume, calibratedUnits, multithread);
+            process(inputImagePlus, minVolume, maxVolume, multithread, minStripWidth);
 
         } catch (LongOverflowException e) {
             return Status.FAIL;
@@ -246,7 +285,7 @@ public class FillHolesByVolume extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeMessage("Adding image (" + outputImageName + ") to workspace");
+            writeStatus("Adding image (" + outputImageName + ") to workspace");
             Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
             if (showOutput)
@@ -280,6 +319,8 @@ public class FillHolesByVolume extends Module {
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true,
                 "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores."));
+        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60,
+                "Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units."));
 
     }
 
@@ -310,6 +351,9 @@ public class FillHolesByVolume extends Module {
 
         returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
+        if ((boolean) parameters.getValue(ENABLE_MULTITHREADING)) {
+            returnedParameters.add(parameters.get(MIN_STRIP_WIDTH));
+        }
 
         return returnedParameters;
 

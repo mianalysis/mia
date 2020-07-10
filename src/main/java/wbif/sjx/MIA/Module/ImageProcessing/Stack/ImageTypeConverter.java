@@ -225,7 +225,7 @@ public class ImageTypeConverter extends Module {
         // Adding output image to workspace if necessary
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            writeMessage("Adding image ("+outputImageName+") to workspace");
+            writeStatus("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             setLUTs(outputImage,luts);
             workspace.addImage(outputImage);
