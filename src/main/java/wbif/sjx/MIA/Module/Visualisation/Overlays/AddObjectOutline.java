@@ -6,8 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PolygonRoi;
@@ -67,6 +66,8 @@ public class AddObjectOutline extends Overlay {
 
     public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, double lineInterpolation, double lineWidth,
             HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
+        String name = new AddObjectOutline(null).getName();
+        
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -75,11 +76,21 @@ public class AddObjectOutline extends Overlay {
                 ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
             }
 
+            // Counting number of overlays to add
+            int tempTotal = 0;
+            int nFrames = renderInAllFrames ? ipl.getNFrames() : 1;
+            for (Obj object : inputObjects.values()) {
+                double[][] extents = object.getExtents(true, false);
+                tempTotal = tempTotal + ((int) extents[2][1] - (int) extents[2][0] + 1) * nFrames;
+            }
+            int total = tempTotal;
+
             int nThreads = multithread ? Prefs.getThreads() : 1;
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger(1);
             for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
@@ -110,6 +121,7 @@ public class AddObjectOutline extends Overlay {
                             float hue = hues.get(object.getID());
                             addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), lineInterpolation,
                                     lineWidth, renderInAllFrames, finalT, finalZ);
+                                    writeStatus("Rendered "+count+" of "+total+" ("+Math.floorDiv(100*count.getAndIncrement(),total)+"%)", name);
                         };
                         pool.submit(task);
                     }

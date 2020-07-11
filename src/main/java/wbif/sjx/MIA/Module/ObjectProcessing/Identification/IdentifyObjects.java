@@ -86,7 +86,7 @@ public class IdentifyObjects extends Module {
         }
         int sW = tempSW;
 
-        MIA.log.writeDebug("Using " + nThreads + " threads");
+        // MIA.log.writeDebug("Using " + nThreads + " threads");
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
@@ -94,10 +94,10 @@ public class IdentifyObjects extends Module {
         HashMap<Integer, ImageStack> strips = new HashMap<>();
         HashMap<Integer, HashMap<Double, Fragment>> fragments = new HashMap<>();
 
-        MIA.log.writeDebug("Input image shape = " + imW + "_" + imH + "_" + imNSlices + "_" + bitDepth + "_" + sW);
-        MIA.log.writeDebug("Connectivity = " + connectivity);
+        // MIA.log.writeDebug("Input image shape = " + imW + "_" + imH + "_" + imNSlices + "_" + bitDepth + "_" + sW);
+        // MIA.log.writeDebug("Connectivity = " + connectivity);
 
-        MIA.log.writeDebug("Labelling strips");
+        // MIA.log.writeDebug("Labelling strips");
         for (int stripIdx = 0; stripIdx < nThreads; stripIdx++) {
             final int finalStripIdx = stripIdx;
 
@@ -153,7 +153,7 @@ public class IdentifyObjects extends Module {
         }
 
         // Processing overlapping regions, adding links
-        MIA.log.writeDebug("Processing overlap");
+        // MIA.log.writeDebug("Processing overlap");
         for (int stripIdx = 1; stripIdx < nThreads; stripIdx++) {
             ImageStack stripL = strips.get(stripIdx - 1);
             ImageStack stripR = strips.get(stripIdx);
@@ -181,7 +181,7 @@ public class IdentifyObjects extends Module {
         }
 
         // Iterating over all RegionObjs, assigning groups
-        MIA.log.writeDebug("Assigning groups");
+        // MIA.log.writeDebug("Assigning groups");
         int maxGroup = 0;
         for (HashMap<Double, Fragment> currFragments : fragments.values()) {
             for (Fragment fragment : currFragments.values()) {
@@ -193,12 +193,12 @@ public class IdentifyObjects extends Module {
 
         // If number of groups is greater than 65535, switching stack to 32-bit
         if (bitDepth < 32 && maxGroup > 65535) {
-            MIA.log.writeDebug("Converting to 32-bit");
+            // MIA.log.writeDebug("Converting to 32-bit");
             ImagePlus tempIpl = new ImagePlus("Temp", ist);
             ImageTypeConverter.applyConversion(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
             ist = tempIpl.getImageStack();
         } else if (bitDepth < 16 && maxGroup > 255) {
-            MIA.log.writeDebug("Converting to 16-bit");
+            // MIA.log.writeDebug("Converting to 16-bit");
             ImagePlus tempIpl = new ImagePlus("Temp", ist);
             ImageTypeConverter.applyConversion(tempIpl, 16, ImageTypeConverter.ScalingModes.CLIP);
             ist = tempIpl.getImageStack();
@@ -207,7 +207,7 @@ public class IdentifyObjects extends Module {
         // Restarting the pool
         pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 
-        MIA.log.writeDebug("Labelling image");
+        // MIA.log.writeDebug("Labeling image");
         for (int z = 0; z < ist.size(); z++) {
             final int finalZ = z;
             ImageProcessor ipr = ist.getProcessor(finalZ + 1);
@@ -282,21 +282,21 @@ public class IdentifyObjects extends Module {
                     
             // Applying connected components labelling
             if (!singleObject) {
-                MIA.log.writeDebug("Applying labelling");
+                // MIA.log.writeDebug("Applying labelling");
                 int nThreads = multithread ? Prefs.getThreads() : 1;
-                MIA.log.writeDebug("N threads = " + Prefs.getThreads());
+                // MIA.log.writeDebug("N threads = " + Prefs.getThreads());
                 if (nThreads > 1 && minStripWidth < currStack.getWidth()) {
-                    MIA.log.writeDebug("Using MT connected components labeling");
+                    // MIA.log.writeDebug("Using MT connected components labeling");
                     currStack.setStack(
                             connectedComponentsLabellingMT(currStack.getStack(), connectivity, minStripWidth));
                 } else {
-                    MIA.log.writeDebug("Using non-MT connected components labeling");
+                    // MIA.log.writeDebug("Using non-MT connected components labeling");
                     try {
-                        MIA.log.writeDebug("Using 16-bit labeling");
+                        // MIA.log.writeDebug("Using 16-bit labeling");
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 16);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     } catch (RuntimeException e2) {
-                        MIA.log.writeDebug("Using 32-bit labeling");
+                        // MIA.log.writeDebug("Using 32-bit labeling");
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, 32);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     }
@@ -304,7 +304,7 @@ public class IdentifyObjects extends Module {
             }
 
             // Converting image to objects
-            MIA.log.writeDebug("Processing objects");
+            // MIA.log.writeDebug("Processing objects");
             Image tempImage = new Image("Temp image", currStack);
             ObjCollection currOutputObjects = tempImage.convertImageToObjects(type, outputObjectsName, singleObject);
 
