@@ -129,8 +129,8 @@ public abstract class Module extends Ref implements Comparable {
             DecimalFormat df = new DecimalFormat("#.0");
 
             String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
-                    + ", module \"" + getName() + "\"" + ", file \"" + workspace.getMetadata().getFile() + ", date/time = "
-                    + dateTime;
+                    + ", module \"" + getName() + "\"" + ", date/time = " + dateTime + ", file \""
+                    + workspace.getMetadata().getFile();
 
             MIA.log.writeMemory(memoryMessage);
 
@@ -235,7 +235,7 @@ public abstract class Module extends Ref implements Comparable {
 
     public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
-        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, ParameterCollection> collections = parameterGroup.getCollections(false);
         for (ParameterCollection collection : collections.values()) {
             for (Parameter currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {
@@ -396,7 +396,7 @@ public abstract class Module extends Ref implements Comparable {
             PartnerRef newRef = ref.duplicate();
             if (newRef == null)
                 continue;
-                newPartnerRefs.add(newRef);
+            newPartnerRefs.add(newRef);
         }
 
         return newModule;
@@ -445,7 +445,7 @@ public abstract class Module extends Ref implements Comparable {
         if (map.getNamedItem("ID") == null) {
             this.moduleID = String.valueOf(System.currentTimeMillis());
             try {
-                Thread.sleep(5);  // This prevents the next module ID clashing with this one
+                Thread.sleep(5); // This prevents the next module ID clashing with this one
             } catch (InterruptedException e) {
             }
         } else {

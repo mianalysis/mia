@@ -35,6 +35,7 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.common.Analysis.Volume.PointSurfaceSeparatorCalculator;
 import wbif.sjx.common.Object.Point;
 
 public class RelateManyToOne extends Module {
@@ -263,7 +264,7 @@ public class RelateManyToOne extends Module {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement()+" of "+total+" objects", moduleName);                   
+                    writeStatus("Initialised " + count.getAndIncrement() + " of " + total + " objects", moduleName);
                 };
                 pool.submit(task);
             }
@@ -273,7 +274,7 @@ public class RelateManyToOne extends Module {
             if (!child.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     child.getCoordinateSet().calculateSurface(child.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement()+" of "+total+" objects", moduleName); 
+                    writeStatus("Initialised " + count.getAndIncrement() + " of " + total + " objects", moduleName);
                 };
                 pool.submit(task);
             }
@@ -331,6 +332,7 @@ public class RelateManyToOne extends Module {
                 } else {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+
                 }
 
                 writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
