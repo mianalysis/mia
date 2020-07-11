@@ -258,28 +258,16 @@ public class RelateManyToOne extends Module {
         final AtomicInteger count = new AtomicInteger(1);
         int numberOfParents = parentObjects.size();
         int numberOfChildren = childObjects.size();
-        int total = numberOfParents + numberOfChildren;
 
         for (Obj parent : parentObjects.values()) {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement() + " of " + total + " objects", moduleName);
+                    writeStatus("Initialised " + count.getAndIncrement() + " of " + numberOfParents + " objects", moduleName);
                 };
                 pool.submit(task);
             }
         }
-
-        for (Obj child : childObjects.values()) {
-            if (!child.hasCalculatedSurface()) {
-                Runnable task = () -> {
-                    child.getCoordinateSet().calculateSurface(child.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement() + " of " + total + " objects", moduleName);
-                };
-                pool.submit(task);
-            }
-        }
-
         pool.shutdown();
 
         try {

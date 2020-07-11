@@ -372,16 +372,15 @@ public class Obj extends Volume {
             return (Roi) rois.get(slice).clone();
 
         // Getting the image corresponding to this slice
-        SpatCal newCal = new SpatCal(spatCal.getDppXY(), spatCal.getDppZ(), spatCal.getUnits(), spatCal.getWidth(),
-                spatCal.getHeight(), 1);
-        Obj sliceObj = new Obj(getVolumeType(), "Slice", ID, newCal, nFrames);
-        setSlicePoints(sliceObj.coordinateSet, slice);
+        Volume sliceVol = getSlice(slice);
+        Obj sliceObj = new Obj(sliceVol.getVolumeType(), "Slice", ID, sliceVol.getSpatialCalibration(), nFrames);
+        sliceObj.setCoordinateSet(sliceVol.getCoordinateSet());
 
         // Checking if the object exists in this slice
-        if (sliceObj.size() == 0)
+        if (sliceVol.size() == 0)
             return null;
 
-        ObjCollection objectCollection = new ObjCollection("SliceObjects", newCal, nFrames);
+        ObjCollection objectCollection = new ObjCollection("SliceObjects", sliceVol.getSpatialCalibration(), nFrames);
         objectCollection.add(sliceObj);
 
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objectCollection,
@@ -434,11 +433,6 @@ public class Obj extends Volume {
 
     }
 
-    public void setSlicePoints(CoordinateSet sliceCoordinateSet, int slice) {
-        for (Point<Integer> point : coordinateSet)
-            if (point.getZ() == slice)
-                sliceCoordinateSet.add(point);
-    }
 
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to generate this image

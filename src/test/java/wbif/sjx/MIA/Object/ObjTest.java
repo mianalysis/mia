@@ -305,11 +305,6 @@ public class ObjTest {
     }
 
     @Test @Disabled
-    public void testGetSlicePoints() {
-
-    }
-
-    @Test @Disabled
     public void testConvertObjToImage() {
 
     }

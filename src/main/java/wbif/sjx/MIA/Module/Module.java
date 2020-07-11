@@ -124,13 +124,13 @@ public abstract class Module extends Ref implements Comparable {
         if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
-            String dateTime = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss").format(new Date());
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date());
 
             DecimalFormat df = new DecimalFormat("#.0");
 
             String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
-                    + ", module \"" + getName() + "\"" + ", date/time = " + dateTime + ", file \""
-                    + workspace.getMetadata().getFile();
+                    + ", MODULE = \"" + getName() + "\"" + ", DATE/TIME = " + dateTime + ", FILE = \""
+                    + workspace.getMetadata().getFile()+"\"";
 
             MIA.log.writeMemory(memoryMessage);
 
