@@ -171,7 +171,7 @@ public class AddObjectOutline extends Overlay {
             // Applying interpolation to reduce complexity of line
             if (lineInterpolation != 1 && roi.getType() == Roi.TRACED_ROI
                     && roi.getFloatPolygon().npoints > lineInterpolation * 2) {
-                roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, false), roi.getType());
+                roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, true), roi.getType());
             }
 
             if (ipl.isHyperStack()) {
