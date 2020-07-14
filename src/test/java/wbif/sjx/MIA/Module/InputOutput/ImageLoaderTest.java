@@ -1119,7 +1119,7 @@ public class ImageLoaderTest extends ModuleTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.IMAGE_SEQUENCE);
-        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+MIA.getSlashes()+"\SeqZ{0000}.tif");
+        imageFileLoader.updateParameterValue(ImageLoader.SEQUENCE_ROOT_NAME, new File(pathToImage).getParent()+MIA.getSlashes()+"SeqZ{0000}.tif");
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE, "Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3-end-2");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
