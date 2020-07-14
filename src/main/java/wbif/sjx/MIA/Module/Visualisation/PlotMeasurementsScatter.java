@@ -93,7 +93,7 @@ public class PlotMeasurementsScatter extends Module {
         cs[0] = new CumStat();
         cs[1] = new CumStat();
 
-        writeMessage("Getting measurements to plot");
+        writeStatus("Getting measurements to plot");
         int iter = 0;
         for (Obj inputObject:inputObjects.values()) {
             measurementValues1[iter] = inputObject.getMeasurement(measurement1).getValue();
@@ -110,7 +110,7 @@ public class PlotMeasurementsScatter extends Module {
 
         // Creating the scatter plot
         if (useColour) {
-            writeMessage("Plotting "+measurement1+", " + measurement2+" and "+measurement3);
+            writeStatus("Plotting "+measurement1+", " + measurement2+" and "+measurement3);
 
             String title = "Scatter plot of " + measurement1 + ", " + measurement2+" and "+measurement3;
             Plot plot = new Plot(title, measurement1, measurement2);
@@ -145,7 +145,7 @@ public class PlotMeasurementsScatter extends Module {
             plot.show();
 
         } else {
-            writeMessage("Plotting "+measurement1+" and "+measurement2);
+            writeStatus("Plotting "+measurement1+" and "+measurement2);
 
             // Creating the plot
             String title = "Scatter plot of " + measurement1 + " and " + measurement2;

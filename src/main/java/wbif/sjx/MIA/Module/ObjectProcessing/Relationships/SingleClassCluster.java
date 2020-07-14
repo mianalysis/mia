@@ -249,7 +249,7 @@ public class SingleClassCluster extends Module {
             int count = 1;
             int total = temporalLimits[1]-temporalLimits[0]+1;
             for (int f=temporalLimits[0];f<=temporalLimits[1];f++) {
-                writeMessage("Processing frame "+(count++)+" of "+total);
+                writeStatus("Processing frame "+(count++)+" of "+total);
                 // Getting locations in current frame
                 List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
                 for (Obj inputObject:inputObjects.values()) {
@@ -270,14 +270,14 @@ public class SingleClassCluster extends Module {
             }
         } else {
             // Adding points to collection
-            writeMessage("Adding points to clustering algorithm");
+            writeStatus("Adding points to clustering algorithm");
             List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
             for (Obj inputObject:inputObjects.values()) {
                 locations.add(new LocationWrapper(inputObject));
             }
 
             // Running clustering system
-            writeMessage("Running clustering algorithm");
+            writeStatus("Running clustering algorithm");
             switch (clusteringAlgorithm) {
                 case ClusteringAlgorithms.KMEANSPLUSPLUS:
                     runKMeansPlusPlus(outputObjects,locations,width,height,nSlices,dppXY,dppZ,calibratedUnits);
@@ -300,7 +300,7 @@ public class SingleClassCluster extends Module {
             }
         }
 
-        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
+        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing clustered objects colour coded by parent

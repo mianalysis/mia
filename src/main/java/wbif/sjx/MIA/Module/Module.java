@@ -100,7 +100,7 @@ public abstract class Module extends Ref implements Comparable {
     // PUBLIC METHODS
 
     public Status execute(Workspace workspace) {
-        writeMessage("Processing");
+        writeStatus("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
@@ -110,13 +110,13 @@ public abstract class Module extends Ref implements Comparable {
 
         switch (status) {
             case PASS:
-                writeMessage("Completed");
+                writeStatus("Completed");
                 break;
             case TERMINATE:
-                writeMessage("Completed (ending analysis early)");
+                writeStatus("Completed (ending analysis early)");
                 break;
             case FAIL:
-                writeMessage("Did not complete");
+                writeStatus("Did not complete");
                 break;
         }
 
@@ -124,13 +124,13 @@ public abstract class Module extends Ref implements Comparable {
         if (MIA.getMainRenderer().isWriteEnabled(LogRenderer.Level.MEMORY)) {
             double totalMemory = Runtime.getRuntime().totalMemory();
             double usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
-            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss").format(new Date());
 
             DecimalFormat df = new DecimalFormat("#.0");
 
             String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
-                    + ", module \"" + getName() + "\"" + ", file \"" + workspace.getMetadata().getFile() + ", time "
-                    + dateTime;
+                    + ", MODULE = \"" + getName() + "\"" + ", DATE/TIME = " + dateTime + ", FILE = \""
+                    + workspace.getMetadata().getFile()+"\"";
 
             MIA.log.writeMemory(memoryMessage);
 
@@ -235,7 +235,7 @@ public abstract class Module extends Ref implements Comparable {
 
     public static <T extends Parameter> void addParameterGroupParameters(ParameterGroup parameterGroup, Class<T> type,
             LinkedHashSet<T> parameters) {
-        LinkedHashMap<Integer,ParameterCollection> collections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, ParameterCollection> collections = parameterGroup.getCollections(false);
         for (ParameterCollection collection : collections.values()) {
             for (Parameter currParameter : collection.values()) {
                 if (type.isInstance(currParameter)) {
@@ -396,7 +396,7 @@ public abstract class Module extends Ref implements Comparable {
             PartnerRef newRef = ref.duplicate();
             if (newRef == null)
                 continue;
-                newPartnerRefs.add(newRef);
+            newPartnerRefs.add(newRef);
         }
 
         return newModule;
@@ -405,12 +405,12 @@ public abstract class Module extends Ref implements Comparable {
 
     // PROTECTED METHODS
 
-    public void writeMessage(String message) {
+    public void writeStatus(String message) {
         if (verbose)
             MIA.log.writeStatus("[" + name + "] " + message);
     }
 
-    protected static void writeMessage(String message, String name) {
+    protected static void writeStatus(String message, String name) {
         if (verbose)
             MIA.log.writeStatus("[" + name + "] " + message);
     }
@@ -445,7 +445,7 @@ public abstract class Module extends Ref implements Comparable {
         if (map.getNamedItem("ID") == null) {
             this.moduleID = String.valueOf(System.currentTimeMillis());
             try {
-                Thread.sleep(5);  // This prevents the next module ID clashing with this one
+                Thread.sleep(5); // This prevents the next module ID clashing with this one
             } catch (InterruptedException e) {
             }
         } else {

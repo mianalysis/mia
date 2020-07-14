@@ -96,14 +96,14 @@ public class WekaProbabilityMaps extends Module {
             return null;
         }
 
-        writeMessage("Loading classifier");
+        writeStatus("Loading classifier");
         try {
             wekaSegmentation.loadClassifier(new FileInputStream(classifierFilePath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
         }
-        writeMessage("Classifier loaded");
+        writeStatus("Classifier loaded");
 
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
@@ -163,7 +163,7 @@ public class WekaProbabilityMaps extends Module {
             }
 
             count = count + endingBlock - startingBlock + 1;
-            writeMessage("Processed " + count + " of " + slices + " images");
+            writeStatus("Processed " + count + " of " + slices + " images");
 
         }
 

@@ -169,7 +169,7 @@ public class AddTracks extends Overlay {
 
             addOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
 
-            writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
         }
 

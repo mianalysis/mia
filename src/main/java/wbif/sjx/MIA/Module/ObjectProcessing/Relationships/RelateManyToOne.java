@@ -1,26 +1,42 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
-import ij.ImagePlus;
-import ij.Prefs;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Deprecated.RelateObjects;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.common.Object.Point;
-
-import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import ij.ImagePlus;
+import ij.Prefs;
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Deprecated.RelateObjects;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.common.Analysis.Volume.PointSurfaceSeparatorCalculator;
+import wbif.sjx.common.Object.Point;
 
 public class RelateManyToOne extends Module {
     public static final String INPUT_SEPARATOR = "Objects input";
@@ -82,7 +98,6 @@ public class RelateManyToOne extends Module {
         String WAS_LINKED = "WAS_LINKED_${PARENT}";
 
     }
-    
 
     public RelateManyToOne(ModuleCollection modules) {
         super("Relate many-to-one", modules);
@@ -152,7 +167,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
 
-                writeMessage("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
                         moduleName);
 
             };
@@ -180,7 +195,7 @@ public class RelateManyToOne extends Module {
         // Ensuring all parent objects have a calculated surface
         for (Obj parent : parentObjects.values())
             if (!parent.hasCalculatedSurface())
-                parent.getCoordinateSet().calculateSurface(parent.is2D(), nThreads);
+                parent.getCoordinateSet().calculateSurface(parent.is2D());
 
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
@@ -217,7 +232,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
-                writeMessage("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
                         moduleName);
             };
             pool.submit(task);
@@ -232,22 +247,39 @@ public class RelateManyToOne extends Module {
 
     public static void linkByCentroidToSurfaceProximity(ObjCollection parentObjects, ObjCollection childObjects,
             boolean linkInSameFrame, double linkingDistance, String insideOutsideMode, boolean calcFrac, int nThreads) {
-        String moduleName = RelateObjects.class.getSimpleName();
+        String moduleName = new RelateManyToOne(null).getName();
         String measurementNamePx = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
         String measurementNameCal = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
 
-        AtomicInteger count = new AtomicInteger(1);
-        int numberOfChildren = childObjects.size();
-
         // Ensuring all parent objects have a calculated surface
-        for (Obj parent : parentObjects.values()) {
-            if (!parent.hasCalculatedSurface())
-                parent.getCoordinateSet().calculateSurface(parent.is2D(), nThreads);
-        }
-
+        writeStatus("Initialising object surfaces", moduleName);
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
-        
+        final AtomicInteger count = new AtomicInteger(1);
+        int numberOfParents = parentObjects.size();
+        int numberOfChildren = childObjects.size();
+
+        for (Obj parent : parentObjects.values()) {
+            if (!parent.hasCalculatedSurface()) {
+                Runnable task = () -> {
+                    parent.getCoordinateSet().calculateSurface(parent.is2D());
+                    writeStatus("Initialised " + count.getAndIncrement() + " of " + numberOfParents + " objects", moduleName);
+                };
+                pool.submit(task);
+            }
+        }
+        pool.shutdown();
+
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            e.printStackTrace(System.err);
+        }
+
+        pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+        count.set(1);
+
+        writeStatus("Processing objects", moduleName);
         for (Obj childObject : childObjects.values()) {
             Runnable task = () -> {
                 double minDist = Double.MAX_VALUE;
@@ -288,9 +320,10 @@ public class RelateManyToOne extends Module {
                 } else {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
+
                 }
 
-                writeMessage("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
                         moduleName);
             };
             pool.submit(task);
@@ -428,7 +461,7 @@ public class RelateManyToOne extends Module {
 
             }
 
-            writeMessage("Compared " + Math.floorDiv(100 * childObjects.size() * ++count, nCombined) + "% of pairs");
+            writeStatus("Compared " + Math.floorDiv(100 * childObjects.size() * ++count, nCombined) + "% of pairs");
 
         }
     }
@@ -718,8 +751,8 @@ public class RelateManyToOne extends Module {
                         distCentSurfCal.setObjectsName(childObjectsName);
                         returnedRefs.add(distCentSurfCal);
 
-                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY) && 
-                        (boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE)) {
+                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)
+                                && (boolean) parameters.getValue(CALCULATE_FRACTIONAL_DISTANCE)) {
                             measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObjectName);
                             ObjMeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
                             distCentSurfFrac.setDescription(

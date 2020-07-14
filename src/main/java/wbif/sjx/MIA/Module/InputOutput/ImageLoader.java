@@ -44,11 +44,11 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -63,13 +63,11 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
@@ -84,7 +82,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMPORT_MODE = "Import mode";
     public static final String READER = "Reader";
-    public static final String NUMBER_OF_ZEROES = "Number of zeroes";
+    public static final String SEQUENCE_ROOT_NAME = "Sequence root name";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
     public static final String EXTENSION = "Extension";
@@ -119,7 +117,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
 
     public ImageLoader(ModuleCollection modules) {
-        super("Load image", modules);        
+        super("Load image", modules);
     }
 
     public interface ImportModes {
@@ -391,7 +389,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     ipl.setProcessor(ip);
 
                     if (localVerbose)
-                        writeMessage("Loaded image " + (++count) + " of " + nTotal);
+                        writeStatus("Loaded image " + (++count) + " of " + nTotal);
 
                     countT++;
                 }
@@ -465,28 +463,40 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, String channels, String frames, int[] crop,
+    public ImagePlus getImageSequence(String rootName, Metadata metadata, String channels, String frames, int[] crop,
             double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
+
+        String absolutePath = metadata.insertMetadataValues(rootName);
+
         // Number format
+        Pattern pattern = Pattern.compile("Z\\{0+}");
+        Matcher matcher = pattern.matcher(absolutePath);
+        int numberOfZeroes = 0;
+        String nameBefore = "";
+        String nameAfter = "";
+        if (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            numberOfZeroes = end - start - 3; // Removing 3 for the "Z{}"
+            nameBefore = absolutePath.substring(0, start);
+            nameAfter = absolutePath.substring(end);
+        } else {
+            MIA.log.writeWarning("Zero location in sequence filename uncertain.");
+            return null;
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < numberOfZeroes; i++)
             stringBuilder.append("0");
         DecimalFormat df = new DecimalFormat(stringBuilder.toString());
-
-        // Getting fragments of the filepath
-        String rootPath = rootFile.getParent() + MIA.getSlashes();
-        String rootName = rootFile.getName();
-        int numStart = FilenameUtils.removeExtension(rootName).length() - numberOfZeroes;
-        rootName = rootFile.getName().substring(0, numStart);
-        String extension = FilenameUtils.getExtension(rootFile.getName());
 
         // Determining the number of images to load
         int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames, true);
 
         if (framesList[framesList.length - 1] == Integer.MAX_VALUE) {
             int idx = framesList[0];
-            while (new File(rootPath + rootName + df.format(idx) + "." + extension).exists())
+            while (new File(nameBefore + df.format(idx) + nameAfter).exists())
                 idx++;
 
             framesList = CommaSeparatedStringInterpreter.extendRangeToEnd(framesList, idx - 1);
@@ -494,7 +504,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, "1", "1" };
-        ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(), 1, dimRanges, crop, scaleFactors, scaleMode,
+
+        ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, 1, dimRanges, crop, scaleFactors, scaleMode,
                 intRange, manualCal, false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
@@ -512,8 +523,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, count, 1, bitDepth);
 
         for (int frame : framesList) {
-            writeMessage("Loading image " + (i + 1) + " of " + count);
-            String currentPath = rootPath + rootName + df.format(frame) + "." + extension;
+            writeStatus("Loading image " + (i + 1) + " of " + count);
+            String currentPath = nameBefore + df.format(frame) + nameAfter;
 
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
@@ -529,6 +540,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     outputIpl.setProcessor(tempIpl.getProcessor());
                 }
             }
+
             i++;
         }
 
@@ -683,7 +695,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String absolutePath = metadata.insertMetadataValues(genericFormat);
         String filepath = FilenameUtils.getFullPath(absolutePath);
         String filename = FilenameUtils.getName(absolutePath);
-        
+
         // If name includes "*" get first instance of wildcard
         if (filename.contains("*")) {
             String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
@@ -727,7 +739,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
-        int numberOfZeroes = parameters.getValue(NUMBER_OF_ZEROES);
+        String sequenceRootName = parameters.getValue(SEQUENCE_ROOT_NAME);
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
@@ -819,14 +831,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     break;
 
                 case ImportModes.IMAGE_SEQUENCE:
-                    file = workspace.getMetadata().getFile();
-                    if (!file.exists()) {
-                        MIA.log.write("File \"" + file.getAbsolutePath() + "\" not found.  Skipping file.",
-                                LogRenderer.Level.WARNING);
-                        return Status.FAIL;
-                    }
-
-                    ipl = getImageSequence(file, numberOfZeroes, channels, frames, crop, scaleFactors, scaleMode,
+                    Metadata metadata = (Metadata) workspace.getMetadata().clone();
+                    ipl = getImageSequence(sequenceRootName, metadata, channels, frames, crop, scaleFactors, scaleMode,
                             intRange, setCalibration);
 
                     break;
@@ -835,7 +841,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     String path = null;
                     switch (nameFormat) {
                         case NameFormats.HUYGENS:
-                            Metadata metadata = (Metadata) workspace.getMetadata().clone();
+                            metadata = (Metadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
                             path = getHuygensPath(metadata);
                             break;
@@ -902,7 +908,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
-            writeMessage("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
+            writeStatus("Setting spatial calibration (XY = " + xyCal + ", Z = " + zCal + ")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
@@ -927,7 +933,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Adding image to workspace
-        writeMessage("Adding image (" + outputImageName + ") to workspace");
+        writeStatus("Adding image (" + outputImageName + ") to workspace");
         Image outputImage = new Image(outputImageName, ipl);
         workspace.addImage(outputImage);
 
@@ -962,7 +968,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 "Set the reader for importing the image.<br>" + "<br>- \"" + Readers.BIOFORMATS
                         + "\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).<br>"
                         + "<br>- \"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader."));
-        parameters.add(new IntegerP(NUMBER_OF_ZEROES, this, 4, "Number of digits in image sequence suffix."));
+        parameters.add(new StringP(SEQUENCE_ROOT_NAME, this, ""));
         parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL,
                 "Method to use for generation of the input filename.<br>" + "<br>- \"" + NameFormats.GENERIC
                         + "\" (default) will generate a name from metadata values stored in the current workspace.<br>"
@@ -1045,7 +1051,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 break;
 
             case ImportModes.IMAGE_SEQUENCE:
-                returnedParameters.add(parameters.getParameter(NUMBER_OF_ZEROES));
+                returnedParameters.add(parameters.getParameter(SEQUENCE_ROOT_NAME));
+                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
 
             case ImportModes.MATCHING_FORMAT:
@@ -1061,7 +1070,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     case NameFormats.GENERIC:
                         returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
                         returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
-                        MetadataRefCollection metadataRefs = modules.getMetadataRefs(this);
+                        metadataRefs = modules.getMetadataRefs(this);
                         parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                         break;
                 }

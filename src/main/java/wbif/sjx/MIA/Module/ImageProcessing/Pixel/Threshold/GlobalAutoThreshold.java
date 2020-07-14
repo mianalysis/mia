@@ -85,7 +85,7 @@ public class GlobalAutoThreshold extends Module {
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    writeMessage("Processing image " + (++count) + " of " + total);
+                    writeStatus("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c, z, t);
 
                     int[] tempHist = inputImagePlus.getProcessor().getHistogram();
@@ -171,7 +171,7 @@ public class GlobalAutoThreshold extends Module {
         }
 
         // Calculating the threshold based on the selected algorithm
-        writeMessage("Applying "+algorithm+" threshold (multiplier = "+thrMult+" x)");
+        writeStatus("Applying "+algorithm+" threshold (multiplier = "+thrMult+" x)");
         threshold = calculateThreshold(inputImagePlus,algorithm,thrMult,useLowerLim,lowerLim);
 
         if (outputMode.equals(OutputModes.CALCULATE_AND_APPLY)) {

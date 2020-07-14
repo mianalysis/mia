@@ -100,7 +100,7 @@ public class ResolveCoOccurrence extends Module {
                     overlap2[1] = (double) object1.getID();
                 }
             }
-            writeMessage("Compared "+(count)+" pairs of "+totalPairs);
+            writeStatus("Compared "+(count)+" pairs of "+totalPairs);
         }
 
         reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2);
@@ -141,7 +141,7 @@ public class ResolveCoOccurrence extends Module {
                 }
                 count++;
             }
-            writeMessage("Compared "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
+            writeStatus("Compared "+Math.floorDiv(100*count,totalPairs)+"% of pairs");
         }
 
         reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2);

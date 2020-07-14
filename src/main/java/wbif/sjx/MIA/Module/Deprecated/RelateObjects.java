@@ -1,20 +1,37 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
+import java.util.Iterator;
+
 import ij.ImagePlus;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.common.Analysis.Volume.PointSurfaceSeparatorCalculator;
 import wbif.sjx.common.Object.Point;
-
-import java.util.Iterator;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -154,7 +171,7 @@ public class RelateObjects extends Module {
 
                         Point<Double> currentPoint = new Point<>(childXCent, childYCent, childZCentSlice);
                         dist = parentObject.getPointSurfaceSeparation(currentPoint,true);
-
+                        
                         if (Math.abs(dist) < Math.abs(minDist)) {
                             if (limitLinking && Math.abs(dist) > linkingDistance) continue;
                             minDist = dist;
@@ -181,7 +198,7 @@ public class RelateObjects extends Module {
             // Adding measurements to the input object
             applyMeasurements(childObject,parentObjects,minDist,minLink);
 
-            writeMessage("Processed "+(iter++)+" of "+numberOfChildren+" objects");
+            writeStatus("Processed "+(iter++)+" of "+numberOfChildren+" objects");
 
         }
     }
@@ -368,7 +385,7 @@ public class RelateObjects extends Module {
 
             }
 
-            writeMessage("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
+            writeStatus("Compared "+Math.floorDiv(100*childObjects.size()*++count,nCombined)+"% of pairs");
 
         }
     }
@@ -466,22 +483,22 @@ public class RelateObjects extends Module {
 
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
-                writeMessage("Relating objects by matching ID numbers");
+                writeStatus("Relating objects by matching ID numbers");
                 linkMatchingIDs(parentObjects,childObjects);
                 break;
 
             case RelateModes.PROXIMITY:
-                writeMessage("Relating objects by proximity");
+                writeStatus("Relating objects by proximity");
                 proximity(parentObjects,childObjects);
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
-                writeMessage("Relating objects by proximity to children");
+                writeStatus("Relating objects by proximity to children");
                 proximityToChildren(parentObjects,childObjects);
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                writeMessage("Relating objects by spatial overlap");
+                writeStatus("Relating objects by spatial overlap");
                 spatialOverlap(parentObjects,childObjects,minOverlap,centroidOverlap,linkInSameFrame);
                 break;
 

@@ -199,6 +199,7 @@ public class InputControl extends Module {
 
         // If the input is a tif or video, we can skip this
         if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("zip")
                 || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff")
                 || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi")
                 || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {
@@ -270,6 +271,7 @@ public class InputControl extends Module {
 
         // If the input is a tif or video, we can skip this
         if (FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tif")
+                || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("zip")
                 || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("tiff")
                 || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("avi")
                 || FilenameUtils.getExtension(inputFile.getName()).equalsIgnoreCase("mp4")) {

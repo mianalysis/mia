@@ -92,7 +92,7 @@ public class CreateMeasurementMap extends Module {
         int count = 0;
         int nTotal = objects.size();
         for (Obj object:objects.values()) {
-            if (message != null) writeMessage("Processing object "+(++count)+" of "+nTotal,message);
+            if (message != null) writeStatus("Processing object "+(++count)+" of "+nTotal,message);
             // Getting measurement value.  Skip if null or NaN.
             Measurement measurement = object.getMeasurement(measurementName);
             if (measurement == null) continue;
@@ -118,7 +118,7 @@ public class CreateMeasurementMap extends Module {
         int count = 0;
         int nTotal = objects.size();
         for (Obj object:objects.values()) {
-            if (message != null) writeMessage("Processing object "+(++count)+" of "+nTotal,message);
+            if (message != null) writeStatus("Processing object "+(++count)+" of "+nTotal,message);
 
             // Getting parent object
             Obj parentObject = object.getParent(parentObjectsName);
@@ -305,7 +305,7 @@ public class CreateMeasurementMap extends Module {
         }
 
         // Blurring image
-        writeMessage("Blurring image");
+        writeStatus("Blurring image");
         CumStat[] blurCumStats = applyBlur(cumStats,indexer,range,statistic);
 
         // Converting statistic array to Image

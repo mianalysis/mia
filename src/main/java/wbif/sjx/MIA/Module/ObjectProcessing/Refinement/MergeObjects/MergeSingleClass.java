@@ -66,7 +66,7 @@ public class MergeSingleClass extends Module {
         ObjCollection outputObjects = mergeSingleClass(inputObjects,outputObjectsName);
 
         // Adding objects to workspace
-        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
+        writeStatus("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing objects

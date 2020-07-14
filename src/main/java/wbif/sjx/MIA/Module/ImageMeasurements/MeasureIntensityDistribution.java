@@ -520,12 +520,12 @@ public class MeasureIntensityDistribution extends Module {
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE), css[1].getSum()));
 
-                writeMessage("Number of pixels inside range = " + css[0].getN());
-                writeMessage("Number of pixels outside range = " + css[1].getN());
-                writeMessage("Total intensity in range = " + css[0].getSum());
-                writeMessage("Total intensity outside range = " + css[1].getSum());
-                writeMessage("Mean intensity in range = " + css[0].getMean());
-                writeMessage("Mean intensity outside range = " + css[1].getMean());
+                writeStatus("Number of pixels inside range = " + css[0].getN());
+                writeStatus("Number of pixels outside range = " + css[1].getN());
+                writeStatus("Total intensity in range = " + css[0].getSum());
+                writeStatus("Total intensity outside range = " + css[1].getSum());
+                writeStatus("Mean intensity in range = " + css[0].getMean());
+                writeStatus("Mean intensity outside range = " + css[1].getMean());
 
                 break;
 
@@ -556,7 +556,7 @@ public class MeasureIntensityDistribution extends Module {
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL);
                 inputImage.addMeasurement(new Measurement(name, cs.getStd() * dppXY));
 
-                writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- " + cs.getStd());
+                writeStatus("Mean intensity proximity = " + cs.getMean() + " +/- " + cs.getStd());
 
                 break;
         }

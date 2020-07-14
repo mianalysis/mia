@@ -6,8 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PolygonRoi;
@@ -67,6 +66,8 @@ public class AddObjectOutline extends Overlay {
 
     public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, double lineInterpolation, double lineWidth,
             HashMap<Integer, Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
+        String name = new AddObjectOutline(null).getName();
+
         // Adding the overlay element
         try {
             // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
@@ -75,45 +76,58 @@ public class AddObjectOutline extends Overlay {
                 ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
             }
 
+            // Counting number of overlays to add
+            int tempTotal = 0;
+            int nFrames = renderInAllFrames ? ipl.getNFrames() : 1;
+            for (Obj object : inputObjects.values()) {
+                double[][] extents = object.getExtents(true, false);
+                tempTotal = tempTotal + ((int) extents[2][1] - (int) extents[2][0] + 1) * nFrames;
+            }
+            int total = tempTotal;
+
             int nThreads = multithread ? Prefs.getThreads() : 1;
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger(1);
             for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
-                int t1 = object.getT() + 1;
-                int t2 = object.getT() + 1;
-                if (renderInAllFrames) {
-                    t1 = 1;
-                    t2 = ipl.getNFrames();
-                }
+                Runnable task = () -> {
+                    int t1 = object.getT() + 1;
+                    int t2 = object.getT() + 1;
+                    if (renderInAllFrames) {
+                        t1 = 1;
+                        t2 = finalIpl.getNFrames();
+                    }
 
-                // Running through each slice of this object
-                double[][] range = object.getExtents(true, false);
+                    // Running through each slice of this object
+                    double[][] range = object.getExtents(true, false);
 
-                // If this is a 2D object, add it to all slices
-                int minZ = (int) Math.floor(range[2][0]);
-                int maxZ = (int) Math.floor(range[2][1]);
-                if (object.is2D()) {
-                    minZ = 0;
-                    maxZ = ipl.getNSlices() - 1;
-                }
+                    // If this is a 2D object, add it to all slices
+                    int minZ = (int) Math.floor(range[2][0]);
+                    int maxZ = (int) Math.floor(range[2][1]);
+                    if (object.is2D()) {
+                        minZ = 0;
+                        maxZ = finalIpl.getNSlices() - 1;
+                    }
 
-                for (int t = t1; t <= t2; t++) {
-                    for (int z = minZ; z <= maxZ; z++) {
-                        final int finalT = t;
-                        final int finalZ = z;
+                    for (int t = t1; t <= t2; t++) {
+                        for (int z = minZ; z <= maxZ; z++) {
+                            final int finalT = t;
+                            final int finalZ = z;
 
-                        Runnable task = () -> {
                             float hue = hues.get(object.getID());
                             addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), lineInterpolation,
                                     lineWidth, renderInAllFrames, finalT, finalZ);
-                        };
-                        pool.submit(task);
+                            writeStatus("Rendered " + count + " of " + total + " ("
+                                    + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
+
+                        }
                     }
-                }
+                };
+                pool.submit(task);
             }
 
             pool.shutdown();
@@ -157,7 +171,7 @@ public class AddObjectOutline extends Overlay {
             // Applying interpolation to reduce complexity of line
             if (lineInterpolation != 1 && roi.getType() == Roi.TRACED_ROI
                     && roi.getFloatPolygon().npoints > lineInterpolation * 2) {
-                roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, false), roi.getType());
+                roi = new PolygonRoi(roi.getInterpolatedPolygon(lineInterpolation, true), roi.getType());
             }
 
             if (ipl.isHyperStack()) {

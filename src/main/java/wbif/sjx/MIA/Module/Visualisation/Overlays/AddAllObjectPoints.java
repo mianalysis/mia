@@ -143,7 +143,7 @@ public class AddAllObjectPoints extends Overlay {
 
                     addAllPointsOverlay(object, finalIpl, colour, renderInAllFrames);
 
-                    writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
                 };
                 pool.submit(task);
             }

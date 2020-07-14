@@ -13,7 +13,6 @@ import java.util.TreeMap;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import ij.IJ;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.ControlObjects.CustomMenuBar;
 import wbif.sjx.MIA.GUI.ControlObjects.StatusTextField;

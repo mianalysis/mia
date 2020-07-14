@@ -120,7 +120,7 @@ public class ActiveContourObjectDetection extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            writeMessage("Processing object " + (count++) + " of " + total);
+            writeStatus("Processing object " + (count++) + " of " + total);
 
             // Getting the z-plane of the current object
             int z = inputObject.getPoints().iterator().next().getZ();
