@@ -526,8 +526,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             writeStatus("Loading image " + (i + 1) + " of " + count);
             String currentPath = nameBefore + df.format(frame) + nameAfter;
 
-            System.out.println(currentPath);
-
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
             tempIpl.updateChannelAndDraw();
