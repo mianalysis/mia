@@ -13,7 +13,7 @@ branches:
   only:
   - master
   - Develop
-  - TravisCI
+  - TestTests
 
 after_success:
 - mvn clean cobertura:cobertura coveralls:report
