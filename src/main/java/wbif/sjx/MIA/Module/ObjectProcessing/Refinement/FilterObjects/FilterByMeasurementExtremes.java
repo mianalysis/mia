@@ -133,7 +133,7 @@ public class FilterByMeasurementExtremes extends CoreFilter {
             workspace.addObjects(outputObjects);
 
         // Showing objects
-        // if (showOutput) showRemainingObjects(inputObjects);
+        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 

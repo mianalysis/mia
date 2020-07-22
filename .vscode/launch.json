@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - FillHolesByVolume",
-            "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.FillHolesByVolume",
-            "projectName": "MIA_"
-        },
-        {
-            "type": "java",
             "name": "Debug (Launch)-MIA<MIA_>",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.MIA",
