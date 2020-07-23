@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -433,6 +434,38 @@ public class Obj extends Volume {
 
     }
 
+    public Image getAsTightImage(String imageName) {
+        int[][] borderWidths = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 } };
+        
+        return getAsTightImage(imageName, borderWidths);
+
+    }
+
+    public Image getAsTightImage(String imageName, int[][] borderWidths) {
+        double[][] extents = getExtents(true, false);
+        int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
+        int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
+        int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
+
+        int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
+                + borderWidths[0][1] + 1;
+        int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
+                + borderWidths[1][1] + 1;
+        int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
+                + borderWidths[2][1] + 1;
+
+        ImagePlus ipl = IJ.createImage(imageName, width, height, nSlices, 8);
+
+        // Populating ipl
+        for (Point<Integer> point : getCoordinateSet()) {
+            ipl.setPosition(point.z - zOffs + 1);
+            ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
+
+        }
+
+        return new Image("Tight", ipl);
+
+    }
 
     public Image convertObjToImage(String outputName) {
         // Creating an ObjCollection to generate this image

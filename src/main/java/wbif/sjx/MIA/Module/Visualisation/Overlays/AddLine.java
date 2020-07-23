@@ -120,10 +120,10 @@ public class AddLine extends Overlay {
         
         int t = object.getT()+1;
         if (ipl.isHyperStack()) {
-            ipl.setPosition(1,1,t+1);
-            line.setPosition(1,1, t+1);
+            ipl.setPosition(1,1,t);
+            line.setPosition(1,1,t);
         } else {
-            int pos = Math.max(1,t+1);
+            int pos = Math.max(1,t);
             ipl.setPosition(pos);
             line.setPosition(pos);
         }

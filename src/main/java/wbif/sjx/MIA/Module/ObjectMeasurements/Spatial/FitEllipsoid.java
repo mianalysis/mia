@@ -259,7 +259,7 @@ public class FitEllipsoid extends Module {
         // Running through each object, taking measurements and adding new object to the
         // workspace where necessary
         AtomicInteger count = new AtomicInteger(1);
-        int nTotal = inputObjects.size();
+        int total = inputObjects.size();
         ObjCollection finalOutputObjects = outputObjects;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
@@ -269,7 +269,8 @@ public class FitEllipsoid extends Module {
                     MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
                             + " during ellipsoid fitting.");
                 }
-                writeStatus("Processed object " + count.getAndIncrement() + " of " + nTotal);
+                writeStatus("Processed object " + count + " of " + total + " ("
+                + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
             };
             pool.submit(task);
 

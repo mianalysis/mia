@@ -5,6 +5,7 @@ import java.util.Iterator;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -31,6 +32,7 @@ import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -63,10 +65,6 @@ public class ExpandShrinkObjects extends Module {
             throws IntegerOverflowException {
         // Convert each object to an image, do the dilation/erosion, then convert back
         // to an object
-        // Image objectImage = inputObject.convertObjToImage("ObjectToMorph");
-        // Get object limits
-        double[][] extents = inputObject.getExtents(true, false);
-
         int[][] borderWidths;
         switch (method) {
             case Methods.EXPAND_2D:
@@ -86,7 +84,7 @@ public class ExpandShrinkObjects extends Module {
                 break;
         }
 
-        Image objectImage = getTightImage(inputObject, borderWidths, extents);
+        Image objectImage = inputObject.getAsTightImage("Temp", borderWidths);
         InvertIntensity.process(objectImage);
 
         Prefs.blackBackground = false;
@@ -116,44 +114,27 @@ public class ExpandShrinkObjects extends Module {
 
         // Creating a new object collection (only contains one image) from the
         // transformed image
-        ObjCollection tempObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
-
+        ObjCollection outputObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
+        
         // During object shrinking it's possible the object will disappear entirely
-        if (tempObjects.size() == 0)
+        if (outputObjects.size() == 0)
             return null;
 
-        Obj tempObj = tempObjects.getFirst();
-        Obj outputObj = new Obj("ModifiedObj", inputObject.getID(), inputObject);
-
-        transferObjectCoordinates(tempObj, outputObj, borderWidths, extents);
-
-        return outputObj;
-
-    }
-
-    static Image getTightImage(Obj obj, int[][] borderWidths, double[][] extents) {
-        // Create empty image
+        Obj outputObject = outputObjects.getFirst();
+        
+        double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
         int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
         int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
-
-        int width = (int) Math.round(extents[0][1]) - (int) Math.round(extents[0][0]) + borderWidths[0][0]
-                + borderWidths[0][1] + 1;
-        int height = (int) Math.round(extents[1][1]) - (int) Math.round(extents[1][0]) + borderWidths[1][0]
-                + borderWidths[1][1] + 1;
-        int nSlices = (int) Math.round(extents[2][1]) - (int) Math.round(extents[2][0]) + borderWidths[2][0]
-                + borderWidths[2][1] + 1;
-
-        ImagePlus ipl = IJ.createImage("Temp", width, height, nSlices, 8);
-
-        // Populating ipl
-        for (Point<Integer> point : obj.getCoordinateSet()) {
-            ipl.setPosition(point.z - zOffs + 1);
-            ipl.getProcessor().putPixel(point.x - xOffs, point.y - yOffs, 255);
-
-        }
-
-        return new Image("Tight", ipl);
+        
+        SpatCal inputSpatCal = inputObject.getSpatialCalibration();
+        SpatCal outputSpatCal = outputObjects.getSpatialCalibration();
+        outputSpatCal.setWidth(inputSpatCal.getWidth());
+        outputSpatCal.setHeight(inputSpatCal.getHeight());
+        outputSpatCal.setNSlices(inputSpatCal.getNSlices());
+        outputObject.translateCoords(xOffs, yOffs, zOffs);
+        
+        return outputObject;
 
     }
 
