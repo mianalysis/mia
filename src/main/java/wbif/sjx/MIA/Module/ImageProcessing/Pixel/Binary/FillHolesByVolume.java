@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -14,6 +15,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -54,7 +56,7 @@ public class FillHolesByVolume extends Module {
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-    public static final String MIN_STRIP_WIDTH = "Minimum strip width";
+    public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
     public interface BlackWhiteModes {
         String FILL_BLACK_HOLES = "Fill black holes";
@@ -84,7 +86,9 @@ public class FillHolesByVolume extends Module {
                 ImagePlus currStack;
                 if (ipl.getNFrames() == 1) {
                     currStack = ipl;
+                    MIA.log.writeDebug("Is single");
                 } else {
+                    MIA.log.writeDebug("Is stack");
                     currStack = SubHyperstackMaker.makeSubhyperstack(ipl, c + "-" + c, "1-" + nSlices, t + "-" + t);
                 }
                 currStack.updateChannelAndDraw();
@@ -165,9 +169,13 @@ public class FillHolesByVolume extends Module {
                 // Binarising the input image based on whether the label is still in the list
                 // MIA.log.writeDebug("Removing holes");
                 for (int z = 0; z < nSlices; z++) {
+                    final int finalC = c;
                     final int finalZ = z;
+                    final int finalT = t;
                     Runnable task = () -> {
-                        final ImageProcessor ipr = ipl.getImageStack().getProcessor(finalZ + 1);
+                        ipl.setPosition(finalC, finalZ + 1, finalT);
+                        final ImageProcessor ipr = ipl.getProcessor();
+                        // final ImageProcessor ipr = ipl.getImageStack().getProcessor(finalZ + 1);
                         final ImageProcessor labelIpr = labelIst.getProcessor(finalZ + 1);
                         for (int x = 0; x < labelIst.getWidth(); x++) {
                             for (int y = 0; y < labelIst.getHeight(); y++) {

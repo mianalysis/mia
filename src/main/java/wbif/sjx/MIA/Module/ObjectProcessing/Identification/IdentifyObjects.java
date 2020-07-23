@@ -13,7 +13,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -55,7 +54,7 @@ public class IdentifyObjects extends Module {
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-    public static final String MIN_STRIP_WIDTH = "Minimum strip width";
+    public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
     public IdentifyObjects(ModuleCollection modules) {
         super("Identify objects", modules);
