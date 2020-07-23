@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ij.ImagePlus;
 import ij.Prefs;
@@ -13,10 +14,10 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -48,32 +49,51 @@ public class AddObjectFill extends Overlay {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public AddObjectFill(ModuleCollection modules) {
-        super("Add object fill",modules);
+        super("Add object fill", modules);
     }
 
+    public interface ColourModes extends Overlay.ColourModes {
+    }
 
-    public interface ColourModes extends Overlay.ColourModes {}
+    public interface SingleColours extends ColourFactory.SingleColours {
+    }
 
-    public interface SingleColours extends ColourFactory.SingleColours {}
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer, Float> hues,
+            double opacity, boolean renderInAllFrames, boolean multithread) {
+                String name = new AddObjectFill(null).getName();
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, double opacity, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+            // be a standard ImagePlus)
             if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
                 ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
             }
 
+            // Counting number of overlays to add
+            int tempTotal = 0;
+            int nFrames = renderInAllFrames ? ipl.getNFrames() : 1;
+            for (Obj object : inputObjects.values()) {
+                double[][] extents = object.getExtents(true, false);
+                tempTotal = tempTotal + ((int) extents[2][1] - (int) extents[2][0] + 1) * nFrames;
+            }
+            int total = tempTotal;
+
             int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object:inputObjects.values()) {
+            AtomicInteger count = new AtomicInteger(1);
+            for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    addOverlay(object, finalIpl, ColourFactory.getColour(hue,opacity), renderInAllFrames);
+                    addOverlay(object, finalIpl, ColourFactory.getColour(hue, opacity), renderInAllFrames);
+                    writeStatus("Rendered " + count + " of " + total + " ("
+                            + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
+
                 };
                 pool.submit(task);
             }
@@ -87,7 +107,8 @@ public class AddObjectFill extends Overlay {
     }
 
     public static void addOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+        if (ipl.getOverlay() == null)
+            ipl.setOverlay(new ij.gui.Overlay());
 
         int t1 = object.getT() + 1;
         int t2 = object.getT() + 1;
@@ -97,14 +118,14 @@ public class AddObjectFill extends Overlay {
         }
 
         // Running through each slice of this object
-        double[][] range = object.getExtents(true,false);
+        double[][] range = object.getExtents(true, false);
 
         // If this is a 2D object, add it to all slices
         int minZ = (int) Math.floor(range[2][0]);
         int maxZ = (int) Math.floor(range[2][1]);
         if (object.is2D()) {
             minZ = 0;
-            maxZ = ipl.getNSlices()-1;
+            maxZ = ipl.getNSlices() - 1;
         }
 
         for (int t = t1; t <= t2; t++) {
@@ -116,8 +137,9 @@ public class AddObjectFill extends Overlay {
                     polyRoi = object.getRoi(z);
                 }
 
-                //  If the object doesn't have any pixels in this plane, skip it
-                if (polyRoi == null) continue;
+                // If the object doesn't have any pixels in this plane, skip it
+                if (polyRoi == null)
+                    continue;
 
                 if (ipl.isHyperStack()) {
                     polyRoi.setPosition(1, z + 1, t);
@@ -167,18 +189,22 @@ public class AddObjectFill extends Overlay {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+        if (!applyToInput)
+            ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = getHues(inputObjects);
+        HashMap<Integer, Float> hues = getHues(inputObjects);
 
-        addOverlay(ipl,inputObjects,hues,opacity,renderInAllFrames,multithread);
+        addOverlay(ipl, inputObjects, hues, opacity, renderInAllFrames, multithread);
 
-        Image outputImage = new Image(outputImageName,ipl);
+        Image outputImage = new Image(outputImageName, ipl);
 
-        // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (!applyToInput && addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) outputImage.showImage();
+        // If necessary, adding output image to workspace. This also allows us to show
+        // it.
+        if (!applyToInput && addOutputToWorkspace)
+            workspace.addImage(outputImage);
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -188,19 +214,19 @@ public class AddObjectFill extends Overlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }

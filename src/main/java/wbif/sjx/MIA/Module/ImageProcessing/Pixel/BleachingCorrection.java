@@ -50,8 +50,7 @@ public class BleachingCorrection extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        writeStatus("Running bleach correction (may take several minutes)");
-
+        writeStatus("Running bleach correction");
         new BleachCorrection_MH(inputImagePlus).doCorrection();
 
         // If the image is being saved as a new image, adding it to the workspace
