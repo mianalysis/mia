@@ -43,7 +43,7 @@ public class FitLongestChordTest extends ModuleTest {
 
         // Processing object
         FitLongestChord fitLongestChord = new FitLongestChord(null);
-        fitLongestChord.processObject(inputObj);
+        fitLongestChord.processObject(inputObj,true,true,true);
 
         // Testing single value measurements
         double actual = inputObj.getMeasurement(FitLongestChord.Measurements.LENGTH_PX).getValue();
@@ -112,7 +112,7 @@ public class FitLongestChordTest extends ModuleTest {
 
         // Processing object
         FitLongestChord fitLongestChord = new FitLongestChord(null);
-        fitLongestChord.processObject(inputObj);
+        fitLongestChord.processObject(inputObj,true,true,true);
 
         // Testing single value measurements
         double actual = inputObj.getMeasurement(FitLongestChord.Measurements.LENGTH_PX).getValue();

@@ -7,6 +7,6 @@
     },
     "maven.view": "hierarchical",
     "java.configuration.updateBuildConfiguration": "automatic",
-    "editor.formatOnType": true
-    
+    "editor.formatOnType": true,
+    "java.home": ""
 }

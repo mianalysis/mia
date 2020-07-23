@@ -7,8 +7,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -16,7 +14,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -39,8 +36,6 @@ import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
-import wbif.sjx.MIA.Process.Logging.BasicLogRenderer;
-import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
 import wbif.sjx.common.Exceptions.LongOverflowException;
 
 public class FillHolesByVolume extends Module {
@@ -66,21 +61,6 @@ public class FillHolesByVolume extends Module {
         String FILL_WHITE_HOLES = "Fill white holes";
 
         String[] ALL = new String[] { FILL_BLACK_HOLES, FILL_WHITE_HOLES };
-
-    }
-
-    public static void main(String[] args) {
-        new ImageJ();
-        ImagePlus ipl = IJ.openImage("C:\\Users\\sc13967\\OneDrive - University of Bristol\\Desktop\\BoneP.tif");
-
-        BasicLogRenderer renderer = new BasicLogRenderer();
-        renderer.setWriteEnabled(Level.DEBUG, true);
-        renderer.setWriteEnabled(Level.STATUS, true);
-        MIA.log.addRenderer(renderer);
-
-        ipl.duplicate().show();
-        FillHolesByVolume.process(ipl, 1000, Float.MAX_VALUE, true, 5000);
-        ipl.duplicate().show();
 
     }
 

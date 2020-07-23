@@ -22,6 +22,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Nullable;
+
 public class AddFromPositionMeasurement extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
@@ -57,7 +59,7 @@ public class AddFromPositionMeasurement extends Overlay {
     }
 
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type, double lineWidth, String[] posMeasurements, boolean renderInAllFrames) {
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type, double lineWidth, String[] posMeasurements, @Nullable String radiusMeasurement, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
@@ -71,7 +73,7 @@ public class AddFromPositionMeasurement extends Overlay {
         int typeVal = AddObjectCentroid.getType(type);
 
         if (renderInAllFrames) t = 0;
-        if (posMeasurements[3] == null) {
+        if (radiusMeasurement == null) {
             PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
             pointRoi.setPointType(typeVal);
             pointRoi.setSize(sizeVal);
@@ -85,7 +87,7 @@ public class AddFromPositionMeasurement extends Overlay {
             ipl.getOverlay().addElement(pointRoi);
 
         } else {
-            double r = object.getMeasurement(posMeasurements[3]).getValue();
+            double r = object.getMeasurement(radiusMeasurement).getValue();
             OvalRoi ovalRoi = new OvalRoi(xMean + 0.5 - r, yMean + 0.5 - r, 2 * r, 2 * r);
             if (ipl.isHyperStack()) {
                 ovalRoi.setPosition(1, z, t);
@@ -130,7 +132,7 @@ public class AddFromPositionMeasurement extends Overlay {
         String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
         String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
         boolean useRadius = parameters.getValue(USE_RADIUS);
-        String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
+        String tempRadiusMeasurement = parameters.getValue(MEASUREMENT_FOR_RADIUS);
 
         double opacity = parameters.getValue(OPACITY);        
         String pointSize = parameters.getValue(POINT_SIZE);
@@ -146,8 +148,8 @@ public class AddFromPositionMeasurement extends Overlay {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Setting position measurements
-        if (!useRadius) measurementForRadius = null;
-        String[] posMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, measurementForRadius};
+        final String radiusMeasurement = useRadius ? tempRadiusMeasurement : null;
+        String[] posMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas};
 
         // Generating colours for each object
         HashMap<Integer,Float> hues = getHues(inputObjects);
@@ -170,9 +172,10 @@ public class AddFromPositionMeasurement extends Overlay {
                     float hue = hues.get(object.getID());
                     Color colour = ColourFactory.getColour(hue,opacity);
                 
-                    addOverlay(object, finalIpl, colour, pointSize, pointType, lineWidth, posMeasurements, renderInAllFrames);
-        
+                    addOverlay(object, finalIpl, colour, pointSize, pointType, lineWidth, posMeasurements, radiusMeasurement, renderInAllFrames);
+
                     writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                    
                 };
                 pool.submit(task);
             }

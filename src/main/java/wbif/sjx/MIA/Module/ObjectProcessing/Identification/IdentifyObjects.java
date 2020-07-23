@@ -253,7 +253,7 @@ public class IdentifyObjects extends Module {
     }
 
     public static ObjCollection process(Image inputImage, String outputObjectsName, boolean whiteBackground,
-            boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth)
+            boolean singleObject, int connectivity, String type, boolean multithread, int minStripWidth, boolean verbose)
             throws IntegerOverflowException, RuntimeException {
         String name = new IdentifyObjects(null).getName();
 
@@ -264,7 +264,7 @@ public class IdentifyObjects extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName, cal, nFrames);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            writeStatus("Processing image " + t + " of " + inputImagePlus.getNFrames(), name);
+            if (verbose) writeStatus("Processing image " + t + " of " + inputImagePlus.getNFrames(), name);
 
             // Creating a copy of the input image
             ImagePlus currStack;
@@ -369,7 +369,7 @@ public class IdentifyObjects extends Module {
         int connectivity = getConnectivity(connectivityName);
 
         ObjCollection outputObjects = process(inputImage, outputObjectsName, whiteBackground, singleObject,
-                connectivity, type, multithread, minStripWidth);
+                connectivity, type, multithread, minStripWidth,true);
 
         // Adding objects to workspace
         writeStatus("Adding objects (" + outputObjectsName + ") to workspace");

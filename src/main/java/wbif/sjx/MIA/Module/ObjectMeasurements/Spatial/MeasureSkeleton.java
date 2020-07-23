@@ -21,11 +21,11 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterOnImageEdge;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
@@ -53,10 +53,13 @@ public class MeasureSkeleton extends Module {
     public static final String OUTPUT_SKELETON_OBJECTS = "Output skeleton objects";
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
     public static final String OUTPUT_JUNCTION_OBJECTS = "Output junction objects";
+    public static final String EXPORT_LOOP_OBJECTS = "Export loop objects";
     public static final String OUTPUT_LOOP_OBJECTS = "Output loop objects";
     public static final String ANALYSIS_SEPARATOR = "Analysis settings";
     public static final String MINIMUM_BRANCH_LENGTH = "Minimum branch length";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface Measurements {
@@ -69,7 +72,7 @@ public class MeasureSkeleton extends Module {
         super("Measure skeleton", modules);
     }
 
-    static Image getProjectedImage(Obj inputObject) {
+    static Image getProjectedSkeletonImage(Obj inputObject) {
         // Generate projected object
         Obj projectedObj;
         try {
@@ -78,7 +81,9 @@ public class MeasureSkeleton extends Module {
             e.printStackTrace();
             return null;
         }
-        Image projectedImage = projectedObj.convertObjToImage("Projected");
+
+        Image projectedImage = inputObject.getAsTightImage("Projected");
+
         InvertIntensity.process(projectedImage);
 
         // Run skeletonisation (ensures it is properly skeletonised before processing)
@@ -91,6 +96,11 @@ public class MeasureSkeleton extends Module {
 
     static Obj createEdgeJunctionObjects(Obj inputObject, SkeletonResult result, ObjCollection skeletonObjects,
             ObjCollection edgeObjects, ObjCollection junctionObjects) {
+
+        double[][] extents = inputObject.getExtents(true, false);
+        int xOffs = (int) Math.round(extents[0][0]);
+        int yOffs = (int) Math.round(extents[1][0]);
+
         // The Skeleton object doesn't contain any coordinate data, it just links
         // branches, junctions and loops.
         Obj skeletonObject = new Obj(VolumeType.POINTLIST, skeletonObjects.getName(), inputObject.getID(), inputObject);
@@ -108,7 +118,7 @@ public class MeasureSkeleton extends Module {
         double dppXY = inputObject.getDppXY();
         for (Graph graph : result.getGraph()) {
             for (Edge edge : graph.getEdges()) {
-                Obj edgeObj = createEdgeObject(skeletonObject, edgeObjects, edge);
+                Obj edgeObj = createEdgeObject(skeletonObject, edgeObjects, edge, xOffs, yOffs);
                 edgeObjs.put(edge, edgeObj);
 
                 // Adding edge length measurements
@@ -120,7 +130,7 @@ public class MeasureSkeleton extends Module {
             }
 
             for (Vertex junction : graph.getVertices()) {
-                Obj junctionObj = createJunctionObject(skeletonObject, junctionObjects, junction);
+                Obj junctionObj = createJunctionObject(skeletonObject, junctionObjects, junction, xOffs, yOffs);
                 junctionObjs.put(junction, junctionObj);
             }
         }
@@ -133,8 +143,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static void createLoopObjects(ObjCollection loopObjects, ObjCollection edgeObjects,
-            ObjCollection junctionObjects, String loopObjectsName, Obj skeletonObject) {
+    static void createLoopObjects(ObjCollection loopObjects, ObjCollection edgeObjects, ObjCollection junctionObjects,
+            String loopObjectsName, Obj skeletonObject) {
         // Creating an object for the entire skeleton
         Obj tempObject = new Obj("Temp", 1, skeletonObject);
         CoordinateSet coords = tempObject.getCoordinateSet();
@@ -152,7 +162,7 @@ public class MeasureSkeleton extends Module {
 
         // Converting binary image to loop objects
         ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
-                Image.VolumeTypes.QUADTREE,false,0);
+                Image.VolumeTypes.QUADTREE, false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops
         FilterOnImageEdge.process(tempLoopObjects, 0, null, false, true, null);
@@ -170,7 +180,7 @@ public class MeasureSkeleton extends Module {
         }
     }
 
-    static Obj createEdgeObject(Obj skeletonObject, ObjCollection edgeObjects, Edge edge) {
+    static Obj createEdgeObject(Obj skeletonObject, ObjCollection edgeObjects, Edge edge, int xOffs, int yOffs) {
         Obj edgeObject = edgeObjects.createAndAddNewObject(VolumeType.POINTLIST);
         edgeObject.setT(skeletonObject.getT());
         skeletonObject.addChild(edgeObject);
@@ -179,7 +189,7 @@ public class MeasureSkeleton extends Module {
         // Adding coordinates
         for (Point point : edge.getSlabs()) {
             try {
-                edgeObject.add(point.x, point.y, 0);
+                edgeObject.add(point.x + xOffs, point.y + yOffs, 0);
             } catch (PointOutOfRangeException e) {
             }
         }
@@ -188,7 +198,8 @@ public class MeasureSkeleton extends Module {
 
     }
 
-    static Obj createJunctionObject(Obj skeletonObject, ObjCollection junctionObjects, Vertex junction) {
+    static Obj createJunctionObject(Obj skeletonObject, ObjCollection junctionObjects, Vertex junction, int xOffs,
+            int yOffs) {
         Obj junctionObject = junctionObjects.createAndAddNewObject(VolumeType.POINTLIST);
         junctionObject.setT(skeletonObject.getT());
         skeletonObject.addChild(junctionObject);
@@ -197,7 +208,7 @@ public class MeasureSkeleton extends Module {
         // Adding coordinates
         for (Point point : junction.getPoints()) {
             try {
-                junctionObject.add(point.x, point.y, 0);
+                junctionObject.add(point.x + xOffs, point.y + yOffs, 0);
             } catch (PointOutOfRangeException e) {
             }
         }
@@ -273,6 +284,7 @@ public class MeasureSkeleton extends Module {
         String skeletonObjectsName = parameters.getValue(OUTPUT_SKELETON_OBJECTS);
         String edgeObjectsName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
         String junctionObjectsName = parameters.getValue(OUTPUT_JUNCTION_OBJECTS);
+        boolean exportLoops = parameters.getValue(EXPORT_LOOP_OBJECTS);
         String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
         double minLength = parameters.getValue(MINIMUM_BRANCH_LENGTH);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
@@ -288,13 +300,16 @@ public class MeasureSkeleton extends Module {
         final ObjCollection edgeObjects = addToWorkspace ? new ObjCollection(edgeObjectsName, inputObjects) : null;
         final ObjCollection junctionObjects = addToWorkspace ? new ObjCollection(junctionObjectsName, inputObjects)
                 : null;
-        final ObjCollection loopObjects = addToWorkspace ? new ObjCollection(loopObjectsName, inputObjects) : null;
+        final ObjCollection loopObjects = addToWorkspace & exportLoops
+                ? new ObjCollection(loopObjectsName, inputObjects)
+                : null;
 
         if (addToWorkspace) {
             workspace.addObjects(skeletonObjects);
             workspace.addObjects(edgeObjects);
             workspace.addObjects(junctionObjects);
-            workspace.addObjects(loopObjects);
+            if (exportLoops)
+                workspace.addObjects(loopObjects);
         }
 
         // Configuring multithreading
@@ -302,7 +317,7 @@ public class MeasureSkeleton extends Module {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>());
 
-        int nTotal = inputObjects.size();
+        int total = inputObjects.size();
         AtomicInteger count = new AtomicInteger();
 
         // For each object, create a child projected object, then generate a binary
@@ -311,7 +326,7 @@ public class MeasureSkeleton extends Module {
         final double minLengthFinal = minLength;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
-                Image projectedImage = getProjectedImage(inputObject);
+                Image projectedImage = getProjectedSkeletonImage(inputObject);
 
                 AnalyzeSkeleton_ analyzeSkeleton = new AnalyzeSkeleton_();
                 analyzeSkeleton.setup("", projectedImage.getImagePlus());
@@ -325,16 +340,20 @@ public class MeasureSkeleton extends Module {
                                 edgeObjects, junctionObjects);
 
                         // Creating loop objects
-                        createLoopObjects(loopObjects, edgeObjects, junctionObjects, loopObjectsName, skeletonObject);
-                        workspace.addObjects(loopObjects);
+                        if (exportLoops) {
+                            createLoopObjects(loopObjects, edgeObjects, junctionObjects, loopObjectsName,
+                                    skeletonObject);
+                            workspace.addObjects(loopObjects);
+                            applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
+                        }
 
-                        applyLoopPartnerships(loopObjects, edgeObjects, junctionObjects);
                     } catch (IntegerOverflowException e) {
                         e.printStackTrace();
                     }
                 }
 
-                writeStatus("Processed " + (count.incrementAndGet()) + " of " + nTotal + " objects");
+                writeStatus("Processed " + count + " of " + total + " ("
+                + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
 
             };
             pool.submit(task);
@@ -365,10 +384,12 @@ public class MeasureSkeleton extends Module {
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_SKELETON_OBJECTS, this));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_EDGE_OBJECTS, this));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_JUNCTION_OBJECTS, this));
+        parameters.add(new BooleanP(EXPORT_LOOP_OBJECTS, this, true));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_LOOP_OBJECTS, this));
         parameters.add(new ParamSeparatorP(ANALYSIS_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_BRANCH_LENGTH, this, 0d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
@@ -387,12 +408,17 @@ public class MeasureSkeleton extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_SKELETON_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
             returnedParameters.add(parameters.getParameter(OUTPUT_JUNCTION_OBJECTS));
-            returnedParameters.add(parameters.getParameter(OUTPUT_LOOP_OBJECTS));
+            returnedParameters.add(parameters.getParameter(EXPORT_LOOP_OBJECTS));
+            if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
+                returnedParameters.add(parameters.getParameter(OUTPUT_LOOP_OBJECTS));
+            }
         }
 
         returnedParameters.add(parameters.getParameter(ANALYSIS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MINIMUM_BRANCH_LENGTH));
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -447,7 +473,9 @@ public class MeasureSkeleton extends Module {
         returnedRefs.add(parentChildRefs.getOrPut(inputObjectsName, skeletonObjectsName));
         returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, edgeObjectsName));
         returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, junctionObjectsName));
-        returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
+            returnedRefs.add(parentChildRefs.getOrPut(skeletonObjectsName, loopObjectsName));
+        }
 
         return returnedRefs;
 
@@ -462,8 +490,10 @@ public class MeasureSkeleton extends Module {
         String loopObjectsName = parameters.getValue(OUTPUT_LOOP_OBJECTS);
 
         returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, junctionObjectsName));
-        returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
-        returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+        if ((boolean) parameters.getValue(EXPORT_LOOP_OBJECTS)) {
+            returnedRefs.add(partnerRefs.getOrPut(edgeObjectsName, loopObjectsName));
+            returnedRefs.add(partnerRefs.getOrPut(junctionObjectsName, loopObjectsName));
+        }
 
         return returnedRefs;
 

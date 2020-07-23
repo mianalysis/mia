@@ -232,7 +232,8 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNamePx, Double.NaN));
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
-                writeStatus("Processed " + (count.getAndIncrement()) + " of " + numberOfChildren + " objects",
+                writeStatus("Processed " + count + " of " + numberOfChildren + " ("
+                + Math.floorDiv(100 * count.getAndIncrement(), numberOfChildren) + "%)",
                         moduleName);
             };
             pool.submit(task);
