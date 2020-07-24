@@ -33,10 +33,6 @@ Getting started
 > - Checkboxes to the right of each module determine if they are visible in the basic view (default view)
 > - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
 
-Note
-----
-This plugin is still in development and test coverage is currently incomplete.  Please keep an eye on results and add an [issue](https://github.com/SJCross/ModularImageAnalysis/issues) if any problems are encountered.
-
 Acknowledgements
 ----------------
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the updater.
@@ -62,4 +58,12 @@ Plugins bundled with MIA:
 
 A list of bundled dependencies along with their respective licenses can be found [here](https://htmlpreview.github.io/?https://github.com/SJCross/MIA/blob/master/target/site/dependencies.html).
 
+
+Citing MIA
+----------
+We hope you find MIA useful.  If you've used MIA in your research, please cite it using the Zenodo DOI for that version of the plugin.  Zenodo DOIs for MIA can be found [here](https://doi.org/10.5281/zenodo.1201320).
+
+Note
+----
+This plugin is still in development and test coverage is currently incomplete.  Please keep an eye on results and add an [issue](https://github.com/SJCross/ModularImageAnalysis/issues) if any problems are encountered.
 

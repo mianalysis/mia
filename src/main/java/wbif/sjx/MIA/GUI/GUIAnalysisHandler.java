@@ -237,14 +237,6 @@ public class GUIAnalysisHandler {
             Transferable contents = clipboard.getContents(null);
             String copyString = (String) contents.getTransferData(DataFlavor.stringFlavor);
             ModuleCollection pasteModules = AnalysisReader.loadAnalysis(copyString).getModules();
-//            MIA.log.writeDebug("Target flavour "+dataFlavor);
-//            MIA.log.writeDebug("Present flavours:");
-//            Arrays.stream(clipboard.getAvailableDataFlavors()).forEach(MIA.log::writeDebug);
-//            MIA.log.writeDebug("End flavours");
-//            ModuleCollection copyModules = (ModuleCollection) clipboard.getData(dataFlavor);
-//
-//            // Creating a new copy of the copyModules to paste in
-//            ModuleCollection pasteModules = copyModules.duplicate();
 
             // Ensuring the copied modules are linked to the present ModuleCollection and have a unique ID
             for (Module module : pasteModules.values()) {

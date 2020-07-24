@@ -42,7 +42,7 @@ public class AnalysisRunner {
     public void run(Analysis analysis) throws InterruptedException, IOException {
         // Resetting progress display
         GUI.updateProgressBar(0);
-        MIA.log.clearLogHistory();
+        MIA.clearLogHistory();
         counter = 0;
 
         // Get jobs and exit if no images found

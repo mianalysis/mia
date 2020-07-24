@@ -28,6 +28,7 @@ import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
 import wbif.sjx.MIA.Process.Logging.BasicLogRenderer;
 import wbif.sjx.MIA.Process.Logging.ConsoleRenderer;
 import wbif.sjx.MIA.Process.Logging.Log;
+import wbif.sjx.MIA.Process.Logging.LogHistory;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 
 
@@ -40,6 +41,7 @@ public class MIA implements Command {
     private static String version = "";
     private static boolean debug = false;
     private static LogRenderer mainRenderer = new BasicLogRenderer();
+    private static LogHistory logHistory = new LogHistory();
     public static Log log = new Log(mainRenderer); // This is for testing and headless modes
     private final static boolean headless = false; // Determines if there is a GUI
 
@@ -97,6 +99,8 @@ public class MIA implements Command {
         } catch (Exception e) {
             // If any exception was thrown, just don't apply the ConsoleRenderer.
         }
+
+        log.addRenderer(logHistory);
 
         // Determining the version number from the pom file
         try {
@@ -168,6 +172,14 @@ public class MIA implements Command {
 
     public static LogRenderer getMainRenderer() {
         return mainRenderer;
+    }
+
+    public static LogHistory getLogHistory() {
+        return logHistory;
+    }
+
+    public static void clearLogHistory() {
+        logHistory.clearLogHistory();
     }
 
     public static void setLog(Log log) {

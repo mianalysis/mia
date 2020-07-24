@@ -397,11 +397,13 @@ public class DocumentationGenerator {
             sb.append("\n\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/gettingStarted.md"))));
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md"))));
-            sb.append("\n\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md"))));
             sb.append("\n\n");
-
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md"))));
+            sb.append("\n\n");
+            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md"))));
+            sb.append("\n\n");
+            
             FileWriter writer = new FileWriter("README.md");
             writer.write(sb.toString());
             writer.flush();

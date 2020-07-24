@@ -18,7 +18,7 @@ import wbif.sjx.MIA.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -96,11 +96,9 @@ public class AddObjectsOverlayTest extends ModuleTest {
         String imageName = "Test_image";
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/Tracks.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        ConvertStackToTimeseries.process(ipl);
+        Convert3DStack.process(ipl,Convert3DStack.Modes.OUTPUT_TIMESERIES);
         Image intensityImage = new Image(imageName,ipl);
         workspace.addImage(intensityImage);
-
-
 
         AddObjectsOverlay addObjectsOverlay = (AddObjectsOverlay) new AddObjectsOverlay(null)
                 .updateParameterValue(AddObjectsOverlay.INPUT_OBJECTS,inputObjectsName)
