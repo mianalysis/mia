@@ -8,5 +8,6 @@
     "maven.view": "hierarchical",
     "java.configuration.updateBuildConfiguration": "automatic",
     "editor.formatOnType": true,
-    "java.home": ""
+    "java.home": "",
+    "java.dependency.packagePresentation": "hierarchical"
 }

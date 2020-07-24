@@ -2,13 +2,16 @@
 
 package wbif.sjx.MIA.GUI.ControlObjects.ModuleList;
 
-import javax.activation.ActivationDataFlavor;
-import javax.activation.DataHandler;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+
+import javax.activation.ActivationDataFlavor;
+import javax.activation.DataHandler;
+import javax.swing.JComponent;
+import javax.swing.JTable;
+import javax.swing.TransferHandler;
 
 /**
  * Handles drag and drop row reordering

@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
  * Created by Stephen Cross on 14/06/2019.
  */
 public class Log {
-    static HashMap<Level,String> logHistory = new HashMap<>();
     private HashSet<LogRenderer> renderers = new HashSet<>();
     
     public Log(HashSet<LogRenderer> renderers) {
@@ -21,8 +20,6 @@ public class Log {
     }
 
     public void write(String message, Level level) {
-        logHistory.put(level,logHistory.get(level)+message);
-        
         for (LogRenderer renderer : renderers) 
             renderer.write(message, level);
         
@@ -80,15 +77,6 @@ public class Log {
     public void writeStatus(Object message) {
         if (message == null) write("null",Level.STATUS);
         else write(message.toString(),Level.STATUS);
-    }
-
-    public String getLogHistory(Level level) {
-        logHistory.putIfAbsent(level,"");
-        return logHistory.get(level);
-    }
-
-    public void clearLogHistory() {
-        logHistory.clear();
     }
 
     public HashSet<LogRenderer> getRenderers() {

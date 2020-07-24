@@ -14,6 +14,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -54,7 +55,7 @@ public class FillHolesByVolume extends Module {
 
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-    public static final String MIN_STRIP_WIDTH = "Minimum strip width";
+    public static final String MIN_STRIP_WIDTH = "Minimum strip width (px)";
 
     public interface BlackWhiteModes {
         String FILL_BLACK_HOLES = "Fill black holes";
@@ -80,7 +81,6 @@ public class FillHolesByVolume extends Module {
                 writeStatus("Processing stack " + (++count) + " of " + total, name);
 
                 // Creating the current sub-stack
-                // MIA.log.writeDebug("Getting substack");
                 ImagePlus currStack;
                 if (ipl.getNFrames() == 1) {
                     currStack = ipl;
@@ -90,27 +90,20 @@ public class FillHolesByVolume extends Module {
                 currStack.updateChannelAndDraw();
 
                 // Applying connected components labelling
-                // MIA.log.writeDebug("Applying labelling");
                 int nThreads = multithread ? Prefs.getThreads() : 1;
-                // MIA.log.writeDebug("N threads = " + Prefs.getThreads());
                 if (multithread && nThreads > 1 && minStripWidth < ipl.getWidth()) {
-                    // MIA.log.writeDebug("Using MT connected components labeling");
                     currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), 26, minStripWidth));
                 } else {
-                    // MIA.log.writeDebug("Using non-MT connected components labeling");
                     try {
-                        // MIA.log.writeDebug("Using 16-bit labeling");
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 16);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     } catch (RuntimeException e2) {
-                        // MIA.log.writeDebug("Using 32-bit labeling");
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 32);
                         currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
                     }
                 }
 
                 // Counting the number of instances of each label
-                // MIA.log.writeDebug("Counting label instances");
                 ImageStack labelIst = currStack.getImageStack();
 
                 ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
@@ -149,7 +142,6 @@ public class FillHolesByVolume extends Module {
                 }
 
                 // Removing pixels with counts outside the limits
-                // MIA.log.writeDebug("Identifying holes for removal");
                 Iterator<Integer> iterator = labels.keySet().iterator();
                 while (iterator.hasNext()) {
                     int label = iterator.next();
@@ -163,11 +155,14 @@ public class FillHolesByVolume extends Module {
                         new LinkedBlockingQueue<>());
 
                 // Binarising the input image based on whether the label is still in the list
-                // MIA.log.writeDebug("Removing holes");
                 for (int z = 0; z < nSlices; z++) {
+                    final int finalC = c;
                     final int finalZ = z;
+                    final int finalT = t;
                     Runnable task = () -> {
-                        final ImageProcessor ipr = ipl.getImageStack().getProcessor(finalZ + 1);
+                        ipl.setPosition(finalC, finalZ + 1, finalT);
+                        final ImageProcessor ipr = ipl.getProcessor();
+                        // final ImageProcessor ipr = ipl.getImageStack().getProcessor(finalZ + 1);
                         final ImageProcessor labelIpr = labelIst.getProcessor(finalZ + 1);
                         for (int x = 0; x < labelIst.getWidth(); x++) {
                             for (int y = 0; y < labelIst.getHeight(); y++) {
@@ -189,13 +184,11 @@ public class FillHolesByVolume extends Module {
                 } catch (InterruptedException e) {
                     e.printStackTrace(System.err);
                 }
-                // MIA.log.writeDebug("Hole removal complete");
             }
         }
 
         // Ensuring the output is 8-bit
         if (ipl.getBitDepth() > 8) {
-            // MIA.log.writeDebug("Converting back to 8-bit");
             ImageTypeConverter.applyConversion(ipl, 8, ImageTypeConverter.ScalingModes.CLIP);
         }
     }

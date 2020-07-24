@@ -57,6 +57,7 @@ import wbif.sjx.MIA.Object.References.PartnerRef;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
+import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Metadata;
 
@@ -310,7 +311,7 @@ public class Exporter {
         Sheet errorSheet = workbook.createSheet("Log");
 
         // Getting error write text and split by line returns
-        String logText = MIA.log.getLogHistory(LogRenderer.Level.ERROR);
+        String logText = MIA.getLogHistory().getLogHistory(Level.ERROR);
         StringTokenizer tokenizer = new StringTokenizer(logText,"\n");
 
         // Adding a header row for the parameter titles
