@@ -263,10 +263,10 @@ public class IdentifyObjects extends Module {
             // Creating a copy of the input image
             ImagePlus currStack;
             if (inputImagePlus.getNFrames() == 1) {
-                currStack = new Duplicator().run(inputImagePlus);
+                currStack = inputImagePlus.duplicate();
             } else {
                 currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" + inputImagePlus.getNChannels(),
-                        "1-" + inputImagePlus.getNSlices(), t + "-" + t);
+                        "1-" + inputImagePlus.getNSlices(), t + "-" + t).duplicate();
                 currStack.setCalibration(inputImagePlus.getCalibration());
             }
             currStack.updateChannelAndDraw();
