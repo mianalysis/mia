@@ -43,7 +43,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -505,8 +505,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, "1", "1" };
 
-        ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, 1, dimRanges, crop, scaleFactors, scaleMode,
-                intRange, manualCal, false);
+        ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, 1, dimRanges, crop,
+                scaleFactors, scaleMode, intRange, manualCal, false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
         int bitDepth = rootIpl.getBitDepth();
@@ -926,10 +926,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             ipl = CompositeConverter.makeComposite(ipl);
 
         // If either number of slices or timepoints is 1 check it's the right dimension
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && ((ipl.getNFrames() == 1 && ipl.getNSlices() > 1)
-                || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1))) {
-            ConvertStackToTimeseries.process(ipl);
+        if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
+            Convert3DStack.process(ipl,Convert3DStack.Modes.OUTPUT_TIMESERIES);
             ipl.getCalibration().pixelDepth = 1;
+        } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
+            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
         }
 
         // Adding image to workspace

@@ -171,14 +171,18 @@ public class MeasureObjectShape extends Module {
                 // If necessary analyses are included
                 Obj projectedObject = null;
                 if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
-                    try {
-                        if (inputObject.is2D()) 
-                            projectedObject = inputObject;
-                        else
-                            projectedObject = ProjectObjects.process(inputObject, "Projected", false);
-                    } catch (IntegerOverflowException e) {
-                        MIA.log.writeWarning(e);
-                        return;
+                    if (inputObject.is2D()) {
+                        projectedObject = inputObject;
+                    } else {
+                        try {
+                            if (inputObject.is2D())
+                                projectedObject = inputObject;
+                            else
+                                projectedObject = ProjectObjects.process(inputObject, "Projected", false);
+                        } catch (IntegerOverflowException e) {
+                            MIA.log.writeWarning(e);
+                            return;
+                        }
                     }
                 }
 
@@ -212,12 +216,12 @@ public class MeasureObjectShape extends Module {
 
                 }
 
-                if (projectedObject != null &! inputObject.is2D()) {
+                // Clearing the projected object from memory to save some space
+                if (projectedObject != null & !inputObject.is2D())
                     inputObject.clearProjected();
-                }
 
                 writeStatus("Processed " + count + " of " + total + " ("
-                + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
+                        + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
 
             };
             pool.submit(task);
