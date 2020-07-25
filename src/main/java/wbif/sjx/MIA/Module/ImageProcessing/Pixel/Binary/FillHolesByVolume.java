@@ -86,9 +86,7 @@ public class FillHolesByVolume extends Module {
                 ImagePlus currStack;
                 if (ipl.getNFrames() == 1) {
                     currStack = ipl;
-                    MIA.log.writeDebug("Is single");
                 } else {
-                    MIA.log.writeDebug("Is stack");
                     currStack = SubHyperstackMaker.makeSubhyperstack(ipl, c + "-" + c, "1-" + nSlices, t + "-" + t);
                 }
                 currStack.updateChannelAndDraw();

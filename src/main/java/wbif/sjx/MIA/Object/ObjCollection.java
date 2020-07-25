@@ -64,6 +64,15 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return spatCal;
     }
 
+    public void setSpatialCalibration(SpatCal spatCal, boolean updateAllObjects) {
+        this.spatCal = spatCal;
+        if (updateAllObjects) {
+            for (Obj obj : values()) {
+                obj.setSpatialCalibration(spatCal);
+            }
+        }
+    }
+
     public synchronized int getAndIncrementID() {
         maxID++;
         return maxID;
@@ -141,7 +150,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Assigning the spatial cal from the cal
-        setSpatCal(ipl);
+        spatCal.setImageCalibration(ipl);
 
         return new Image(outputName,ipl);
 
@@ -192,7 +201,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Assigning the spatial cal from the cal
-        setSpatCal(ipl);
+        spatCal.setImageCalibration(ipl);
 
         return new Image(outputName,ipl);
 
@@ -229,13 +238,6 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 }
             }
         }
-    }
-
-    public void setSpatCal(ImagePlus ipl) {
-            ipl.getCalibration().pixelWidth = spatCal.getDppXY();
-            ipl.getCalibration().pixelHeight = spatCal.getDppXY();
-            ipl.getCalibration().pixelDepth = spatCal.getNSlices() == 1? 1 : spatCal.getDppZ();
-            ipl.getCalibration().setUnit(spatCal.getUnits());
     }
 
     /*

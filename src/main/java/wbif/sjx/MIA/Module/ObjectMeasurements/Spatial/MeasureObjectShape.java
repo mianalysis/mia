@@ -172,7 +172,10 @@ public class MeasureObjectShape extends Module {
                 Obj projectedObject = null;
                 if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                     try {
-                        projectedObject = ProjectObjects.process(inputObject, "Projected", false);
+                        if (inputObject.is2D()) 
+                            projectedObject = inputObject;
+                        else
+                            projectedObject = ProjectObjects.process(inputObject, "Projected", false);
                     } catch (IntegerOverflowException e) {
                         MIA.log.writeWarning(e);
                         return;
@@ -207,6 +210,10 @@ public class MeasureObjectShape extends Module {
                     double circularity = 4 * Math.PI * areaPx / (perimeterPx * perimeterPx);
                     inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity));
 
+                }
+
+                if (projectedObject != null &! inputObject.is2D()) {
+                    inputObject.clearProjected();
                 }
 
                 writeStatus("Processed " + count + " of " + total + " ("
