@@ -25,6 +25,7 @@ import wbif.sjx.MIA.Process.DependencyValidator;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisRunner;
+import wbif.sjx.MIA.Process.AnalysisHandling.LostAndFound;
 import wbif.sjx.MIA.Process.Logging.BasicLogRenderer;
 import wbif.sjx.MIA.Process.Logging.ConsoleRenderer;
 import wbif.sjx.MIA.Process.Logging.Log;
@@ -42,8 +43,10 @@ public class MIA implements Command {
     private static boolean debug = false;
     private static LogRenderer mainRenderer = new BasicLogRenderer();
     private static LogHistory logHistory = new LogHistory();
-    public static Log log = new Log(mainRenderer); // This is for testing and headless modes
     private final static boolean headless = false; // Determines if there is a GUI
+
+    public static Log log = new Log(mainRenderer); // This is for testing and headless modes
+    public final static LostAndFound lostAndFound = new LostAndFound(); // Maps missing modules and parameters to replacements (e.g. if a module was renamed)
 
     /*
         Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to addRef compatibility.

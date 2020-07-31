@@ -142,49 +142,13 @@ public class AnalysisReader {
         String className = moduleAttributes.getNamedItem("CLASSNAME").getNodeValue();
         String moduleName = FilenameUtils.getExtension(className);
 
+        // Checking if this module has been reassigned
+        moduleName = MIA.lostAndFound.findModule(moduleName);
+
+        // Trying to load from available modules
         for (String availableModuleName : availableModuleNames) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModuleName))) {
-                Class<Module> clazz = null;
-                try {
-                    clazz = (Class<Module>) Class.forName(availableModuleName);
-                } catch (ClassNotFoundException e) {
-                    MIA.log.writeError(e);
-                }
-                Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
-
-                // Populating parameters
-                NodeList moduleChildNodes = moduleNode.getChildNodes();
-                for (int i = 0; i < moduleChildNodes.getLength(); i++) {
-                    switch (moduleChildNodes.item(i).getNodeName()) {
-                        case "PARAMETERS":
-                            populateParameters(moduleChildNodes.item(i), module);
-                            break;
-
-                        case "MEASUREMENTS":
-                            populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
-                            break;
-
-                        case "IMAGE_MEASUREMENTS":
-                            populateImageMeasurementRefs(moduleChildNodes.item(i), module);
-                            break;
-
-                        case "OBJECT_MEASUREMENTS":
-                            populateObjMeasurementRefs(moduleChildNodes.item(i), module);
-                            break;
-
-                        case "METADATA":
-                            populateModuleMetadataRefs(moduleChildNodes.item(i), module);
-                            break;
-
-                        case "RELATIONSHIPS":
-                        case "PARENT_CHILD":
-                            populateModuleParentChildRefs(moduleChildNodes.item(i), module);
-                            break;
-                    }
-                }
-
-                return module;
-
+                return initialiseModule(moduleNode, modules, availableModuleName);
             }
         }
 
@@ -192,6 +156,51 @@ public class AnalysisReader {
         MIA.log.writeWarning("Module \"" + moduleName + "\" not found (skipping)");
 
         return null;
+
+    }
+
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, String availableModuleName)
+            throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        Class<Module> clazz = null;
+        try {
+            clazz = (Class<Module>) Class.forName(availableModuleName);
+        } catch (ClassNotFoundException e) {
+            MIA.log.writeError(e);
+        }
+        Module module = (Module) clazz.getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+
+        // Populating parameters
+        NodeList moduleChildNodes = moduleNode.getChildNodes();
+        for (int i = 0; i < moduleChildNodes.getLength(); i++) {
+            switch (moduleChildNodes.item(i).getNodeName()) {
+                case "PARAMETERS":
+                    populateParameters(moduleChildNodes.item(i), module);
+                    break;
+
+                case "MEASUREMENTS":
+                    populateLegacyMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
+
+                case "IMAGE_MEASUREMENTS":
+                    populateImageMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
+
+                case "OBJECT_MEASUREMENTS":
+                    populateObjMeasurementRefs(moduleChildNodes.item(i), module);
+                    break;
+
+                case "METADATA":
+                    populateModuleMetadataRefs(moduleChildNodes.item(i), module);
+                    break;
+
+                case "RELATIONSHIPS":
+                case "PARENT_CHILD":
+                    populateModuleParentChildRefs(moduleChildNodes.item(i), module);
+                    break;
+            }
+        }
+
+        return module;
 
     }
 

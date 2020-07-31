@@ -42,7 +42,7 @@ import wbif.sjx.common.Object.Metadata;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-public class ConditionalAnalysisTermination extends Module {
+public class WorkflowHandling extends Module {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";
     public static final String CHOICE = "Choice";
@@ -68,7 +68,7 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REMOVE_OBJECTS = "Remove objects from workspace";
     public static final String REMOVE_IMAGES = "Remove images from workspace";
 
-    public ConditionalAnalysisTermination(ModuleCollection modules) {
+    public WorkflowHandling(ModuleCollection modules) {
         super("Workflow handling", modules);
     }
 
@@ -97,18 +97,22 @@ public class ConditionalAnalysisTermination extends Module {
 
     }
 
-    Status processTermination(ParameterCollection params, Workspace workspace) {
-        String continuationMode = params.getValue(CONTINUATION_MODE);
-        boolean showRedirectMessage = params.getValue(SHOW_REDIRECT_MESSAGE);
-        String redirectMessage = params.getValue(REDIRECT_MESSAGE);
-        boolean exportWorkspace = params.getValue(EXPORT_WORKSPACE);
-        boolean removeImages = params.getValue(REMOVE_IMAGES);
-        boolean removeObjects = params.getValue(REMOVE_OBJECTS);
+    Status processTermination(ParameterCollection params) {
+        return processTermination(params, null, false);
+
+    }
+
+    Status processTermination(ParameterCollection parameters, Workspace workspace, boolean showRedirectMessage) {
+        String continuationMode = parameters.getValue(CONTINUATION_MODE);
+        String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
+        boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
+        boolean removeImages = parameters.getValue(REMOVE_IMAGES);
+        boolean removeObjects = parameters.getValue(REMOVE_OBJECTS);
 
         // If terminate, remove necessary images and objects
         switch (continuationMode) {
             case ContinuationModes.REDIRECT_TO_MODULE:
-                redirectModule = params.getValue(REDIRECT_MODULE);
+                redirectModule = parameters.getValue(REDIRECT_MODULE);
                 if (showRedirectMessage)
                     MIA.log.writeMessage(workspace.getMetadata().insertMetadataValues(redirectMessage));
                 return Status.REDIRECT;
@@ -199,6 +203,7 @@ public class ConditionalAnalysisTermination extends Module {
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
         double fixedValue = parameters.getValue(FIXED_VALUE);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
+        boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
 
         // Running relevant tests
         boolean terminate = false;
@@ -232,12 +237,12 @@ public class ConditionalAnalysisTermination extends Module {
         if (terminate) {
             switch (testMode) {
                 default:
-                    return processTermination(parameters, workspace);
+                    return processTermination(parameters, workspace, showRedirectMessage);
                 case TestModes.GUI_CHOICE:
                     // Getting choice parameters
                     for (ParameterCollection collection : collections.values()) {
                         if (collection.getValue(CHOICE_NAME).equals(choice)) {
-                            return processTermination(collection, workspace);
+                            return processTermination(collection, workspace, showRedirectMessage);
                         }
                     }
                     MIA.log.writeWarning("Did not find matching termination option");
@@ -346,7 +351,15 @@ public class ConditionalAnalysisTermination extends Module {
                 break;
         }
 
-        if (!((String) parameters.getValue(TEST_MODE)).equals(TestModes.GUI_CHOICE)) {
+        if (((String) parameters.getValue(TEST_MODE)).equals(TestModes.GUI_CHOICE)) {
+            String choice = parameters.getValue(CHOICE);
+            LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
+            for (ParameterCollection collection : collections.values()) {
+                if (collection.getValue(CHOICE_NAME).equals(choice)) {
+                    processTermination(collection);
+                }
+            }
+        } else {
             returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
             returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
             switch ((String) parameters.getValue(CONTINUATION_MODE)) {
