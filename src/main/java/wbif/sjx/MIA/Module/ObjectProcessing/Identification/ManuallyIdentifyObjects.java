@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -42,13 +43,11 @@ import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
-import net.imglib2.algorithm.tree.Tree;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
-import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -108,8 +107,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public static final String VOLUME_TYPE = "Volume type";
     public static final String OUTPUT_TRACKS = "Output tracks";
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
-    public static final String SPATIAL_INTERPOLATION_MODE = "Spatial interpolation mode";
-    public static final String SPATIOTEMPORAL_INTERPOLATION_MODE = "Spatio-temporal interpolation mode";
+    public static final String SPATIAL_INTERPOLATION = "Spatial interpolation";
+    public static final String TEMPORAL_INTERPOLATION = "Temporal interpolation";
 
     public static final String SELECTION_SEPARATOR = "Object selection controls";
     public static final String SELECTOR_TYPE = "Default selector type";
@@ -300,10 +299,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         for (Obj inputObj : inputObjects.values()) {
             Image binaryImage = inputObj.getAsTightImage("BinaryTight");
 
+            // We need at least 3 slices to make interpolation worthwhile
+            if (binaryImage.getImagePlus().getNSlices() < 3)
+                continue;
+
             applySpatialInterpolation(binaryImage);
 
             // Converting binary image back to objects
-            Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(), false).getFirst();
+            Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(), true).getFirst();
             double[][] extents = inputObj.getExtents(true, false);
 
             interpObj.translateCoords((int) Math.round(extents[0][0]), (int) Math.round(extents[1][0]),
@@ -338,39 +341,43 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // There should only be one object per timepoint per track
         for (Obj trackObj : trackObjects.values()) {
-            MIA.log.writeDebug("    Processing track " + trackObj.getID());
-            // The following collection will be used to reassign the objects after
-            // interpolation
-            HashMap<Integer, Obj> objectsByT = new HashMap<>();
+            // Keeping a record of frames which have an object (these will be unchanged, so
+            // don't need a new object)
+            ArrayList<Integer> timepoints = new ArrayList<>();
 
             // Creating a blank image for this track
             Image binaryImage = trackObj.convertObjToImage("Track");
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
-                MIA.log.writeDebug("        Adding child " + childObj.getID() + "_" + childObj.getT());
                 Image childImage = childObj.convertObjToImage("Child");
-                ImageCalculator.process(binaryImage, childImage, null, calcMeth, ovrMode, false, false);
-                objectsByT.put(childObj.getT(), childObj);
+                ImageCalculator.process(binaryImage, childImage, calcMeth, ovrMode, null, false, false);
+                timepoints.add(childObj.getT());
             }
-
-            binaryImage.showImage();
 
             applyTemporalInterpolation(binaryImage);
 
-            binaryImage.showImage();
-            IJ.runMacro("waitForUser");
+            // Converting binary image back to objects
+            ObjCollection interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
 
-            // // Converting binary image back to objects
-            // Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(),
-            // false).getFirst();
-            // double[][] extents = inputObj.getExtents(true, false);
+            // Transferring new timepoint objects to inputObjects ObjCollection
+            Iterator<Obj> iterator = interpObjs.values().iterator();
+            while (iterator.hasNext()) {
+                Obj interpObj = iterator.next();
 
-            // interpObj.translateCoords((int) Math.round(extents[0][0]), (int)
-            // Math.round(extents[1][0]),
-            // (int) Math.round(extents[2][0]));
-            // inputObj.setCoordinateSet(interpObj.getCoordinateSet());
+                // If this timepoint already existed, it doesn't need a new object
+                if (timepoints.contains(interpObj.getT()))
+                    continue;
 
+                // Adding this object to the original collection
+                interpObj.setID(inputObjects.getAndIncrementID());
+                interpObj.setSpatialCalibration(inputObjects.getSpatialCalibration());
+                interpObj.addParent(trackObj);
+                trackObj.addChild(interpObj);
+                inputObjects.add(interpObj);
+                iterator.remove();
+
+            }
         }
     }
 
@@ -436,14 +443,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String type = parameters.getValue(VOLUME_TYPE);
         boolean outputTracks = parameters.getValue(OUTPUT_TRACKS);
         String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
+        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION);
+        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION);
         String selectorType = parameters.getValue(SELECTOR_TYPE);
         String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
-
-        String interpolationMode;
-        if (outputTracks)
-            interpolationMode = parameters.getValue(SPATIOTEMPORAL_INTERPOLATION_MODE);
-        else
-            interpolationMode = parameters.getValue(SPATIAL_INTERPOLATION_MODE);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -493,33 +496,13 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             return Status.FAIL;
 
         // If necessary, apply interpolation
-        MIA.log.writeDebug(interpolationMode);
-        switch (interpolationMode) {
-            case SpatialInterpolationModes.SPATIAL:
-                MIA.log.writeDebug("Spatial interpolation");
-                try {
-                    applySpatialInterpolation(outputObjects, type);
-                } catch (IntegerOverflowException e) {
-                    return Status.FAIL;
-                }
-                break;
-
-            case SpatioTemporalInterpolationModes.TEMPORAL:
-                MIA.log.writeDebug("Temporal interpolation");
-                try {
-                    applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
-                } catch (IntegerOverflowException e) {
-                    return Status.FAIL;
-                }
-                break;
-
-            // case SpatioTemporalInterpolationModes.SPATIAL_AND_TEMPORAL:
-            // try {
-            // applySpatioTemporalInterpolation(outputObjects, interpolationMode, type);
-            // } catch (IntegerOverflowException e) {
-            // return Status.FAIL;
-            // }
-            // break;
+        try {
+            if (spatialInterpolation)
+                applySpatialInterpolation(outputObjects, type);
+            if (temporalInterpolation)
+                applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
+        } catch (IntegerOverflowException e) {
+            return Status.FAIL;
         }
 
         workspace.addObjects(outputObjects);
@@ -543,12 +526,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
         parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));
-        parameters.add(new ChoiceP(SPATIAL_INTERPOLATION_MODE, this, SpatialInterpolationModes.NONE,
-                SpatialInterpolationModes.ALL,
-                "Interpolation method used for reducing the number of selections that must be made"));
-        parameters.add(new ChoiceP(SPATIOTEMPORAL_INTERPOLATION_MODE, this, SpatioTemporalInterpolationModes.NONE,
-                SpatioTemporalInterpolationModes.ALL,
-                "Interpolation method used for reducing the number of selections that must be made"));
+        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false,
+                "Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results)."));
+        parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false,
+                "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results)."));
 
         parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR, this));
         parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL,
@@ -572,9 +553,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         if ((boolean) parameters.getValue(OUTPUT_TRACKS)) {
             returnedParameters.add(parameters.get(OUTPUT_TRACK_OBJECTS));
-            returnedParameters.add(parameters.get(SPATIOTEMPORAL_INTERPOLATION_MODE));
+            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
+            returnedParameters.add(parameters.get(TEMPORAL_INTERPOLATION));
         } else {
-            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION_MODE));
+            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
         }
 
         returnedParameters.add(parameters.get(SELECTION_SEPARATOR));

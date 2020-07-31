@@ -1,5 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
+import javax.annotation.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
@@ -86,7 +88,7 @@ public class ImageCalculator extends Module {
     }
 
     public static Image process(Image inputImage1, Image inputImage2, String calculationMethod, String overwriteMode,
-            String outputImageName, boolean output32Bit, boolean setNaNToZero) {
+            @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
         ImagePlus ipl1 = inputImage1.getImagePlus();
         ImagePlus ipl2 = inputImage2.getImagePlus();
         ImagePlus iplOut = process(ipl1, ipl2, calculationMethod, overwriteMode, output32Bit, setNaNToZero);
@@ -96,10 +98,8 @@ public class ImageCalculator extends Module {
             default:
                 return new Image(outputImageName, iplOut);
             case OverwriteModes.OVERWRITE_IMAGE1:
-                inputImage1.setImagePlus(iplOut);
                 return inputImage1;
             case OverwriteModes.OVERWRITE_IMAGE2:
-                inputImage2.setImagePlus(iplOut);
                 return inputImage2;
         }
     }
@@ -225,10 +225,10 @@ public class ImageCalculator extends Module {
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
                 return imagePlus1;
-
             case OverwriteModes.OVERWRITE_IMAGE1:
+                return imagePlus1;
             case OverwriteModes.OVERWRITE_IMAGE2:
-                return null;
+                return imagePlus2;
         }
 
         return null;
