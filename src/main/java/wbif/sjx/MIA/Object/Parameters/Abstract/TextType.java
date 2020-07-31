@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.objecthunter.exp4j.ExpressionBuilder;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.TextParameter;
 import wbif.sjx.MIA.Module.Module;
@@ -52,7 +53,9 @@ public abstract class TextType extends Parameter {
 
     @Override
     public boolean verify() {
-        // The only thing to check is that any global variables and metadata values have been defined
-        return GlobalVariables.variablesPresent(getRawStringValue(),module.getModules());
+        // The only thing to check is that any global variables and metadata values have
+        // been defined
+        return GlobalVariables.variablesPresent(getRawStringValue(), module.getModules());
+        
     }
 }

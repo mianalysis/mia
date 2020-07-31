@@ -92,11 +92,9 @@ public class ModuleP extends Parameter {
         if (selectedModuleID == "")
             return false;
 
-        // Checking if the selected module is in the module list and if it's enabled and
-        // runnable
+        // Checking if the selected module is in the module list.  It doesn't need to be enabled or runnable
         for (Module testModule : module.getModules()) {
-            if (testModule.getModuleID().equals(selectedModuleID) && testModule.isEnabled()
-                    && testModule.isRunnable()) {
+            if (testModule.getModuleID().equals(selectedModuleID)) {
                 return true;
             }
         }

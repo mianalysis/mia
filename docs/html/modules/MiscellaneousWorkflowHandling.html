@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modules.html" class="nav1">Modules</a>
+    <a href="../modulelist.html" class="nav2">List of modules</a>
+    <a href="../macros.html" class="nav1">Macros</a>
+    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Workflow handling</h1>
+<h2>Description</h2>
+
+<h2>Parameters</h2>
+<ul><li>Test mode<ul><li>Type: ChoiceP</li><li>Default value: Image measurement</li><li>Choices: <ul><li>GUI choice</li><li>File doesn't exist</li><li>File exists</li><li>Fixed value</li><li>Image measurement</li><li>Metadata value</li><li>Object count</li></ul></li></ul><br><li>Choice<ul><li>Type: ChoiceP</li><li>Choices: <ul></ul></li></ul><br><li>Add choice<ul><li>Type: ParameterGroup</li></ul><br><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Input objects<ul><li>Type: InputObjectsP</li></ul><br><li>Reference image measurement mode<ul><li>Type: ChoiceP</li><li>Default value: Less than</li><li>Choices: <ul><li>Less than</li><li>Less than or equal to</li><li>Equal to</li><li>Greater than or equal to</li><li>Greater than</li><li>Not equal to</li></ul></li></ul><br><li>Reference image measurement<ul><li>Type: ImageMeasurementP</li></ul><br><li>Reference metadata value<ul><li>Type: MetadataItemP</li></ul><br><li>Reference value<ul><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><br><li>Fixed value<ul><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><br><li>Generic format<ul><li>Description: Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.</li><li>Type: StringP</li></ul><br><li>Available metadata fields<ul><li>Description: List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.</li><li>Type: TextAreaP</li></ul><br><li>Continuation mode<ul><li>Type: ChoiceP</li><li>Default value: Terminate</li><li>Choices: <ul><li>Redirect to module</li><li>Terminate</li></ul></li></ul><br><li>Redirect module<ul><li>Type: ModuleP</li></ul><br><li>Show redirect message<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Redirect message<ul><li>Type: StringP</li></ul><br><li>Export terminated workspaces<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Remove images from workspace<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Remove objects from workspace<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br></ul>
+
+</div>
+</body>

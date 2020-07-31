@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -24,30 +25,24 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_VALUE = "Variable value";
 
-    private static final HashMap<String,String> globalParameters = new HashMap<>();
+    private static final HashMap<StringP, String> globalParameters = new HashMap<>();
 
     public GlobalVariables(ModuleCollection modules) {
-        super("Global variables",modules);
+        super("Global variables", modules);
     }
 
-    public static String convertString(String string,ModuleCollection modules) {
+    public static String convertString(String string, ModuleCollection modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
-
-        if (pattern.matcher(string).matches()) {
-            // Reset global variables
-            globalParameters.clear();
-            for (Module module:modules.values()) module.updateAndGetParameters();
-        }
 
         while (matcher.find()) {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
 
-            for (String name:globalParameters.keySet()) {
-                if (name.equals(metadataName)) {
-                    String value = globalParameters.get(name);
-                    string = string.replace(fullName,value);
+            for (StringP nameP : globalParameters.keySet()) {
+                if (nameP.getValue().equals(metadataName)) {
+                    String value = globalParameters.get(nameP);
+                    string = string.replace(fullName, value);
                     break;
                 }
             }
@@ -57,19 +52,9 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static boolean variablesPresent(String string,ModuleCollection modules) {
+    public static boolean variablesPresent(String string, ModuleCollection modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
-
-        if (pattern.matcher(string).matches()) {
-            // Reset global variables
-            globalParameters.clear();
-            for (Module module:modules.values()) {
-                if (module instanceof GlobalVariables && module.isEnabled() && module.isRunnable()) {
-                    module.updateAndGetParameters();
-                }
-            }
-        }
 
         // Re-compiling the matcher
         matcher = pattern.matcher(string);
@@ -77,8 +62,8 @@ public class GlobalVariables extends Module {
             String metadataName = matcher.group(1);
 
             boolean found = false;
-            for (String name:globalParameters.keySet()) {
-                if (name.equals(metadataName)) {
+            for (StringP name : globalParameters.keySet()) {
+                if (name.getValue().equals(metadataName)) {
                     found = true;
                     break;
                 }
@@ -123,21 +108,26 @@ public class GlobalVariables extends Module {
     @Override
     protected void initialiseParameters() {
         ParameterCollection parameterCollection = new ParameterCollection();
-        parameterCollection.add(new StringP(VARIABLE_NAME,this));
-        parameterCollection.add(new StringP(VARIABLE_VALUE,this));
+        parameterCollection.add(new StringP(VARIABLE_NAME, this));
+        parameterCollection.add(new StringP(VARIABLE_VALUE, this));
 
-        parameters.add(new ParameterGroup(ADD_NEW_VARIABLE,this,parameterCollection));
+        parameters.add(new ParameterGroup(ADD_NEW_VARIABLE, this, parameterCollection));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
-        if (group == null) return parameters;
+        if (group == null)
+            return parameters;
 
-        LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
-        for (ParameterCollection collection:collections.values()) {
-            globalParameters.put(collection.getValue(VARIABLE_NAME),collection.getValue(VARIABLE_VALUE));
+        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(false);
+        for (ParameterCollection collection : collections.values()) {
+            StringP variableName = (StringP) collection.get(VARIABLE_NAME);
+            if (isRunnable() && isEnabled())
+                globalParameters.put(variableName, collection.getValue(VARIABLE_VALUE));
+            else if (globalParameters.containsKey(variableName))
+                globalParameters.remove(variableName);
         }
 
         return parameters;
