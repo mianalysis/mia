@@ -7,7 +7,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.TextParameter;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.WorkflowHandling.GlobalVariables;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 
 public abstract class TextType extends Parameter {
     public TextType(String name, Module module) {

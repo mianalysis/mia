@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Object.Parameters.Text;
 
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.WorkflowHandling.GlobalVariables;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
