@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import wbif.sjx.MIA.GUI.ParameterControls.MessageArea;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
+import wbif.sjx.MIA.Module.WorkflowHandling.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class MessageP extends TextAreaP {

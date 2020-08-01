@@ -1,12 +1,19 @@
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Miscellaneous.WorkflowHandling;
+import wbif.sjx.MIA.Module.WorkflowHandling.CoreWorkspaceHandler;
+import wbif.sjx.MIA.Module.WorkflowHandling.FixedTextCondition;
+import wbif.sjx.MIA.Module.WorkflowHandling.GUICondition;
+import wbif.sjx.MIA.Module.WorkflowHandling.GlobalVariables;
+import wbif.sjx.MIA.Module.WorkflowHandling.ModuleIsEnabled;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class AnalysisTester {
     public static int testModules(ModuleCollection modules) {
+        GlobalVariables.updateVariables(modules);
+
         // Setting all module runnable states to false
         for (Module module : modules)
             module.setRunnable(false);
@@ -20,19 +27,22 @@ public class AnalysisTester {
 
             // Checking for the special case of WorkflowHandling module in
             // "GUI choice" mode (this we can definitively evaluate at this point)
-            if (module instanceof WorkflowHandling) {
-                String testMode = module.updateAndGetParameters().getValue(WorkflowHandling.TEST_MODE);
-                if (!testMode.equals(WorkflowHandling.TestModes.GUI_CHOICE))
-                    continue;
+            if (module instanceof GUICondition || module instanceof FixedTextCondition
+                    || module instanceof ModuleIsEnabled) {
+
+                        // For ModuleIsEnabled check if we need to redirect/terminate
+                if (module instanceof ModuleIsEnabled)
+                    if (!((ModuleIsEnabled) module).testDoRedirect())
+                        continue;
 
                 Module redirectModule = module.getRedirectModule();
 
                 // If null, the analysis was terminated
                 if (redirectModule == null)
-                    i = modules.size();
+                    break;
 
                 // Setting the index of the next module to be evaluated
-                i = modules.indexOf(module.getRedirectModule()) - 1;
+                i = modules.indexOf(redirectModule) - 1;
 
             }
 
@@ -40,18 +50,6 @@ public class AnalysisTester {
                 nRunnable++;
 
         }
-
-        // // Iterating over all modules, checking if they are runnable
-        // int nRunnable = 0;
-        // for (Module module : modules) {
-        // boolean runnable = testModule(module, modules);
-
-        // module.setRunnable(runnable);
-
-        // if (runnable && module.isEnabled())
-        // nRunnable++;
-
-        // }
 
         return nRunnable;
 

@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Miscellaneous;
+package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +45,6 @@ import wbif.sjx.common.Object.Metadata;
 public class WorkflowHandling extends Module {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";
-    public static final String CHOICE = "Choice";
-    public static final String ADD_CHOICE = "Add choice";
-    public static final String CHOICE_NAME = "Choice name";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Reference image measurement mode";
@@ -73,7 +70,6 @@ public class WorkflowHandling extends Module {
     }
 
     public interface TestModes {
-        String GUI_CHOICE = "GUI choice";
         String IMAGE_MEASUREMENT = "Image measurement";
         String METADATA_VALUE = "Metadata value";
         String FILE_EXISTS = "File exists";
@@ -81,7 +77,7 @@ public class WorkflowHandling extends Module {
         String FIXED_VALUE = "Fixed value";
         String OBJECT_COUNT = "Object count";
 
-        String[] ALL = new String[] { GUI_CHOICE, FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT,
+        String[] ALL = new String[] { FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT,
                 METADATA_VALUE, OBJECT_COUNT };
 
     }
@@ -181,7 +177,7 @@ public class WorkflowHandling extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.MISCELLANEOUS;
+        return PackageNames.WORKFLOW_HANDLING;
     }
 
     @Override
@@ -193,24 +189,19 @@ public class WorkflowHandling extends Module {
     protected Status process(Workspace workspace) {
         // Getting parameters
         String testMode = parameters.getValue(TEST_MODE);
-        String choice = parameters.getValue(CHOICE);
-        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String filterMode = parameters.getValue(FILTER_MODE);
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String referenceMetadataValue = parameters.getValue(REFERENCE_METADATA_VALUE);
-        double referenceValue = parameters.getValue(REFERENCE_VALUE);
-        double fixedValue = parameters.getValue(FIXED_VALUE);
+        double referenceValueNumber = parameters.getValue(REFERENCE_VALUE);
+        double fixedValueNumber = parameters.getValue(FIXED_VALUE);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
 
         // Running relevant tests
         boolean terminate = false;
         switch (testMode) {
-            case TestModes.GUI_CHOICE:
-                terminate = true;
-                break;
             case TestModes.FILE_DOES_NOT_EXIST:
                 terminate = !testFileExists(workspace.getMetadata(), genericFormat);
                 break;
@@ -218,36 +209,25 @@ public class WorkflowHandling extends Module {
                 terminate = testFileExists(workspace.getMetadata(), genericFormat);
                 break;
             case TestModes.FIXED_VALUE:
-                terminate = fixedValue == referenceValue;
+                terminate = fixedValueNumber == referenceValueNumber;
                 break;
             case TestModes.IMAGE_MEASUREMENT:
                 Image inputImage = workspace.getImage(inputImageName);
-                terminate = testImageMeasurement(inputImage, referenceImageMeasurement, filterMode, referenceValue);
+                terminate = testImageMeasurement(inputImage, referenceImageMeasurement, filterMode,
+                        referenceValueNumber);
                 break;
             case TestModes.METADATA_VALUE:
                 String metadataValue = workspace.getMetadata().get(referenceMetadataValue).toString();
-                terminate = testMetadata(metadataValue, filterMode, referenceValue);
+                terminate = testMetadata(metadataValue, filterMode, referenceValueNumber);
                 break;
             case TestModes.OBJECT_COUNT:
                 ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-                terminate = testObjectCount(inputObjects, filterMode, referenceValue);
+                terminate = testObjectCount(inputObjects, filterMode, referenceValueNumber);
                 break;
         }
 
-        if (terminate) {
-            switch (testMode) {
-                default:
-                    return processTermination(parameters, workspace, showRedirectMessage);
-                case TestModes.GUI_CHOICE:
-                    // Getting choice parameters
-                    for (ParameterCollection collection : collections.values()) {
-                        if (collection.getValue(CHOICE_NAME).equals(choice)) {
-                            return processTermination(collection, workspace, showRedirectMessage);
-                        }
-                    }
-                    MIA.log.writeWarning("Did not find matching termination option");
-            }
-        }
+        if (terminate)
+            return processTermination(parameters, workspace, showRedirectMessage);
 
         return Status.PASS;
 
@@ -257,20 +237,6 @@ public class WorkflowHandling extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(TEST_MODE, this, TestModes.IMAGE_MEASUREMENT, TestModes.ALL));
-
-        ParameterCollection collection = new ParameterCollection();
-        collection.add(new StringP(CHOICE_NAME, this, ""));
-        collection.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
-        collection.add(new ModuleP(REDIRECT_MODULE, this));
-        collection.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
-        collection.add(new StringP(REDIRECT_MESSAGE, this, ""));
-        collection.add(new BooleanP(EXPORT_WORKSPACE, this, true));
-        collection.add(new BooleanP(REMOVE_IMAGES, this, false));
-        collection.add(new BooleanP(REMOVE_OBJECTS, this, false));
-
-        parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
-        parameters.getParameter(CHOICE).setVisible(true);
-        parameters.add(new ParameterGroup(ADD_CHOICE, this, collection, 0, getUpdaterAndGetter()));
 
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
@@ -286,7 +252,7 @@ public class WorkflowHandling extends Module {
 
         parameters.add(new ParamSeparatorP(RESULT_SEPARATOR, this));
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
-        parameters.add(new ModuleP(REDIRECT_MODULE, this));
+        parameters.add(new ModuleP(REDIRECT_MODULE, this,true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
         parameters.add(new StringP(REDIRECT_MESSAGE, this, ""));
         parameters.add(new BooleanP(EXPORT_WORKSPACE, this, true));
@@ -300,20 +266,8 @@ public class WorkflowHandling extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
-
         returnedParameters.add(parameters.getParameter(TEST_MODE));
         switch ((String) parameters.getValue(TEST_MODE)) {
-            case TestModes.GUI_CHOICE:
-                returnedParameters.add(parameters.getParameter(CHOICE));
-                returnedParameters.add(parameters.getParameter(ADD_CHOICE));
-
-                // Updating options in choice menu
-                ParameterGroup group = (ParameterGroup) parameters.get(ADD_CHOICE);
-                String[] choices = getGUIChoices(group.getCollections(false));
-                ((ChoiceP) parameters.getParameter(CHOICE)).setChoices(choices);
-
-                break;
-
             case TestModes.FILE_EXISTS:
             case TestModes.FILE_DOES_NOT_EXIST:
                 returnedParameters.add(parameters.getParameter(GENERIC_FORMAT));
@@ -351,33 +305,23 @@ public class WorkflowHandling extends Module {
                 break;
         }
 
-        if (((String) parameters.getValue(TEST_MODE)).equals(TestModes.GUI_CHOICE)) {
-            String choice = parameters.getValue(CHOICE);
-            LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
-            for (ParameterCollection collection : collections.values()) {
-                if (collection.getValue(CHOICE_NAME).equals(choice)) {
-                    processTermination(collection);
+        returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
+        switch ((String) parameters.getValue(CONTINUATION_MODE)) {
+            case ContinuationModes.REDIRECT_TO_MODULE:
+                returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
+                redirectModule = parameters.getValue(REDIRECT_MODULE);
+                returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
+                if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
+                    returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
                 }
-            }
-        } else {
-            returnedParameters.add(parameters.getParameter(RESULT_SEPARATOR));
-            returnedParameters.add(parameters.getParameter(CONTINUATION_MODE));
-            switch ((String) parameters.getValue(CONTINUATION_MODE)) {
-                case ContinuationModes.REDIRECT_TO_MODULE:
-                    returnedParameters.add(parameters.getParameter(REDIRECT_MODULE));
-                    redirectModule = parameters.getValue(REDIRECT_MODULE);
-                    returnedParameters.add(parameters.getParameter(SHOW_REDIRECT_MESSAGE));
-                    if ((boolean) parameters.getValue(SHOW_REDIRECT_MESSAGE)) {
-                        returnedParameters.add(parameters.getParameter(REDIRECT_MESSAGE));
-                    }
-                    break;
-                case ContinuationModes.TERMINATE:
-                    returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
-                    returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
-                    returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
-                    redirectModule = null;
-                    break;
-            }
+                break;
+            case ContinuationModes.TERMINATE:
+                returnedParameters.add(parameters.getParameter(EXPORT_WORKSPACE));
+                returnedParameters.add(parameters.getParameter(REMOVE_IMAGES));
+                returnedParameters.add(parameters.getParameter(REMOVE_OBJECTS));
+                redirectModule = null;
+                break;
         }
 
         return returnedParameters;
@@ -412,49 +356,5 @@ public class WorkflowHandling extends Module {
     @Override
     public boolean verify() {
         return true;
-    }
-
-    private ParameterUpdaterAndGetter getUpdaterAndGetter() {
-        return new ParameterUpdaterAndGetter() {
-
-            @Override
-            public ParameterCollection updateAndGet(ParameterCollection params) {
-                ParameterCollection returnedParameters = new ParameterCollection();
-
-                returnedParameters.add(params.getParameter(CHOICE_NAME));
-                returnedParameters.add(params.getParameter(CONTINUATION_MODE));
-                switch ((String) params.getValue(CONTINUATION_MODE)) {
-                    case ContinuationModes.REDIRECT_TO_MODULE:
-                        returnedParameters.add(params.getParameter(REDIRECT_MODULE));
-                        redirectModule = params.getValue(REDIRECT_MODULE);
-                        returnedParameters.add(params.getParameter(SHOW_REDIRECT_MESSAGE));
-                        if ((boolean) params.getValue(SHOW_REDIRECT_MESSAGE)) {
-                            returnedParameters.add(params.getParameter(REDIRECT_MESSAGE));
-                        }
-                        break;
-                    case ContinuationModes.TERMINATE:
-                        returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
-                        returnedParameters.add(params.getParameter(REMOVE_IMAGES));
-                        returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
-                        redirectModule = null;
-                        break;
-                }
-
-                return returnedParameters;
-
-            }
-        };
-    }
-
-    String[] getGUIChoices(LinkedHashMap<Integer, ParameterCollection> collections) {
-        String[] choices = new String[collections.size()];
-
-        int i = 0;
-        for (ParameterCollection collection : collections.values()) {
-            choices[i++] = collection.getValue(CHOICE_NAME);
-        }
-
-        return choices;
-
     }
 }

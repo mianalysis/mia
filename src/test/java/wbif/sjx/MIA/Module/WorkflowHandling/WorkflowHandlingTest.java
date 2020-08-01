@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Miscellaneous;
+package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import wbif.sjx.MIA.Module.ModuleTest;
 

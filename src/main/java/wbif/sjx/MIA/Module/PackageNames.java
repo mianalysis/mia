@@ -22,5 +22,6 @@ public class PackageNames {
     public final static String VISUALISATION = ".Visualisation\\";
     public final static String VISUALISATION_IMAGE_RENDERING = ".Visualisation\\.Image rendering\\";
     public final static String VISUALISATION_OVERLAYS = ".Visualisation\\.Overlays\\";
+    public final static String WORKFLOW_HANDLING = ".WorkflowHandling\\";
 
 }

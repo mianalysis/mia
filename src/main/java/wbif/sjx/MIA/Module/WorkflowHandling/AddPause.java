@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Miscellaneous;
+package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
@@ -30,7 +30,7 @@ public class AddPause extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.MISCELLANEOUS;
+        return PackageNames.WORKFLOW_HANDLING;
     }
 
     @Override

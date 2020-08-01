@@ -8,19 +8,23 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class ModuleP extends Parameter {
     protected String selectedModuleID = "";
+    protected boolean showNonRunnable = true;
 
-    public ModuleP(String name, Module module) {
+    public ModuleP(String name, Module module, boolean showNonRunnable) {
         super(name, module);
+        this.showNonRunnable = showNonRunnable;
     }
 
-    public ModuleP(String name, Module module, String selectedModuleID) {
+    public ModuleP(String name, Module module, boolean showNonRunnable, String selectedModuleID) {
         super(name, module);
         this.selectedModuleID = selectedModuleID;
+        this.showNonRunnable = showNonRunnable;
     }
 
-    public ModuleP(String name, Module module, String selectedModuleID, String description) {
+    public ModuleP(String name, Module module, boolean showNonRunnable, String selectedModuleID, String description) {
         super(name, module, description);
         this.selectedModuleID = selectedModuleID;
+        this.showNonRunnable = showNonRunnable;
     }
 
     public Module getSelectedModule() {
@@ -35,14 +39,14 @@ public class ModuleP extends Parameter {
         ModuleCollection modules = module.getModules();
         int nAvailable = 0;
         for (Module module : modules) {
-            if (module.isEnabled() && module.isRunnable())
+            if (module.isEnabled() && (module.isRunnable() || showNonRunnable))
                 nAvailable++;
         }
 
         Module[] moduleArray = new Module[nAvailable];
         int count = 0;
         for (Module module : modules) {
-            if (module.isEnabled() && module.isRunnable())
+            if (module.isEnabled() && (module.isRunnable() || showNonRunnable))
                 moduleArray[count++] = module;
         }
 
@@ -76,6 +80,14 @@ public class ModuleP extends Parameter {
         return new ModuleChoiceParameter(this);
     }
 
+    public boolean getShowNonRunnable() {
+        return showNonRunnable;
+    }
+
+    public void setShowNonRunnable(boolean showNonRunnable) {
+        this.showNonRunnable = showNonRunnable;
+    }
+
     @Override
     public <T> T getValue() {
         return (T) getSelectedModule();
@@ -92,7 +104,8 @@ public class ModuleP extends Parameter {
         if (selectedModuleID == "")
             return false;
 
-        // Checking if the selected module is in the module list.  It doesn't need to be enabled or runnable
+        // Checking if the selected module is in the module list. It doesn't need to be
+        // enabled or runnable
         for (Module testModule : module.getModules()) {
             if (testModule.getModuleID().equals(selectedModuleID)) {
                 return true;
@@ -105,7 +118,7 @@ public class ModuleP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        ModuleP newParameter = new ModuleP(name, newModule, selectedModuleID, getDescription());
+        ModuleP newParameter = new ModuleP(name, newModule, showNonRunnable, selectedModuleID, getDescription());
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

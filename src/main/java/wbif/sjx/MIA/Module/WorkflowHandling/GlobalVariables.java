@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.Miscellaneous;
+package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,7 +25,7 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_VALUE = "Variable value";
 
-    private static final HashMap<StringP, String> globalParameters = new HashMap<>();
+    private static final HashMap<StringP, String> globalVariables = new HashMap<>();
 
     public GlobalVariables(ModuleCollection modules) {
         super("Global variables", modules);
@@ -39,9 +39,9 @@ public class GlobalVariables extends Module {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
 
-            for (StringP nameP : globalParameters.keySet()) {
+            for (StringP nameP : globalVariables.keySet()) {
                 if (nameP.getValue().equals(metadataName)) {
-                    String value = globalParameters.get(nameP);
+                    String value = globalVariables.get(nameP);
                     string = string.replace(fullName, value);
                     break;
                 }
@@ -62,7 +62,7 @@ public class GlobalVariables extends Module {
             String metadataName = matcher.group(1);
 
             boolean found = false;
-            for (StringP name : globalParameters.keySet()) {
+            for (StringP name : globalVariables.keySet()) {
                 if (name.getValue().equals(metadataName)) {
                     found = true;
                     break;
@@ -86,13 +86,23 @@ public class GlobalVariables extends Module {
 
     }
 
+    public static void updateVariables(ModuleCollection modules) {
+        // Reset global variables
+        globalVariables.clear();
+        for (Module module : modules.values()) {
+            if (module instanceof GlobalVariables && module.isEnabled()) {
+                module.updateAndGetParameters();
+            }
+        }
+    }
+
     public static int count() {
-        return globalParameters.size();
+        return globalVariables.size();
     }
 
     @Override
     public String getPackageName() {
-        return PackageNames.MISCELLANEOUS;
+        return PackageNames.WORKFLOW_HANDLING;
     }
 
     @Override
@@ -124,10 +134,11 @@ public class GlobalVariables extends Module {
         LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(false);
         for (ParameterCollection collection : collections.values()) {
             StringP variableName = (StringP) collection.get(VARIABLE_NAME);
-            if (isRunnable() && isEnabled())
-                globalParameters.put(variableName, collection.getValue(VARIABLE_VALUE));
-            else if (globalParameters.containsKey(variableName))
-                globalParameters.remove(variableName);
+            if (isEnabled()) {
+                globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE));
+            } else if (globalVariables.containsKey(variableName)) {
+                globalVariables.remove(variableName);
+            }
         }
 
         return parameters;

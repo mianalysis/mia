@@ -71,9 +71,8 @@ public class MIA implements Command {
                 new AnalysisRunner().run(analysis);
             }
 
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
-                ParserConfigurationException | InterruptedException e) {
-            MIA.log.writeError(e);
+        } catch (Exception e) {
+            MIA.log.writeError(e.getMessage());
         }
     }
 
