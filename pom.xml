@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.scijava</groupId>
         <artifactId>pom-scijava</artifactId>
-        <version>27.0.1</version>
+        <version>29.2.0</version>
         <relativePath />
     </parent>
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.14.11</version>
+    <version>0.14.12-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -131,13 +131,6 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1.1</version>
-            <scope>${scp}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>5.5.2</version>
@@ -149,15 +142,35 @@
             <artifactId>maven-project-info-reports-plugin</artifactId>
             <version>2.9</version>
             <type>maven-plugin</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <exclusions>
+                <exclusion>
+                    <groupId>classworlds</groupId>
+                    <artifactId>classworlds</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-project</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-settings</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.apache.maven.reporting</groupId>
                     <artifactId>maven-reporting-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sisu</groupId>
+                    <artifactId>org.eclipse.sisu.plexus</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>com.jcraft</groupId>
@@ -400,7 +413,7 @@
         </plugins>
     </build>
 
-    <reporting>
+    <!-- <reporting>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -418,5 +431,5 @@
                 </reportSets>
             </plugin>
         </plugins>
-    </reporting>
+    </reporting> -->
 </project>
