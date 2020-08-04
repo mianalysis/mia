@@ -1,11 +1,11 @@
 package wbif.sjx.MIA.Object.Parameters.Text;
 
-import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
+import javax.annotation.Nonnull;
+
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
-
-import javax.annotation.Nonnull;
 
 public class StringP extends TextType {
     protected String value = "";
@@ -25,7 +25,7 @@ public class StringP extends TextType {
     }
 
     public void setValue(String value) {
-        this.value = value;
+            this.value = value;
     }
 
     @Override

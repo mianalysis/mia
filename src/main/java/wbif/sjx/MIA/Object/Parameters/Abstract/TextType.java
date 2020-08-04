@@ -52,7 +52,9 @@ public abstract class TextType extends Parameter {
 
     @Override
     public boolean verify() {
-        // The only thing to check is that any global variables and metadata values have been defined
-        return GlobalVariables.variablesPresent(getRawStringValue(),module.getModules());
+        // The only thing to check is that any global variables and metadata values have
+        // been defined        
+        return GlobalVariables.variablesPresent(getRawStringValue(), module.getModules());
+        
     }
 }

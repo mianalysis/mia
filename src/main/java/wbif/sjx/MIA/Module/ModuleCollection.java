@@ -4,20 +4,29 @@
 
 package wbif.sjx.MIA.Module;
 
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Hidden.InputControl;
-import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
-import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.Objects.RemovedObjectsP;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
+import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.RemovedObjectsP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRef;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRef;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
 /**
  * Created by sc13967 on 03/05/2017.

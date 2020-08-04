@@ -3,12 +3,14 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
@@ -32,6 +34,8 @@ public class ObjectMeasurementCalculator extends Module {
     public static final String VALUE_SEPARATOR_1 = "Value 1 selection";
     public static final String VALUE_MODE_1 = "Value mode 1";
     public static final String FIXED_VALUE_1 = "Fixed value 1";
+    public static final String IMAGE_1 = "Image 1";
+    public static final String IMAGE_MEASUREMENT_1 = "Image measurement 1";
     public static final String MEASUREMENT_1 = "Measurement 1";
     public static final String REFERENCE_OBJECTS_1 = "Reference objects 1";
     public static final String REFERENCE_MEASUREMENT_1 = "Reference measurement 1";
@@ -40,6 +44,8 @@ public class ObjectMeasurementCalculator extends Module {
     public static final String VALUE_SEPARATOR_2 = "Value 2 selection";
     public static final String VALUE_MODE_2 = "Value mode 2";
     public static final String FIXED_VALUE_2 = "Fixed value 2";
+    public static final String IMAGE_2 = "Image 2";
+    public static final String IMAGE_MEASUREMENT_2 = "Image measurement 2";
     public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String REFERENCE_OBJECTS_2 = "Reference objects 2";
     public static final String REFERENCE_MEASUREMENT_2 = "Reference measurement 2";
@@ -51,10 +57,11 @@ public class ObjectMeasurementCalculator extends Module {
 
     public interface ValueModes {
         String FIXED = "Fixed";
+        String IMAGE_MEASUREMENT = "Image measurement";
         String MEASUREMENT = "Measurement";
         String OBJECT_COLLECTION_STATISTIC = "Object collection statistic";
 
-        String[] ALL = new String[] { FIXED, MEASUREMENT, OBJECT_COLLECTION_STATISTIC };
+        String[] ALL = new String[] { FIXED, IMAGE_MEASUREMENT, MEASUREMENT, OBJECT_COLLECTION_STATISTIC };
 
     }
 
@@ -207,6 +214,8 @@ public class ObjectMeasurementCalculator extends Module {
 
         String valueMode1 = parameters.getValue(VALUE_MODE_1);
         double fixedValue1 = parameters.getValue(FIXED_VALUE_1);
+        String imageName1 = parameters.getValue(IMAGE_1);
+        String imageMeasurement1 = parameters.getValue(IMAGE_MEASUREMENT_1);
         String measurementName1 = parameters.getValue(MEASUREMENT_1);
         String refObjectsName1 = parameters.getValue(REFERENCE_OBJECTS_1);
         String refMeasurementName1 = parameters.getValue(REFERENCE_MEASUREMENT_1);
@@ -214,6 +223,8 @@ public class ObjectMeasurementCalculator extends Module {
 
         String valueMode2 = parameters.getValue(VALUE_MODE_2);
         double fixedValue2 = parameters.getValue(FIXED_VALUE_2);
+        String imageName2 = parameters.getValue(IMAGE_2);
+        String imageMeasurement2 = parameters.getValue(IMAGE_MEASUREMENT_2);
         String measurementName2 = parameters.getValue(MEASUREMENT_2);
         String refObjectsName2 = parameters.getValue(REFERENCE_OBJECTS_2);
         String refMeasurementName2 = parameters.getValue(REFERENCE_MEASUREMENT_2);
@@ -242,6 +253,9 @@ public class ObjectMeasurementCalculator extends Module {
                 case ValueModes.FIXED:
                     value1 = fixedValue1;
                     break;
+                case ValueModes.IMAGE_MEASUREMENT:
+                    value1 = workspace.getImage(imageName1).getMeasurement(imageMeasurement1).getValue();
+                    break;
                 case ValueModes.MEASUREMENT:
                     value1 = inputObject.getMeasurement(measurementName1).getValue();
                     break;
@@ -255,6 +269,9 @@ public class ObjectMeasurementCalculator extends Module {
             switch (valueMode2) {
                 case ValueModes.FIXED:
                     value2 = fixedValue2;
+                    break;
+                case ValueModes.IMAGE_MEASUREMENT:
+                    value2 = workspace.getImage(imageName2).getMeasurement(imageMeasurement2).getValue();
                     break;
                 case ValueModes.MEASUREMENT:
                     value2 = inputObject.getMeasurement(measurementName2).getValue();
@@ -288,6 +305,8 @@ public class ObjectMeasurementCalculator extends Module {
         parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_1, this));
         parameters.add(new ChoiceP(VALUE_MODE_1, this, ValueModes.MEASUREMENT, ValueModes.ALL));
         parameters.add(new DoubleP(FIXED_VALUE_1, this, 0));
+        parameters.add(new InputImageP(IMAGE_1, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_1, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_1, this));
         parameters.add(new InputObjectsP(REFERENCE_OBJECTS_1, this));
         parameters.add(new ObjectMeasurementP(REFERENCE_MEASUREMENT_1, this));
@@ -296,6 +315,8 @@ public class ObjectMeasurementCalculator extends Module {
         parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_2, this));
         parameters.add(new ChoiceP(VALUE_MODE_2, this, ValueModes.MEASUREMENT, ValueModes.ALL));
         parameters.add(new DoubleP(FIXED_VALUE_2, this, 0));
+        parameters.add(new InputImageP(IMAGE_2, this));
+        parameters.add(new ImageMeasurementP(IMAGE_MEASUREMENT_2, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_2, this));
         parameters.add(new InputObjectsP(REFERENCE_OBJECTS_2, this));
         parameters.add(new ObjectMeasurementP(REFERENCE_MEASUREMENT_2, this));
@@ -323,6 +344,13 @@ public class ObjectMeasurementCalculator extends Module {
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_1));
                 break;
 
+            case ValueModes.IMAGE_MEASUREMENT:
+                returnedParams.add(parameters.getParameter(IMAGE_1));
+                returnedParams.add(parameters.getParameter(IMAGE_MEASUREMENT_1));
+                String imageName1 = parameters.getValue(IMAGE_1);
+                ((ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_1)).setImageName(imageName1);
+                break;
+
             case ValueModes.MEASUREMENT:
                 returnedParams.add(parameters.getParameter(MEASUREMENT_1));
                 ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_1)).setObjectName(inputObjectsName);
@@ -343,6 +371,13 @@ public class ObjectMeasurementCalculator extends Module {
         switch ((String) parameters.getValue(VALUE_MODE_2)) {
             case ValueModes.FIXED:
                 returnedParams.add(parameters.getParameter(FIXED_VALUE_2));
+                break;
+
+            case ValueModes.IMAGE_MEASUREMENT:
+                returnedParams.add(parameters.getParameter(IMAGE_2));
+                returnedParams.add(parameters.getParameter(IMAGE_MEASUREMENT_2));
+                String imageName2 = parameters.getValue(IMAGE_2);
+                ((ImageMeasurementP) parameters.get(IMAGE_MEASUREMENT_2)).setImageName(imageName2);
                 break;
 
             case ValueModes.MEASUREMENT:

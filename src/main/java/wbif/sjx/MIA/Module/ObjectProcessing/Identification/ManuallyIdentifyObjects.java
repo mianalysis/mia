@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -46,23 +47,25 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
 import wbif.sjx.common.Object.Volume.SpatCal;
@@ -81,35 +84,38 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private Workspace workspace;
     private ImagePlus displayImagePlus;
     private Overlay overlay;
-    private HashMap<Integer,ArrayList<ObjRoi>> rois;
+    private HashMap<Integer, ArrayList<ObjRoi>> rois;
     private int maxID;
 
-    private String outputObjectsName;
     private ObjCollection outputObjects;
+    private ObjCollection outputTrackObjects;
 
     private SpatCal calibration;
     private int nFrames;
     private boolean overflow = false;
-
-    private int elementHeight = 40;
 
     private static final String ADD_NEW = "Add new";
     private static final String ADD_EXISTING = "Add existing";
     private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
-    public static final String INPUT_SEPARATOR = "Image input, object output";
+    public static final String INPUT_SEPARATOR = "Image input";
     public static final String INPUT_IMAGE = "Input image";
+
+    public static final String OUTPUT_SEPARATOR = "Object output";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String VOLUME_TYPE = "Volume type";
+    public static final String OUTPUT_TRACKS = "Output tracks";
+    public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
+    public static final String SPATIAL_INTERPOLATION = "Spatial interpolation";
+    public static final String TEMPORAL_INTERPOLATION = "Temporal interpolation";
+
     public static final String SELECTION_SEPARATOR = "Object selection controls";
     public static final String SELECTOR_TYPE = "Default selector type";
-    public static final String INTERPOLATION_MODE = "Interpolation mode";
-    public static final String VOLUME_TYPE = "Volume type";
     public static final String MESSAGE_ON_IMAGE = "Message on image";
 
-
     public ManuallyIdentifyObjects(ModuleCollection modules) {
-        super("Manually identify objects",modules);
+        super("Manually identify objects", modules);
     }
 
     public interface SelectorTypes {
@@ -121,27 +127,35 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String RECTANGLE = "Rectangle";
         String SEGMENTED_LINE = "Segmented line";
 
-        String[] ALL = new String[]{FREEHAND_LINE,FREEHAND_REGION,LINE,OVAL,POLYGON,RECTANGLE,SEGMENTED_LINE};
+        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POLYGON, RECTANGLE, SEGMENTED_LINE };
 
     }
 
-    public interface InterpolationModes {
+    public interface SpatialInterpolationModes {
         String NONE = "None";
         String SPATIAL = "Spatial";
+
+        String[] ALL = new String[] { NONE, SPATIAL };
+
+    }
+
+    public interface SpatioTemporalInterpolationModes extends SpatialInterpolationModes {
+        String NONE = "None";
         String TEMPORAL = "Temporal";
         String SPATIAL_AND_TEMPORAL = "Spatial and temporal";
 
-        String[] ALL = new String[]{NONE, SPATIAL, TEMPORAL, SPATIAL_AND_TEMPORAL};
+        String[] ALL = new String[] { NONE, SPATIAL, TEMPORAL, SPATIAL_AND_TEMPORAL };
 
     }
 
-    public interface VolumeTypes extends Image.VolumeTypes {}
+    public interface VolumeTypes extends Image.VolumeTypes {
+    }
 
     VolumeType getVolumeType(String volumeType) {
         switch (volumeType) {
             case Image.VolumeTypes.OCTREE:
                 return VolumeType.OCTREE;
-//            case Image.VolumeTypes.OPTIMISED:
+            // case Image.VolumeTypes.OPTIMISED:
             default:
             case Image.VolumeTypes.POINTLIST:
                 return VolumeType.POINTLIST;
@@ -186,7 +200,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 List<ObjRoi> selected = list.getSelectedValuesList();
-                for (ObjRoi objRoi:selected) displayObject(objRoi);
+                for (ObjRoi objRoi : selected)
+                    displayObject(objRoi);
             }
         });
 
@@ -198,54 +213,54 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridheight = 1;
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(5,5,5,5);
+        c.insets = new Insets(5, 5, 5, 5);
 
-        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following" +
-                "<br>(or click \"Finish adding objects\" at any time)." +
-                "<br>Different timepoints must be added as new objects.</html>");
+        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following"
+                + "<br>(or click \"Finish adding objects\" at any time)."
+                + "<br>Different timepoints must be added as new objects.</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
-        frame.add(headerLabel,c);
+        frame.add(headerLabel, c);
 
         JButton newObjectButton = new JButton("Add as new object");
         newObjectButton.addActionListener(this);
         newObjectButton.setActionCommand(ADD_NEW);
         c.gridy++;
         c.gridwidth = 1;
-        frame.add(newObjectButton,c);
+        frame.add(newObjectButton, c);
 
         JButton existingObjectButton = new JButton("Add to existing object");
         existingObjectButton.addActionListener(this);
         existingObjectButton.setActionCommand(ADD_EXISTING);
         c.gridx++;
-        frame.add(existingObjectButton,c);
+        frame.add(existingObjectButton, c);
 
         JButton removeObjectButton = new JButton("Remove object (s)");
         removeObjectButton.addActionListener(this);
         removeObjectButton.setActionCommand(REMOVE);
         c.gridx++;
-        frame.add(removeObjectButton,c);
+        frame.add(removeObjectButton, c);
 
         JButton finishButton = new JButton("Finish adding objects");
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
         c.gridx++;
-        frame.add(finishButton,c);
+        frame.add(finishButton, c);
 
         // Object number panel
         JLabel objectNumberLabel = new JLabel("Existing object number");
         c.gridx = 0;
         c.gridy++;
         c.gridwidth = 2;
-        frame.add(objectNumberLabel,c);
+        frame.add(objectNumberLabel, c);
 
         objectNumberField = new JTextField();
         c.gridx++;
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
-        frame.add(objectNumberField,c);
+        frame.add(objectNumberField, c);
 
-        objectsScrollPane.setPreferredSize(new Dimension(0,200));
+        objectsScrollPane.setPreferredSize(new Dimension(0, 200));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
@@ -255,7 +270,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridwidth = 4;
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
-        frame.add(objectsScrollPane,c);
+        frame.add(objectsScrollPane, c);
 
         JCheckBox overlayCheck = new JCheckBox("Display overlay");
         overlayCheck.setSelected(true);
@@ -270,7 +285,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridy++;
         c.gridwidth = 1;
         c.gridheight = 1;
-        frame.add(overlayCheck,c);
+        frame.add(overlayCheck, c);
 
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -279,77 +294,127 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public ObjCollection applyInterpolation(ObjCollection outputObjects, String interpolationMode, String type) throws IntegerOverflowException {
-        // Create a binary image of the objects
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
-        Image binaryImage = outputObjects.convertToImage("Binary",hues,8,false);
-        ImagePlus binaryIpl = binaryImage.getImagePlus();
+    public static void applySpatialInterpolation(ObjCollection inputObjects, String type)
+            throws IntegerOverflowException {
+        for (Obj inputObj : inputObjects.values()) {
+            Image binaryImage = inputObj.getAsTightImage("BinaryTight");
 
-        switch (interpolationMode) {
-            case InterpolationModes.SPATIAL:
-                applySpatialInterpolation(binaryIpl);
-                break;
+            // We need at least 3 slices to make interpolation worthwhile
+            if (binaryImage.getImagePlus().getNSlices() < 3)
+                continue;
 
-            case InterpolationModes.TEMPORAL:
-                applyTemporalInterpolation(binaryIpl);
-                break;
+            applySpatialInterpolation(binaryImage);
 
-            case InterpolationModes.SPATIAL_AND_TEMPORAL:
-                applySpatialInterpolation(binaryIpl);
-                applyTemporalInterpolation(binaryIpl);
-                break;
+            // Converting binary image back to objects
+            Obj interpObj = binaryImage.convertImageToObjects(type, inputObj.getName(), true).getFirst();
+            double[][] extents = inputObj.getExtents(true, false);
+
+            interpObj.translateCoords((int) Math.round(extents[0][0]), (int) Math.round(extents[1][0]),
+                    (int) Math.round(extents[2][0]));
+            inputObj.setCoordinateSet(interpObj.getCoordinateSet());
+
         }
-
-        // Converting binary image back to objects
-        return binaryImage.convertImageToObjects(type,outputObjects.getName(),false);
-
     }
 
-    void applyTemporalInterpolation(ImagePlus binaryIpl) {
+    static void applySpatialInterpolation(Image binaryImage) {
+        ImagePlus binaryIpl = binaryImage.getImagePlus();
         int nSlices = binaryIpl.getNSlices();
         int nFrames = binaryIpl.getNFrames();
 
         BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
 
-        // We only want to interpolate in time, so need to processAutomatic each Z-slice of the stack separately
-        for (int z=1;z<=nSlices;z++) {
+        // We only want to interpolate in z, so need to processAutomatic each timepoint
+        // separately
+        for (int t = 1; t <= nFrames; t++) {
             // Extracting the slice and interpolating
-            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
-            if (!checkStackForInterpolation(sliceIpl.getStack())) continue;
+            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
+            if (!checkStackForInterpolation(sliceIpl.getStack()))
+                continue;
             binaryInterpolator.run(sliceIpl.getStack());
         }
     }
 
-    void applySpatialInterpolation(ImagePlus binaryIpl) {
+    public static void applyTemporalInterpolation(ObjCollection inputObjects, ObjCollection trackObjects, String type)
+            throws IntegerOverflowException {
+        String calcMeth = ImageCalculator.CalculationMethods.ADD;
+        String ovrMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
+
+        // There should only be one object per timepoint per track
+        for (Obj trackObj : trackObjects.values()) {
+            // Keeping a record of frames which have an object (these will be unchanged, so
+            // don't need a new object)
+            ArrayList<Integer> timepoints = new ArrayList<>();
+
+            // Creating a blank image for this track
+            Image binaryImage = trackObj.convertObjToImage("Track");
+
+            // Adding each timepoint object (child) to this image
+            for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
+                Image childImage = childObj.convertObjToImage("Child");
+                ImageCalculator.process(binaryImage, childImage, calcMeth, ovrMode, null, false, false);
+                timepoints.add(childObj.getT());
+            }
+
+            applyTemporalInterpolation(binaryImage);
+
+            // Converting binary image back to objects
+            ObjCollection interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
+
+            // Transferring new timepoint objects to inputObjects ObjCollection
+            Iterator<Obj> iterator = interpObjs.values().iterator();
+            while (iterator.hasNext()) {
+                Obj interpObj = iterator.next();
+
+                // If this timepoint already existed, it doesn't need a new object
+                if (timepoints.contains(interpObj.getT()))
+                    continue;
+
+                // Adding this object to the original collection
+                interpObj.setID(inputObjects.getAndIncrementID());
+                interpObj.setSpatialCalibration(inputObjects.getSpatialCalibration());
+                interpObj.addParent(trackObj);
+                trackObj.addChild(interpObj);
+                inputObjects.add(interpObj);
+                iterator.remove();
+
+            }
+        }
+    }
+
+    static void applyTemporalInterpolation(Image binaryImage) {
+        ImagePlus binaryIpl = binaryImage.getImagePlus();
         int nSlices = binaryIpl.getNSlices();
         int nFrames = binaryIpl.getNFrames();
 
         BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
 
-        // We only want to interpolate in z, so need to processAutomatic each timepoint separately
-        for (int t=1;t<=nFrames;t++) {
+        // We only want to interpolate in time, so need to processAutomatic each Z-slice
+        // of the stack separately
+        for (int z = 1; z <= nSlices; z++) {
             // Extracting the slice and interpolating
-            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
-            if (!checkStackForInterpolation(sliceIpl.getStack())) continue;
+            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
+            if (!checkStackForInterpolation(sliceIpl.getStack()))
+                continue;
             binaryInterpolator.run(sliceIpl.getStack());
         }
     }
 
     /**
      * Verifies that at least two images in the stack contain non-zero pixels
+     * 
      * @param stack
      * @return
      */
-    boolean checkStackForInterpolation(ImageStack stack) {
+    static boolean checkStackForInterpolation(ImageStack stack) {
         int count = 0;
-        for (int i=1;i<=stack.getSize();i++) {
-            if (stack.getProcessor(i).getStatistics().max > 0) count++;
+        for (int i = 1; i <= stack.getSize(); i++) {
+            if (stack.getProcessor(i).getStatistics().max > 0)
+                count++;
         }
 
         return count >= 2;
 
     }
-
 
     @Override
     public String getPackageName() {
@@ -358,12 +423,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     public String getDescription() {
-        return "Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process." +
-                "<br><br>This module will display a control panel and an image onto which selections are made.  " +
-                "<br><br>Following selection of a region to be included in the object, the user can either add this region to a new object (\""+ADD_NEW+"\" button), or add it to an existing object (\""+ADD_EXISTING+"\" button).  " +
-                "The target object for adding to an existing object is specified using the \"Existing object number\" control (a list of existing object IDs is shown directly below this control)." +
-                "<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections." +
-                "<br><br>Once all selections have been made, objects are added to the workspace with the \""+FINISH+"\" button.";
+        return "Manually create objects using the ImageJ selection tools.  Selected regions can be interpolated in Z and T to speed up the object creation process."
+                + "<br><br>This module will display a control panel and an image onto which selections are made.  "
+                + "<br><br>Following selection of a region to be included in the object, the user can either add this region to a new object (\""
+                + ADD_NEW + "\" button), or add it to an existing object (\"" + ADD_EXISTING + "\" button).  "
+                + "The target object for adding to an existing object is specified using the \"Existing object number\" control (a list of existing object IDs is shown directly below this control)."
+                + "<br><br>References to each selection are displayed below the controls.  Previously-added regions can be re-selected by clicking the relevant reference.  This allows selections to be deleted or used as a basis for further selections."
+                + "<br><br>Once all selections have been made, objects are added to the workspace with the \"" + FINISH
+                + "\" button.";
     }
 
     @Override
@@ -372,10 +439,13 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        String selectorType = parameters.getValue(SELECTOR_TYPE);
-        String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String type = parameters.getValue(VOLUME_TYPE);
+        boolean outputTracks = parameters.getValue(OUTPUT_TRACKS);
+        String outputTrackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
+        boolean spatialInterpolation = parameters.getValue(SPATIAL_INTERPOLATION);
+        boolean temporalInterpolation = parameters.getValue(TEMPORAL_INTERPOLATION);
+        String selectorType = parameters.getValue(SELECTOR_TYPE);
         String messageOnImage = parameters.getValue(MESSAGE_ON_IMAGE);
 
         // Getting input image
@@ -401,7 +471,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         listModel.clear();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName,calibration,nFrames);
+        outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames);
+        if (outputTracks) {
+            outputTrackObjects = new ObjCollection(outputTrackObjectsName, calibration, nFrames);
+        }
 
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
@@ -417,26 +490,26 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             }
         }
 
-        // If more pixels than Integer.MAX_VALUE were assigned, return false (IntegerOverflowException).
-        if (overflow) return Status.FAIL;
+        // If more pixels than Integer.MAX_VALUE were assigned, return false
+        // (IntegerOverflowException).
+        if (overflow)
+            return Status.FAIL;
 
         // If necessary, apply interpolation
-        switch (interpolationMode) {
-            case InterpolationModes.SPATIAL:
-            case InterpolationModes.TEMPORAL:
-            case InterpolationModes.SPATIAL_AND_TEMPORAL:
-                try {
-                    outputObjects = applyInterpolation(outputObjects,interpolationMode,type);
-                } catch (IntegerOverflowException e) {
-                    return Status.FAIL;
-                }
-                break;
+        try {
+            if (spatialInterpolation)
+                applySpatialInterpolation(outputObjects, type);
+            if (temporalInterpolation)
+                applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
+        } catch (IntegerOverflowException e) {
+            return Status.FAIL;
         }
 
         workspace.addObjects(outputObjects);
 
         // Showing the selected objects
-        if (showOutput) outputObjects.convertToImageRandomColours().showImage();
+        if (showOutput)
+            outputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 
@@ -444,20 +517,54 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this, "",
+                "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
-        parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR,this));
-        parameters.add(new ChoiceP(SELECTOR_TYPE,this,SelectorTypes.FREEHAND_REGION,SelectorTypes.ALL,"Default region drawing tool to enable.  This tool can be changed by the user when selecting regions."));
-        parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL,"Interpolation method used for reducing the number of selections that must be made"));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
-        parameters.add(new StringP(MESSAGE_ON_IMAGE,this,"Draw objects on this image", "Message to display in title of image."));
+        parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
+        parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));
+        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false,
+                "Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results)."));
+        parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false,
+                "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results)."));
+
+        parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR, this));
+        parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL,
+                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions."));
+        parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image",
+                "Message to display in title of image."));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
+        returnedParameters.add(parameters.get(INPUT_IMAGE));
+
+        returnedParameters.add(parameters.get(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.get(OUTPUT_OBJECTS));
+        returnedParameters.add(parameters.get(VOLUME_TYPE));
+        returnedParameters.add(parameters.get(OUTPUT_TRACKS));
+
+        if ((boolean) parameters.getValue(OUTPUT_TRACKS)) {
+            returnedParameters.add(parameters.get(OUTPUT_TRACK_OBJECTS));
+            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
+            returnedParameters.add(parameters.get(TEMPORAL_INTERPOLATION));
+        } else {
+            returnedParameters.add(parameters.get(SPATIAL_INTERPOLATION));
+        }
+
+        returnedParameters.add(parameters.get(SELECTION_SEPARATOR));
+        returnedParameters.add(parameters.get(SELECTOR_TYPE));
+        returnedParameters.add(parameters.get(MESSAGE_ON_IMAGE));
+
+        return returnedParameters;
+
     }
 
     @Override
@@ -477,7 +584,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     public ParentChildRefCollection updateAndGetParentChildRefs() {
-        return null;
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+
+        if ((boolean) parameters.getValue(OUTPUT_TRACKS))
+            returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(OUTPUT_TRACK_OBJECTS),
+                    parameters.getValue(OUTPUT_OBJECTS)));
+
+        return returnedRelationships;
+
     }
 
     @Override
@@ -507,7 +621,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             case (FINISH):
                 try {
-                    processObjects();
+                    if (outputTrackObjects == null) {
+                        processSpatialOnlyObjects();
+                    } else {
+                        processTemporalObjects();
+                    }
                 } catch (IntegerOverflowException e1) {
                     overflow = true;
                 }
@@ -534,9 +652,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = new ArrayList<>();
-        ObjRoi objRoi = new ObjRoi(ID, roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
         currentRois.add(objRoi);
-        rois.put(ID,currentRois);
+        rois.put(ID, currentRois);
 
         // Displaying the ROI on the overlay
         updateOverlay();
@@ -545,7 +663,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         objectNumberField.setText(String.valueOf(ID));
 
         // Adding to the list of objects
-        addObjectToList(objRoi,ID);
+        addObjectToList(objRoi, ID);
 
     }
 
@@ -564,9 +682,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = rois.get(ID);
-        ObjRoi objRoi = new ObjRoi(ID, roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
+        ObjRoi objRoi = new ObjRoi(ID, roi, displayImagePlus.getT() - 1, displayImagePlus.getZ());
         currentRois.add(objRoi);
-        rois.put(ID,currentRois);
+        rois.put(ID, currentRois);
 
         // Displaying the ROI on the overlay
         updateOverlay();
@@ -575,7 +693,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         objectNumberField.setText(String.valueOf(ID));
 
         // Adding to the list of objects
-        addObjectToList(objRoi,ID);
+        addObjectToList(objRoi, ID);
 
     }
 
@@ -583,7 +701,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Get selected ROIs
         List<ObjRoi> selected = list.getSelectedValuesList();
 
-        for (ObjRoi objRoi:selected) {
+        for (ObjRoi objRoi : selected) {
             // Get objects matching this ID
             int ID = objRoi.getID();
             rois.get(ID).remove(objRoi);
@@ -596,21 +714,22 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public void processObjects() throws IntegerOverflowException {
+    public void processSpatialOnlyObjects() throws IntegerOverflowException {
         // Processing each list of Rois, then converting them to objects
-        for (int ID:rois.keySet()) {
+        for (int ID : rois.keySet()) {
             ArrayList<ObjRoi> currentRois = rois.get(ID);
 
             // This Obj may be empty; if so, skip it
-            if (currentRois.size() == 0) continue;
+            if (currentRois.size() == 0)
+                continue;
 
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
             VolumeType volumeType = getVolumeType(type);
-            Obj outputObject = new Obj(volumeType,outputObjectsName,ID,calibration,nFrames);
+            Obj outputObject = new Obj(volumeType, outputObjects.getName(), ID, calibration, nFrames);
             outputObjects.add(outputObject);
 
-            for (ObjRoi objRoi:currentRois) {
+            for (ObjRoi objRoi : currentRois) {
                 Roi roi = objRoi.getRoi();
                 Point[] points = roi.getContainedPoints();
 
@@ -624,7 +743,61 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
                         try {
                             outputObject.add(x, y, z - 1);
-                        } catch (PointOutOfRangeException e) {}
+                        } catch (PointOutOfRangeException e) {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void processTemporalObjects() throws IntegerOverflowException {
+        // Processing each list of Rois, then converting them to objects
+        for (int ID : rois.keySet()) {
+            ArrayList<ObjRoi> currentRois = rois.get(ID);
+            // This Obj may be empty; if so, skip it
+            if (currentRois.size() == 0)
+                continue;
+
+            // Creating current track object
+            Obj outputTrack = new Obj(VolumeType.POINTLIST, outputTrackObjects.getName(), ID, calibration, nFrames);
+            outputTrackObjects.add(outputTrack);
+
+            // Creating the new object
+            String type = parameters.getValue(VOLUME_TYPE);
+            VolumeType volumeType = getVolumeType(type);
+
+            HashMap<Integer, Obj> objectsByT = new HashMap<>();
+            for (ObjRoi objRoi : currentRois) {
+                int t = objRoi.getT();
+
+                Obj outputObject;
+                if (objectsByT.containsKey(t)) {
+                    // Getting a previously-defined Obj
+                    outputObject = objectsByT.get(t);
+                } else {
+                    // Creating a new object
+                    outputObject = new Obj(volumeType, outputObjects.getName(), outputObjects.getAndIncrementID(),
+                            calibration, nFrames);
+                    outputObject.setT(t);
+                    outputObject.addParent(outputTrack);
+                    outputTrack.addChild(outputObject);
+
+                    outputObjects.add(outputObject);
+                    objectsByT.put(t, outputObject);
+                }
+
+                int z = objRoi.getZ();
+                Roi roi = objRoi.getRoi();
+                Point[] points = roi.getContainedPoints();
+                for (Point point : points) {
+                    int x = (int) Math.round(point.getX());
+                    int y = (int) Math.round(point.getY());
+                    if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
+                        try {
+                            outputObject.add(x, y, z - 1);
+                        } catch (PointOutOfRangeException e) {
+                        }
                     }
                 }
             }
@@ -636,7 +809,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Ensuring the scrollbar is visible if necessary and moving to the bottom
         JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
-        scrollBar.setValue(scrollBar.getMaximum()-1);
+        scrollBar.setValue(scrollBar.getMaximum() - 1);
         objectsScrollPane.revalidate();
 
     }
@@ -644,8 +817,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void updateOverlay() {
         overlay.clear();
 
-        for (ArrayList<ObjRoi> groups:rois.values()) {
-            for (ObjRoi objRoi:groups) {
+        for (ArrayList<ObjRoi> groups : rois.values()) {
+            for (ObjRoi objRoi : groups) {
                 addToOverlay(objRoi);
             }
         }
@@ -659,12 +832,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         overlay.add(ObjRoi.duplicateRoi(roi));
 
         double[] centroid = roi.getContourCentroid();
-        TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
+        TextRoi textRoi = new TextRoi(centroid[0], centroid[1], String.valueOf(ID));
 
         if (displayImagePlus.isHyperStack()) {
             textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
         } else {
-            int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
+            int pos = Math.max(Math.max(1, displayImagePlus.getZ()), displayImagePlus.getT());
             textRoi.setPosition(pos);
         }
         overlay.add(textRoi);
@@ -700,7 +873,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 case Roi.OVAL:
                     Rectangle bounds = roi.getBounds();
-                    newRoi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
+                    newRoi = new OvalRoi(bounds.x, bounds.y, bounds.width, bounds.height);
                     break;
 
                 case Roi.FREEROI:
@@ -708,38 +881,44 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     PolygonRoi polyRoi = (PolygonRoi) roi;
                     int[] x = polyRoi.getXCoordinates();
                     int[] xx = new int[x.length];
-                    for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
+                    for (int i = 0; i < x.length; i++)
+                        xx[i] = x[i] + (int) polyRoi.getXBase();
 
                     int[] y = polyRoi.getYCoordinates();
                     int[] yy = new int[x.length];
-                    for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
+                    for (int i = 0; i < y.length; i++)
+                        yy[i] = y[i] + (int) polyRoi.getYBase();
 
-                    newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
+                    newRoi = new PolygonRoi(xx, yy, polyRoi.getNCoordinates(), roi.getType());
                     break;
 
                 case Roi.FREELINE:
                 case Roi.POLYLINE:
                     polyRoi = (PolygonRoi) roi;
 
-                    if (polyRoi.getStrokeWidth() > 0) MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
+                    if (polyRoi.getStrokeWidth() > 0)
+                        MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
 
                     x = polyRoi.getXCoordinates();
                     xx = new int[x.length];
-                    for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
+                    for (int i = 0; i < x.length; i++)
+                        xx[i] = x[i] + (int) polyRoi.getXBase();
 
                     y = polyRoi.getYCoordinates();
                     yy = new int[x.length];
-                    for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
+                    for (int i = 0; i < y.length; i++)
+                        yy[i] = y[i] + (int) polyRoi.getYBase();
 
-                    newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
+                    newRoi = new PolygonRoi(xx, yy, polyRoi.getNCoordinates(), roi.getType());
                     break;
 
                 case Roi.LINE:
                     Line line = (Line) roi;
 
-                    if (line.getStrokeWidth() > 0) MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
+                    if (line.getStrokeWidth() > 0)
+                        MIA.log.writeWarning("Thick lines currently unsupported.  Using backbone only.");
 
-                    newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
+                    newRoi = new Line(line.x1, line.y1, line.x2, line.y2);
                     break;
 
                 case Roi.POINT:
@@ -748,12 +927,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     Point[] points = pointRoi.getContainedPoints();
                     int[] xxx = new int[points.length];
                     int[] yyy = new int[points.length];
-                    for (int i=0;i<points.length;i++) {
+                    for (int i = 0; i < points.length; i++) {
                         xxx[i] = points[i].x;
                         yyy[i] = points[i].y;
                     }
 
-                    newRoi = new PointRoi(xxx,yyy,points.length);
+                    newRoi = new PointRoi(xxx, yyy, points.length);
                     break;
 
                 default:
@@ -784,7 +963,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         @Override
         public String toString() {
-            return "Object "+String.valueOf(ID)+", T = "+(t+1)+", Z = "+z;
+            return "Object " + String.valueOf(ID) + ", T = " + (t + 1) + ", Z = " + z;
         }
     }
 }

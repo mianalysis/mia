@@ -10,8 +10,10 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -22,32 +24,36 @@ import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 public class GlobalVariables extends Module {
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
+    public static final String CONTROL_TYPE = "Control type";
     public static final String VARIABLE_VALUE = "Variable value";
+    public static final String VARIABLE_CHOICE = "Variable choice";
 
-    private static final HashMap<String,String> globalParameters = new HashMap<>();
+    private static final HashMap<StringP, String> globalVariables = new HashMap<>();
 
-    public GlobalVariables(ModuleCollection modules) {
-        super("Global variables",modules);
+    public interface ControlTypes {
+        String CHOICE = "Choice";
+        String TEXT = "Text";
+
+        String[] ALL = new String[] { CHOICE, TEXT };
+
     }
 
-    public static String convertString(String string,ModuleCollection modules) {
+    public GlobalVariables(ModuleCollection modules) {
+        super("Global variables", modules);
+    }
+
+    public static String convertString(String string, ModuleCollection modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
-
-        if (pattern.matcher(string).matches()) {
-            // Reset global variables
-            globalParameters.clear();
-            for (Module module:modules.values()) module.updateAndGetParameters();
-        }
 
         while (matcher.find()) {
             String fullName = matcher.group(0);
             String metadataName = matcher.group(1);
 
-            for (String name:globalParameters.keySet()) {
-                if (name.equals(metadataName)) {
-                    String value = globalParameters.get(name);
-                    string = string.replace(fullName,value);
+            for (StringP nameP : globalVariables.keySet()) {
+                if (nameP.getValue().equals(metadataName)) {
+                    String value = globalVariables.get(nameP);
+                    string = string.replace(fullName, value);
                     break;
                 }
             }
@@ -57,19 +63,9 @@ public class GlobalVariables extends Module {
 
     }
 
-    public static boolean variablesPresent(String string,ModuleCollection modules) {
+    public static boolean variablesPresent(String string, ModuleCollection modules) {
         Pattern pattern = Pattern.compile("V\\{([\\w]+)}");
         Matcher matcher = pattern.matcher(string);
-
-        if (pattern.matcher(string).matches()) {
-            // Reset global variables
-            globalParameters.clear();
-            for (Module module:modules.values()) {
-                if (module instanceof GlobalVariables && module.isEnabled() && module.isRunnable()) {
-                    module.updateAndGetParameters();
-                }
-            }
-        }
 
         // Re-compiling the matcher
         matcher = pattern.matcher(string);
@@ -77,8 +73,8 @@ public class GlobalVariables extends Module {
             String metadataName = matcher.group(1);
 
             boolean found = false;
-            for (String name:globalParameters.keySet()) {
-                if (name.equals(metadataName)) {
+            for (StringP name : globalVariables.keySet()) {
+                if (name.getValue().equals(metadataName)) {
                     found = true;
                     break;
                 }
@@ -101,8 +97,18 @@ public class GlobalVariables extends Module {
 
     }
 
+    public static void updateVariables(ModuleCollection modules) {
+        // Reset global variables
+        globalVariables.clear();
+        for (Module module : modules.values()) {
+            if (module instanceof GlobalVariables && module.isEnabled()) {
+                module.updateAndGetParameters();
+            }
+        }
+    }
+
     public static int count() {
-        return globalParameters.size();
+        return globalVariables.size();
     }
 
     @Override
@@ -123,21 +129,37 @@ public class GlobalVariables extends Module {
     @Override
     protected void initialiseParameters() {
         ParameterCollection parameterCollection = new ParameterCollection();
-        parameterCollection.add(new StringP(VARIABLE_NAME,this));
-        parameterCollection.add(new StringP(VARIABLE_VALUE,this));
+        parameterCollection.add(new StringP(VARIABLE_NAME, this));
+        parameterCollection.add(new ChoiceP(CONTROL_TYPE, this, ControlTypes.TEXT, ControlTypes.ALL));
+        parameterCollection.add(new StringP(VARIABLE_VALUE, this));
+        parameterCollection.add(new ChoiceP(VARIABLE_CHOICE, this, "", new String[0]));
 
-        parameters.add(new ParameterGroup(ADD_NEW_VARIABLE,this,parameterCollection));
+        parameters.add(new ParameterGroup(ADD_NEW_VARIABLE, this, parameterCollection, 0, getUpdaterAndGetter()));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterGroup group = parameters.getParameter(ADD_NEW_VARIABLE);
-        if (group == null) return parameters;
+        if (group == null)
+            return parameters;
 
-        LinkedHashMap<Integer,ParameterCollection> collections = group.getCollections(false);
-        for (ParameterCollection collection:collections.values()) {
-            globalParameters.put(collection.getValue(VARIABLE_NAME),collection.getValue(VARIABLE_VALUE));
+        LinkedHashMap<Integer, ParameterCollection> collections = group.getCollections(false);
+        for (ParameterCollection collection : collections.values()) {
+            StringP variableName = (StringP) collection.get(VARIABLE_NAME);
+            if (isEnabled()) {
+                switch ((String) collection.getValue(CONTROL_TYPE)) {
+                    case ControlTypes.CHOICE:
+                    globalVariables.put(variableName, collection.getValue(VARIABLE_CHOICE));
+                        break;
+                    case ControlTypes.TEXT:
+                    globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE));
+                        break;
+                }
+                
+            } else if (globalVariables.containsKey(variableName)) {
+                globalVariables.remove(variableName);
+            }
         }
 
         return parameters;
@@ -172,5 +194,33 @@ public class GlobalVariables extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    private ParameterUpdaterAndGetter getUpdaterAndGetter() {
+        return new ParameterUpdaterAndGetter() {
+
+            @Override
+            public ParameterCollection updateAndGet(ParameterCollection params) {
+                ParameterCollection returnedParameters = new ParameterCollection();
+
+                returnedParameters.add(params.getParameter(VARIABLE_NAME));
+                returnedParameters.add(params.getParameter(CONTROL_TYPE));
+                switch ((String) params.getValue(CONTROL_TYPE)) {
+                    case ControlTypes.CHOICE:
+                        returnedParameters.add(params.getParameter(VARIABLE_VALUE));
+                        returnedParameters.add(params.getParameter(VARIABLE_CHOICE));
+                        String variableValue = params.getValue(VARIABLE_VALUE);
+                        String[] choices = variableValue.split(",");
+                        ((ChoiceP) params.getParameter(VARIABLE_CHOICE)).setChoices(choices);
+                        break;
+                    case ControlTypes.TEXT:
+                        returnedParameters.add(params.getParameter(VARIABLE_VALUE));
+                        break;
+                }
+
+                return returnedParameters;
+
+            }
+        };
     }
 }

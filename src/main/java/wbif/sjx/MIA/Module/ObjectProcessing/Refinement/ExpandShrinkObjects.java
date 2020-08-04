@@ -127,11 +127,8 @@ public class ExpandShrinkObjects extends Module {
         int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
         int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
         
-        SpatCal inputSpatCal = inputObject.getSpatialCalibration();
-        SpatCal outputSpatCal = outputObjects.getSpatialCalibration();
-        outputSpatCal.setWidth(inputSpatCal.getWidth());
-        outputSpatCal.setHeight(inputSpatCal.getHeight());
-        outputSpatCal.setNSlices(inputSpatCal.getNSlices());
+        // Updating the output objects spatial calibration to the full range, then moving objects to the correct positions
+        outputObjects.setSpatialCalibration(inputObject.getSpatialCalibration(),true);
         outputObject.translateCoords(xOffs, yOffs, zOffs);
         
         return outputObject;

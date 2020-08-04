@@ -141,14 +141,14 @@ public class GUISeparator extends Module {
         return null;
     }
 
-    /**
-     * This module is always runnable
-     * @return
-     */
-    @Override
-    public boolean isRunnable() {
-        return true;
-    }
+    // /**
+    //  * This module is always runnable
+    //  * @return
+    //  */
+    // @Override
+    // public boolean isRunnable() {
+    //     return true;
+    // }
 
     @Override
     public boolean verify() {
