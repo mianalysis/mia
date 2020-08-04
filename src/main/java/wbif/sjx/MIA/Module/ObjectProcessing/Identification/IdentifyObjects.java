@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,7 +8,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;

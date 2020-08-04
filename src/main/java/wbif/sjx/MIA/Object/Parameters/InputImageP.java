@@ -4,19 +4,19 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ImageNamesType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class InputImageP extends ImageNamesType {
     public InputImageP(String name, Module module) {
         super(name, module);
     }
 
-    public InputImageP(String name, Module module, @Nonnull String imageName) {
+    public InputImageP(String name, Module module, @NotNull String imageName) {
         super(name, module);
         this.choice = imageName;
     }
 
-    public InputImageP(String name, Module module, @Nonnull String imageName, String description) {
+    public InputImageP(String name, Module module, @NotNull String imageName, String description) {
         super(name, module, description);
         this.choice = imageName;
     }

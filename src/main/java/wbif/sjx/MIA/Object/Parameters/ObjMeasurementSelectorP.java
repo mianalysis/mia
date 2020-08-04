@@ -4,7 +4,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.RefSelectorParameter;
@@ -24,12 +24,12 @@ public class ObjMeasurementSelectorP extends Parameter {
         super(name, module);
     }
 
-    public ObjMeasurementSelectorP(String name, Module module, @Nonnull String objectName) {
+    public ObjMeasurementSelectorP(String name, Module module, @NotNull String objectName) {
         super(name, module);
         this.objectName = objectName;
     }
 
-    public ObjMeasurementSelectorP(String name, Module module, @Nonnull String objectName, String description) {
+    public ObjMeasurementSelectorP(String name, Module module, @NotNull String objectName, String description) {
         super(name, module, description);
         this.objectName = objectName;
     }

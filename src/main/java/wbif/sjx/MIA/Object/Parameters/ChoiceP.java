@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
@@ -9,14 +9,14 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 public class ChoiceP extends ChoiceType {
     private String[] choices;
 
-    public ChoiceP(String name, Module module, @Nonnull String choice, @Nonnull String[] choices) {
+    public ChoiceP(String name, Module module, @NotNull String choice, @NotNull String[] choices) {
         super(name,module);
         this.choice = choice;
         this.choices = choices;
 
     }
 
-    public ChoiceP(String name, Module module, @Nonnull String choice, @Nonnull String[] choices, String description) {
+    public ChoiceP(String name, Module module, @NotNull String choice, @NotNull String[] choices, String description) {
         super(name, module, description);
         this.choice = choice;
         this.choices = choices;

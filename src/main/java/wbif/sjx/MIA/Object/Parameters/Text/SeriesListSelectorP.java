@@ -6,18 +6,18 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class SeriesListSelectorP extends StringP {
     public SeriesListSelectorP(String name, Module module) {
         super(name, module);
     }
 
-    public SeriesListSelectorP(String name, Module module, @Nonnull String value) {
+    public SeriesListSelectorP(String name, Module module, @NotNull String value) {
         super(name, module, value);
     }
 
-    public SeriesListSelectorP(String name, Module module, @Nonnull String value, String description) {
+    public SeriesListSelectorP(String name, Module module, @NotNull String value, String description) {
         super(name, module, value, description);
     }
 

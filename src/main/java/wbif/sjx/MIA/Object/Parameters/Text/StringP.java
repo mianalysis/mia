@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters.Text;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
@@ -14,12 +14,12 @@ public class StringP extends TextType {
         super(name,module);
     }
 
-    public StringP(String name, Module module, @Nonnull String value) {
+    public StringP(String name, Module module, @NotNull String value) {
         super(name,module);
         this.value = value;
     }
 
-    public StringP(String name, Module module, @Nonnull String value, String description) {
+    public StringP(String name, Module module, @NotNull String value, String description) {
         super(name,module,description);
         this.value = value;
     }

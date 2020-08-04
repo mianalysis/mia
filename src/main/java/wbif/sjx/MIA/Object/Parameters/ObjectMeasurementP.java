@@ -4,7 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class ObjectMeasurementP extends ChoiceType {
     private String objectName = "";
@@ -17,14 +17,14 @@ public class ObjectMeasurementP extends ChoiceType {
         super(name, module, description);
     }
 
-    public ObjectMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String objectName) {
+    public ObjectMeasurementP(String name, Module module, @NotNull String choice, @NotNull String objectName) {
         super(name, module);
         this.objectName = objectName;
         this.choice = choice;
 
     }
 
-    public ObjectMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String objectName, String description) {
+    public ObjectMeasurementP(String name, Module module, @NotNull String choice, @NotNull String objectName, String description) {
         super(name, module, description);
         this.objectName = objectName;
         this.choice = choice;

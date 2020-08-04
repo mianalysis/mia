@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import javax.annotation.Nullable;import ij.ImagePlus;
+import com.drew.lang.annotations.Nullable;import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;

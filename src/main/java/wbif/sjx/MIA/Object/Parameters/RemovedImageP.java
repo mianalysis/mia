@@ -4,19 +4,19 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ImageNamesType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class RemovedImageP extends ImageNamesType {
     public RemovedImageP(String name, Module module) {
         super(name,module);
     }
 
-    public RemovedImageP(String name, Module module, @Nonnull String choice) {
+    public RemovedImageP(String name, Module module, @NotNull String choice) {
         super(name,module);
         this.choice = choice;
     }
 
-    public RemovedImageP(String name, Module module, @Nonnull String choice, String description) {
+    public RemovedImageP(String name, Module module, @NotNull String choice, String description) {
         super(name,module,description);
         this.choice = choice;
     }

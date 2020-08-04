@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Module.Deprecated;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import javax.swing.*;
 
 import ij.ImagePlus;

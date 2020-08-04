@@ -3,7 +3,7 @@ package wbif.sjx.MIA.Object.Parameters.Objects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 import java.util.LinkedHashSet;
 
 public class InputLoopObjectsP extends InputObjectsP {
@@ -11,11 +11,11 @@ public class InputLoopObjectsP extends InputObjectsP {
         super(name, module);
     }
 
-    public InputLoopObjectsP(String name, Module module, @Nonnull String choice) {
+    public InputLoopObjectsP(String name, Module module, @NotNull String choice) {
         super(name, module, choice);
     }
 
-    public InputLoopObjectsP(String name, Module module, @Nonnull String choice, String description) {
+    public InputLoopObjectsP(String name, Module module, @NotNull String choice, String description) {
         super(name, module, choice, description);
     }
 

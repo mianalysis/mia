@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;

@@ -4,19 +4,19 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ObjectNamesType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class RemovedObjectsP extends ObjectNamesType {
     public RemovedObjectsP(String name, Module module) {
         super(name,module);
     }
 
-    public RemovedObjectsP(String name, Module module, @Nonnull String choice) {
+    public RemovedObjectsP(String name, Module module, @NotNull String choice) {
         super(name,module);
         this.choice = choice;
     }
 
-    public RemovedObjectsP(String name, Module module, @Nonnull String choice, String description) {
+    public RemovedObjectsP(String name, Module module, @NotNull String choice, String description) {
         super(name,module,description);
         this.choice = choice;
     }

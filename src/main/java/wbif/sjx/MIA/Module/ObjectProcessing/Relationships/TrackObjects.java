@@ -3,7 +3,7 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;

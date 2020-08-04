@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.NotNull;
+import com.drew.lang.annotations.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -254,7 +254,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public ImagePlus getBFImage(String path, int seriesNumber, @Nonnull String[] dimRanges, @Nullable int[] crop,
+    public ImagePlus getBFImage(String path, int seriesNumber, @NotNull String[] dimRanges, @Nullable int[] crop,
             double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal,
             boolean localVerbose) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");

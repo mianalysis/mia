@@ -4,20 +4,20 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ObjectNamesType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class InputObjectsP extends ObjectNamesType {
     public InputObjectsP(String name, Module module) {
         super(name,module);
     }
 
-    public InputObjectsP(String name, Module module, @Nonnull String choice) {
+    public InputObjectsP(String name, Module module, @NotNull String choice) {
         super(name, module);
         this.choice = choice;
 
     }
 
-    public InputObjectsP(String name, Module module, @Nonnull String choice, String description) {
+    public InputObjectsP(String name, Module module, @NotNull String choice, String description) {
         super(name, module, description);
         this.choice = choice;
 
