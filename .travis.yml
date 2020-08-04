@@ -12,8 +12,7 @@ jdk:
 branches:
   only:
   - master
-  - Develop
-  - TestTests
+  - develop
 
 after_success:
 - mvn clean cobertura:cobertura coveralls:report
