@@ -4,7 +4,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class OutputObjectsP extends TextType {
     private String objectsName = "";
@@ -13,12 +13,12 @@ public class OutputObjectsP extends TextType {
         super(name,module);
     }
 
-    public OutputObjectsP(String name, Module module, @Nonnull String objectsName) {
+    public OutputObjectsP(String name, Module module, @NotNull String objectsName) {
         super(name,module);
         this.objectsName = objectsName;
     }
 
-    public OutputObjectsP(String name, Module module, @Nonnull String objectsName, String description) {
+    public OutputObjectsP(String name, Module module, @NotNull String objectsName, String description) {
         super(name,module,description);
         this.objectsName = objectsName;
     }

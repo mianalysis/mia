@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PolygonRoi;

@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 public class ParentObjectsP extends ChoiceType {
     private String childObjectsName = "";
@@ -19,13 +19,13 @@ public class ParentObjectsP extends ChoiceType {
         super(name,module);
     }
 
-    public ParentObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String childObjectsName) {
+    public ParentObjectsP(String name, Module module, @NotNull String choice, @NotNull String childObjectsName) {
         super(name,module);
         this.choice = choice;
         this.childObjectsName = childObjectsName;
     }
 
-    public ParentObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String childObjectsName, String description) {
+    public ParentObjectsP(String name, Module module, @NotNull String choice, @NotNull String childObjectsName, String description) {
         super(name,module,description);
         this.choice = choice;
         this.childObjectsName = childObjectsName;

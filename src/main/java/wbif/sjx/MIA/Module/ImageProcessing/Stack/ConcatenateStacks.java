@@ -3,7 +3,9 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
+
+import com.drew.lang.annotations.NotNull;
 
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
@@ -413,11 +415,11 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         }
 
-        public CustomInputImageP(String name, Module module, @Nonnull String imageName) {
+        public CustomInputImageP(String name, Module module, @NotNull String imageName) {
             super(name, module, imageName);
         }
 
-        public CustomInputImageP(String name, Module module, @Nonnull String imageName, String description) {
+        public CustomInputImageP(String name, Module module, @NotNull String imageName, String description) {
             super(name, module, imageName, description);
         }
 

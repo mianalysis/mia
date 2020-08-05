@@ -1,23 +1,24 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
+
+import com.drew.lang.annotations.NotNull;
+
 import wbif.sjx.MIA.GUI.ParameterControls.FileParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
-
 public class FileFolderPathP extends FileFolderType {
     public FileFolderPathP(String name, Module module) {
-        super(name,module);
+        super(name, module);
     }
 
-    public FileFolderPathP(String name, Module module, @Nonnull String fileFolderPath) {
+    public FileFolderPathP(String name, Module module, @NotNull String fileFolderPath) {
         super(name,module,fileFolderPath);
     }
 
-    public FileFolderPathP(String name, Module module, @Nonnull String fileFolderPath, String description) {
+    public FileFolderPathP(String name, Module module, @NotNull String fileFolderPath, String description) {
         super(name,module,fileFolderPath,description);
     }
 

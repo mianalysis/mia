@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import ij.measure.Calibration;

@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 import java.io.File;
 
 public class FolderPathP extends FileFolderType {
@@ -14,11 +14,11 @@ public class FolderPathP extends FileFolderType {
         super(name, module);
     }
 
-    public FolderPathP(String name, Module module, @Nonnull String filePath) {
+    public FolderPathP(String name, Module module, @NotNull String filePath) {
         super(name, module, filePath);
     }
 
-    public FolderPathP(String name, Module module, @Nonnull String filePath, String description) {
+    public FolderPathP(String name, Module module, @NotNull String filePath, String description) {
         super(name, module, filePath, description);
     }
 

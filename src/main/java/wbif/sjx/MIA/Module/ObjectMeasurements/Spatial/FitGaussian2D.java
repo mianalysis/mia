@@ -6,7 +6,7 @@ import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
 
 import java.util.Iterator;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;

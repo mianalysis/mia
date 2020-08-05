@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Object.Parameters.Text;
 
 import java.awt.Color;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.GUI.ParameterControls.MessageArea;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
@@ -18,13 +18,13 @@ public class MessageP extends TextAreaP {
         setExported(false);
     }
 
-    public MessageP(String name, Module module, @Nonnull String value, Color color) {
+    public MessageP(String name, Module module, @NotNull String value, Color color) {
         super(name, module, value, false);
         this.color = color;
         setExported(false);
     }
 
-    public MessageP(String name, Module module, @Nonnull String value, Color color, String description) {
+    public MessageP(String name, Module module, @NotNull String value, Color color, String description) {
         super(name, module, value, false, description);
         this.color = color;
         setExported(false);

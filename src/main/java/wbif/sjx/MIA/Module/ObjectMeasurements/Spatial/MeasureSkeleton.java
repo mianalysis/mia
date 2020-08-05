@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ij.IJ;
 import ij.Prefs;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
@@ -13,6 +14,7 @@ import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -293,9 +295,10 @@ public class MeasureSkeleton extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        // If necessary, converting to pixel units
-        if (calibratedUnits)
-            minLength = minLength / inputObjects.getFirst().getDppXY();
+        // If necessary, converting to calibrated units (Skeletonise takes calibrated
+        // measurements, so unlike most modules, we want to convert to calibrated units)
+        if (!calibratedUnits)
+            minLength = minLength * inputObjects.getFirst().getDppXY();
 
         // Creating empty output object collections
         final ObjCollection skeletonObjects = addToWorkspace ? new ObjCollection(skeletonObjectsName, inputObjects)

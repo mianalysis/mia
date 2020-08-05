@@ -3,7 +3,7 @@ package wbif.sjx.MIA.Object.References;
 
 import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.TreeMap;

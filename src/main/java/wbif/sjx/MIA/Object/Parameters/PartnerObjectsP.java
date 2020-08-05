@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -19,13 +19,13 @@ public class PartnerObjectsP extends ChoiceType {
         super(name, module, description);
     }
 
-    public PartnerObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String partnerObjectsName) {
+    public PartnerObjectsP(String name, Module module, @NotNull String choice, @NotNull String partnerObjectsName) {
         super(name, module);
         this.choice = choice;
         this.partnerObjectsName = partnerObjectsName;
     }
 
-    public PartnerObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String partnerObjectsName, String description) {
+    public PartnerObjectsP(String name, Module module, @NotNull String choice, @NotNull String partnerObjectsName, String description) {
         super(name, module, description);
         this.choice = choice;
         this.partnerObjectsName = partnerObjectsName;

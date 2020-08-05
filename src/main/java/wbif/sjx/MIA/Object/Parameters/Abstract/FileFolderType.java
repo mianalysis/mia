@@ -2,7 +2,7 @@ package wbif.sjx.MIA.Object.Parameters.Abstract;
 
 import wbif.sjx.MIA.Module.Module;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 import java.io.File;
 
 public abstract class FileFolderType extends Parameter {
@@ -16,7 +16,7 @@ public abstract class FileFolderType extends Parameter {
         super(name, module);
     }
 
-    public FileFolderType(String name, Module module, @Nonnull String path, String description) {
+    public FileFolderType(String name, Module module, @NotNull String path, String description) {
         super(name, module, description);
         this.path = path;
     }

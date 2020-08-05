@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
-import javax.annotation.Nullable;import ij.IJ;
+import com.drew.lang.annotations.Nullable;import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ByteProcessor;

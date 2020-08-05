@@ -78,6 +78,8 @@ public class MIA implements Command {
 
     @Override
     public void run() {
+        setLookAndFeel();
+        
         // Waiting for UIService to become available
         while (uiService == null) {
             try {
@@ -118,8 +120,7 @@ public class MIA implements Command {
         if (DependencyValidator.run())
             return;
     
-        try {
-            setLookAndFeel();
+        try {            
             new GUI();
         } catch (InstantiationException | IllegalAccessException e) {
             MIA.log.writeError(e);

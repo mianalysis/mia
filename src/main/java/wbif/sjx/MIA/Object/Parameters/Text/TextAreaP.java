@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters.Text;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.GUI.ParameterControls.TextAreaParameter;
@@ -24,13 +24,13 @@ public class TextAreaP extends TextType {
         this.editable = editable;
     }
 
-    public TextAreaP(String name, Module module, @Nonnull String value, boolean editable) {
+    public TextAreaP(String name, Module module, @NotNull String value, boolean editable) {
         super(name, module);
         this.value = value;
         this.editable = editable;
     }
 
-    public TextAreaP(String name, Module module, @Nonnull String value, boolean editable, String description) {
+    public TextAreaP(String name, Module module, @NotNull String value, boolean editable, String description) {
         super(name, module, description);
         this.value = value;
         this.editable = editable;

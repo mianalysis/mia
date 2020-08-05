@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 public class AddFromPositionMeasurement extends Overlay {
     public static final String INPUT_SEPARATOR = "Image and object input";

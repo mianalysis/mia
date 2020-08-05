@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;

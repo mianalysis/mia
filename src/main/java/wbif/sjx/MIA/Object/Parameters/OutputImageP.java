@@ -1,6 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
-import javax.annotation.Nonnull;
+import com.drew.lang.annotations.NotNull;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -11,11 +11,11 @@ public class OutputImageP extends StringP {
         super(name,module);
     }
 
-    public OutputImageP(String name, Module module, @Nonnull String value) {
+    public OutputImageP(String name, Module module, @NotNull String value) {
         super(name,module,value);
     }
 
-    public OutputImageP(String name, Module module, @Nonnull String value, String description) {
+    public OutputImageP(String name, Module module, @NotNull String value, String description) {
         super(name, module, value, description);
     }
 

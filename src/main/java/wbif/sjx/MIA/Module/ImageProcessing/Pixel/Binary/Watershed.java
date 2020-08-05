@@ -16,7 +16,7 @@ import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.*;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
