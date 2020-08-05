@@ -53,7 +53,7 @@ public class GUISeparator extends Module {
             }
 
             // If currently recording and the module is visible, add it
-            if (module.isRunnable() || module.invalidParameterIsVisible()) basicModules.add(module);
+            if (module.isRunnable() && (module.hasVisibleParameters() || module.invalidParameterIsVisible())) basicModules.add(module);
 
         }
 
