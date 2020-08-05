@@ -24,18 +24,18 @@ public class GUISeparator extends Module {
     public static final String EXPANDED_EDITING = "Expanded editing GUI";
 
     public GUISeparator(ModuleCollection modules) {
-        super("GUI separator",modules);
+        super("GUI separator", modules);
     }
-
 
     public ModuleCollection getBasicModules() {
         ModuleCollection basicModules = new ModuleCollection();
 
         // If this separator isn't visible on the basic GUI it contains no modules
-        if (!((boolean) parameters.getValue(SHOW_BASIC))) return basicModules;
+        if (!((boolean) parameters.getValue(SHOW_BASIC)))
+            return basicModules;
 
         boolean record = false;
-        for (Module module:modules.values()) {
+        for (Module module : modules.values()) {
             // Start recording until another visible GUI Separator is found
             if (module == this) {
                 record = true;
@@ -43,9 +43,11 @@ public class GUISeparator extends Module {
             }
 
             // If not yet recording we can skip to the next round
-            if (!record) continue;
+            if (!record)
+                continue;
 
-            // If this module is a visible GUISeparator, stop recording and return the available modules
+            // If this module is a visible GUISeparator, stop recording and return the
+            // available modules
             if (module instanceof GUISeparator) {
                 if ((boolean) module.getParameterValue(GUISeparator.SHOW_BASIC)) {
                     return basicModules;
@@ -53,7 +55,9 @@ public class GUISeparator extends Module {
             }
 
             // If currently recording and the module is visible, add it
-            if (module.isRunnable() && (module.hasVisibleParameters() || module.invalidParameterIsVisible())) basicModules.add(module);
+            if (module.isRunnable()
+                    && (module.canBeDisabled() || module.hasVisibleParameters() || module.invalidParameterIsVisible()))
+                basicModules.add(module);
 
         }
 
@@ -65,21 +69,23 @@ public class GUISeparator extends Module {
         ModuleCollection editingModules = new ModuleCollection();
 
         boolean record = false;
-        for (Module module:modules.values()) {
+        for (Module module : modules.values()) {
             // Start recording until another GUI Separator is found
             if (module == this) {
                 record = true;
                 continue;
             }
 
-            // If this module is a visible GUISeparator, stop recording and return the available modules
+            // If this module is a visible GUISeparator, stop recording and return the
+            // available modules
             if (module instanceof GUISeparator) {
                 record = false;
                 return editingModules;
             }
 
             // If currently recording, add the module
-            if (record) editingModules.add(module);
+            if (record)
+                editingModules.add(module);
 
         }
 
@@ -104,10 +110,10 @@ public class GUISeparator extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(VISIBILITY_SEPARATOR,this));
-        parameters.add(new BooleanP(SHOW_BASIC,this,true));
-        parameters.add(new BooleanP(EXPANDED_BASIC,this,true));
-        parameters.add(new BooleanP(EXPANDED_EDITING,this,true));
+        parameters.add(new ParamSeparatorP(VISIBILITY_SEPARATOR, this));
+        parameters.add(new BooleanP(SHOW_BASIC, this, true));
+        parameters.add(new BooleanP(EXPANDED_BASIC, this, true));
+        parameters.add(new BooleanP(EXPANDED_EDITING, this, true));
 
     }
 
@@ -142,12 +148,12 @@ public class GUISeparator extends Module {
     }
 
     // /**
-    //  * This module is always runnable
-    //  * @return
-    //  */
+    // * This module is always runnable
+    // * @return
+    // */
     // @Override
     // public boolean isRunnable() {
-    //     return true;
+    // return true;
     // }
 
     @Override

@@ -92,7 +92,8 @@ public class FillHolesByVolume extends Module {
                 // Applying connected components labelling
                 int nThreads = multithread ? Prefs.getThreads() : 1;
                 if (multithread && nThreads > 1 && minStripWidth < ipl.getWidth()) {
-                    currStack.setStack(IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), 26, minStripWidth));
+                    currStack.setStack(
+                            IdentifyObjects.connectedComponentsLabellingMT(currStack.getStack(), 26, minStripWidth));
                 } else {
                     try {
                         FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26, 16);
@@ -155,15 +156,16 @@ public class FillHolesByVolume extends Module {
                         new LinkedBlockingQueue<>());
 
                 // Binarising the input image based on whether the label is still in the list
-                for (int z = 0; z < nSlices; z++) {
+                for (int z = 1; z <= nSlices; z++) {
                     final int finalC = c;
                     final int finalZ = z;
                     final int finalT = t;
+
                     Runnable task = () -> {
-                        ipl.setPosition(finalC, finalZ + 1, finalT);
-                        final ImageProcessor ipr = ipl.getProcessor();
-                        // final ImageProcessor ipr = ipl.getImageStack().getProcessor(finalZ + 1);
-                        final ImageProcessor labelIpr = labelIst.getProcessor(finalZ + 1);
+                        int idx = ipl.getStackIndex(finalC, finalZ, finalT);
+                        ImageProcessor ipr = ipl.getImageStack().getProcessor(idx);
+                        ImageProcessor labelIpr = labelIst.getProcessor(finalZ);
+                        
                         for (int x = 0; x < labelIst.getWidth(); x++) {
                             for (int y = 0; y < labelIst.getHeight(); y++) {
                                 int label = labelIpr.get(x, y);
