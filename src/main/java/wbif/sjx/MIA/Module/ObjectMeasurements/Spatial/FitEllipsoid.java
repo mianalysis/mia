@@ -111,6 +111,8 @@ public class FitEllipsoid extends Module {
                     break;
             }
         } catch (RuntimeException e) {
+            MIA.log.writeWarning("Ellipsoid fitting failed for \"" + inputObject.getName() + "\" (ID = "
+                    + inputObject.getID() + "), Error: " + e.getMessage());
         }
 
         addMeasurements(inputObject, calculator);
@@ -270,7 +272,7 @@ public class FitEllipsoid extends Module {
                             + " during ellipsoid fitting.");
                 }
                 writeStatus("Processed object " + count + " of " + total + " ("
-                + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
+                        + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
             };
             pool.submit(task);
 

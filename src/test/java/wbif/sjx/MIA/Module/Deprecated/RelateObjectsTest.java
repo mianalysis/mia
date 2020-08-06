@@ -86,7 +86,6 @@ public class RelateObjectsTest extends ModuleTest {
             assertNotNull(childSpot.getParent(inputObjectsName));
 
             // Testing spot is at expected location
-            int nPoints = testObject.getPoints().size();
             double expected = testObject.getMeasurement(Objects3D.Measures.EXP_SPOT_ID_X.name()).getValue();
             double actual = childSpot.getX(true)[0];
             assertEquals(expected,actual,tolerance);
@@ -139,7 +138,7 @@ public class RelateObjectsTest extends ModuleTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
-            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.size());
             int[] expectedX = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_X.name());
             int[] expectedY = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_Y.name());
             int[] expectedZ = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_Z.name());
@@ -228,7 +227,7 @@ public class RelateObjectsTest extends ModuleTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
-            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.size());
             int[] expectedX = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_X.name());
             int[] expectedY = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Y.name());
             int[] expectedZ = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Z.name());

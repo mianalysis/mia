@@ -2,7 +2,6 @@ package wbif.sjx.MIA.Module.WorkflowHandling;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -27,8 +26,6 @@ import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;

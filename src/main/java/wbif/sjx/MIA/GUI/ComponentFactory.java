@@ -18,9 +18,7 @@ import javax.swing.JSeparator;
 
 import org.apache.batik.ext.swing.GridBagConstants;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.ControlObjects.ExportCheck;
-import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleTitle;
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleList.ModuleEnabledButton;
 import wbif.sjx.MIA.GUI.ControlObjects.ParameterList.DisableRefsButton;

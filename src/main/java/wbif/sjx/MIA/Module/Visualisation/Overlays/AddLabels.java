@@ -110,7 +110,7 @@ public class AddLabels extends Overlay {
         // Get location of largest value
         Point<Integer> bestPoint = null;
         double distance = Double.MIN_VALUE;
-        for (Point<Integer> point : obj.getPoints()) {
+        for (Point<Integer> point : obj.getCoordinateSet()) {
             distanceMap.setPosition(1, point.getZ() + 1, obj.getT() + 1);
             double currDistance = distanceMap.getProcessor().getPixelValue(point.getX(), point.getY());
 

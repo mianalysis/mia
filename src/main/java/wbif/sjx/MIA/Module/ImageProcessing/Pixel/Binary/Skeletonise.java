@@ -1,14 +1,8 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
-import ij.process.ImageProcessor;
-import inra.ijpb.morphology.GeodesicReconstruction3D;
 import sc.fiji.skeletonize3D.Skeletonize3D_;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
