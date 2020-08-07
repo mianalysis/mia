@@ -301,12 +301,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.SJCross</groupId>
+            <!-- <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.6.13</version>
-	    <!-- <groupId>wbif.sjx</groupId>
+            <version>v1.6.1</version> -->
+	    <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-	    <version>1.6.13-SNAPSHOT</version> -->
+	    <version>1.6.14-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
