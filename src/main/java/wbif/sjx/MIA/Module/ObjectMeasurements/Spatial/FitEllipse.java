@@ -105,7 +105,8 @@ public class FitEllipse extends Module {
                     break;
             }
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            MIA.log.writeWarning("Ellipse fitting failed for \"" + inputObject.getName() + "\" (ID = "
+                    + inputObject.getID() + "), Error: " + e.getMessage());
         }
 
         addMeasurements(inputObject, calculator);
@@ -135,10 +136,7 @@ public class FitEllipse extends Module {
             return null;
 
         Obj ellipseObject = new Obj(outputObjects.getName(), outputObjects.getAndIncrementID(), inputObject);
-        try {
-            ellipseObject.setPoints(ellipse.getPoints());
-        } catch (PointOutOfRangeException e) {
-        }
+        ellipseObject.setCoordinateSet(ellipse.getCoordinateSet());
         ellipseObject.setT(inputObject.getT());
 
         ellipseObject.addParent(inputObject);
@@ -151,10 +149,8 @@ public class FitEllipse extends Module {
 
     public void updateInputObject(Obj inputObject, Volume ellipsoid) {
         inputObject.getCoordinateSet().clear();
-        try {
-            inputObject.setPoints(ellipsoid.getPoints());
-        } catch (PointOutOfRangeException e) {
-        }
+        inputObject.setCoordinateSet(ellipsoid.getCoordinateSet());
+
     }
 
     public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {

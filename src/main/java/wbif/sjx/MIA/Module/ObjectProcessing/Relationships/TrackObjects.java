@@ -425,7 +425,7 @@ public class TrackObjects extends Module {
                 // Iterating over all points, measuring their distance from the midLine
                 Point<Integer> furthestPoint = null;
                 double largestOffset = Double.NEGATIVE_INFINITY;
-                for (Point<Integer> point:obj.getPoints()) {
+                for (Point<Integer> point:obj.getCoordinateSet()) {
                     double offset = midLine.getOffset(new Vector2D(point.getX(),point.getY()));
 
                     // Determining if the offset is positive or negative

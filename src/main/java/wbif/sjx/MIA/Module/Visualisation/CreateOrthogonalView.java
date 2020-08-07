@@ -141,7 +141,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 Obj largestObject = null;
                 int largestSize = 0;
                 for (Obj inputObject:inputObjects.values()) {
-                    int currentSize = inputObject.getPoints().size();
+                    int currentSize = inputObject.size();
                     if (currentSize > largestSize) {
                         largestSize = currentSize;
                         largestObject = inputObject;

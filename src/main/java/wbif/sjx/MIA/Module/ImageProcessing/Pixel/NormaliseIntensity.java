@@ -120,7 +120,7 @@ public class NormaliseIntensity extends Module {
                 double factor = bitDepth == 32 ? 1 : Math.pow(2, bitDepth) - 1;
                 double mult = factor / (max - min);
 
-                for (Point<Integer> point:maskObject.getPoints()) {
+                for (Point<Integer> point:maskObject.getCoordinateSet()) {
                     ipl.setPosition(c,point.getZ()+1,frame+1);
 
                     ImageProcessor ipr = ipl.getProcessor();

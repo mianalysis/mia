@@ -186,7 +186,7 @@ public class SingleClassCluster extends Module {
         objectIpl = DistanceMap.getDistanceMap(objectIpl,true);
 
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
-        Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
+        Iterator<Point<Integer>> iterator = outputObject.getCoordinateSet().iterator();
         double conv = outputObject.getDppZ()/outputObject.getDppXY();
         while (iterator.hasNext()) {
             Point<Integer> point = iterator.next();

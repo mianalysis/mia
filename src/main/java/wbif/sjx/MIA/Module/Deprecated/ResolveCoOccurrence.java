@@ -204,8 +204,8 @@ public class ResolveCoOccurrence extends Module {
             outputObject.addMeasurement(new Measurement(name,nPoints2));
 
             // Assigning points to new object
-            outputObject.getPoints().addAll(object1.getPoints());
-            outputObject.getPoints().addAll(object2.getPoints());
+            outputObject.getCoordinateSet().addAll(object1.getCoordinateSet());
+            outputObject.getCoordinateSet().addAll(object2.getCoordinateSet());
             outputObjects.add(outputObject);
 
             // Removing merged objects from input

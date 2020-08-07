@@ -2,7 +2,6 @@ package wbif.sjx.MIA.Module.Deprecated;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
@@ -12,7 +11,6 @@ import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imagej.axis.IdentityAxis;
 import net.imglib2.Cursor;
-import net.imglib2.img.Img;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -21,15 +19,14 @@ import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -174,66 +171,66 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    private Img<T> createComposite(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
-        long dimX = 0;
-        long dimY = 0;
-        long dimZ = 0;
-        T type = null;
+    // private Img<T> createComposite(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
+    //     long dimX = 0;
+    //     long dimY = 0;
+    //     long dimZ = 0;
+    //     T type = null;
 
-        Img<T> redImg = null;
-        if (inputImageRed != null) {
-            redImg = inputImageRed.getImgPlus();
-            dimX = redImg.dimension(0);
-            dimY = redImg.dimension(1);
-            dimZ = redImg.dimension(2);
-            type = redImg.firstElement();
-        }
+    //     Img<T> redImg = null;
+    //     if (inputImageRed != null) {
+    //         redImg = inputImageRed.getImgPlus();
+    //         dimX = redImg.dimension(0);
+    //         dimY = redImg.dimension(1);
+    //         dimZ = redImg.dimension(2);
+    //         type = redImg.firstElement();
+    //     }
 
-        Img<T> greenImg = null;
-        if (inputImageGreen != null) {
-            greenImg = inputImageGreen.getImgPlus();
-            dimX = greenImg.dimension(0);
-            dimY = greenImg.dimension(1);
-            dimZ = greenImg.dimension(2);
-            type = greenImg.firstElement();
-        }
+    //     Img<T> greenImg = null;
+    //     if (inputImageGreen != null) {
+    //         greenImg = inputImageGreen.getImgPlus();
+    //         dimX = greenImg.dimension(0);
+    //         dimY = greenImg.dimension(1);
+    //         dimZ = greenImg.dimension(2);
+    //         type = greenImg.firstElement();
+    //     }
 
-        Img<T> blueImg = null;
-        if (inputImageBlue != null) {
-            blueImg = inputImageBlue.getImgPlus();
-            dimX = blueImg.dimension(0);
-            dimY = blueImg.dimension(1);
-            dimZ = blueImg.dimension(2);
-            type = blueImg.firstElement();
-        }
+    //     Img<T> blueImg = null;
+    //     if (inputImageBlue != null) {
+    //         blueImg = inputImageBlue.getImgPlus();
+    //         dimX = blueImg.dimension(0);
+    //         dimY = blueImg.dimension(1);
+    //         dimZ = blueImg.dimension(2);
+    //         type = blueImg.firstElement();
+    //     }
 
-        // Creating the composite image
-        long[] dimensions = new long[]{dimX,dimY,3, dimZ,1};
-        CellImgFactory<T> factory = new CellImgFactory<T>(type);
-        Img<T> rgbImg = factory.create(dimensions);
+    //     // Creating the composite image
+    //     long[] dimensions = new long[]{dimX,dimY,3, dimZ,1};
+    //     CellImgFactory<T> factory = new CellImgFactory<T>(type);
+    //     Img<T> rgbImg = factory.create(dimensions);
 
-        // Adding values view
-        if (inputImageRed != null) {
-            Cursor<T> cursorSingle = redImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0,0}, new long[]{dimX,dimY,1, dimZ,1}).cursor();
-            while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
-        }
+    //     // Adding values view
+    //     if (inputImageRed != null) {
+    //         Cursor<T> cursorSingle = redImg.cursor();
+    //         Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0,0}, new long[]{dimX,dimY,1, dimZ,1}).cursor();
+    //         while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
+    //     }
 
-        if (inputImageGreen != null) {
-            Cursor<T> cursorSingle = greenImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
-            while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
-        }
+    //     if (inputImageGreen != null) {
+    //         Cursor<T> cursorSingle = greenImg.cursor();
+    //         Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
+    //         while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
+    //     }
 
-        if (inputImageBlue != null) {
-            Cursor<T> cursorSingle = blueImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
-            while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
-        }
+    //     if (inputImageBlue != null) {
+    //         Cursor<T> cursorSingle = blueImg.cursor();
+    //         Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
+    //         while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
+    //     }
 
-        return rgbImg;
+    //     return rgbImg;
 
-    }
+    // }
 
     @Override
     public String getPackageName() {

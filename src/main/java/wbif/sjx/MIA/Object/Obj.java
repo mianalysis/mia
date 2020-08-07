@@ -426,7 +426,7 @@ public class Obj extends Volume {
         ImagePlus ipl = IJ.createImage(imageName, spatCal.width, spatCal.height, spatCal.nSlices, 8);
         spatCal.setImageCalibration(ipl);
         
-        for (Point<Integer> point : getPoints()) {
+        for (Point<Integer> point : getCoordinateSet()) {
             ipl.setPosition(point.getZ() + 1);
             ipl.getProcessor().putPixel(point.getX(), point.getY(), 255);
         }
@@ -485,7 +485,7 @@ public class Obj extends Volume {
         int height = spatCal.getHeight();
         int nSlices = spatCal.getNSlices();
 
-        getPoints().removeIf(point -> point.getX() < 0 || point.getX() >= width || point.getY() < 0
+        getCoordinateSet().removeIf(point -> point.getX() < 0 || point.getX() >= width || point.getY() < 0
                 || point.getY() >= height || point.getZ() < 0 || point.getZ() >= nSlices);
 
     }

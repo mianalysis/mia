@@ -30,7 +30,6 @@ import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
-import wbif.sjx.common.Analysis.Volume.PointSurfaceSeparatorCalculator;
 import wbif.sjx.common.Object.Point;
 
 /**
@@ -430,7 +429,7 @@ public class RelateObjects extends Module {
 
             for (Obj childObject:currChildObjects.values()) {
                 // Transferring points from the child object to the new object
-                relatedObject.getPoints().addAll(childObject.getPoints());
+                relatedObject.getCoordinateSet().addAll(childObject.getCoordinateSet());
 
                 // Removing the child object from its original collection
                 childObjects.values().remove(childObject);
@@ -438,7 +437,7 @@ public class RelateObjects extends Module {
             }
 
             // Transferring points from the parent object to the new object
-            relatedObject.getPoints().addAll(parentObj.getPoints());
+            relatedObject.getCoordinateSet().addAll(parentObj.getCoordinateSet());
 
             // Removing the parent object from its original collection
             parentIterator.remove();
