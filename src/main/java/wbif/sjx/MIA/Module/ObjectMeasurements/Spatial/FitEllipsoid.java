@@ -110,10 +110,7 @@ public class FitEllipsoid extends Module {
                     calculator = new EllipsoidCalculator(edgeObject, maxAxisLength);
                     break;
             }
-        } catch (RuntimeException e) {
-            MIA.log.writeWarning("Ellipsoid fitting failed for \"" + inputObject.getName() + "\" (ID = "
-                    + inputObject.getID() + "), Error: " + e.getMessage());
-        }
+        } catch (RuntimeException e) {}
 
         addMeasurements(inputObject, calculator);
 

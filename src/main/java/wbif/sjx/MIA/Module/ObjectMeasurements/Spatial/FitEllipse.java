@@ -104,10 +104,7 @@ public class FitEllipse extends Module {
                     calculator = new EllipseCalculator(edgeObject, maxAxisLength);
                     break;
             }
-        } catch (RuntimeException e) {
-            MIA.log.writeWarning("Ellipse fitting failed for \"" + inputObject.getName() + "\" (ID = "
-                    + inputObject.getID() + "), Error: " + e.getMessage());
-        }
+        } catch (RuntimeException e) {}
 
         addMeasurements(inputObject, calculator);
 
