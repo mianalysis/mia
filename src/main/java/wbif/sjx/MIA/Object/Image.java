@@ -10,7 +10,6 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.CompositeImage;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;

@@ -2,10 +2,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
 import java.util.Iterator;
 
-import ij.IJ;
-import ij.ImagePlus;
 import ij.Prefs;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -32,7 +29,6 @@ import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
-import wbif.sjx.common.Object.Volume.SpatCal;
 
 /**
  * Created by sc13967 on 16/01/2018.

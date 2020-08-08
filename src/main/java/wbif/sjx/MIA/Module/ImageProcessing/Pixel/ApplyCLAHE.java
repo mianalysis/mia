@@ -12,7 +12,6 @@ import ij.Prefs;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import mpicbg.ij.clahe.Flat;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;

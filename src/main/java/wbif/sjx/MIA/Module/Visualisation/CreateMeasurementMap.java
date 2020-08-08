@@ -100,7 +100,7 @@ public class CreateMeasurementMap extends Module {
             if (Double.isNaN(measurementValue)) continue;
 
             // Getting all object points
-            for (Point<Integer> point:object.getPoints()) {
+            for (Point<Integer> point:object.getCoordinateSet()) {
                 // Getting index for this point
                 int z = indexer.getDim()[2] == 1 ? 0 : point.getZ();
                 int t = indexer.getDim()[3] == 1 ? 0 : object.getT();
@@ -132,7 +132,7 @@ public class CreateMeasurementMap extends Module {
             if (Double.isNaN(measurementValue)) continue;
 
             // Getting all object points
-            for (Point<Integer> point:object.getPoints()) {
+            for (Point<Integer> point:object.getCoordinateSet()) {
                 // Getting index for this point
                 int z = indexer.getDim()[2] == 1 ? 0 : point.getZ();
                 int t = indexer.getDim()[3] == 1 ? 0 : object.getT();

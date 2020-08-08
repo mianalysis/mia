@@ -5,8 +5,6 @@ import java.util.LinkedHashMap;
 
 import com.drew.lang.annotations.NotNull;
 
-import com.drew.lang.annotations.NotNull;
-
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
 import ij.process.LUT;

@@ -77,8 +77,6 @@ public class ProjectObjectsTest extends ModuleTest {
         ObjCollection expectedObjects = new Objects2D(volumeType).getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         ObjCollection actualObjects = workspace.getObjectSet(outputObjectsName);
 
-        TreeSet<Point<Integer>> expPoints = expectedObjects.get(3).getPoints();
-
         for (Obj object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
             Obj expectedObject = expectedObjects.getByEquals(object);

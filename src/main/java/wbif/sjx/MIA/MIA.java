@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
@@ -17,7 +16,6 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
-import org.xml.sax.SAXException;
 
 import net.imagej.ImageJ;
 import wbif.sjx.MIA.GUI.GUI;

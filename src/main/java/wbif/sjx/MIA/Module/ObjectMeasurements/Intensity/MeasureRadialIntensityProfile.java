@@ -94,7 +94,7 @@ public class MeasureRadialIntensityProfile extends Module {
         double maxDist = distanceBins[distanceBins.length-1];
         double binWidth = distanceBins[1]-distanceBins[0];
 
-        for (Point<Integer> point:inputObject.getPoints()) {
+        for (Point<Integer> point:inputObject.getCoordinateSet()) {
             int x = point.getX();
             int y = point.getY();
             int z = point.getZ();

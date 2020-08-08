@@ -166,7 +166,7 @@ public class CreateDistanceMap extends Module {
         int t = inputObject.getT();
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        for (Point<Integer> point:inputObject.getPoints()) {
+        for (Point<Integer> point:inputObject.getCoordinateSet()) {
             int x = point.getX();
             int y = point.getY();
             int z = point.getZ();
@@ -186,7 +186,7 @@ public class CreateDistanceMap extends Module {
         int t = inputObject.getT();
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        for (Point<Integer> point:inputObject.getPoints()) {
+        for (Point<Integer> point:inputObject.getCoordinateSet()) {
             int x = point.getX();
             int y = point.getY();
             int z = point.getZ();

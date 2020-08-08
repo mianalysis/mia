@@ -9,7 +9,6 @@ import javax.swing.JComponent;
 
 import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
 
 /**

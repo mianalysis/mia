@@ -123,7 +123,7 @@ public class ActiveContourObjectDetection extends Module {
             writeStatus("Processing object " + (count++) + " of " + total);
 
             // Getting the z-plane of the current object
-            int z = inputObject.getPoints().iterator().next().getZ();
+            int z = inputObject.getCoordinateSet().iterator().next().getZ();
 
             // Getting the Roi for the current object
             Polygon roi = inputObject.getRoi(z).getPolygon();

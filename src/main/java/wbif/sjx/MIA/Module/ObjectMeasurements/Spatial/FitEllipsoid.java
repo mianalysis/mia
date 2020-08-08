@@ -110,8 +110,7 @@ public class FitEllipsoid extends Module {
                     calculator = new EllipsoidCalculator(edgeObject, maxAxisLength);
                     break;
             }
-        } catch (RuntimeException e) {
-        }
+        } catch (RuntimeException e) {}
 
         addMeasurements(inputObject, calculator);
 
@@ -270,7 +269,7 @@ public class FitEllipsoid extends Module {
                             + " during ellipsoid fitting.");
                 }
                 writeStatus("Processed object " + count + " of " + total + " ("
-                + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
+                        + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)");
             };
             pool.submit(task);
 
