@@ -16,7 +16,7 @@ public class ParentObjectsP extends ChoiceType {
     }
 
     public ParentObjectsP(String name, Module module, String description) {
-        super(name,module);
+        super(name,module,description);
     }
 
     public ParentObjectsP(String name, Module module, @NotNull String choice, @NotNull String childObjectsName) {
