@@ -128,7 +128,7 @@ public abstract class Overlay extends Module {
 
         parameters.add(new ChoiceP(SINGLE_COLOUR, this, SingleColours.WHITE, SingleColours.ALL,
                 "Colour for all object overlays to be rendered using.  This parameter is used if \"" + COLOUR_MODE
-                        + "\" is set to \""+ColourModes.SINGLE_COLOUR+"\".  Options are: "+String.join(",", SingleColours.ALL)+"."));
+                        + "\" is set to \""+ColourModes.SINGLE_COLOUR+"\".  Options are: "+String.join(", ", SingleColours.ALL)+"."));
 
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_FOR_COLOUR, this, "Object collection used to determine the colour of the overlay based on number of children per object when \"" + COLOUR_MODE
                 + "\" is set to \"" + ColourModes.CHILD_COUNT
