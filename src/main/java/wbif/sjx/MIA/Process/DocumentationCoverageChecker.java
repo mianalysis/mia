@@ -98,7 +98,7 @@ public class DocumentationCoverageChecker {
         System.out.println("Mean object measurement coverage = " + completedObjRefs + "/" + totalObjRefs + " ("
                 + (100 * fractionObjMeasurements) + "%)");
 
-        System.out.println("__" + classNames.size() + "_" + completedModuleDescriptions + "_" + totalParameters + "_"
+        System.out.println("_" + classNames.size() + "_" + completedModuleDescriptions + "_" + totalParameters + "_"
                 + completedParameters + "_" + completedParameterSets + "_" + totalImageRefs + "_" + completedImageRefs
                 + "_" + totalObjRefs + "_" + completedObjRefs);
 
