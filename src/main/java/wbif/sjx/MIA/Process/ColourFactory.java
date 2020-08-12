@@ -177,7 +177,7 @@ public class ColourFactory {
             H = (float) object.getChildren(childObjectsName).size();
             if (normalised) {
                 double startH = 0;
-                double endH = 120d / 255d;
+                double endH = 128d / 255d;
                 H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
             }
 
