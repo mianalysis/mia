@@ -265,13 +265,8 @@ public class AddObjectOutline extends Overlay {
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new BooleanP(REDUCE_LINE_COMPLEXITY, this, false));
         parameters.add(new DoubleP(LINE_INTERPOLATION, this, 1));
-<<<<<<< Updated upstream
-        parameters.add(new DoubleP(LINE_WIDTH, this, 1));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
-=======
         parameters.add(new DoubleP(LINE_WIDTH, this, 1,"Width of the rendered lines.  Specified in pixel units."));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false,"Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame."));
->>>>>>> Stashed changes
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));

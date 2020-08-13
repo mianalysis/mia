@@ -247,16 +247,6 @@ public class AddArrows extends Overlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-<<<<<<< Updated upstream
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-=======
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
@@ -268,7 +258,6 @@ public class AddArrows extends Overlay {
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.MEASUREMENT, OrientationModes.ALL));
->>>>>>> Stashed changes
 
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_ORIENTATION, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_ORIENTATION, this));
@@ -277,15 +266,6 @@ public class AddArrows extends Overlay {
         parameters.add(new DoubleP(LENGTH_VALUE, this, 5d));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LENGTH, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LENGTH, this));
-<<<<<<< Updated upstream
-        parameters.add(new DoubleP(LENGTH_SCALE,this,1d));
-        parameters.add(new IntegerP(HEAD_SIZE,this,3));
-        parameters.add(new DoubleP(LINE_WIDTH,this,1));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
-
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-=======
         parameters.add(new DoubleP(LENGTH_SCALE, this, 1d));
         parameters.add(new IntegerP(HEAD_SIZE, this, 3));
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
@@ -295,7 +275,6 @@ public class AddArrows extends Overlay {
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();
->>>>>>> Stashed changes
 
     }
 
