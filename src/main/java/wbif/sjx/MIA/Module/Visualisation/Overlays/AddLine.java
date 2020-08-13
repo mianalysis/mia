@@ -272,7 +272,7 @@ public class AddLine extends Overlay {
         // parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT_OBJ_2,this));
         
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new DoubleP(LINE_WIDTH,this,1));
+        parameters.add(new DoubleP(LINE_WIDTH,this,1,"Width of the rendered lines.  Specified in pixel units."));
         
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));

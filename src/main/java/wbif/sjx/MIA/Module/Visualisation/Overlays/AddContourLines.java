@@ -581,7 +581,7 @@ public class AddContourLines extends Module {
         parameters.add(new IntegerP(NUMBER_OF_CONTOURS, this, 9));
         parameters.add(new ChoiceP(CONTOUR_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(CONTOUR_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
-        parameters.add(new DoubleP(LINE_WIDTH, this, 1));
+        parameters.add(new DoubleP(LINE_WIDTH, this, 1, "Width of the rendered lines.  Specified in pixel units."));
         parameters.add(new IntegerP(DRAW_EVERY_N_POINTS, this, 1));
 
         parameters.add(new ParamSeparatorP(LABEL_SEPARATOR, this));

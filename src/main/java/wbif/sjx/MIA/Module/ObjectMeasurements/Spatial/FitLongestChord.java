@@ -2,7 +2,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddFromPositionMeasurement;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -22,7 +23,7 @@ import java.awt.*;
 public class FitLongestChord extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
-    
+
     public static final String CALCULATION_SEPARATOR = "Longest chord calculation";
     public static final String MEASURE_OBJECT_WIDTH = "Measure object width";
     public static final String MEASURE_OBJECT_ORIENTATION = "Measure object orientation";
@@ -98,10 +99,16 @@ public class FitLongestChord extends Module {
 
         if (measureOrientation) {
             double orientationDegs = Math.toDegrees(calculator.getXYOrientationRads());
-            orientationDegs = Math.abs((orientationDegs + 90) % 180 - 90);
-            if (orientationDegs >= 90)
-                orientationDegs = orientationDegs - 180;
+
+            // Ensuring the orientation is positive
+            while (orientationDegs < 0)
+                orientationDegs += 360;
+
+            // Fitting to range -90 to + 90 degrees
+            orientationDegs = (orientationDegs + 90) % 180 - 90;
+
             object.addMeasurement(new Measurement(Measurements.ORIENTATION_XY_DEGS, orientationDegs));
+
         }
     }
 
@@ -109,8 +116,10 @@ public class FitLongestChord extends Module {
         String[] pos1 = new String[] { Measurements.X1_PX, Measurements.Y1_PX, Measurements.Z1_SLICE, "" };
         String[] pos2 = new String[] { Measurements.X2_PX, Measurements.Y2_PX, Measurements.Z2_SLICE, "" };
 
-        AddObjectsOverlay.addPositionMeasurementsOverlay(object, imagePlus, Color.ORANGE, 1, pos1, false);
-        AddObjectsOverlay.addPositionMeasurementsOverlay(object, imagePlus, Color.CYAN, 1, pos2, false);
+        String size = AddFromPositionMeasurement.PointSizes.SMALL;
+        String type = AddFromPositionMeasurement.PointTypes.CIRCLE;
+        AddFromPositionMeasurement.addOverlay(object, imagePlus, Color.ORANGE, size, type, 1, pos1, null, false);
+        AddFromPositionMeasurement.addOverlay(object, imagePlus, Color.CYAN, size, type, 1, pos2, null, false);
 
     }
 
@@ -158,9 +167,8 @@ public class FitLongestChord extends Module {
             processObject(inputObject, measureWidth, measureOrientation, storeEndPoints);
             if (addOverlay)
                 addEndpointsOverlay(inputObject, inputImagePlus);
-                ++count;
-            writeStatus("Processed object " + count + " of " + total + " ("
-                    + Math.floorDiv(100 * count, total) + "%)");
+            ++count;
+            writeStatus("Processed object " + count + " of " + total + " (" + Math.floorDiv(100 * count, total) + "%)");
         }
 
         if (addOverlay) {

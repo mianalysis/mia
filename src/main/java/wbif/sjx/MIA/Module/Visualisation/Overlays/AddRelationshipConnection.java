@@ -494,7 +494,7 @@ public class AddRelationshipConnection extends Overlay {
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new ChoiceP(RENDER_MODE, this, RenderModes.FULL_LINE, RenderModes.ALL));
-        parameters.add(new DoubleP(LINE_WIDTH, this, 1));
+        parameters.add(new DoubleP(LINE_WIDTH, this, 1,"Width of the rendered lines.  Specified in pixel units."));
         parameters.add(new ChoiceP(POINT_SIZE, this, PointSizes.SMALL, PointSizes.ALL));
         parameters.add(new ChoiceP(POINT_TYPE, this, PointTypes.CIRCLE, PointTypes.ALL));
         parameters.add(new BooleanP(OFFSET_BY_MEASUREMENT, this, false));

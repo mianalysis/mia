@@ -15,7 +15,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -217,18 +216,18 @@ public class AddLabels extends Overlay {
             String childObjectsForLabelName, String parentObjectsForLabelName, String partnerObjectsForLabelName,
             String measurementForLabel) {
         switch (labelMode) {
-            case AddObjectsOverlay.LabelModes.CHILD_COUNT:
+            case LabelModes.CHILD_COUNT:
                 return LabelFactory.getChildCountLabels(inputObjects, childObjectsForLabelName, df);
-            case AddObjectsOverlay.LabelModes.ID:
+            case LabelModes.ID:
                 return LabelFactory.getIDLabels(inputObjects, df);
-            case AddObjectsOverlay.LabelModes.MEASUREMENT_VALUE:
+            case LabelModes.MEASUREMENT_VALUE:
                 return LabelFactory.getMeasurementLabels(inputObjects, measurementForLabel, df);
-            case AddObjectsOverlay.LabelModes.PARENT_ID:
+            case LabelModes.PARENT_ID:
                 return LabelFactory.getParentIDLabels(inputObjects, parentObjectsForLabelName, df);
-            case AddObjectsOverlay.LabelModes.PARENT_MEASUREMENT_VALUE:
+            case LabelModes.PARENT_MEASUREMENT_VALUE:
                 return LabelFactory.getParentMeasurementLabels(inputObjects, parentObjectsForLabelName,
                         measurementForLabel, df);
-            case AddObjectsOverlay.LabelModes.PARTNER_COUNT:
+            case LabelModes.PARTNER_COUNT:
                 return LabelFactory.getPartnerCountLabels(inputObjects, partnerObjectsForLabelName, df);
         }
 

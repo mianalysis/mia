@@ -91,7 +91,7 @@ public abstract class Overlay extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL,
-                "Method for determining colour of each object's corresponding overlay.<br>"
+                "Method for determining colour of each object's corresponding overlay:<br>"
                         + "<br>- \"" + ColourModes.CHILD_COUNT + "\" Overlay colour is determined by the number of children each object has.  "
                         + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
                         + "with the fewest children is shown in red and the object with the most, in cyan.  Objects without any children are always shown in red.  "

@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Process;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import wbif.sjx.MIA.Module.Module;
@@ -86,17 +87,18 @@ public class DocumentationCoverageChecker {
         double fractionImageMeasurements = (double) completedImageRefs / (double) totalImageRefs;
         double fractionObjMeasurements = (double) completedObjRefs / (double) totalObjRefs;
 
+        DecimalFormat df = new DecimalFormat("0.00");
         System.out.println(" ");
         System.out.println("Completed module descriptions = " + completedModuleDescriptions + "/" + classNames.size()
-                + " (" + (100 * fractionModuleDescriptions) + "%)");
+                + " (" + df.format(100 * fractionModuleDescriptions) + "%)");
         System.out.println("Completed parameter set descriptions = " + completedParameterSets + "/" + classNames.size()
-                + " (" + (100 * fractionModuleParameters) + "%)");
+                + " (" + df.format(100 * fractionModuleParameters) + "%)");
         System.out.println("Mean parameter coverage = " + completedParameters + "/" + totalParameters + " ("
-                + (100 * fractionParameters) + "%)");
+                + df.format(100 * fractionParameters) + "%)");
         System.out.println("Mean image measurement coverage = " + completedImageRefs + "/" + totalImageRefs + " ("
-                + (100 * fractionImageMeasurements) + "%)");
+                + df.format(100 * fractionImageMeasurements) + "%)");
         System.out.println("Mean object measurement coverage = " + completedObjRefs + "/" + totalObjRefs + " ("
-                + (100 * fractionObjMeasurements) + "%)");
+                + df.format(100 * fractionObjMeasurements) + "%)");
 
         System.out.println("__" + classNames.size() + "_" + completedModuleDescriptions + "_" + totalParameters + "_"
                 + completedParameters + "_" + completedParameterSets + "_" + totalImageRefs + "_" + completedImageRefs
