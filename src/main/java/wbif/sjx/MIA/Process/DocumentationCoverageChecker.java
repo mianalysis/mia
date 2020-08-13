@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -145,7 +146,7 @@ public class DocumentationCoverageChecker {
         for (Parameter parameter : module.getAllParameters().values()) {
             if (parameter.getDescription() == null)
                 continue;
-            if (parameter instanceof ParameterGroup || parameter instanceof ParamSeparatorP)
+            if (parameter instanceof ParameterGroup || parameter instanceof ParamSeparatorP || parameter instanceof MessageP) 
                 nParams--;
             if (parameter.getDescription().length() > 1)
                 nCoveredParams++;

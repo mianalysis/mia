@@ -170,20 +170,22 @@ public class AddAllObjectPoints extends Overlay {
         super.initialiseParameters();
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to represent as overlays."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false,"Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame."));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU."));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -245,5 +247,22 @@ public class AddAllObjectPoints extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.getParameter(INPUT_IMAGE).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
+        
+        parameters.getParameter(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
+
+        parameters.getParameter(APPLY_TO_INPUT).setDescription("Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+        
+        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+        
+        parameters.getParameter(OUTPUT_IMAGE).setDescription("The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+        
+        parameters.getParameter(RENDER_IN_ALL_FRAMES).setDescription("Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
+        
+        parameters.getParameter(ENABLE_MULTITHREADING).setDescription("Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+        
     }
 }

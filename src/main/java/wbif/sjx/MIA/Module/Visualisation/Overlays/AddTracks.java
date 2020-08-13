@@ -57,43 +57,43 @@ public class AddTracks extends Overlay {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-
     public AddTracks(ModuleCollection modules) {
-        super("Add tracks",modules);
+        super("Add tracks", modules);
     }
 
-
-    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
+    public static void addOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth,
+            int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
-        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+        if (ipl.getOverlay() == null)
+            ipl.setOverlay(new ij.gui.Overlay());
         ij.gui.Overlay ovl = ipl.getOverlay();
 
         // Putting the current track points into a TreeMap stored by the frame
-        TreeMap<Integer,Obj> points = new TreeMap<>();
-        for (Obj pointObject:pointObjects.values()) {
-            points.put(pointObject.getT(),pointObject);
+        TreeMap<Integer, Obj> points = new TreeMap<>();
+        for (Obj pointObject : pointObjects.values()) {
+            points.put(pointObject.getT(), pointObject);
         }
 
-        //  Iterating over all points in the track, drawing lines between them
+        // Iterating over all points in the track, drawing lines between them
         int nFrames = ipl.getNFrames();
         Obj p1 = null;
-        for (Obj p2:points.values()) {
+        for (Obj p2 : points.values()) {
             if (p1 != null) {
-                double x1 = p1.getXMean(true)+0.5;
-                double y1 = p1.getYMean(true)+0.5;
-                double x2 = p2.getXMean(true)+0.5;
-                double y2 = p2.getYMean(true)+0.5;
+                double x1 = p1.getXMean(true) + 0.5;
+                double y1 = p1.getYMean(true) + 0.5;
+                double x2 = p2.getXMean(true) + 0.5;
+                double y2 = p2.getYMean(true) + 0.5;
 
-                int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames,p2.getT()+history);
-                for (int t = p2.getT();t<=maxFrame-1;t++) {
-                    Line line = new Line(x1,y1,x2,y2);
+                int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames, p2.getT() + history);
+                for (int t = p2.getT(); t <= maxFrame - 1; t++) {
+                    Line line = new Line(x1, y1, x2, y2);
 
                     if (ipl.isHyperStack()) {
-                        ipl.setPosition(1,1,t+1);
-                        line.setPosition(1,1, t+1);
+                        ipl.setPosition(1, 1, t + 1);
+                        line.setPosition(1, 1, t + 1);
                     } else {
-                        int pos = Math.max(1,t+1);
+                        int pos = Math.max(1, t + 1);
                         ipl.setPosition(pos);
                         line.setPosition(pos);
                     }
@@ -110,7 +110,6 @@ public class AddTracks extends Overlay {
         }
     }
 
-
     @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
@@ -118,7 +117,7 @@ public class AddTracks extends Overlay {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds an overlay to the specified input image showing the path of each track object.  The line is drawn between object centroids.";
     }
 
     @Override
@@ -145,39 +144,46 @@ public class AddTracks extends Overlay {
         double lineWidth = parameters.getValue(LINE_WIDTH);
 
         // Only add output to workspace if not applying to input
-        if (applyToInput) addOutputToWorkspace = false;
+        if (applyToInput)
+            addOutputToWorkspace = false;
 
         // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+        if (!applyToInput)
+            ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = getHues(inputObjects);
+        HashMap<Integer, Float> hues = getHues(inputObjects);
 
         // Adding the overlay element
-        if (!limitHistory) history = Integer.MAX_VALUE;
+        if (!limitHistory)
+            history = Integer.MAX_VALUE;
 
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
-        for (Obj object:inputObjects.values()) {
+        for (Obj object : inputObjects.values()) {
             float hue = hues.get(object.getID());
-            Color colour = ColourFactory.getColour(hue,opacity);
+            Color colour = ColourFactory.getColour(hue, opacity);
 
-            addOverlay(object, spotObjectsName, ipl, colour, lineWidth,  history);
+            addOverlay(object, spotObjectsName, ipl, colour, lineWidth, history);
 
             writeStatus("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
         }
 
-        Image outputImage = new Image(outputImageName,ipl);
+        Image outputImage = new Image(outputImageName, ipl);
 
-        // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) outputImage.showImage();
+        // If necessary, adding output image to workspace. This also allows us to show
+        // it.
+        if (addOutputToWorkspace)
+            workspace.addImage(outputImage);
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -187,24 +193,27 @@ public class AddTracks extends Overlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputTrackObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new BooleanP(LIMIT_TRACK_HISTORY, this,false));
-        parameters.add(new IntegerP(TRACK_HISTORY, this,10));
-        parameters.add(new DoubleP(LINE_WIDTH,this,1,"Width of the rendered lines.  Specified in pixel units."));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
+        parameters.add(new BooleanP(LIMIT_TRACK_HISTORY, this, false));
+        parameters.add(new IntegerP(TRACK_HISTORY, this, 10));
+        parameters.add(new DoubleP(LINE_WIDTH, this, 1));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU."));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        addParameterDescriptions();
+                
     }
 
     @Override
@@ -231,7 +240,8 @@ public class AddTracks extends Overlay {
         returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
-        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
+        if ((boolean) parameters.getValue(LIMIT_TRACK_HISTORY))
+            returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
         ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
@@ -272,5 +282,28 @@ public class AddTracks extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.getParameter(INPUT_IMAGE).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
+        
+        parameters.getParameter(INPUT_OBJECTS).setDescription("Track objects to render in the overlay.  Track objects themselves don't contain any coordinate information, they simply act as links between the different \""+SPOT_OBJECTS+"\" children in each frame of the track.");
+        
+        parameters.getParameter(SPOT_OBJECTS).setDescription("Objects present in each frame of this track.  These are children of the \""+INPUT_OBJECTS+"\" and provide the coordinate information for each frame.");
+        
+        parameters.getParameter(APPLY_TO_INPUT).setDescription("Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+        
+        parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+        
+        parameters.getParameter(OUTPUT_IMAGE).setDescription("The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+        
+        parameters.getParameter(LIMIT_TRACK_HISTORY).setDescription("When enabled, segments of a track will only be displayed for a finite number of frames after the timepoint they correspond to.  This gives the effect of a moving tail behind the object and can be use to prevent the overlay image becoming too cluttered for long/dense videos.  The duration of the track history is specified by the \""+TRACK_HISTORY+"\" parameter.");
+        
+        parameters.getParameter(TRACK_HISTORY).setDescription("Number of frames a track segment will be displayed for after the timepoint to which it corresponds.");
+        
+        parameters.getParameter(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
+
+        parameters.getParameter(ENABLE_MULTITHREADING).setDescription("Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+        
     }
 }

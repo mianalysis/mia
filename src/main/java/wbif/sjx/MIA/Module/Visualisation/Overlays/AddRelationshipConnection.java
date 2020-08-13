@@ -640,4 +640,45 @@ public class AddRelationshipConnection extends Overlay {
     public boolean verify() {
         return true;
     }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
+
+        parameters.get(LINE_MODE).setDescription("");
+
+        parameters.get(PARENT_OBJECTS).setDescription("");
+
+        parameters.get(CHILD_OBJECTS_1).setDescription("");
+
+        parameters.get(CHILD_OBJECTS_2).setDescription("");
+
+        parameters.get(PARTNER_OBJECTS_1).setDescription("");
+
+        parameters.get(PARTNER_OBJECTS_2).setDescription("");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(RENDER_MODE).setDescription("");
+
+        parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
+
+        parameters.get(POINT_SIZE).setDescription("Size of each overlay marker.  Options are: "+String.join(", ", PointSizes.ALL)+".");
+
+        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Options are: "+String.join(", ", PointTypes.ALL)+".");
+
+        parameters.get(OFFSET_BY_MEASUREMENT).setDescription("");
+
+        parameters.get(MEASUREMENT_NAME_1).setDescription("");
+
+        parameters.get(MEASUREMENT_NAME_2).setDescription("");
+
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription("Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
+    }
 }
