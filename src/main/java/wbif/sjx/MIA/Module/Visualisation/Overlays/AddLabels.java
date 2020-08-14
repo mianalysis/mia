@@ -242,7 +242,7 @@ public class AddLabels extends Overlay {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds an overlay to the specified input image with each object represented by a text label.  The label can include information such as measurements, associated object counts or ID numbers.";
     }
 
     @Override
@@ -313,13 +313,13 @@ public class AddLabels extends Overlay {
         super.initialiseParameters();
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to represent as overlays."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new ChoiceP(LABEL_MODE, this, LabelModes.ID, LabelModes.ALL));
@@ -334,11 +334,13 @@ public class AddLabels extends Overlay {
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL, this));
         parameters.add(new ChoiceP(LABEL_POSITION, this, LabelPositions.CENTRE, LabelPositions.ALL));
         parameters.add(new BooleanP(RENDER_IN_ALL_OBJECT_SLICES, this, false));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false,"Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame."));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU."));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -447,5 +449,98 @@ public class AddLabels extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(LABEL_MODE).setDescription("Controls what information each label displays:<br>"
+
+                + "<br>- \"" + LabelModes.CHILD_COUNT
+                + "\" The number of children from a specific object collection for each object.  The children to summarise are selected using the \""
+                + CHILD_OBJECTS_FOR_LABEL + "\" parameter.<br>"
+
+                + "<br>- \"" + LabelModes.ID + "\" The ID number of the object.<br>"
+
+                + "<br>- \"" + LabelModes.MEASUREMENT_VALUE
+                + "\" A measurement associated with the object.  The measurement is selected using the \""
+                + MEASUREMENT_FOR_LABEL + "\" parameter.<br>"
+
+                + "<br>- \"" + LabelModes.PARENT_ID
+                + "\" The ID number of a parent of the object.  The parent object is selected using the \""
+                + PARENT_OBJECT_FOR_LABEL + "\" parameter.<br>"
+
+                + "<br>- \"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                + "\" A measurement associated with a parent of the object.  The measurement is selected using the \""
+                + MEASUREMENT_FOR_LABEL + "\" parameter and the parent object with the \"" + PARENT_OBJECT_FOR_LABEL
+                + "\" parameter.<br>"
+                
+                + "<br>- \"" + LabelModes.PARTNER_COUNT
+                + "\" The number of partners from a specific object collection for each object.  The partners to summarise are selected using the \""
+                + PARTNER_OBJECTS_FOR_LABEL + "\" parameter.<br>");
+
+        parameters.get(DECIMAL_PLACES)
+                .setDescription("Number of decimal places to use when displaying numeric values.");
+
+        parameters.get(USE_SCIENTIFIC).setDescription(
+                "When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.");
+
+        parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
+
+        parameters.get(X_OFFSET).setDescription(
+                "Offset the label by this number of pixels horizontally (along the x-axis).  Increasingly positive numbers move the label right.");
+
+        parameters.get(Y_OFFSET).setDescription(
+                "Offset the label by this number of pixels vertically (along the y-axis).  Increasingly positive numbers move the label down.");
+
+        parameters.get(CHILD_OBJECTS_FOR_LABEL).setDescription("If \"" + LABEL_MODE + "\" is set to \""
+                + LabelModes.CHILD_COUNT
+                + "\", these are the child objects which will be counted and displayed on the label.  These objects will be children of the input objects.");
+
+        parameters.get(PARENT_OBJECT_FOR_LABEL).setDescription("If \"" + LABEL_MODE + "\" is set to either \""
+                + LabelModes.PARENT_ID + "\" or \"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                + "\", these are the parent objects which will be used.  These objects will be parents of the input objects.");
+
+        parameters.get(PARTNER_OBJECTS_FOR_LABEL).setDescription("If \"" + LABEL_MODE + "\" is set to \""
+                + LabelModes.PARTNER_COUNT
+                + "\", these are the partner objects which will be counted and displayed on the label.  These objects will be partners of the input objects.");
+
+        parameters.get(MEASUREMENT_FOR_LABEL)
+                .setDescription("If \"" + LABEL_MODE + "\" is set to either \"" + LabelModes.MEASUREMENT_VALUE
+                        + "\" or \"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                        + "\", these are the measurements which will be used.");
+
+        parameters.get(LABEL_POSITION)
+                .setDescription("Determines the method used for placing the label overlay for each object:<br>"
+
+                        + "<br>- \"" + LabelPositions.CENTRE
+                        + "\" Labels will be placed at the centroid (average coordinate location) of each object.  This position won't necessarily coincide with a region corresponding to that object.  For example, the centroid of a crescent shape won't lie on the crescent itself.<br>"
+                        + "<br>- \"" + LabelPositions.INSIDE
+                        + "\" Labels will be placed coinciden with the largest region of each object.  This ensures the label is placed directly over the relevant object.<br>");
+
+        parameters.get(RENDER_IN_ALL_OBJECT_SLICES)
+                .setDescription("Display overlay elements in all slices corresponding to that object.");
+
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription(
+                "Display overlay elements in all frames, irrespective of whether each object is present in that frame.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }
