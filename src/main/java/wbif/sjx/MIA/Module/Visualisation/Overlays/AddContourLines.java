@@ -80,7 +80,7 @@ public class AddContourLines extends Module {
         String SPECTRUM = "Spectrum";
         String THERMAL = "Thermal";
 
-        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR, 
+        String[] ALL = new String[] { BLACK_FIRE, ICE, JET, PHYSICS, RANDOM, SINGLE_COLOUR_GRADIENT, SINGLE_COLOUR,
                 SPECTRUM, THERMAL };
 
     }
@@ -570,10 +570,10 @@ public class AddContourLines extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(CONTOUR_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_INTENSITY, this, 0));
@@ -581,7 +581,7 @@ public class AddContourLines extends Module {
         parameters.add(new IntegerP(NUMBER_OF_CONTOURS, this, 9));
         parameters.add(new ChoiceP(CONTOUR_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(CONTOUR_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
-        parameters.add(new DoubleP(LINE_WIDTH, this, 1, "Width of the rendered lines.  Specified in pixel units."));
+        parameters.add(new DoubleP(LINE_WIDTH, this, 1));
         parameters.add(new IntegerP(DRAW_EVERY_N_POINTS, this, 1));
 
         parameters.add(new ParamSeparatorP(LABEL_SEPARATOR, this));
@@ -671,5 +671,84 @@ public class AddContourLines extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(MINIMUM_INTENSITY).setDescription("Minimum contour magnitude to display.");
+
+        parameters.get(MAXIMUM_INTENSITY).setDescription("Maximum contour magnitude to display.");
+
+        parameters.get(NUMBER_OF_CONTOURS).setDescription(
+                "Number of different contour magnitudes to display.  Contour lines are equally spaced in magnitude between \""
+                        + MINIMUM_INTENSITY + "\" and \"" + MAXIMUM_INTENSITY + "\".");
+
+        parameters.get(CONTOUR_COLOUR_MODE)
+                .setDescription("Determines the colour look-up table to use when rendering the contours.  Colour corresponds to the magnitude of that contour line:<br>"
+
+                        + "<br>- \"" + ColourModes.BLACK_FIRE
+                        + "\" Standard ImageJ \"Fire\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+                        
+                        + "<br>- \"" + ColourModes.ICE
+                        + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+                        
+                        + "<br>- \"" + ColourModes.JET
+                        + "\" Look-up table with colour progression blue > cyan > green > yellow > orange > red.<br>"
+
+                        + "<br>- \"" + ColourModes.PHYSICS
+                        + "\" Standard Fiji \"Physics\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/physics.lut\".<br>"
+
+                        + "<br>- \"" + ColourModes.RANDOM
+                        + "\" Random sequence of colours.<br>"
+
+                        + "<br>- \"" + ColourModes.SINGLE_COLOUR
+                        + "\" All contour lines have the same colour, determined by the \"" + CONTOUR_COLOUR
+                        + "\" parameter.<br>"
+                        
+                        + "<br>- \"" + ColourModes.SINGLE_COLOUR_GRADIENT
+                        + "\" Single colour gradient from the colour determined by the \""+ CONTOUR_COLOUR +"\" parameter (lowest magnitude contour line) and white (highest magnitude contour line).<br>"
+
+                        + "<br>- \"" + ColourModes.SPECTRUM
+                        + "\" Standard ImageJ \"Spectrum\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+
+                        + "<br>- \"" + ColourModes.THERMAL
+                        + "\" Standard Fiji \"Thermal\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/Thermal.lut\".<br>");
+
+        // parameters.get(CONTOUR_COLOUR).setDescription();
+
+        parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
+
+        parameters.get(DRAW_EVERY_N_POINTS).setDescription(
+                "Specifies the interval between plotted points on the contour line.  This is useful when there are a lot of contour lines in an image and where a reduction in line precision isn't problematic.  Plotting fewer points will reduce the memory required to store/display overlays.");
+
+        parameters.get(SHOW_LABELS).setDescription(
+                "Display magnitude values as text on each contour line.  Labels are placed randomly on each contour and are oriented in line with the local contour line.");
+
+        parameters.get(DECIMAL_PLACES)
+                .setDescription("Number of decimal places to use when displaying numeric values.");
+
+        parameters.get(USE_SCIENTIFIC).setDescription(
+                "When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.");
+
+        // parameters.get(LABEL_COLOUR_MODE).setDescription();
+
+        // parameters.get(LABEL_COLOUR).setDescription();
+
+        parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
+
     }
 }
