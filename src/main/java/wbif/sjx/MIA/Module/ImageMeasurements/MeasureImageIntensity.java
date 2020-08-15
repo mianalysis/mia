@@ -88,22 +88,27 @@ public class MeasureImageIntensity extends Module {
 
         ImageMeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageName(inputImageName);
+        mean.setDescription("Mean intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
         returnedRefs.add(mean);
 
         ImageMeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageName(inputImageName);
+        min.setDescription("Minimum intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
         returnedRefs.add(min);
 
         ImageMeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
         max.setImageName(inputImageName);
+        max.setDescription("Maximum intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
         returnedRefs.add(max);
 
         ImageMeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
         stdev.setImageName(inputImageName);
+        stdev.setDescription("Standard deviation of intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");        
         returnedRefs.add(stdev);
 
         ImageMeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
         sum.setImageName(inputImageName);
+        sum.setDescription("Summed intensity of all pixels in the image \""+parameters.getValue(INPUT_IMAGE)+"\".");
         returnedRefs.add(sum);
 
         return returnedRefs;
