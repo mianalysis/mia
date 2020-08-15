@@ -126,8 +126,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String POLYGON = "Polygon";
         String RECTANGLE = "Rectangle";
         String SEGMENTED_LINE = "Segmented line";
+        String WAND = "Wand (tracing) tool";
 
-        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POLYGON, RECTANGLE, SEGMENTED_LINE };
+        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POLYGON, RECTANGLE, SEGMENTED_LINE, WAND };
 
     }
 
@@ -187,6 +188,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 return;
             case SelectorTypes.POLYGON:
                 IJ.setTool(Toolbar.POLYGON);
+                return;
+            case SelectorTypes.WAND:
+                IJ.setTool(Toolbar.WAND);
                 return;
         }
     }
@@ -865,6 +869,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         public static Roi duplicateRoi(Roi roi) {
             Roi newRoi;
+            
             // Need to processAutomatic Roi depending on its type
             switch (roi.getType()) {
                 case Roi.RECTANGLE:
@@ -878,6 +883,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 case Roi.FREEROI:
                 case Roi.POLYGON:
+                case Roi.TRACED_ROI:
                     PolygonRoi polyRoi = (PolygonRoi) roi;
                     int[] x = polyRoi.getXCoordinates();
                     int[] xx = new int[x.length];

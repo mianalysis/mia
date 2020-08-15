@@ -9,14 +9,24 @@ import ij.Prefs;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
@@ -192,6 +202,7 @@ public class MeasureObjectShape extends Module {
                     double areaCal = areaPx * projectedObject.getDppXY() * projectedObject.getDppXY();
                     inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx));
                     inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_CAL, areaCal));
+
                 }
 
                 // Adding the projected-object diameter measurements
@@ -368,7 +379,7 @@ public class MeasureObjectShape extends Module {
             returnedRefs.add(reference);
             reference.setObjectsName(inputObjectsName);
             reference.setDescription("Circularity of the 2D Z-projection of the object, \"" + inputObjectsName + "\".  "
-                    + "Uses the calculation \"circularity = 4pi(area/perimeter^2)\".  This measurement has no units.");
+                    + "Uses the calculation <i>circularity = 4pi(area/perimeter^2)</i>.  Values approaching 1 correspond to perfect circles, while values approaching 0 indicate increasingly elongated shapes.  Due to rounding errors, very small objects can yield values outside the true range of 0-1.  This measurement has no units.");
 
         }
 

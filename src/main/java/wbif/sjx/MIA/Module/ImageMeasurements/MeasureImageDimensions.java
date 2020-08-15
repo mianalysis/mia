@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -107,36 +108,43 @@ public class MeasureImageDimensions extends Module {
         String name = getFullName(Measurements.WIDTH);
         ImageMeasurementRef reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("Width (number of columns) of the image \""+parameters.getValue(INPUT_IMAGE)+"\".  Measured in pixel units.");
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.HEIGHT);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("Height (number of rows) of the image \""+parameters.getValue(INPUT_IMAGE)+"\".  Measured in pixel units.");
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_CHANNELS);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("Number of channels in the image \""+parameters.getValue(INPUT_IMAGE)+"\" hyperstack.  Minimum value is 1.");
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_SLICES);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("Number of slices (Z-axis) in the image \""+parameters.getValue(INPUT_IMAGE)+"\" hyperstack.  Minimum value is 1.");
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.N_FRAMES);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("Number of frames (time axis) in the image \""+parameters.getValue(INPUT_IMAGE)+"\" hyperstack.  Minimum value is 1.");
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.DIST_PER_PX_XY);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("XY-axis spatial calibration for the image \""+parameters.getValue(INPUT_IMAGE)+"\".  MIA currently does not support different spatial calibration in X and Y.  Measured in calibrated_units/pixel units, where <i>calibrated_units</i> is determined by the \""+InputControl.SPATIAL_UNITS+"\" parameter of the \""+new InputControl(null).getName()+"\" module.");
         returnedRefs.add(reference);
 
         name = getFullName(Measurements.DIST_PER_SLICE_Z);
         reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageName(inputImageName);
+        reference.setDescription("Z-axis spatial calibration for the image \""+parameters.getValue(INPUT_IMAGE)+"\". Measured in calibrated_units/slice units, where <i>calibrated_units</i> is determined by the \""+InputControl.SPATIAL_UNITS+"\" parameter of the \""+new InputControl(null).getName()+"\" module.");
         returnedRefs.add(reference);
 
         return returnedRefs;

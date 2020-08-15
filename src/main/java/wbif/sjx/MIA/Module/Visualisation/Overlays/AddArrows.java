@@ -14,7 +14,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -64,17 +63,15 @@ public class AddArrows extends Overlay {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-
     public AddArrows(ModuleCollection modules) {
-        super("Add arrows",modules);
+        super("Add arrows", modules);
     }
-
 
     public interface OrientationModes {
         String MEASUREMENT = "Measurement";
         String PARENT_MEASUREMENT = "Parent measurement";
 
-        String[] ALL = new String[]{PARENT_MEASUREMENT, MEASUREMENT};
+        String[] ALL = new String[] { PARENT_MEASUREMENT, MEASUREMENT };
 
     }
 
@@ -83,29 +80,30 @@ public class AddArrows extends Overlay {
         String MEASUREMENT = "Measurement";
         String PARENT_MEASUREMENT = "Parent measurement";
 
-        String[] ALL = new String[]{FIXED_VALUE, PARENT_MEASUREMENT, MEASUREMENT};
+        String[] ALL = new String[] { FIXED_VALUE, PARENT_MEASUREMENT, MEASUREMENT };
 
     }
 
-
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation,
+            double arrowLength, double headSize) {
+        if (ipl.getOverlay() == null)
+            ipl.setOverlay(new ij.gui.Overlay());
 
         double oriRads = Math.toRadians(orientation);
 
         // Adding each point
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true,false);
+        double zMean = object.getZMean(true, false);
 
-        int z = (int) Math.round(zMean+1);
-        int t = object.getT()+1;
+        int z = (int) Math.round(zMean + 1);
+        int t = object.getT() + 1;
 
         // Getting end point
-        double x2 = arrowLength*Math.cos(oriRads);
-        double y2 = arrowLength*Math.sin(oriRads);
+        double x2 = arrowLength * Math.cos(oriRads);
+        double y2 = arrowLength * Math.sin(oriRads);
 
-        Arrow arrow = new Arrow(xMean,yMean,xMean+x2,yMean+y2);
+        Arrow arrow = new Arrow(xMean, yMean, xMean + x2, yMean + y2);
         arrow.setHeadSize(headSize);
         arrow.setStrokeColor(colour);
         arrow.setStrokeWidth(lineWidth);
@@ -113,13 +111,12 @@ public class AddArrows extends Overlay {
         if (ipl.isHyperStack()) {
             arrow.setPosition(1, (int) z, t);
         } else {
-            int pos = Math.max(Math.max(1,(int) z),t);
+            int pos = Math.max(Math.max(1, (int) z), t);
             arrow.setPosition(pos);
         }
         ipl.getOverlay().addElement(arrow);
 
     }
-
 
     @Override
     public String getPackageName() {
@@ -128,7 +125,8 @@ public class AddArrows extends Overlay {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds an overlay to the specified input image with each object represented by an arrow.  The size, colour and orientation of each arrow can be fixed or based on a measurement value.";
+
     }
 
     @Override
@@ -162,15 +160,18 @@ public class AddArrows extends Overlay {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Only add output to workspace if not applying to input
-        if (applyToInput) addOutputToWorkspace = false;
+        if (applyToInput)
+            addOutputToWorkspace = false;
 
         // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+        if (!applyToInput)
+            ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = getHues(inputObjects);
+        HashMap<Integer, Float> hues = getHues(inputObjects);
 
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+        // be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
@@ -178,16 +179,17 @@ public class AddArrows extends Overlay {
         // Adding the overlay element
         try {
             int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
             AtomicInteger count = new AtomicInteger();
-            for (Obj object:inputObjects.values()) {
+            for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue,opacity);
+                    Color colour = ColourFactory.getColour(hue, opacity);
                     double orientation = 0;
                     switch (orientationMode) {
                         case OrientationModes.MEASUREMENT:
@@ -204,14 +206,14 @@ public class AddArrows extends Overlay {
                             length = lengthValue;
                             break;
                         case LengthModes.MEASUREMENT:
-                            length= object.getMeasurement(measurementForLength).getValue();
+                            length = object.getMeasurement(measurementForLength).getValue();
                             break;
                         case LengthModes.PARENT_MEASUREMENT:
                             length = object.getParent(parentForLength).getMeasurement(measurementForLength).getValue();
                             break;
                     }
 
-                    length = length*lengthScale;
+                    length = length * lengthScale;
 
                     addOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
@@ -228,11 +230,14 @@ public class AddArrows extends Overlay {
             return Status.FAIL;
         }
 
-        Image outputImage = new Image(outputImageName,ipl);
+        Image outputImage = new Image(outputImageName, ipl);
 
-        // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) outputImage.showImage();
+        // If necessary, adding output image to workspace. This also allows us to show
+        // it.
+        if (addOutputToWorkspace)
+            workspace.addImage(outputImage);
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -242,30 +247,34 @@ public class AddArrows extends Overlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to represent as overlays."));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new ChoiceP(ORIENTATION_MODE, this, AddObjectsOverlay.OrientationModes.MEASUREMENT, AddObjectsOverlay.OrientationModes.ALL));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
+        parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.MEASUREMENT, OrientationModes.ALL));
+
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_ORIENTATION, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_ORIENTATION, this));
-        parameters.add(new ChoiceP(LENGTH_MODE, this, AddObjectsOverlay.LengthModes.MEASUREMENT, AddObjectsOverlay.LengthModes.ALL));
-        parameters.add(new DoubleP(LENGTH_VALUE,this,5d));
+        parameters.add(new ChoiceP(LENGTH_MODE, this, LengthModes.MEASUREMENT, LengthModes.ALL));
+
+        parameters.add(new DoubleP(LENGTH_VALUE, this, 5d));
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LENGTH, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LENGTH, this));
-        parameters.add(new DoubleP(LENGTH_SCALE,this,1d));
-        parameters.add(new IntegerP(HEAD_SIZE,this,3));
-        parameters.add(new DoubleP(LINE_WIDTH,this,1));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false,"Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame."));
+        parameters.add(new DoubleP(LENGTH_SCALE, this, 1d));
+        parameters.add(new IntegerP(HEAD_SIZE, this, 3));
+        parameters.add(new DoubleP(LINE_WIDTH, this, 1));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU."));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -294,13 +303,13 @@ public class AddArrows extends Overlay {
         returnedParameters.addAll(super.updateAndGetParameters(inputObjectsName));
         returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
-            case AddObjectsOverlay.OrientationModes.MEASUREMENT:
+            case OrientationModes.MEASUREMENT:
                 ObjectMeasurementP oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
                 oriMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
                 break;
 
-            case AddObjectsOverlay.OrientationModes.PARENT_MEASUREMENT:
+            case OrientationModes.PARENT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION));
                 ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION);
                 parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
@@ -313,17 +322,17 @@ public class AddArrows extends Overlay {
 
         returnedParameters.add(parameters.getParameter(LENGTH_MODE));
         switch ((String) parameters.getValue(LENGTH_MODE)) {
-            case AddObjectsOverlay.LengthModes.FIXED_VALUE:
+            case LengthModes.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(LENGTH_VALUE));
                 break;
 
-            case AddObjectsOverlay.LengthModes.MEASUREMENT:
+            case LengthModes.MEASUREMENT:
                 ObjectMeasurementP lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
                 lengthMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
                 break;
 
-            case AddObjectsOverlay.LengthModes.PARENT_MEASUREMENT:
+            case LengthModes.PARENT_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LENGTH));
                 ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_LENGTH);
                 parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
@@ -374,5 +383,77 @@ public class AddArrows extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(ORIENTATION_MODE).setDescription("Source for arrow orientation values:<br>"
+
+                + "<br>- \"" + OrientationModes.MEASUREMENT
+                + "\" Orientation of arrows will be based on the measurement specified by the parameter \""
+                + MEASUREMENT_FOR_ORIENTATION + "\" for each object.<br>"
+
+                + "<br>- \"" + OrientationModes.PARENT_MEASUREMENT
+                + "\" Orientation of arrows will be based on the measurement specified by the parameter \""
+                + MEASUREMENT_FOR_ORIENTATION
+                + "\" taken from a parent of each object.  The parent object providing this measurement is specified by the parameter \""
+                + PARENT_OBJECT_FOR_ORIENTATION + "\".<br>");
+
+        parameters.get(PARENT_OBJECT_FOR_ORIENTATION).setDescription(
+                "Parent objects providing the measurements on which the orientation of the arrows are based.");
+
+        parameters.get(MEASUREMENT_FOR_ORIENTATION).setDescription(
+                "Measurement that defines the orientation of each arrow.  Measurements should be supplied in degree units.");
+
+        parameters.get(LENGTH_MODE)
+                .setDescription("Method for determining the length of arrows:<br>" + "<br>- \""
+                        + LengthModes.FIXED_VALUE + "\" All arrows are the same length.  Length is controlled by the \""
+                        + LENGTH_VALUE + "\" parameter.<br>"
+
+                        + "<br>- \"" + LengthModes.MEASUREMENT
+                        + "\" Arrow length is proportional to the measurement value specified by the \""
+                        + MEASUREMENT_FOR_LENGTH + "\" parameter.  Absolute arrow lengths are adjusted by the \""
+                        + LENGTH_SCALE + "\" multiplication factor.<br>"
+
+                        + "<br>- \"" + LengthModes.PARENT_MEASUREMENT
+                        + "\" Arrow length is proportional to a parent object measurement value.  The parent is specified by the \""
+                        + PARENT_OBJECT_FOR_LENGTH + "\" parameter and the measurement value by \""+MEASUREMENT_FOR_LENGTH+"\".  Absolute arrow lengths are adjusted by the \""
+                        + LENGTH_SCALE + "\" multiplication factor.<br>");
+
+        parameters.get(LENGTH_VALUE).setDescription("Fixed value specifying the length of all arrows in pixel units.");
+
+        parameters.get(PARENT_OBJECT_FOR_LENGTH)
+                .setDescription("Parent objects from which the arrow length measurements will be taken.");
+        
+        parameters.get(MEASUREMENT_FOR_LENGTH).setDescription(
+                "Measurement value that will be used to control the arrow length.  This value is adjusted using the \""
+                        + LENGTH_SCALE + "\" muliplication factor.");
+        
+        parameters.get(LENGTH_SCALE).setDescription("Measurement values will be multiplied by this value prior to being used to control the arrow length.  Each arrow will be <i>MeasurementValue*LengthScale</i> pixels long.");
+
+        parameters.get(HEAD_SIZE).setDescription("Size of the arrow head.  This should be an integer between 0 and 30, where 0 is the smallest possible head and 30 is the largest.");
+
+        parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
+
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription("Display overlay elements in all frames, irrespective of whether each object is present in that frame.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

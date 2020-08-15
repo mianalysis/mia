@@ -50,7 +50,6 @@ public class AddObjectCentroid extends Overlay {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-
     public interface PointSizes {
         String TINY = "Tiny";
         String SMALL = "Small";
@@ -58,7 +57,7 @@ public class AddObjectCentroid extends Overlay {
         String LARGE = "Large";
         String EXTRA_LARGE = "Extra large";
 
-        String[] ALL = new String[]{TINY,SMALL,MEDIUM,LARGE,EXTRA_LARGE};
+        String[] ALL = new String[] { TINY, SMALL, MEDIUM, LARGE, EXTRA_LARGE };
 
     }
 
@@ -68,33 +67,35 @@ public class AddObjectCentroid extends Overlay {
         String DOT = "Dot";
         String HYBRID = "Hybrid";
 
-        String[] ALL = new String[]{CIRCLE,CROSS,DOT,HYBRID};
+        String[] ALL = new String[] { CIRCLE, CROSS, DOT, HYBRID };
 
     }
-
 
     public AddObjectCentroid(ModuleCollection modules) {
-        super("Add object centroid",modules);
+        super("Add object centroid", modules);
     }
 
-    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Float> hues, double opacity, String size, String type, boolean renderInAllFrames, boolean multithread) {
+    public static void addOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer, Float> hues,
+            double opacity, String size, String type, boolean renderInAllFrames, boolean multithread) {
         // Adding the overlay element
         try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will
+            // be a standard ImagePlus)
             if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
                 ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
             }
 
             int nThreads = multithread ? Prefs.getThreads() : 1;
-            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>());
 
             // Running through each object, adding it to the overlay along with an ID label
-            for (Obj object:inputObjects.values()) {
+            for (Obj object : inputObjects.values()) {
                 ImagePlus finalIpl = ipl;
 
                 Runnable task = () -> {
                     float hue = hues.get(object.getID());
-                    Color colour = ColourFactory.getColour(hue,opacity);
+                    Color colour = ColourFactory.getColour(hue, opacity);
 
                     addOverlay(object, finalIpl, colour, size, type, renderInAllFrames);
 
@@ -105,34 +106,38 @@ public class AddObjectCentroid extends Overlay {
             pool.shutdown();
             pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        }
     }
 
-    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type, boolean renderInAllFrames) {
-        if (ipl.getOverlay() == null) ipl.setOverlay(new ij.gui.Overlay());
+    public static void addOverlay(Obj object, ImagePlus ipl, Color colour, String size, String type,
+            boolean renderInAllFrames) {
+        if (ipl.getOverlay() == null)
+            ipl.setOverlay(new ij.gui.Overlay());
 
         double xMean = object.getXMean(true);
         double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true,false);
+        double zMean = object.getZMean(true, false);
 
         int sizeVal = getSize(size);
         int typeVal = getType(type);
 
         // Getting coordinates to plot
-        int z = (int) Math.round(zMean+1);
-        int t = object.getT()+1;
+        int z = (int) Math.round(zMean + 1);
+        int t = object.getT() + 1;
 
-        if (renderInAllFrames) t = 0;
+        if (renderInAllFrames)
+            t = 0;
 
         // Adding circles where the object centroids are
-        PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+        PointRoi pointRoi = new PointRoi(xMean + 0.5, yMean + 0.5);
         pointRoi.setPointType(typeVal);
         pointRoi.setSize(sizeVal);
 
         if (ipl.isHyperStack()) {
             pointRoi.setPosition(1, z, t);
         } else {
-            int pos = Math.max(Math.max(1,z),t);
+            int pos = Math.max(Math.max(1, z), t);
             pointRoi.setPosition(pos);
         }
         pointRoi.setStrokeColor(colour);
@@ -170,7 +175,6 @@ public class AddObjectCentroid extends Overlay {
         }
     }
 
-
     @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
@@ -178,7 +182,7 @@ public class AddObjectCentroid extends Overlay {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds an overlay to the specified input image representing each object by a single marker placed at the centroid of that object.";
     }
 
     @Override
@@ -204,21 +208,26 @@ public class AddObjectCentroid extends Overlay {
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Only add output to workspace if not applying to input
-        if (applyToInput) addOutputToWorkspace = false;
+        if (applyToInput)
+            addOutputToWorkspace = false;
 
         // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+        if (!applyToInput)
+            ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues= getHues(inputObjects);
+        HashMap<Integer, Float> hues = getHues(inputObjects);
 
-        addOverlay(ipl,inputObjects,hues,opacity,pointSize,pointType,renderInAllFrames,multithread);
+        addOverlay(ipl, inputObjects, hues, opacity, pointSize, pointType, renderInAllFrames, multithread);
 
-        Image outputImage = new Image(outputImageName,ipl);
+        Image outputImage = new Image(outputImageName, ipl);
 
-        // If necessary, adding output image to workspace.  This also allows us to show it.
-        if (addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) outputImage.showImage();
+        // If necessary, adding output image to workspace. This also allows us to show
+        // it.
+        if (addOutputToWorkspace)
+            workspace.addImage(outputImage);
+        if (showOutput)
+            outputImage.showImage();
 
         return Status.PASS;
 
@@ -228,22 +237,24 @@ public class AddObjectCentroid extends Overlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to represent as overlays."));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
-        parameters.add(new ChoiceP(POINT_SIZE,this,PointSizes.SMALL,PointSizes.ALL));
-        parameters.add(new ChoiceP(POINT_TYPE,this,PointTypes.CIRCLE,PointTypes.ALL));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false,"Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame."));
+        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
+        parameters.add(new ChoiceP(POINT_SIZE, this, PointSizes.SMALL, PointSizes.ALL));
+        parameters.add(new ChoiceP(POINT_TYPE, this, PointTypes.CIRCLE, PointTypes.ALL));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU."));
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -308,5 +319,37 @@ public class AddObjectCentroid extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(POINT_SIZE).setDescription(
+                "Size of each overlay marker.  Options are: " + String.join(", ", PointSizes.ALL) + ".");
+
+        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Options are: "
+                + String.join(", ", PointTypes.ALL) + ".");
+
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription(
+                "Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

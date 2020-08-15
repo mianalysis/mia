@@ -11,6 +11,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -93,14 +94,18 @@ public class FitEllipse extends Module {
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode,
             double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
+
+        // Get projected object
+        Obj projObj = ProjectObjects.process(inputObject, "Proj", false);
+
         try {
             switch (fittingMode) {
                 case FitEllipsoid.FittingModes.FIT_TO_WHOLE:
-                    calculator = new EllipseCalculator(inputObject, maxAxisLength);
+                    calculator = new EllipseCalculator(projObj, maxAxisLength);
                     break;
 
                 case FitEllipsoid.FittingModes.FIT_TO_SURFACE:
-                    Obj edgeObject = GetObjectSurface.getSurface(inputObject, "Edge", 1);
+                    Obj edgeObject = GetObjectSurface.getSurface(projObj, "Edge", 1);
                     calculator = new EllipseCalculator(edgeObject, maxAxisLength);
                     break;
             }
@@ -234,7 +239,7 @@ public class FitEllipse extends Module {
         // Running through each object, taking measurements and adding new object to the
         // workspace where necessary
         AtomicInteger count = new AtomicInteger(1);
-        int nTotal = inputObjects.size();
+        int total = inputObjects.size();
         ObjCollection finalOutputObjects = outputObjects;
         for (Obj inputObject : inputObjects.values()) {
             Runnable task = () -> {
@@ -244,7 +249,8 @@ public class FitEllipse extends Module {
                     MIA.log.writeWarning("Integer overflow exception for object " + inputObject.getID()
                             + " during ellipsoid fitting.");
                 }
-                writeStatus("Processed object " + count.getAndIncrement() + " of " + nTotal);
+                writeStatus("Rendered " + count + " of " + total + " ("
+                                    + Math.floorDiv(100 * count.getAndIncrement(), total) + "%)", name);
             };
             pool.submit(task);
 
@@ -399,7 +405,7 @@ public class FitEllipse extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \"" + inputObjectsName
                 + "\".  Measured in degrees, relative to positive x-axis (positive above x-axis, "
-                + "negative below x-axis).");
+                + "negative below x-axis).  Note: ImageJ displays images with an inverted y-axis.");
         returnedRefs.add(reference);
 
         return returnedRefs;

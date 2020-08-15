@@ -395,7 +395,7 @@ public class AddRelationshipConnection extends Overlay {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds a series of line overlays, representing various relationship scenarios.  Lines extend between centroids of two objects.  Depicted relationships can be between mutual child of the same parent object, between partner objects of between children and parents.";
     }
 
     @Override
@@ -479,7 +479,7 @@ public class AddRelationshipConnection extends Overlay {
         super.initialiseParameters();
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(LINE_MODE, this, LineModes.PARENT_TO_CHILD, LineModes.ALL));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS_1, this));
@@ -488,9 +488,9 @@ public class AddRelationshipConnection extends Overlay {
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_2, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new ChoiceP(RENDER_MODE, this, RenderModes.FULL_LINE, RenderModes.ALL));
@@ -500,10 +500,12 @@ public class AddRelationshipConnection extends Overlay {
         parameters.add(new BooleanP(OFFSET_BY_MEASUREMENT, this, false));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_NAME_1, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_NAME_2, this));
-        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false,"Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame."));
+        parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true, "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU."));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -639,5 +641,99 @@ public class AddRelationshipConnection extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.get(LINE_MODE).setDescription(
+                "Controls what object-object relationships will be represented by the lines.  In all cases, lines are drawn between object centroids, although the line start and end points can be offset along the line when the \""
+                        + OFFSET_BY_MEASUREMENT + "\" setting is selected:<br>"
+
+                        + "<br>- \"" + LineModes.BETWEEN_CHILDREN
+                        + "\" Draw lines between all objects in two child object sets of a common parent object (\""
+                        + PARENT_OBJECTS
+                        + "\").  This will result in all permutations of lines between one child object set and the other  The child object sets are selected with the \""
+                        + CHILD_OBJECTS_1 + "\" and \"" + CHILD_OBJECTS_2 + "\" parameters.<br>"
+
+                        + "<br>- \"" + LineModes.BETWEEN_PARTNERS
+                        + "\" Draw lines between all partner objects.  The two partner object sets are selected using the \""
+                        + PARTNER_OBJECTS_1 + "\" and \"" + PARTNER_OBJECTS_2 + "\" parameters.<br>"
+
+                        + "<br>- \"" + LineModes.PARENT_TO_CHILD
+                        + "\" Draw lines between parent objects and all their children.  Parent objects are selected using the \""
+                        + PARENT_OBJECTS + "\" parameter and children using the \"" + CHILD_OBJECTS_1
+                        + "\" parameter..<br>"
+
+        );
+
+        parameters.get(PARENT_OBJECTS)
+                .setDescription("Used to select the parent object of the two child object sets when in \""
+                        + LineModes.BETWEEN_CHILDREN + "\" mode, or to select the parent objects in \""
+                        + LineModes.PARENT_TO_CHILD + "\" mode.");
+
+        parameters.get(CHILD_OBJECTS_1)
+                .setDescription("Selects the first child objects set when in \"" + LineModes.BETWEEN_CHILDREN
+                        + "\" mode, or the (only) child set when in \"" + LineModes.PARENT_TO_CHILD + "\" mode.");
+
+        parameters.get(CHILD_OBJECTS_2).setDescription(
+                "Selects the second child objects set when in \"" + LineModes.BETWEEN_CHILDREN + "\" mode.");
+
+        parameters.get(PARTNER_OBJECTS_1).setDescription(
+                "Selects the first partner objects set when in \"" + LineModes.BETWEEN_PARTNERS + "\" mode.");
+
+        parameters.get(PARTNER_OBJECTS_2).setDescription(
+                "Selects the second partner objects set when in \"" + LineModes.BETWEEN_PARTNERS + "\" mode.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(RENDER_MODE).setDescription(
+                "Controls how the line is displayed between the centroids of the relevant two objects:<br>"
+
+                        + "<br>- \"" + RenderModes.FULL_LINE
+                        + "\" Draws a complete line between the two centroids (unless \"" + OFFSET_BY_MEASUREMENT
+                        + "\" is selected, in which case the line won't necessarily begin at the centroid).<br>"
+
+                        + "<br>- \"" + RenderModes.HALF_LINE + "\" Draws a line between the first object (either \""
+                        + CHILD_OBJECTS_1 + "\", \"" + PARTNER_OBJECTS_1 + "\" or \"" + PARENT_OBJECTS + "\" when in \""
+                        + LineModes.BETWEEN_CHILDREN + "\", \"" + LineModes.BETWEEN_PARTNERS + "\" or \""
+                        + LineModes.PARENT_TO_CHILD
+                        + "\" modes, respectively) and the mid-point between the two relevant objects.  Any offsets applied when \""
+                        + OFFSET_BY_MEASUREMENT + "\" is selected still apply.<br>"
+
+                        + "<br>- \"" + RenderModes.MIDPOINT_DOT
+                        + "\" Draws a dot half way between the two relevant objects (no line is drawn).<br>");
+
+        parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
+
+        parameters.get(POINT_SIZE).setDescription(
+                "Size of each overlay marker.  Options are: " + String.join(", ", PointSizes.ALL) + ".");
+
+        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Options are: "
+                + String.join(", ", PointTypes.ALL) + ".");
+
+        parameters.get(OFFSET_BY_MEASUREMENT).setDescription("When selected, the lines at either end can start a fraction of the way between the two relevant object centroids.  Separate offsets are applied at each end, with measurements providing the offset values selected using the \""+MEASUREMENT_NAME_1+"\" and \""+MEASUREMENT_NAME_2+"\" parameters.  For example.  This is useful when it is preferable to not have the line extend all the way between centroids.");
+
+        parameters.get(MEASUREMENT_NAME_1).setDescription("Object measurement specifying offset to be applied to the line start point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.");
+
+        parameters.get(MEASUREMENT_NAME_2).setDescription("Object measurement specifying offset to be applied to the line end point.  Offsets are fractional values, specifying the proportion of the line to ignore.  For example, dual offsets of 0.25 will result in a line half the usual length.");
+
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription(
+                "Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

@@ -81,7 +81,7 @@ public class AddText extends Overlay {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds an overlay to the specified input image showing a fixed text label.  Slice and frame indices can be dynamically inserted into the text using keywords.";
     }
 
     @Override
@@ -136,10 +136,10 @@ public class AddText extends Overlay {
         super.initialiseParameters();
 
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\"."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false, "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated."));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false, "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image)."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new StringP(TEXT,this));
@@ -150,6 +150,8 @@ public class AddText extends Overlay {
         parameters.add(new StringP(FRAME_RANGE,this,"1-end"));
         parameters.add(new IntegerP(LABEL_SIZE,this,8));
         parameters.add(new ChoiceP(LABEL_COLOUR,this, SingleColours.BLACK,SingleColours.ALL));
+
+        addParameterDescriptions();
 
     }
 
@@ -211,6 +213,31 @@ public class AddText extends Overlay {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""+APPLY_TO_INPUT+"\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""+OUTPUT_IMAGE+"\".");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription("If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(TEXT).setDescription("Fixed text to be displayed");
+
+        parameters.get(X_POSITION).setDescription("Horizontal location of the text to be displayed.  Specified in pixel units relative to the left of the image (x=0).");
+
+        parameters.get(Y_POSITION).setDescription("Vertical location of the text to be displayed.  Specified in pixel units relative to the top of the image (y=0).");
+
+        parameters.get(Z_RANGE).setDescription("Z-slices on which to display the text.  This is specified as a comma-separated list of slice indices.  The keyword \"end\" is used to denote the final slice in the stack and will be interpreted automatically.  Accepted formats are \"[VALUE]\" for a single index, \"[RANGE START]-[RANGE END]\" for a complete range of indices and \"[RANGE START]-[RANGE-END]-[INTERVAL]\" for indices evenly spaced at the specified interval.");
+
+        parameters.get(FRAME_RANGE).setDescription("Frames on which to display the text.  This is specified as a comma-separated list of frame indices.  The keyword \"end\" is used to denote the final frame in the stack and will be interpreted automatically.  Accepted formats are \"[VALUE]\" for a single index, \"[RANGE START]-[RANGE END]\" for a complete range of indices and \"[RANGE START]-[RANGE-END]-[INTERVAL]\" for indices evenly spaced at the specified interval.");
+
+        parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
+
+        parameters.get(LABEL_COLOUR).setDescription("Colour of the text label.  Options are: "+String.join(", ", SingleColours.ALL)+".");
+        
     }
 }
 

@@ -453,7 +453,7 @@ public class TrackObjects extends Module {
 
         // Creating a parent-ID encoded image of the objects
         Image dispImage = spotObjects.convertToImage(spotObjects.getName(),hues,32,false);
-
+        
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();
         ipl.setPosition(1,1,1);
