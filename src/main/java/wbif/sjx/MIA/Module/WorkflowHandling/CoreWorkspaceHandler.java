@@ -66,16 +66,49 @@ public abstract class CoreWorkspaceHandler extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
-        parameters.add(new ModuleP(REDIRECT_MODULE, this,true));
+        parameters.add(new ModuleP(REDIRECT_MODULE, this, true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
         parameters.add(new StringP(REDIRECT_MESSAGE, this, ""));
         parameters.add(new BooleanP(EXPORT_WORKSPACE, this, true));
         parameters.add(new BooleanP(REMOVE_IMAGES, this, false));
         parameters.add(new BooleanP(REMOVE_OBJECTS, this, false));
+
+        addParameterDescriptions();
+
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(CONTINUATION_MODE).setDescription(
+                "Controls what happens if the termination/redirection condition is met:<br>"
+
+                        + "<br>- \"" + ContinuationModes.REDIRECT_TO_MODULE
+                        + "The analysis workflow will skip to the module specified by the \"" + REDIRECT_MODULE
+                        + "\" parameter.  Any modules between the present module and the target module will not be evaluated.<br>"
+                        
+                        + "<br>- \"" + ContinuationModes.TERMINATE
+                        + "The analysis will stop evaluating any further modules.<br>");
+
+        parameters.get(REDIRECT_MODULE).setDescription(
+                "If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.");
+
+        parameters.get(SHOW_REDIRECT_MESSAGE)
+                .setDescription("Controls if a message should be displayed in the log if redirection occurs.");
+
+        parameters.get(REDIRECT_MESSAGE).setDescription("Message to display if redirection occurs.");
+
+        parameters.get(EXPORT_WORKSPACE).setDescription(
+                "Controls if the workspace should still be exported to the output Excel spreadsheet if termination occurs.");
+
+        parameters.get(REMOVE_IMAGES).setDescription(
+                "Controls if images should be completely removed from the workspace along with any associated measurements if termination occurs.");
+
+        parameters.get(REMOVE_OBJECTS).setDescription(
+                "Controls if objects should be completely removed from the workspace along with any associated measurements if termination occurs.");
+
     }
 }

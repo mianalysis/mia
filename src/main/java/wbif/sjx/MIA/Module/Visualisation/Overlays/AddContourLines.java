@@ -499,7 +499,7 @@ public class AddContourLines extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Adds overlay contour lines (and optional labels) to an image.  Lines correspond to contours of constant intensity in the input image.";
     }
 
     @Override
@@ -591,6 +591,8 @@ public class AddContourLines extends Module {
         parameters.add(new ChoiceP(LABEL_COLOUR_MODE, this, ColourModes.PHYSICS, ColourModes.ALL));
         parameters.add(new ChoiceP(LABEL_COLOUR, this, SingleColours.WHITE, SingleColours.ALL));
         parameters.add(new IntegerP(LABEL_SIZE, this, 12));
+
+        addParameterDescriptions();
 
     }
 
@@ -697,30 +699,30 @@ public class AddContourLines extends Module {
                 "Number of different contour magnitudes to display.  Contour lines are equally spaced in magnitude between \""
                         + MINIMUM_INTENSITY + "\" and \"" + MAXIMUM_INTENSITY + "\".");
 
-        parameters.get(CONTOUR_COLOUR_MODE)
-                .setDescription("Determines the colour look-up table to use when rendering the contours.  Colour corresponds to the magnitude of that contour line:<br>"
+        parameters.get(CONTOUR_COLOUR_MODE).setDescription(
+                "Determines the colour look-up table to use when rendering the contours.  Colour corresponds to the magnitude of that contour line:<br>"
 
                         + "<br>- \"" + ColourModes.BLACK_FIRE
                         + "\" Standard ImageJ \"Fire\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
-                        
+
                         + "<br>- \"" + ColourModes.ICE
                         + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
-                        
+
                         + "<br>- \"" + ColourModes.JET
                         + "\" Look-up table with colour progression blue > cyan > green > yellow > orange > red.<br>"
 
                         + "<br>- \"" + ColourModes.PHYSICS
                         + "\" Standard Fiji \"Physics\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/physics.lut\".<br>"
 
-                        + "<br>- \"" + ColourModes.RANDOM
-                        + "\" Random sequence of colours.<br>"
+                        + "<br>- \"" + ColourModes.RANDOM + "\" Random sequence of colours.<br>"
 
                         + "<br>- \"" + ColourModes.SINGLE_COLOUR
                         + "\" All contour lines have the same colour, determined by the \"" + CONTOUR_COLOUR
                         + "\" parameter.<br>"
-                        
+
                         + "<br>- \"" + ColourModes.SINGLE_COLOUR_GRADIENT
-                        + "\" Single colour gradient from the colour determined by the \""+ CONTOUR_COLOUR +"\" parameter (lowest magnitude contour line) and white (highest magnitude contour line).<br>"
+                        + "\" Single colour gradient from the colour determined by the \"" + CONTOUR_COLOUR
+                        + "\" parameter (lowest magnitude contour line) and white (highest magnitude contour line).<br>"
 
                         + "<br>- \"" + ColourModes.SPECTRUM
                         + "\" Standard ImageJ \"Spectrum\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
@@ -728,7 +730,10 @@ public class AddContourLines extends Module {
                         + "<br>- \"" + ColourModes.THERMAL
                         + "\" Standard Fiji \"Thermal\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/Thermal.lut\".<br>");
 
-        // parameters.get(CONTOUR_COLOUR).setDescription();
+        parameters.get(CONTOUR_COLOUR)
+                .setDescription("Contour colour used when \"" + CONTOUR_COLOUR_MODE + "\" is set to either \""
+                        + ColourModes.SINGLE_COLOUR + "\" or \"" + ColourModes.SINGLE_COLOUR_GRADIENT
+                        + "\".  Options are: " + String.join(", ", SingleColours.ALL) + ".");
 
         parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
 
@@ -744,9 +749,40 @@ public class AddContourLines extends Module {
         parameters.get(USE_SCIENTIFIC).setDescription(
                 "When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.");
 
-        // parameters.get(LABEL_COLOUR_MODE).setDescription();
+        parameters.get(LABEL_COLOUR_MODE).setDescription(
+                "Determines the colour look-up table to use when rendering the contour labels.  Colour corresponds to the magnitude of that contour line:<br>"
 
-        // parameters.get(LABEL_COLOUR).setDescription();
+                        + "<br>- \"" + ColourModes.BLACK_FIRE
+                        + "\" Standard ImageJ \"Fire\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+
+                        + "<br>- \"" + ColourModes.ICE
+                        + "\" Standard ImageJ \"Ice\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+
+                        + "<br>- \"" + ColourModes.JET
+                        + "\" Look-up table with colour progression blue > cyan > green > yellow > orange > red.<br>"
+
+                        + "<br>- \"" + ColourModes.PHYSICS
+                        + "\" Standard Fiji \"Physics\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/physics.lut\".<br>"
+
+                        + "<br>- \"" + ColourModes.RANDOM + "\" Random sequence of colours.<br>"
+
+                        + "<br>- \"" + ColourModes.SINGLE_COLOUR
+                        + "\" All contour line labels have the same colour, determined by the \"" + CONTOUR_COLOUR
+                        + "\" parameter.<br>"
+
+                        + "<br>- \"" + ColourModes.SINGLE_COLOUR_GRADIENT
+                        + "\" Single colour gradient from the colour determined by the \"" + CONTOUR_COLOUR
+                        + "\" parameter (lowest magnitude contour line label) and white (highest magnitude contour line label).<br>"
+
+                        + "<br>- \"" + ColourModes.SPECTRUM
+                        + "\" Standard ImageJ \"Spectrum\" look-up table.  Values taken from \"https://github.com/imagej/ImageJA/blob/master/src/main/java/ij/LookUpTable.java\".<br>"
+
+                        + "<br>- \"" + ColourModes.THERMAL
+                        + "\" Standard Fiji \"Thermal\" look-up table.  Values taken from \"https://github.com/fiji/fiji/tree/master/luts/Thermal.lut\".<br>");
+
+        parameters.get(LABEL_COLOUR).setDescription("Contour line label colour used when \"" + CONTOUR_COLOUR_MODE
+                + "\" is set to either \"" + ColourModes.SINGLE_COLOUR + "\" or \"" + ColourModes.SINGLE_COLOUR_GRADIENT
+                + "\".  Options are: " + String.join(", ", SingleColours.ALL) + ".");
 
         parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
 
