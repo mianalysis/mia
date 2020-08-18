@@ -375,6 +375,14 @@
                                     <artifact>org.apache.poi</artifact>
                                     <includes>
                                         <include>**</include>
+                                        <!-- <include>schemaorg_apache_xmlbeans/system</include>
+                                        <include>org/apache/poi/ss/**</include>
+                                        <include>org/apache/poi/xssf/**</include>
+                                        <include>org/apache/poi/openxml4j/**</include>
+                                        <include>org/apache/poi/util/**</include>
+                                        <include>org/apache/poi/POIXML*.class</include>
+                                        <include>org/apache/poi/*Exception*</include>
+                                        <include>org/openxmlformats/schemas/spreadsheetml/x2006/**</include> -->
                                     </includes>
                                 </filter>
                                 <filter>

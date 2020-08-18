@@ -76,6 +76,7 @@ public class RunTrackMate extends Module {
         String RADIUS_CAL = "SPOT_DETECT_TRACK // RADIUS_(${CAL})";
         String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK // EST_DIAMETER_(PX)";
         String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK // EST_DIAMETER_(${CAL})";
+        String QUALITY = "SPOT_DETECT_TRACK // QUALITY";
 
     }
 
@@ -165,6 +166,7 @@ public class RunTrackMate extends Module {
             spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY));
             spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
             spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY));
+            spotObject.addMeasurement(new Measurement(Measurements.QUALITY,spot.getFeature(Spot.QUALITY)));
 
             spotObjects.add(spotObject);
 
@@ -214,7 +216,8 @@ public class RunTrackMate extends Module {
                 spotObject.addMeasurement(new Measurement(Measurements.RADIUS_CAL,spot.getFeature(Spot.RADIUS)*dppXY));
                 spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
                 spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY));
-
+                spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
+                
                 // Getting coordinates
                 int x = (int) Math.round(spot.getDoublePosition(0));
                 int y = (int) Math.round(spot.getDoublePosition(1));
@@ -467,6 +470,10 @@ public class RunTrackMate extends Module {
         reference.setObjectsName(outputSpotObjectsName);
         reference.setDescription("Diameter of spots as estimated by TrackMate.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
+        returnedRefs.add(reference);
+
+        reference = objectMeasurementRefs.getOrPut(Measurements.QUALITY);
+        reference.setObjectsName(outputSpotObjectsName);
         returnedRefs.add(reference);
 
         return returnedRefs;
