@@ -47,7 +47,6 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -128,7 +127,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String SEGMENTED_LINE = "Segmented line";
         String WAND = "Wand (tracing) tool";
 
-        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POLYGON, RECTANGLE, SEGMENTED_LINE, WAND };
+        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POLYGON, RECTANGLE, SEGMENTED_LINE,
+                WAND };
 
     }
 
@@ -340,10 +340,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public static void applyTemporalInterpolation(ObjCollection inputObjects, ObjCollection trackObjects, String type)
             throws IntegerOverflowException {
-        String calcMeth = ImageCalculator.CalculationMethods.ADD;
-        String ovrMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
-
-        // There should only be one object per timepoint per track
         for (Obj trackObj : trackObjects.values()) {
             // Keeping a record of frames which have an object (these will be unchanged, so
             // don't need a new object)
@@ -354,8 +350,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
-                Image childImage = childObj.convertObjToImage("Child");
-                ImageCalculator.process(binaryImage, childImage, calcMeth, ovrMode, null, false, false);
+                childObj.addToImage(binaryImage, Float.MAX_VALUE);                
                 timepoints.add(childObj.getT());
             }
 
@@ -399,6 +394,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
             if (!checkStackForInterpolation(sliceIpl.getStack()))
                 continue;
+            
             binaryInterpolator.run(sliceIpl.getStack());
         }
     }
@@ -503,7 +499,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         try {
             if (spatialInterpolation)
                 applySpatialInterpolation(outputObjects, type);
-            if (temporalInterpolation)
+            if (outputTracks && temporalInterpolation)
                 applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;
@@ -869,7 +865,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         public static Roi duplicateRoi(Roi roi) {
             Roi newRoi;
-            
+
             // Need to processAutomatic Roi depending on its type
             switch (roi.getType()) {
                 case Roi.RECTANGLE:
