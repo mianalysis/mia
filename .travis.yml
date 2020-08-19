@@ -1,9 +1,5 @@
 language: java
-
-os:
-  - linux
-  - osx
-  - windows
+dist: trusty
 
 before_install:
   - "export DISPLAY=:99.0"
