@@ -503,7 +503,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         try {
             if (spatialInterpolation)
                 applySpatialInterpolation(outputObjects, type);
-            if (temporalInterpolation)
+            if (outputTracks && temporalInterpolation)
                 applyTemporalInterpolation(outputObjects, outputTrackObjects, type);
         } catch (IntegerOverflowException e) {
             return Status.FAIL;

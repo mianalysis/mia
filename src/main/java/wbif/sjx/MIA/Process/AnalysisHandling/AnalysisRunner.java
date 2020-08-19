@@ -286,12 +286,10 @@ public class AnalysisRunner {
 
                 MIA.log.writeError(
                         "Failed for file " + file.getName() + ", series " + seriesNumber + " (" + memoryMessage + ")");
-                MIA.log.writeError(t);
+                t.printStackTrace();
 
                 workspace.clearAllImages(true);
                 workspace.clearAllObjects(true);
-
-                pool.shutdownNow();
 
             }
         };
