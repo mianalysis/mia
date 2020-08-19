@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public class ObjCollection extends LinkedHashMap<Integer,Obj> {
+public class ObjCollection extends LinkedHashMap<Integer, Obj> {
     /**
      *
      */
@@ -56,7 +56,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     synchronized public void add(Obj object) {
-        put(object.getID(),object);
+        put(object.getID(), object);
 
     }
 
@@ -79,7 +79,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     public Obj getFirst() {
-        if (size() == 0) return null;
+        if (size() == 0)
+            return null;
 
         return values().iterator().next();
 
@@ -87,9 +88,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public int[][] getSpatialLimits() {
         // Taking limits from the first object, otherwise returning null
-        if (size() == 0) return null;
+        if (size() == 0)
+            return null;
 
-        return new int[][]{{0,getFirst().getWidth()-1},{0,getFirst().getHeight()-1},{0,getFirst().getNSlices()-1}};
+        return new int[][] { { 0, getFirst().getWidth() - 1 }, { 0, getFirst().getHeight() - 1 },
+                { 0, getFirst().getNSlices() - 1 } };
 
     }
 
@@ -99,9 +102,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         limits[0] = Integer.MAX_VALUE;
         limits[1] = -Integer.MAX_VALUE;
 
-        for (Obj object:values()) {
-            if (object.getT() < limits[0]) limits[0] = object.getT();
-            if (object.getT() > limits[1]) limits[1] = object.getT();
+        for (Obj object : values()) {
+            if (object.getT() < limits[0])
+                limits[0] = object.getT();
+            if (object.getT() > limits[1])
+                limits[1] = object.getT();
 
         }
 
@@ -111,61 +116,46 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public int getLargestID() {
         int largestID = 0;
-        for (Obj obj:values()) {
-            if (obj.getID() > largestID) largestID = obj.getID();
+        for (Obj obj : values()) {
+            if (obj.getID() > largestID)
+                largestID = obj.getID();
         }
 
         return largestID;
 
     }
 
-    public Image convertToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
-                // Create output image
-        ImagePlus ipl = createImage(outputName,bitDepth);
+    public Image convertToImage(String outputName, HashMap<Integer, Float> hues, int bitDepth, boolean nanBackground) {
+        // Create output image
+        Image image = createImage(outputName, bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
+        if (bitDepth == 32 && nanBackground)
+            setNaNBackground(image.getImagePlus());
 
         // Labelling pixels in image
-        for (Obj object:values()) {
-            int tPos = object.getT();
-            for (Point<Integer> point:object.getCoordinateSet()) {
-                int xPos = point.x;
-                int yPos = point.y;
-                int zPos = point.z;
-
-                ipl.setPosition(1,zPos+1,tPos+1);
-
-                float hue = hues.get(object.getID());
-                switch (bitDepth) {
-                    case 8:
-                    case 16:
-                        ipl.getProcessor().putPixel(xPos,yPos,Math.round(hue*255));
-                        break;
-                    case 32:
-                        ipl.getProcessor().putPixelValue(xPos,yPos,hue);
-                        break;
-                }
-            }
-        }
+        for (Obj object : values())
+            object.addToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        spatCal.setImageCalibration(ipl);
+        spatCal.setImageCalibration(image.getImagePlus());
 
-        return new Image(outputName,ipl);
+        return image;
 
     }
 
     public Image convertToImageRandomColours() {
-        HashMap<Integer,Float> hues = ColourFactory.getRandomHues(this);
-        Image dispImage = convertToImage(name,hues,8,false);
+        HashMap<Integer, Float> hues = ColourFactory.getRandomHues(this);
+        Image dispImage = convertToImage(name, hues, 8, false);
 
-        if (dispImage == null) return null;
-        if (dispImage.getImagePlus() == null) return null;
+        if (dispImage == null)
+            return null;
+        if (dispImage.getImagePlus() == null)
+            return null;
 
         ImagePlus dispIpl = dispImage.getImagePlus();
         dispIpl.setLut(LUTs.Random(true));
-        dispIpl.setPosition(1,1,1);
+        dispIpl.setPosition(1, 1, 1);
         dispIpl.updateChannelAndDraw();
 
         return dispImage;
@@ -174,42 +164,26 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public Image convertCentroidsToImage(String outputName, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         // Create output image
-        ImagePlus ipl = createImage(outputName,bitDepth);
+        Image image = createImage(outputName,bitDepth);
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32 && nanBackground) setNaNBackground(ipl);
+        if (bitDepth == 32 && nanBackground) setNaNBackground(image.getImagePlus());
 
         // Labelling pixels in image
-        for (Obj object:values()) {
-            int tPos = object.getT();
-            int xPos = (int) Math.round(object.getXMean(true));
-            int yPos = (int) Math.round(object.getYMean(true));
-            int zPos = (int) Math.round(object.getZMean(true,false));
-
-            ipl.setPosition(1,zPos+1,tPos+1);
-
-            float hue = hues.get(object.getID());
-            switch (bitDepth) {
-                case 8:
-                case 16:
-                    ipl.getProcessor().putPixel(xPos,yPos,Math.round(hue*255));
-                    break;
-                case 32:
-                    ipl.getProcessor().putPixelValue(xPos,yPos,hue);
-                    break;
-            }
-        }
+        for (Obj object:values()) 
+        object.addCentroidToImage(image, hues.get(object.getID()));
 
         // Assigning the spatial cal from the cal
-        spatCal.setImageCalibration(ipl);
+        spatCal.setImageCalibration(image.getImagePlus());
 
-        return new Image(outputName,ipl);
+        return image;
 
     }
 
     public void applyCalibration(Image image) {
         Obj obj = getFirst();
-        if (obj == null) return;
+        if (obj == null)
+            return;
 
         Calibration calibration = image.getImagePlus().getCalibration();
         calibration.pixelWidth = obj.getDppXY();
@@ -219,9 +193,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    ImagePlus createImage(String outputName, int bitDepth) {
-            // Creating a new image
-            return IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(),1, spatCal.getNSlices(),nFrames,bitDepth);
+    Image createImage(String outputName, int bitDepth) {
+        // Creating a new image
+        ImagePlus ipl = IJ.createHyperStack(outputName, spatCal.getWidth(), spatCal.getHeight(), 1,
+                spatCal.getNSlices(), nFrames, bitDepth);
+
+        return new Image(outputName, ipl);
 
     }
 
@@ -241,11 +218,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     /*
-     * Returns the Obj with coordinates matching the Obj passed as an argument.  Useful for unit tests.
+     * Returns the Obj with coordinates matching the Obj passed as an argument.
+     * Useful for unit tests.
      */
     public Obj getByEquals(Obj referenceObj) {
-        for (Obj testObj:values()) {
-            if (testObj.equals(referenceObj)) return testObj;
+        for (Obj testObj : values()) {
+            if (testObj.equals(referenceObj))
+                return testObj;
         }
 
         return null;
@@ -259,33 +238,37 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     /**
      * Displays measurement values from a specific Module
+     * 
      * @param module
      */
     public void showMeasurements(Module module, ModuleCollection modules) {
         // Getting MeasurementReferences
         ObjMeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
-        if (measRefs == null) return;
+        if (measRefs == null)
+            return;
 
         // Creating a new ResultsTable for these values
         ResultsTable rt = new ResultsTable();
 
         // Getting a list of all measurements relating to this object collection
         LinkedHashSet<String> measNames = new LinkedHashSet<>();
-        for (ObjMeasurementRef measRef:measRefs.values()) {
-            if (measRef.getObjectsName().equals(name)) measNames.add(measRef.getName());
+        for (ObjMeasurementRef measRef : measRefs.values()) {
+            if (measRef.getObjectsName().equals(name))
+                measNames.add(measRef.getName());
         }
 
         // Iterating over each measurement, adding all the values
         int row = 0;
-        for (Obj obj:values()) {
-            if (row != 0) rt.incrementCounter();
+        for (Obj obj : values()) {
+            if (row != 0)
+                rt.incrementCounter();
 
             // Setting some common values
-            rt.setValue("ID",row,obj.getID());
-            rt.setValue("X_CENTROID (PX)",row,obj.getXMean(true));
-            rt.setValue("Y_CENTROID (PX)",row,obj.getYMean(true));
-            rt.setValue("Z_CENTROID (SLICE)",row,obj.getZMean(true,false));
-            rt.setValue("TIMEPOINT",row,obj.getT());
+            rt.setValue("ID", row, obj.getID());
+            rt.setValue("X_CENTROID (PX)", row, obj.getXMean(true));
+            rt.setValue("Y_CENTROID (PX)", row, obj.getYMean(true));
+            rt.setValue("Z_CENTROID (SLICE)", row, obj.getZMean(true, false));
+            rt.setValue("TIMEPOINT", row, obj.getT());
 
             // Setting the measurements from the Module
             for (String measName : measNames) {
@@ -293,7 +276,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
                 // Setting value
-                rt.setValue(measName,row,value);
+                rt.setValue(measName, row, value);
 
             }
 
@@ -302,7 +285,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Displaying the results table
-        rt.show("\""+module.getName()+" \"measurements for \""+name+"\"");
+        rt.show("\"" + module.getName() + " \"measurements for \"" + name + "\"");
 
     }
 
@@ -312,15 +295,16 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         // Iterating over each measurement, adding all the values
         int row = 0;
-        for (Obj obj:values()) {
-            if (row != 0) rt.incrementCounter();
+        for (Obj obj : values()) {
+            if (row != 0)
+                rt.incrementCounter();
 
             // Setting some common values
-            rt.setValue("ID",row,obj.getID());
-            rt.setValue("X_CENTROID (PX)",row,obj.getXMean(true));
-            rt.setValue("Y_CENTROID (PX)",row,obj.getYMean(true));
-            rt.setValue("Z_CENTROID (SLICE)",row,obj.getZMean(true,false));
-            rt.setValue("TIMEPOINT",row,obj.getT());
+            rt.setValue("ID", row, obj.getID());
+            rt.setValue("X_CENTROID (PX)", row, obj.getXMean(true));
+            rt.setValue("Y_CENTROID (PX)", row, obj.getYMean(true));
+            rt.setValue("Z_CENTROID (SLICE)", row, obj.getZMean(true, false));
+            rt.setValue("TIMEPOINT", row, obj.getT());
 
             // Setting the measurements from the Module
             Set<String> measNames = obj.getMeasurements().keySet();
@@ -329,7 +313,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
                 // Setting value
-                rt.setValue(measName,row,value);
+                rt.setValue(measName, row, value);
 
             }
 
@@ -338,12 +322,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Displaying the results table
-        rt.show("All measurements for \""+name+"\"");
+        rt.show("All measurements for \"" + name + "\"");
 
     }
 
     public void removeParents(String parentObjectsName) {
-        for (Obj obj:values()) obj.removeParent(parentObjectsName);
+        for (Obj obj : values())
+            obj.removeParent(parentObjectsName);
 
     }
 
@@ -358,8 +343,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     }
 
     public boolean containsPoint(Point<Integer> point) {
-        for (Obj obj:values()) {
-            if (obj.contains(point)) return true;
+        for (Obj obj : values()) {
+            if (obj.contains(point))
+                return true;
         }
 
         return false;
@@ -377,10 +363,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         Obj referenceObject = null;
         int objSize = Integer.MIN_VALUE;
 
-        // Iterating over each object, checking it's size against the current reference values
-        for (Obj currReferenceObject:values()) {
-            // Only check objects in the current frame (if required - if frame doesn't matter, t = -1)
-            if (t != -1 && currReferenceObject.getT() != t) continue;
+        // Iterating over each object, checking it's size against the current reference
+        // values
+        for (Obj currReferenceObject : values()) {
+            // Only check objects in the current frame (if required - if frame doesn't
+            // matter, t = -1)
+            if (t != -1 && currReferenceObject.getT() != t)
+                continue;
             if (currReferenceObject.size() > objSize) {
                 objSize = currReferenceObject.size();
                 referenceObject = currReferenceObject;
@@ -395,10 +384,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         Obj referenceObject = null;
         int objSize = Integer.MAX_VALUE;
 
-        // Iterating over each object, checking it's size against the current reference values
-        for (Obj currReferenceObject:values()) {
-            // Only check objects in the current frame (if required - if frame doesn't matter, t = -1)
-            if (t != -1 && currReferenceObject.getT() != t) continue;
+        // Iterating over each object, checking it's size against the current reference
+        // values
+        for (Obj currReferenceObject : values()) {
+            // Only check objects in the current frame (if required - if frame doesn't
+            // matter, t = -1)
+            if (t != -1 && currReferenceObject.getT() != t)
+                continue;
 
             if (currReferenceObject.size() < objSize) {
                 objSize = currReferenceObject.size();
