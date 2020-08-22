@@ -89,13 +89,13 @@ public class FilterByChildren extends CoreFilter {
             }
             
             boolean conditionMet = testFilter(childObjects.size(),referenceValue,filterMethod);
-
+            
             // Adding measurements
             if (storeIndividual) {
                 String measurementName = getMeasurementName(filterMethod,childObjectsName,String.valueOf(referenceValue));
                 inputObject.addMeasurement(new Measurement(measurementName,conditionMet ? 1 : 0));
             }
-
+            
             // Removing the object if it has too few children
             if (conditionMet) {
                 count++;
@@ -121,10 +121,7 @@ public class FilterByChildren extends CoreFilter {
     
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
-        parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
+        super.initialiseParameters();
         
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.EQUAL_TO, FilterMethods.ALL));
@@ -142,12 +139,7 @@ public class FilterByChildren extends CoreFilter {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
-        }
+        returnedParameters.addAll(super.updateAndGetParameters());
         
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
@@ -226,15 +218,5 @@ public class FilterByChildren extends CoreFilter {
         }
         
         return returnedRefs;
-    }
-    
-    @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        return null;
-    }
-
-    @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
     }
 }

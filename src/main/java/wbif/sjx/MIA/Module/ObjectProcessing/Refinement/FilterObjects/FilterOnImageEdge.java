@@ -159,10 +159,7 @@ public class FilterOnImageEdge extends CoreFilter {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
-        parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
+        super.initialiseParameters();
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new IntegerP(MAXIMUM_CONTACT, this, 0));
@@ -178,12 +175,7 @@ public class FilterOnImageEdge extends CoreFilter {
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
-        }
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MAXIMUM_CONTACT));
@@ -246,15 +238,5 @@ public class FilterOnImageEdge extends CoreFilter {
         }
 
         return returnedRefs;
-    }
-
-    @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        return null;
-    }
-
-    @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
     }
 }

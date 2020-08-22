@@ -11,11 +11,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 public class FilterWithWithoutParent extends CoreFilter {
-    public static final String INPUT_SEPARATOR = "Object input";
-    public static final String INPUT_OBJECTS = "Input objects";
-    public static final String FILTER_MODE = "Filter mode";
-    public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
-
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String PARENT_OBJECT = "Parent object";
@@ -113,11 +108,8 @@ public class FilterWithWithoutParent extends CoreFilter {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
-        parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
-
+        super.initialiseParameters();
+        
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITH_PARENT, FilterMethods.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
@@ -130,13 +122,9 @@ public class FilterWithWithoutParent extends CoreFilter {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
-        }
 
+        returnedParameters.addAll(super.updateAndGetParameters());
+        
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
         returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
@@ -193,15 +181,5 @@ public class FilterWithWithoutParent extends CoreFilter {
 
         return returnedRefs;
 
-    }
-
-    @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        return null;
-    }
-
-    @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
     }
 }

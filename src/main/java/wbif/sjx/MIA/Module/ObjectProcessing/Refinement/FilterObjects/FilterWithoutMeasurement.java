@@ -102,7 +102,7 @@ public class FilterWithoutMeasurement extends CoreFilter {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        super.initialiseParameters();parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(FILTER_MODE,this, FilterModes.REMOVE_FILTERED, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
@@ -119,12 +119,7 @@ public class FilterWithoutMeasurement extends CoreFilter {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(FILTER_MODE));
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_FILTERED_OBJECTS));
-        }
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
         returnedParameters.add(parameters.getParameter(FILTER_METHOD));
@@ -182,15 +177,5 @@ public class FilterWithoutMeasurement extends CoreFilter {
         }
 
         return returnedRefs;
-    }
-
-    @Override
-    public ParentChildRefCollection updateAndGetParentChildRefs() {
-        return null;
-    }
-
-    @Override
-    public PartnerRefCollection updateAndGetPartnerRefs() {
-        return null;
     }
 }
