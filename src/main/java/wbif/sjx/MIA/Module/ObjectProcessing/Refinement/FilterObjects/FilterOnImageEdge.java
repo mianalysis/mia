@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 import com.drew.lang.annotations.Nullable;
 
-public class FilterOnImageEdge extends CoreFilter {
+public class FilterOnImageEdge extends ObjectFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";

@@ -16,11 +16,10 @@ import wbif.sjx.MIA.Object.Parameters.ModuleP;
  * Created by sc13967 on 22/05/2017.
  */
 public class ModuleChoiceParameter extends ParameterControl implements ActionListener {
-    private ModuleP parameter;
     private WiderDropDownCombo control;
 
     public ModuleChoiceParameter(ModuleP parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         // Choices may have not been initialised when this first runs, so a blank list is created
         Module[] choices = parameter.getModules();
@@ -33,15 +32,11 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
 
     }
 
-    public ModuleP getParameter() {
-        return parameter;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        parameter.setSelectedModule((Module) control.getSelectedItem());
+        ((ModuleP) parameter).setSelectedModule((Module) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
@@ -62,7 +57,7 @@ public class ModuleChoiceParameter extends ParameterControl implements ActionLis
 
     @Override
     public void updateControl() {
-        Module[] choices = parameter.getModules();
+        Module[] choices = ((ModuleP) parameter).getModules();
 
         // Getting previously-selected item
         Module selected = (Module) control.getSelectedItem();

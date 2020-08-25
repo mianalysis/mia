@@ -15,11 +15,10 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.BooleanType;
  * Created by Stephen on 20/05/2017.
  */
 public class BooleanParameter extends ParameterControl implements ActionListener {
-    private BooleanType parameter;
     private JCheckBox control;
 
     public BooleanParameter(BooleanType parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         control = new JCheckBox();
 
@@ -30,15 +29,11 @@ public class BooleanParameter extends ParameterControl implements ActionListener
 
     }
 
-    public BooleanType getParameter() {
-        return parameter;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        parameter.setSelected(control.isSelected());
+        ((BooleanType) parameter).setSelected(control.isSelected());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
@@ -57,6 +52,6 @@ public class BooleanParameter extends ParameterControl implements ActionListener
 
     @Override
     public void updateControl() {
-        control.setSelected(parameter.isSelected());
+        control.setSelected(((BooleanType) parameter).isSelected());
     }
 }

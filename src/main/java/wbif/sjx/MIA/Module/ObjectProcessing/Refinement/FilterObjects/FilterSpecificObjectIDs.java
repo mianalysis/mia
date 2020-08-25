@@ -16,7 +16,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FilterSpecificObjectIDs extends CoreFilter implements ActionListener {
+public class FilterSpecificObjectIDs extends ObjectFilter implements ActionListener {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";

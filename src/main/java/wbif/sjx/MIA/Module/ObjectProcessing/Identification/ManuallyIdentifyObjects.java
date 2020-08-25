@@ -350,14 +350,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
-                MIA.log.writeDebug("Adding child "+childObj.getID());
                 childObj.addToImage(binaryImage, Float.MAX_VALUE);                
                 timepoints.add(childObj.getT());
             }
-
-            MIA.log.writeDebug("Applying interpolation");
             applyTemporalInterpolation(binaryImage);
-            MIA.log.writeDebug("Applied interpolation");
 
             // Converting binary image back to objects
             ObjCollection interpObjs = binaryImage.convertImageToObjects(type, inputObjects.getName(), true);
@@ -373,7 +369,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 // Adding this object to the original collection
                 interpObj.setID(inputObjects.getAndIncrementID());
-                MIA.log.writeDebug("Completing object "+interpObj.getID());
+                
                 interpObj.setSpatialCalibration(inputObjects.getSpatialCalibration());
                 interpObj.addParent(trackObj);
                 trackObj.addChild(interpObj);

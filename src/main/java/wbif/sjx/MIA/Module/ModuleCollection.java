@@ -308,6 +308,29 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         return getParametersMatchingType(type, null);
     }
 
+    public Parameter getObjectSource(String objectName, Module cutoffModule) {
+        Parameter sourceParameter = null;
+
+        for (Module module : this) {
+            if (module == cutoffModule)
+                break;
+
+            // Get the added and removed images
+            LinkedHashSet<OutputObjectsP> addedObjects = module.getParametersMatchingType(OutputObjectsP.class);
+            if (addedObjects == null)
+                continue;
+                
+            // Find most recent instance of this object being created
+            for (OutputObjectsP addedObject : addedObjects) {
+                if (addedObject.getValue().equals(objectName))
+                    sourceParameter = addedObject;
+            }
+        }
+
+        return sourceParameter;
+
+    }
+
     public <T extends OutputObjectsP> LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule,
             Class<T> objectClass, boolean ignoreRemoved) {
         LinkedHashSet<OutputObjectsP> objects = new LinkedHashSet<>();
@@ -316,21 +339,21 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
             if (module == cutoffModule)
                 break;
 
-            // Get the added and removed images
+            // Get the added and removed objects
             LinkedHashSet<T> addedObjects = module.getParametersMatchingType(objectClass);
             LinkedHashSet<RemovedObjectsP> removedObjects = module.getParametersMatchingType(RemovedObjectsP.class);
 
-            // Adding new images
+            // Adding new objects
             if (addedObjects != null)
                 objects.addAll(addedObjects);
 
-            // Removing images
+            // Removing objects
             if (!ignoreRemoved || removedObjects == null)
                 continue;
 
             for (Parameter removedImage : removedObjects) {
-                String removeImageName = removedImage.getRawStringValue();
-                objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeImageName));
+                String removeObjectName = removedImage.getRawStringValue();
+                objects.removeIf(outputObjectP -> outputObjectP.getObjectsName().equals(removeObjectName));
             }
         }
 
@@ -349,6 +372,27 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
     public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule) {
         return getAvailableObjects(cutoffModule, OutputObjectsP.class, true);
+    }
+
+    public Parameter getImageSource(String imageName, Module cutoffModule) {
+        Parameter sourceParameter = null;
+
+        for (Module module : this) {
+            if (module == cutoffModule)
+                break;
+
+            // Get the added and removed images
+            LinkedHashSet<OutputImageP> addedImages = module.getParametersMatchingType(OutputImageP.class);
+
+            // Find most recent instance of this object being created
+            for (OutputImageP addedImage : addedImages) {
+                if (addedImage.getValue().equals(imageName))
+                    sourceParameter = addedImage;
+            }
+        }
+
+        return sourceParameter;
+
     }
 
     public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule) {

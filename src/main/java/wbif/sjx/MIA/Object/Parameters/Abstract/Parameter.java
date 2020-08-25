@@ -1,10 +1,12 @@
 package wbif.sjx.MIA.Object.Parameters.Abstract;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
@@ -17,12 +19,12 @@ public abstract class Parameter extends Ref {
     private boolean exported = true;
     private String description = "";
 
-
     // CONSTRUCTORS
 
     public Parameter(String name, Module module) {
         super(name);
         this.module = module;
+
     }
 
     public Parameter(String name, Module module, String description) {
@@ -30,7 +32,6 @@ public abstract class Parameter extends Ref {
         this.module = module;
         this.description = description;
     }
-
 
     // ABSTRACT METHODS
 
@@ -48,21 +49,37 @@ public abstract class Parameter extends Ref {
 
     public abstract <T extends Parameter> T duplicate(Module newModule);
 
-
     // PUBLIC METHODS
 
     public String getNameAsString() {
         return name.toString().replace("_", " ");
     }
 
-    // Can be used to display a different name if the raw name isn't useful for the GUI
+    // Can be used to display a different name if the raw name isn't useful for the
+    // GUI
     public String getAlternativeString() {
         return getRawStringValue();
     }
 
+    public Parameter createNewInstance(String name, Module module)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Constructor[] constructors = this.getClass().getConstructors();
+
+        for (Constructor constructor : constructors) {
+            // Finding constructor with String and Module parameters
+            if (constructor.getParameterCount() != 2)
+                continue;
+
+            Class[] parameterTypes = constructor.getParameterTypes();
+            if (parameterTypes[0] == String.class && parameterTypes[1] == Module.class)
+                return (Parameter) constructor.newInstance(name, module);
+        }
+
+        return null;
+
+    }
 
     // GETTERS AND SETTERS
-
 
     public Module getModule() {
         return module;
@@ -73,8 +90,14 @@ public abstract class Parameter extends Ref {
     }
 
     public ParameterControl getControl() {
-        if (control == null) control = initialiseControl();
+        if (control == null)
+            control = initialiseControl();
         return control;
+    }
+
+    public void setControl(ParameterControl control) {
+        this.control = control;
+        control.setParameter(this);
     }
 
     public boolean isVisible() {
@@ -115,9 +138,10 @@ public abstract class Parameter extends Ref {
         super.appendXMLAttributes(element);
 
         String stringValue = getRawStringValue();
-        if (stringValue == null) stringValue = "";
-        element.setAttribute("VALUE",getRawStringValue());
-        element.setAttribute("VISIBLE",Boolean.toString(isVisible()));
+        if (stringValue == null)
+            stringValue = "";
+        element.setAttribute("VALUE", getRawStringValue());
+        element.setAttribute("VISIBLE", Boolean.toString(isVisible()));
 
     }
 
@@ -133,6 +157,6 @@ public abstract class Parameter extends Ref {
 
     @Override
     public String toString() {
-        return "Name: "+name+", value: "+getRawStringValue()+", module: "+module.getName();
+        return "Name: " + name + ", value: " + getRawStringValue() + ", module: " + module.getName();
     }
 }

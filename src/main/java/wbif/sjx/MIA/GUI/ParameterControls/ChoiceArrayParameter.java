@@ -15,11 +15,10 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
  * Created by sc13967 on 22/05/2017.
  */
 public class ChoiceArrayParameter extends ParameterControl implements ActionListener {
-    private ChoiceType parameter;
     private WiderDropDownCombo control;
 
     public ChoiceArrayParameter(ChoiceType parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         // Choices may have not been initialised when this first runs, so a blank list is created
         String[] choices = parameter.getChoices();
@@ -33,15 +32,11 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
 
     }
 
-    public ChoiceType getParameter() {
-        return parameter;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        parameter.setChoice((String) control.getSelectedItem());
+        ((ChoiceType) parameter).setChoice((String) control.getSelectedItem());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);
@@ -62,7 +57,7 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
 
     @Override
     public void updateControl() {
-        String[] choices = parameter.getChoices();
+        String[] choices = ((ChoiceType) parameter).getChoices();
         if (choices == null) choices = new String[]{""};
 
         // Getting previously-selected item

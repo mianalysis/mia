@@ -7,11 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SeparatorParameter extends ParameterControl {
-    protected ParamSeparatorP parameter;
     protected JPanel control;
 
     public SeparatorParameter(ParamSeparatorP parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         control = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

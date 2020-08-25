@@ -21,7 +21,6 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.FileFolderType;
  * Created by Stephen on 20/05/2017.
  */
 public class FileParameter extends ParameterControl implements ActionListener {
-    private FileFolderType parameter;
     private String fileType;
     private JButton control;
 
@@ -33,7 +32,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
     }
 
     public FileParameter(FileFolderType parameter, String fileType) {
-        this.parameter = parameter;
+        super(parameter);
         this.fileType = fileType;
 
         control = new JButton();
@@ -46,10 +45,6 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
     }
 
-    public FileFolderType getParameter() {
-        return parameter;
-    }
-
     @Override
     public JComponent getComponent() {
         return control;
@@ -57,8 +52,8 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
     @Override
     public void updateControl() {
-        control.setText(FilenameUtils.getName(parameter.getPath()));
-        control.setToolTipText(parameter.getPath());
+        control.setText(FilenameUtils.getName(((FileFolderType) parameter).getPath()));
+        control.setToolTipText(((FileFolderType) parameter).getPath());
     }
 
     @Override
@@ -83,15 +78,15 @@ public class FileParameter extends ParameterControl implements ActionListener {
                 break;
         }
 
-        if (parameter.getPath() != null) {
-            fileChooser.setCurrentDirectory(new File((String) parameter.getPath()));
+        if (((FileFolderType) parameter).getPath() != null) {
+            fileChooser.setCurrentDirectory(new File((String) ((FileFolderType) parameter).getPath()));
         }
         fileChooser.showDialog(null, "Open");
 
         if (fileChooser.getSelectedFile() == null)
             return;
 
-        parameter.setPath(fileChooser.getSelectedFile().getAbsolutePath());
+        ((FileFolderType) parameter).setPath(fileChooser.getSelectedFile().getAbsolutePath());
 
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);

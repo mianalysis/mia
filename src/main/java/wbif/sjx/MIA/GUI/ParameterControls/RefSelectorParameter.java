@@ -21,13 +21,12 @@ import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
  * Created by Stephen Cross on 18/02/2020.
  */
 public class RefSelectorParameter extends ParameterControl implements ActionListener {
-    protected ObjMeasurementSelectorP parameter;
     protected JPanel control;
     protected JTextArea textArea;
     private HashSet<JCheckBox> checkboxes;
 
     public RefSelectorParameter(ObjMeasurementSelectorP parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         control = new JPanel();
         control.setLayout(new GridBagLayout());
@@ -53,7 +52,7 @@ public class RefSelectorParameter extends ParameterControl implements ActionList
 
         control.removeAll();
 
-        TreeMap<String,Boolean> states = parameter.getMeasurementStates();
+        TreeMap<String,Boolean> states = ((ObjMeasurementSelectorP) parameter).getMeasurementStates();
         checkboxes = new HashSet<>();
 
         for (String name:states.keySet()) {
@@ -78,7 +77,7 @@ public class RefSelectorParameter extends ParameterControl implements ActionList
             String name = checkBox.getText();
             boolean state = checkBox.isSelected();
 
-            parameter.getMeasurementStates().put(name,state);
+            ((ObjMeasurementSelectorP) parameter).getMeasurementStates().put(name,state);
 
         }
     }

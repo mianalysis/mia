@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 
-public class FilterByChildren extends CoreFilter {
+public class FilterByChildren extends ObjectFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";

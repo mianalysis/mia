@@ -15,12 +15,11 @@ import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
  * Created by Stephen Cross on 01/02/2019.
  */
 public class AddParametersButton extends ParameterControl implements ActionListener {
-    private ParameterGroup parameter;
     private JButton control;
 
 
     public AddParametersButton(ParameterGroup parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         control = new JButton("Add");
         control.addActionListener(this);
@@ -42,7 +41,7 @@ public class AddParametersButton extends ParameterControl implements ActionListe
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        parameter.addParameters();
+        ((ParameterGroup) parameter).addParameters();
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);

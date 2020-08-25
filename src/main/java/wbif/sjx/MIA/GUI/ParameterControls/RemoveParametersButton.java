@@ -15,12 +15,11 @@ import wbif.sjx.MIA.Object.Parameters.RemoveParameters;
  * Created by Stephen Cross on 01/02/2019.
  */
 public class RemoveParametersButton extends ParameterControl implements ActionListener {
-    private RemoveParameters parameter;
     private JButton control;
 
 
     public RemoveParametersButton(RemoveParameters parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         control = new JButton("Remove");
         control.addActionListener(this);
@@ -42,7 +41,7 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
     public void actionPerformed(ActionEvent e) {
         GUI.addUndo();
 
-        parameter.getGroup().removeCollection(parameter.getCollectionIndex());
+        ((RemoveParameters) parameter).getGroup().removeCollection(((RemoveParameters) parameter).getCollectionIndex());
 
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval() & !(parameter.getModule() instanceof OutputControl)) GUI.setLastModuleEval(idx-1);

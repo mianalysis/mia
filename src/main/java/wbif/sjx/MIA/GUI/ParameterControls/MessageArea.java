@@ -14,12 +14,11 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.TextType;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 
 public class MessageArea extends ParameterControl {
-    protected TextType parameter;
     protected JPanel control;
     protected JTextArea textArea;
 
     public MessageArea(MessageP parameter) {
-        this.parameter = parameter;
+        super(parameter);
 
         control = new JPanel();
 
@@ -50,10 +49,6 @@ public class MessageArea extends ParameterControl {
         control.add(objectsScrollPane,c);
 
 
-    }
-
-    public TextType getParameter() {
-        return parameter;
     }
 
     @Override

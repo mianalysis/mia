@@ -20,14 +20,13 @@ import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 
 public class TextAreaParameter extends ParameterControl implements FocusListener {
-    protected TextAreaP parameter;
     protected JPanel control;
     private  JTextArea textArea;
     private JScrollPane objectsScrollPane;
     private String prevString = "";
 
     public TextAreaParameter(TextAreaP parameter) {
-        this.parameter = parameter;
+        super(parameter);
         this.prevString = parameter.getRawStringValue();
 
         control = new JPanel();
@@ -62,10 +61,6 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
 
     }
 
-    public TextAreaP getParameter() {
-        return parameter;
-    }
-
     @Override
     public JComponent getComponent() {
         return control;
@@ -91,7 +86,7 @@ public class TextAreaParameter extends ParameterControl implements FocusListener
     public void focusLost(FocusEvent e) {
         GUI.addUndo();
 
-        if (!parameter.isEditable()) return;
+        if (!((TextAreaP) parameter).isEditable()) return;
 
         parameter.setValueFromString(textArea.getText());
         int idx = GUI.getModules().indexOf(parameter.getModule());

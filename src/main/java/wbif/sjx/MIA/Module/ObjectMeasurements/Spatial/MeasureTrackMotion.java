@@ -94,7 +94,8 @@ public class MeasureTrackMotion extends Module {
             double z = spotObject.getZMean(true,true);
 
             int t = spotObject.getT();
-            track.addTimepoint(x,y,z,t);
+            track.addTimepoint(x, y, z, t);
+            
         }
 
         // Create track object

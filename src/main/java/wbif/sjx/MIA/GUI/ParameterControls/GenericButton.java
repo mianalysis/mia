@@ -12,6 +12,8 @@ public class GenericButton extends ParameterControl {
     private JButton control;
 
     public GenericButton(GenericButtonP parameter) {
+        super(parameter);
+        
         control = new JButton(parameter.getRawStringValue());
         control.addActionListener(parameter.getActionListener());
 

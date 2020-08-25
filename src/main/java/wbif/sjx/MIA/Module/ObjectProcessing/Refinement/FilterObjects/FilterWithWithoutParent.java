@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.References.*;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class FilterWithWithoutParent extends CoreFilter {
+public class FilterWithWithoutParent extends ObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String PARENT_OBJECT = "Parent object";

@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Object.References.*;
 
 import java.util.Iterator;
 
-public class FilterWithoutMeasurement extends CoreFilter {
+public class FilterWithoutMeasurement extends ObjectFilter {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
