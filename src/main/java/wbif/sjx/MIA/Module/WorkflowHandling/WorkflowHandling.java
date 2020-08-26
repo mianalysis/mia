@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
-import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.ObjectFilter;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.AbstractObjectFilter;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -79,7 +79,7 @@ public class WorkflowHandling extends Module {
 
     }
 
-    public interface FilterModes extends ObjectFilter.FilterMethods {
+    public interface FilterModes extends AbstractObjectFilter.FilterMethods {
     }
 
     public interface ContinuationModes {
@@ -145,14 +145,14 @@ public class WorkflowHandling extends Module {
 
         // Testing the value
         double measurementValue = measurement.getValue();
-        return ObjectFilter.testFilter(measurementValue, referenceValue, referenceMode);
+        return AbstractObjectFilter.testFilter(measurementValue, referenceValue, referenceMode);
 
     }
 
     public static boolean testMetadata(String metadataValue, String referenceMode, double referenceValue) {
         try {
             double testValue = Double.parseDouble(metadataValue);
-            return ObjectFilter.testFilter(testValue, referenceValue, referenceMode);
+            return AbstractObjectFilter.testFilter(testValue, referenceValue, referenceMode);
 
         } catch (NumberFormatException e) {
             // This will be thrown if the value specified wasn't a number
@@ -168,7 +168,7 @@ public class WorkflowHandling extends Module {
         if (inputObjects != null)
             testValue = inputObjects.size();
 
-        return ObjectFilter.testFilter(testValue, referenceValue, referenceMode);
+        return AbstractObjectFilter.testFilter(testValue, referenceValue, referenceMode);
 
     }
 

@@ -32,7 +32,7 @@ import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
-public class AddObjectFill extends Overlay {
+public class AddObjectFill extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -52,7 +52,7 @@ public class AddObjectFill extends Overlay {
         super("Add object fill", modules);
     }
 
-    public interface ColourModes extends Overlay.ColourModes {
+    public interface ColourModes extends AbstractOverlay.ColourModes {
     }
 
     public interface SingleColours extends ColourFactory.SingleColours {

@@ -32,7 +32,7 @@ import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
-public class AddObjectCentroid extends Overlay {
+public class AddObjectCentroid extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";

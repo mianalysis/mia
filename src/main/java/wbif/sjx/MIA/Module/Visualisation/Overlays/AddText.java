@@ -29,7 +29,7 @@ import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
-public class AddText extends Overlay {
+public class AddText extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";

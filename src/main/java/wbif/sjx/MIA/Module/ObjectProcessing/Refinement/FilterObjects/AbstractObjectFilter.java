@@ -21,13 +21,13 @@ import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
-public abstract class ObjectFilter extends Module {
+public abstract class AbstractObjectFilter extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_MODE = "Filter mode";
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
 
-    protected ObjectFilter(String name, ModuleCollection modules) {
+    protected AbstractObjectFilter(String name, ModuleCollection modules) {
         super(name, modules);
     }
 
@@ -141,6 +141,8 @@ public abstract class ObjectFilter extends Module {
         // specific type (e.g. OutputTrackObjectsP) to match the input object type
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -203,7 +205,7 @@ public abstract class ObjectFilter extends Module {
                 // Adding relationships where the input object is the child
                 String[] parentNames = currentRefs.getParentNames(inputObjectsName, true);
                 for (String parentName : parentNames)
-                returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
+                    returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
 
                 break;
 
@@ -239,5 +241,22 @@ public abstract class ObjectFilter extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to be filtered.");
+
+        parameters.get(FILTER_MODE)
+                .setDescription("Controls what happens to objects which don't pass the filter:<br>" + "<br>- \""
+                        + FilterModes.DO_NOTHING + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).<br>"
+
+                        + "<br>- \"" + FilterModes.MOVE_FILTERED + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""+OUTPUT_FILTERED_OBJECTS+"\" parameter.  All existing measurements and relationships are carried forward into the new object collection.<br>"
+
+                        + "<br>- \"" + FilterModes.REMOVE_FILTERED + "\" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.<br>");
+
+        parameters.get(OUTPUT_FILTERED_OBJECTS).setDescription(
+                "New object collection containing input objects which did not pass the filter.  These objects are only stored if \""
+                        + FILTER_MODE + "\" is set to \"" + FilterModes.MOVE_FILTERED + "\".");
+
     }
 }

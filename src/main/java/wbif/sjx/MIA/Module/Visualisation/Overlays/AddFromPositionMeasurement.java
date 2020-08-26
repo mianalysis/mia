@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.drew.lang.annotations.Nullable;
 
-public class AddFromPositionMeasurement extends Overlay {
+public class AddFromPositionMeasurement extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";

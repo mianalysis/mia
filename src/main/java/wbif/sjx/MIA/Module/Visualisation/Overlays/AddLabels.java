@@ -44,7 +44,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Object.Point;
 
-public class AddLabels extends Overlay {
+public class AddLabels extends AbstractOverlay {
     TextRoi textRoi = null;
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";

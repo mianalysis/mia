@@ -1,27 +1,34 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
-
 import java.util.Iterator;
 
-public class FilterWithoutMeasurement extends ObjectFilter {
-    public static final String INPUT_SEPARATOR = "Object input";
-    public static final String INPUT_OBJECTS = "Input objects";
-    public static final String FILTER_MODE = "Filter mode";
-    public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
+public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String STORE_RESULTS = "Store filter results";
 
-    public FilterWithoutMeasurement(ModuleCollection modules) {
-        super("Without measurement",modules);
+    public FilterWithWithoutMeasurement(ModuleCollection modules) {
+        super("With / without measurement",modules);
     }
 
 
@@ -61,7 +68,7 @@ public class FilterWithoutMeasurement extends ObjectFilter {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-
+        
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);

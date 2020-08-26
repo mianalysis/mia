@@ -1,27 +1,42 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import ij.ImagePlus;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Image;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
-
-import com.drew.lang.annotations.Nullable;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FilterSpecificObjectIDs extends ObjectFilter implements ActionListener {
-    public static final String INPUT_SEPARATOR = "Object input";
-    public static final String INPUT_OBJECTS = "Input objects";
-    public static final String FILTER_MODE = "Filter mode";
-    public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
+import com.drew.lang.annotations.Nullable;
+
+import ij.ImagePlus;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
+
+public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String MEASUREMENT = "Measurement to filter on";

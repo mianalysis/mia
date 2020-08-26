@@ -1,24 +1,26 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.drew.lang.annotations.Nullable;
 
-public class FilterOnImageEdge extends ObjectFilter {
-    public static final String INPUT_SEPARATOR = "Object input";
-    public static final String INPUT_OBJECTS = "Input objects";
-    public static final String FILTER_MODE = "Filter mode";
-    public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
+public class FilterOnImageEdge extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
     public static final String MAXIMUM_CONTACT = "Maximum permitted contact";
     public static final String REMOVE_ON_TOP = "Remove on top";

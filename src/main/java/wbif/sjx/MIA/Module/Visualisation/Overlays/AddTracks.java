@@ -38,7 +38,7 @@ import wbif.sjx.MIA.Process.ColourFactory;
 /**
  * Created by sc13967 on 17/05/2017.
  */
-public class AddTracks extends Overlay {
+public class AddTracks extends AbstractOverlay {
     public static final String INPUT_SEPARATOR = "Image and object input";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";

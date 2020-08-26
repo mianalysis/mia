@@ -15,7 +15,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.Overlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AbstractOverlay;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
@@ -573,7 +573,7 @@ public class TrackObjects extends Module {
         if (identifyLeading) identifyLeading(inputObjects,orientationMode);
 
         // If selected, showing an overlay of the tracked objects
-        String colourMode = Overlay.ColourModes.PARENT_ID;
+        String colourMode = AbstractOverlay.ColourModes.PARENT_ID;
         if (showOutput) showObjects(inputObjects,trackObjectsName,colourMode);
 
         // Adding track objects to the workspace
