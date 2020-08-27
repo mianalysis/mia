@@ -23,32 +23,41 @@ public class FilterWithWithoutParentTest extends ModuleTest {
         assertNotNull(new FilterWithWithoutParent(null).getDescription());
     }
 
+    public static void main(String[] args) {
+        try {
+            new FilterWithWithoutParentTest().testRunPresentParentDoNothing(VolumeType.POINTLIST);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @ParameterizedTest
     @EnumSource(VolumeType.class)
     public void testRunPresentParentDoNothing(VolumeType volumeType) throws Exception {
         // Creating a new workspace
         WorkspaceCollection workspaces = new WorkspaceCollection();
-        Workspace workspace = workspaces.getNewWorkspace(null,1);
+        Workspace workspace = workspaces.getNewWorkspace(null, 1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        SpatCal calibration = new SpatCal(dppXY,dppZ,calibratedUnits,1,1,1);
+        SpatCal calibration = new SpatCal(dppXY, dppZ, calibratedUnits, 1, 1, 1);
 
         // Getting test objects
-        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D(volumeType).getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,
+                dppXY, dppZ, calibratedUnits, true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
-        boolean[] parents = new boolean[]{true,true,false,true,false,false,false,false};
-        ObjCollection parentObjects = new ObjCollection("Parents",calibration,1);
-        ObjCollection expectedPassObjects = new ObjCollection("PassOutput",calibration,1);
+        boolean[] parents = new boolean[] { true, true, false, true, false, false, false, false };
+        ObjCollection parentObjects = new ObjCollection("Parents", calibration, 1);
+        ObjCollection expectedPassObjects = new ObjCollection("PassOutput", calibration, 1);
 
         int counter = 0;
-        for (Obj testObject:testObjects.values()) {
+        for (Obj testObject : testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj(volumeType,"Parents",parentObjects.getAndIncrementID(),calibration,1);
+                Obj parentObject = new Obj(volumeType, "Parents", parentObjects.getAndIncrementID(), calibration, 1);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
@@ -62,21 +71,26 @@ public class FilterWithWithoutParentTest extends ModuleTest {
 
         // Initialising FilterObjects module
         FilterWithWithoutParent filterWithWithoutParent = new FilterWithWithoutParent(null);
-        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS,"TestObj");
-        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,FilterWithWithoutParent.FilterMethods.WITH_PARENT);
-        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,FilterWithWithoutParent.FilterModes.DO_NOTHING);
-        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT,"Parents");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.INPUT_OBJECTS, "TestObj");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_METHOD,
+                FilterWithWithoutParent.FilterMethods.WITH_PARENT);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.FILTER_MODE,
+                FilterWithWithoutParent.FilterModes.DO_NOTHING);
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.PARENT_OBJECT, "Parents");
+        filterWithWithoutParent.updateParameterValue(FilterWithWithoutParent.STORE_RESULTS, true);
 
         // Running the module
         filterWithWithoutParent.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
-        assertEquals(8,workspace.getObjectSet("TestObj").values().size());
-        assertEquals(expectedPassObjects,workspace.getObjectSet("TestObj"));
+        assertEquals(8, workspace.getObjectSet("TestObj").values().size());
+        assertEquals(expectedPassObjects, workspace.getObjectSet("TestObj"));
 
-        String metadataName = FilterWithWithoutParent.getMetadataName("TestObj",FilterWithWithoutParent.FilterMethods.WITH_PARENT,"Parents");
+        String metadataName = FilterWithWithoutParent.getMetadataName("TestObj",
+                FilterWithWithoutParent.FilterMethods.WITH_PARENT, "Parents");
         String metadata = workspace.getMetadata().getAsString(metadataName);
+
         assertEquals("3",metadata);
 
     }

@@ -147,7 +147,9 @@ public class GUI {
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
                     | InvocationTargetException | NoClassDefFoundError e) {
-                MIA.log.writeWarning("Module \""+detectedModuleName+"\" incompatible with MIA v"+MIA.getVersion()+".  Module not loaded.");
+                MIA.log.writeWarning("Module \"" + detectedModuleName + "\" incompatible with MIA v" + MIA.getVersion()
+                        + ".  Module not loaded.");
+                e.printStackTrace();
             }
         }
     }

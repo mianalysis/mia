@@ -16,7 +16,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 public class FilterWithWithoutParent extends AbstractObjectFilter {
@@ -58,7 +57,7 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection based on the presence of a specific parent for each object.  Objects which do/don't have the relevant parent can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.";
     }
 
     @Override
@@ -105,8 +104,10 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
         if (moveObjects) workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getMetadataName(inputObjectsName,filterMethod,parentObjectName);
-        workspace.getMetadata().put(metadataName,count);
+        if (storeResults) {
+            String metadataName = getMetadataName(inputObjectsName, filterMethod, parentObjectName);
+            workspace.getMetadata().put(metadataName, count);
+        }
 
         // Showing objects
         if (showOutput) inputObjects.convertToImageRandomColours().showImage();
@@ -123,6 +124,8 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITH_PARENT, FilterMethods.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
+
+        addParameterDescriptions();
 
     }
 
@@ -151,25 +154,8 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
-
-        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-
-            // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
-
-            for (ObjMeasurementRef reference:references.values()) {
-                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
-            }
-
-            return returnedRefs;
-
-        }
-
-        return null;
+        return super.updateAndGetObjectMeasurementRefs();
+        
     }
 
     @Override
@@ -189,6 +175,27 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
         }
 
         return returnedRefs;
+
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(FILTER_METHOD).setDescription(
+                "Controls whether objects are removed when a specific parent object is present or not:<br>"
+        
+                        + "<br>- \"" + FilterMethods.WITHOUT_PARENT + "\" Objects without the parent specified by \""
+                        + PARENT_OBJECT + "\" are removed, counted or moved (depending on the \"" + FILTER_MODE
+                        + "\" parameter).<br>"
+        
+                        + "<br>- \"" + FilterMethods.WITH_PARENT + "\" Objects with the parent specified by \""
+                        + PARENT_OBJECT + "\" are removed, counted or moved (depending on the \"" + FILTER_MODE
+                        + "\" parameter).<br>"
+                        
+                );
+
+        parameters.get(PARENT_OBJECT).setDescription("Parent object to filter by.  The presence or absence of this relationship will determine which of the input objects are counted, removed or moved (depending on the \""+FILTER_MODE+"\" parameter).");
+
+        String metadataName = getMetadataName("[inputObjectsName]", FilterMethods.WITHOUT_PARENT, "[parentObjectsName]");
+        parameters.get(STORE_RESULTS).setDescription("When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format \""+metadataName+"\").");
 
     }
 }
