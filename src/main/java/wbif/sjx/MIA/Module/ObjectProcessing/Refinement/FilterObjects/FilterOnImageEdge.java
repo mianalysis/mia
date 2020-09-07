@@ -199,27 +199,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
-
-        // If the filtered objects are to be moved to a new class, assign them the
-        // measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-
-            // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName, this);
-
-            for (ObjMeasurementRef reference : references.values()) {
-                returnedRefs
-                        .add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
-            }
-
-            return returnedRefs;
-
-        }
-
-        return null;
+        return super.updateAndGetObjectMeasurementRefs();
 
     }
 

@@ -38,8 +38,6 @@ import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 public class FilterSpecificObjectIDs extends AbstractObjectFilter implements ActionListener {
     public static final String FILTER_SEPARATOR = "Object filtering";
-    public static final String FILTER_METHOD = "Method for filtering";
-    public static final String MEASUREMENT = "Measurement to filter on";
     public static final String SHOW_IMAGE = "Show image";
     public static final String DISPLAY_IMAGE_NAME = "Image to display";
     public static final String STORE_RESULTS = "Store filter results";
@@ -52,29 +50,13 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     private boolean active = false;
 
     public FilterSpecificObjectIDs(ModuleCollection modules) {
-        super("Objects with specific IDs",modules);
+        super("Objects with specific IDs", modules);
     }
 
-    public interface FilterMethods {
-        String WITH_MEASUREMENT = "Remove objects with measurement";
-        String WITHOUT_MEASUREMENT = "Remove objects without measurement";
-
-        String[] ALL = new String[]{WITH_MEASUREMENT, WITHOUT_MEASUREMENT};
+    public String getMetadataName(String inputObjectsName) {
+        return "FILTER // NUM_" + inputObjectsName + "_BY_ID";
 
     }
-
-
-    public String getFullName(String inputObjectsName, String filterMethod, String measName) {
-        switch (filterMethod) {
-            case FilterMethods.WITH_MEASUREMENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITH " + measName + " MEASUREMENT";
-            case FilterMethods.WITHOUT_MEASUREMENT:
-                return "FILTER // NUM_" + inputObjectsName + " WITHOUT " + measName + " MEASUREMENT";
-            default:
-                return "";
-        }
-    }
-
 
     private void showOptionsPanel() {
         active = true;
@@ -86,26 +68,26 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5,5,5,5);
+        c.insets = new Insets(5, 5, 5, 5);
 
         // Header panel
         JLabel headerLabel = new JLabel("<html>Specify object IDs to remove (comma separated)</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        headerLabel.setPreferredSize(new Dimension(300,elementHeight));
-        frame.add(headerLabel,c);
+        headerLabel.setPreferredSize(new Dimension(300, elementHeight));
+        frame.add(headerLabel, c);
 
         numbersField = new JTextField();
         numbersField.setPreferredSize(new Dimension(200, elementHeight));
         c.gridy++;
         c.insets = new Insets(0, 5, 5, 5);
-        frame.add(numbersField,c);
+        frame.add(numbersField, c);
 
         JButton okButton = new JButton(OK);
         okButton.addActionListener(this);
         okButton.setActionCommand(OK);
-        okButton.setPreferredSize(new Dimension(300,elementHeight));
+        okButton.setPreferredSize(new Dimension(300, elementHeight));
         c.gridy++;
-        frame.add(okButton,c);
+        frame.add(okButton, c);
 
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -114,7 +96,8 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     }
 
-    public int filter(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, @Nullable Image image) {
+    public int filter(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove,
+            @Nullable Image image) {
         ImagePlus ipl = null;
         if (image != null) {
             ipl = image.getImagePlus().duplicate();
@@ -132,14 +115,15 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
             }
         }
 
-        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(),true);
+        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(), true);
 
         frame.dispose();
         frame = null;
-        if (ipl != null) ipl.close();
+        if (ipl != null)
+            ipl.close();
 
         int count = 0;
-        for (int id:ids) {
+        for (int id : ids) {
             Obj obj = inputObjects.get(id);
             count++;
             if (remove) {
@@ -175,28 +159,28 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         // Getting parameters
         String filterMode = parameters.getValue(FILTER_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-        String filterMethod = parameters.getValue(FILTER_METHOD);
-        String measName = parameters.getValue(MEASUREMENT);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
         boolean moveObjects = filterMode.equals(FilterModes.MOVE_FILTERED);
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
-        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName,inputObjects) : null;
+        ObjCollection outputObjects = moveObjects ? new ObjCollection(outputObjectsName, inputObjects) : null;
         Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
 
-        int count = filter(inputObjects,outputObjects,remove,displayImage);
+        int count = filter(inputObjects, outputObjects, remove, displayImage);
 
         // If moving objects, addRef them to the workspace
-        if (moveObjects) workspace.addObjects(outputObjects);
+        if (moveObjects)
+            workspace.addObjects(outputObjects);
 
         // If storing the result, create a new metadata item for it
-        String metadataName = getFullName(inputObjectsName,filterMethod,measName);
-        workspace.getMetadata().put(metadataName,count);
+        String metadataName = getMetadataName(inputObjectsName);
+        workspace.getMetadata().put(metadataName, count);
 
         // Showing objects
-        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
+        if (showOutput)
+            inputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 
@@ -206,9 +190,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
-        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITHOUT_MEASUREMENT, FilterMethods.ALL));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
@@ -217,14 +199,9 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addAll(super.updateAndGetParameters());
         returnedParameters.add(parameters.getParameter(FILTER_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(FILTER_METHOD));
-        returnedParameters.add(parameters.getParameter(MEASUREMENT));
-        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
         if ((boolean) parameters.getValue(SHOW_IMAGE)) {
             returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE_NAME));
@@ -243,38 +220,19 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     @Override
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
-        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
-
-        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
-        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
-
-            // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
-
-            for (ObjMeasurementRef reference:references.values()) {
-                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
-            }
-
-            return returnedRefs;
-
-        }
-
-        return null;
+        return super.updateAndGetObjectMeasurementRefs();
     }
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        // Filter results are stored as a metadata item since they apply to the whole set
+        // Filter results are stored as a metadata item since they apply to the whole
+        // set
         if ((boolean) parameters.getValue(STORE_RESULTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            String filterMethod = parameters.getValue(FILTER_METHOD);
-            String measName = parameters.getValue(MEASUREMENT);
 
-            String metadataName = getFullName(inputObjectsName,filterMethod,measName);
+            String metadataName = getMetadataName(inputObjectsName);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
 

@@ -3,11 +3,9 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 
 import com.drew.lang.annotations.Nullable;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
@@ -18,6 +16,8 @@ import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
+import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.PartnerRefCollection;
 
@@ -37,59 +37,6 @@ public abstract class AbstractObjectFilter extends Module {
         String REMOVE_FILTERED = "Remove filtered objects";
 
         String[] ALL = new String[] { DO_NOTHING, MOVE_FILTERED, REMOVE_FILTERED };
-
-    }
-
-    public interface FilterMethods {
-        String LESS_THAN = "Less than";
-        String LESS_THAN_OR_EQUAL_TO = "Less than or equal to";
-        String EQUAL_TO = "Equal to";
-        String GREATER_THAN_OR_EQUAL_TO = "Greater than or equal to";
-        String GREATER_THAN = "Greater than";
-        String NOT_EQUAL_TO = "Not equal to";
-
-        String[] ALL = new String[] { LESS_THAN, LESS_THAN_OR_EQUAL_TO, EQUAL_TO, GREATER_THAN_OR_EQUAL_TO,
-                GREATER_THAN, NOT_EQUAL_TO };
-
-    }
-
-    public static boolean testFilter(double testValue, double referenceValue, String filterMethod) {
-        switch (filterMethod) {
-            case FilterMethods.LESS_THAN:
-                return testValue < referenceValue;
-            case FilterMethods.LESS_THAN_OR_EQUAL_TO:
-                return testValue <= referenceValue;
-            case FilterMethods.EQUAL_TO:
-                return testValue == referenceValue;
-            case FilterMethods.GREATER_THAN_OR_EQUAL_TO:
-                return testValue >= referenceValue;
-            case FilterMethods.GREATER_THAN:
-                return testValue > referenceValue;
-            case FilterMethods.NOT_EQUAL_TO:
-                return testValue != referenceValue;
-        }
-
-        return false;
-
-    }
-
-    public static String getFilterMethodSymbol(String filterMethod) {
-        switch (filterMethod) {
-            case FilterMethods.LESS_THAN:
-                return "<";
-            case FilterMethods.LESS_THAN_OR_EQUAL_TO:
-                return "<=";
-            case FilterMethods.EQUAL_TO:
-                return "==";
-            case FilterMethods.GREATER_THAN_OR_EQUAL_TO:
-                return ">=";
-            case FilterMethods.GREATER_THAN:
-                return ">";
-            case FilterMethods.NOT_EQUAL_TO:
-                return "!=";
-        }
-
-        return "";
 
     }
 
@@ -141,7 +88,7 @@ public abstract class AbstractObjectFilter extends Module {
         // specific type (e.g. OutputTrackObjectsP) to match the input object type
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
-        addParameterDescriptions();
+        addAbstractParameterDescriptions();
 
     }
 
@@ -181,6 +128,28 @@ public abstract class AbstractObjectFilter extends Module {
         }
 
         return returnedParameters;
+
+    }
+
+    @Override
+    public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
+        
+        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
+        if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED)) {
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
+
+            // Getting object measurement references associated with this object set
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName, this);
+
+            for (ObjMeasurementRef reference : references.values()) {
+                returnedRefs
+                        .add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
+            }
+        }
+        
+        return returnedRefs;
 
     }
 
@@ -243,7 +212,7 @@ public abstract class AbstractObjectFilter extends Module {
         return true;
     }
 
-    void addParameterDescriptions() {
+    void addAbstractParameterDescriptions() {
         parameters.get(INPUT_OBJECTS).setDescription("Objects to be filtered.");
 
         parameters.get(FILTER_MODE)
