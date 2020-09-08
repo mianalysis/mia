@@ -9,9 +9,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
@@ -33,7 +31,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
     
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection based on a measurement value associated with this object.  The threshold (reference) value can be either a fixed value (same for all objects), a measurement associated with an image (same for all objects within a single analysis run) or a measurement associated with a parent object (potentially different for all objects).  Objects which satisfy the specified numeric filter (less than, equal to, greater than, etc.) can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.";
     }
     
     @Override
@@ -61,7 +59,7 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
             
-            // Removing the object if it has no children
+            // Skipping this object if it doesn't have the measurement
             Measurement measurement = inputObject.getMeasurement(measName);
             if (measurement == null) continue;
             
@@ -107,6 +105,8 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
         super.initialiseParameters();
         
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+
+        addParameterDescriptions();
                 
     }
     
@@ -153,17 +153,23 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
-        
+
         // Filter results are stored as a metadata item since they apply to the whole set
         if ((boolean) parameters.getValue(STORE_SUMMARY_RESULTS)) {
             String measName = parameters.getValue(MEASUREMENT);
             String metadataName = getSummaryMeasurementName(measName);
 
             returnedRefs.add(metadataRefs.getOrPut(metadataName));
-            
+
         }
-        
+
         return returnedRefs;
-        
+
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(MEASUREMENT).setDescription(
+                "Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module \""+new FilterWithWithoutMeasurement(null).getName()+"\".");
+
     }
 }

@@ -71,8 +71,6 @@ public class ModuleIsEnabled extends CoreWorkspaceHandler {
     @Override
     protected Status process(Workspace workspace) {
         // Getting parameters
-        String testMode = parameters.getValue(TEST_MODE);
-        Module testModule = parameters.getValue(TEST_MODULE);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
 
         if (testDoRedirect())
