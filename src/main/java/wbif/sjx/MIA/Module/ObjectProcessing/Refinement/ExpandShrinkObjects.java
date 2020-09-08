@@ -20,7 +20,7 @@ import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
@@ -41,7 +41,8 @@ public class ExpandShrinkObjects extends Module {
 
     public static final String PROCESSING_SEPARATOR = "Processing options";
     public static final String METHOD = "Method";
-    public static final String RADIUS_CHANGE_PX = "Radius change (px)";
+    public static final String RADIUS_CHANGE = "Radius change";
+    public static final String CALIBRATED_UNITS = "Calibrated units";
 
     public ExpandShrinkObjects(ModuleCollection modules) {
         super("Expand and shrink objects", modules);
@@ -111,22 +112,23 @@ public class ExpandShrinkObjects extends Module {
         // Creating a new object collection (only contains one image) from the
         // transformed image
         ObjCollection outputObjects = objectImage.convertImageToObjects(inputObject.getVolumeType(), "NewObjects");
-        
+
         // During object shrinking it's possible the object will disappear entirely
         if (outputObjects.size() == 0)
             return null;
 
         Obj outputObject = outputObjects.getFirst();
-        
+
         double[][] extents = inputObject.getExtents(true, false);
         int xOffs = (int) Math.round(extents[0][0]) - borderWidths[0][0];
         int yOffs = (int) Math.round(extents[1][0]) - borderWidths[1][0];
         int zOffs = (int) Math.round(extents[2][0]) - borderWidths[2][0];
-        
-        // Updating the output objects spatial calibration to the full range, then moving objects to the correct positions
-        outputObjects.setSpatialCalibration(inputObject.getSpatialCalibration(),true);
+
+        // Updating the output objects spatial calibration to the full range, then
+        // moving objects to the correct positions
+        outputObjects.setSpatialCalibration(inputObject.getSpatialCalibration(), true);
         outputObject.translateCoords(xOffs, yOffs, zOffs);
-        
+
         return outputObject;
 
     }
@@ -169,13 +171,19 @@ public class ExpandShrinkObjects extends Module {
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
         String method = parameters.getValue(METHOD);
-        int radiusChangePx = parameters.getValue(RADIUS_CHANGE_PX);
+        double radiusChange = parameters.getValue(RADIUS_CHANGE);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
 
         // Storing the image calibration
-        Obj firstObject = inputObjects.getFirst();
-        if (firstObject == null)
+        Obj firstObj = inputObjects.getFirst();
+        if (firstObj == null)
             return Status.PASS;
 
+        if (calibratedUnits)
+            radiusChange = radiusChange / firstObj.getDppXY();
+
+        int radiusChangePx = (int) Math.round(radiusChange);
+        
         // Iterating over all objects
         int count = 1;
         int total = inputObjects.size();
@@ -209,7 +217,7 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.clearCentroid();
                 inputObject.clearProjected();
             } else {
-                Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), firstObject);
+                Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), firstObj);
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
                 outputObject.setT(newObject.getT());
                 outputObject.addParent(inputObject);
@@ -243,7 +251,8 @@ public class ExpandShrinkObjects extends Module {
 
         parameters.add(new ParamSeparatorP(PROCESSING_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.EXPAND_2D, Methods.ALL));
-        parameters.add(new IntegerP(RADIUS_CHANGE_PX, this, 1));
+        parameters.add(new DoubleP(RADIUS_CHANGE, this, 1));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
     }
 
@@ -261,7 +270,8 @@ public class ExpandShrinkObjects extends Module {
 
         returnedParameters.add(parameters.getParameter(PROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(METHOD));
-        returnedParameters.add(parameters.getParameter(RADIUS_CHANGE_PX));
+        returnedParameters.add(parameters.getParameter(RADIUS_CHANGE));
+        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         return returnedParameters;
 

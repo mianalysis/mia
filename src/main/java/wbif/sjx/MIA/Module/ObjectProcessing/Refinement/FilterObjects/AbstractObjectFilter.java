@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import com.drew.lang.annotations.Nullable;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
@@ -173,9 +174,9 @@ public abstract class AbstractObjectFilter extends Module {
 
                 // Adding relationships where the input object is the child
                 String[] parentNames = currentRefs.getParentNames(inputObjectsName, true);
-                for (String parentName : parentNames)
+                for (String parentName : parentNames) 
                     returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
-
+            
                 break;
 
         }
