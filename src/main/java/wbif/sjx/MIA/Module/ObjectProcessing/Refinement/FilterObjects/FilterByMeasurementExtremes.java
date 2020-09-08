@@ -49,7 +49,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
             minMax[0] = Math.min(minMax[0], value);
             minMax[1] = Math.max(minMax[1], value);
-            
+
         }
 
         return minMax;
@@ -78,7 +78,7 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection to remove/retain the object with the largest/smallest value for a specific measurement.  The objects identified for removal can be indeed removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).";
     }
 
     @Override
@@ -123,7 +123,8 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
             workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
+        if (showOutput)
+            inputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 
@@ -136,6 +137,8 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.REMOVE_LARGEST, FilterMethods.ALL));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -169,5 +172,24 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(FILTER_METHOD).setDescription("Controls what happens to objects which don't pass the filter:<br>"
+                + "<br>- \"" + FilterMethods.REMOVE_LARGEST
+                + "\" Remove the object with the largest value measurement specified by \""+MEASUREMENT+"\".<br>"
+
+                + "<br>- \"" + FilterMethods.REMOVE_SMALLEST
+                + "\" Remove the object with the smallest value measurement specified by \""+MEASUREMENT+"\".<br>"
+
+                + "<br>- \"" + FilterMethods.RETAIN_LARGEST
+                + "\" Retain only the object with the largest value measurement specified by \""+MEASUREMENT+"\".<br>"
+
+                + "<br>- \"" + FilterMethods.RETAIN_SMALLEST
+                + "\" Retain only the object with the smallest value measurement specified by \""+MEASUREMENT+"\".<br>"
+                );
+
+        parameters.get(MEASUREMENT).setDescription("Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module \""+new FilterWithWithoutMeasurement(null).getName()+"\".");
+
     }
 }

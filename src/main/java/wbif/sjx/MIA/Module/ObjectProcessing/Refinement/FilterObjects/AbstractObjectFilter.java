@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 
 import com.drew.lang.annotations.Nullable;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
@@ -173,9 +174,9 @@ public abstract class AbstractObjectFilter extends Module {
 
                 // Adding relationships where the input object is the child
                 String[] parentNames = currentRefs.getParentNames(inputObjectsName, true);
-                for (String parentName : parentNames)
+                for (String parentName : parentNames) 
                     returnedRefs.add(parentChildRefs.getOrPut(parentName, outputObjectsName));
-
+            
                 break;
 
         }
@@ -216,8 +217,8 @@ public abstract class AbstractObjectFilter extends Module {
         parameters.get(INPUT_OBJECTS).setDescription("Objects to be filtered.");
 
         parameters.get(FILTER_MODE)
-                .setDescription("Controls what happens to objects which don't pass the filter:<br>" + "<br>- \""
-                        + FilterModes.DO_NOTHING + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).<br>"
+                .setDescription("Controls what happens to objects which don't pass the filter:<br>"
+                        + "<br>- \"" + FilterModes.DO_NOTHING + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).<br>"
 
                         + "<br>- \"" + FilterModes.MOVE_FILTERED + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""+OUTPUT_FILTERED_OBJECTS+"\" parameter.  All existing measurements and relationships are carried forward into the new object collection.<br>"
 

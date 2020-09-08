@@ -19,20 +19,18 @@ import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
@@ -147,7 +145,10 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection based on user-defined list of object ID numbers.  When the module executes, the user is presented with a dialog box where they can enter a comma-separated list of object IDs to remove.  Once the list is complete, the user presses \"OK\" to proceed.  All objects with ID numbers matching those in the list can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  To assist with selection of ID numbers, an optional image can be displayed - this could be pre-prepared to display object ID numbers using the \""
+                + new AddLabels(null).getName()
+                + "\" module.  The number of objects specified for removal can be stored as a metadata value.";
+        
     }
 
     @Override
@@ -195,6 +196,8 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
+        addParameterDescriptions();
+       
     }
 
     @Override
@@ -239,6 +242,18 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         }
 
         return returnedRefs;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(SHOW_IMAGE).setDescription("When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the \""+DISPLAY_IMAGE_NAME+"\" parameter.");
+
+        parameters.get(DISPLAY_IMAGE_NAME).setDescription("Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the \""+new AddLabels(null).getName()+"\" module.");
+
+        String metadataName = getMetadataName("[inputObjectsName]");
+        parameters.get(STORE_RESULTS).setDescription(
+                "When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format \""
+                        + metadataName + "\").");
+
     }
 
     @Override

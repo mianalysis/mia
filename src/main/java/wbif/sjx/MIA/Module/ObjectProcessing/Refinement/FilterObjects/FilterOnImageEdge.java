@@ -17,7 +17,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
 
 public class FilterOnImageEdge extends AbstractObjectFilter {
@@ -46,7 +45,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
             boolean includeZ, boolean remove, @Nullable ObjCollection outputObjects) {
         if (removalEdges == null)
             removalEdges = new boolean[] { true, true, true, true };
-            
+
         int count = 0;
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -115,7 +114,8 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection based on contact of each object with the image edge.  Contact is considered as a case where an object pixel is in the outer-most row, column or slice  of an image (e.g. x = 0, y = max_value).  The maximum number of contact pixels before an object is removed can be set to permit a degree of contact.  Objects identified as being in contact with the image edge can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.  <br><br>Image edge filters can be used when counting the number of objects in a field of view - in this case, typically two adjacent edges are removed (e.g. bottom and right) to prevent over-counting.  Alternatively, removing objects on all edges can be performed when measuring whole-object properties such as area or volume to prevent under-measuring values.";
+
     }
 
     @Override
@@ -172,6 +172,8 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
         parameters.add(new BooleanP(INCLUDE_Z_POSITION, this, false));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -220,5 +222,42 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
         }
 
         return returnedRefs;
+
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(MAXIMUM_CONTACT).setDescription(
+                "Maximum number of object pixels which can lie along any of the specified edges without the object being removed.  This provides tolerance for objects which only just make contact with the image edge.");
+
+        parameters.get(REMOVE_ON_TOP).setDescription(
+                "When selected, object pixels which make contact with the top of the image (y = 0) will count towards the \""
+                        + MAXIMUM_CONTACT
+                        + "\" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).");
+
+        parameters.get(REMOVE_ON_LEFT).setDescription(
+                "When selected, object pixels which make contact with the left side of the image (x = 0) will count towards the \""
+                        + MAXIMUM_CONTACT
+                        + "\" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).");
+
+        parameters.get(REMOVE_ON_BOTTOM).setDescription(
+                "When selected, object pixels which make contact with the bottom of the image (y = max_value) will count towards the \""
+                        + MAXIMUM_CONTACT
+                        + "\" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).");
+
+        parameters.get(REMOVE_ON_RIGHT).setDescription(
+                "When selected, object pixels which make contact with the right side of the image (x = max_value) will count towards the \""
+                        + MAXIMUM_CONTACT
+                        + "\" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).");
+
+        parameters.get(INCLUDE_Z_POSITION).setDescription(
+                "When selected, object pixels which make contact with the lower (z = 0) and upper (z = max_value) slices of the image stack will count towards the \""
+                        + MAXIMUM_CONTACT
+                        + "\" limit.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).  If enabled for single slice stacks all objects will removed.");
+
+        String metadataName = getMetadataName("[inputObjectsName]", true);
+        parameters.get(STORE_RESULTS).setDescription(
+                "When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format \""
+                        + metadataName + "\").");
+
     }
 }

@@ -9,11 +9,8 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.PartnerObjectsP;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -33,7 +30,8 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection based on the number of partners each object has from another object collection.  The threshold (reference) value can be either a fixed value (same for all objects), a measurement associated with an image (same for all objects within a single analysis run) or a measurement associated with a parent object (potentially different for all objects).  Objects which satisfy the specified numeric filter (less than, equal to, greater than, etc.) can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.";
+
     }
 
     @Override
@@ -111,6 +109,8 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -168,5 +168,11 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
         }
 
         return returnedRefs;
+
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(PARTNER_OBJECTS).setDescription("Objects will be filtered against the number of partners they have from this object collection.");
+
     }
 }

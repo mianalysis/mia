@@ -284,6 +284,31 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
     }
 
     protected void addAbstractNumericParameterDescriptions() {
+        parameters.get(FILTER_METHOD).setDescription("Numeric comparison used to determine which objects should be removed.  Objects with specified property (e.g. a measurement value) that passes this filter will be removed.  For example, an object with a measurement value of 7 would be removed if \""+FILTER_METHOD+"\" is set to \""+FilterMethods.LESS_THAN+"\" with a reference value of 10.  Options are: "+ String.join(", ", FilterMethods.ALL) + ".");
+
+        parameters.get(REFERENCE_MODE).setDescription("Type of reference value used to compare objects to:<br>"
+                + "<br>- \"" + ReferenceModes.FIXED_VALUE
+                + "\" Objects will be compared to a single, fixed value specified using the \"" + REFERENCE_VALUE
+                + "\" parameter.<br>"
+        
+                + "<br>- \"" + ReferenceModes.IMAGE_MEASUREMENT
+                + "\" Objects will be compared to a measurement associated with an image in the workspace.  The image and associated measurement are specified by the \""+REFERENCE_VAL_IMAGE+"\" and \""+REFERENCE_IMAGE_MEASUREMENT+"\" parameters.  In this mode, all objects will still be compared to the same value; however, this value can vary between input files.<br>"
+                
+                + "<br>- \"" + ReferenceModes.PARENT_OBJECT_MEASUREMENT
+                + "\" Objects will be compared to a measurement associated with a parent object.  The parent object and measurement are specified by the \""+REFERENCE_VAL_PARENT_OBJECT+"\" and \""+REFERENCE_OBJECT_MEASUREMENT+"\" parameters.  In this mode all objects can (but won't necessarily) be compared to different values.<br>");
+
+        parameters.get(REFERENCE_VALUE).setDescription("When \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.FIXED_VALUE+"\", all objects will be compared to this fixed value.");
+
+        parameters.get(REFERENCE_VAL_IMAGE).setDescription("When \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.IMAGE_MEASUREMENT+"\", all objects will be compared to a measurement associated with this image.");
+
+        parameters.get(REFERENCE_IMAGE_MEASUREMENT).setDescription("When \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.IMAGE_MEASUREMENT+"\", all objects will be compared to this measurement, which itself is associated with the image specified by \""+REFERENCE_VAL_IMAGE+"\".");
+
+        parameters.get(REFERENCE_VAL_PARENT_OBJECT).setDescription("When \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.PARENT_OBJECT_MEASUREMENT+"\", all objects will be compared to a measurement associated with their parent object from this collection.");
+
+        parameters.get(REFERENCE_OBJECT_MEASUREMENT).setDescription("When \""+REFERENCE_MODE+"\" is set to \""+ReferenceModes.PARENT_OBJECT_MEASUREMENT+"\", all objects will be compared to this measurement, which itself is associated with the parent object specified by \""+REFERENCE_VAL_PARENT_OBJECT+"\".");
+
+        parameters.get(REFERENCE_MULTIPLIER).setDescription("Irrespective of how the reference value was determined, it can be systematically adjusted prior to use for comparison using this multiplier.  For example, an image measurement reference value of 32 with a \""+REFERENCE_MULTIPLIER+"\" of \"0.5\" will see all objects compared against a value of 16.  This is useful when comparing to dynamic values coming from image and parent object measurements.");
+
         parameters.get(STORE_INDIVIDUAL_RESULTS).setDescription(
                 "When selected, each input object will be assigned a measurement reporting if that object passed or failed the filter.  The measurement value is \"1\" for objects that failed the filter (i.e. would be removed if the relevant removal setting was enabled) and \"0\" for objects that passed (i.e. wouldn't be removed).");
 
