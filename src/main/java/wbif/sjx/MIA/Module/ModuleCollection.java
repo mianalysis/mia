@@ -11,7 +11,6 @@ import java.util.LinkedHashSet;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Module.Hidden.WorkflowParameters;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.RemovedImageP;
@@ -37,7 +36,6 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
      *
      */
     private static final long serialVersionUID = -2862089290555674650L;
-    private WorkflowParameters workflowParameters = new WorkflowParameters(this);
     private InputControl inputControl = new InputControl(this);
     private OutputControl outputControl = new OutputControl(this);
 
@@ -442,14 +440,6 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
 
         return false;
 
-    }
-
-    public WorkflowParameters getWorkflowParameters() {
-        return workflowParameters;
-    }
-
-    public void setWorkflowParameters(WorkflowParameters workflowParameters) {
-        this.workflowParameters = workflowParameters;
     }
 
     public InputControl getInputControl() {

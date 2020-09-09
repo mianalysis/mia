@@ -41,7 +41,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Measure intensity statistics (mean, minimum, maximum, sum and standard deviation) for an image in the workspace.  Measurements are associated with the input image, so can be used later on or exported to the results spreadsheet.";
     }
 
     @Override
@@ -72,6 +72,8 @@ public class MeasureImageIntensity extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -138,5 +140,10 @@ public class MeasureImageIntensity extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to measure intensity statistics for.  The resulting measurements will be associated with this image for use in subsequent modules.");
+
     }
 }
