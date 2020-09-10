@@ -15,8 +15,7 @@ public class LostAndFound {
 
         // Populating hard-coded parameter reassignments
         HashMap<String, String> currentParameters = new HashMap<>();
-        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);
-        
+        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);        
         String moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
 

@@ -129,7 +129,7 @@ public class GlobalVariables extends Module {
     @Override
     protected void initialiseParameters() {
         ParameterCollection parameterCollection = new ParameterCollection();
-        parameterCollection.add(new StringP(VARIABLE_NAME, this));
+        parameterCollection.add(new StringP(VARIABLE_NAME, this, "", "Name of this variable.  This is the name that will be used when referring to the variable in place of fixed values.  To refer to variables, use the form \"V{[VARIABLE_NAME]}\", where \"[VARIABLE_NAME]\" is replaced by the variable name.  For example, a variable called \"my_var\" would be referred to using the text \"V{my_var}\"."));
         parameterCollection.add(new ChoiceP(CONTROL_TYPE, this, ControlTypes.TEXT, ControlTypes.ALL));
         parameterCollection.add(new StringP(VARIABLE_VALUE, this));
         parameterCollection.add(new ChoiceP(VARIABLE_CHOICE, this, "", new String[0]));

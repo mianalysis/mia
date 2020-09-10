@@ -153,6 +153,8 @@ public class FitGaussian2D extends Module {
             spotObject.clearSurface();
             spotObject.clearCentroid();
             spotObject.clearProjected();
+            spotObject.clearROIs();
+
         }
     }
 

@@ -216,6 +216,8 @@ public class ExpandShrinkObjects extends Module {
                 inputObject.clearSurface();
                 inputObject.clearCentroid();
                 inputObject.clearProjected();
+                inputObject.clearROIs();
+
             } else {
                 Obj outputObject = new Obj(outputObjectsName, outputObjects.getAndIncrementID(), firstObj);
                 outputObject.setCoordinateSet(newObject.getCoordinateSet());
@@ -223,6 +225,7 @@ public class ExpandShrinkObjects extends Module {
                 outputObject.addParent(inputObject);
                 inputObject.addChild(outputObject);
                 outputObjects.add(outputObject);
+
             }
         }
 
