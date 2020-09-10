@@ -45,7 +45,10 @@ public class ParentChildRefCollection extends TreeMap<String, ParentChildRef> im
         if (!useHierarchy) return newChildNames;
 
         // Adding parent names from parents
-        for (String childName:childNames) {
+        for (String childName : childNames) {
+            if (childName.equals(parentName))
+                return newChildNames;
+
             TreeSet<String> currentParentNames = getChildNames(childName,true,rootName+childName+" // ");
             newChildNames.addAll(currentParentNames);
         }

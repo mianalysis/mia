@@ -261,6 +261,8 @@ public class RunTrackMate extends Module {
             spotObject.clearSurface();
             spotObject.clearCentroid();
             spotObject.clearProjected();
+            spotObject.clearROIs();
+
         }
     }
 

@@ -1,20 +1,22 @@
 package wbif.sjx.MIA.Object;
 
+import java.awt.Polygon;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume.*;
-
-import java.awt.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import wbif.sjx.common.Object.Volume.PointOutOfRangeException;
+import wbif.sjx.common.Object.Volume.SpatCal;
+import wbif.sjx.common.Object.Volume.Volume;
+import wbif.sjx.common.Object.Volume.VolumeType;
 
 /**
  * Created by Stephen on 30/04/2017.
@@ -534,6 +536,11 @@ public class Obj extends Volume {
         getCoordinateSet().removeIf(point -> point.getX() < 0 || point.getX() >= width || point.getY() < 0
                 || point.getY() >= height || point.getZ() < 0 || point.getZ() >= nSlices);
 
+    }
+
+    public void clearROIs() {
+        rois = new HashMap<>();
+        
     }
 
     @Override

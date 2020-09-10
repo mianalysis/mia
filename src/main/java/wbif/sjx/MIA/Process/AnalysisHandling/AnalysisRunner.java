@@ -98,7 +98,7 @@ public class AnalysisRunner {
             MIA.log.writeStatus("Exporting data");
             File outputFile = new File((String) inputControl.getParameterValue(InputControl.INPUT_PATH));
             String name = outputControl.getGroupOutputPath(outputFile);
-            exporter.export(workspaces, analysis, name);
+            exporter.exportResults(workspaces, analysis, name);
         }
 
         // Running macro (if enabled)

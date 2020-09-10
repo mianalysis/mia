@@ -308,7 +308,7 @@ public class OutputControl extends Module {
 
                 + "<li>\"Log\" A list of any error messages presented to the user while the analysis was running."
 
-                + "<li>\"Summary\" Each analysis run is summarised by a single line (or one line per timepoint, if selected) containing metadata values, image measurements, the number of objects detected as well as statistics for object collections (e.g. mean of a particular measurement).  The summary sheet is intended to facilitate quick analysis; all data contained in this sheet (with the exception of image measurements) can be manually compiled from the individual object sheets.  This sheet can be enabled/disabled using the \""
+                + "<li>\"Summary\" Each analysis run is summarised by a single line (or one line per timepoint or metadata value, if selected) containing metadata values, image measurements, the number of objects detected as well as statistics for object collections (e.g. mean of a particular measurement).  The summary sheet is intended to facilitate quick analysis; all data contained in this sheet (with the exception of image measurements) can be manually compiled from the individual object sheets.  This sheet can be enabled/disabled using the \""
                 + EXPORT_SUMMARY + "\" parameter."
 
                 + "<li>\"[Object-specific sheets]\" Each object collection can export to a separate sheet.  These sheets contain one row per object in that collection and include metadata values, along with all measurements and relationships for that object.  This sheet can be enabled/disabled using the \""
@@ -499,26 +499,49 @@ public class OutputControl extends Module {
 
         ParameterGroup group = (ParameterGroup) parameters.get(ADD_VARIABLE);
         ParameterCollection collection = group.getTemplateParameters();
-        collection.get(VARIABLE_NAME).setDescription("The variable value can be accessed from within the macro by using this variable name.");
+        collection.get(VARIABLE_NAME).setDescription(
+                "The variable value can be accessed from within the macro by using this variable name.");
 
         collection.get(VARIABLE_VALUE).setDescription("Value assigned to this variable.");
 
-        parameters.get(ADD_VARIABLE).setDescription("Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""+getName()+"\" panel.");
+        parameters.get(ADD_VARIABLE).setDescription(
+                "Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""
+                        + getName() + "\" panel.");
 
-        parameters.get(MACRO_MODE).setDescription("Select the source for the macro code:<br><ul>"
-                + "<li>\""+MacroModes.MACRO_FILE+"\" Load the macro from the file specified by the \""+MACRO_FILE+"\" parameter.</li>"
-                
-                + "<li>\"" + MacroModes.MACRO_TEXT + "\" Macro code is written directly into the \"" + MACRO_TEXT
-                + "\" box.</li></ul>");
+        parameters.get(MACRO_MODE)
+                .setDescription("Select the source for the macro code:<br><ul>" + "<li>\"" + MacroModes.MACRO_FILE
+                        + "\" Load the macro from the file specified by the \"" + MACRO_FILE + "\" parameter.</li>"
 
-        parameters.get(MACRO_TEXT)
-                .setDescription("Macro code to be executed.  MIA macro commands are enabled using the \"run(\"Enable MIA Extensions\");\" command which is included by default.  This should always be the first line of a macro if these commands are needed.");
-                
-        parameters.get(MACRO_FILE).setDescription("Select a macro file (.ijm) to run once, after all analysis runs have completed.");
+                        + "<li>\"" + MacroModes.MACRO_TEXT + "\" Macro code is written directly into the \""
+                        + MACRO_TEXT + "\" box.</li></ul>");
 
-        parameters.get(TEST_BUTTON).setDescription("Runs the macro on the currently-active workspace.  This requires that the analysis has been run at least once already, either by clicking the \"Run\" button or by evaluating all modules (or some, if not all required for macro) using the arrow buttons.");
+        parameters.get(MACRO_TEXT).setDescription(
+                "Macro code to be executed.  MIA macro commands are enabled using the \"run(\"Enable MIA Extensions\");\" command which is included by default.  This should always be the first line of a macro if these commands are needed.");
 
-        parameters.get(EXPORT_MODE).setDescription("");
+        parameters.get(MACRO_FILE)
+                .setDescription("Select a macro file (.ijm) to run once, after all analysis runs have completed.");
+
+        parameters.get(TEST_BUTTON).setDescription(
+                "Runs the macro on the currently-active workspace.  This requires that the analysis has been run at least once already, either by clicking the \"Run\" button or by evaluating all modules (or some, if not all required for macro) using the arrow buttons.");
+
+        parameters.get(EXPORT_MODE).setDescription(
+                "Controls the number of results spreadsheets that are exported and what they contain:<br><ul>"
+
+                        + "<li>\"" + ExportModes.ALL_TOGETHER
+                        + "\" Results from all current analysis runs are grouped into a single spreadsheet.  The same sheets are used for all runs, so it's necessary to include a filename (and where necessary, a series name/number) metadata identifier.  Unless \""
+                        + SAVE_NAME_MODE + "\" is set to \"" + SaveNameModes.SPECIFIC_NAME
+                        + "\", this file is named after the input file/folder.</li>"
+
+                        + "<li>\"" + ExportModes.GROUP_BY_METADATA
+                        + "\" Results are grouped and exported by a specific metadata item associated with each analysis run.  Unless \""
+                        + SAVE_NAME_MODE + "\" is set to \"" + SaveNameModes.SPECIFIC_NAME
+                        + "\", the files are named in the format \"[input file/folder name]_[metadata name]-[metadata value]\".  The metadata item to group on is specified by the \""
+                        + METADATA_ITEM_FOR_GROUPING + "\" parameter.</li>"
+
+                        + "<li>\"" + ExportModes.INDIVIDUAL_FILES
+                        + "\" A separate results spreadsheet is saved for each analysis run.</li>"
+
+                        + "<li>\"" + ExportModes.NONE + "\" No results spreadsheets are exported.</li></ul>");
 
         parameters.get(INDIVIDUAL_SAVE_LOCATION).setDescription("");
 
@@ -530,11 +553,14 @@ public class OutputControl extends Module {
 
         parameters.get(SAVE_FILE_NAME).setDescription("");
 
-        parameters.get(METADATA_ITEM_FOR_GROUPING).setDescription("");
+        parameters.get(METADATA_ITEM_FOR_GROUPING).setDescription("If \"" + EXPORT_MODE + "\" is set to \""
+                + ExportModes.GROUP_BY_METADATA
+                + "\", results will be grouped and saved by the value of this metadata item associated with each analysis run.  There will be one results spreadsheet for each unique value of this metadata item.");
 
-        parameters.get(CONTINUOUS_DATA_EXPORT).setDescription("");
+        parameters.get(CONTINUOUS_DATA_EXPORT).setDescription("When selected, the results spreadsheet(s) can be exported at intervals during a multi-analysis run.  They will be exported every N runs, where N is controlled by the \""+SAVE_EVERY_N+"\" parameter.  The spreadsheet(s) will still be stored when all analysis runs have completed.");
 
-        parameters.get(SAVE_EVERY_N).setDescription("");
+        parameters.get(SAVE_EVERY_N).setDescription(
+                "If \""+CONTINUOUS_DATA_EXPORT+"\" is enabled, the current version of the spreadsheet will be exported after every N analysis runs.  This means if the analysis fails or the computer crashes, results collected so far are not lost.");
 
         parameters.get(APPEND_DATETIME_MODE).setDescription("");
 
