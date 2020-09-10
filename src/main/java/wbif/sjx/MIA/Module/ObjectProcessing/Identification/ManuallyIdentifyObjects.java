@@ -11,6 +11,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -80,7 +82,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JList<ObjRoi> list = new JList<>(listModel);
     private JScrollPane objectsScrollPane = new JScrollPane(list);
 
-    private Workspace workspace;
     private ImagePlus displayImagePlus;
     private Overlay overlay;
     private HashMap<Integer, ArrayList<ObjRoi>> rois;
@@ -200,6 +201,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         maxID = 0;
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                processObjectsAndFinish();
+            };
+        });
+
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -350,7 +359,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Adding each timepoint object (child) to this image
             for (Obj childObj : trackObj.getChildren(inputObjects.getName()).values()) {
-                childObj.addToImage(binaryImage, Float.MAX_VALUE);                
+                childObj.addToImage(binaryImage, Float.MAX_VALUE);
                 timepoints.add(childObj.getT());
             }
             applyTemporalInterpolation(binaryImage);
@@ -369,7 +378,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 // Adding this object to the original collection
                 interpObj.setID(inputObjects.getAndIncrementID());
-                
+
                 interpObj.setSpatialCalibration(inputObjects.getSpatialCalibration());
                 interpObj.addParent(trackObj);
                 trackObj.addChild(interpObj);
@@ -394,7 +403,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
             if (!checkStackForInterpolation(sliceIpl.getStack()))
                 continue;
-            
+
             binaryInterpolator.run(sliceIpl.getStack());
         }
     }
@@ -435,8 +444,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     public Status process(Workspace workspace) {// Local access to this is required for the action listeners
-        this.workspace = workspace;
-
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -620,19 +627,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 break;
 
             case (FINISH):
-                try {
-                    if (outputTrackObjects == null) {
-                        processSpatialOnlyObjects();
-                    } else {
-                        processTemporalObjects();
-                    }
-                } catch (IntegerOverflowException e1) {
-                    overflow = true;
-                }
-                frame.dispose();
-                frame = null;
-                displayImagePlus.close();
-
+            processObjectsAndFinish();
                 break;
         }
     }
@@ -711,6 +706,26 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
 
         updateOverlay();
+
+    }
+
+    public void processObjectsAndFinish() {
+        try {
+            if (outputTrackObjects == null) {
+                processSpatialOnlyObjects();
+            } else {
+                processTemporalObjects();
+            }
+        } catch (IntegerOverflowException e1) {
+            overflow = true;
+        }
+
+        // If the frame isn't already closed, close it
+        if (frame != null) {
+            frame.dispose();
+            frame = null;
+        }
+        displayImagePlus.close();
 
     }
 
