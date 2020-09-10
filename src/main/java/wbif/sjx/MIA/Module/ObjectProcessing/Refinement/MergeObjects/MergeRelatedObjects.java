@@ -207,7 +207,17 @@ public class MergeRelatedObjects extends Module {
 
     @Override
     public ParentChildRefCollection updateAndGetParentChildRefs() {
-        return null;
+        ParentChildRefCollection returnedRelationships = new ParentChildRefCollection();
+
+        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+            case OutputModes.CREATE_NEW_OBJECT:
+                returnedRelationships.add(parentChildRefs.getOrPut(parameters.getValue(PARENT_OBJECTS),
+                        parameters.getValue(OUTPUT_MERGED_OBJECTS)));
+                break;
+        }
+
+        return returnedRelationships;
+
     }
 
     @Override
@@ -250,7 +260,7 @@ public class MergeRelatedObjects extends Module {
 
                 + "<li>\"" + MergeModes.MERGE_CHILDREN_ONLY
                 + "\" Only coordinates from child objects are added to the merged object.  In this mode, coordinates for the parent are ignored.</li>"
-                
+
                 + "<li>\"" + MergeModes.MERGE_PARENTS_AND_CHILDREN
                 + "\" Coordinates from both the parent and child objects are added to the new merged object.</li></ul>");
 
