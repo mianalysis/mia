@@ -49,6 +49,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AbstractOverlay;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -515,8 +517,13 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         workspace.addObjects(outputObjects);
 
         // Showing the selected objects
-        if (showOutput)
-            outputObjects.convertToImageRandomColours().showImage();
+        if (showOutput) {
+            if (outputTracks) {
+                TrackObjects.showObjects(outputObjects,outputTrackObjectsName,AbstractOverlay.ColourModes.PARENT_ID);
+            } else {
+                outputObjects.convertToImageRandomColours().showImage();
+            }
+        }            
 
         return Status.PASS;
 
