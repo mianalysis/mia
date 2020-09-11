@@ -525,24 +525,21 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "",
-                "Image onto which selections will be drawn.  This will be displayed automatically when the module runs."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Objects created by this module."));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
         parameters.add(new OutputTrackObjectsP(OUTPUT_TRACK_OBJECTS, this));
-        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false,
-                "Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results)."));
-        parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false,
-                "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results)."));
+        parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
+        parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false));
 
         parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR, this));
-        parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL,
-                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions."));
-        parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image",
-                "Message to display in title of image."));
+        parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL));
+        parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image"));
+
+        addParameterDescriptions();
 
     }
 
@@ -611,6 +608,40 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         return true;
     }
 
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image onto which selections will be drawn.  This will be displayed automatically when the module runs.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Objects created by this module.");
+
+        parameters.get(VOLUME_TYPE).setDescription(
+                "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
+                        + "<li>\"" + VolumeTypes.POINTLIST
+                        + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
+                        + "<li>\"" + VolumeTypes.OCTREE
+                        + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
+                        + "<li>\"" + VolumeTypes.QUADTREE
+                        + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
+
+        parameters.get(OUTPUT_TRACKS).setDescription(
+                "When selected, the same object can be identified across multiple timepoints.  The same ID should be used for all objects in this \"track\" - this will become the ID of the track object itself, while each timepoint instance will be assigned its own unique ID.  This feature also enables the use of temporal intepolation of objects.");
+
+        parameters.get(OUTPUT_TRACK_OBJECTS).setDescription(
+                "Name of track objects to be added to the workspace.  These will be parents of the individual timepoint instances and provide a way of grouping all the individual timepoint instances of a particular object.  Track objects themselves do not contain any coordinate information.");
+
+        parameters.get(SPATIAL_INTERPOLATION).setDescription(
+                "Interpolate objects in Z.  Objects assigned the same ID will be interpolated to appear in all slices between the top-most and bottom-most specific slices.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
+
+        parameters.get(TEMPORAL_INTERPOLATION).setDescription(
+                "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
+
+        parameters.get(SELECTOR_TYPE).setDescription(
+                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Options are: "+String.join(", ", SelectorTypes.ALL)+".");
+
+        parameters.get(MESSAGE_ON_IMAGE).setDescription("Message to display in title of image.");
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -627,7 +658,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 break;
 
             case (FINISH):
-            processObjectsAndFinish();
+                processObjectsAndFinish();
                 break;
         }
     }

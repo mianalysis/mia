@@ -304,15 +304,16 @@ public class OutputControl extends Module {
                 + "\" parameter it's possible to redirect the output spreadsheet(s) to a specific location."
 
                 + "<br><br>Data can be collated into a single Excel spreadsheet, or exported as one spreadsheet per analysis run (job).  Exported spreadsheets are separated into multiple sheets:<br><ul>"
+                
                 + "<li>\"Parameters\" An overview of the analysis setup (path to workflow file, date run, computer operating system) along with a list of all modules and parameters, their values and states.  The information here should be sufficient to reconstruct the analysis workflow in the absence of the original workflow file.</li>"
 
-                + "<li>\"Log\" A list of any error messages presented to the user while the analysis was running."
+                + "<li>\"Log\" A list of any error messages presented to the user while the analysis was running.</li>"
 
                 + "<li>\"Summary\" Each analysis run is summarised by a single line (or one line per timepoint or metadata value, if selected) containing metadata values, image measurements, the number of objects detected as well as statistics for object collections (e.g. mean of a particular measurement).  The summary sheet is intended to facilitate quick analysis; all data contained in this sheet (with the exception of image measurements) can be manually compiled from the individual object sheets.  This sheet can be enabled/disabled using the \""
-                + EXPORT_SUMMARY + "\" parameter."
+                + EXPORT_SUMMARY + "\" parameter.</li>"
 
                 + "<li>\"[Object-specific sheets]\" Each object collection can export to a separate sheet.  These sheets contain one row per object in that collection and include metadata values, along with all measurements and relationships for that object.  This sheet can be enabled/disabled using the \""
-                + EXPORT_INDIVIDUAL_OBJECTS + "\" parameter."
+                + EXPORT_INDIVIDUAL_OBJECTS + "\" parameter.</li>"
 
                 + "</ul><br>It's also possible to select the data to be exported for each sheet, including the metadata values (filename, series number, etc.), individual measurements and object collection statistics.";
     }

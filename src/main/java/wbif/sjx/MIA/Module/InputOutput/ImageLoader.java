@@ -927,7 +927,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // If either number of slices or timepoints is 1 check it's the right dimension
         if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
-            Convert3DStack.process(ipl,Convert3DStack.Modes.OUTPUT_TIMESERIES);
+            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
             ipl.getCalibration().pixelDepth = 1;
         } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
             Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
@@ -955,86 +955,44 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(LOADER_SEPARATOR, this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name assigned to the image."));
-        parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL,
-                "File reader mode to use.<br>" + "<br>- \"" + ImportModes.CURRENT_FILE
-                        + "\" (default option) will import the current root-file for the workspace.<br>" + "<br>- \""
-                        + ImportModes.IMAGEJ + "\" will load the active image fromm ImageJ.<br>" + "<br>- \""
-                        + ImportModes.IMAGE_SEQUENCE
-                        + "\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.<br>"
-                        + "<br>- \"" + ImportModes.MATCHING_FORMAT
-                        + "\" will load the image matching a filename based on the root-file for the workspace and a series of rules.<br>"
-                        + "<br>- \"" + ImportModes.SPECIFIC_FILE + "\" will load the image at a specific location."));
-        parameters.add(new ChoiceP(READER, this, Readers.BIOFORMATS, Readers.ALL,
-                "Set the reader for importing the image.<br>" + "<br>- \"" + Readers.BIOFORMATS
-                        + "\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).<br>"
-                        + "<br>- \"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader."));
-        parameters.add(new StringP(SEQUENCE_ROOT_NAME, this, ""));
-        parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL,
-                "Method to use for generation of the input filename.<br>" + "<br>- \"" + NameFormats.GENERIC
-                        + "\" (default) will generate a name from metadata values stored in the current workspace.<br>"
-                        + "<br>- \"" + NameFormats.HUYGENS
-                        + "\" will generate a name matching the SVI Huygens format, where channel numbers are specified as \"ch00\", \"ch01\", etc.<br>"
-                        + "<br>- \"" + NameFormats.INCUCYTE_SHORT
-                        + "\" will generate a name matching the short Incucyte Zoom format.  The root name is specified as the parameter \"Comment\".<br>"
-                        + "<br>- \"" + NameFormats.YOKOGAWA
-                        + "\" will generate a name matching the Yokogawa high content microscope name format.<br>"));
-        parameters.add(new StringP(COMMENT, this, "",
-                "Root name for generation of Incucyte Zoom filenames.  This will be added before the standard well and field values."));
-        parameters.add(new StringP(EXTENSION, this, "", "Extension for the generated filename."));
-        parameters.add(new StringP(GENERIC_FORMAT, this, "",
-                "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
-        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,
-                "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
-        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true,
-                "Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file."));
-        parameters.add(new FilePathP(FILE_PATH, this, "", "Path to file to be loaded."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL));
+        parameters.add(new ChoiceP(READER, this, Readers.BIOFORMATS, Readers.ALL));
+        parameters.add(new StringP(SEQUENCE_ROOT_NAME, this));
+        parameters.add(new ChoiceP(NAME_FORMAT, this, NameFormats.GENERIC, NameFormats.ALL));
+        parameters.add(new StringP(COMMENT, this));
+        parameters.add(new StringP(EXTENSION, this));
+        parameters.add(new StringP(GENERIC_FORMAT, this));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false));
+        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
+        parameters.add(new FilePathP(FILE_PATH, this));
 
         parameters.add(new ParamSeparatorP(RANGE_SEPARATOR, this));
-        parameters.add(new StringP(CHANNELS, this, "1-end",
-                "Range of channels to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load channels 4,5,6 and 7) or as a range loading every nth channel (e.g. \"4-10-2\" will load channels 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available channels at runtime."));
-        parameters.add(new StringP(SLICES, this, "1-end",
-                "Range of slices to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load slices 4,5,6 and 7) or as a range loading every nth slice (e.g. \"4-10-2\" will load slices 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available slices at runtime."));
-        parameters.add(new StringP(FRAMES, this, "1-end",
-                "Range of frames to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load frames 4,5,6 and 7) or as a range loading every nth frame (e.g. \"4-10-2\" will load frames 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available frames at runtime."));
-        parameters.add(new IntegerP(CHANNEL, this, 1, "Channel to load when constructing a \"Yokogawa\" format name."));
-        parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL,
-                "ImageJ will load 3D tifs as Z-stacks by default.  This control provides a choice between loading as a Z-stack or timeseries."));
-        parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL,
-                "Choice of loading the entire image, or cropping in XY.<br>" + "<br>- \"" + CropModes.NONE
-                        + "\" (default) will load the entire image in XY.<br>" + "<br>- \"" + CropModes.FIXED
-                        + "\" will apply a pre-defined crop to the input image based on the parameters \"Left\", \"Top\",\"Width\" and \"Height\".<br>"
-                        + "<br>- \"" + CropModes.FROM_REFERENCE
-                        + "\" will display a specified image and ask the user to select a region to crop the input image to."));
-        parameters.add(new InputImageP(REFERENCE_IMAGE, this, "",
-                "The image to be displayed for selection of the cropping region if the cropping mode is set to \""
-                        + CropModes.FROM_REFERENCE + "\"."));
-        parameters.add(
-                new IntegerP(LEFT, this, 0, "Left coordinate limit for image cropping (specified in pixel units)."));
-        parameters
-                .add(new IntegerP(TOP, this, 0, "Top coordinate limit for image cropping (specified in pixel units)."));
-        parameters.add(new IntegerP(WIDTH, this, 512, "Width of the final cropped region (specified in pixel units)."));
-        parameters
-                .add(new IntegerP(HEIGHT, this, 512, "Height of the final cropped region (specified in pixel units)."));
+        parameters.add(new StringP(CHANNELS, this, "1-end"));
+        parameters.add(new StringP(SLICES, this, "1-end"));
+        parameters.add(new StringP(FRAMES, this, "1-end"));
+        parameters.add(new IntegerP(CHANNEL, this, 1));
+        parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL));
+        parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new IntegerP(LEFT, this, 0));
+        parameters.add(new IntegerP(TOP, this, 0));
+        parameters.add(new IntegerP(WIDTH, this, 512));
+        parameters.add(new IntegerP(HEIGHT, this, 512));
         parameters.add(new ChoiceP(SCALE_MODE, this, ScaleModes.NONE, ScaleModes.ALL));
         parameters.add(new DoubleP(SCALE_FACTOR_X, this, 1));
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
 
         parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR, this));
-        parameters.add(new BooleanP(SET_CAL, this, false,
-                "Option to use the automatically-applied spatial calibration or manually specify these values."));
-        parameters.add(new DoubleP(XY_CAL, this, 1d,
-                "Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module."));
-        parameters.add(new DoubleP(Z_CAL, this, 1d,
-                "Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module."));
-        parameters.add(new BooleanP(FORCE_BIT_DEPTH, this, false,
-                "Enable to force the output image to adopt a specific bit-depth."));
-        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH, this, OutputBitDepths.EIGHT, OutputBitDepths.ALL,
-                "Output bit depth of the loaded image."));
-        parameters.add(new DoubleP(MIN_INPUT_INTENSITY, this, 0d,
-                "Minimum intensity in the input image when in the native bit depth.  This is used for scaling intensities to the desired bit depth."));
-        parameters.add(new DoubleP(MAX_INPUT_INTENSITY, this, 1d,
-                "Maximum intensity in the input image when in the native bit depth.  This is used for scaling intensities to the desired bit depth."));
+        parameters.add(new BooleanP(SET_CAL, this, false));
+        parameters.add(new DoubleP(XY_CAL, this, 1d));
+        parameters.add(new DoubleP(Z_CAL, this, 1d));
+        parameters.add(new BooleanP(FORCE_BIT_DEPTH, this, false));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH, this, OutputBitDepths.EIGHT, OutputBitDepths.ALL));
+        parameters.add(new DoubleP(MIN_INPUT_INTENSITY, this, 0d));
+        parameters.add(new DoubleP(MAX_INPUT_INTENSITY, this, 1d));
+
+        addParameterDescriptions();
 
     }
 
@@ -1212,6 +1170,137 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         return valid;
+
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(OUTPUT_IMAGE).setDescription("Name assigned to the image.");
+
+        parameters.get(IMPORT_MODE).setDescription("File reader mode to use.<br><ul>"
+
+                + "<li>\"" + ImportModes.CURRENT_FILE
+                + "\" (default option) will import the current root-file for the workspace.</li>"
+
+                + "<li>\"" + ImportModes.IMAGEJ + "\" will load the active image fromm ImageJ.</li>"
+
+                + "<li>\"" + ImportModes.IMAGE_SEQUENCE
+                + "\" will use the root-file for the workspace as the basis for loading a series of images with numbered suffixes.</li>"
+
+                + "<li>\"" + ImportModes.MATCHING_FORMAT
+                + "\" will load the image matching a filename based on the root-file for the workspace and a series of rules.</li>"
+
+                + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the image at a specific location.</li></ul>");
+
+        parameters.get(READER).setDescription("Set the reader for importing the image:<br><ul>"
+
+                + "<li>\"" + Readers.BIOFORMATS
+                + "\" will use the BioFormats plugin.  This is best for most cases (especially proprietary formats).</li>"
+
+                + "<li>\"" + Readers.IMAGEJ + "\" will use the stock ImageJ file reader.</li></ul>");
+
+        parameters.get(SEQUENCE_ROOT_NAME).setDescription(
+                "Template filename for loading multiple image sequence files (those with names in the format \"image0001.tif\", \"image0002.tif\", \"image0003.tif\",etc.  Template filenames are constructed in a generic manner, whereby metadata values stored in the workspace can be inserted into the name using the notation  \"M{name}\".  This allows names to be created dynamically for each analysis run.  The location in the filenam of the variable image number is specified using the \"Z{0000}\" notation, where the number of \"0\" characters specifies the number of digits.  It is also necessary to specify the filepath (input file filepath stored as metadata value \"M{Filepath}\".   <br><br>For example, loading the sequence \"image0001.tif\", etc. from the same folder as the input file would require the format \"M{Filepath}\\\\imageZ{0000}.tif\".  Note: Backslash characters specifying the folder path need to be double typed (standard Java formatting).");
+
+        parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
+
+                + "<li>\"" + NameFormats.GENERIC
+                + "\" (default) will generate a name from metadata values stored in the current workspace.</li>"
+
+                + "<li>\"" + NameFormats.HUYGENS
+                + "\" will generate a name matching the SVI Huygens format, where channel numbers are specified as \"ch00\", \"ch01\", etc.</li>"
+
+                + "<li>\"" + NameFormats.INCUCYTE_SHORT
+                + "\" will generate a name matching the short Incucyte Zoom format.  The root name is specified as the parameter \"Comment\".</li>"
+
+                + "<li>\"" + NameFormats.YOKOGAWA
+                + "\" will generate a name matching the Yokogawa high content microscope name format.</li></ul>");
+
+        parameters.get(COMMENT).setDescription(
+                "Root name for generation of Incucyte Zoom filenames.  This will be added before the standard well and field values.");
+
+        parameters.get(EXTENSION).setDescription("Extension for the generated filename.");
+
+        parameters.get(GENERIC_FORMAT).setDescription(
+                "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
+
+        parameters.get(AVAILABLE_METADATA_FIELDS).setDescription(
+                "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
+
+        parameters.get(INCLUDE_SERIES_NUMBER).setDescription(
+                "Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file.");
+
+        parameters.get(FILE_PATH).setDescription("Path to file to be loaded.");
+
+        parameters.get(CHANNELS).setDescription(
+                "Range of channels to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load channels 4,5,6 and 7) or as a range loading every nth channel (e.g. \"4-10-2\" will load channels 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available channels at runtime.");
+
+        parameters.get(SLICES).setDescription(
+                "Range of slices to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load slices 4,5,6 and 7) or as a range loading every nth slice (e.g. \"4-10-2\" will load slices 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available slices at runtime.");
+
+        parameters.get(FRAMES).setDescription(
+                "Range of frames to be loaded for the current file.  These can be specified as a comma-separated list, using a range (e.g. \"4-7\" will load frames 4,5,6 and 7) or as a range loading every nth frame (e.g. \"4-10-2\" will load frames 4,6,8 and 10).  The \"end\" keyword will be converted to the total number of available frames at runtime.");
+
+        parameters.get(CHANNEL).setDescription("Channel to load when constructing a \"Yokogawa\" format name.");
+
+        parameters.get(THREE_D_MODE).setDescription(
+                "ImageJ will load 3D tifs as Z-stacks by default.  This control provides a choice between loading as a Z-stack or timeseries.");
+
+        parameters.get(CROP_MODE).setDescription("Choice of loading the entire image, or cropping in XY:<br><ul>"
+
+                + "<li>\"" + CropModes.NONE + "\" (default) will load the entire image in XY.</li>"
+
+                + "<li>\"" + CropModes.FIXED
+                + "\" will apply a pre-defined crop to the input image based on the parameters \"Left\", \"Top\",\"Width\" and \"Height\".</li>"
+
+                + "<li>\"" + CropModes.FROM_REFERENCE
+                + "\" will display a specified image and ask the user to select a region to crop the input image to.</li></ul>");
+
+        parameters.get(REFERENCE_IMAGE).setDescription(
+                "The image to be displayed for selection of the cropping region if the cropping mode is set to \""
+                        + CropModes.FROM_REFERENCE + "\".");
+
+        parameters.get(LEFT).setDescription("Left coordinate limit for image cropping (specified in pixel units).");
+
+        parameters.get(TOP).setDescription("Top coordinate limit for image cropping (specified in pixel units).");
+
+        parameters.get(WIDTH).setDescription("Width of the final cropped region (specified in pixel units).");
+
+        parameters.get(HEIGHT).setDescription("Height of the final cropped region (specified in pixel units).");
+
+        parameters.get(SCALE_MODE).setDescription(
+                "Controls if the input image is scaled upon importing.  This only works for scaling in X and Y (magnitudes determined by the \""+SCALE_FACTOR_X+"\" and \""+SCALE_FACTOR_Y+"\" parameters):<br><ul>"
+                
+                        + "<li>\"" + ScaleModes.BICUBIC + "\" Scales the input images using a bicubic filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
+
+                        + "<li>\"" + ScaleModes.BILINEAR + "\" Scales the input images using a bilinear filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
+
+                        + "<li>\"" + ScaleModes.NONE + "\" (default) Input images are not scaled.  They are loaded into the workspace at their native resolutions.</li>"
+
+                        + "<li>\"" + ScaleModes.NO_INTERPOLATION + "\" Scales the input images using a nearest-neighbour approach.  This leads to a \"blocky\" apppearance to scaled images.</li>");
+
+        parameters.get(SCALE_FACTOR_X).setDescription("Scale factor applied to X-axis of input images (if \""+SCALE_MODE+"\" is in an image scaling mode).  Values <1 will reduce image width, while values >1 will increase it.");
+
+        parameters.get(SCALE_FACTOR_Y).setDescription("Scale factor applied to Y-axis of input images (if \""+SCALE_MODE+"\" is in an image scaling mode).  Values <1 will reduce image height, while values >1 will increase it.");
+
+        parameters.get(SET_CAL).setDescription(
+                "Option to use the automatically-applied spatial calibration or manually specify these values.");
+
+        parameters.get(XY_CAL).setDescription(
+                "Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module.");
+
+        parameters.get(Z_CAL).setDescription(
+                "Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module.");
+
+        parameters.get(FORCE_BIT_DEPTH)
+                .setDescription("Enable to force the output image to adopt a specific bit-depth.");
+
+        parameters.get(OUTPUT_BIT_DEPTH).setDescription("Output bit depth of the loaded image.");
+
+        parameters.get(MIN_INPUT_INTENSITY).setDescription(
+                "Minimum intensity in the input image when in the native bit depth.  This is used for scaling intensities to the desired bit depth.");
+
+        parameters.get(MAX_INPUT_INTENSITY).setDescription(
+                "Maximum intensity in the input image when in the native bit depth.  This is used for scaling intensities to the desired bit depth.");
 
     }
 }
