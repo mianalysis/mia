@@ -6,6 +6,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
@@ -39,7 +40,15 @@ public class FixedTextCondition extends CoreWorkspaceHandler {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Implement variable workflow handling outcomes based on comparison of a fixed text value against a series of fixed conditions.  If the text test value matches any of the conditions the workflow handling outcome associated with that condition will be implemented.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to be looped, or sections of the workflow to be skipped.<br><br>"
+        
+                + "An example usage case for fixed text conditions is implementing the same behaviour at multiple parts of the workflow without having to control them individually.  This can be achieved using a global variable (see \""
+                + new GlobalVariables(null).getName()
+                + "\" module).  The global variable could be specified once, early on in the analysis, then used as \""
+                + TEST_VALUE
+                + "\" in this module.  As such, it's possible to only specify the value once, but refer to it in multiple \""
+                + getName() + "\" modules.  Note: The global variables module allows variables to be user-selected from a drop-down list, negating risk of mis-typing parameter names that will be compared in this module.";
+        
     }
 
     @Override
@@ -94,7 +103,9 @@ public class FixedTextCondition extends CoreWorkspaceHandler {
         collection.add(new StringP(REFERENCE_VALUE, this, ""));
         collection.addAll(super.updateAndGetParameters());
 
-        parameters.add(new ParameterGroup(ADD_CONDITION, this, collection, 0, getUpdaterAndGetter()));
+        parameters.add(new ParameterGroup(ADD_CONDITION, this, collection, 1, getUpdaterAndGetter()));
+
+        addParameterDescriptions();
 
     }
 
@@ -138,6 +149,15 @@ public class FixedTextCondition extends CoreWorkspaceHandler {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(TEST_VALUE).setDescription("Text value that will tested.  If this matches any of the reference values listed within this module the relevant workflow operation (e.g. termination/redirection) will be implemented.  This text value could be a global variable.");
+
+        parameters.get(ADD_CONDITION).setDescription("Add another condition that \""+TEST_VALUE+"\" can be compared against.  Each condition can have its own handling outcome (e.g. termination/redirection).");
+
+        ((ParameterGroup) parameters.get(ADD_CONDITION)).getTemplateParameters().get(REFERENCE_VALUE).setDescription("Value \""+TEST_VALUE+"\" will be compared against.  If the two values match, the associated handling outcome of this condition will be implemented.");
+
     }
 
     private ParameterUpdaterAndGetter getUpdaterAndGetter() {

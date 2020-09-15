@@ -361,14 +361,14 @@ public class FitEllipse extends Module {
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""
                 + inputObjectsName + "\".  The semi-major axis passes from the centre of the ellipse to the furthest "
-                + "point on it's perimeter.  Measured in pixels.");
+                + "point on its perimeter.  Measured in pixels.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MAJOR_CAL);
         reference.setObjectsName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""
                 + inputObjectsName + "\".  The semi-major axis passes from the centre of the ellipse to the furthest "
-                + "point on it's perimeter.  Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
+                + "point on its perimeter.  Measured in calibrated (" + Units.getOMEUnits().getSymbol() + ") units.");
         returnedRefs.add(reference);
 
         reference = objectMeasurementRefs.getOrPut(Measurements.SEMI_MINOR_PX);

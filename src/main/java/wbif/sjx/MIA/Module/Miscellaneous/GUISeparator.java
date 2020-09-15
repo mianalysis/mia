@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.Miscellaneous;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -101,7 +100,9 @@ public class GUISeparator extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "GUI separators break the module list into sections, where all modules are considered to be in the \"section\" corresponding to the separator above them in the module list.  All modules contained within these sections can be enabled/disabled <i>en masse</i> by enabling/disabling their associated separator.  In basic view, the separator can be shown as a blue line, while in editing view it appears as a normal module entry albeit with blue text.  In both views it's possible to hide/show the contents of a separator section using the blue arrows.<br><br>"
+        
+        +"Separators are intended to break analyses into logical groups, thus making workflow organisation easier and tidier.";
     }
 
     @Override
@@ -116,6 +117,8 @@ public class GUISeparator extends Module {
         parameters.add(new BooleanP(EXPANDED_BASIC, this, true));
         parameters.add(new BooleanP(EXPANDED_EDITING, this, true));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -148,17 +151,25 @@ public class GUISeparator extends Module {
         return null;
     }
 
-    // /**
-    // * This module is always runnable
-    // * @return
-    // */
-    // @Override
-    // public boolean isRunnable() {
-    // return true;
-    // }
-
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(SHOW_BASIC).setDescription(
+                "Display this GUI separator in the basic control panel view.  When this parameter is selected, this separator will still only be shown if at least one of the following is true:<br><ul>"
+
+                        + "<li>The separator (and thus all associated modules) can be enabled/disabled from the basic view.  This is done by ticking \"Can be disabled\" at the top of this module in editing view.  Enabling/disabling a GUI separator will automatically apply the same state to all modules contained within (i.e. between this separator and the next separator).  If the separator can be enabled/disabled from basic view the power icon will be shown in green when enabled or in black with a strikethrough when disabled; however, if it can't be enabled/disabled, the power icon will be greyed out.</li>"
+
+                        + "<li>At least one module associated with this separator (a module between this separator and the next) can be disabled from the basic control view.  Modules can be set to allow enabling/disabling from basic view by ticking \"Can be disabled\" at the top of the relevant module parameter control in editing view.</li>"
+
+                        + "<li>At least one parameter from a module associated with this separator (a module between this separator and the next) can be set from the basic control view.  Parameters can be set as visible in basic view by clicking the eyeball icon to the right of that parameter in editing view.  When a module is visible an open eye is shown, while this is a closed eye when it's not visible (default option).</li></ul>");
+
+        parameters.get(EXPANDED_BASIC).setDescription(
+                "In basic view, all controls between this separator and the next can be displayed/hidden by clicking the blue arrows either side of the separator bar.  This parameter controls if this parameter is in the expanded (controls displayed) or collapsed (controls hidden) state.  When the expansion state is changed from the basic view, this parameter is automatically updated.");
+
+        parameters.get(EXPANDED_EDITING).setDescription("In editing view, all modules in the module list between this separator and the next can be displayed/hidden by clicking the blue arrows either side of module button.  This parameter controls if this parameter is in the expanded (modules displayed) or collapsed (modules hidden) state.  When the expansion state is changed from the editing view, this parameter is automatically updated.");
+
     }
 }

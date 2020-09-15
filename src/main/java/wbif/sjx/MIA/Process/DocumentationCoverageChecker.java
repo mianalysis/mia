@@ -31,6 +31,8 @@ public class DocumentationCoverageChecker {
         int completedObjRefs = 0;
         int totalObjRefs = 0;
 
+        DecimalFormat df = new DecimalFormat("0.00");
+
         // Converting the list of classes to a list of Modules
         for (String className : classNames) {
             try {
@@ -73,8 +75,8 @@ public class DocumentationCoverageChecker {
                 double objRefCoverage = measurementCounts[2] == 0 ? 1
                         : (double) measurementCounts[3] / (double) measurementCounts[2];
 
-                System.out.println("Module \"" + module.getName() + "\", parameters = " + (100 * parameterCoverage)
-                        + "%, image refs = " + (100 * imageRefCoverage) + "%, obj refs = " + (100 * objRefCoverage));
+                System.out.println("Module \"" + module.getName() + "\", parameters = " + df.format(100 * parameterCoverage)
+                        + "%, image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = " + df.format(100 * objRefCoverage));
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
@@ -88,7 +90,6 @@ public class DocumentationCoverageChecker {
         double fractionImageMeasurements = (double) completedImageRefs / (double) totalImageRefs;
         double fractionObjMeasurements = (double) completedObjRefs / (double) totalObjRefs;
 
-        DecimalFormat df = new DecimalFormat("0.00");
         System.out.println(" ");
         System.out.println("Completed module descriptions = " + completedModuleDescriptions + "/" + classNames.size()
                 + " (" + df.format(100 * fractionModuleDescriptions) + "%)");
@@ -146,8 +147,10 @@ public class DocumentationCoverageChecker {
         for (Parameter parameter : module.getAllParameters().values()) {
             if (parameter.getDescription() == null)
                 continue;
-            if (parameter instanceof ParameterGroup || parameter instanceof ParamSeparatorP || parameter instanceof MessageP) 
+            if (parameter instanceof ParamSeparatorP || parameter instanceof MessageP) 
                 nParams--;
+            if (parameter instanceof ParameterGroup)
+                nParams = ((ParameterGroup) parameter).getTemplateParameters().size() - 1;
             if (parameter.getDescription().length() > 1)
                 nCoveredParams++;
         }

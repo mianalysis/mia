@@ -363,7 +363,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         Obj referenceObject = null;
         int objSize = Integer.MIN_VALUE;
 
-        // Iterating over each object, checking it's size against the current reference
+        // Iterating over each object, checking its size against the current reference
         // values
         for (Obj currReferenceObject : values()) {
             // Only check objects in the current frame (if required - if frame doesn't
@@ -384,7 +384,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         Obj referenceObject = null;
         int objSize = Integer.MAX_VALUE;
 
-        // Iterating over each object, checking it's size against the current reference
+        // Iterating over each object, checking its size against the current reference
         // values
         for (Obj currReferenceObject : values()) {
             // Only check objects in the current frame (if required - if frame doesn't

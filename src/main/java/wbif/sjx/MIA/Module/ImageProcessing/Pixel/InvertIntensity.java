@@ -83,9 +83,11 @@ public class InvertIntensity extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "Image to be inverted."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true, "When selected, the input image will be replaced by the inverted image in the workspace.  If disabled, the inverted image will be stored as a new image in the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output inverted image."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        
+        addParameterDescriptions();
 
     }
 
@@ -133,5 +135,14 @@ public class InvertIntensity extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to be inverted.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the input image will be replaced by the inverted image in the workspace.  If disabled, the inverted image will be stored as a new image in the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \""+APPLY_TO_INPUT+"\" is not selected, the inverted image will be stored as a new image in the workspace.  This is the name of the output inverted image.");
+
     }
 }
