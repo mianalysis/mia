@@ -40,7 +40,7 @@ public class MeasureObjectCentroid extends Module {
 
     @Override
     public String getDescription() {
-        return "Z-coordinates are specified in terms of slices (not pixels)";
+        return "Measure mean XYZ centroid for all objects in an object colleciton.  <br>br>Note: Z-coordinates are specified in terms of slices (not pixels).";
     }
 
     @Override
@@ -154,5 +154,9 @@ public class MeasureObjectCentroid extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to measure mean XYZ centroid for.  Measurements will be associated with each object.");
     }
 }

@@ -155,7 +155,7 @@ public class DocumentationCoverageChecker {
                 nParams--;
                 
             if (parameter instanceof ParameterGroup) 
-                nParams = nParams + ((ParameterGroup) parameter).getTemplateParameters().size();
+                nParams = nParams + ((ParameterGroup) parameter).getTemplateParameters().size()-1;
                 
             if (parameter.getDescription().length() > 1) 
                 nCoveredParams++;
