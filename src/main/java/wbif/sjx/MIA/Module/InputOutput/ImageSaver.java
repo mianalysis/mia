@@ -62,9 +62,8 @@ public class ImageSaver extends Module {
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public ImageSaver(ModuleCollection modules) {
-        super("Save image",modules);
+        super("Save image", modules);
     }
-
 
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
@@ -72,7 +71,7 @@ public class ImageSaver extends Module {
         String SAVE_WITH_INPUT = "Save with input file";
         String SPECIFIC_LOCATION = "Specific location";
 
-        String[] ALL = new String[]{MIRRORED_DIRECTORY, MATCH_OUTPUT_CONTROL, SAVE_WITH_INPUT, SPECIFIC_LOCATION};
+        String[] ALL = new String[] { MIRRORED_DIRECTORY, MATCH_OUTPUT_CONTROL, SAVE_WITH_INPUT, SPECIFIC_LOCATION };
 
     }
 
@@ -80,7 +79,7 @@ public class ImageSaver extends Module {
         String MATCH_INPUT = "Match input file name";
         String SPECIFIC_NAME = "Specific name";
 
-        String[] ALL = new String[]{MATCH_INPUT, SPECIFIC_NAME};
+        String[] ALL = new String[] { MATCH_INPUT, SPECIFIC_NAME };
 
     }
 
@@ -89,7 +88,7 @@ public class ImageSaver extends Module {
         String SERIES_NAME = "Series name";
         String SERIES_NUMBER = "Series number";
 
-        String[] ALL = new String[]{NONE,SERIES_NAME,SERIES_NUMBER};
+        String[] ALL = new String[] { NONE, SERIES_NAME, SERIES_NUMBER };
 
     }
 
@@ -98,23 +97,23 @@ public class ImageSaver extends Module {
         String IF_FILE_EXISTS = "If file exists";
         String NEVER = "Never";
 
-        String[] ALL = new String[]{ALWAYS,IF_FILE_EXISTS, NEVER};
+        String[] ALL = new String[] { ALWAYS, IF_FILE_EXISTS, NEVER };
 
     }
 
     public interface FileFormats {
-                String AVI = "AVI"; // avi
-//        String BITMAP = "Bitmap"; // bmp
-//        String FITS = "FITS"; // fits
-//        String JPEG = "JPEG"; // jpeg
-//        String PGM = "PGM"; // pgm
-//        String PNG = "PNG"; // png
-//        String RAW = "Raw"; // raw
-        //        String TEXT_IMAGE = "Text image"; // text image
+        String AVI = "AVI"; // avi
+        // String BITMAP = "Bitmap"; // bmp
+        // String FITS = "FITS"; // fits
+        // String JPEG = "JPEG"; // jpeg
+        // String PGM = "PGM"; // pgm
+        // String PNG = "PNG"; // png
+        // String RAW = "Raw"; // raw
+        // String TEXT_IMAGE = "Text image"; // text image
         String TIF = "TIF"; // tif
         String ZIP = "ZIP"; // zip
 
-        String[] ALL = new String[]{AVI,TIF,ZIP};
+        String[] ALL = new String[] { AVI, TIF, ZIP };
 
     }
 
@@ -122,7 +121,7 @@ public class ImageSaver extends Module {
         String COLOUR = "Colour (separate channels)";
         String COMPOSITE = "Composite";
 
-        String[] ALL = new String[]{COLOUR,COMPOSITE};
+        String[] ALL = new String[] { COLOUR, COMPOSITE };
 
     }
 
@@ -131,7 +130,7 @@ public class ImageSaver extends Module {
         String JPEG = "JPEG";
         String PNG = "PNG";
 
-        String[] ALL = new String[]{NONE,JPEG,PNG};
+        String[] ALL = new String[] { NONE, JPEG, PNG };
 
     }
 
@@ -153,12 +152,13 @@ public class ImageSaver extends Module {
         switch (appendDateTimeMode) {
             case AppendDateTimeModes.IF_FILE_EXISTS:
                 File file = new File(inputName);
-                if (!file.exists()) return inputName;
+                if (!file.exists())
+                    return inputName;
             case AppendDateTimeModes.ALWAYS:
                 String nameWithoutExtension = FilenameUtils.removeExtension(inputName);
                 String extension = FilenameUtils.getExtension(inputName);
                 String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-                return  nameWithoutExtension+ "_("+ dateTime + ")."+extension;
+                return nameWithoutExtension + "_(" + dateTime + ")." + extension;
             case AppendDateTimeModes.NEVER:
             default:
                 return inputName;
@@ -168,21 +168,22 @@ public class ImageSaver extends Module {
     public static void saveImage(ImagePlus inputImagePlus, String fileFormat, String path) {
         switch (fileFormat) {
             case FileFormats.TIF:
-                IJ.saveAs(inputImagePlus,"tif",path);
+                IJ.saveAs(inputImagePlus, "tif", path);
                 break;
             case FileFormats.ZIP:
-                IJ.saveAs(inputImagePlus,"zip",path);
+                IJ.saveAs(inputImagePlus, "zip", path);
                 break;
         }
     }
 
-    public static void saveVideo(ImagePlus inputImagePlus, String compressionMode, int frameRate, int jpegQuality, String path) {
+    public static void saveVideo(ImagePlus inputImagePlus, String compressionMode, int frameRate, int jpegQuality,
+            String path) {
         AVI_Writer writer = new AVI_Writer();
         int compressionType = getVideoCompressionType(compressionMode);
         inputImagePlus.getCalibration().fps = frameRate;
 
         try {
-            writer.writeImage(inputImagePlus,path,compressionType,jpegQuality);
+            writer.writeImage(inputImagePlus, path, compressionType, jpegQuality);
         } catch (IOException e) {
             MIA.log.writeError(e);
         }
@@ -200,7 +201,6 @@ public class ImageSaver extends Module {
         }
     }
 
-
     @Override
     public String getPackageName() {
         return PackageNames.INPUT_OUTPUT;
@@ -208,7 +208,7 @@ public class ImageSaver extends Module {
 
     @Override
     public String getDescription() {
-        return "Save an image from the workspace to file.";
+        return "Save an image/stack from the workspace to file.";
     }
 
     @Override
@@ -235,7 +235,8 @@ public class ImageSaver extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        if (channelMode.equals(ChannelModes.COMPOSITE)) inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
+        if (channelMode.equals(ChannelModes.COMPOSITE))
+            inputImagePlus.setDisplayMode(CompositeImage.COMPOSITE);
 
         // If the image is being altered make a copy
         if (saveAsRGB || flattenOverlay) {
@@ -246,14 +247,17 @@ public class ImageSaver extends Module {
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
             if (inputImagePlus.getNSlices() > 1 || inputImagePlus.getNFrames() > 1) {
-                IntensityMinMax.run(inputImagePlus,true);
-                if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
+                IntensityMinMax.run(inputImagePlus, true);
+                if (inputImagePlus.getOverlay() != null)
+                    inputImagePlus.flattenStack();
             } else {
-                if (inputImagePlus.getOverlay() != null) inputImagePlus = inputImagePlus.flatten();
+                if (inputImagePlus.getOverlay() != null)
+                    inputImagePlus = inputImagePlus.flatten();
             }
         }
 
-        // If using the same settings as OutputControl, update saveLocation and filePath (if necessary)
+        // If using the same settings as OutputControl, update saveLocation and filePath
+        // (if necessary)
         if (saveLocation.equals(SaveLocations.MATCH_OUTPUT_CONTROL)) {
             OutputControl outputControl = modules.getOutputControl();
             String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
@@ -263,7 +267,8 @@ public class ImageSaver extends Module {
                     switch (outputSaveLocation) {
                         case OutputControl.IndividualSaveLocations.MIRRORED_DIRECTORY:
                             saveLocation = SaveLocations.MIRRORED_DIRECTORY;
-                            mirroredDirectoryRoot = outputControl.getParameterValue(OutputControl.MIRRORED_DIRECTORY_ROOT);
+                            mirroredDirectoryRoot = outputControl
+                                    .getParameterValue(OutputControl.MIRRORED_DIRECTORY_ROOT);
                             break;
 
                         case OutputControl.IndividualSaveLocations.SAVE_WITH_INPUT:
@@ -297,7 +302,8 @@ public class ImageSaver extends Module {
         String path;
         switch (saveLocation) {
             case SaveLocations.MIRRORED_DIRECTORY:
-                path = OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),workspace.getMetadata(),mirroredDirectoryRoot);
+                path = OutputControl.getMirroredDirectory(modules.getInputControl().getRootFile(),
+                        workspace.getMetadata(), mirroredDirectoryRoot);
                 break;
 
             case SaveLocations.SAVE_WITH_INPUT:
@@ -326,21 +332,20 @@ public class ImageSaver extends Module {
 
         // Adding last bits to name
         path = path + name;
-        path = appendSeries(path,workspace,appendSeriesMode);
-        path = appendDateTime(path,appendDateTimeMode);
+        path = appendSeries(path, workspace, appendSeriesMode);
+        path = appendDateTime(path, appendDateTimeMode);
 
         switch (fileFormat) {
             case FileFormats.AVI:
                 path = path + suffix + ".avi";
-                saveVideo(inputImagePlus,compressionMode,frameRate,quality,path);
+                saveVideo(inputImagePlus, compressionMode, frameRate, quality, path);
                 break;
             case FileFormats.TIF:
             case FileFormats.ZIP:
                 path = path + suffix + ".tif";
-                saveImage(inputImagePlus,fileFormat,path);
+                saveImage(inputImagePlus, fileFormat, path);
                 break;
         }
-
 
         return Status.PASS;
 
@@ -348,33 +353,29 @@ public class ImageSaver extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to be saved to file."));
-        parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL, "Select where the image should be saved.<br>" +
-                "<br>- \""+SaveLocations.MIRRORED_DIRECTORY+"\" Save the image to a new directory structure which has the same layout as the input.  This is useful when batch processing from a multi-layer folder structure.  The subdirectory layout will match that of the input structure, but will have its root at the folder specified in \""+MIRROR_DIRECTORY_ROOT+"\".<br>" +
-                "<br>- \""+SaveLocations.MATCH_OUTPUT_CONTROL+"\" Save the image to the folder specified by the \"Save location\" parameter in \"Output control\".<br>" +
-                "<br>- \""+SaveLocations.SAVE_WITH_INPUT+"\" Save the image in the same file as the root file for this workspace (i.e. the image specified in \"Input control\".<br>" +
-                "<br>- \""+SaveLocations.SPECIFIC_LOCATION+"\" Save the image to a specific folder."));
-        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this,"","The root path for the mirrored directory structure.  This path is the equivalent of the folder specified in \"Input control\".  All subfolders will be in the same relative locations to their input counterparts."));
-        parameters.add(new FolderPathP(SAVE_FILE_PATH,this,"","Path to folder where images will be saved."));
+        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
+        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));
+        parameters.add(new FolderPathP(SAVE_FILE_PATH, this));
 
-        parameters.add(new ParamSeparatorP(NAME_SEPARATOR,this));
-        parameters.add(new ChoiceP(SAVE_NAME_MODE, this,SaveNameModes.MATCH_INPUT,SaveNameModes.ALL,"Control how saved image names will be generated.<br>" +
-                "<br>- \""+SaveNameModes.MATCH_INPUT+"\" Use the same name as the root file for this workspace (i.e. the input file in \"Input control\".<br>" +
-                "<br>- \""+SaveNameModes.SPECIFIC_NAME+"\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images."));
-        parameters.add(new StringP(SAVE_FILE_NAME,this,"","Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images."));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL, "Add the series number as a suffix to each filename.  Series numbers are prepended by \"S\"."));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL, "Add a timestamp suffix to each filename.  Timestamps are in the format \"yyyy-MM-dd_HH-mm-ss\"."));
-        parameters.add(new StringP(SAVE_SUFFIX, this, "", "A custom suffix to be added to each filename."));
+        parameters.add(new ParamSeparatorP(NAME_SEPARATOR, this));
+        parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
+        parameters.add(new StringP(SAVE_FILE_NAME, this));
+        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
+        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
+        parameters.add(new StringP(SAVE_SUFFIX, this));
 
-        parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR,this));
-        parameters.add(new ChoiceP(FILE_FORMAT,this,FileFormats.TIF,FileFormats.ALL));
-        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.COMPOSITE,ChannelModes.ALL,"Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode."));
-        parameters.add(new BooleanP(SAVE_AS_RGB, this,false,"Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ."));
-        parameters.add(new ChoiceP(COMPRESSION_MODE,this,CompressionModes.NONE,CompressionModes.ALL));
+        parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR, this));
+        parameters.add(new ChoiceP(FILE_FORMAT, this, FileFormats.TIF, FileFormats.ALL));
+        parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.COMPOSITE, ChannelModes.ALL));
+        parameters.add(new BooleanP(SAVE_AS_RGB, this, false));
+        parameters.add(new ChoiceP(COMPRESSION_MODE, this, CompressionModes.NONE, CompressionModes.ALL));
         parameters.add(new IntegerP(QUALITY, this, 100));
         parameters.add(new IntegerP(FRAME_RATE, this, 25));
-        parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false,"Flatten any overlay elements onto the image prior to saving."));
+        parameters.add(new BooleanP(FLATTEN_OVERLAY, this, false));
+
+        addParameterDescriptions();
 
     }
 
@@ -465,5 +466,75 @@ public class ImageSaver extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to be saved to file.");
+
+        parameters.get(SAVE_LOCATION).setDescription("Select where the image should be saved.<br><ul>" +
+
+                "<li>\"" + SaveLocations.MIRRORED_DIRECTORY
+                + "\" Save the image to a new directory structure which has the same layout as the input.  This is useful when batch processing from a multi-layer folder structure.  The subdirectory layout will match that of the input structure, but will have its root at the folder specified in \""
+                + MIRROR_DIRECTORY_ROOT + "\".</li>" +
+
+                "<li>\"" + SaveLocations.MATCH_OUTPUT_CONTROL
+                + "\" Save the image to the folder specified by the \"Save location\" parameter in \"Output control\".</li>"
+                +
+
+                "<li>\"" + SaveLocations.SAVE_WITH_INPUT
+                + "\" Save the image in the same file as the root file for this workspace (i.e. the image specified in \"Input control\".</li>"
+                +
+
+                "<li>\"" + SaveLocations.SPECIFIC_LOCATION + "\" Save the image to a specific folder.</li></ul>");
+
+        parameters.get(MIRROR_DIRECTORY_ROOT).setDescription(
+                "The root path for the mirrored directory structure.  This path is the equivalent of the folder specified in \"Input control\".  All subfolders will be in the same relative locations to their input counterparts.");
+
+        parameters.get(SAVE_FILE_PATH).setDescription("Path to folder where images will be saved.");
+
+        parameters.get(SAVE_NAME_MODE).setDescription("Controls how saved image names will be generated.<br><ul>" +
+
+                "<li>\"" + SaveNameModes.MATCH_INPUT
+                + "\" Use the same name as the root file for this workspace (i.e. the input file in \"Input control\".</li>"
+
+                + "<li>\"" + SaveNameModes.SPECIFIC_NAME
+                + "\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.</li></ul>");
+
+        parameters.get(SAVE_FILE_NAME).setDescription("Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.");
+
+        parameters.get(APPEND_SERIES_MODE).setDescription("Add the series number as a suffix to each filename.  Series numbers are prepended by \"S\".");
+
+        parameters.get(APPEND_DATETIME_MODE).setDescription("Add a timestamp suffix to each filename.  Timestamps are in the format \"yyyy-MM-dd_HH-mm-ss\".");
+
+        parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
+
+        parameters.get(FILE_FORMAT).setDescription("The format the output image will be saved as:<br><ul>"
+        
+                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"AVI Writer\" (https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java).  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
+        
+                + "<li>\"" + FileFormats.TIF + "\" Standard multidimensional (multi-page) TIF image saving.</li>"
+                
+                +"<li>\""+FileFormats.ZIP+"\" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul>");
+
+        parameters.get(CHANNEL_MODE).setDescription("Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode.");
+
+        parameters.get(SAVE_AS_RGB).setDescription("Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.");
+
+        parameters.get(COMPRESSION_MODE).setDescription("Compression mode used when saving AVI videos (\""+FILE_FORMAT+"\" parameter):<br><ul>"
+        
+                + "<li>\"" + CompressionModes.JPEG + "\" Lossy video compression with quality specified by \"" + QUALITY
+                + "\" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li>"
+            
+                + "<li>\"" + CompressionModes.NONE
+                + "\" Frames are stored in their raw format (uncompressed).  This gives the highest quality, but also the largest file size.</li>"
+                
+                + "<li>\"" + CompressionModes.PNG + "\" PNG video compression.</li></ul>");
+
+        parameters.get(QUALITY).setDescription("Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's \"File > Save As...\" menu uses a quality of 90.");
+
+        parameters.get(FRAME_RATE).setDescription("Output video framerate (frames per second).");
+
+        parameters.get(FLATTEN_OVERLAY).setDescription("Flatten any overlay elements onto the image prior to saving.");
+
     }
 }

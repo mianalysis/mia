@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import wbif.sjx.MIA.Module.Module;
@@ -63,6 +64,7 @@ public class DocumentationCoverageChecker {
                 } else {
                     parameterCoverage = (double) parameterCounts[1] / (double) parameterCounts[0];
                 }
+                int incompleteParameters = parameterCounts[0] - parameterCounts[1];
 
                 int[] measurementCounts = getModuleMeasurementCoverage(module);
                 totalImageRefs = totalImageRefs + measurementCounts[0];
@@ -76,7 +78,7 @@ public class DocumentationCoverageChecker {
                         : (double) measurementCounts[3] / (double) measurementCounts[2];
 
                 System.out.println("Module \"" + module.getName() + "\", parameters = " + df.format(100 * parameterCoverage)
-                        + "%, image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = " + df.format(100 * objRefCoverage));
+                        + "%, incomplete parameters = "+incompleteParameters+", image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = " + df.format(100 * objRefCoverage));
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
@@ -145,13 +147,17 @@ public class DocumentationCoverageChecker {
         int nCoveredParams = 0;
 
         for (Parameter parameter : module.getAllParameters().values()) {
+
             if (parameter.getDescription() == null)
                 continue;
+
             if (parameter instanceof ParamSeparatorP || parameter instanceof MessageP) 
                 nParams--;
-            if (parameter instanceof ParameterGroup)
-                nParams = ((ParameterGroup) parameter).getTemplateParameters().size() - 1;
-            if (parameter.getDescription().length() > 1)
+                
+            if (parameter instanceof ParameterGroup) 
+                nParams = nParams + ((ParameterGroup) parameter).getTemplateParameters().size();
+                
+            if (parameter.getDescription().length() > 1) 
                 nCoveredParams++;
         }
 
