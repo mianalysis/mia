@@ -30,6 +30,8 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AbstractOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -116,13 +118,30 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public interface ColourModes extends AbstractOverlay.ColourModes {
+    public interface ColourModes {
+        String ID = "ID";
+        String MEASUREMENT_VALUE = "Measurement value";
+        String PARENT_ID = "Parent ID";
+        String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
+        String RANDOM_COLOUR = "Random colour";
+        String SINGLE_COLOUR = "Single colour";
+
+        String[] ALL = new String[] { ID, MEASUREMENT_VALUE, PARENT_ID, PARENT_MEASUREMENT_VALUE, RANDOM_COLOUR,
+                SINGLE_COLOUR };
+
     }
 
     public interface SingleColours extends ColourFactory.SingleColours {
     }
 
-    public interface LabelModes extends LabelFactory.LabelModes {
+    public interface LabelModes {
+        String ID = "ID";
+        String MEASUREMENT_VALUE = "Measurement value";
+        String PARENT_ID = "Parent ID";
+        String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
+
+        String[] ALL = new String[] { ID, MEASUREMENT_VALUE, PARENT_ID, PARENT_MEASUREMENT_VALUE };
+
     }
 
     public interface PositionModes {
@@ -702,7 +721,12 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "DEPRECATED - PLEASE USE INDIVIDUAL OVERLAY MODULES (e.g. \"" + new AddLabels(null).getName() + "\", \""
+                + new AddObjectOutline(null).getName() + "\", etc.).<br><br>"
+
+                + "Adds an overlay to the specified input image which can represent each specified input object.  This module can render many different types of overlay; options include: "
+                + String.join(", ", PositionModes.ALL);
+
     }
 
     @Override
@@ -821,6 +845,7 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
@@ -856,7 +881,8 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new DoubleP(LINE_WIDTH, this, 0.2));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -1064,5 +1090,214 @@ public class AddObjectsOverlay extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
+                        + APPLY_TO_INPUT
+                        + "\" is enabled, otherwise the image containing the overlay will be stored as a new image with name specified by \""
+                        + OUTPUT_IMAGE + "\".");
+
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to represent as overlays.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Determines if the modifications made to the input image (added overlay elements) will be applied to that image or directed to a new image.  When selected, the input image will be updated.");
+
+        parameters.get(ADD_OUTPUT_TO_WORKSPACE).setDescription(
+                "If the modifications (overlay) aren't being applied directly to the input image, this control will determine if a separate image containing the overlay should be saved to the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
+
+        parameters.get(LABEL_MODE).setDescription("Controls what information each label displays:<br><ul>"
+
+                + "<li>\"" + LabelModes.ID + "\" The ID number of the object.</li>"
+
+                + "<li>\"" + LabelModes.MEASUREMENT_VALUE
+                + "\" A measurement associated with the object.  The measurement is selected using the \""
+                + MEASUREMENT_FOR_LABEL + "\" parameter.</li>"
+
+                + "<li>\"" + LabelModes.PARENT_ID
+                + "\" The ID number of a parent of the object.  The parent object is selected using the \""
+                + PARENT_OBJECT_FOR_LABEL + "\" parameter.</li>"
+
+                + "<li>\"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                + "\" A measurement associated with a parent of the object.  The measurement is selected using the \""
+                + MEASUREMENT_FOR_LABEL + "\" parameter and the parent object with the \"" + PARENT_OBJECT_FOR_LABEL
+                + "\" parameter.</li></ul>");
+
+        parameters.get(DECIMAL_PLACES)
+                .setDescription("Number of decimal places to use when displaying numeric values.");
+
+        parameters.get(USE_SCIENTIFIC).setDescription(
+                "When enabled, numeric values will be displayed in the format <i>1.23E-3</i>.  Otherwise, the same value would appear as <i>0.00123</i>.");
+
+        parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
+
+        parameters.get(PARENT_OBJECT_FOR_LABEL).setDescription("If \"" + LABEL_MODE + "\" is set to either \""
+                + LabelModes.PARENT_ID + "\" or \"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                + "\", these are the parent objects which will be used.  These objects will be parents of the input objects.");
+
+        parameters.get(MEASUREMENT_FOR_LABEL)
+                .setDescription("If \"" + LABEL_MODE + "\" is set to either \"" + LabelModes.MEASUREMENT_VALUE
+                        + "\" or \"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                        + "\", these are the measurements which will be used.");
+
+        parameters.get(POSITION_MODE)
+                .setDescription("Controls the sort of overlay to be rendered:<br><ul>"
+                
+                        + "<li>\"" + PositionModes.ALL_POINTS + "\" All points in each object are rendered as small circles.</li>"
+
+                        + "<li>\"" + PositionModes.ARROWS + "\" Each object is represented by an arrow.  The size, colour and orientation of each arrow can be fixed or based on a measurement value..</li>"
+
+                        + "<li>\"" + PositionModes.CENTROID + "\" Each object is represented by a single small circle positioned at the centre of the object (mean XYZ location).</li>"
+
+                        + "<li>\"" + PositionModes.LABEL_ONLY + "\" Displays a text string at the centroid location of each object.  Text can include object ID numbers, measurements or similar values for parent objects.</li>"
+
+                        + "<li>\"" + PositionModes.OUTLINE + "\" Each object is represented by an outline.</li>"
+
+                        + "<li>\"" + PositionModes.POSITION_MEASUREMENTS + "\" Each object is represented by a single circle positioned at the XYZ location specified by three position measurements.</li>"
+
+                        + "<li>\"" + PositionModes.TRACKS + "\" The trajectory of a track (time-linked objects) is rendered for all track objects.  The line passes between the centre of each timepoint instance of that track and appears as the object moves )(i.e. it only shows the trajectory from previous frames).</li></ul>");
+
+        parameters.get(ORIENTATION_MODE).setDescription("Source for arrow orientation values:<br><ul>"
+
+                + "<li>\"" + OrientationModes.MEASUREMENT
+                + "\" Orientation of arrows will be based on the measurement specified by the parameter \""
+                + MEASUREMENT_FOR_ORIENTATION + "\" for each object.</li>"
+
+                + "<li>\"" + OrientationModes.PARENT_MEASUREMENT
+                + "\" Orientation of arrows will be based on the measurement specified by the parameter \""
+                + MEASUREMENT_FOR_ORIENTATION
+                + "\" taken from a parent of each object.  The parent object providing this measurement is specified by the parameter \""
+                + PARENT_OBJECT_FOR_ORIENTATION + "\".</li></ul>");
+
+        parameters.get(PARENT_OBJECT_FOR_ORIENTATION).setDescription(
+                "Parent objects providing the measurements on which the orientation of the arrows are based.");
+
+        parameters.get(MEASUREMENT_FOR_ORIENTATION).setDescription(
+                "Measurement that defines the orientation of each arrow.  Measurements should be supplied in degree units.");
+
+        parameters.get(LENGTH_MODE).setDescription("Method for determining the length of arrows:<br><ul>"
+
+                + "<li>\"" + LengthModes.FIXED_VALUE
+                + "\" All arrows are the same length.  Length is controlled by the \"" + LENGTH_VALUE
+                + "\" parameter.</li>"
+
+                + "<li>\"" + LengthModes.MEASUREMENT
+                + "\" Arrow length is proportional to the measurement value specified by the \""
+                + MEASUREMENT_FOR_LENGTH + "\" parameter.  Absolute arrow lengths are adjusted by the \"" + LENGTH_SCALE
+                + "\" multiplication factor.</li>"
+
+                + "<li>\"" + LengthModes.PARENT_MEASUREMENT
+                + "\" Arrow length is proportional to a parent object measurement value.  The parent is specified by the \""
+                + PARENT_OBJECT_FOR_LENGTH + "\" parameter and the measurement value by \"" + MEASUREMENT_FOR_LENGTH
+                + "\".  Absolute arrow lengths are adjusted by the \"" + LENGTH_SCALE
+                + "\" multiplication factor.</li></ul>");
+
+        parameters.get(LENGTH_VALUE).setDescription("Fixed value specifying the length of all arrows in pixel units.");
+
+        parameters.get(PARENT_OBJECT_FOR_LENGTH)
+                .setDescription("Parent objects from which the arrow length measurements will be taken.");
+
+        parameters.get(MEASUREMENT_FOR_LENGTH).setDescription(
+                "Measurement value that will be used to control the arrow length.  This value is adjusted using the \""
+                        + LENGTH_SCALE + "\" muliplication factor.");
+
+        parameters.get(LENGTH_SCALE).setDescription(
+                "Measurement values will be multiplied by this value prior to being used to control the arrow length.  Each arrow will be <i>MeasurementValue*LengthScale</i> pixels long.");
+
+        parameters.get(HEAD_SIZE).setDescription(
+                "Size of the arrow head.  This should be an integer between 0 and 30, where 0 is the smallest possible head and 30 is the largest.");
+
+        parameters.get(X_POSITION_MEASUREMENT).setDescription(
+                "Object measurement specifying the X-position of the overlay marker.  Measurement value must be specified in pixel units.");
+
+        parameters.get(Y_POSITION_MEASUREMENT).setDescription(
+                "Object measurement specifying the Y-position of the overlay marker.  Measurement value must be specified in pixel units.");
+
+        parameters.get(Z_POSITION_MEASUREMENT).setDescription(
+                "Object measurement specifying the Z-position (slice) of the overlay marker.  Measurement value must be specified in slice units.");
+
+        parameters.get(USE_RADIUS).setDescription(
+                "When selected, the radius of the overlay marker circle is controlled by the measurement specified by \""
+                        + MEASUREMENT_FOR_RADIUS
+                        + "\".  When not selected, point is represented by a single spot of fixed size.");
+
+        parameters.get(MEASUREMENT_FOR_RADIUS).setDescription(
+                "Object measurement use to specify the radius of the overlay marker circle.  Measurement value must be specified in pixel units.");
+
+        parameters.get(COLOUR_MODE)
+                .setDescription("Method for determining colour of each object's corresponding overlay:<br><ul>"
+
+                        + "<li>\"" + ColourModes.ID
+                        + "\" Overlay colour is quasi-randomly selected based on the ID number of the object.  The colour used for a specific "
+                        + "ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.</li>"
+
+                        + "<li>\"" + ColourModes.MEASUREMENT_VALUE
+                        + "\" Overlay colour is determined by a measurement value.  "
+                        + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
+                        + "with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects missing the relevant measurement "
+                        + " are always shown in red.  The measurement value is selected with the \""
+                        + MEASUREMENT_FOR_COLOUR + "\" parameter.</li>"
+
+                        + "<li>\"" + ColourModes.PARENT_ID
+                        + "\" Overlay colour is quasi-randomly selected based on the ID number of a parent of this object.  "
+                        + "The colour used for a specific ID number will always be the same and is calculated using the equation <i>hue = (ID * 1048576 % 255) / 255</i>.  "
+                        + "The parent object is selected with the \"" + PARENT_OBJECT_FOR_COLOUR + "\" parameter.</li>"
+
+                        + "<li>\"" + ColourModes.PARENT_MEASUREMENT_VALUE
+                        + "\" Overlay colour is determined by a measurement value of a parent of this object.  "
+                        + "Colour range runs across the first half of the visible spectrum (i.e. red to cyan) and is maximised, so the object "
+                        + "with the smallest measurement is shown in red and the object with the largest, in cyan.  Objects either missing the relevant measurement or without "
+                        + "the relevant parent are always shown in red.  The parent object is selected with the \""
+                        + PARENT_OBJECT_FOR_COLOUR + "\" parameter and the measurement "
+                        + "value is selected with the \"" + MEASUREMENT_FOR_COLOUR + "\" parameter.</li>"
+
+                        + "<li>\"" + ColourModes.RANDOM_COLOUR
+                        + "\" Overlay colour is randomly selected for each object.  " + "Unlike the \"" + ColourModes.ID
+                        + "\" option, the colours generated here will be different for each evaluation of the module.</li>"
+
+                        + "<li>\"" + ColourModes.SINGLE_COLOUR
+                        + "\" (default option) Overlay colour is fixed to one of a predetermined list of colours.  All objects "
+                        + " will be assigned the same overlay colour.  The colour is chosen using the \""
+                        + SINGLE_COLOUR + "\" parameter.</li></ul>");
+
+        parameters.get(SINGLE_COLOUR)
+                .setDescription("Colour for all object overlays to be rendered using.  This parameter is used if \""
+                        + COLOUR_MODE + "\" is set to \"" + ColourModes.SINGLE_COLOUR + "\".  Options are: "
+                        + String.join(", ", SingleColours.ALL) + ".");
+
+        parameters.get(MEASUREMENT_FOR_COLOUR)
+                .setDescription("Measurement used to determine the colour of the overlay when \"" + COLOUR_MODE
+                        + "\" is set to either \"" + ColourModes.MEASUREMENT_VALUE + "\" or \""
+                        + ColourModes.PARENT_MEASUREMENT_VALUE + "\".");
+
+        parameters.get(PARENT_OBJECT_FOR_COLOUR).setDescription(
+                "Object collection used to determine the colour of the overlay based on either the ID or measurement value "
+                        + " of a parent object when \"" + COLOUR_MODE + "\" is set to either  \""
+                        + ColourModes.PARENT_ID + "\" or \"" + ColourModes.PARENT_MEASUREMENT_VALUE
+                        + "\".  These objects will be parents of the input objects.");
+
+        parameters.get(SPOT_OBJECTS)
+                .setDescription("Objects present in each frame of this track.  These are children of the \""
+                        + INPUT_OBJECTS + "\" and provide the coordinate information for each frame.");
+
+        parameters.get(LIMIT_TRACK_HISTORY).setDescription(
+                "When enabled, segments of a track will only be displayed for a finite number of frames after the timepoint they correspond to.  This gives the effect of a moving tail behind the object and can be use to prevent the overlay image becoming too cluttered for long/dense videos.  The duration of the track history is specified by the \""
+                        + TRACK_HISTORY + "\" parameter.");
+
+        parameters.get(TRACK_HISTORY).setDescription(
+                "Number of frames a track segment will be displayed for after the timepoint to which it corresponds.");
+
+        parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
+
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription(
+                "Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

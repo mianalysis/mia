@@ -44,6 +44,7 @@ public class GUICondition extends CoreWorkspaceHandler {
                         redirectModule = collection.getValue(REDIRECT_MODULE);
                         break;
                     case ContinuationModes.TERMINATE:
+                    default:
                         redirectModule = null;
                         break;
                 }
@@ -61,7 +62,10 @@ public class GUICondition extends CoreWorkspaceHandler {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Implement variable workflow handling outcomes based on a user-selectable drop-down list of choices.  Each choice has a unique workflow outcome, which can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis workflow to be skipped.<br><br>"
+        
+        + "An example usage case for GUI conditions is providing a drop-down box on the basic control view.  With this simple control, the user can execute different blocks of the workflow without having to fundamentally understand how they are assembled.";
+
     }
 
     @Override
@@ -96,6 +100,8 @@ public class GUICondition extends CoreWorkspaceHandler {
         parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
         parameters.getParameter(CHOICE).setVisible(true);
         parameters.add(new ParameterGroup(ADD_CHOICE, this, collection, 0, getUpdaterAndGetter()));
+
+        addParameterDescriptions();
 
     }
 
@@ -146,6 +152,15 @@ public class GUICondition extends CoreWorkspaceHandler {
         return true;
     }
 
+    void addParameterDescriptions() {
+        parameters.get(CHOICE).setDescription("Currently-selected choice from the available set (all choices added via \""+ADD_CHOICE+"\" option).  The relevant workflow operation (e.g. termination/redirection) will be implemented for the selected condition.  This control can be made visible in the basic view, so users can select between a set of pre-determined outcomes.");
+
+        parameters.get(ADD_CHOICE).setDescription("Add another condition that \""+CHOICE+"\" can select from.  Each choice can have its own handling outcome (e.g. termination/redirection).");
+
+        ((ParameterGroup) parameters.get(ADD_CHOICE)).getTemplateParameters().get(CHOICE_NAME).setDescription("Name that this choice will appear as in the \""+CHOICE+"\" drop-down menu.");
+
+    }
+
     private ParameterUpdaterAndGetter getUpdaterAndGetter() {
         return new ParameterUpdaterAndGetter() {
 
@@ -165,6 +180,7 @@ public class GUICondition extends CoreWorkspaceHandler {
                         }
                         break;
                     case ContinuationModes.TERMINATE:
+                    default:
                         returnedParameters.add(params.getParameter(EXPORT_WORKSPACE));
                         returnedParameters.add(params.getParameter(REMOVE_IMAGES));
                         returnedParameters.add(params.getParameter(REMOVE_OBJECTS));
