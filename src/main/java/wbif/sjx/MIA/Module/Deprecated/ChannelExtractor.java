@@ -32,9 +32,9 @@ public class ChannelExtractor extends Module {
 
     @Override
     public String getDescription() {
-        return "NOTE: This Module has been superseeded by the ExtractSubstack Module.  It will " +
-                "be removed in a future release.\r\n" +
-                "Extracts a single channel from a stack.";
+        return "DEPRECATED: PLEASE USE ExtractSubstack Module.<br><br> "
+        + "Extracts a single channel from a stack and stores it as a new image in the workspace.";
+
     }
 
     @Override
@@ -69,6 +69,8 @@ public class ChannelExtractor extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new IntegerP(CHANNEL_TO_EXTRACT,this,1));
+
+        addParameterDescriptions();
 
     }
 
@@ -105,5 +107,14 @@ public class ChannelExtractor extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Multi-channel image to extract a channel from.  This image is unaffected by the extraction process (i.e. its channel count doesn't decrease by 1).");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("The extracted channel will be stored in the workspace under this name.");
+
+        parameters.get(CHANNEL_TO_EXTRACT).setDescription("Channel index to extract.  Index numbering starts at 1 and must be specified as a single integer value.");
+
     }
 }

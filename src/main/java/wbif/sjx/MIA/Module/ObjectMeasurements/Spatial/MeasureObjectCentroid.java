@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
  * Created by sc13967 on 11/05/2017.
  */
 public class MeasureObjectCentroid extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectCentroid(ModuleCollection modules) {
@@ -77,7 +79,10 @@ public class MeasureObjectCentroid extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
+        addParameterDescriptions();
 
     }
 

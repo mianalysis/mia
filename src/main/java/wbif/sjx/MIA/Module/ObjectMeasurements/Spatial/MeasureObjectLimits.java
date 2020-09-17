@@ -5,10 +5,12 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 
 public class MeasureObjectLimits extends Module {
+    public static final String INPUT_SEPARATOR = "Object input";
     public static final String INPUT_OBJECTS = "Input objects";
 
     public MeasureObjectLimits(ModuleCollection modules) {
@@ -41,7 +43,7 @@ public class MeasureObjectLimits extends Module {
 
     @Override
     public String getDescription() {
-        return "Measures the spatial limits of each object in terms of pixels.";
+        return "Measures the XYZ spatial limits of each object relative to the origin (x = 0, y = 0, z = 0) of the original image.  Limits are stored as measurements associated with each object.  Measurements are reported in pixel (slice for z) coordinates and calibrated units.";
     }
 
     @Override
@@ -81,8 +83,11 @@ public class MeasureObjectLimits extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this,"Objects to measure."));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "Objects to measure."));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -207,5 +212,10 @@ public class MeasureObjectLimits extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to measure spatial limits for.  Measurements will be associated with each object.");
+
     }
 }

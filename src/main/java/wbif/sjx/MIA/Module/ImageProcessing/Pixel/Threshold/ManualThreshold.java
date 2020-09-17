@@ -41,20 +41,17 @@ public class ManualThreshold extends Module {
     public static final String MEASUREMENT = "Measurement";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
 
-
     public interface ThresholdSources {
         String FIXED_VALUE = "Fixed value";
         String IMAGE_MEASUREMENT = "Image measurement";
 
-        String[] ALL = new String[]{FIXED_VALUE, IMAGE_MEASUREMENT};
+        String[] ALL = new String[] { FIXED_VALUE, IMAGE_MEASUREMENT };
 
     }
-
 
     public ManualThreshold(ModuleCollection modules) {
-        super("Manual threshold",modules);
+        super("Manual threshold", modules);
     }
-
 
     public static void applyThreshold(ImagePlus inputImagePlus, int threshold) {
         // Applying threshold
@@ -67,10 +64,9 @@ public class ManualThreshold extends Module {
             }
         }
 
-        inputImagePlus.setPosition(1,1,1);
+        inputImagePlus.setPosition(1, 1, 1);
 
     }
-
 
     @Override
     public String getPackageName() {
@@ -79,7 +75,8 @@ public class ManualThreshold extends Module {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Binarises an image (or image stack) using a fixed intensity threshold.  The input threshold can be a single value (same for all images) or taken from a measurement associated with the image to be binarised.";
+        
     }
 
     @Override
@@ -103,22 +100,27 @@ public class ManualThreshold extends Module {
         Prefs.blackBackground = !whiteBackground;
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
+        if (!applyToInput) {
+            inputImagePlus = new Duplicator().run(inputImagePlus);
+        }
 
         // Calculating the threshold based on the selected algorithm
-        applyThreshold(inputImagePlus,thresholdValue);
+        applyThreshold(inputImagePlus, thresholdValue);
 
-        if (whiteBackground) InvertIntensity.process(inputImagePlus);
+        if (whiteBackground)
+            InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            if (showOutput) inputImage.showImage();
+            if (showOutput)
+                inputImage.showImage();
 
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput)
+                outputImage.showImage();
         }
 
         return Status.PASS;
@@ -127,16 +129,18 @@ public class ManualThreshold extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply threshold to."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output image created during the thresholding process.  This image will be added to the workspace."));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(THRESHOLD_SOURCE, this, ThresholdSources.FIXED_VALUE, ThresholdSources.ALL));
-        parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1, "Absolute manual threshold value that will be applied to all pixels."));
+        parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1));
         parameters.add(new ImageMeasurementP(MEASUREMENT, this));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this,true, "Controls the logic of the output image in terms of what is considered foreground and background."));
+        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -200,5 +204,36 @@ public class ManualThreshold extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to apply threshold to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription(
+                "Name of the output image created during the thresholding process.  This image will be added to the workspace.");
+
+        parameters.get(THRESHOLD_SOURCE).setDescription("Source for the threshold value:<br><ul>"
+
+                + "<li>\"" + ThresholdSources.FIXED_VALUE
+                + "\" Uses a single, fixed value for all images.  This value is specified using the \""
+                + THRESHOLD_VALUE + "\" parameter.</li>"
+
+                + "<li>\"" + ThresholdSources.IMAGE_MEASUREMENT
+                + "\" Threshold is set to the value of a measurement assoiated with the image to be binarised.  Measurement selected by \""
+                + MEASUREMENT
+                + "\" parameter.  In this mode a different threshold can be applied to each image.</li></ul>");
+
+        parameters.get(THRESHOLD_VALUE)
+                .setDescription("Absolute manual threshold value that will be applied to all pixels.");
+
+        parameters.get(MEASUREMENT).setDescription(
+                "Measurement to act as threshold value when in \"" + ThresholdSources.IMAGE_MEASUREMENT + "\" mode.");
+
+        parameters.get(WHITE_BACKGROUND).setDescription(
+                "Controls the logic of the output image in terms of what is considered foreground and background.");
+
     }
 }
