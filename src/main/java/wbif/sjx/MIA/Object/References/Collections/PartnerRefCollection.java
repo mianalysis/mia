@@ -1,9 +1,9 @@
-package wbif.sjx.MIA.Object.References;
+package wbif.sjx.MIA.Object.References.Collections;
 
 import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.PartnerRef;
 
 public class PartnerRefCollection extends TreeSet<PartnerRef> implements RefCollection<PartnerRef> {
     /**

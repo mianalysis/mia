@@ -3,9 +3,10 @@ package wbif.sjx.MIA.Object.References;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
-public class PartnerRef extends SummaryRef implements Comparable {
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+
+public class PartnerRef extends Ref implements Comparable {
     private final String object1Name;
     private final String object2Name;
     private String description = "";
@@ -80,14 +81,6 @@ public class PartnerRef extends SummaryRef implements Comparable {
 
         ref.setDescription(description);
         ref.setNickname(getNickname());
-
-        ref.setExportGlobal(isExportGlobal());
-        ref.setExportIndividual(isExportIndividual());
-        ref.setExportMean(isExportMean());
-        ref.setExportMax(isExportMax());
-        ref.setExportMin(isExportMin());
-        ref.setExportStd(isExportStd());
-        ref.setExportSum(isExportSum());
 
         return ref;
 

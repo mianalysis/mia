@@ -1,10 +1,10 @@
-package wbif.sjx.MIA.Object.References;
+package wbif.sjx.MIA.Object.References.Collections;
 
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
+import wbif.sjx.MIA.Object.References.MetadataRef;
 
 public class MetadataRefCollection extends TreeMap<String,MetadataRef> implements RefCollection<MetadataRef> {
     /**

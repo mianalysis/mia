@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ParameterList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
+import wbif.sjx.MIA.GUI.GUI;
 
 import javax.swing.*;
 import java.awt.*;

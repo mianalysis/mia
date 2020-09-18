@@ -407,12 +407,14 @@ public class LegacyAnalysisReader {
     public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
-        // Iterating over all references of this type
-        for (int j=0;j<referenceNodes.getLength();j++) {
-            ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
-            module.addParentChildRef(ref);
+        MIA.log.writeWarning("Handle reading parent child references");
 
-        }
+        // // Iterating over all references of this type
+        // for (int j=0;j<referenceNodes.getLength();j++) {
+        //     ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
+        //     module.addParentChildRef(ref);
+
+        // }
     }
 
     public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters, String moduleName) {

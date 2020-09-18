@@ -43,8 +43,8 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
+import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 
 /**
  * Created by Stephen on 23/06/2017.

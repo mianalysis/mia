@@ -9,7 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.References.MetadataRef;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.common.Object.Metadata;
 
 /**

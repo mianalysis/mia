@@ -1,8 +1,9 @@
 package wbif.sjx.MIA.Object;
 
 import org.junit.jupiter.api.Test;
+
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 
 import static org.junit.jupiter.api.Assertions.*;
 

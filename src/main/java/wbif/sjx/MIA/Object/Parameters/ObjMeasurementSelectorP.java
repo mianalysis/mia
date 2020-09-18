@@ -11,7 +11,7 @@ import wbif.sjx.MIA.GUI.ParameterControls.RefSelectorParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 
 /**
  * Created by Stephen Cross on 18/02/2020.

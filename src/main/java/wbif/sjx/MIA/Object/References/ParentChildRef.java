@@ -3,13 +3,13 @@ package wbif.sjx.MIA.Object.References;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
-public class ParentChildRef extends SummaryRef {
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+
+public class ParentChildRef extends Ref {
     private final String parentName;
     private final String childName;
     private String description = "";
-
 
     public ParentChildRef(Node node) {
         super(node);
@@ -23,7 +23,7 @@ public class ParentChildRef extends SummaryRef {
     }
 
     public ParentChildRef(String parentName, String childName) {
-        super(createName(parentName,childName));
+        super(createName(parentName, childName));
         this.parentName = parentName;
         this.childName = childName;
 
@@ -71,14 +71,7 @@ public class ParentChildRef extends SummaryRef {
         ref.setDescription(description);
         ref.setNickname(getNickname());
 
-        ref.setExportGlobal(isExportGlobal());
-        ref.setExportIndividual(isExportIndividual());
-        ref.setExportMean(isExportMean());
-        ref.setExportMax(isExportMax());
-        ref.setExportMin(isExportMin());
-        ref.setExportStd(isExportStd());
-        ref.setExportSum(isExportSum());
-
         return ref;
+        
     }
 }

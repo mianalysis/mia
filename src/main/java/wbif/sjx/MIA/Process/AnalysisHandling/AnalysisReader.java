@@ -213,7 +213,7 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String parameterName = attributes.getNamedItem("NAME").getNodeValue();            
+            String parameterName = attributes.getNamedItem("NAME").getNodeValue();
             Parameter parameter = module.getParameter(parameterName);
 
             // If parameter isn't found, try the lost and found
@@ -295,26 +295,27 @@ public class AnalysisReader {
     }
 
     public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
-        NodeList referenceNodes = moduleNode.getChildNodes();
+        MIA.log.writeWarning("Handle reading parent child references");
+        // NodeList referenceNodes = moduleNode.getChildNodes();
+        //
+        // // Iterating over all references of this type
+        // for (int i = 0; i < referenceNodes.getLength(); i++) {
+        // Node node = referenceNodes.item(i);
 
-        // Iterating over all references of this type
-        for (int i = 0; i < referenceNodes.getLength(); i++) {
-            Node node = referenceNodes.item(i);
+        // switch (node.getNodeName()) {
+        // case "RELATIONSHIP":
+        // case "PARENT_CHILD":
+        // // Getting relationship properties
+        // ParentChildRef parentChildRef = new ParentChildRef(node);
+        // module.addParentChildRef(parentChildRef);
+        // break;
 
-            switch (node.getNodeName()) {
-                case "RELATIONSHIP":
-                case "PARENT_CHILD":
-                    // Getting relationship properties
-                    ParentChildRef parentChildRef = new ParentChildRef(node);
-                    module.addParentChildRef(parentChildRef);
-                    break;
-
-                case "PARTNER":
-                    // Getting relationship properties
-                    PartnerRef partnerRef = new PartnerRef(node);
-                    module.addPartnerRef(partnerRef);
-                    break;
-            }
-        }
+        // case "PARTNER":
+        // // Getting relationship properties
+        // PartnerRef partnerRef = new PartnerRef(node);
+        // module.addPartnerRef(partnerRef);
+        // break;
+        // }
+        // }
     }
 }
