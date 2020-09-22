@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Process.AnalysisHandling.Legacy;
+package wbif.sjx.MIA.Process.AnalysisHandling.LegacyReaders;
 
 import java.awt.FileDialog;
 import java.awt.Frame;

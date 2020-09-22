@@ -33,8 +33,8 @@ import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Process.ClassHunter;
-import wbif.sjx.MIA.Process.AnalysisHandling.Legacy.AnalysisReader_0p10p0_0p15p0;
-import wbif.sjx.MIA.Process.AnalysisHandling.Legacy.AnalysisReader_Pre_0p10p0;
+import wbif.sjx.MIA.Process.AnalysisHandling.LegacyReaders.AnalysisReader_0p10p0_0p15p0;
+import wbif.sjx.MIA.Process.AnalysisHandling.LegacyReaders.AnalysisReader_Pre_0p10p0;
 
 /**
  * Created by sc13967 on 23/06/2017.
