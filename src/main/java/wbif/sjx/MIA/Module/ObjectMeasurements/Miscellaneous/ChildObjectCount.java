@@ -56,6 +56,9 @@ public class ChildObjectCount extends Module {
         ObjCollection objects = workspace.getObjects().get(objectName);
         String measurementName = getFullName(childObjectsName);
 
+        if (objects == null)
+            return Status.PASS;
+
         for (Obj obj : objects.values()) 
             obj.addMeasurement(new ChildCountMeasurement(measurementName, obj, childObjectsName));
         

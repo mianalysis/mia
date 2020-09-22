@@ -56,6 +56,9 @@ public class PartnerObjectCount extends Module {
         ObjCollection objects = workspace.getObjects().get(objectName);
         String measurementName = getFullName(partnerObjectsName);
 
+        if (objects == null)
+            return Status.PASS;
+            
         for (Obj obj : objects.values()) 
             obj.addMeasurement(new PartnerCountMeasurement(measurementName, obj, partnerObjectsName));
         

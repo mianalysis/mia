@@ -1,8 +1,27 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+import com.drew.lang.annotations.Nullable;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.InputOutput.ImageSaver;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -11,9 +30,11 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -25,24 +46,45 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
  * Created by sc13967 on 22/06/2017.
  */
 public class CalculateNearestNeighbour extends Module {
+    public static final String INPUT_SEPARATOR = "Objects input";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String RELATIONSHIP_MODE = "ParentChildRef mode";
+    public static final String RELATIONSHIP_MODE = "Relationship mode";
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
+
+    public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
     public static final String LIMIT_LINKING_DISTANCE = "Limit linking distance";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance";
     public static final String CALIBRATED_DISTANCE = "Calibrated distance";
+    public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+    public static final String OUTPUT_SEPARATOR = "Data output";
+    public static final String EXPORT_ALL_DISTANCES = "Export all distances";
+    public static final String SAVE_NAME_MODE = "Save name mode";
+    public static final String SAVE_FILE_NAME = "File name";
+    public static final String APPEND_SERIES_MODE = "Append series mode";
+    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
+    public static final String SAVE_SUFFIX = "Add filename suffix";
+
+    public interface SaveNameModes extends ImageSaver.SaveNameModes {
+    }
+
+    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {
+    }
+
+    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
+    }
 
     public CalculateNearestNeighbour(ModuleCollection modules) {
-        super("Calculate nearest neighbour",modules);
+        super("Calculate nearest neighbour", modules);
     }
 
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
         String DIFFERENT_SET = "Different object set";
 
-        String[] ALL = new String[]{WITHIN_SAME_SET, DIFFERENT_SET};
+        String[] ALL = new String[] { WITHIN_SAME_SET, DIFFERENT_SET };
 
     }
 
@@ -52,28 +94,40 @@ public class CalculateNearestNeighbour extends Module {
         String NN_ID = "NN_${NEIGHBOUR}_ID";
     }
 
-    public static String getFullName(String measurement,String neighbourObjectsName) {
-        return "NEAREST_NEIGHBOUR // "+measurement.replace("${NEIGHBOUR}",neighbourObjectsName);
+    public static String getFullName(String measurement, String neighbourObjectsName) {
+        return "NEAREST_NEIGHBOUR // " + measurement.replace("${NEIGHBOUR}", neighbourObjectsName);
     }
 
-
-    public Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects, double maximumLinkingDistance) {
+    public Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects, double maximumLinkingDistance,
+            boolean linkInSameFrame, @Nullable LinkedHashMap<Obj, Double> currDistances) {
         double minDist = Double.MAX_VALUE;
         Obj nearestNeighbour = null;
 
-        if (testObjects == null) return null;
+        if (testObjects == null)
+            return null;
 
         for (Obj testObject : testObjects.values()) {
-            if (testObject == inputObject) continue;
+            // Don't compare an object to itself
+            if (testObject == inputObject)
+                continue;
 
-            double dist = inputObject.getCentroidSeparation(testObject,true);
+            // Check if we should only be comparing objects in same timepoint
+            if (linkInSameFrame && (inputObject.getT() != testObject.getT()))
+                continue;
+
+            double dist = inputObject.getCentroidSeparation(testObject, true);
             if (dist < minDist) {
                 minDist = dist;
                 nearestNeighbour = testObject;
             }
+
+            // If storing all distances, adding current distance
+            if (currDistances != null)
+                currDistances.put(testObject, dist);
         }
 
-        if (minDist > maximumLinkingDistance) return null;
+        if (minDist > maximumLinkingDistance)
+            return null;
 
         return nearestNeighbour;
 
@@ -83,30 +137,105 @@ public class CalculateNearestNeighbour extends Module {
         // Adding details of the nearest neighbour to the input object's measurements
         if (nearestNeighbour != null) {
             double dppXY = inputObject.getDppXY();
-            double minDist = inputObject.getCentroidSeparation(nearestNeighbour,true);
+            double minDist = inputObject.getCentroidSeparation(nearestNeighbour, true);
 
-            String name = getFullName(Measurements.NN_ID,nearestNeighbourName);
+            String name = getFullName(Measurements.NN_ID, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, nearestNeighbour.getID()));
 
-            name = getFullName(Measurements.NN_DISTANCE_PX,nearestNeighbourName);
+            name = getFullName(Measurements.NN_DISTANCE_PX, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, minDist));
 
-            name = getFullName(Measurements.NN_DISTANCE_CAL,nearestNeighbourName);
-            inputObject.addMeasurement(new Measurement(name, minDist*dppXY));
+            name = getFullName(Measurements.NN_DISTANCE_CAL, nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, minDist * dppXY));
 
         } else {
-            String name = getFullName(Measurements.NN_ID,nearestNeighbourName);
+            String name = getFullName(Measurements.NN_ID, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, Double.NaN));
 
-            name = getFullName(Measurements.NN_DISTANCE_PX,nearestNeighbourName);
+            name = getFullName(Measurements.NN_DISTANCE_PX, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, Double.NaN));
 
-            name = getFullName(Measurements.NN_DISTANCE_CAL,nearestNeighbourName);
+            name = getFullName(Measurements.NN_DISTANCE_CAL, nearestNeighbourName);
             inputObject.addMeasurement(new Measurement(name, Double.NaN));
 
         }
     }
 
+    public static SXSSFWorkbook exportDistances(LinkedHashMap<Obj, LinkedHashMap<Obj, Double>> distances,
+            ObjCollection inputObjects, ObjCollection targetObjects) {
+        String inputObjectsName = inputObjects.getName();
+        String targetObjectsName = targetObjects.getName();
+
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Distances");
+        int rowCount = 0;
+        int colCount = 0;
+
+        // Adding column headers and storing index of this column position
+        HashMap<Obj, Integer> colIdxs = new HashMap<>();
+        Row row = sheet.createRow(rowCount++);
+        Cell cell = row.createCell(colCount++);
+        for (Obj targetObject : targetObjects.values()) {
+            cell = row.createCell(colCount);
+            cell.setCellValue(targetObjectsName + " (ID " + targetObject.getID() + ")");
+            colIdxs.put(targetObject, colCount++);
+        }
+
+        // Adding header rows for target objects
+        for (Obj inputObject : distances.keySet()) {
+            // Creating row for this object
+            row = sheet.createRow(rowCount++);
+
+            // Creating row title
+            cell = row.createCell(0);
+            cell.setCellValue(inputObjectsName + " (ID " + inputObject.getID() + ")");
+
+            // Iterating over all target objects, adding their distances
+            LinkedHashMap<Obj, Double> currDistances = distances.get(inputObject);
+            for (Obj targetObject : currDistances.keySet()) {
+                // Getting relevant column index
+                int colIdx = colIdxs.get(targetObject);
+                cell = row.createCell(colIdx);
+
+                // Assigning the distance
+                cell.setCellValue(currDistances.get(targetObject));
+
+            }
+        }
+
+        return workbook;
+
+    }
+
+    public static void writeDistancesFile(SXSSFWorkbook workbook, String path) {
+        // Writing the workbook to file
+        try {
+            FileOutputStream outputStream = new FileOutputStream(path);
+            workbook.write(outputStream);
+            workbook.close();
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            try {
+                String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+                String rootPath = FilenameUtils.removeExtension(path);
+                String newOutPath = rootPath + "_(" + dateTime + ").xlsx";
+                FileOutputStream outputStream = null;
+
+                outputStream = new FileOutputStream(newOutPath);
+                workbook.write(outputStream);
+                workbook.close();
+                outputStream.close();
+
+                MIA.log.writeWarning("Target file (" + new File(path).getName() + ") inaccessible");
+                MIA.log.writeWarning("Saved to alternative file (" + new File(newOutPath).getName() + ")");
+
+            } catch (IOException e1) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String getPackageName() {
@@ -132,17 +261,29 @@ public class CalculateNearestNeighbour extends Module {
         boolean limitLinkingDistance = parameters.getValue(LIMIT_LINKING_DISTANCE);
         double maxLinkingDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+        boolean exportAllDistances = parameters.getValue(EXPORT_ALL_DISTANCES);
+        String saveNameMode = parameters.getValue(SAVE_NAME_MODE);
+        String saveFileName = parameters.getValue(SAVE_FILE_NAME);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
+        String suffix = parameters.getValue(SAVE_SUFFIX);
 
         // If there are no input objects skip the module
-        if (inputObjects == null) return Status.PASS;
+        if (inputObjects == null)
+            return Status.PASS;
         Obj firstObj = inputObjects.getFirst();
-        if (firstObj == null) return Status.PASS;
+        if (firstObj == null)
+            return Status.PASS;
 
-        // If the maximum linking distance was specified in calibrated units convert it to pixels
-        if (limitLinkingDistance && calibratedDistance) maxLinkingDist = maxLinkingDist/firstObj.getDppXY();
+        // If the maximum linking distance was specified in calibrated units convert it
+        // to pixels
+        if (limitLinkingDistance && calibratedDistance)
+            maxLinkingDist = maxLinkingDist / firstObj.getDppXY();
 
         // If the linking distance limit isn't to be used, use Double.MAX_VALUE instead
-        if (!limitLinkingDistance) maxLinkingDist = Double.MAX_VALUE;
+        if (!limitLinkingDistance)
+            maxLinkingDist = Double.MAX_VALUE;
 
         ObjCollection neighbourObjects = null;
         String nearestNeighbourName = null;
@@ -158,26 +299,68 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
+        // Creating a store for distance-distance measurements
+        LinkedHashMap<Obj, LinkedHashMap<Obj, Double>> distances = null;
+        if (exportAllDistances)
+            distances = new LinkedHashMap<>();
+
         // Running through each object, calculating the nearest neighbour distance
-        for (Obj inputObject:inputObjects.values()) {
+        for (Obj inputObject : inputObjects.values()) {
+            // Creating store for this input object
+            LinkedHashMap<Obj, Double> currDistances = null;
+            if (exportAllDistances) {
+                distances.putIfAbsent(inputObject, new LinkedHashMap<Obj, Double>());
+                currDistances = distances.get(inputObject);
+            }
+
             if (calculateWithinParent) {
                 Obj parentObject = inputObject.getParent(parentObjectsName);
                 if (parentObject == null) {
-                    addMeasurements(inputObject,null,nearestNeighbourName);
+                    addMeasurements(inputObject, null, nearestNeighbourName);
                     continue;
                 }
 
                 ObjCollection childObjects = parentObject.getChildren(nearestNeighbourName);
-                Obj nearestNeighbour = getNearestNeighbour(inputObject,childObjects,maxLinkingDist);
-                addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
+                Obj nearestNeighbour = getNearestNeighbour(inputObject, childObjects, maxLinkingDist, linkInSameFrame,
+                        currDistances);
+                addMeasurements(inputObject, nearestNeighbour, nearestNeighbourName);
 
             } else {
-                Obj nearestNeighbour = getNearestNeighbour(inputObject,neighbourObjects,maxLinkingDist);
-                addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
+                Obj nearestNeighbour = getNearestNeighbour(inputObject, neighbourObjects, maxLinkingDist,
+                        linkInSameFrame, currDistances);
+                addMeasurements(inputObject, nearestNeighbour, nearestNeighbourName);
             }
         }
 
-        if (showOutput) inputObjects.showMeasurements(this,modules);
+        if (exportAllDistances) {
+            File rootFile = workspace.getMetadata().getFile();
+            String path = rootFile.getParent() + MIA.getSlashes();
+
+            String name;
+            switch (saveNameMode) {
+                case SaveNameModes.MATCH_INPUT:
+                default:
+                    name = FilenameUtils.removeExtension(rootFile.getName());
+                    break;
+
+                case SaveNameModes.SPECIFIC_NAME:
+                    name = FilenameUtils.removeExtension(saveFileName);
+                    break;
+            }
+
+            // Adding last bits to name
+            path = path + name;
+            path = ImageSaver.appendSeries(path, workspace, appendSeriesMode);
+            path = ImageSaver.appendDateTime(path, appendDateTimeMode);
+            path = path + suffix + ".xlsx";
+
+            SXSSFWorkbook workbook = exportDistances(distances, inputObjects, neighbourObjects);
+            writeDistancesFile(workbook, path);
+
+        }
+
+        if (showOutput)
+            inputObjects.showMeasurements(this, modules);
 
         return Status.PASS;
 
@@ -185,14 +368,26 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.WITHIN_SAME_SET,RelationshipModes.ALL));
+        parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.WITHIN_SAME_SET, RelationshipModes.ALL));
         parameters.add(new InputObjectsP(NEIGHBOUR_OBJECTS, this));
-        parameters.add(new BooleanP(CALCULATE_WITHIN_PARENT, this,false));
+
+        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
+        parameters.add(new BooleanP(CALCULATE_WITHIN_PARENT, this, false));
         parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
-        parameters.add(new BooleanP(LIMIT_LINKING_DISTANCE, this,false));
-        parameters.add(new DoubleP(MAXIMUM_LINKING_DISTANCE, this,100d));
-        parameters.add(new BooleanP(CALIBRATED_DISTANCE, this,false));
+        parameters.add(new BooleanP(LIMIT_LINKING_DISTANCE, this, false));
+        parameters.add(new DoubleP(MAXIMUM_LINKING_DISTANCE, this, 100d));
+        parameters.add(new BooleanP(CALIBRATED_DISTANCE, this, false));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, false));
+
+        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new BooleanP(EXPORT_ALL_DISTANCES, this, false));
+        parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
+        parameters.add(new StringP(SAVE_FILE_NAME, this));
+        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
+        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
+        parameters.add(new StringP(SAVE_SUFFIX, this));
 
     }
 
@@ -200,6 +395,7 @@ public class CalculateNearestNeighbour extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
 
@@ -209,6 +405,7 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
         if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT)) {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
@@ -221,6 +418,23 @@ public class CalculateNearestNeighbour extends Module {
         if ((boolean) parameters.getValue(LIMIT_LINKING_DISTANCE)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
             returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCE));
+        }
+        returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
+
+        returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(EXPORT_ALL_DISTANCES));
+        if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES)) {
+            returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
+            switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
+                case SaveNameModes.SPECIFIC_NAME:
+                    returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
+                    break;
+            }
+
+            returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
+            returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
+            returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
+
         }
 
         return returnedParameters;
@@ -249,17 +463,17 @@ public class CalculateNearestNeighbour extends Module {
                 break;
         }
 
-        String name = getFullName(Measurements.NN_DISTANCE_CAL,neighbourObjectsName);
+        String name = getFullName(Measurements.NN_DISTANCE_CAL, neighbourObjectsName);
         ObjMeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
+        name = getFullName(Measurements.NN_DISTANCE_PX, neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
 
-        name = getFullName(Measurements.NN_ID,neighbourObjectsName);
+        name = getFullName(Measurements.NN_ID, neighbourObjectsName);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setObjectsName(inputObjectsName);
         returnedRefs.add(reference);
@@ -288,4 +502,3 @@ public class CalculateNearestNeighbour extends Module {
         return true;
     }
 }
-

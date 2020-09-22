@@ -6,7 +6,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,12 +36,12 @@ import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ChildObjectCount;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ParentObjectID;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.PartnerObjectCount;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.ParentChildRef;
 import wbif.sjx.MIA.Object.References.PartnerRef;
-import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.ClassHunter;
@@ -101,6 +105,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
     public static ModuleCollection loadModules(Document doc)
             throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         ModuleCollection modules = new ModuleCollection();
+        ArrayList<Node> relationshipsToCovert = new ArrayList<>();
 
         // Creating a list of all available modules (rather than reading their full
         // path, in case they move) using
@@ -113,7 +118,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
             // Creating an empty Module matching the input type. If none was found the loop
             // skips to the next Module
-            Module module = initialiseModule(moduleNode, modules, availableModuleNames);
+            Module module = initialiseModule(moduleNode, modules, availableModuleNames, relationshipsToCovert);
             if (module == null)
                 continue;
 
@@ -129,11 +134,15 @@ public class AnalysisReader_0p10p0_0p15p0 {
             }
         }
 
+        // Adding relationships
+        connvertRelationshipRefs(modules, relationshipsToCovert);
+
         return modules;
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModuleNames)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModuleNames,
+            ArrayList<Node> relationshipsToCovert)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
@@ -146,7 +155,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         // Trying to load from available modules
         for (String availableModuleName : availableModuleNames) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModuleName))) {
-                return initialiseModule(moduleNode, modules, availableModuleName);
+                return initialiseModule(moduleNode, modules, availableModuleName, relationshipsToCovert);
             }
         }
 
@@ -157,7 +166,8 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, String availableModuleName)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, String availableModuleName,
+            ArrayList<Node> relationshipsToCovert)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         Class<Module> clazz = null;
         try {
@@ -193,7 +203,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
                 case "RELATIONSHIPS":
                 case "PARENT_CHILD":
-                    populateModuleParentChildRefs(moduleChildNodes.item(i), modules);
+                    relationshipsToCovert.add(moduleChildNodes.item(i));
                     break;
             }
         }
@@ -292,48 +302,75 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void populateModuleParentChildRefs(Node moduleNode, ModuleCollection modules) {
-        NodeList referenceNodes = moduleNode.getChildNodes();
+    public static void connvertRelationshipRefs(ModuleCollection modules, ArrayList<Node> relationshipsToCovert) {
         boolean firstAdded = true; // As soon as one module is added, this is set to false.
 
-        // Iterating over all references of this type
-        for (int i = 0; i < referenceNodes.getLength(); i++) {
-            Node node = referenceNodes.item(i);
+        // Getting final list of available objects
+        LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
+        HashSet<String> availableObjectNames = new HashSet<>();
+        for (OutputObjectsP availableObject : availableObjects)
+            availableObjectNames.add(availableObject.getValue());
 
-            // ParentChildRef and PartnerRef no longer supports exporting, so have to use new,
-            // LegacySummaryRef to get export options
-            LegacySummaryRef lRef = new LegacySummaryRef(node);
+        for (Node moduleNode : relationshipsToCovert) {
+            NodeList referenceNodes = moduleNode.getChildNodes();
 
-            // If this reference exports anything, new ObjectCount and ParentID measurement
-            // modules must be added at the end of the analysis
-            if (!lRef.isExportGlobal() && !lRef.isExportIndividual() && !lRef.isExportMax() && !lRef.isExportMean()
-                    && !lRef.isExportMin() && !lRef.isExportStd() && !lRef.isExportSum())
-                continue;
+            // Iterating over all references of this type
+            for (int i = 0; i < referenceNodes.getLength(); i++) {
+                Node node = referenceNodes.item(i);
 
-            // Adding a GUI separator if necessary
-            if (firstAdded) {
-                addRefSeparatorModule(modules);
-                firstAdded = false;
-                MIA.log.writeMessage(
-                        "Pre-v0.15.0 analysis loaded.  Analysis has been automatically updated to store exported child/partner counts and parent IDs as measurements.");
-            }
+                // ParentChildRef and PartnerRef no longer supports exporting, so have to use
+                // new,
+                // LegacySummaryRef to get export options
+                LegacySummaryRef lRef = new LegacySummaryRef(node);
 
-            switch (node.getNodeName()) {
-                case "RELATIONSHIP":
-                case "PARENT_CHILD":
-                    // Getting relationship properties and modules
-                    ParentChildRef pcRef = new ParentChildRef(node);
-                    addChildCountModule(modules, lRef, pcRef);
-                    addParentIDModule(modules, lRef, pcRef);
+                // If this reference exports anything, new ObjectCount and ParentID measurement
+                // modules must be added at the end of the analysis
+                if (!lRef.isExportGlobal() && !lRef.isExportIndividual() && !lRef.isExportMax() && !lRef.isExportMean()
+                        && !lRef.isExportMin() && !lRef.isExportStd() && !lRef.isExportSum())
+                    continue;
 
-                    break;
+                // Adding a GUI separator if necessary
+                if (firstAdded) {
+                    addRefSeparatorModule(modules);
+                    firstAdded = false;
+                    MIA.log.writeMessage(
+                            "Pre-v0.15.0 analysis loaded.  Analysis has been automatically updated to store exported child/partner counts and parent IDs as measurements.");
+                }
 
-                case "PARTNER":
-                    // Getting relationship properties and module
-                    PartnerRef pRef = new PartnerRef(node);
-                    addPartnerCountModule(modules, lRef, pRef);
+                switch (node.getNodeName()) {
+                    case "RELATIONSHIP":
+                    case "PARENT_CHILD":
+                        // Getting relationship properties and modules
+                        ParentChildRef pcRef = new ParentChildRef(node);
 
-                    break;
+                        // Checking objects still exist (i.e. haven't been removed)
+                        if (!availableObjectNames.contains(pcRef.getParentName()))
+                            continue;
+
+                        if (!availableObjectNames.contains(pcRef.getChildName()))
+                            continue;
+
+                        addChildCountModule(modules, lRef, pcRef.getParentName(), pcRef.getChildName());
+                        addParentIDModule(modules, lRef, pcRef.getParentName(), pcRef.getChildName());
+
+                        break;
+
+                    case "PARTNER":
+                        // Getting relationship properties and module
+                        PartnerRef pRef = new PartnerRef(node);
+
+                        // Checking objects still exist (i.e. haven't been removed)
+                        if (!availableObjectNames.contains(pRef.getObject1Name()))
+                            continue;
+
+                        if (!availableObjectNames.contains(pRef.getObject2Name()))
+                            continue;
+                        
+                        addPartnerCountModule(modules, lRef, pRef.getObject1Name(), pRef.getObject2Name());
+                        addPartnerCountModule(modules, lRef, pRef.getObject2Name(), pRef.getObject1Name());
+
+                        break;
+                }
             }
         }
     }
@@ -343,21 +380,22 @@ public class AnalysisReader_0p10p0_0p15p0 {
         modules.add(guiSeparator);
 
         guiSeparator.updateParameterValue(GUISeparator.SHOW_BASIC, false);
-        guiSeparator.setNickname("[AUTOGEN] Object relationship counts");
+        guiSeparator.setNickname("[AUTOGEN] Object relationships");
         guiSeparator.setNotes(
-                "The following modules were automatically added to aid compatibility with MIA v0.15.0 and above.<br><br>Child object counts, parent IDs and partner object counts are now stored as measurements.  The following modules add the same data exporting as present in the original analysis.<br><br>Note: Spreadsheet column headers may have changed.");
+                "The following modules were automatically added to aid compatibility with MIA v0.15.0 and above.  Child object counts, parent IDs and partner object counts are now stored as measurements.  The following modules add the same data exporting as present in the original analysis.  Note: Spreadsheet column headers may have changed.");
 
     }
 
-    static void addChildCountModule(ModuleCollection modules, LegacySummaryRef lRef, ParentChildRef pcRef) {
+    static void addChildCountModule(ModuleCollection modules, LegacySummaryRef lRef, String parentName,
+            String childName) {
         // Creating the object count module
         ChildObjectCount countModule = new ChildObjectCount(modules);
         modules.add(countModule);
-        countModule.updateParameterValue(ChildObjectCount.INPUT_OBJECTS, pcRef.getParentName());
-        countModule.updateParameterValue(ChildObjectCount.CHILD_OBJECTS, pcRef.getChildName());
+        countModule.updateParameterValue(ChildObjectCount.INPUT_OBJECTS, parentName);
+        countModule.updateParameterValue(ChildObjectCount.CHILD_OBJECTS, childName);
 
         // Getting relevant measurement
-        String measurementName = ChildObjectCount.getFullName(pcRef.getChildName());
+        String measurementName = ChildObjectCount.getFullName(childName);
         ObjMeasurementRefCollection measRefs = countModule.updateAndGetObjectMeasurementRefs();
         ObjMeasurementRef measRef = measRefs.get(measurementName);
 
@@ -372,30 +410,32 @@ public class AnalysisReader_0p10p0_0p15p0 {
 
     }
 
-    static void addParentIDModule(ModuleCollection modules, LegacySummaryRef lRef, ParentChildRef pcRef) {
+    static void addParentIDModule(ModuleCollection modules, LegacySummaryRef lRef, String parentName,
+            String childName) {
         // Creating the object count module
         ParentObjectID idModule = new ParentObjectID(modules);
         modules.add(idModule);
-        idModule.updateParameterValue(ParentObjectID.INPUT_OBJECTS, pcRef.getChildName());
-        idModule.updateParameterValue(ParentObjectID.PARENT_OBJECT, pcRef.getParentName());
+        idModule.updateParameterValue(ParentObjectID.INPUT_OBJECTS, childName);
+        idModule.updateParameterValue(ParentObjectID.PARENT_OBJECT, parentName);
 
         // There's no need to set export states here, as this measurement should already
         // be set to only appear as an individual measurement with no statistics.
 
     }
 
-    static void addPartnerCountModule(ModuleCollection modules, LegacySummaryRef lRef, PartnerRef pRef) {
+    static void addPartnerCountModule(ModuleCollection modules, LegacySummaryRef lRef, String object1Name,
+            String object2Name) {
         // Creating the object count module
         PartnerObjectCount countModule = new PartnerObjectCount(modules);
         modules.add(countModule);
-        countModule.updateParameterValue(PartnerObjectCount.INPUT_OBJECTS, pRef.getObject1Name());
-        countModule.updateParameterValue(PartnerObjectCount.PARTNER_OBJECTS, pRef.getObject2Name());
+        countModule.updateParameterValue(PartnerObjectCount.INPUT_OBJECTS, object1Name);
+        countModule.updateParameterValue(PartnerObjectCount.PARTNER_OBJECTS, object2Name);
 
         // Getting relevant measurement
-        String measurementName = PartnerObjectCount.getFullName(pRef.getObject2Name());
+        String measurementName = PartnerObjectCount.getFullName(object2Name);
         ObjMeasurementRefCollection measRefs = countModule.updateAndGetObjectMeasurementRefs();
         ObjMeasurementRef measRef = measRefs.get(measurementName);
-
+        
         // Setting measurement export states
         measRef.setExportGlobal(lRef.isExportGlobal());
         measRef.setExportIndividual(lRef.isExportIndividual());
@@ -411,6 +451,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
 class LegacySummaryRef extends SummaryRef {
     public LegacySummaryRef(Node node) {
         super(node);
+        super.setAttributesFromXML(node);
     }
 
     @Override

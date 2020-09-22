@@ -56,6 +56,9 @@ public class ParentObjectID extends Module {
         ObjCollection objects = workspace.getObjects().get(objectName);
         String measurementName = getFullName(parentObjectsName);
 
+        if (objects == null)
+            return Status.PASS;
+            
         for (Obj obj : objects.values())
             obj.addMeasurement(new ParentIDMeasurement(measurementName, obj, parentObjectsName));
         
