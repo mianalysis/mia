@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -62,33 +63,37 @@ import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
  */
 public class AnalysisReader_Pre_0p10p0 {
     public static Analysis loadAnalysis()
-            throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
+            throws SAXException, IllegalAccessException, IOException, InstantiationException,
+            ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
-        if (fileDialog.getFiles().length==0) return null;
+        if (fileDialog.getFiles().length == 0)
+            return null;
 
         Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
 
-        MIA.log.writeStatus("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        MIA.log.writeStatus("File loaded (" + FilenameUtils.getName(fileDialog.getFiles()[0].getName()) + ")");
 
         return analysis;
 
     }
 
     public static Analysis loadAnalysis(File file)
-            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        String xml = FileUtils.readFileToString(file,"UTF-8");
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
+            IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        String xml = FileUtils.readFileToString(file, "UTF-8");
 
         return loadAnalysis(xml);
 
     }
 
     public static Analysis loadAnalysis(String xml)
-            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException,
+            IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         MIA.log.writeStatus("Loading analysis");
         GUI.updateProgressBar(0);
 
@@ -103,54 +108,63 @@ public class AnalysisReader_Pre_0p10p0 {
 
         Analysis analysis = new Analysis();
         ModuleCollection modules = analysis.getModules();
+        ArrayList<Node> relationshipsToCovert = new ArrayList<>();
 
-        // Creating a list of all available modules (rather than reading their full path, in case they move) using
+        // Creating a list of all available modules (rather than reading their full
+        // path, in case they move) using
         // Reflections tool
         List<String> availableModules = new ClassHunter<Module>().getClasses(Module.class);
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
-        for (int i=0;i<moduleNodes.getLength();i++) {
+        for (int i = 0; i < moduleNodes.getLength(); i++) {
             Node moduleNode = moduleNodes.item(i);
 
-            // Creating an empty Module matching the input type.  If none was found the loop skips to the next Module
-            Module module = initialiseModule(moduleNode,modules,availableModules);
-            if (module == null) continue;
+            // Creating an empty Module matching the input type. If none was found the loop
+            // skips to the next Module
+            Module module = initialiseModule(moduleNode, modules, availableModules, relationshipsToCovert);
+            if (module == null)
+                continue;
 
             // If the module is an input, treat it differently
             if (module.getClass().isInstance(new GlobalVariables(modules))) {
-                addSingleInstanceSpecificComponents(module,moduleNode);
+                addSingleInstanceSpecificComponents(module, moduleNode);
             } else if (module.getClass().isInstance(new InputControl(modules))) {
-                addSingleInstanceSpecificComponents(module,moduleNode);
+                addSingleInstanceSpecificComponents(module, moduleNode);
                 analysis.getModules().setInputControl((InputControl) module);
             } else if (module.getClass().isInstance(new OutputControl(modules))) {
-                addSingleInstanceSpecificComponents(module,moduleNode);
+                addSingleInstanceSpecificComponents(module, moduleNode);
                 analysis.getModules().setOutputControl((OutputControl) module);
             } else {
                 addStandardModuleSpecificComponents(module, moduleNode);
                 modules.add(module);
             }
 
-            MIA.log.writeStatus("Loaded "+i+" of "+moduleNodes.getLength()+" modules");
-            GUI.updateProgressBar(100*Math.floorDiv(i,moduleNodes.getLength()));
+            MIA.log.writeStatus("Loaded " + i + " of " + moduleNodes.getLength() + " modules");
+            GUI.updateProgressBar(100 * Math.floorDiv(i, moduleNodes.getLength()));
 
         }
+
+        // Adding relationships
+        AnalysisReader_0p10p0_0p15p0.convertRelationshipRefs(modules, relationshipsToCovert);
 
         return analysis;
 
     }
 
-    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModules)
+    public static Module initialiseModule(Node moduleNode, ModuleCollection modules, List<String> availableModules,
+            ArrayList<Node> relationshipsToCovert)
             throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
         String className = moduleAttributes.getNamedItem("NAME").getNodeValue();
         String moduleName = FilenameUtils.getExtension(className);
 
-        for (String availableModule:availableModules) {
+        for (String availableModule : availableModules) {
             if (moduleName.equals(FilenameUtils.getExtension(availableModule))) {
                 Module module;
                 try {
-                    module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class).newInstance(modules);
+                    module = (Module) Class.forName(availableModule).getDeclaredConstructor(ModuleCollection.class)
+                            .newInstance(modules);
                 } catch (ClassNotFoundException e) {
                     MIA.log.writeError(e);
                     continue;
@@ -166,7 +180,7 @@ public class AnalysisReader_Pre_0p10p0 {
                 // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
                 boolean foundParameters = false;
-                for (int j=0;j<moduleChildNodes.getLength();j++) {
+                for (int j = 0; j < moduleChildNodes.getLength(); j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
                         case "PARAMETERS":
                             populateModuleParameters(moduleChildNodes.item(j), module.getAllParameters(), moduleName);
@@ -190,13 +204,15 @@ public class AnalysisReader_Pre_0p10p0 {
                             break;
 
                         case "RELATIONSHIPS":
-                            populateModuleParentChildRefs(moduleChildNodes.item(j), module);
+                            relationshipsToCovert.add(moduleChildNodes.item(j));
+                            // populateModuleParentChildRefs(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
 
                 // Old file formats had parameters loose within MODULE
-                if (!foundParameters) populateModuleParameters(moduleNode, module.getAllParameters(),moduleName);
+                if (!foundParameters)
+                    populateModuleParameters(moduleNode, module.getAllParameters(), moduleName);
 
                 return module;
 
@@ -204,7 +220,7 @@ public class AnalysisReader_Pre_0p10p0 {
         }
 
         // If no module was found matching that name an error message is displayed
-        MIA.log.writeWarning("Module \""+moduleName+"\" not found (skipping)");
+        MIA.log.writeWarning("Module \"" + moduleName + "\" not found (skipping)");
 
         return null;
 
@@ -266,7 +282,7 @@ public class AnalysisReader_Pre_0p10p0 {
             Node parameterNode = parameterNodes.item(j);
 
             if (parameterNode.getNodeName().equals("COLLECTIONS")) {
-                populateModuleParameterGroups(parameterNode,parameters,moduleName);
+                populateModuleParameterGroups(parameterNode, parameters, moduleName);
                 continue;
             }
 
@@ -338,7 +354,8 @@ public class AnalysisReader_Pre_0p10p0 {
                 }
 
             } catch (NullPointerException e) {
-                MIA.log.writeWarning("Module \""+moduleName+"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
+                MIA.log.writeWarning("Module \"" + moduleName + "\" parameter \"" + parameterName + "\" ("
+                        + parameterValue + ") not set");
 
             }
         }
@@ -349,7 +366,7 @@ public class AnalysisReader_Pre_0p10p0 {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
-        for (int j=0;j<referenceNodes.getLength();j++) {
+        for (int j = 0; j < referenceNodes.getLength(); j++) {
             Node referenceNode = referenceNodes.item(j);
 
             // Getting measurement properties
@@ -375,7 +392,7 @@ public class AnalysisReader_Pre_0p10p0 {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
-        for (int j=0;j<referenceNodes.getLength();j++) {
+        for (int j = 0; j < referenceNodes.getLength(); j++) {
             MetadataRef ref = new MetadataRef(referenceNodes.item(j));
             module.addMetadataRef(ref);
 
@@ -386,7 +403,7 @@ public class AnalysisReader_Pre_0p10p0 {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
-        for (int j=0;j<referenceNodes.getLength();j++) {
+        for (int j = 0; j < referenceNodes.getLength(); j++) {
             ImageMeasurementRef ref = new ImageMeasurementRef(referenceNodes.item(j));
             module.addImageMeasurementRef(ref);
 
@@ -397,40 +414,29 @@ public class AnalysisReader_Pre_0p10p0 {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
-        for (int j=0;j<referenceNodes.getLength();j++) {
+        for (int j = 0; j < referenceNodes.getLength(); j++) {
             ObjMeasurementRef ref = new ObjMeasurementRef(referenceNodes.item(j));
             module.addObjectMeasurementRef(ref);
 
         }
     }
 
-    public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
-        NodeList referenceNodes = moduleNode.getChildNodes();
-
-        MIA.log.writeWarning("Handle reading parent child references");
-
-        // // Iterating over all references of this type
-        // for (int j=0;j<referenceNodes.getLength();j++) {
-        //     ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
-        //     module.addParentChildRef(ref);
-
-        // }
-    }
-
-    public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters, String moduleName) {
+    public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters,
+            String moduleName) {
         NodeList collectionNodes = parameterNode.getChildNodes();
         String groupName = parameterNode.getAttributes().getNamedItem("NAME").getNodeValue();
 
         // Loading the ParameterGroup and clearing all previously-initialised parameters
         ParameterGroup group = parameters.getParameter(groupName);
-        group.removeAllParameters();
+        if (group != null)
+            group.removeAllParameters();
 
         for (int j = 0; j < collectionNodes.getLength(); j++) {
             ParameterCollection newParameters = group.addParameters();
 
             Node collectionNode = collectionNodes.item(j);
             Node newParametersNode = collectionNode.getChildNodes().item(0);
-            populateModuleParameters(newParametersNode,newParameters,moduleName);
+            populateModuleParameters(newParametersNode, newParameters, moduleName);
 
         }
     }

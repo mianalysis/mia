@@ -136,7 +136,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
 
         // Adding relationships
-        connvertRelationshipRefs(modules, relationshipsToCovert);
+        convertRelationshipRefs(modules, relationshipsToCovert);
 
         return modules;
 
@@ -303,7 +303,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         }
     }
 
-    public static void connvertRelationshipRefs(ModuleCollection modules, ArrayList<Node> relationshipsToCovert) {
+    public static void convertRelationshipRefs(ModuleCollection modules, ArrayList<Node> relationshipsToCovert) {
         boolean firstAdded = true; // As soon as one module is added, this is set to false.
 
         // Storing ParentChildRefs and PartnerRefs to prevent duplicate entries
