@@ -1281,7 +1281,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                         + "<li>\"" + ScaleModes.NONE + "\" (default) Input images are not scaled.  They are loaded into the workspace at their native resolutions.</li>"
 
-                        + "<li>\"" + ScaleModes.NO_INTERPOLATION + "\" Scales the input images using a nearest-neighbour approach.  This leads to a \"blocky\" apppearance to scaled images.</li>");
+                        + "<li>\"" + ScaleModes.NO_INTERPOLATION + "\" Scales the input images using a nearest-neighbour approach.  This leads to a \"blocky\" apppearance to scaled images.</li></ul>");
 
         parameters.get(SCALE_FACTOR_X).setDescription("Scale factor applied to X-axis of input images (if \""+SCALE_MODE+"\" is in an image scaling mode).  Values <1 will reduce image width, while values >1 will increase it.");
 

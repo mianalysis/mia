@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 Uses SIFT image registration toolbox
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Apply to input image<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Output image<ul><li>Type: OutputImageP</li></ul><br><li>Transformation mode<ul><li>Type: ChoiceP</li><li>Default value: Rigid</li><li>Choices: <ul><li>Affine</li><li>Rigid</li><li>Similarity</li><li>Translation</li></ul></li></ul><br><li>Alignment mode<ul><li>Type: ChoiceP</li><li>Default value: Automatic (feature extraction)</li><li>Choices: <ul><li>Automatic (feature extraction)</li><li>Manual (landmarks)</li></ul></li></ul><br><li>Fill mode<ul><li>Type: ChoiceP</li><li>Default value: Black</li><li>Choices: <ul><li>Black</li><li>White</li></ul></li></ul><br><li>Enable multithreading<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Relative mode<ul><li>Type: ChoiceP</li><li>Default value: First frame</li><li>Choices: <ul><li>First frame</li><li>Previous frame</li><li>Specific image</li></ul></li></ul><br><li>Rolling correction<ul><li>Type: ChoiceP</li><li>Default value: None</li><li>Choices: <ul><li>None</li><li>Every nth frame</li></ul></li></ul><br><li>Correction interval<ul><li>Type: IntegerP</li><li>Default value: 1</li></ul><br><li>Reference image<ul><li>Type: InputImageP</li></ul><br><li>Calculation source<ul><li>Type: ChoiceP</li><li>Default value: Internal</li><li>Choices: <ul><li>Internal</li><li>External</li></ul></li></ul><br><li>External source<ul><li>Type: InputImageP</li></ul><br><li>Calculation channel<ul><li>Type: IntegerP</li><li>Default value: 1</li></ul><br><li>Initial Gaussian blur (px)<ul><li>Type: DoubleP</li><li>Default value: 1.6</li></ul><br><li>Steps per scale<ul><li>Type: IntegerP</li><li>Default value: 3</li></ul><br><li>Minimum image size (px)<ul><li>Type: IntegerP</li><li>Default value: 64</li></ul><br><li>Maximum image size (px)<ul><li>Type: IntegerP</li><li>Default value: 1024</li></ul><br><li>Feature descriptor size<ul><li>Type: IntegerP</li><li>Default value: 4</li></ul><br><li>Feature descriptor orientation bins<ul><li>Type: IntegerP</li><li>Default value: 8</li></ul><br><li>Closest/next closest ratio<ul><li>Type: DoubleP</li><li>Default value: 0.92</li></ul><br><li>Maximal alignment error (px)<ul><li>Type: DoubleP</li><li>Default value: 25.0</li></ul><br><li>Inlier ratio<ul><li>Type: DoubleP</li><li>Default value: 0.05</li></ul><br></ul>
+<ul><li><b>Input image</b> (default = "") </li><br><li><b>Apply to input image</b> (default = "true") </li><br><li><b>Output image</b> (default = "") </li><br><li><b>Transformation mode</b> (default = "Rigid") </li><br><li><b>Alignment mode</b> (default = "Automatic (feature extraction)") </li><br><li><b>Fill mode</b> (default = "Black") </li><br><li><b>Enable multithreading</b> (default = "true") </li><br><li><b>Relative mode</b> (default = "First frame") </li><br><li><b>Rolling correction</b> (default = "None") </li><br><li><b>Correction interval</b> (default = "1") </li><br><li><b>Reference image</b> (default = "") </li><br><li><b>Calculation source</b> (default = "Internal") </li><br><li><b>External source</b> (default = "") </li><br><li><b>Calculation channel</b> (default = "1") </li><br><li><b>Initial Gaussian blur (px)</b> (default = "1.6") </li><br><li><b>Steps per scale</b> (default = "3") </li><br><li><b>Minimum image size (px)</b> (default = "64") </li><br><li><b>Maximum image size (px)</b> (default = "1024") </li><br><li><b>Feature descriptor size</b> (default = "4") </li><br><li><b>Feature descriptor orientation bins</b> (default = "8") </li><br><li><b>Closest/next closest ratio</b> (default = "0.92") </li><br><li><b>Maximal alignment error (px)</b> (default = "25.0") </li><br><li><b>Inlier ratio</b> (default = "0.05") </li><br></ul>
 
 </div>
 </body>

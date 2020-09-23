@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Description: Image to set look-up table for.</li><li>Type: InputImageP</li></ul><br><li>Channel mode<ul><li>Description: Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br></li><li>Type: ChoiceP</li><li>Default value: All channels</li><li>Choices: <ul><li>All channels</li><li>Specific channels</li></ul></li></ul><br><li>Channel<ul><li>Description: When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.</li><li>Type: IntegerP</li><li>Default value: 1</li></ul><br><li>Lookup table<ul><li>Description: Look-up table to apply to the relevant channels.  Options are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.</li><li>Type: ChoiceP</li><li>Default value: Grey</li><li>Choices: <ul><li>Grey</li><li>Red</li><li>Green</li><li>Blue</li><li>Cyan</li><li>Magenta</li><li>Yellow</li><li>Fire</li><li>Ice</li><li>Jet</li><li>Physics</li><li>Spectrum</li><li>Thermal</li><li>Random</li></ul></li></ul><br><li>Display mode<ul><li>Description: Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br></li><li>Type: ChoiceP</li><li>Default value: Full range</li><li>Choices: <ul><li>Full range</li><li>Set zero to black</li></ul></li></ul><br></ul>
+<ul><li><b>Input image</b> (default = "") Image to set look-up table for.</li><br><li><b>Channel mode</b> (default = "All channels") Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br></li><br><li><b>Channel</b> (default = "1") When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.</li><br><li><b>Lookup table</b> (default = "Grey") Look-up table to apply to the relevant channels.  Options are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.</li><br><li><b>Display mode</b> (default = "Full range") Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br></li><br></ul>
 
 </div>
 </body>

@@ -302,12 +302,16 @@ public class ImageCalculator extends Module {
         parameters.add(new InputImageP(INPUT_IMAGE1, this, "", "First image to be processed as part of calculation."));
         parameters.add(new InputImageP(INPUT_IMAGE2, this, "", "Second image to be processed as part of calculation."));
         parameters.add(new ChoiceP(OVERWRITE_MODE, this, OverwriteModes.CREATE_NEW, OverwriteModes.ALL,
-                "Controls how the resultant image should be output.<br>" + "<br> - \"" + OverwriteModes.CREATE_NEW
-                        + "\" (default) will create a new image and save it to the workspace." + "<br> - \""
-                        + OverwriteModes.OVERWRITE_IMAGE1
-                        + "\" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image"
-                        + "<br> - \"" + OverwriteModes.OVERWRITE_IMAGE2
-                        + "\" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image"));
+                "Controls how the resultant image should be output:<br><ul>"
+
+                        + "<li>\"" + OverwriteModes.CREATE_NEW
+                        + "\" (default) will create a new image and save it to the workspace.</li>"
+
+                        + "<li>\"" + OverwriteModes.OVERWRITE_IMAGE1
+                        + "\" will overwrite the first input image with the output image.  The output image will retain all measurements from the first input image.</li>"
+
+                        + "<li>\"" + OverwriteModes.OVERWRITE_IMAGE2
+                        + "\" will overwrite the second input image with the output image.  The output image will retain all measurements from the second input image.</li></ul>"));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
                 "Name of the output image created during the image calculation.  This image will be added to the workspace."));
         parameters.add(new BooleanP(OUTPUT_32BIT, this, false,

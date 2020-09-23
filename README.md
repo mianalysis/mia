@@ -15,10 +15,20 @@ Installation
 - The latest version of the plugin can be downloaded from the [Releases](https://github.com/SJCross/ModularImageAnalysis/releases) page.
 - Place this .jar file into the /plugins directory of the your Fiji installation.
 - MIA requires the "Biomedgroup" and "MorphoLibJ" plugins to be installed.
-    - For MIA versions before 0.11.0: Launch Fiji's [Updater](https://imagej.net/Updater) tool and add the "Biomedgroup" and "IJPB-plugins" (possibly listed as "MorphoLibJ") update sites, then restart Fiji.
-    - For MIA versions 0.11.0 or newer: Start MIA as usual, then click "Yes" when prompted to automatically download the updates.
+> - For MIA versions before 0.11.0: Launch Fiji's [Updater](https://imagej.net/Updater) tool and add the "Biomedgroup" and "IJPB-plugins" (possibly listed as "MorphoLibJ") update sites, then restart Fiji.
+> - For MIA versions 0.11.0 or newer: Start MIA as usual, then click "Yes" when prompted to automatically download the updates.
 
-Getting started
+Creating a new workflow
+-----
+- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
+> - Select View > "Switch to editing view" from the menu bar
+> - Modules are added and removed from the workflow using the "+" and "-" buttons
+> - Module order can be shifted with the arrow buttons
+> - Selecting a module will display its relevant parameters in the right panel
+> - Checkboxes to the right of each module determine if they are visible in the basic view (default view)
+> - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
+
+Using an existing workflow
 -----
 - In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 - To run an existing analysis workflow
@@ -27,13 +37,6 @@ Getting started
 > - When ready, click "Run" to start the analysis
 > - While processing the status panel will display the number of files completed (batch mode) or a summary of the ongoing task (single file mode)
 > - When finished, "Complete" will be displayed in the status panel.  Output XLS files will be saved in the input directory.
-- To create a new workflow
-> - Select View > "Switch to editing view" from the menu bar
-> - Modules are added and removed from the workflow using the "+" and "-" buttons
-> - Module order can be shifted with the arrow buttons
-> - Selecting a module will display its relevant parameters in the right panel
-> - Checkboxes to the right of each module determine if they are visible in the basic view (default view)
-> - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
 
 Acknowledgements
 ----------------

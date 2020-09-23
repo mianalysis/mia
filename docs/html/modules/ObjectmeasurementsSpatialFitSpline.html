@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 
 <h2>Parameters</h2>
-<ul><li>Input objects<ul><li>Type: InputObjectsP</li></ul><br><li>Object output mode<ul><li>Type: ChoiceP</li><li>Default value: Do not store</li><li>Choices: <ul><li>Do not store</li><li>Individual control points</li><li>Full contour</li></ul></li></ul><br><li>Output objects<ul><li>Type: OutputObjectsP</li></ul><br><li>Export every N points<ul><li>Type: IntegerP</li><li>Default value: 1</li></ul><br><li>Relate to reference point<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>X-axis reference measurement<ul><li>Type: ObjectMeasurementP</li></ul><br><li>Y-axis reference measurement<ul><li>Type: ObjectMeasurementP</li></ul><br><li>Spline fitting method<ul><li>Type: ChoiceP</li><li>Default value: LOESS (smooth fitting)</li><li>Choices: <ul><li>LOESS (smooth fitting)</li><li>Standard (fits all points)</li></ul></li></ul><br><li>Number of neighbours (smoothing)<ul><li>Type: IntegerP</li><li>Default value: 20</li></ul><br><li>Iterations<ul><li>Type: IntegerP</li><li>Default value: 10</li></ul><br><li>Accuracy<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Measure absolute curvature<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Measure signed curvature<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Draw spline<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Apply to image<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Output image<ul><li>Type: OutputImageP</li></ul><br><li>Line width<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Maximum curvature (for colour)<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Calculate angle between ends<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Fitting range (px)<ul><li>Type: IntegerP</li><li>Default value: 5</li></ul><br></ul>
+<ul><li><b>Input objects</b> (default = "") </li><br><li><b>Object output mode</b> (default = "Do not store") </li><br><li><b>Output objects</b> (default = "") </li><br><li><b>Export every N points</b> (default = "1") </li><br><li><b>Relate to reference point</b> (default = "false") </li><br><li><b>X-axis reference measurement</b> (default = "") </li><br><li><b>Y-axis reference measurement</b> (default = "") </li><br><li><b>Spline fitting method</b> (default = "LOESS (smooth fitting)") </li><br><li><b>Number of neighbours (smoothing)</b> (default = "20") </li><br><li><b>Iterations</b> (default = "10") </li><br><li><b>Accuracy</b> (default = "1.0") </li><br><li><b>Measure absolute curvature</b> (default = "true") </li><br><li><b>Measure signed curvature</b> (default = "true") </li><br><li><b>Draw spline</b> (default = "false") </li><br><li><b>Input image</b> (default = "") </li><br><li><b>Apply to image</b> (default = "false") </li><br><li><b>Output image</b> (default = "") </li><br><li><b>Line width</b> (default = "1.0") </li><br><li><b>Maximum curvature (for colour)</b> (default = "1.0") </li><br><li><b>Calculate angle between ends</b> (default = "true") </li><br><li><b>Fitting range (px)</b> (default = "5") </li><br></ul>
 
 </div>
 </body>

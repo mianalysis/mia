@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 CURRENTLY ONLY WORKS IN 3D
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Measurement type<ul><li>Type: ChoiceP</li><li>Default value: Distance profile</li><li>Choices: <ul><li>Distance profile</li><li>Fraction proximal to objects</li><li>Intensity-weighted proximity</li></ul></li></ul><br><li>Distance map image<ul><li>Type: InputImageP</li></ul><br><li>Number of radial samples<ul><li>Type: IntegerP</li><li>Default value: 10</li></ul><br><li>Range mode<ul><li>Type: ChoiceP</li><li>Default value: Automatic range</li><li>Choices: <ul><li>Automatic range</li><li>Manual range</li></ul></li></ul><br><li>Minimum distance<ul><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><br><li>Maximum distance<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Save profile mode<ul><li>Type: ChoiceP</li><li>Default value: Don't save</li><li>Choices: <ul><li>Don't save</li><li>Individual files</li></ul></li></ul><br><li>Profile file suffix<ul><li>Type: StringP</li></ul><br><li>Input objects<ul><li>Type: InputObjectsP</li></ul><br><li>Proximal distance<ul><li>Type: DoubleP</li><li>Default value: 2.0</li></ul><br><li>Spatial units<ul><li>Type: ChoiceP</li><li>Default value: Pixel</li><li>Choices: <ul><li>Calibrated</li><li>Pixel</li></ul></li></ul><br><li>Ignore values on objects<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Edge distance mode<ul><li>Type: ChoiceP</li><li>Default value: Inside and outside</li><li>Choices: <ul><li>Inside and outside</li><li>Inside only</li><li>Outside only</li></ul></li></ul><br></ul>
+<ul><li><b>Input image</b> (default = "") </li><br><li><b>Measurement type</b> (default = "Distance profile") </li><br><li><b>Distance map image</b> (default = "") </li><br><li><b>Number of radial samples</b> (default = "10") </li><br><li><b>Range mode</b> (default = "Automatic range") </li><br><li><b>Minimum distance</b> (default = "0.0") </li><br><li><b>Maximum distance</b> (default = "1.0") </li><br><li><b>Save profile mode</b> (default = "Don't save") </li><br><li><b>Profile file suffix</b> (default = "") </li><br><li><b>Input objects</b> (default = "") </li><br><li><b>Proximal distance</b> (default = "2.0") </li><br><li><b>Spatial units</b> (default = "Pixel") </li><br><li><b>Ignore values on objects</b> (default = "false") </li><br><li><b>Edge distance mode</b> (default = "Inside and outside") </li><br></ul>
 
 </div>
 </body>

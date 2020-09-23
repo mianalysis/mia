@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 
 <h2>Parameters</h2>
-<ul><li>Extractor mode<ul><li>Type: ChoiceP</li><li>Default value: Filename</li><li>Choices: <ul><li>Filename</li><li>Foldername</li><li>Keyword</li><li>Metadata file</li><li>Series name</li></ul></li></ul><br><li>Filename extractor<ul><li>Type: ChoiceP</li><li>Default value: Generic</li><li>Choices: <ul><li>Generic</li><li>Cell Voyager filename</li><li>IncuCyte long filename</li><li>IncuCyte short filename</li><li>Opera filename</li><li>Yokogawa filename</li></ul></li></ul><br><li>Foldername extractor<ul><li>Type: ChoiceP</li><li>Default value: Generic</li><li>Choices: <ul><li>Generic</li><li>Cell Voyager foldername</li><li>Opera measurement foldername</li><li>Opera barcode</li></ul></li></ul><br><li>Keyword list<ul><li>Type: StringP</li></ul><br><li>Keyword source<ul><li>Type: ChoiceP</li><li>Default value: File name</li><li>Choices: <ul><li>File name</li><li>Series name</li></ul></li></ul><br><li>Metadata file extractor<ul><li>Type: ChoiceP</li><li>Default value: CSV file</li><li>Choices: <ul><li>CSV file</li><li>Opera file (.flex)</li></ul></li></ul><br><li>Input source<ul><li>Type: ChoiceP</li><li>Default value: File in input folder</li><li>Choices: <ul><li>File in input folder</li><li>Static file</li></ul></li></ul><br><li>Metadata file<ul><li>Type: FilePathP</li></ul><br><li>Metadata file name<ul><li>Type: StringP</li></ul><br><li>Metadata item to match<ul><li>Type: MetadataItemP</li></ul><br><li>Pattern<ul><li>Type: StringP</li></ul><br><li>Groups (comma separated)<ul><li>Type: StringP</li></ul><br><li>Show pattern matching test<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Example string<ul><li>Type: StringP</li></ul><br><li>Identified groups<ul><li>Type: TextAreaP</li></ul><br><li>Split using regular expressions<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Metadata value name<ul><li>Type: StringP</li></ul><br></ul>
+<ul><li><b>Extractor mode</b> (default = "Filename") </li><br><li><b>Filename extractor</b> (default = "Generic") </li><br><li><b>Foldername extractor</b> (default = "Generic") </li><br><li><b>Keyword list</b> (default = "") </li><br><li><b>Keyword source</b> (default = "File name") </li><br><li><b>Metadata file extractor</b> (default = "CSV file") </li><br><li><b>Input source</b> (default = "File in input folder") </li><br><li><b>Metadata file</b> (default = "") </li><br><li><b>Metadata file name</b> (default = "") </li><br><li><b>Metadata item to match</b> (default = "") </li><br><li><b>Pattern</b> (default = "") </li><br><li><b>Groups (comma separated)</b> (default = "") </li><br><li><b>Show pattern matching test</b> (default = "false") </li><br><li><b>Example string</b> (default = "") </li><br><li><b>Identified groups</b> (default = "") </li><br><li><b>Split using regular expressions</b> (default = "false") </li><br><li><b>Metadata value name</b> (default = "") </li><br></ul>
 
 </div>
 </body>

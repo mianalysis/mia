@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 Applies an integer pixel row shift to every other row (starting with top-most row).
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Description: Image to which the correction will be applied.</li><li>Type: InputImageP</li></ul><br><li>Apply to input image<ul><li>Description: Set to "true" to apply correction to the input image or "false" to store the corrected image separately.</li><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Output image<ul><li>Description: Output image with correction applied.</li><li>Type: OutputImageP</li></ul><br><li>Offset (px)<ul><li>Description: Pixel offset to be applied to every other row.</li><li>Type: IntegerP</li><li>Default value: 0</li></ul><br></ul>
+<ul><li><b>Input image</b> (default = "") Image to which the correction will be applied.</li><br><li><b>Apply to input image</b> (default = "true") Set to "true" to apply correction to the input image or "false" to store the corrected image separately.</li><br><li><b>Output image</b> (default = "") Output image with correction applied.</li><br><li><b>Offset (px)</b> (default = "0") Pixel offset to be applied to every other row.</li><br></ul>
 
 </div>
 </body>
