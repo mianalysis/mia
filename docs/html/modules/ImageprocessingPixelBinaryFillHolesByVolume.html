@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Apply to input image<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Output image<ul><li>Type: OutputImageP</li></ul><br><li>Black-white mode<ul><li>Type: ChoiceP</li><li>Default value: Fill white holes</li><li>Choices: <ul><li>Fill black holes</li><li>Fill white holes</li></ul></li></ul><br><li>Use minimum volume<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Minimum size<ul><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><br><li>Use maximum volume<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Maximum size<ul><li>Type: DoubleP</li><li>Default value: 1000.0</li></ul><br><li>Calibrated units<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Enable multithreading<ul><li>Description: Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.</li><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Minimum strip width (px)<ul><li>Description: Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.</li><li>Type: IntegerP</li><li>Default value: 60</li></ul><br></ul>
+<ul><li><b>Input image</b> (default = "") </li><br><li><b>Apply to input image</b> (default = "true") </li><br><li><b>Output image</b> (default = "") </li><br><li><b>Black-white mode</b> (default = "Fill white holes") </li><br><li><b>Use minimum volume</b> (default = "true") </li><br><li><b>Minimum size</b> (default = "0.0") </li><br><li><b>Use maximum volume</b> (default = "true") </li><br><li><b>Maximum size</b> (default = "1000.0") </li><br><li><b>Calibrated units</b> (default = "false") </li><br><li><b>Enable multithreading</b> (default = "true") Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.</li><br><li><b>Minimum strip width (px)</b> (default = "60") Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.</li><br></ul>
 
 </div>
 </body>

@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -27,7 +26,7 @@ Gaussian spot fitting.  Can take objects as estimated locations.
 ***Only works in 2D***
 ***Only works for refinement of existing spots***
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Input objects<ul><li>Type: InputObjectsP</li></ul><br><li>Method to estimate spot radius<ul><li>Type: ChoiceP</li><li>Default value: Fixed value</li><li>Choices: <ul><li>Fixed value</li><li>Measurement</li></ul></li></ul><br><li>Radius<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Radius measurement<ul><li>Type: ObjectMeasurementP</li></ul><br><li>Measurement multiplier<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Limit sigma range<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Minimum sigma (x Radius)<ul><li>Type: DoubleP</li><li>Default value: 0.25</li></ul><br><li>Maximum sigma (x Radius)<ul><li>Type: DoubleP</li><li>Default value: 4.0</li></ul><br><li>Fixed fitting window<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Window size<ul><li>Type: IntegerP</li><li>Default value: 15</li></ul><br><li>Maximum number of evaluations<ul><li>Type: IntegerP</li><li>Default value: 1000</li></ul><br><li>Remove objects with failed fitting<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Apply volume<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Create Gaussian image<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Gaussian image name<ul><li>Type: OutputImageP</li></ul><br></ul>
+<ul><li><b>Input image</b> (default = "") </li><br><li><b>Input objects</b> (default = "") </li><br><li><b>Method to estimate spot radius</b> (default = "Fixed value") </li><br><li><b>Radius</b> (default = "1.0") </li><br><li><b>Radius measurement</b> (default = "") </li><br><li><b>Measurement multiplier</b> (default = "1.0") </li><br><li><b>Limit sigma range</b> (default = "true") </li><br><li><b>Minimum sigma (x Radius)</b> (default = "0.25") </li><br><li><b>Maximum sigma (x Radius)</b> (default = "4.0") </li><br><li><b>Fixed fitting window</b> (default = "false") </li><br><li><b>Window size</b> (default = "15") </li><br><li><b>Maximum number of evaluations</b> (default = "1000") </li><br><li><b>Remove objects with failed fitting</b> (default = "false") </li><br><li><b>Apply volume</b> (default = "true") </li><br><li><b>Create Gaussian image</b> (default = "false") </li><br><li><b>Gaussian image name</b> (default = "") </li><br></ul>
 
 </div>
 </body>

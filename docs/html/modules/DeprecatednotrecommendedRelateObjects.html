@@ -11,10 +11,9 @@ layout: default
 <div class="sidenav">
     <a href="../../index.html" class="nav1">Introduction</a>
     <a href="../gettingstarted.html" class="nav1">Getting started</a>
-    <a href="../modules.html" class="nav1">Modules</a>
-    <a href="../modulelist.html" class="nav2">List of modules</a>
-    <a href="../macros.html" class="nav1">Macros</a>
-    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
 </div>
 
 <!-- Page content -->
@@ -25,7 +24,7 @@ layout: default
 <h2>Description</h2>
 
 <h2>Parameters</h2>
-<ul><li>Parent (larger) objects<ul><li>Type: InputObjectsP</li></ul><br><li>Child (smaller) objects<ul><li>Type: InputObjectsP</li></ul><br><li>Method to relate objects<ul><li>Type: ChoiceP</li><li>Default value: Matching IDs</li><li>Choices: <ul><li>Matching IDs</li><li>Proximity</li><li>Proximity to children</li><li>Spatial overlap</li></ul></li></ul><br><li>Reference point<ul><li>Type: ChoiceP</li><li>Default value: Centroid</li><li>Choices: <ul><li>Centroid</li><li>Surface</li><li>Child centroid to parent surface</li></ul></li></ul><br><li>Child objects to test against<ul><li>Type: ChildObjectsP</li></ul><br><li>Limit linking by distance<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Maximum linking distance (px)<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><br><li>Inside/outside mode<ul><li>Type: ChoiceP</li><li>Default value: Inside and outside</li><li>Choices: <ul><li>Inside and outside</li><li>Inside only (set outside to zero)</li><li>Outside only (set inside to zero)</li></ul></li></ul><br><li>Minimum percentage overlap<ul><li>Description: Percentage of total child volume overlapping with the parent object.</li><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><br><li>Require centroid overlap<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Only link objects in same frame<ul><li>Type: BooleanP</li><li>Default value: true</li></ul><br><li>Merge related objects<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><br><li>Output overlapping objects<ul><li>Type: OutputObjectsP</li></ul><br></ul>
+<ul><li><b>Parent (larger) objects</b> (default = "") </li><br><li><b>Child (smaller) objects</b> (default = "") </li><br><li><b>Method to relate objects</b> (default = "Matching IDs") </li><br><li><b>Reference point</b> (default = "Centroid") </li><br><li><b>Child objects to test against</b> (default = "") </li><br><li><b>Limit linking by distance</b> (default = "false") </li><br><li><b>Maximum linking distance (px)</b> (default = "1.0") </li><br><li><b>Inside/outside mode</b> (default = "Inside and outside") </li><br><li><b>Minimum percentage overlap</b> (default = "0.0") Percentage of total child volume overlapping with the parent object.</li><br><li><b>Require centroid overlap</b> (default = "true") </li><br><li><b>Only link objects in same frame</b> (default = "true") </li><br><li><b>Merge related objects</b> (default = "false") </li><br><li><b>Output overlapping objects</b> (default = "") </li><br></ul>
 
 </div>
 </body>
