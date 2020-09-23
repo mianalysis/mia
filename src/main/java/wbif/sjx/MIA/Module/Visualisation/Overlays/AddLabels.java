@@ -35,11 +35,11 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.PartnerObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.MIA.Process.LabelFactory;
 import wbif.sjx.common.Object.Point;
@@ -469,30 +469,30 @@ public class AddLabels extends AbstractOverlay {
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
 
-        parameters.get(LABEL_MODE).setDescription("Controls what information each label displays:<br>"
+        parameters.get(LABEL_MODE).setDescription("Controls what information each label displays:<br><ul>"
 
-                + "<br>- \"" + LabelModes.CHILD_COUNT
+                + "<li>\"" + LabelModes.CHILD_COUNT
                 + "\" The number of children from a specific object collection for each object.  The children to summarise are selected using the \""
-                + CHILD_OBJECTS_FOR_LABEL + "\" parameter.<br>"
+                + CHILD_OBJECTS_FOR_LABEL + "\" parameter.</li>"
 
-                + "<br>- \"" + LabelModes.ID + "\" The ID number of the object.<br>"
+                + "<li>\"" + LabelModes.ID + "\" The ID number of the object.</li>"
 
-                + "<br>- \"" + LabelModes.MEASUREMENT_VALUE
+                + "<li>\"" + LabelModes.MEASUREMENT_VALUE
                 + "\" A measurement associated with the object.  The measurement is selected using the \""
-                + MEASUREMENT_FOR_LABEL + "\" parameter.<br>"
+                + MEASUREMENT_FOR_LABEL + "\" parameter.</li>"
 
-                + "<br>- \"" + LabelModes.PARENT_ID
+                + "<li>\"" + LabelModes.PARENT_ID
                 + "\" The ID number of a parent of the object.  The parent object is selected using the \""
-                + PARENT_OBJECT_FOR_LABEL + "\" parameter.<br>"
+                + PARENT_OBJECT_FOR_LABEL + "\" parameter.</li>"
 
-                + "<br>- \"" + LabelModes.PARENT_MEASUREMENT_VALUE
+                + "<li>\"" + LabelModes.PARENT_MEASUREMENT_VALUE
                 + "\" A measurement associated with a parent of the object.  The measurement is selected using the \""
                 + MEASUREMENT_FOR_LABEL + "\" parameter and the parent object with the \"" + PARENT_OBJECT_FOR_LABEL
-                + "\" parameter.<br>"
+                + "\" parameter.</li>"
                 
-                + "<br>- \"" + LabelModes.PARTNER_COUNT
+                + "<li>\"" + LabelModes.PARTNER_COUNT
                 + "\" The number of partners from a specific object collection for each object.  The partners to summarise are selected using the \""
-                + PARTNER_OBJECTS_FOR_LABEL + "\" parameter.<br>");
+                + PARTNER_OBJECTS_FOR_LABEL + "\" parameter.</li></ul>");
 
         parameters.get(DECIMAL_PLACES)
                 .setDescription("Number of decimal places to use when displaying numeric values.");
@@ -526,12 +526,13 @@ public class AddLabels extends AbstractOverlay {
                         + "\", these are the measurements which will be used.");
 
         parameters.get(LABEL_POSITION)
-                .setDescription("Determines the method used for placing the label overlay for each object:<br>"
+                .setDescription("Determines the method used for placing the label overlay for each object:<br><ul>"
 
-                        + "<br>- \"" + LabelPositions.CENTRE
-                        + "\" Labels will be placed at the centroid (average coordinate location) of each object.  This position won't necessarily coincide with a region corresponding to that object.  For example, the centroid of a crescent shape won't lie on the crescent itself.<br>"
-                        + "<br>- \"" + LabelPositions.INSIDE
-                        + "\" Labels will be placed coinciden with the largest region of each object.  This ensures the label is placed directly over the relevant object.<br>");
+                        + "<li>\"" + LabelPositions.CENTRE
+                        + "\" Labels will be placed at the centroid (average coordinate location) of each object.  This position won't necessarily coincide with a region corresponding to that object.  For example, the centroid of a crescent shape won't lie on the crescent itself.</li>"
+                        
+                        + "<li>\"" + LabelPositions.INSIDE
+                        + "\" Labels will be placed coinciden with the largest region of each object.  This ensures the label is placed directly over the relevant object.</li></ul>");
 
         parameters.get(RENDER_IN_ALL_OBJECT_SLICES)
                 .setDescription("Display overlay elements in all slices corresponding to that object.");

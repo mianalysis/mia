@@ -73,7 +73,7 @@ public abstract class CoreWorkspaceHandler extends Module {
         parameters.add(new BooleanP(REMOVE_IMAGES, this, false));
         parameters.add(new BooleanP(REMOVE_OBJECTS, this, false));
 
-        addParameterDescriptions();
+        addAbstractParameterDescriptions();
 
     }
 
@@ -82,7 +82,7 @@ public abstract class CoreWorkspaceHandler extends Module {
         return parameters;
     }
 
-    void addParameterDescriptions() {
+    void addAbstractParameterDescriptions() {
         parameters.get(CONTINUATION_MODE).setDescription(
                 "Controls what happens if the termination/redirection condition is met:<br>"
 

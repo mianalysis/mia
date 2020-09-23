@@ -10,8 +10,8 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 public class XLSXExporter {

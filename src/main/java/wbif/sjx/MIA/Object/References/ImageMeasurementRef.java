@@ -6,16 +6,16 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
-import wbif.sjx.MIA.Object.Workspace;
 
 import java.util.LinkedHashMap;
 
 public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter {
     private String imageName = "";
-    private String description = "";
-
+    
     public ImageMeasurementRef(Node node) {
         super(node);
         setAttributesFromXML(node);
@@ -90,21 +90,12 @@ public class ImageMeasurementRef extends SummaryRef implements SpreadsheetWriter
         }
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public ImageMeasurementRef duplicate() {
         ImageMeasurementRef ref = new ImageMeasurementRef(name);
 
         ref.setDescription(description);
         ref.setImageName(imageName);
-        ref.setNickname(getNickname());
+        ref.setNickname(nickname);
 
         ref.setExportGlobal(isExportGlobal());
         ref.setExportIndividual(isExportIndividual());

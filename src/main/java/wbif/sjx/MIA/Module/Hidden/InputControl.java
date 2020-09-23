@@ -36,11 +36,11 @@ import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
 import wbif.sjx.MIA.Object.Parameters.Text.SeriesListSelectorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -119,7 +119,7 @@ public class InputControl extends Module {
 
     public void addFilenameFilters(FileCrawler fileCrawler) {
         // Getting filters
-        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_FILTER);
 
         // Iterating over each filter
         for (ParameterCollection collection : collections.values()) {
@@ -227,7 +227,7 @@ public class InputControl extends Module {
 
         // Creating a Collection of seriesname filters
         HashSet<FileCondition> filters = new HashSet<>();
-        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_FILTER);
         for (ParameterCollection collection : collections.values()) {
             // If this filter is a filename filter type, addRef it to the AnalysisRunner
             String filterSource = collection.getValue(FILTER_SOURCE);
@@ -307,7 +307,7 @@ public class InputControl extends Module {
             namesAndNumbers.put(series, meta.getImageName(series - 1));
 
         }
-        
+
         reader.close();
 
         return namesAndNumbers;
@@ -340,37 +340,29 @@ public class InputControl extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR, this));
-        parameters.add(new FileFolderPathP(INPUT_PATH, this, "",
-                "The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed."));
+        parameters.add(new FileFolderPathP(INPUT_PATH, this));
         // parameters.add(new FileListP(FILE_LIST,this));
-        parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1,
-                "The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM."));
+        parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1));
         parameters.add(new MessageP(MACRO_WARNING, this,
                 "Analysis can only be run as a single simultaneous job when ImageJ macro module is present.",
                 Colours.RED));
-        parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.ALL_SERIES, SeriesModes.ALL,
-                "For multi-series files, select which series to process.  \"All series\" will create a new workspace for each series in the file.  \"Series list (comma separated)\" allows a comma-separated list of series numbers to be specified."));
-        parameters.add(new SeriesListSelectorP(SERIES_LIST, this, "1",
-                "Comma-separated list of series numbers to be processed."));
+        parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.ALL_SERIES, SeriesModes.ALL));
+        parameters.add(new SeriesListSelectorP(SERIES_LIST, this, "1"));
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
 
         parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
-
         ParameterCollection collection = new ParameterCollection();
-        collection.add(
-                new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL, "Type of filter to add."));
-        collection.add(new StringP(FILTER_VALUE, this, "", "Value to filter filenames against."));
-        collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL,
-                "Control how the present filter operates.  \"Matches partially (include)\" will process an image if the filter value is partially present in the source (e.g. filename or extension).  \"Matches completely (include)\" will process an image if the filter value is exactly the same as the source.  \"Matches partially (exclude)\" will not process an image if the filter value is partially present in the source.  \"Matches completely (exclude)\" will not process an image if the filter value is exactly the same as the source."));
-        parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0,
-                "Add another filename filter.  All images to be processed will pass all filters."));
+        collection.add(new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL));
+        collection.add(new StringP(FILTER_VALUE, this));
+        collection.add(new ChoiceP(FILTER_TYPE, this, FilterTypes.INCLUDE_MATCHES_PARTIALLY, FilterTypes.ALL));
+        parameters.add(new ParameterGroup(ADD_FILTER, this, collection, 0));
 
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.MICROMETRE, SpatialUnits.ALL,
-                "Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
-
+        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.MICROMETRE, SpatialUnits.ALL));
         parameters.add(new MessageP(NO_LOAD_MESSAGE, this,
                 "\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",
                 Colours.RED));
+
+        addParameterDescriptions();
 
     }
 
@@ -452,5 +444,50 @@ public class InputControl extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_PATH).setDescription(
+                "The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.");
+
+        parameters.get(SIMULTANEOUS_JOBS).setDescription(
+                "The number of images that will be processed simultaneously.  If this is set to \"1\" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as \"1\" unless using a system with large amounts of RAM.");
+
+        parameters.get(SERIES_MODE).setDescription("For multi-series files, select which series to process:<br><ul>"
+
+                + "<li>\"" + SeriesModes.ALL_SERIES + "\" will create a new workspace for each series in the file.</li>"
+                + "<li>\"" + SeriesModes.SERIES_LIST
+                + "\" allows a comma-separated list of series numbers to be specified.</li></ul>");
+
+        parameters.get(SERIES_LIST).setDescription("Comma-separated list of series numbers to be processed.");
+
+        parameters.get(LOAD_FIRST_PER_FOLDER)
+                .setDescription("Only load the (alphabetically) first file in each folder.");
+
+        ParameterCollection templateParameters = ((ParameterGroup) parameters.get(ADD_FILTER)).getTemplateParameters();
+        templateParameters.get(FILTER_SOURCE).setDescription("Type of filter to add.");
+
+        templateParameters.get(FILTER_VALUE).setDescription("Value to filter filenames against.");
+
+        templateParameters.get(FILTER_TYPE).setDescription("Control how the present filter operates:"
+
+                + "<li>\"" + FilterTypes.INCLUDE_MATCHES_PARTIALLY
+                + "\" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li>"
+
+                + "<li>\"" + FilterTypes.INCLUDE_MATCHES_COMPLETELY
+                + "\" will process an image if the filter value is exactly the same as the source.</li>"
+
+                + "<li>\"" + FilterTypes.EXCLUDE_MATCHES_PARTIALLY
+                + "\" will not process an image if the filter value is partially present in the source.</li>"
+
+                + "<li>\"" + FilterTypes.EXCLUDE_MATCHES_COMPLETELY
+                + "\" will not process an image if the filter value is exactly the same as the source.</li></ul>");
+
+        parameters.get(ADD_FILTER)
+                .setDescription("Add another filename filter.  All images to be processed will pass all filters.");
+
+        parameters.get(SPATIAL_UNITS).setDescription(
+                "Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.");
+
     }
 }

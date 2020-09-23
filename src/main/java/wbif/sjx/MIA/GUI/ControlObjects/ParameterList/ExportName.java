@@ -1,8 +1,8 @@
 package wbif.sjx.MIA.GUI.ControlObjects.ParameterList;
 
 import wbif.sjx.MIA.GUI.ControlObjects.RenameListMenu;
-import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
+import wbif.sjx.MIA.GUI.GUI;
 
 import javax.swing.*;
 import java.awt.*;

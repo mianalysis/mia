@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class PartnerObjectsP extends ChoiceType {
     private String partnerObjectsName = "";

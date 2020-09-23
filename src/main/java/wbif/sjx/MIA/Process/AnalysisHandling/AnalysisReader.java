@@ -32,9 +32,9 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ParentChildRef;
-import wbif.sjx.MIA.Object.References.PartnerRef;
 import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.MIA.Process.AnalysisHandling.LegacyReaders.AnalysisReader_0p10p0_0p15p0;
+import wbif.sjx.MIA.Process.AnalysisHandling.LegacyReaders.AnalysisReader_Pre_0p10p0;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -83,14 +83,14 @@ public class AnalysisReader {
         Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
         doc.getDocumentElement().normalize();
 
-        // If loading a version older than v0.10.0 use the legacy loader. Also, has
-        // handling for older versions still,
-        // which didn't include a version number
-        Version thisVersion = new Version("0.10.0");
+        // If loading a suitably old version, use the relevant legacy loader. Also, has
+        // handling for older versions still, which didn't include a version number.
         Node versionNode = doc.getChildNodes().item(0).getAttributes().getNamedItem("MIA_VERSION");
         Version loadedVersion = versionNode == null ? null : new Version(versionNode.getNodeValue());
-        if (loadedVersion == null || thisVersion.compareTo(loadedVersion) > 0)
-            return LegacyAnalysisReader.loadAnalysis(xml);
+        if (loadedVersion == null || new Version("0.10.0").compareTo(loadedVersion) > 0)
+            return AnalysisReader_Pre_0p10p0.loadAnalysis(xml);
+        else if (new Version("0.15.0").compareTo(loadedVersion) > 0)
+            return AnalysisReader_0p10p0_0p15p0.loadAnalysis(xml);
 
         Analysis analysis = new Analysis();
         ModuleCollection modules = loadModules(doc);
@@ -192,11 +192,6 @@ public class AnalysisReader {
                 case "METADATA":
                     populateModuleMetadataRefs(moduleChildNodes.item(i), module);
                     break;
-
-                case "RELATIONSHIPS":
-                case "PARENT_CHILD":
-                    populateModuleParentChildRefs(moduleChildNodes.item(i), module);
-                    break;
             }
         }
 
@@ -213,7 +208,7 @@ public class AnalysisReader {
 
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
-            String parameterName = attributes.getNamedItem("NAME").getNodeValue();            
+            String parameterName = attributes.getNamedItem("NAME").getNodeValue();
             Parameter parameter = module.getParameter(parameterName);
 
             // If parameter isn't found, try the lost and found
@@ -291,30 +286,6 @@ public class AnalysisReader {
             // Getting measurement properties
             ObjMeasurementRef ref = new ObjMeasurementRef(referenceNodes.item(i));
             module.addObjectMeasurementRef(ref);
-        }
-    }
-
-    public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
-        NodeList referenceNodes = moduleNode.getChildNodes();
-
-        // Iterating over all references of this type
-        for (int i = 0; i < referenceNodes.getLength(); i++) {
-            Node node = referenceNodes.item(i);
-
-            switch (node.getNodeName()) {
-                case "RELATIONSHIP":
-                case "PARENT_CHILD":
-                    // Getting relationship properties
-                    ParentChildRef parentChildRef = new ParentChildRef(node);
-                    module.addParentChildRef(parentChildRef);
-                    break;
-
-                case "PARTNER":
-                    // Getting relationship properties
-                    PartnerRef partnerRef = new PartnerRef(node);
-                    module.addPartnerRef(partnerRef);
-                    break;
-            }
         }
     }
 }

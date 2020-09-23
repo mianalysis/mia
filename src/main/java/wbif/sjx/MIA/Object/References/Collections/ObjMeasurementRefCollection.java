@@ -1,8 +1,7 @@
-package wbif.sjx.MIA.Object.References;
+package wbif.sjx.MIA.Object.References.Collections;
 
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
 import wbif.sjx.MIA.Object.Units;
-
+import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 
 import java.util.TreeMap;
 

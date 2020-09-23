@@ -7,7 +7,7 @@ import ij.measure.ResultsTable;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
@@ -363,7 +363,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         Obj referenceObject = null;
         int objSize = Integer.MIN_VALUE;
 
-        // Iterating over each object, checking it's size against the current reference
+        // Iterating over each object, checking its size against the current reference
         // values
         for (Obj currReferenceObject : values()) {
             // Only check objects in the current frame (if required - if frame doesn't
@@ -384,7 +384,7 @@ public class ObjCollection extends LinkedHashMap<Integer, Obj> {
         Obj referenceObject = null;
         int objSize = Integer.MAX_VALUE;
 
-        // Iterating over each object, checking it's size against the current reference
+        // Iterating over each object, checking its size against the current reference
         // values
         for (Obj currReferenceObject : values()) {
             // Only check objects in the current frame (if required - if frame doesn't

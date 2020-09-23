@@ -46,15 +46,11 @@ import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.MetadataRef;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRef;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRef;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
 import wbif.sjx.MIA.Process.Logging.LogRenderer.Level;
@@ -500,68 +496,6 @@ public class Exporter {
                     colNumbers.put(summaryDataName, headerCol.getAndIncrement());
                 }
 
-                // Running through all the object's children
-                ParentChildRefCollection parentChildRefs = modules.getParentChildRefs();
-                for (ParentChildRef ref : parentChildRefs.getChildren(availableObjectName, false)) {
-                    if (!ref.isExportGlobal())
-                        continue;
-                    if (!ref.isExportIndividual())
-                        continue;
-
-                    String child = ref.getChildName();
-                    if (ref.isExportMean()) {
-                        addSummaryChildHeader(summaryHeaderRow, colNumbers, headerCol, availableObjectName, child,
-                                "MEAN", "Mean");
-                    }
-
-                    if (ref.isExportMin()) {
-                        addSummaryChildHeader(summaryHeaderRow, colNumbers, headerCol, availableObjectName, child,
-                                "MIN", "Minimum");
-                    }
-
-                    if (ref.isExportMax()) {
-                        addSummaryChildHeader(summaryHeaderRow, colNumbers, headerCol, availableObjectName, child,
-                                "MAX", "Maximum");
-                    }
-
-                    if (ref.isExportStd()) {
-                        addSummaryChildHeader(summaryHeaderRow, colNumbers, headerCol, availableObjectName, child,
-                                "STD", "Standard deviation");
-                    }
-
-                    if (ref.isExportSum()) {
-                        addSummaryChildHeader(summaryHeaderRow, colNumbers, headerCol, availableObjectName, child,
-                                "SUM", "Sum");
-                    }
-                }
-                
-                // Running through all the object's partners
-                PartnerRefCollection partnerRefs = modules.getPartnerRefs();
-                for (PartnerRef ref : partnerRefs.getPartners(availableObjectName)) {
-                    if (!ref.isExportGlobal()) continue;
-                    if (!ref.isExportIndividual()) continue;
-
-                    String partnerName = ref.getPartnerName(availableObjectName);
-                    if (ref.isExportMean()) {
-                        addSummaryPartnerHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,partnerName,"MEAN","Mean");
-                    }
-
-                    if (ref.isExportMin()) {
-                        addSummaryPartnerHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,partnerName,"MIN","Minimum");
-                    }
-
-                    if (ref.isExportMax()) {
-                        addSummaryPartnerHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,partnerName,"MAX","Maximum");
-                    }
-
-                    if (ref.isExportStd()) {
-                        addSummaryPartnerHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,partnerName,"STD","Standard deviation");
-                    }
-
-                    if (ref.isExportSum()) {
-                        addSummaryPartnerHeader(summaryHeaderRow,colNumbers,headerCol,availableObjectName,partnerName,"SUM","Sum");
-                    }
-                }
 
                 ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
 
@@ -597,41 +531,6 @@ public class Exporter {
         }
     }
 
-    private void addSummaryChildHeader(Row summaryHeaderRow, HashMap<String, Integer> colNumbers,
-            AtomicInteger headerCol, String objectName, String child, String shortName, String longName) {
-        Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
-
-        // Creating bold font
-        CellStyle cellStyle = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setBold(true);
-        cellStyle.setFont(font);
-
-        String summaryDataName = getObjectString(objectName, shortName, "NUM_CHILDREN_" + child);
-        Cell cell = summaryHeaderRow.createCell(headerCol.get());
-        cell.setCellValue(summaryDataName);
-        cell.setCellStyle(cellStyle);
-        addNumberOfChildrenComment(cell, objectName, child, longName);
-        colNumbers.put(summaryDataName, headerCol.getAndIncrement());
-    }
-    
-    private void addSummaryPartnerHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, String objectName, String partner, String shortName, String longName) {
-        Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
-
-        // Creating bold font
-        CellStyle cellStyle = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        font.setBold(true);
-        cellStyle.setFont(font);
-
-        String summaryDataName = getObjectString(objectName, shortName, "NUM_PARTNERS_" + partner);
-        Cell cell = summaryHeaderRow.createCell(headerCol.get());
-        cell.setCellValue(summaryDataName);
-        cell.setCellStyle(cellStyle);
-        addNumberOfChildrenComment(cell,objectName,partner,longName);
-        colNumbers.put(summaryDataName, headerCol.getAndIncrement());
-    }
-
     private void addSummaryObjectStatisticHeader(Row summaryHeaderRow, HashMap<String,Integer> colNumbers, AtomicInteger headerCol, ObjMeasurementRef objectMeasurement, String shortName, String longName) {
         Workbook workbook = summaryHeaderRow.getSheet().getWorkbook();
 
@@ -649,23 +548,6 @@ public class Exporter {
         cell.setCellStyle(cellStyle);
         addSummaryComment(cell,objectMeasurement,longName);
         colNumbers.put(summaryDataName, headerCol.getAndIncrement());
-    }
-
-    private void addNumberOfChildrenComment(Cell cell, String parent, String child, String calculation) {
-        String text = "";
-        switch (summaryMode) {
-            case PER_FILE:
-                text = calculation+" number of \""+child+"\" child objects for all \""+parent+"\" parent objects " +
-                        "in the input file.";
-                break;
-            case PER_TIMEPOINT_PER_FILE:
-                text = calculation+" number of \""+child+"\" child objects for all \""+parent+"\" parent objects " +
-                        "at the stated timepoint of the input file.";
-                break;
-        }
-
-        addComment(cell,text);
-
     }
 
     private void addSummaryComment(Cell cell, ObjMeasurementRef measurement, String calculation) {
@@ -747,174 +629,6 @@ public class Exporter {
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(objCollection.size());
-            }
-
-            // Running through all the object's children
-            ParentChildRefCollection parentChildRefs = modules.getParentChildRefs();
-            for (ParentChildRef ref : parentChildRefs.getChildren(objSetName, false)) {
-                if (!ref.isExportGlobal())
-                    continue;
-                if (!ref.isExportIndividual())
-                    continue;
-
-                String child = ref.getChildName();
-
-                // Running through all objects in this set, adding children to a CumStat object
-                CumStat cs = new CumStat();
-                for (Obj obj : objCollection.values()) {
-                    ObjCollection children = obj.getChildren(child);
-                    if (children != null)
-                        cs.addMeasure(children.size());
-                }
-
-                if (ref.isExportMean()) {
-                    headerName = getObjectString(objSetName, "MEAN", "NUM_CHILDREN_" + child);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMean();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportMin()) {
-                    headerName = getObjectString(objSetName, "MIN", "NUM_CHILDREN_" + child);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMin();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportMax()) {
-                    headerName = getObjectString(objSetName, "MAX", "NUM_CHILDREN_" + child);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMax();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportStd()) {
-                    headerName = getObjectString(objSetName, "STD", "NUM_CHILDREN_" + child);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getStd();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportSum()) {
-                    headerName = getObjectString(objSetName, "SUM", "NUM_CHILDREN_" + child);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getSum();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-            }
-
-            // Running through all the object's children
-            PartnerRefCollection partnerRefs = modules.getPartnerRefs();
-            for (PartnerRef ref : partnerRefs.getPartners(objSetName)) {
-                if (!ref.isExportGlobal())
-                    continue;
-                if (!ref.isExportIndividual())
-                    continue;
-
-                String partnerName = ref.getPartnerName(objSetName);
-
-                // Running through all objects in this set, adding partners to a CumStat object
-                CumStat cs = new CumStat();
-                for (Obj obj : objCollection.values()) {
-                    ObjCollection partners = obj.getPartners(partnerName);
-                    if (partners != null)
-                        cs.addMeasure(partners.size());
-                }
-
-                if (ref.isExportMean()) {
-                    headerName = getObjectString(objSetName, "MEAN", "NUM_PARTNERS_" + partnerName);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMean();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportMin()) {
-                    headerName = getObjectString(objSetName, "MIN", "NUM_PARTNERS_" + partnerName);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMin();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportMax()) {
-                    headerName = getObjectString(objSetName, "MAX", "NUM_PARTNERS_" + partnerName);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getMax();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportStd()) {
-                    headerName = getObjectString(objSetName, "STD", "NUM_PARTNERS_" + partnerName);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getStd();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
-
-                if (ref.isExportSum()) {
-                    headerName = getObjectString(objSetName, "SUM", "NUM_PARTNERS_" + partnerName);
-                    if (!colNumbers.containsKey(headerName))
-                        break;
-                    colNum = colNumbers.get(headerName);
-                    summaryCell = summaryValueRow.createCell(colNum);
-                    val = cs.getSum();
-                    if (Double.isNaN(val))
-                        summaryCell.setCellValue("");
-                    else
-                        summaryCell.setCellValue(val);
-                }
             }
             
             ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
@@ -998,12 +712,6 @@ public class Exporter {
         HashMap<String, Sheet> objectSheets = new HashMap<>();
         HashMap<String, Integer> objectRows = new HashMap<>();
 
-        // Creating a LinkedHashMap that links relationship ID names to column numbers.  This keeps the correct
-        // relationships in the correct columns
-        LinkedHashMap<String, LinkedHashMap<Integer,String>> parentNames = new LinkedHashMap<>();
-        LinkedHashMap<String, LinkedHashMap<Integer, String>> childNames = new LinkedHashMap<>();
-        LinkedHashMap<String, LinkedHashMap<Integer,String>> partnerNames = new LinkedHashMap<>();
-
         // Creating a LinkedHashMap that links measurement names to column numbers.  This keeps the correct
         // measurements in the correct columns
         LinkedHashMap<String, LinkedHashMap<Integer,String>> measurementNames = new LinkedHashMap<>();
@@ -1020,7 +728,7 @@ public class Exporter {
             String objectName = availableObject.getObjectsName();
 
             // Check if this object has any associated measurements; if not, skip it
-            if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportCounts(objectName)) continue;
+            if (!modules.objectsExportMeasurements(objectName)) continue;
 
             // Creating relevant sheet prefixed with "OBJ"
             objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
@@ -1054,59 +762,7 @@ public class Exporter {
                 cell.setCellValue(getMetadataString(ref.getName()));
                 cell.setCellStyle(cellStyle);
             }
-
-            // Adding parent IDs
-            ParentChildRefCollection parentChildRefs = modules.getParentChildRefs();
-            String[] parents = parentChildRefs.getParentNames(objectName,false);
-            if (parents != null) {
-                for (String parent : parents) {
-                    ParentChildRef ref = parentChildRefs.getOrPut(parent,objectName);
-                    if (!ref.isExportGlobal()) continue;
-                    if (!ref.isExportIndividual()) continue;
-
-                    parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    parentNames.get(objectName).put(col, parent);
-                    cell = objectHeaderRow.createCell(col++);
-                    cell.setCellValue("PARENT_" + parent + "_ID");
-                    cell.setCellStyle(cellStyle);
-                }
-            }
-
-            // Adding number of children for each child type
-            String[] children = parentChildRefs.getChildNames(objectName,false);
-            if (children != null) {
-                for (String child : children) {
-                    ParentChildRef ref = parentChildRefs.getOrPut(objectName, child);
-                    if (!ref.isExportGlobal())
-                        continue;
-                    if (!ref.isExportIndividual())
-                        continue;
-
-                    childNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    childNames.get(objectName).put(col, child);
-                    cell = objectHeaderRow.createCell(col++);
-                    cell.setCellValue("NUMBER_OF_" + child + "_CHILDREN");
-                    cell.setCellStyle(cellStyle);
-                }
-            }
             
-            // Adding number of partners for each child type
-            PartnerRefCollection partnerRefs = modules.getPartnerRefs();
-            String[] partners = partnerRefs.getPartnerNamesArray(objectName);
-            if (partners != null) {
-                for (String partner : partners) {
-                    PartnerRef ref = partnerRefs.getOrPut(objectName,partner);
-                    if (!ref.isExportGlobal()) continue;
-                    if (!ref.isExportIndividual()) continue;
-
-                    partnerNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    partnerNames.get(objectName).put(col, partner);
-                    cell = objectHeaderRow.createCell(col++);
-                    cell.setCellValue("NUMBER_OF_" + partner + "_PARTNERS");
-                    cell.setCellStyle(cellStyle);
-                }
-            }
-
             // Running through all the object measurement values, adding them as new columns
             ObjMeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
             for (ObjMeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
@@ -1128,7 +784,7 @@ public class Exporter {
             for (String objectName : workspace.getObjects().keySet()) {
                 ObjCollection objects = workspace.getObjects().get(objectName);
 
-                if (!modules.objectsExportMeasurements(objectName) &! modules.objectsExportCounts(objectName)) continue;
+                if (!modules.objectsExportMeasurements(objectName)) continue;
 
                 if (objects.values().iterator().hasNext()) {
                     for (Obj object : objects.values()) {
@@ -1152,51 +808,6 @@ public class Exporter {
                         for (int column:metadataNames.keySet()) {
                             Cell metaValueCell = objectValueRow.createCell(column);
                             metaValueCell.setCellValue(metadata.getAsString(metadataNames.get(column)));
-                        }
-
-                        // Adding parents to the columns specified in parentNames
-                        if (parentNames.get(objectName) != null) {
-                            for (int column : parentNames.get(objectName).keySet()) {
-                                Cell parentValueCell = objectValueRow.createCell(column);
-                                String parentName = parentNames.get(objectName).get(column);
-                                Obj parent = object.getParent(parentName);
-                                if (parent != null) {
-                                    parentValueCell.setCellValue(parent.getID());
-                                } else {
-                                    parentValueCell.setCellValue("");
-                                }
-                                col++;
-                            }
-                        }
-
-                        // Adding number of children to the columns specified in childNames
-                        if (childNames.get(objectName) != null) {
-                            for (int column : childNames.get(objectName).keySet()) {
-                                Cell childValueCell = objectValueRow.createCell(column);
-                                String childName = childNames.get(objectName).get(column);
-                                ObjCollection children = object.getChildren(childName);
-                                if (children != null) {
-                                    childValueCell.setCellValue(children.size());
-                                } else {
-                                    childValueCell.setCellValue("0");
-                                }
-                                col++;
-                            }
-                        }
-
-                        // Adding number of partners to the columns specified in partnerNames
-                        if (partnerNames.get(objectName) != null) {
-                            for (int column : partnerNames.get(objectName).keySet()) {
-                                Cell partnerValueCell = objectValueRow.createCell(column);
-                                String partnerName = partnerNames.get(objectName).get(column);
-                                ObjCollection partners = object.getPartners(partnerName);
-                                if (partners != null) {
-                                    partnerValueCell.setCellValue(partners.size());
-                                } else {
-                                    partnerValueCell.setCellValue("0");
-                                }
-                                col++;
-                            }
                         }
 
                         if (measurementNames.get(objectName) == null) continue;

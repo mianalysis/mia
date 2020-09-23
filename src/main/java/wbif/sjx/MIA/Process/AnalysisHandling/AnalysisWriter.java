@@ -10,12 +10,12 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -131,14 +131,6 @@ public class AnalysisWriter {
             MetadataRefCollection metadataRefs = module.updateAndGetMetadataReferences();
             metadataElement = prepareRefsXML(doc, metadataElement,metadataRefs,"METADATUM");
             moduleElement.appendChild(metadataElement);
-
-            // Adding relationship references from this module
-            Element relationshipElement = doc.createElement("RELATIONSHIPS");
-            ParentChildRefCollection parentChildRefs = module.updateAndGetParentChildRefs();
-            relationshipElement = prepareRefsXML(doc, relationshipElement,parentChildRefs,"PARENT_CHILD");
-            PartnerRefCollection partnerRefs = module.updateAndGetPartnerRefs();
-            relationshipElement = prepareRefsXML(doc, relationshipElement,partnerRefs,"PARTNER");
-            moduleElement.appendChild(relationshipElement);
 
             // Adding current module to modules
             modulesElement.appendChild(moduleElement);

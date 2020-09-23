@@ -1,8 +1,7 @@
 package wbif.sjx.MIA.Object.Parameters;
 
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.References.Abstract.RefCollection;
-
+import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 
 import java.util.LinkedHashMap;
 

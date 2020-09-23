@@ -12,8 +12,6 @@ import wbif.sjx.MIA.Object.References.Abstract.ExportableRef;
 import wbif.sjx.MIA.Object.References.Abstract.SpreadsheetWriter;
 
 public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
-    private String description = "";
-
     public MetadataRef(Node node) {
         super(node);
         setAttributesFromXML(node);
@@ -45,20 +43,11 @@ public class MetadataRef extends ExportableRef implements SpreadsheetWriter {
         }
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public MetadataRef duplicate() {
         MetadataRef ref = new MetadataRef(name);
 
         ref.setDescription(description);
-        ref.setNickname(getNickname());
+        ref.setNickname(nickname);
 
         ref.setExportGlobal(isExportGlobal());
         ref.setExportIndividual(isExportIndividual());

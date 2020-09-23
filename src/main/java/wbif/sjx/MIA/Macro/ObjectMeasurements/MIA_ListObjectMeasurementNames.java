@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 
 public class MIA_ListObjectMeasurementNames extends MacroOperation {
     public MIA_ListObjectMeasurementNames(MacroExtension theHandler) {

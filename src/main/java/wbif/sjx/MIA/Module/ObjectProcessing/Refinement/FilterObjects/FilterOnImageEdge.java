@@ -15,9 +15,9 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 
 public class FilterOnImageEdge extends AbstractObjectFilter {
     public static final String FILTER_SEPARATOR = "Object filtering";
@@ -114,7 +114,7 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     @Override
     public String getDescription() {
-        return "Filter an object collection based on contact of each object with the image edge.  Contact is considered as a case where an object pixel is in the outer-most row, column or slice  of an image (e.g. x = 0, y = max_value).  The maximum number of contact pixels before an object is removed can be set to permit a degree of contact.  Objects identified as being in contact with the image edge can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.  <br><br>Image edge filters can be used when counting the number of objects in a field of view - in this case, typically two adjacent edges are removed (e.g. bottom and right) to prevent over-counting.  Alternatively, removing objects on all edges can be performed when measuring whole-object properties such as area or volume to prevent under-measuring values.";
+        return "Filter an object collection based on contact of each object with the image edge.  Contact is considered as a case where an object pixel is in the outer-most row, column or slice  of an image (e.g. x = 0 or y = max_value).  The maximum number of contact pixels before an object is removed can be set to permit a degree of contact.  Objects identified as being in contact with the image edge can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  The number of objects failing the filter can be stored as a metadata value.  <br><br>Image edge filters can be used when counting the number of objects in a field of view - in this case, typically two adjacent edges are removed (e.g. bottom and right) to prevent over-counting.  Alternatively, removing objects on all edges can be performed when measuring whole-object properties such as area or volume to prevent under-measuring values.";
 
     }
 

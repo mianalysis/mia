@@ -58,7 +58,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE,false,null);
 
         assertEquals(obj3,nearestNeighour);
 
@@ -99,7 +99,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE,false,null);
 
         assertEquals(obj5,nearestNeighour);
 
@@ -136,7 +136,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,100d);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,100d,false,null);
 
         assertEquals(obj3,nearestNeighour);
 
@@ -173,7 +173,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
 
         // Testing against first object in set
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,50d);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,50d,false,null);
 
         assertNull(nearestNeighour);
 

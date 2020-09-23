@@ -1,5 +1,3 @@
-// TODO: Add true 3D local thresholds (local auto thresholding works slice-by-slice)
-
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Threshold;
 
 import fiji.threshold.Auto_Local_Threshold;
@@ -15,6 +13,11 @@ import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 
 public class LocalAutoThreshold extends Module {
@@ -130,9 +133,9 @@ public class LocalAutoThreshold extends Module {
     @Override
     public String getDescription() {
         return "Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the " +
-                "built-in ImageJ global and 2D local auto-thresholding algorithms." +
-                "<br>" +
-                "<br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically " +
+                "built-in ImageJ global and 2D local auto-thresholding algorithms.<br><br>" +
+                
+                "Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically " +
                 "converted to 8-bit based on the \""+ImageTypeConverter.ScalingModes.FILL+"\" scaling method from the " +
                 "\""+new ImageTypeConverter(null).getName()+"\" module.";
     }
@@ -202,21 +205,23 @@ public class LocalAutoThreshold extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply threshold to."));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output image created during the thresholding process.  This image will be added to the workspace."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR,this));
-        parameters.add(new ChoiceP(THRESHOLD_MODE,this,ThresholdModes.SLICE,ThresholdModes.ALL,"Local thresholding algorithm mode to use."));
+        parameters.add(new ChoiceP(THRESHOLD_MODE,this,ThresholdModes.SLICE,ThresholdModes.ALL));
         parameters.add(new ChoiceP(ALGORITHM_SLICE,this,AlgorithmsSlice.BERNSEN,AlgorithmsSlice.ALL));
         parameters.add(new ChoiceP(ALGORITHM_3D,this,Algorithms3D.BERNSEN,Algorithms3D.ALL));
-        parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this,1.0,"Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a \""+THRESHOLD_MULTIPLIER+"\" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180."));
-        parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false,"Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present)."));
-        parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0, "Lowest absolute threshold value that can be applied."));
-        parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0, "Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS+"\" control."));
-        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL, "Units that the local radius is specified using."));
-        parameters.add(new BooleanP(USE_GLOBAL_Z,this,false, "When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting."));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this,true, "Controls the logic of the output image in terms of what is considered foreground and background."));
+        parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this,1.0));
+        parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
+        parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
+        parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0));
+        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new BooleanP(USE_GLOBAL_Z,this,false));
+        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -291,5 +296,38 @@ public class LocalAutoThreshold extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to apply threshold to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Name of the output image created during the thresholding process.  This image will be added to the workspace.");
+
+        parameters.get(THRESHOLD_MODE).setDescription("Local thresholding algorithm mode to use.<br><ul>"
+        
+        + "<li>\""+ThresholdModes.SLICE+"\" Local thresholds are applied to a multidimensional image stack one 2D image at a time.  Images are processed independently.</li>"
+        
+        + "<li>\""+ThresholdModes.THREE_D+"\" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul>");
+
+        parameters.get(ALGORITHM_SLICE).setDescription("Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at \"https://imagej.net/Auto_Local_Threshold\".  Algorithms available: "+String.join(", ",AlgorithmsSlice.ALL));
+
+        parameters.get(ALGORITHM_3D).setDescription("Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at \"https://imagej.net/Auto_Local_Threshold\".  Algorithms available: "+String.join(", ",Algorithms3D.ALL));
+
+        parameters.get(THRESHOLD_MULTIPLIER).setDescription("Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a \""+THRESHOLD_MULTIPLIER+"\" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.");
+
+        parameters.get(USE_LOWER_THRESHOLD_LIMIT).setDescription("Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).");
+
+        parameters.get(LOWER_THRESHOLD_LIMIT).setDescription("Lowest absolute threshold value that can be applied.");
+
+        parameters.get(LOCAL_RADIUS).setDescription("Radius of region to be used when calculating local intensity thresholds.  Units controlled by \""+SPATIAL_UNITS+"\" control.");
+
+        parameters.get(SPATIAL_UNITS).setDescription("Units that the local radius is specified using.");
+
+        parameters.get(USE_GLOBAL_Z).setDescription("When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the \""+LOCAL_RADIUS+"\" setting.");
+
+        parameters.get(WHITE_BACKGROUND).setDescription("Controls the logic of the output image in terms of what is considered foreground and background.");
+
     }
 }

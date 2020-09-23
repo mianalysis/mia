@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Process.AnalysisHandling;
+package wbif.sjx.MIA.Process.AnalysisHandling.LegacyReaders;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -54,13 +54,13 @@ import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.MetadataRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ParentChildRef;
 import wbif.sjx.MIA.Process.ClassHunter;
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 /**
  * Created by Stephen on 23/06/2017.
  */
-public class LegacyAnalysisReader {
+public class AnalysisReader_Pre_0p10p0 {
     public static Analysis loadAnalysis()
             throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
@@ -407,12 +407,14 @@ public class LegacyAnalysisReader {
     public static void populateModuleParentChildRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
-        // Iterating over all references of this type
-        for (int j=0;j<referenceNodes.getLength();j++) {
-            ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
-            module.addParentChildRef(ref);
+        MIA.log.writeWarning("Handle reading parent child references");
 
-        }
+        // // Iterating over all references of this type
+        // for (int j=0;j<referenceNodes.getLength();j++) {
+        //     ParentChildRef ref = new ParentChildRef(referenceNodes.item(j));
+        //     module.addParentChildRef(ref);
+
+        // }
     }
 
     public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters, String moduleName) {

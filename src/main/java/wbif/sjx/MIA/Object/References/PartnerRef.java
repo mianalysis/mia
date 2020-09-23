@@ -3,13 +3,13 @@ package wbif.sjx.MIA.Object.References;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
-public class PartnerRef extends SummaryRef implements Comparable {
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
+
+public class PartnerRef extends Ref implements Comparable {
     private final String object1Name;
     private final String object2Name;
-    private String description = "";
-
+    
 
     public PartnerRef(Node node) {
         super(node);
@@ -66,28 +66,11 @@ public class PartnerRef extends SummaryRef implements Comparable {
         return object1Name+" // "+object2Name;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public PartnerRef duplicate() {
         PartnerRef ref = new PartnerRef(object1Name, object2Name);
 
         ref.setDescription(description);
-        ref.setNickname(getNickname());
-
-        ref.setExportGlobal(isExportGlobal());
-        ref.setExportIndividual(isExportIndividual());
-        ref.setExportMean(isExportMean());
-        ref.setExportMax(isExportMax());
-        ref.setExportMin(isExportMin());
-        ref.setExportStd(isExportStd());
-        ref.setExportSum(isExportSum());
+        ref.setNickname(nickname);
 
         return ref;
 

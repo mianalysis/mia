@@ -9,11 +9,11 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -65,7 +65,10 @@ public class ModuleIsEnabled extends CoreWorkspaceHandler {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Implement workflow handling outcome based on whether another module is enabled or disabled.  Outcomes can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis to skipped.<br><br>" 
+        
+        + "Note: This only applies to modules explictly enabled/disabled by the user.  It does not apply to modules that are inactive due to invalid parameters (modules highlighted in red in the module list).";
+
     }
 
     @Override
@@ -91,6 +94,8 @@ public class ModuleIsEnabled extends CoreWorkspaceHandler {
         parameters.add(new ParamSeparatorP(RESULT_SEPARATOR, this));
         parameters.addAll(super.updateAndGetParameters());
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -152,5 +157,16 @@ public class ModuleIsEnabled extends CoreWorkspaceHandler {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(TEST_MODE).setDescription(
+                "Controls whether the specified workflow handling outcome is applied if another module is enabled or disabled:<br><ul>"
+        +"<li>\""+TestModes.MODULE_IS_ENABLED+"\" Execute specified outcome if another module is enabled.</li>"
+        
+        +"<li>\""+TestModes.MODULE_IS_NOT_ENABLED+"\" Execute specified outcome if another module is not enabled.</li></ul>");
+
+        parameters.get(TEST_MODULE).setDescription("Module to test the enabled/disabled state of.  This doesn't necessarily need to be a module that would execute before the current module.");
+
     }
 }

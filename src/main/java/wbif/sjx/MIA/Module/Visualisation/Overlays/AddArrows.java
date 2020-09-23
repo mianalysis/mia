@@ -30,11 +30,11 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
 
 public class AddArrows extends AbstractOverlay {
@@ -402,17 +402,17 @@ public class AddArrows extends AbstractOverlay {
         parameters.get(OUTPUT_IMAGE).setDescription(
                 "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
 
-        parameters.get(ORIENTATION_MODE).setDescription("Source for arrow orientation values:<br>"
+        parameters.get(ORIENTATION_MODE).setDescription("Source for arrow orientation values:<br><ul>"
 
-                + "<br>- \"" + OrientationModes.MEASUREMENT
+                + "<li>\"" + OrientationModes.MEASUREMENT
                 + "\" Orientation of arrows will be based on the measurement specified by the parameter \""
-                + MEASUREMENT_FOR_ORIENTATION + "\" for each object.<br>"
+                + MEASUREMENT_FOR_ORIENTATION + "\" for each object.</li>"
 
-                + "<br>- \"" + OrientationModes.PARENT_MEASUREMENT
+                + "<li>\"" + OrientationModes.PARENT_MEASUREMENT
                 + "\" Orientation of arrows will be based on the measurement specified by the parameter \""
                 + MEASUREMENT_FOR_ORIENTATION
                 + "\" taken from a parent of each object.  The parent object providing this measurement is specified by the parameter \""
-                + PARENT_OBJECT_FOR_ORIENTATION + "\".<br>");
+                + PARENT_OBJECT_FOR_ORIENTATION + "\".</li></ul>");
 
         parameters.get(PARENT_OBJECT_FOR_ORIENTATION).setDescription(
                 "Parent objects providing the measurements on which the orientation of the arrows are based.");
@@ -420,37 +420,42 @@ public class AddArrows extends AbstractOverlay {
         parameters.get(MEASUREMENT_FOR_ORIENTATION).setDescription(
                 "Measurement that defines the orientation of each arrow.  Measurements should be supplied in degree units.");
 
-        parameters.get(LENGTH_MODE)
-                .setDescription("Method for determining the length of arrows:<br>" + "<br>- \""
-                        + LengthModes.FIXED_VALUE + "\" All arrows are the same length.  Length is controlled by the \""
-                        + LENGTH_VALUE + "\" parameter.<br>"
+        parameters.get(LENGTH_MODE).setDescription("Method for determining the length of arrows:<br><ul>"
 
-                        + "<br>- \"" + LengthModes.MEASUREMENT
-                        + "\" Arrow length is proportional to the measurement value specified by the \""
-                        + MEASUREMENT_FOR_LENGTH + "\" parameter.  Absolute arrow lengths are adjusted by the \""
-                        + LENGTH_SCALE + "\" multiplication factor.<br>"
+                + "<li>\"" + LengthModes.FIXED_VALUE
+                + "\" All arrows are the same length.  Length is controlled by the \"" + LENGTH_VALUE
+                + "\" parameter.</li>"
 
-                        + "<br>- \"" + LengthModes.PARENT_MEASUREMENT
-                        + "\" Arrow length is proportional to a parent object measurement value.  The parent is specified by the \""
-                        + PARENT_OBJECT_FOR_LENGTH + "\" parameter and the measurement value by \""+MEASUREMENT_FOR_LENGTH+"\".  Absolute arrow lengths are adjusted by the \""
-                        + LENGTH_SCALE + "\" multiplication factor.<br>");
+                + "<li>\"" + LengthModes.MEASUREMENT
+                + "\" Arrow length is proportional to the measurement value specified by the \""
+                + MEASUREMENT_FOR_LENGTH + "\" parameter.  Absolute arrow lengths are adjusted by the \"" + LENGTH_SCALE
+                + "\" multiplication factor.</li>"
+
+                + "<li>\"" + LengthModes.PARENT_MEASUREMENT
+                + "\" Arrow length is proportional to a parent object measurement value.  The parent is specified by the \""
+                + PARENT_OBJECT_FOR_LENGTH + "\" parameter and the measurement value by \"" + MEASUREMENT_FOR_LENGTH
+                + "\".  Absolute arrow lengths are adjusted by the \"" + LENGTH_SCALE
+                + "\" multiplication factor.</li></ul>");
 
         parameters.get(LENGTH_VALUE).setDescription("Fixed value specifying the length of all arrows in pixel units.");
 
         parameters.get(PARENT_OBJECT_FOR_LENGTH)
                 .setDescription("Parent objects from which the arrow length measurements will be taken.");
-        
+
         parameters.get(MEASUREMENT_FOR_LENGTH).setDescription(
                 "Measurement value that will be used to control the arrow length.  This value is adjusted using the \""
                         + LENGTH_SCALE + "\" muliplication factor.");
-        
-        parameters.get(LENGTH_SCALE).setDescription("Measurement values will be multiplied by this value prior to being used to control the arrow length.  Each arrow will be <i>MeasurementValue*LengthScale</i> pixels long.");
 
-        parameters.get(HEAD_SIZE).setDescription("Size of the arrow head.  This should be an integer between 0 and 30, where 0 is the smallest possible head and 30 is the largest.");
+        parameters.get(LENGTH_SCALE).setDescription(
+                "Measurement values will be multiplied by this value prior to being used to control the arrow length.  Each arrow will be <i>MeasurementValue*LengthScale</i> pixels long.");
+
+        parameters.get(HEAD_SIZE).setDescription(
+                "Size of the arrow head.  This should be an integer between 0 and 30, where 0 is the smallest possible head and 30 is the largest.");
 
         parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
 
-        parameters.get(RENDER_IN_ALL_FRAMES).setDescription("Display overlay elements in all frames, irrespective of whether each object is present in that frame.");
+        parameters.get(RENDER_IN_ALL_FRAMES).setDescription(
+                "Display overlay elements in all frames, irrespective of whether each object is present in that frame.");
 
         parameters.get(ENABLE_MULTITHREADING).setDescription(
                 "Process multiple overlay elements simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");

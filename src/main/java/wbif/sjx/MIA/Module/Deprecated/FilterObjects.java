@@ -7,12 +7,19 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutMeasurement;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import java.awt.*;
@@ -55,16 +62,15 @@ public class FilterObjects extends Module implements ActionListener {
     private boolean active = false;
 
     public FilterObjects(ModuleCollection modules) {
-        super("Filter objects",modules);
+        super("Filter objects", modules);
     }
-
 
     public interface FilterModes {
         String DO_NOTHING = "Do nothing";
         String MOVE_FILTERED_OBJECTS = "Move filtered objects to new class";
         String REMOVE_FILTERED_OBJECTS = "Remove filtered objects";
 
-        String[] ALL = new String[]{DO_NOTHING,MOVE_FILTERED_OBJECTS,REMOVE_FILTERED_OBJECTS};
+        String[] ALL = new String[] { DO_NOTHING, MOVE_FILTERED_OBJECTS, REMOVE_FILTERED_OBJECTS };
 
     }
 
@@ -79,9 +85,9 @@ public class FilterObjects extends Module implements ActionListener {
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)"; // TRANSFERRED
         String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)"; // TRANSFERRED
 
-        String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
+        String[] ALL = new String[] { REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
                 MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN,
-                RUNTIME_OBJECT_ID};
+                RUNTIME_OBJECT_ID };
 
     }
 
@@ -90,7 +96,7 @@ public class FilterObjects extends Module implements ActionListener {
         String IMAGE_MEASUREMENT = "Image measurement";
         String PARENT_OBJECT_MEASUREMENT = "Parent object measurement";
 
-        String[] ALL = new String[]{FIXED_VALUE,IMAGE_MEASUREMENT,PARENT_OBJECT_MEASUREMENT};
+        String[] ALL = new String[] { FIXED_VALUE, IMAGE_MEASUREMENT, PARENT_OBJECT_MEASUREMENT };
 
     }
 
@@ -104,26 +110,26 @@ public class FilterObjects extends Module implements ActionListener {
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5,5,5,5);
+        c.insets = new Insets(5, 5, 5, 5);
 
         // Header panel
         JLabel headerLabel = new JLabel("<html>Specify object IDs to remove (comma separated)</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        headerLabel.setPreferredSize(new Dimension(300,elementHeight));
-        frame.add(headerLabel,c);
+        headerLabel.setPreferredSize(new Dimension(300, elementHeight));
+        frame.add(headerLabel, c);
 
         numbersField = new JTextField();
         numbersField.setPreferredSize(new Dimension(200, elementHeight));
         c.gridy++;
         c.insets = new Insets(0, 5, 5, 5);
-        frame.add(numbersField,c);
+        frame.add(numbersField, c);
 
         JButton okButton = new JButton(OK);
         okButton.addActionListener(this);
         okButton.setActionCommand(OK);
-        okButton.setPreferredSize(new Dimension(300,elementHeight));
+        okButton.setPreferredSize(new Dimension(300, elementHeight));
         c.gridy++;
-        frame.add(okButton,c);
+        frame.add(okButton, c);
 
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -132,7 +138,8 @@ public class FilterObjects extends Module implements ActionListener {
 
     }
 
-    public String getFullName(String inputObjectsName, String filterMethod, @Nullable String referenceName, @Nullable String filterValue) {
+    public String getFullName(String inputObjectsName, String filterMethod, @Nullable String referenceName,
+            @Nullable String filterValue) {
         switch (filterMethod) {
             case FilterMethods.MISSING_MEASUREMENTS:
                 return "FILTER // NUM_" + inputObjectsName + "_MISSING_" + referenceName + "_MEAS";
@@ -150,10 +157,10 @@ public class FilterObjects extends Module implements ActionListener {
                 return "FILTER // NUM_" + inputObjectsName + "_MORE_THAN_" + filterValue + "_" + referenceName;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
-                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName+ "_SMALLER_THAN_" + filterValue;
+                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName + "_SMALLER_THAN_" + filterValue;
 
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
-                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName+ "_LARGER_THAN_" + filterValue;
+                return "FILTER // NUM_" + inputObjectsName + "_WITH_" + referenceName + "_LARGER_THAN_" + filterValue;
 
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
                 return "FILTER // NUM_" + inputObjectsName + "_ON_" + referenceName + "_EDGE_2D";
@@ -167,13 +174,14 @@ public class FilterObjects extends Module implements ActionListener {
 
     }
 
-    public void filterObjectsOnImageEdge(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, boolean includeZ) {
+    public void filterObjectsOnImageEdge(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, boolean includeZ) {
         int minX = 0;
         int minY = 0;
         int minZ = 0;
-        int maxX = inputObjects.getSpatialCalibration().getWidth()-1;
-        int maxY = inputObjects.getSpatialCalibration().getHeight()-1;
-        int maxZ = inputObjects.getSpatialCalibration().getNSlices()-1;
+        int maxX = inputObjects.getSpatialCalibration().getWidth() - 1;
+        int maxY = inputObjects.getSpatialCalibration().getHeight() - 1;
+        int maxZ = inputObjects.getSpatialCalibration().getNSlices() - 1;
 
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -183,57 +191,66 @@ public class FilterObjects extends Module implements ActionListener {
             ArrayList<Integer> y = inputObject.getYCoords();
             ArrayList<Integer> z = inputObject.getZCoords();
 
-            for (int i=0;i<x.size();i++) {
+            for (int i = 0; i < x.size(); i++) {
                 if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
-                    if (remove) processRemoval(inputObject,outputObjects,iterator);
+                    if (remove)
+                        processRemoval(inputObject, outputObjects, iterator);
                     break;
                 }
 
                 // Only consider Z if the user requested this
                 if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ)) {
-                    if (remove) processRemoval(inputObject,outputObjects,iterator);
+                    if (remove)
+                        processRemoval(inputObject, outputObjects, iterator);
                     break;
                 }
             }
         }
     }
 
-    public void filterObjectsWithMissingMeasurement(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String measurement) {
+    public void filterObjectsWithMissingMeasurement(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String measurement) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             if (Double.isNaN(inputObject.getMeasurement(measurement).getValue())) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsWithoutAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String parentObjectName) {
+    public void filterObjectsWithoutAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String parentObjectName) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+            LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) == null) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsWithAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String parentObjectName) {
+    public void filterObjectsWithAParent(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String parentObjectName) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
-            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+            LinkedHashMap<String, Obj> parents = inputObject.getParents(true);
             if (parents.get(parentObjectName) != null) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsWithMinNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String childObjectsName, double minChildN) {
+    public void filterObjectsWithMinNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String childObjectsName, double minChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
@@ -241,33 +258,39 @@ public class FilterObjects extends Module implements ActionListener {
 
             // Removing the object if it has no children
             if (childObjects == null) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
                 continue;
             }
 
             // Removing the object if it has too few children
             if (childObjects.size() < minChildN) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String childObjectsName, double maxChildN) {
+    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String childObjectsName, double maxChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
             ObjCollection childObjects = inputObject.getChildren(childObjectsName);
 
-            if (childObjects == null) continue;
+            if (childObjects == null)
+                continue;
 
             // Removing the object if it has too few children
             if (childObjects.size() > maxChildN) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String measurementName, MeasRef measurementReference) {
+    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
@@ -275,7 +298,8 @@ public class FilterObjects extends Module implements ActionListener {
             // Removing the object if it has no children
             Measurement measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
                 continue;
             }
 
@@ -283,23 +307,27 @@ public class FilterObjects extends Module implements ActionListener {
             double referenceValue = measurementReference.getValue(inputObject);
 
             if (Double.isNaN(referenceValue)) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
 
             if (value < referenceValue || Double.isNaN(value)) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, String measurementName, MeasRef measurementReference) {
+    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects,
+            boolean remove, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             Measurement measurement = inputObject.getMeasurement(measurementName);
             if (measurement == null) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
                 continue;
             }
 
@@ -308,16 +336,19 @@ public class FilterObjects extends Module implements ActionListener {
             double referenceValue = measurementReference.getValue(inputObject);
 
             if (Double.isNaN(referenceValue)) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
 
             if (value > referenceValue || Double.isNaN(value)) {
-                if (remove) processRemoval(inputObject,outputObjects,iterator);
+                if (remove)
+                    processRemoval(inputObject, outputObjects, iterator);
             }
         }
     }
 
-    public void filterObjectsByID(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove, @Nullable Image image) {
+    public void filterObjectsByID(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, boolean remove,
+            @Nullable Image image) {
         ImagePlus ipl = null;
         if (image != null) {
             ipl = image.getImagePlus().duplicate();
@@ -335,13 +366,14 @@ public class FilterObjects extends Module implements ActionListener {
             }
         }
 
-        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(),true);
+        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(), true);
 
         frame.dispose();
         frame = null;
-        if (ipl != null) ipl.close();
+        if (ipl != null)
+            ipl.close();
 
-        for (int id:ids) {
+        for (int id : ids) {
             Obj obj = inputObjects.get(id);
             if (remove) {
                 obj.removeRelationships();
@@ -363,7 +395,6 @@ public class FilterObjects extends Module implements ActionListener {
         iterator.remove();
     }
 
-
     @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
@@ -371,7 +402,7 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Filter an object collection based on a variety of properties.  Objects that satisfy the relevant condition can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).";
     }
 
     @Override
@@ -399,82 +430,94 @@ public class FilterObjects extends Module implements ActionListener {
         String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
         ObjCollection outputObjects = filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)
-                ? new ObjCollection(outputObjectsName,inputObjects) : null;
+                ? new ObjCollection(outputObjectsName, inputObjects)
+                : null;
 
         boolean remove = !filterMode.equals(FilterModes.DO_NOTHING);
 
         // Removing objects with a missing measurement (i.e. value set to null)
         switch (method) {
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
-                filterObjectsOnImageEdge(inputObjects,outputObjects,remove,includeZ);
+                filterObjectsOnImageEdge(inputObjects, outputObjects, remove, includeZ);
                 break;
 
             case FilterMethods.MISSING_MEASUREMENTS:
-                filterObjectsWithMissingMeasurement(inputObjects,outputObjects,remove,measurement);
+                filterObjectsWithMissingMeasurement(inputObjects, outputObjects, remove, measurement);
                 break;
 
             case FilterMethods.NO_PARENT:
-                filterObjectsWithoutAParent(inputObjects,outputObjects,remove,parentObjectName);
+                filterObjectsWithoutAParent(inputObjects, outputObjects, remove, parentObjectName);
                 break;
 
             case FilterMethods.WITH_PARENT:
-                filterObjectsWithAParent(inputObjects,outputObjects,remove,parentObjectName);
+                filterObjectsWithAParent(inputObjects, outputObjects, remove, parentObjectName);
                 break;
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
-                filterObjectsWithMinNumOfChildren(inputObjects,outputObjects,remove,childObjectsName,referenceValue);
+                filterObjectsWithMinNumOfChildren(inputObjects, outputObjects, remove, childObjectsName,
+                        referenceValue);
                 break;
 
             case FilterMethods.MAX_NUMBER_OF_CHILDREN:
-                filterObjectsWithMaxNumOfChildren(inputObjects,outputObjects,remove,childObjectsName,referenceValue);
+                filterObjectsWithMaxNumOfChildren(inputObjects, outputObjects, remove, childObjectsName,
+                        referenceValue);
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
                 MeasRef measurementReference = null;
                 switch (referenceMode) {
                     case ReferenceModes.FIXED_VALUE:
-                        measurementReference = new MeasRef(ReferenceModes.FIXED_VALUE,referenceValue,1);
+                        measurementReference = new MeasRef(ReferenceModes.FIXED_VALUE, referenceValue, 1);
                         break;
                     case ReferenceModes.IMAGE_MEASUREMENT:
-                        double value = workspace.getImage(referenceValueImage).getMeasurement(referenceImageMeasurement).getValue();
-                        measurementReference = new MeasRef(ReferenceModes.IMAGE_MEASUREMENT,value,referenceMultiplier);
+                        double value = workspace.getImage(referenceValueImage).getMeasurement(referenceImageMeasurement)
+                                .getValue();
+                        measurementReference = new MeasRef(ReferenceModes.IMAGE_MEASUREMENT, value,
+                                referenceMultiplier);
                         break;
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-                        measurementReference = new MeasRef(ReferenceModes.PARENT_OBJECT_MEASUREMENT,referenceValueParent,referenceObjectMeasurement,referenceMultiplier);
+                        measurementReference = new MeasRef(ReferenceModes.PARENT_OBJECT_MEASUREMENT,
+                                referenceValueParent, referenceObjectMeasurement, referenceMultiplier);
                         break;
                 }
 
-                filterObjectsWithMeasSmallerThan(inputObjects,outputObjects,remove,measurement,measurementReference);
+                filterObjectsWithMeasSmallerThan(inputObjects, outputObjects, remove, measurement,
+                        measurementReference);
                 break;
 
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
                 measurementReference = null;
                 switch (referenceMode) {
                     case ReferenceModes.FIXED_VALUE:
-                        measurementReference = new MeasRef(ReferenceModes.FIXED_VALUE,referenceValue,1);
+                        measurementReference = new MeasRef(ReferenceModes.FIXED_VALUE, referenceValue, 1);
                         break;
                     case ReferenceModes.IMAGE_MEASUREMENT:
-                        double value = workspace.getImage(referenceValueImage).getMeasurement(referenceImageMeasurement).getValue();
-                        measurementReference = new MeasRef(ReferenceModes.IMAGE_MEASUREMENT,value,referenceMultiplier);
+                        double value = workspace.getImage(referenceValueImage).getMeasurement(referenceImageMeasurement)
+                                .getValue();
+                        measurementReference = new MeasRef(ReferenceModes.IMAGE_MEASUREMENT, value,
+                                referenceMultiplier);
                         break;
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-                        measurementReference = new MeasRef(ReferenceModes.PARENT_OBJECT_MEASUREMENT,referenceValueParent,referenceObjectMeasurement,referenceMultiplier);
+                        measurementReference = new MeasRef(ReferenceModes.PARENT_OBJECT_MEASUREMENT,
+                                referenceValueParent, referenceObjectMeasurement, referenceMultiplier);
                         break;
                 }
 
-                filterObjectsWithMeasLargerThan(inputObjects,outputObjects,remove,measurement,measurementReference);
+                filterObjectsWithMeasLargerThan(inputObjects, outputObjects, remove, measurement, measurementReference);
                 break;
 
             case FilterMethods.RUNTIME_OBJECT_ID:
                 Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
-                filterObjectsByID(inputObjects,outputObjects,remove,displayImage);
+                filterObjectsByID(inputObjects, outputObjects, remove, displayImage);
                 break;
         }
 
-        if (filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS)) workspace.addObjects(outputObjects);
+        if (filterMode.equals(FilterModes.MOVE_FILTERED_OBJECTS))
+            workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showOutput) inputObjects.convertToImageRandomColours().showImage();
+        if (showOutput)
+            inputObjects.convertToImageRandomColours().showImage();
 
         return Status.PASS;
 
@@ -482,19 +525,19 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE,this,FilterModes.REMOVE_FILTERED_OBJECTS,FilterModes.ALL));
+        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.REMOVE_FILTERED_OBJECTS, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
-        parameters.add(new ChoiceP(FILTER_METHOD, this,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
-        parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
+        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.REMOVE_ON_IMAGE_EDGE_2D, FilterMethods.ALL));
+        parameters.add(new BooleanP(INCLUDE_Z_POSITION, this, false));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
-        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.FIXED_VALUE,ReferenceModes.ALL));
-        parameters.add(new DoubleP(REFERENCE_VALUE, this,1d));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.FIXED_VALUE, ReferenceModes.ALL));
+        parameters.add(new DoubleP(REFERENCE_VALUE, this, 1d));
         parameters.add(new InputImageP(REFERENCE_VAL_IMAGE, this));
         parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT, this));
         parameters.add(new ParentObjectsP(REFERENCE_VAL_PARENT_OBJECT, this));
@@ -502,6 +545,8 @@ public class FilterObjects extends Module implements ActionListener {
         parameters.add(new DoubleP(REFERENCE_MULTIPLIER, this, 1d));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -561,7 +606,8 @@ public class FilterObjects extends Module implements ActionListener {
                         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
                         String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE);
-                        ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT)).setImageName(referenceValueImageName);
+                        ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT))
+                                .setImageName(referenceValueImageName);
                         break;
 
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
@@ -569,8 +615,10 @@ public class FilterObjects extends Module implements ActionListener {
                         returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
                         String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
-                        ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
-                        ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT)).setObjectName(referenceValueParentObjectsName);
+                        ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT))
+                                .setChildObjectsName(inputObjectsName);
+                        ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT))
+                                .setObjectName(referenceValueParentObjectsName);
                         break;
                 }
                 break;
@@ -595,16 +643,18 @@ public class FilterObjects extends Module implements ActionListener {
     public ObjMeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         ObjMeasurementRefCollection returnedRefs = new ObjMeasurementRefCollection();
 
-        // If the filtered objects are to be moved to a new class, assign them the measurements they've lost
+        // If the filtered objects are to be moved to a new class, assign them the
+        // measurements they've lost
         if (parameters.getValue(FILTER_MODE).equals(FilterModes.MOVE_FILTERED_OBJECTS)) {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             String filteredObjectsName = parameters.getValue(OUTPUT_FILTERED_OBJECTS);
 
             // Getting object measurement references associated with this object set
-            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName,this);
+            ObjMeasurementRefCollection references = modules.getObjectMeasurementRefs(inputObjectsName, this);
 
-            for (ObjMeasurementRef reference:references.values()) {
-                returnedRefs.add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
+            for (ObjMeasurementRef reference : references.values()) {
+                returnedRefs
+                        .add(objectMeasurementRefs.getOrPut(reference.getName()).setObjectsName(filteredObjectsName));
             }
 
             return returnedRefs;
@@ -631,6 +681,124 @@ public class FilterObjects extends Module implements ActionListener {
     }
 
     @Override
+    public boolean verify() {
+        return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to be filtered.");
+
+        parameters.get(FILTER_MODE)
+                .setDescription("Controls what happens to objects which don't pass the filter:<br><ul>" + "<li>\""
+                        + FilterModes.DO_NOTHING
+                        + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li>"
+
+                        + "<li>\"" + FilterModes.MOVE_FILTERED_OBJECTS
+                        + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""
+                        + OUTPUT_FILTERED_OBJECTS
+                        + "\" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li>"
+
+                        + "<li>\"" + FilterModes.REMOVE_FILTERED_OBJECTS
+                        + "\" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul>");
+
+        parameters.get(OUTPUT_FILTERED_OBJECTS).setDescription(
+                "New object collection containing input objects which did not pass the filter.  These objects are only stored if \""
+                        + FILTER_MODE + "\" is set to \"" + FilterModes.MOVE_FILTERED_OBJECTS + "\".");
+
+        parameters.get(FILTER_METHOD).setDescription("Controls the type of filter being used:<br><ul>" + "<li>\""
+                + FilterMethods.REMOVE_ON_IMAGE_EDGE_2D
+                + "\" Remove any objects based on contact with the image edge.  Contact is considered as a case where an object pixel is in the outer-most row, column or slice  of an image (e.g. x = 0 or y = max_value).  Can optionally also consider top and bottom of 3D stack (Z-position).</li>"
+
+                + "<li>\"" + FilterMethods.MISSING_MEASUREMENTS
+                + "\" Remove any objects without a specific measurement value (i.e. values with NaN values).</li>"
+
+                + "<li>\"" + FilterMethods.NO_PARENT
+                + "\" Remove any objects without an assigned parent from a specific object collection.</li>"
+
+                + "<li>\"" + FilterMethods.WITH_PARENT
+                + "\" Remove any objects with an assigned parent from a specific object collection.</li>"
+
+                + "<li>\"" + FilterMethods.MIN_NUMBER_OF_CHILDREN
+                + "\" Remove any objects with fewer children from a specific object collection than a threshold value.</li>"
+
+                + "<li>\"" + FilterMethods.MAX_NUMBER_OF_CHILDREN
+                + "\" Remove any objects with more children from a specific object collection than a threshold value.</li>"
+
+                + "<li>\"" + FilterMethods.MEASUREMENTS_SMALLER_THAN
+                + "\" Remove any objects with a smaller measurement value a specific threshold.</li>"
+
+                + "<li>\"" + FilterMethods.MEASUREMENTS_LARGER_THAN
+                + "\" Remove any objects with a larger measurement value a specific threshold.</li>"
+
+                + "<li>\"" + FilterMethods.RUNTIME_OBJECT_ID
+                + "\" Remove objects by their specific ID numbers.  This is a manual option, whereby an image is displayed to the user (pre-prepared to show object ID numbers) along with a dialog box allowing the user to write a comma-separated list of objects to remove.</li></ul>");
+
+        parameters.get(INCLUDE_Z_POSITION).setDescription(
+                "When selected, object pixels which make contact with the lower (z = 0) and upper (z = max_value) slices of the image stack will lead to removal of that object.  If not selected, pixels along this edge will be ignored (i.e. contact won't lead to object removal).  If enabled for single slice stacks all objects will removed.");
+
+        parameters.get(MEASUREMENT).setDescription(
+                "Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module \""
+                        + new FilterWithWithoutMeasurement(null).getName() + "\".");
+
+        parameters.get(PARENT_OBJECT).setDescription(
+                "Parent object to filter by.  The presence or absence of this relationship will determine which of the input objects are counted, removed or moved (depending on the \""
+                        + FILTER_MODE + "\" parameter).");
+
+        parameters.get(CHILD_OBJECTS).setDescription(
+                "Objects will be filtered against the number of children they have from this object collection.");
+
+        parameters.get(REFERENCE_MODE).setDescription("Type of reference value used to compare objects to:<br><ul>"
+                + "<li>\"" + ReferenceModes.FIXED_VALUE
+                + "\" Objects will be compared to a single, fixed value specified using the \"" + REFERENCE_VALUE
+                + "\" parameter.</li>"
+
+                + "<li>\"" + ReferenceModes.IMAGE_MEASUREMENT
+                + "\" Objects will be compared to a measurement associated with an image in the workspace.  The image and associated measurement are specified by the \""
+                + REFERENCE_VAL_IMAGE + "\" and \"" + REFERENCE_IMAGE_MEASUREMENT
+                + "\" parameters.  In this mode, all objects will still be compared to the same value; however, this value can vary between input files.</li>"
+
+                + "<li>\"" + ReferenceModes.PARENT_OBJECT_MEASUREMENT
+                + "\" Objects will be compared to a measurement associated with a parent object.  The parent object and measurement are specified by the \""
+                + REFERENCE_VAL_PARENT_OBJECT + "\" and \"" + REFERENCE_OBJECT_MEASUREMENT
+                + "\" parameters.  In this mode all objects can (but won't necessarily) be compared to different values.</li></ul>");
+
+        parameters.get(REFERENCE_VALUE).setDescription("When \"" + REFERENCE_MODE + "\" is set to \""
+                + ReferenceModes.FIXED_VALUE + "\", all objects will be compared to this fixed value.");
+
+        parameters.get(REFERENCE_VAL_IMAGE)
+                .setDescription("When \"" + REFERENCE_MODE + "\" is set to \"" + ReferenceModes.IMAGE_MEASUREMENT
+                        + "\", all objects will be compared to a measurement associated with this image.");
+
+        parameters.get(REFERENCE_IMAGE_MEASUREMENT).setDescription("When \"" + REFERENCE_MODE + "\" is set to \""
+                + ReferenceModes.IMAGE_MEASUREMENT
+                + "\", all objects will be compared to this measurement, which itself is associated with the image specified by \""
+                + REFERENCE_VAL_IMAGE + "\".");
+
+        parameters.get(REFERENCE_VAL_PARENT_OBJECT).setDescription("When \"" + REFERENCE_MODE + "\" is set to \""
+                + ReferenceModes.PARENT_OBJECT_MEASUREMENT
+                + "\", all objects will be compared to a measurement associated with their parent object from this collection.");
+
+        parameters.get(REFERENCE_OBJECT_MEASUREMENT).setDescription("When \"" + REFERENCE_MODE + "\" is set to \""
+                + ReferenceModes.PARENT_OBJECT_MEASUREMENT
+                + "\", all objects will be compared to this measurement, which itself is associated with the parent object specified by \""
+                + REFERENCE_VAL_PARENT_OBJECT + "\".");
+
+        parameters.get(REFERENCE_MULTIPLIER).setDescription(
+                "Irrespective of how the reference value was determined, it can be systematically adjusted prior to use for comparison using this multiplier.  For example, an image measurement reference value of 32 with a \""
+                        + REFERENCE_MULTIPLIER
+                        + "\" of \"0.5\" will see all objects compared against a value of 16.  This is useful when comparing to dynamic values coming from image and parent object measurements.");
+
+        parameters.get(SHOW_IMAGE).setDescription(
+                "When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the \""
+                        + DISPLAY_IMAGE_NAME + "\" parameter.");
+
+        parameters.get(DISPLAY_IMAGE_NAME).setDescription(
+                "Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the \""
+                        + new AddLabels(null).getName() + "\" module.");
+
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case (OK):
@@ -648,6 +816,7 @@ public class FilterObjects extends Module implements ActionListener {
 
         /*
          * Constructing a fixed- or image-value type
+         * 
          * @param value
          */
         public MeasRef(String referenceType, double value, double referenceMultiplier) {
@@ -662,7 +831,8 @@ public class FilterObjects extends Module implements ActionListener {
         /*
          * Constructing a parent-reference type
          */
-        public MeasRef(String referenceType, String referenceName, String referenceMeasurementName, double referenceMultiplier) {
+        public MeasRef(String referenceType, String referenceName, String referenceMeasurementName,
+                double referenceMultiplier) {
             this.referenceType = referenceType;
             this.value = 0;
             this.referenceName = referenceName;
@@ -679,10 +849,12 @@ public class FilterObjects extends Module implements ActionListener {
             switch (referenceType) {
                 case ReferenceModes.FIXED_VALUE:
                 case ReferenceModes.IMAGE_MEASUREMENT:
-                    return value*referenceMultiplier;
+                    return value * referenceMultiplier;
                 case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-                    if (object.getParent(referenceName) == null) return Double.NaN;
-                    return object.getParent(referenceName).getMeasurement(referenceMeasurementName).getValue()*referenceMultiplier;
+                    if (object.getParent(referenceName) == null)
+                        return Double.NaN;
+                    return object.getParent(referenceName).getMeasurement(referenceMeasurementName).getValue()
+                            * referenceMultiplier;
             }
 
             return 0;
@@ -700,10 +872,5 @@ public class FilterObjects extends Module implements ActionListener {
         public double getReferenceMultiplier() {
             return referenceMultiplier;
         }
-    }
-
-    @Override
-    public boolean verify() {
-        return true;
     }
 }

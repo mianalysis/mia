@@ -8,7 +8,6 @@ import wbif.sjx.MIA.Object.References.Abstract.SummaryRef;
 
 public class ObjMeasurementRef extends SummaryRef {
     private String objectsName = "";
-    private String description = "";
 
     public ObjMeasurementRef(Node node) {
         super(node);
@@ -50,7 +49,7 @@ public class ObjMeasurementRef extends SummaryRef {
 
         ref.setDescription(description);
         ref.setObjectsName(objectsName);
-        ref.setNickname(getNickname());
+        ref.setNickname(nickname);
 
         ref.setExportGlobal(isExportGlobal());
         ref.setExportIndividual(isExportIndividual());
@@ -77,14 +76,5 @@ public class ObjMeasurementRef extends SummaryRef {
     public ObjMeasurementRef setObjectsName(String objectsName) {
         this.objectsName = objectsName;
         return this;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

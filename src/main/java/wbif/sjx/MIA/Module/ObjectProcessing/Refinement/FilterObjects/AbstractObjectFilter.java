@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 
 import com.drew.lang.annotations.Nullable;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Obj;
@@ -18,9 +17,9 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.PartnerRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public abstract class AbstractObjectFilter extends Module {
     public static final String INPUT_SEPARATOR = "Object input";
@@ -217,12 +216,12 @@ public abstract class AbstractObjectFilter extends Module {
         parameters.get(INPUT_OBJECTS).setDescription("Objects to be filtered.");
 
         parameters.get(FILTER_MODE)
-                .setDescription("Controls what happens to objects which don't pass the filter:<br>"
-                        + "<br>- \"" + FilterModes.DO_NOTHING + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).<br>"
+                .setDescription("Controls what happens to objects which don't pass the filter:<br><ul>"
+                        + "<li>\"" + FilterModes.DO_NOTHING + "\" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li>"
 
-                        + "<br>- \"" + FilterModes.MOVE_FILTERED + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""+OUTPUT_FILTERED_OBJECTS+"\" parameter.  All existing measurements and relationships are carried forward into the new object collection.<br>"
+                        + "<li>\"" + FilterModes.MOVE_FILTERED + "\" Objects failing the filter are moved to a new object class.  The name of the class is determined by the \""+OUTPUT_FILTERED_OBJECTS+"\" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li>"
 
-                        + "<br>- \"" + FilterModes.REMOVE_FILTERED + "\" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.<br>");
+                        + "<li>\"" + FilterModes.REMOVE_FILTERED + "\" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul>");
 
         parameters.get(OUTPUT_FILTERED_OBJECTS).setDescription(
                 "New object collection containing input objects which did not pass the filter.  These objects are only stored if \""

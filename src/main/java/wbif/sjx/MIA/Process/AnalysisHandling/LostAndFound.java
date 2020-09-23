@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 
 public class LostAndFound {
@@ -19,6 +20,11 @@ public class LostAndFound {
         String moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
 
+        currentParameters = new HashMap<>();
+        currentParameters.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
+        moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);
+        
     }
 
     public String findModule(String oldName) {

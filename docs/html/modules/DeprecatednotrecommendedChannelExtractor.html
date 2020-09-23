@@ -23,10 +23,9 @@ layout: default
     <a href="../modulelist.html">Back to module list</a>
 <h1>Channel extractor</h1>
 <h2>Description</h2>
-NOTE: This Module has been superseeded by the ExtractSubstack Module.  It will be removed in a future release.
-Extracts a single channel from a stack.
+DEPRECATED: PLEASE USE ExtractSubstack Module.<br><br> Extracts a single channel from a stack and stores it as a new image in the workspace.
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Type: InputImageP</li></ul><br><li>Output image<ul><li>Type: OutputImageP</li></ul><br><li>Channel to extract (>= 1)<ul><li>Type: IntegerP</li><li>Default value: 1</li></ul><br></ul>
+<ul><li>Input image<ul><li>Description: Multi-channel image to extract a channel from.  This image is unaffected by the extraction process (i.e. its channel count doesn't decrease by 1).</li><li>Type: InputImageP</li></ul><br><li>Output image<ul><li>Description: The extracted channel will be stored in the workspace under this name.</li><li>Type: OutputImageP</li></ul><br><li>Channel to extract (>= 1)<ul><li>Description: Channel index to extract.  Index numbering starts at 1 and must be specified as a single integer value.</li><li>Type: IntegerP</li><li>Default value: 1</li></ul><br></ul>
 
 </div>
 </body>
