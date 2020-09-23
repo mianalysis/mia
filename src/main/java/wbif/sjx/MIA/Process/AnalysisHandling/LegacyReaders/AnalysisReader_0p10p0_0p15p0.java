@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -305,6 +306,10 @@ public class AnalysisReader_0p10p0_0p15p0 {
     public static void connvertRelationshipRefs(ModuleCollection modules, ArrayList<Node> relationshipsToCovert) {
         boolean firstAdded = true; // As soon as one module is added, this is set to false.
 
+        // Storing ParentChildRefs and PartnerRefs to prevent duplicate entries
+        RefPairCollection parentChildRefs = new RefPairCollection();
+        RefPairCollection partnerRefs = new RefPairCollection();
+
         // Getting final list of available objects
         LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null);
         HashSet<String> availableObjectNames = new HashSet<>();
@@ -342,32 +347,48 @@ public class AnalysisReader_0p10p0_0p15p0 {
                     case "PARENT_CHILD":
                         // Getting relationship properties and modules
                         ParentChildRef pcRef = new ParentChildRef(node);
+                        String parentName = pcRef.getParentName();
+                        String childName = pcRef.getChildName();
+
+                        // Checking if this pair has already been added
+                        if (parentChildRefs.contains(parentName, childName))
+                            continue;
+                        else
+                            parentChildRefs.addPair(parentName, childName);
 
                         // Checking objects still exist (i.e. haven't been removed)
-                        if (!availableObjectNames.contains(pcRef.getParentName()))
+                        if (!availableObjectNames.contains(parentName))
                             continue;
 
-                        if (!availableObjectNames.contains(pcRef.getChildName()))
+                        if (!availableObjectNames.contains(childName))
                             continue;
 
-                        addChildCountModule(modules, lRef, pcRef.getParentName(), pcRef.getChildName());
-                        addParentIDModule(modules, lRef, pcRef.getParentName(), pcRef.getChildName());
+                        addChildCountModule(modules, lRef, parentName, childName);
+                        addParentIDModule(modules, lRef, parentName, childName);
 
                         break;
 
                     case "PARTNER":
                         // Getting relationship properties and module
                         PartnerRef pRef = new PartnerRef(node);
+                        String object1Name = pRef.getObject1Name();
+                        String object2Name = pRef.getObject2Name();
+
+                        // Checking if this pair has already been added
+                        if (partnerRefs.contains(object1Name, object2Name))
+                            continue;
+                        else
+                            partnerRefs.addPair(object1Name, object2Name);
 
                         // Checking objects still exist (i.e. haven't been removed)
-                        if (!availableObjectNames.contains(pRef.getObject1Name()))
+                        if (!availableObjectNames.contains(object1Name))
                             continue;
 
-                        if (!availableObjectNames.contains(pRef.getObject2Name()))
+                        if (!availableObjectNames.contains(object2Name))
                             continue;
-                        
-                        addPartnerCountModule(modules, lRef, pRef.getObject1Name(), pRef.getObject2Name());
-                        addPartnerCountModule(modules, lRef, pRef.getObject2Name(), pRef.getObject1Name());
+
+                        addPartnerCountModule(modules, lRef, object1Name, object2Name);
+                        addPartnerCountModule(modules, lRef, object2Name, object1Name);
 
                         break;
                 }
@@ -435,7 +456,7 @@ public class AnalysisReader_0p10p0_0p15p0 {
         String measurementName = PartnerObjectCount.getFullName(object2Name);
         ObjMeasurementRefCollection measRefs = countModule.updateAndGetObjectMeasurementRefs();
         ObjMeasurementRef measRef = measRefs.get(measurementName);
-        
+
         // Setting measurement export states
         measRef.setExportGlobal(lRef.isExportGlobal());
         measRef.setExportIndividual(lRef.isExportIndividual());
@@ -446,17 +467,50 @@ public class AnalysisReader_0p10p0_0p15p0 {
         measRef.setExportSum(lRef.isExportSum());
 
     }
-}
 
-class LegacySummaryRef extends SummaryRef {
-    public LegacySummaryRef(Node node) {
-        super(node);
-        super.setAttributesFromXML(node);
+    static class LegacySummaryRef extends SummaryRef {
+        LegacySummaryRef(Node node) {
+            super(node);
+            super.setAttributesFromXML(node);
+        }
     }
 
-    @Override
-    public String getDescription() {
-        // This doesn't need implementing
-        return null;
+    static class RefPairCollection {
+        private HashSet<RefPair> refPairs = new HashSet<>();
+
+        void addPair(String object1, String object2) {
+            refPairs.add(new RefPair(object1, object2));
+        }
+
+        boolean contains(String object1, String object2) {
+            for (RefPair refPair : refPairs) {
+                if (object1.equals(refPair.getObject1()) && object2.equals(refPair.getObject2()))
+                    return true;
+
+                if (object1.equals(refPair.getObject2()) && object2.equals(refPair.getObject1()))
+                    return true;
+            }
+
+            return false;
+
+        }
+
+        static class RefPair {
+            String object1;
+            String object2;
+
+            RefPair(String object1, String object2) {
+                this.object1 = object1;
+                this.object2 = object2;
+            }
+
+            String getObject1() {
+                return object1;
+            }
+
+            String getObject2() {
+                return object2;
+            }
+        }
     }
 }

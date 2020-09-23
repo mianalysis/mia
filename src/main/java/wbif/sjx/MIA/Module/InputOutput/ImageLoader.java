@@ -699,6 +699,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // If name includes "*" get first instance of wildcard
         if (filename.contains("*")) {
             String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
+            
+            // Checking if any filenames were found
+            if (filenames == null)
+                return null;
+
             if (filenames.length > 0)
                 filename = filenames[0];
         }

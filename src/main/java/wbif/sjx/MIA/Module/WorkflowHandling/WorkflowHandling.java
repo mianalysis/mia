@@ -131,6 +131,10 @@ public class WorkflowHandling extends Module {
             return false;
         }
 
+        // If no name matching the format was found
+        if (name == null)
+            return false;
+
         return (new File(name)).exists();
 
     }

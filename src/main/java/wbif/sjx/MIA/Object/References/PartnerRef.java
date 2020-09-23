@@ -9,8 +9,7 @@ import wbif.sjx.MIA.Object.References.Abstract.Ref;
 public class PartnerRef extends Ref implements Comparable {
     private final String object1Name;
     private final String object2Name;
-    private String description = "";
-
+    
 
     public PartnerRef(Node node) {
         super(node);
@@ -67,20 +66,11 @@ public class PartnerRef extends Ref implements Comparable {
         return object1Name+" // "+object2Name;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public PartnerRef duplicate() {
         PartnerRef ref = new PartnerRef(object1Name, object2Name);
 
         ref.setDescription(description);
-        ref.setNickname(getNickname());
+        ref.setNickname(nickname);
 
         return ref;
 

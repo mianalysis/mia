@@ -9,7 +9,6 @@ import wbif.sjx.MIA.Object.References.Abstract.Ref;
 public class ParentChildRef extends Ref {
     private final String parentName;
     private final String childName;
-    private String description = "";
 
     public ParentChildRef(Node node) {
         super(node);
@@ -56,20 +55,11 @@ public class ParentChildRef extends Ref {
         return parent+" // "+child;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public ParentChildRef duplicate() {
         ParentChildRef ref = new ParentChildRef(parentName,childName);
 
         ref.setDescription(description);
-        ref.setNickname(getNickname());
+        ref.setNickname(nickname);
 
         return ref;
         

@@ -13,6 +13,8 @@ import com.drew.lang.annotations.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -215,7 +217,7 @@ public class CalculateNearestNeighbour extends Module {
     // }
 
     public static SXSSFWorkbook exportDistances(LinkedHashMap<Obj, LinkedHashMap<Obj, Double>> distances,
-            String inputObjectsName, String neighbourObjectsName, boolean includeTimepoints,
+            String inputObjectsName, String neighbourObjectsName, boolean includeTimepoints, boolean linkInSameFrame,
             @Nullable String inputParentsName, @Nullable String neighbourParentsName) {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("Distances");
@@ -225,37 +227,55 @@ public class CalculateNearestNeighbour extends Module {
         int colCount = 0;
         Row row = sheet.createRow(rowCount++);
 
+        // Header cells will be bold
+        CellStyle cellStyle = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        cellStyle.setFont(font);
+
         Cell cell = row.createCell(colCount++);
-        cell.setCellValue(inputObjectsName + " ID");
+        cell.setCellValue("\""+inputObjectsName + "\" ID");
+        cell.setCellStyle(cellStyle);
 
         if (includeTimepoints) {
             cell = row.createCell(colCount++);
-            cell.setCellValue(inputObjectsName + " T");
+            if (linkInSameFrame) {
+                cell.setCellValue("TIMEPOINT");
+            } else {
+                cell.setCellValue(inputObjectsName + "\" TIMEPOINT");
+            }            
+            cell.setCellStyle(cellStyle);
         }
 
         if (inputParentsName != null) {
             cell = row.createCell(colCount++);
-            cell.setCellValue(inputParentsName + " ID");
+            cell.setCellValue("\""+inputParentsName + "\" ID");
+            cell.setCellStyle(cellStyle);
         }
 
         cell = row.createCell(colCount++);
-        cell.setCellValue(neighbourObjectsName + " ID");
+        cell.setCellValue("\""+neighbourObjectsName + "\" ID");
+        cell.setCellStyle(cellStyle);
 
-        if (includeTimepoints) {
+        if (includeTimepoints &! linkInSameFrame) { 
             cell = row.createCell(colCount++);
-            cell.setCellValue(neighbourObjectsName + " T");
+            cell.setCellValue("\""+neighbourObjectsName + "\" TIMEPOINT");
+            cell.setCellStyle(cellStyle);
         }
 
         if (neighbourParentsName != null) {
             cell = row.createCell(colCount++);
-            cell.setCellValue(neighbourParentsName + " ID");
+            cell.setCellValue("\""+neighbourParentsName + "\" ID");
+            cell.setCellStyle(cellStyle);
         }
 
         cell = row.createCell(colCount++);
-        cell.setCellValue("Distance (px)");
+        cell.setCellValue("DISTANCE (PX)");
+        cell.setCellStyle(cellStyle);
 
         cell = row.createCell(colCount++);
-        cell.setCellValue(Units.replace("Distance (${CAL})"));
+        cell.setCellValue(Units.replace("DISTANCE (${CAL})"));
+        cell.setCellStyle(cellStyle);
 
         if (distances.size() == 0)
             return workbook;
@@ -281,22 +301,25 @@ public class CalculateNearestNeighbour extends Module {
                     cell = row.createCell(colCount++);
                     Obj inputParentObject = inputObject.getParent(inputParentsName);
                     double inputParentID = inputParentObject == null ? Double.NaN : inputParentObject.getID();
-                    cell.setCellValue(inputParentID);                      
+                    cell.setCellValue(inputParentID);
                 }
 
                 cell = row.createCell(colCount++);
                 cell.setCellValue(neighbourObject.getID());
 
                 if (includeTimepoints) {
-                    cell = row.createCell(colCount++);
-                    cell.setCellValue(neighbourObject.getT());
+                    if (!linkInSameFrame) {
+                        cell = row.createCell(colCount++);
+                        cell.setCellValue(neighbourObject.getT());
+                    }
                 }
 
                 if (neighbourParentsName != null) {
                     cell = row.createCell(colCount++);
                     Obj neighbourParentObject = neighbourObject.getParent(neighbourParentsName);
-                    double neighbourParentID = neighbourParentObject == null ? Double.NaN : neighbourParentObject.getID();
-                    cell.setCellValue(neighbourParentID);                   
+                    double neighbourParentID = neighbourParentObject == null ? Double.NaN
+                            : neighbourParentObject.getID();
+                    cell.setCellValue(neighbourParentID);
                 }
 
                 cell = row.createCell(colCount++);
@@ -304,7 +327,7 @@ public class CalculateNearestNeighbour extends Module {
                 cell.setCellValue(distPx);
 
                 cell = row.createCell(colCount++);
-                double distCal = distPx*inputObject.getDppXY();
+                double distCal = distPx * inputObject.getDppXY();
                 cell.setCellValue(distCal);
 
             }
@@ -472,8 +495,8 @@ public class CalculateNearestNeighbour extends Module {
             path = ImageSaver.appendDateTime(path, appendDateTimeMode);
             path = path + suffix + ".xlsx";
 
-            SXSSFWorkbook workbook = exportDistances(distances, inputObjectsName, nearestNeighbourName, includeTimepoints, inputParentsName,
-                    neighbourParentsName);
+            SXSSFWorkbook workbook = exportDistances(distances, inputObjectsName, nearestNeighbourName,
+                    includeTimepoints, linkInSameFrame, inputParentsName, neighbourParentsName);
             writeDistancesFile(workbook, path);
 
         }
@@ -517,6 +540,9 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String neighbourObjectsName;
+
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
@@ -525,7 +551,12 @@ public class CalculateNearestNeighbour extends Module {
 
         switch ((String) parameters.getValue(RELATIONSHIP_MODE)) {
             case RelationshipModes.DIFFERENT_SET:
+            default:
                 returnedParameters.add(parameters.getParameter(NEIGHBOUR_OBJECTS));
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
+                break;
+            case RelationshipModes.WITHIN_SAME_SET:
+                neighbourObjectsName = inputObjectsName;
                 break;
         }
 
@@ -533,8 +564,6 @@ public class CalculateNearestNeighbour extends Module {
         returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
         if ((boolean) parameters.getValue(CALCULATE_WITHIN_PARENT)) {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
-
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             ((ParentObjectsP) parameters.getParameter(PARENT_OBJECTS)).setChildObjectsName(inputObjectsName);
         }
 
@@ -550,9 +579,15 @@ public class CalculateNearestNeighbour extends Module {
         if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES)) {
             returnedParameters.add(parameters.getParameter(INCLUDE_TIMEPOINTS));
             returnedParameters.add(parameters.getParameter(INCLUDE_INPUT_PARENT));
-            returnedParameters.add(parameters.getParameter(INPUT_PARENT));
+            if ((boolean) parameters.getValue(INCLUDE_INPUT_PARENT)) {
+                returnedParameters.add(parameters.getParameter(INPUT_PARENT));
+                ((ParentObjectsP) parameters.get(INPUT_PARENT)).setChildObjectsName(inputObjectsName);
+            }
             returnedParameters.add(parameters.getParameter(INCLUDE_NEIGHBOUR_PARENT));
-            returnedParameters.add(parameters.getParameter(NEIGHBOUR_PARENT));
+            if ((boolean) parameters.getValue(INCLUDE_NEIGHBOUR_PARENT)) {
+                returnedParameters.add(parameters.getParameter(NEIGHBOUR_PARENT));
+                ((ParentObjectsP) parameters.get(NEIGHBOUR_PARENT)).setChildObjectsName(neighbourObjectsName);
+            }
 
             returnedParameters.add(parameters.getParameter(SAVE_NAME_MODE));
             switch ((String) parameters.getValue(SAVE_NAME_MODE)) {

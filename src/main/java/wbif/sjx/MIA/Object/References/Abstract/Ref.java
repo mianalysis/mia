@@ -8,8 +8,8 @@ import org.w3c.dom.Node;
 
 public abstract class Ref {
     protected final String name;
-    private String nickname = "";
-
+    protected String nickname = "";
+    protected String description = "";
 
     public Ref(String name) {
         this.name = name;
@@ -26,7 +26,13 @@ public abstract class Ref {
         return name;
     }
 
-    public abstract String getDescription();
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getNickname() {
         return nickname;
