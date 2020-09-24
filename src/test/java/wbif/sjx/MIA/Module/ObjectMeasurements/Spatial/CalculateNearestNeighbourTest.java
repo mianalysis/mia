@@ -57,8 +57,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Testing against first object in set
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE,false,null);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,referenceMode, Double.MAX_VALUE,false,null);
 
         assertEquals(obj3,nearestNeighour);
 
@@ -98,8 +99,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj5);
 
         // Testing against first object in set
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,Double.MAX_VALUE,false,null);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1, referenceMode, Double.MAX_VALUE,false,null);
 
         assertEquals(obj5,nearestNeighour);
 
@@ -135,8 +137,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Testing against first object in set
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,100d,false,null);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,referenceMode,100d,false,null);
 
         assertEquals(obj3,nearestNeighour);
 
@@ -172,8 +175,9 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         objects1.add(obj4);
 
         // Testing against first object in set
+        String referenceMode = CalculateNearestNeighbour.ReferenceModes.CENTROID;
         CalculateNearestNeighbour calculateNearestNeighbour = new CalculateNearestNeighbour(new ModuleCollection());
-        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,50d,false,null);
+        Obj nearestNeighour = calculateNearestNeighbour.getNearestNeighbour(obj1,objects1,referenceMode,50d,false,null);
 
         assertNull(nearestNeighour);
 

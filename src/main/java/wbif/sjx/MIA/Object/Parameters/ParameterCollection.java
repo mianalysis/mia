@@ -1,14 +1,15 @@
 package wbif.sjx.MIA.Object.Parameters;
 
+import java.util.LinkedHashMap;
+
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Collections.RefCollection;
-
-import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class ParameterCollection extends LinkedHashMap<String,Parameter> implements RefCollection<Parameter> {
+public class ParameterCollection extends LinkedHashMap<String, Parameter>
+        implements RefCollection<Parameter> {
 
     // PUBLIC METHODS
 
@@ -18,13 +19,19 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
     private static final long serialVersionUID = -1104212695371396327L;
 
     public boolean add(Parameter parameter) {
-        put(parameter.getName(),parameter);
+        put(parameter.getName(), parameter);
         return true;
     }
 
     public void addAll(ParameterCollection parameterCollection) {
-        for (Parameter parameter:parameterCollection.values()) add(parameter);
+        for (Parameter parameter : parameterCollection.values())
+            add(parameter);
 
+    }
+
+    public void removeAll(ParameterCollection parameterCollection) {
+        for (Parameter parameter : parameterCollection.values())
+            remove(parameter);
     }
 
     public <T extends Parameter> T getParameter(String name) {
@@ -50,12 +57,14 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
     }
 
     public boolean hasVisibleParameters() {
-        for (Parameter parameter:values()) {
-            if (parameter.isVisible()) return true;
+        for (Parameter parameter : values()) {
+            if (parameter.isVisible())
+                return true;
 
             if (parameter instanceof ParameterGroup) {
-                for (ParameterCollection collection:((ParameterGroup) parameter).getCollections(true).values()) {
-                    if (collection.hasVisibleParameters()) return true;
+                for (ParameterCollection collection : ((ParameterGroup) parameter).getCollections(true).values()) {
+                    if (collection.hasVisibleParameters())
+                        return true;
                 }
             }
         }
@@ -67,7 +76,8 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
     public ParameterCollection duplicate() {
         ParameterCollection copyParameters = new ParameterCollection();
 
-        for (Parameter parameter:values()) copyParameters.add(parameter.duplicate(parameter.getModule()));
+        for (Parameter parameter : values())
+            copyParameters.add(parameter.duplicate(parameter.getModule()));
 
         return copyParameters;
 

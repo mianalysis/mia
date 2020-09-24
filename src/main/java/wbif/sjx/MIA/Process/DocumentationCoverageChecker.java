@@ -7,9 +7,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
@@ -33,6 +35,9 @@ public class DocumentationCoverageChecker {
         int totalObjRefs = 0;
 
         DecimalFormat df = new DecimalFormat("0.00");
+
+        // classNames = new ArrayList<>();
+        // classNames.add("wbif.sjx.MIA.Module.WorkflowHandling.FixedTextCondition");
 
         // Converting the list of classes to a list of Modules
         for (String className : classNames) {
@@ -77,8 +82,10 @@ public class DocumentationCoverageChecker {
                 double objRefCoverage = measurementCounts[2] == 0 ? 1
                         : (double) measurementCounts[3] / (double) measurementCounts[2];
 
-                System.out.println("Module \"" + module.getName() + "\", parameters = " + df.format(100 * parameterCoverage)
-                        + "%, incomplete parameters = "+incompleteParameters+", image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = " + df.format(100 * objRefCoverage));
+                System.out.println("Module \"" + module.getName() + "\", parameters = "
+                        + df.format(100 * parameterCoverage) + "%, incomplete parameters = " + incompleteParameters
+                        + ", image refs = " + df.format(100 * imageRefCoverage) + "%, obj refs = "
+                        + df.format(100 * objRefCoverage));
 
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
                     | InvocationTargetException e) {
@@ -147,18 +154,25 @@ public class DocumentationCoverageChecker {
         int nCoveredParams = 0;
 
         for (Parameter parameter : module.getAllParameters().values()) {
+            if (parameter instanceof ParamSeparatorP || parameter instanceof MessageP) {
+                nParams--;
+                continue;
+            }
 
             if (parameter.getDescription() == null)
                 continue;
 
-            if (parameter instanceof ParamSeparatorP || parameter instanceof MessageP) 
-                nParams--;
-                
-            if (parameter instanceof ParameterGroup) 
-                nParams = nParams + ((ParameterGroup) parameter).getTemplateParameters().size()-1;
-                
-            if (parameter.getDescription().length() > 1) 
+            if (parameter.getDescription().length() > 1)
                 nCoveredParams++;
+
+            if (parameter instanceof ParameterGroup) {
+                ParameterCollection collection = ((ParameterGroup) parameter).getTemplateParameters();
+                nParams = nParams + collection.size();
+                for (Parameter collectionParam : collection.values()) {
+                    if (collectionParam.getDescription().length() > 1)
+                        nCoveredParams++;
+                }
+            }
         }
 
         return new int[] { nParams, nCoveredParams };

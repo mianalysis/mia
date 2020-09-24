@@ -44,7 +44,7 @@ public class ParentObjectID extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Stores the ID number of an associated parent from a specific class.  Associated IDs are stored as measurements and are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.";
     }
 
     @Override
@@ -74,6 +74,8 @@ public class ParentObjectID extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -102,6 +104,7 @@ public class ParentObjectID extends Module {
         // We don't want statistics for this measurement
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
         ref.setObjectsName(inputObjectsName);
+        ref.setDescription("ID number of associated \""+parentObjectsName+"\" parent object.");
         ref.setExportMax(false);
         ref.setExportMean(false);
         ref.setExportMin(false);
@@ -132,5 +135,15 @@ public class ParentObjectID extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "For each object in this collection the ID number of an associated parent object (from the collection specified by \""
+                        + PARENT_OBJECT
+                        + "\") will be stored as a measurement.  This measurement will be associated with each input object.  The measurement is evaluated at the time of access (unlike \"normal\" measurements which have fixed values), so should always be correct.");
+
+        parameters.get(PARENT_OBJECT).setDescription("Associated parent object collection.");
+
     }
 }

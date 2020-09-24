@@ -44,7 +44,7 @@ public class RelateManyToOne extends Module {
 
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
     public static final String RELATE_MODE = "Method to relate objects";
-    public static final String REFERENCE_POINT = "Reference point";
+    public static final String REFERENCE_MODE = "Reference mode";
     public static final String TEST_CHILD_OBJECTS = "Child objects to test against";
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
@@ -68,7 +68,7 @@ public class RelateManyToOne extends Module {
 
     }
 
-    public interface ReferencePoints {
+    public interface ReferenceModes {
         String CENTROID = "Centroid";
         String SURFACE = "Surface";
         String CENTROID_TO_SURFACE = "Child centroid to parent surface";
@@ -519,7 +519,7 @@ public class RelateManyToOne extends Module {
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
-        String referencePoint = parameters.getValue(REFERENCE_POINT);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
         String insideOutsideMode = parameters.getValue(INSIDE_OUTSIDE_MODE);
@@ -543,18 +543,18 @@ public class RelateManyToOne extends Module {
                 break;
 
             case RelateModes.PROXIMITY:
-                switch (referencePoint) {
-                    case ReferencePoints.CENTROID:
+                switch (referenceMode) {
+                    case ReferenceModes.CENTROID:
                         linkByCentroidProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
                                 nThreads);
                         break;
 
-                    case ReferencePoints.SURFACE:
+                    case ReferenceModes.SURFACE:
                         linkBySurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
                                 insideOutsideMode, nThreads);
                         break;
 
-                    case ReferencePoints.CENTROID_TO_SURFACE:
+                    case ReferenceModes.CENTROID_TO_SURFACE:
                         linkByCentroidToSurfaceProximity(parentObjects, childObjects, linkInSameFrame, linkingDistance,
                                 insideOutsideMode, calcFrac, nThreads);
                         break;
@@ -591,14 +591,14 @@ public class RelateManyToOne extends Module {
 
         parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
         parameters.add(
-                new ChoiceP(RELATE_MODE, this, RelateObjects.RelateModes.MATCHING_IDS, RelateObjects.RelateModes.ALL));
-        parameters.add(new ChoiceP(REFERENCE_POINT, this, RelateObjects.ReferencePoints.CENTROID,
-                RelateObjects.ReferencePoints.ALL));
+                new ChoiceP(RELATE_MODE, this, RelateModes.MATCHING_IDS, RelateModes.ALL));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID,
+        ReferenceModes.ALL));
         parameters.add(new ChildObjectsP(TEST_CHILD_OBJECTS, this));
         parameters.add(new BooleanP(LIMIT_LINKING_BY_DISTANCE, this, false));
         parameters.add(new DoubleP(LINKING_DISTANCE, this, 1.0));
-        parameters.add(new ChoiceP(INSIDE_OUTSIDE_MODE, this, RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE,
-                RelateObjects.InsideOutsideModes.ALL));
+        parameters.add(new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE,
+                InsideOutsideModes.ALL));
         parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP, this, 0d,
                 "Percentage of total child volume overlapping with the parent object."));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP, this, true));
@@ -621,17 +621,17 @@ public class RelateManyToOne extends Module {
         returnedParameters.add(parameters.getParameter(RELATIONSHIP_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
-        String referencePoint = parameters.getValue(REFERENCE_POINT);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
-                returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
                 returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
                 if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 
-                if (referencePoint.equals(ReferencePoints.CENTROID_TO_SURFACE)
-                        || referencePoint.equals(ReferencePoints.SURFACE)) {
+                if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)
+                        || referenceMode.equals(ReferenceModes.SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
                 }
@@ -645,8 +645,8 @@ public class RelateManyToOne extends Module {
                     returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
                 }
 
-                if (referencePoint.equals(ReferencePoints.CENTROID_TO_SURFACE)
-                        || referencePoint.equals(ReferencePoints.SURFACE)) {
+                if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)
+                        || referenceMode.equals(ReferenceModes.SURFACE)) {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                 }
 
@@ -687,8 +687,8 @@ public class RelateManyToOne extends Module {
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
-                switch ((String) parameters.getValue(REFERENCE_POINT)) {
-                    case ReferencePoints.CENTROID:
+                switch ((String) parameters.getValue(REFERENCE_MODE)) {
+                    case ReferenceModes.CENTROID:
                         String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjectName);
                         ObjMeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName);
                         distCentPx.setDescription(
@@ -707,7 +707,7 @@ public class RelateManyToOne extends Module {
                         returnedRefs.add(distCentCal);
                         break;
 
-                    case ReferencePoints.SURFACE:
+                    case ReferenceModes.SURFACE:
                         measurementName = getFullName(Measurements.DIST_SURFACE_PX, parentObjectName);
                         ObjMeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName);
                         distSurfPx.setDescription(
@@ -730,7 +730,7 @@ public class RelateManyToOne extends Module {
                         returnedRefs.add(distSurfCal);
                         break;
 
-                    case ReferencePoints.CENTROID_TO_SURFACE:
+                    case ReferenceModes.CENTROID_TO_SURFACE:
                         measurementName = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjectName);
                         ObjMeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName);
                         distCentSurfPx.setDescription(
