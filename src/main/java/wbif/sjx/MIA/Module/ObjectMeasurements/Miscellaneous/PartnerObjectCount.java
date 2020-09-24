@@ -1,5 +1,3 @@
-// TODO: Could addRef an optional parameter to select the channel of the input image to use for measurement
-
 package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 
 import wbif.sjx.MIA.Module.Module;
@@ -34,7 +32,7 @@ public class PartnerObjectCount extends Module {
     }
 
     public static String getFullName(String partnerObjectsName) {
-        return "COUNT // "+ partnerObjectsName;
+        return "COUNT // " + partnerObjectsName;
     }
 
     @Override
@@ -44,7 +42,8 @@ public class PartnerObjectCount extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Calculates the number of partners from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.";
+
     }
 
     @Override
@@ -58,11 +57,12 @@ public class PartnerObjectCount extends Module {
 
         if (objects == null)
             return Status.PASS;
-            
-        for (Obj obj : objects.values()) 
+
+        for (Obj obj : objects.values())
             obj.addMeasurement(new PartnerCountMeasurement(measurementName, obj, partnerObjectsName));
-        
-        if (showOutput) objects.showMeasurements(this,modules);
+
+        if (showOutput)
+            objects.showMeasurements(this, modules);
 
         return Status.PASS;
 
@@ -74,13 +74,15 @@ public class PartnerObjectCount extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));
 
+        addParameterDescriptions();
+
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ((PartnerObjectsP) parameters.get(PARTNER_OBJECTS)).setPartnerObjectsName(inputObjectsName);
-        
+
         return parameters;
 
     }
@@ -96,11 +98,12 @@ public class PartnerObjectCount extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String partnerObjectsName = parameters.getValue(PARTNER_OBJECTS);
-        
+
         String measurementName = getFullName(partnerObjectsName);
 
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
         ref.setObjectsName(inputObjectsName);
+        ref.setDescription("Number of \""+partnerObjectsName+"\" partner objects associated with this object.");
         returnedRefs.add(ref);
 
         return returnedRefs;
@@ -125,5 +128,15 @@ public class PartnerObjectCount extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "For each object in this collection the number of associated partner objects (from the collection specified by \""
+                        + PARTNER_OBJECTS
+                        + "\") will be calculated.  The count is stored as a measurement associated with each input object.  The measurement is evaluated at the time of access (unlike \"normal\" measurements which have fixed values), so should always be correct.");
+
+        parameters.get(PARTNER_OBJECTS).setDescription("Partner objects to be counted.");
+
     }
 }

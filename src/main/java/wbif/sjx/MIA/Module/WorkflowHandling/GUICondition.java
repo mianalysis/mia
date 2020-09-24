@@ -91,12 +91,11 @@ public class GUICondition extends CoreWorkspaceHandler {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
-
         ParameterCollection collection = new ParameterCollection();
         collection.add(new StringP(CHOICE_NAME, this, ""));
         collection.addAll(super.updateAndGetParameters());
 
+        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
         parameters.getParameter(CHOICE).setVisible(true);
         parameters.add(new ParameterGroup(ADD_CHOICE, this, collection, 0, getUpdaterAndGetter()));

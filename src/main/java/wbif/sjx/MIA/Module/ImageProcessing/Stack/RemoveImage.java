@@ -67,9 +67,11 @@ public class RemoveImage extends Module {
         parameters.add(new ParamSeparatorP(REMOVAL_SEPARATOR,this));
 
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new RemovedImageP(INPUT_IMAGE,this,"","Name of the image to be removed from the workspace."));
-        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false,"Retain measurements for this image, or remove everything.  When selected, the image intensity information will be removed, as this is typically where most memory us used, however any measurements associated with it will be retained."));
-        parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE,this,collection,1,"Mark another image from the workspace for removal."));
+        collection.add(new RemovedImageP(INPUT_IMAGE,this));
+        collection.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
+        parameters.add(new ParameterGroup(REMOVE_ANOTHER_IMAGE, this, collection, 1));
+
+        addParameterDescriptions();
 
     }
 
@@ -107,5 +109,17 @@ public class RemoveImage extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        ParameterCollection collection = ((ParameterGroup) parameters.get(REMOVE_ANOTHER_IMAGE))
+                .getTemplateParameters();
+
+        collection.get(INPUT_IMAGE).setDescription("Name of the image to be removed from the workspace.");
+
+        collection.get(RETAIN_MEASUREMENTS).setDescription("Retain measurements for this image, or remove everything.  When selected, the image intensity information will be removed, as this is typically where most memory us used, however any measurements associated with it will be retained.");
+
+        parameters.get(REMOVE_ANOTHER_IMAGE).setDescription("Mark another image from the workspace for removal.");
+
     }
 }

@@ -96,13 +96,12 @@ public class FixedTextCondition extends CoreWorkspaceHandler {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new StringP(TEST_VALUE, this));
-        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
-
         ParameterCollection collection = new ParameterCollection();
         collection.add(new StringP(REFERENCE_VALUE, this, ""));
         collection.addAll(super.updateAndGetParameters());
 
+        parameters.add(new StringP(TEST_VALUE, this));
+        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));     
         parameters.add(new ParameterGroup(ADD_CONDITION, this, collection, 1, getUpdaterAndGetter()));
 
         addParameterDescriptions();

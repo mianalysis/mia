@@ -1,5 +1,3 @@
-// TODO: Could addRef an optional parameter to select the channel of the input image to use for measurement
-
 package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 
 import wbif.sjx.MIA.Module.Module;
@@ -34,7 +32,7 @@ public class ChildObjectCount extends Module {
     }
 
     public static String getFullName(String childObjectsName) {
-        return "COUNT // "+ childObjectsName;
+        return "COUNT // " + childObjectsName;
     }
 
     @Override
@@ -44,7 +42,7 @@ public class ChildObjectCount extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Calculates the number of children from a specific class.  Measurements are assigned to all objects in the input collection.  Unlike normal measurements, this value is evaluated at the time of use, so should always be up to date.";
     }
 
     @Override
@@ -59,10 +57,11 @@ public class ChildObjectCount extends Module {
         if (objects == null)
             return Status.PASS;
 
-        for (Obj obj : objects.values()) 
+        for (Obj obj : objects.values())
             obj.addMeasurement(new ChildCountMeasurement(measurementName, obj, childObjectsName));
-        
-        if (showOutput) objects.showMeasurements(this,modules);
+
+        if (showOutput)
+            objects.showMeasurements(this, modules);
 
         return Status.PASS;
 
@@ -74,6 +73,8 @@ public class ChildObjectCount extends Module {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -96,11 +97,12 @@ public class ChildObjectCount extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        
+
         String measurementName = getFullName(childObjectsName);
 
         ObjMeasurementRef ref = objectMeasurementRefs.getOrPut(measurementName);
         ref.setObjectsName(inputObjectsName);
+        ref.setDescription("Number of \""+childObjectsName+"\" child objects associated with this object.");
         returnedRefs.add(ref);
 
         return returnedRefs;
@@ -125,5 +127,15 @@ public class ChildObjectCount extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "For each object in this collection the number of associated child objects (from the collection specified by \""
+                        + CHILD_OBJECTS
+                        + "\") will be calculated.  The count is stored as a measurement associated with each input object.  The measurement is evaluated at the time of access (unlike \"normal\" measurements which have fixed values), so should always be correct.");
+
+        parameters.get(CHILD_OBJECTS).setDescription("Child objects to be counted.");
+
     }
 }
