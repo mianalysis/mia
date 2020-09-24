@@ -2,8 +2,10 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
 
 public class LostAndFound {
     private HashMap<String, String> lostModules = new HashMap<>();
@@ -15,16 +17,31 @@ public class LostAndFound {
         lostModules.put("ConditionalAnalysisTermination", "WorkflowHandling");
 
         // Populating hard-coded parameter reassignments
+        // CalculateNearestNeighbour
         HashMap<String, String> currentParameters = new HashMap<>();
-        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);        
-        String moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
-        lostParameters.put(moduleName, currentParameters);
-
-        currentParameters = new HashMap<>();
         currentParameters.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
-        moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
+        String moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
         
+        // ExpandShrinkObjects
+        currentParameters = new HashMap<>();
+        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);        
+        moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);
+
+        // RelateManyToOne
+        currentParameters = new HashMap<>();
+        currentParameters.put("Reference point", RelateManyToOne.REFERENCE_MODE);
+        moduleName = new RelateManyToOne(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);
+        
+        // ReplaceMeasurementValue
+        currentParameters = new HashMap<>();
+        currentParameters.put("Value to replace", ReplaceMeasurementValue.REFERENCE_VALUE);
+        moduleName = new ReplaceMeasurementValue(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);
+        
+
     }
 
     public String findModule(String oldName) {

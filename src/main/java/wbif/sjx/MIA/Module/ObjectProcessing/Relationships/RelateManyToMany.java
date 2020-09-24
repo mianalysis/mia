@@ -93,17 +93,16 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Relationships;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -147,6 +146,19 @@ public class RelateManyToMany extends Module {
 
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous settings";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+    public static final String OUTPUT_SEPARATOR = "Data output";
+    public static final String EXPORT_ALL_DISTANCES = "Export all distances";
+    public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
+    public static final String INCLUDE_INPUT_PARENT = "Include input object parent";
+    public static final String INPUT_PARENT = "Input object parent";
+    public static final String INCLUDE_NEIGHBOUR_PARENT = "Include neighbour object parent";
+    public static final String NEIGHBOUR_PARENT = "Neighbour object parent";
+    public static final String SAVE_NAME_MODE = "Save name mode";
+    public static final String SAVE_FILE_NAME = "File name";
+    public static final String APPEND_SERIES_MODE = "Append series mode";
+    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
+    public static final String SAVE_SUFFIX = "Add filename suffix";
 
     public interface ObjectSourceModes {
         String DIFFERENT_CLASSES = "Different classes";
