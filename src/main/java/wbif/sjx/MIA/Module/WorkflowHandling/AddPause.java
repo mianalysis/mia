@@ -8,6 +8,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -22,6 +23,7 @@ import javax.swing.*;
  * Created by sc13967 on 09/02/2018.
  */
 public class AddPause extends Module {
+    public static final String PAUSE_SEPARATOR = "Pause controls";
     public static final String SHOW_IMAGE = "Show image";
     public static final String INPUT_IMAGE = "Input image";
 
@@ -40,7 +42,7 @@ public class AddPause extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Pauses workflow execution and displays an option dialog to continue or quit.  Optionally, an image from the workspace can also be displayed.  An example usage would be during parameter optimisation, where subsequent elements of the analysis only want executing if the first steps are deemed successful (and this can't be automatically determined).";
     }
 
     @Override
@@ -87,8 +89,12 @@ public class AddPause extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(PAUSE_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
+
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -132,5 +138,12 @@ public class AddPause extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(SHOW_IMAGE).setDescription("When selected, an image from the workspace can be automatically displayed when this module executes.");
+
+        parameters.get(INPUT_IMAGE).setDescription("If \""+SHOW_IMAGE+"\" is selected, this image will be displayed when the module executes.");
+
     }
 }
