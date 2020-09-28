@@ -1,8 +1,9 @@
-package wbif.sjx.MIA.Module.Miscellaneous;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
@@ -26,13 +27,16 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.MISCELLANEOUS;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
     public String getDescription() {
-        return "This module allows for a specific metadata item to be used.  An example of this would be to add a label " +
-                "for generic (metadata-based) filename generation in the image loader.";
+        return "DEPRECATED: PLEASE USE \"" + new GlobalVariables(null).getName()
+                + "\" MODULE INSTEAD, WHICH ALLOWS CUSTOM VALUES TO BE ACCESSED USING THE V{[NAME]} NOTATION.  GLOBAL VARIABLES CAN ALSO BE STORED AS METADATA ITEMS FOR THE PURPOSE OF EXPORTING."
+        
+        + "<br><br>This module allows for a specific metadata item to be used.  An example of this would be to add a label " +
+                "for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word \"phase\" in them).";
     }
 
     @Override
@@ -51,6 +55,8 @@ public class AddCustomMetadataItem extends Module {
         parameters.add(new ParamSeparatorP(METADATA_SEPARATOR, this));
         parameters.add(new StringP(METADATA_NAME, this));
         parameters.add(new StringP(METADATA_VALUE, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -92,5 +98,12 @@ public class AddCustomMetadataItem extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(METADATA_NAME).setDescription("Name for metadata item to be assigned.");
+
+        parameters.get(METADATA_VALUE).setDescription("Value of metadata item.  This will be the same for all analysis runs performed at the same time since this value doesn't update during an analysis.");
+
     }
 }
