@@ -20,7 +20,6 @@ public class BasicControlPanel extends JScrollPane {
      *
      */
     private static final long serialVersionUID = 7620575044877199413L;
-    private static GUISeparator globalVariablesSeparator;
     private static GUISeparator loadSeparator;
     private JPanel panel;
 
@@ -31,7 +30,6 @@ public class BasicControlPanel extends JScrollPane {
         panel = new JPanel();
         setViewportView(panel);
 
-        globalVariablesSeparator = new GUISeparator(GUI.getModules());
         loadSeparator = new GUISeparator(GUI.getModules());
 
         // Initialising the scroll panel
@@ -50,7 +48,6 @@ public class BasicControlPanel extends JScrollPane {
         validate();
         repaint();
 
-        globalVariablesSeparator.setNickname("Global variables");
         loadSeparator.setNickname("File selection");
 
     }

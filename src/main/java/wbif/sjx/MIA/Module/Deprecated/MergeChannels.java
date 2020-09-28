@@ -38,7 +38,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 /**
  * Created by sc13967 on 22/02/2018.
  */
-public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Module {
+public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OVERWRITE_MODE = "Overwrite mode";
@@ -46,32 +46,24 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
     public MergeChannels(ModuleCollection modules) {
-        super("Merge channels",modules);
+        super("Merge channels", modules);
     }
-
 
     public interface OverwriteModes {
         String CREATE_NEW = "Create new image";
         String OVERWRITE_IMAGE = "Overwrite image";
 
-        String[] ALL = new String[]{CREATE_NEW,OVERWRITE_IMAGE};
+        String[] ALL = new String[] { CREATE_NEW, OVERWRITE_IMAGE };
 
     }
 
-
-//    public void forceSameType(Image inputImage1, Image inputImage2) {
-//        ImgPlus<T> img1 = inputImage1.getImgPlus();
-//        ImgPlus<T> img2 = inputImage2.getImgPlus();
-//
-//    }
-
     public Image combineImages(Image[] inputImages, String outputImageName) {
         // Processing first two images
-        Image outputImage = combineImages(inputImages[0],inputImages[1],outputImageName);
+        Image outputImage = combineImages(inputImages[0], inputImages[1], outputImageName);
 
         // Appending any additional images
-        for (int i=2;i<inputImages.length;i++) {
-            outputImage = combineImages(outputImage,inputImages[i],outputImageName);
+        for (int i = 2; i < inputImages.length; i++) {
+            outputImage = combineImages(outputImage, inputImages[i], outputImageName);
         }
 
         return outputImage;
@@ -117,8 +109,8 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
         dimsOut[3] = zDim1 == -1 ? 1 : img1.dimension(zDim1);
         dimsOut[4] = tDim1 == -1 ? 1 : img1.dimension(tDim1);
 
-        Arrays.fill(offsetOut1,0);
-        Arrays.fill(offsetOut2,0);
+        Arrays.fill(offsetOut1, 0);
+        Arrays.fill(offsetOut2, 0);
         offsetOut2[2] = dimsIn1[2];
 
         // Creating the composite image
@@ -128,109 +120,43 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
         // Assigning the relevant dimensions
         CalibratedAxis xAxis = xDim1 == -1 ? new IdentityAxis(Axes.X) : img1.axis(xDim1);
-        mergedImg.setAxis(xAxis,0);
+        mergedImg.setAxis(xAxis, 0);
         CalibratedAxis yAxis = yDim1 == -1 ? new IdentityAxis(Axes.Y) : img1.axis(yDim1);
-        mergedImg.setAxis(yAxis,1);
+        mergedImg.setAxis(yAxis, 1);
         CalibratedAxis cAxis = cDim1 == -1 ? new IdentityAxis(Axes.CHANNEL) : img1.axis(cDim1);
-        mergedImg.setAxis(cAxis,2);
+        mergedImg.setAxis(cAxis, 2);
         CalibratedAxis zAxis = zDim1 == -1 ? new IdentityAxis(Axes.Z) : img1.axis(zDim1);
-        mergedImg.setAxis(zAxis,3);
+        mergedImg.setAxis(zAxis, 3);
         CalibratedAxis tAxis = tDim1 == -1 ? new IdentityAxis(Axes.TIME) : img1.axis(tDim1);
-        mergedImg.setAxis(tAxis,4);
+        mergedImg.setAxis(tAxis, 4);
 
         Cursor<T> cursorIn = img1.cursor();
         Cursor<T> cursorOut = Views.offsetInterval(mergedImg, offsetOut1, dimsIn1).cursor();
-        while (cursorIn.hasNext()) cursorOut.next().set(cursorIn.next());
+        while (cursorIn.hasNext())
+            cursorOut.next().set(cursorIn.next());
 
         cursorIn = img2.cursor();
         cursorOut = Views.offsetInterval(mergedImg, offsetOut2, dimsIn2).cursor();
-        while (cursorIn.hasNext()) cursorOut.next().set(cursorIn.next());
+        while (cursorIn.hasNext())
+            cursorOut.next().set(cursorIn.next());
 
-//        ImagePlus ipl;
-//        if (mergedImg.firstElement().getClass().isInstance(new UnsignedByteType())) {
-//            ipl = ImageJFunctions.wrapUnsignedByte(mergedImg,outputImageName);
-//        } else if (mergedImg.firstElement().getClass().isInstance(new UnsignedShortType())) {
-//            ipl = ImageJFunctions.wrapUnsignedShort(mergedImg,outputImageName);
-//        } else {
-//            ipl = ImageJFunctions.wrapFloat(mergedImg,outputImageName);
-//        }
-
-        ImagePlus ipl = ImageJFunctions.wrap(mergedImg,outputImageName);
-        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
+        ImagePlus ipl = ImageJFunctions.wrap(mergedImg, outputImageName);
+        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(),
+                ipl.getNFrames(), "xyczt", "Composite"));
 
         // Updating the display range to help show all the colours
-        IntensityMinMax.run(ipl,true,0.001,0.001,IntensityMinMax.PROCESS_FAST);
+        IntensityMinMax.run(ipl, true, 0.001, 0.001, IntensityMinMax.PROCESS_FAST);
 
-        // Spatial calibration has to be reapplied, as it's lost in the translation between ImagePlus and ImgPlus
+        // Spatial calibration has to be reapplied, as it's lost in the translation
+        // between ImagePlus and ImgPlus
         ipl.setCalibration(inputImage1.getImagePlus().getCalibration());
 
-        ipl.setPosition(1,1,1);
+        ipl.setPosition(1, 1, 1);
         ipl.updateChannelAndDraw();
 
-        return new Image(outputImageName,ipl);
+        return new Image(outputImageName, ipl);
 
     }
-
-    // private Img<T> createComposite(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
-    //     long dimX = 0;
-    //     long dimY = 0;
-    //     long dimZ = 0;
-    //     T type = null;
-
-    //     Img<T> redImg = null;
-    //     if (inputImageRed != null) {
-    //         redImg = inputImageRed.getImgPlus();
-    //         dimX = redImg.dimension(0);
-    //         dimY = redImg.dimension(1);
-    //         dimZ = redImg.dimension(2);
-    //         type = redImg.firstElement();
-    //     }
-
-    //     Img<T> greenImg = null;
-    //     if (inputImageGreen != null) {
-    //         greenImg = inputImageGreen.getImgPlus();
-    //         dimX = greenImg.dimension(0);
-    //         dimY = greenImg.dimension(1);
-    //         dimZ = greenImg.dimension(2);
-    //         type = greenImg.firstElement();
-    //     }
-
-    //     Img<T> blueImg = null;
-    //     if (inputImageBlue != null) {
-    //         blueImg = inputImageBlue.getImgPlus();
-    //         dimX = blueImg.dimension(0);
-    //         dimY = blueImg.dimension(1);
-    //         dimZ = blueImg.dimension(2);
-    //         type = blueImg.firstElement();
-    //     }
-
-    //     // Creating the composite image
-    //     long[] dimensions = new long[]{dimX,dimY,3, dimZ,1};
-    //     CellImgFactory<T> factory = new CellImgFactory<T>(type);
-    //     Img<T> rgbImg = factory.create(dimensions);
-
-    //     // Adding values view
-    //     if (inputImageRed != null) {
-    //         Cursor<T> cursorSingle = redImg.cursor();
-    //         Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0,0}, new long[]{dimX,dimY,1, dimZ,1}).cursor();
-    //         while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
-    //     }
-
-    //     if (inputImageGreen != null) {
-    //         Cursor<T> cursorSingle = greenImg.cursor();
-    //         Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
-    //         while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
-    //     }
-
-    //     if (inputImageBlue != null) {
-    //         Cursor<T> cursorSingle = blueImg.cursor();
-    //         Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
-    //         while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
-    //     }
-
-    //     return rgbImg;
-
-    // }
 
     @Override
     public String getPackageName() {
@@ -239,9 +165,9 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public String getDescription() {
-        return "NOTE: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will " +
-                "be removed in a future release.\r\n" +
-                "Combines image stacks as different channels.  Output is automatically converted to a composite image.";
+        return "DEPRECATED: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will "
+                + "be removed in a future release.<br><br>"
+                + "Combines image stacks as different channels.  Output is automatically converted to a composite image.";
     }
 
     @Override
@@ -251,32 +177,30 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Creating a collection of images
-        LinkedHashMap<Integer,ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
         Image[] inputImages = new Image[collections.size()];
-        int i=0;
-        for (ParameterCollection collection:collections.values()) {
+        int i = 0;
+        for (ParameterCollection collection : collections.values()) {
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
         }
 
-        // Ensuring the two image types are the same.  If they're not, they're set to the highest common type
-//        forceSameType(inputImage1,inputImage2);
-
-        Image mergedImage = combineImages(inputImages,outputImageName);
+        Image mergedImage = combineImages(inputImages, outputImageName);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
-                Image outputImage = new Image(outputImageName,mergedImage.getImagePlus());
+                Image outputImage = new Image(outputImageName, mergedImage.getImagePlus());
                 workspace.addImage(outputImage);
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE:
-                inputImages[i-1].setImagePlus(mergedImage.getImagePlus());
+                inputImages[i - 1].setImagePlus(mergedImage.getImagePlus());
                 break;
 
         }
 
-        if (showOutput) mergedImage.showImage();
+        if (showOutput)
+            mergedImage.showImage();
 
         return Status.PASS;
 
@@ -285,12 +209,14 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     @Override
     protected void initialiseParameters() {
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
+        collection.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ParameterGroup(ADD_INPUT_IMAGE, this, collection, 2));
 
-        parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new IntegerP(IMAGE_INDEX_TO_OVERWRITE,this,1));
+        parameters.add(new ChoiceP(OVERWRITE_MODE, this, OverwriteModes.CREATE_NEW, OverwriteModes.ALL));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new IntegerP(IMAGE_INDEX_TO_OVERWRITE, this, 1));
+
+        addParameterDescriptions();
 
     }
 
@@ -342,5 +268,30 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        ParameterCollection collection = ((ParameterGroup) parameters.get(ADD_INPUT_IMAGE)).getTemplateParameters();
+
+        collection.get(INPUT_IMAGE).setDescription("Image from workspace to add to output merged image.");
+
+        parameters.get(ADD_INPUT_IMAGE).setDescription(
+                "Add another image to be included in output merged image.  All added images must have the same X,Y,Z and T dimensions.");
+
+        parameters.get(OVERWRITE_MODE).setDescription("Controls where the output image is stored:<br><ul>"
+
+                + "<li>\"" + OverwriteModes.CREATE_NEW
+                + "\" Stores the merged image as a new image in the workspace with the name specified by \""
+                + OUTPUT_IMAGE + "\".</li>"
+
+                + "<li>\"" + OverwriteModes.OVERWRITE_IMAGE + "\" Overwrite the image specified by the index \""
+                + IMAGE_INDEX_TO_OVERWRITE + "\" in the workspace with the merged image.");
+
+        parameters.get(OUTPUT_IMAGE)
+                .setDescription("Name for the output merged image to be stored in the workspace with.");
+
+        parameters.get(IMAGE_INDEX_TO_OVERWRITE).setDescription(
+                "If overwriting one of the input images, the image specified by this index (numbering starting at 1) will be overwritten.");
+
     }
 }
