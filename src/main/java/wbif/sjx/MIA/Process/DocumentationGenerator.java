@@ -31,6 +31,8 @@ import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationGenerator {
@@ -66,7 +68,8 @@ public class DocumentationGenerator {
 
     private static void generateGettingStartedPage() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted.html")));
+        String template = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted.html")));
         String gettingStartedContent = getGettingStartedContent();
         template = template.replace("${INSERT}", gettingStartedContent);
 
@@ -125,19 +128,18 @@ public class DocumentationGenerator {
 
     private static void generateMacroPages() throws IOException {
         ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
-        for (MacroOperation macro:macros) {
-        String template = new
-        String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
-        String macroList = getMacroSummary(macro);
-        template = template.replace("${INSERT}",macroList);
-        
-        new File("docs/html/macros/").mkdirs();
-        
-        FileWriter writer = new FileWriter("docs/html/"+getSimpleMacroPath(macro));
-        writer.write(template);
-        writer.flush();
-        writer.close();
-        
+        for (MacroOperation macro : macros) {
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
+            String macroList = getMacroSummary(macro);
+            template = template.replace("${INSERT}", macroList);
+
+            new File("docs/html/macros/").mkdirs();
+
+            FileWriter writer = new FileWriter("docs/html/" + getSimpleMacroPath(macro));
+            writer.write(template);
+            writer.flush();
+            writer.close();
+
         }
     }
 
@@ -170,7 +172,7 @@ public class DocumentationGenerator {
         return sb.toString();
 
     }
-    
+
     private static String getGettingStartedContent() {
         Parser parser = Parser.builder().build();
         HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -184,8 +186,9 @@ public class DocumentationGenerator {
             string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
-            
-            string = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md")));
+
+            string = new String(
+                    Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md")));
             sb.append(renderer.render(parser.parse(string)));
             sb.append("<br><br>");
 
@@ -218,6 +221,18 @@ public class DocumentationGenerator {
             sb.append("<li><b>").append(parameter.getName()).append("</b> (default = \"")
                     .append(parameter.getRawStringValue()).append("\") ").append(parameter.getDescription())
                     .append("</li><br>");
+
+            if (parameter instanceof ParameterGroup) {
+                for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values()) {
+                    if (collectionParam.getDescription().length() > 1) {
+                        sb.append("<li><b>").append(collectionParam.getName()).append("</b> (default = \"")
+                                .append(collectionParam.getRawStringValue()).append("\") ")
+                                .append(collectionParam.getDescription()).append("</li><br>");
+                    }
+
+                }
+            }
+
         }
         sb.append("</ul>");
 
@@ -244,7 +259,7 @@ public class DocumentationGenerator {
         String parameterList = macro.getArgumentsDescription();
         for (String parameter : parameterList.split(",")) {
             sb.append("<li>").append(parameter).append("</li><br>");
-        }        
+        }
         sb.append("</ul>");
 
         // Generate module list HTML document
@@ -374,7 +389,8 @@ public class DocumentationGenerator {
             sb.append("\n\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md"))));
             sb.append("\n\n");
-            sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md"))));
+            sb.append(new String(
+                    Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md"))));
             sb.append("\n\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md"))));
             sb.append("\n\n");
