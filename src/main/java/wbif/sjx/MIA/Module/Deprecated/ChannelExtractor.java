@@ -37,7 +37,7 @@ public class ChannelExtractor extends Module {
 
     @Override
     public String getDescription() {
-        return "DEPRECATED: PLEASE USE ExtractSubstack Module.<br><br> "
+        return "DEPRECATED: Please use ExtractSubstack module.<br><br> "
         + "Extracts a single channel from a stack and stores it as a new image in the workspace.";
 
     }

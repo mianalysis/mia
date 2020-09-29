@@ -721,7 +721,7 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public String getDescription() {
-        return "DEPRECATED - PLEASE USE INDIVIDUAL OVERLAY MODULES (e.g. \"" + new AddLabels(null).getName() + "\", \""
+        return "DEPRECATED - Please use individual overlay modules (e.g. \"" + new AddLabels(null).getName() + "\", \""
                 + new AddObjectOutline(null).getName() + "\", etc.).<br><br>"
 
                 + "Adds an overlay to the specified input image which can represent each specified input object.  This module can render many different types of overlay; options include: "

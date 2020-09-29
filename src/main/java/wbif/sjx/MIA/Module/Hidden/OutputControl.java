@@ -304,7 +304,7 @@ public class OutputControl extends Module {
                 + "\" parameter it's possible to redirect the output spreadsheet(s) to a specific location."
 
                 + "<br><br>Data can be collated into a single Excel spreadsheet, or exported as one spreadsheet per analysis run (job).  Exported spreadsheets are separated into multiple sheets:<br><ul>"
-                
+
                 + "<li>\"Parameters\" An overview of the analysis setup (path to workflow file, date run, computer operating system) along with a list of all modules and parameters, their values and states.  The information here should be sufficient to reconstruct the analysis workflow in the absence of the original workflow file.</li>"
 
                 + "<li>\"Log\" A list of any error messages presented to the user while the analysis was running.</li>"
@@ -544,36 +544,102 @@ public class OutputControl extends Module {
 
                         + "<li>\"" + ExportModes.NONE + "\" No results spreadsheets are exported.</li></ul>");
 
-        parameters.get(INDIVIDUAL_SAVE_LOCATION).setDescription("");
+        parameters.get(INDIVIDUAL_SAVE_LOCATION).setDescription("If \"" + EXPORT_MODE + "\" is set to \""
+                + ExportModes.INDIVIDUAL_FILES
+                + "\" this parameter controls where the individual results files are saved:<br><ul>"
 
-        parameters.get(GROUP_SAVE_LOCATION).setDescription("");
+                + "<li>\"" + IndividualSaveLocations.MIRRORED_DIRECTORY
+                + "\" The files are saved in a mirrored directory structure.  This structure has the same folder layout as all subfolders of the specified input folder.  The root location of the mirrored structure is specified by the \""
+                + MIRRORED_DIRECTORY_ROOT + "\" parameter.</li>"
 
-        parameters.get(MIRRORED_DIRECTORY_ROOT).setDescription("");
+                + "<li>\"" + IndividualSaveLocations.SAVE_WITH_INPUT
+                + "\" The files are saved in the same folder as the input file.  If a folder was selected as the input, the result files are saved directly inside that folder.</li>"
 
-        parameters.get(SAVE_NAME_MODE).setDescription("");
+                + "<li>\"" + IndividualSaveLocations.SPECIFIC_LOCATION
+                + "\" The files are all saved in a single folder specified by the \"" + SAVE_FILE_PATH
+                + "\" parameter.</li></ul>");
 
-        parameters.get(SAVE_FILE_NAME).setDescription("");
+        parameters.get(GROUP_SAVE_LOCATION).setDescription("If \"" + EXPORT_MODE + "\" is set to \""
+                + ExportModes.GROUP_BY_METADATA
+                + "\" this parameter controls where the grouped (by metadata) results files are saved:<br><ul>"
+
+                + "<li>\"" + GroupSaveLocations.SAVE_WITH_INPUT
+                + "\" The files are saved in the same folder as the input file.  If a folder was selected as the input, the result files are saved directly inside that folder.</li>"
+
+                + "<li>\"" + GroupSaveLocations.SPECIFIC_LOCATION
+                + "\" The files are all saved in a single folder specified by the \"" + SAVE_FILE_PATH
+                + "\" parameter.</li></ul>");
+
+        parameters.get(MIRRORED_DIRECTORY_ROOT).setDescription(
+                "If using a mirrored directory structure for the results files, this parameter specifies the output structure root.  Subfolders will be created within this root folder that have identical structure to the subfolders of the input folder.");
+
+                parameters.get(SAVE_FILE_PATH)
+                .setDescription("The path to the folder where results will be saved if using a specific folder path.");
+                        
+        parameters.get(SAVE_NAME_MODE).setDescription("Controls how the output results filename is generated:<br><ul>"
+
+                + "<li>\"" + SaveNameModes.MATCH_INPUT
+                + "\" Results files are stored with the same name as the input file/folder (depending on the \""
+                + EXPORT_MODE + "\" parameter).</li>"
+
+                + "<li>\"" + SaveNameModes.SPECIFIC_NAME
+                + "\" Results files are stored with a specific name, specified by \"" + SAVE_FILE_NAME
+                + "\".</li></ul>");
+
+        parameters.get(SAVE_FILE_NAME)
+                .setDescription("Name to save the results file with if saving results files with a specific name (\""
+                        + SAVE_NAME_MODE + "\" parameter).");
 
         parameters.get(METADATA_ITEM_FOR_GROUPING).setDescription("If \"" + EXPORT_MODE + "\" is set to \""
                 + ExportModes.GROUP_BY_METADATA
                 + "\", results will be grouped and saved by the value of this metadata item associated with each analysis run.  There will be one results spreadsheet for each unique value of this metadata item.");
 
-        parameters.get(CONTINUOUS_DATA_EXPORT).setDescription("When selected, the results spreadsheet(s) can be exported at intervals during a multi-analysis run.  They will be exported every N runs, where N is controlled by the \""+SAVE_EVERY_N+"\" parameter.  The spreadsheet(s) will still be stored when all analysis runs have completed.");
+        parameters.get(CONTINUOUS_DATA_EXPORT).setDescription(
+                "When selected, the results spreadsheet(s) can be exported at intervals during a multi-analysis run.  They will be exported every N runs, where N is controlled by the \""
+                        + SAVE_EVERY_N
+                        + "\" parameter.  The spreadsheet(s) will still be stored when all analysis runs have completed.");
 
-        parameters.get(SAVE_EVERY_N).setDescription(
-                "If \""+CONTINUOUS_DATA_EXPORT+"\" is enabled, the current version of the spreadsheet will be exported after every N analysis runs.  This means if the analysis fails or the computer crashes, results collected so far are not lost.");
+        parameters.get(SAVE_EVERY_N).setDescription("If \"" + CONTINUOUS_DATA_EXPORT
+                + "\" is enabled, the current version of the spreadsheet will be exported after every N analysis runs.  This means if the analysis fails or the computer crashes, results collected so far are not lost.");
 
-        parameters.get(APPEND_DATETIME_MODE).setDescription("");
+        parameters.get(APPEND_DATETIME_MODE).setDescription(
+                "Controls under what conditions the time and date will be appended on to the end of the results file filename.  This can be used to prevent accidental over-writing of results files from previous runs:<br><ul>"
 
-        parameters.get(EXPORT_SUMMARY).setDescription("");
+                        + "<li>\"" + AppendDateTimeModes.ALWAYS
+                        + "\" Always append the time and date on to the end of the filename.</li>"
 
-        parameters.get(SUMMARY_MODE).setDescription("");
+                        + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
+                        + "\" Only append the time and date if the results file already exists.</li>"
 
-        parameters.get(METADATA_ITEM_FOR_SUMMARY).setDescription("");
+                        + "<li>\"" + AppendDateTimeModes.NEVER
+                        + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
 
-        parameters.get(SHOW_OBJECT_COUNTS).setDescription("");
+        parameters.get(EXPORT_SUMMARY).setDescription(
+                "When selected, a summary sheet will be added to the results spreadsheet.  The summary sheet contains either (1) one row per input image file, (2) one row per timepoint per image file or (3) one row per metadata item.  The export mode is controlled by the \""
+                        + SUMMARY_MODE
+                        + "\" parameter.  This sheet is given the name \"SUMMARY\" and contains statistics for measurements (mean, min, max, standard deviation and sum), object counts and metadata items.");
 
-        parameters.get(EXPORT_INDIVIDUAL_OBJECTS).setDescription("");
+        parameters.get(SUMMARY_MODE).setDescription("Controls the form of the summary sheet (if \"" + EXPORT_SUMMARY
+                + "\" is selected):<br><ul>"
+
+                + "<li>\"" + SummaryModes.AVERAGE_PER_TIMEPOINT
+                + "\" Each timepoint of each input image file is summarised in a separate row.</li>"
+
+                + "<li>\"" + SummaryModes.GROUP_BY_METADATA
+                + "\" All files matching a specific metadata value are averaged and summarised in a separate row (i.e. one row per unique metadata item).</li>"
+
+                + "<li>\"" + SummaryModes.ONE_AVERAGE_PER_FILE
+                + "\" Each input image file is summarised in a separate row.</li></ul>");
+
+        parameters.get(METADATA_ITEM_FOR_SUMMARY)
+                .setDescription("The metadata item to group the rows of the summary sheet by if \"" + SUMMARY_MODE
+                        + "\" is set to \"" + SummaryModes.GROUP_BY_METADATA + "\".");
+
+        parameters.get(SHOW_OBJECT_COUNTS).setDescription(
+                "When selected, the \"Summary\" results sheet displays columns reporting the number of objects per object collection.");
+
+        parameters.get(EXPORT_INDIVIDUAL_OBJECTS).setDescription(
+                "When selected, individual results sheets will be created for each object collection.  In these sheets, each object in that collection is summarised per row.  The individual object sheets have names in the format \"OBJ_[NAME]\", where \"[NAME]\" is the name of that object collection.");
 
     }
 }

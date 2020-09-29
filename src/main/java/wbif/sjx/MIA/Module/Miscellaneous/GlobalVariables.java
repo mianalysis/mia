@@ -122,7 +122,7 @@ public class GlobalVariables extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Create fixed values which can be accessed by text entry parameters from all modules.  Use of global variables allows the same value to be used across multiple different modules without the need to explicitly type it.  Global variables are accessed with the notation \"V{[NAME]}\", where \"[NAME]\" is replaced with the name of the relevant variable.  Global variables can be used by any text or numeric parameter.";
     }
 
     @Override
