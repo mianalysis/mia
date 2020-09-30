@@ -45,7 +45,6 @@ public class RelateManyToOne extends Module {
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
     public static final String RELATE_MODE = "Method to relate objects";
     public static final String REFERENCE_MODE = "Reference mode";
-    public static final String TEST_CHILD_OBJECTS = "Child objects to test against";
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
@@ -61,10 +60,9 @@ public class RelateManyToOne extends Module {
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
         String PROXIMITY = "Proximity";
-        String PROXIMITY_TO_CHILDREN = "Proximity to children";
         String SPATIAL_OVERLAP = "Spatial overlap";
 
-        String[] ALL = new String[] { MATCHING_IDS, PROXIMITY, PROXIMITY_TO_CHILDREN, SPATIAL_OVERLAP };
+        String[] ALL = new String[] { MATCHING_IDS, PROXIMITY, SPATIAL_OVERLAP };
 
     }
 
@@ -78,11 +76,15 @@ public class RelateManyToOne extends Module {
     }
 
     public interface InsideOutsideModes {
-        String INSIDE_AND_OUTSIDE = "Inside and outside";
-        String INSIDE_ONLY = "Inside only (set outside to zero)";
-        String OUTSIDE_ONLY = "Outside only (set inside to zero)";
+        String INSIDE_AND_OUTSIDE = "Inside and outside (all distances)";
+        String INSIDE_ONLY = "Inside only (distances < 0)";
+        String INSIDE_AND_ON_SURFACE = "Inside and on surface (distances <= 0)";
+        String ON_SURFACE_ONLY = "On surface only (distances = 0)";
+        String OUTSIDE_AND_ON_SURFACE = "Outside and on surface (distances >= 0)";
+        String OUTSIDE_ONLY = "Outside only (distances > 0)";
 
-        String[] ALL = new String[] { INSIDE_AND_OUTSIDE, INSIDE_ONLY, OUTSIDE_ONLY };
+        String[] ALL = new String[] { INSIDE_AND_OUTSIDE, INSIDE_ONLY, INSIDE_AND_ON_SURFACE, ON_SURFACE_ONLY,
+                OUTSIDE_AND_ON_SURFACE, OUTSIDE_ONLY };
 
     }
 
@@ -220,7 +222,10 @@ public class RelateManyToOne extends Module {
                 }
 
                 // Applying the inside outside mode
-                minDist = applyInsideOutsidePolicy(minDist, insideOutsideMode);
+                if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
+                    minDist = 0;
+                    minLink = null;
+                }
 
                 // Adding measurements to the input object
                 if (minLink != null) {
@@ -306,9 +311,11 @@ public class RelateManyToOne extends Module {
                 if (minLink != null && calcFrac)
                     calculateFractionalDistance(childObject, minLink, minDist);
 
-                // Applying the inside outside mode (doesn't apply for centroid-centroid
-                // linking)
-                minDist = applyInsideOutsidePolicy(minDist, insideOutsideMode);
+                // Applying the inside outside mode
+                if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
+                    minDist = 0;
+                    minLink = null;
+                }
 
                 // Adding measurements to the input object
                 if (minLink != null) {
@@ -360,42 +367,6 @@ public class RelateManyToOne extends Module {
         String measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObject.getName());
         childObject.addMeasurement(new Measurement(measurementName, frac));
 
-    }
-
-    public void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects) {
-        String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
-        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
-
-        // Runs through each child object against each parent object
-        for (Obj parentObject : parentObjects.values()) {
-            // Getting children of the parent to be used as references
-            ObjCollection testChildren = parentObject.getChildren(testChildObjectsName);
-
-            // Running through all proximal children
-            for (Obj testChild : testChildren.values()) {
-                // Getting centroid of the current child
-                double xCentTest = testChild.getXMean(true);
-                double yCentTest = testChild.getYMean(true);
-                double zCentTest = testChild.getZMean(true, true);
-
-                // Running through all children to relate
-                for (Obj childObject : childObjects.values()) {
-                    double xDist = xCentTest - childObject.getXMean(true);
-                    double yDist = yCentTest - childObject.getYMean(true);
-                    double zDist = zCentTest - childObject.getZMean(true, true);
-
-                    // If the test object and the current object is less than the linking distance,
-                    // assign the relationship
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-                    if (limitLinking && dist <= linkingDistance) {
-                        childObject.addParent(parentObject);
-                        parentObject.addChild(childObject);
-
-                    }
-                }
-            }
-        }
     }
 
     public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
@@ -467,17 +438,40 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static double applyInsideOutsidePolicy(double minDist, String insideOutsideMode) {
+    /**
+     * Returns false if the inside/outside policy fails (i.e. the policy is "inside
+     * only" and minDist is positive)
+     */
+    public static boolean applyInsideOutsidePolicy(double minDist, String insideOutsideMode) {
         switch (insideOutsideMode) {
-            case InsideOutsideModes.INSIDE_AND_OUTSIDE:
-                return minDist;
             case InsideOutsideModes.INSIDE_ONLY:
-                return Math.min(0, minDist);
+                if (minDist >= 0)
+                    return false;
+                break;
+
+            case InsideOutsideModes.INSIDE_AND_ON_SURFACE:
+                if (minDist > 0)
+                    return false;
+                break;
+
+            case InsideOutsideModes.ON_SURFACE_ONLY:
+                if (minDist != 0)
+                    return false;
+                break;
+
+            case InsideOutsideModes.OUTSIDE_AND_ON_SURFACE:
+                if (minDist < 0)
+                    return false;
+                break;
+
             case InsideOutsideModes.OUTSIDE_ONLY:
-                return Math.max(0, minDist);
+                if (minDist <= 0)
+                    return false;
+                break;
+
         }
 
-        return 0;
+        return true;
 
     }
 
@@ -562,10 +556,6 @@ public class RelateManyToOne extends Module {
                 }
                 break;
 
-            case RelateModes.PROXIMITY_TO_CHILDREN:
-                proximityToChildren(parentObjects, childObjects);
-                break;
-
             case RelateModes.SPATIAL_OVERLAP:
                 spatialOverlap(parentObjects, childObjects, minOverlap, centroidOverlap, linkInSameFrame);
                 break;
@@ -594,7 +584,6 @@ public class RelateManyToOne extends Module {
                 new ChoiceP(RELATE_MODE, this, RelateModes.MATCHING_IDS, RelateModes.ALL));
         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID,
         ReferenceModes.ALL));
-        parameters.add(new ChildObjectsP(TEST_CHILD_OBJECTS, this));
         parameters.add(new BooleanP(LIMIT_LINKING_BY_DISTANCE, this, false));
         parameters.add(new DoubleP(LINKING_DISTANCE, this, 1.0));
         parameters.add(new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE,
@@ -635,23 +624,6 @@ public class RelateManyToOne extends Module {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
                 }
-
-                break;
-
-            case RelateModes.PROXIMITY_TO_CHILDREN:
-                returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
-                returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
-                    returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
-                }
-
-                if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)
-                        || referenceMode.equals(ReferenceModes.SURFACE)) {
-                    returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
-                }
-
-                String parentObjectNames = parameters.getValue(PARENT_OBJECTS);
-                ((ChildObjectsP) parameters.getParameter(TEST_CHILD_OBJECTS)).setParentObjectsName(parentObjectNames);
 
                 break;
 
