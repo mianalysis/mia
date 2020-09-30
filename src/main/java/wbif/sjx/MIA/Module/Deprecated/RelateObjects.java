@@ -17,7 +17,6 @@ import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
@@ -458,7 +457,7 @@ public class RelateObjects extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object.  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
     }
 
     @Override
@@ -754,18 +753,18 @@ public class RelateObjects extends Module {
         parameters.get(LINKING_DISTANCE).setDescription("If \"" + LIMIT_LINKING_BY_DISTANCE
                 + "\" is selected, this is the maximum permitted distance between objects for them to be assigned a relationship.");
 
-        // parameters.get(INSIDE_OUTSIDE_MODE).setDescription("");
+        parameters.get(INSIDE_OUTSIDE_MODE).setDescription("When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Options are: " + String.join(", ", InsideOutsideModes.ALL)+".");
 
         parameters.get(MINIMUM_PERCENTAGE_OVERLAP)
                 .setDescription("Percentage of total child volume overlapping with the parent object.");
 
-        // parameters.get(REQUIRE_CENTROID_OVERLAP).setDescription();
+        parameters.get(REQUIRE_CENTROID_OVERLAP).setDescription("When selected, child objects are only related to a parent if their centroid is inside the parent object (i.e. the child object centroid is coincident with a parent object coordinate).");
 
-        // parameters.get(LINK_IN_SAME_FRAME).setDescription();
+        parameters.get(LINK_IN_SAME_FRAME).setDescription("When selected, child and parent objects must be in the same time frame for them to be linked.");
 
-        // parameters.get(MERGE_RELATED_OBJECTS).setDescription();
+        parameters.get(MERGE_RELATED_OBJECTS).setDescription("When selected, any merged children and parents will be removed from their respective object collections, combined into a single object (one merged object per parent and associated children) and stored in a new object collection.");
 
-        // parameters.get(RELATED_OBJECTS).setDescription();
+        parameters.get(RELATED_OBJECTS).setDescription("If \""+MERGE_RELATED_OBJECTS+"\" is selected, this is the name of the output related objects collection that will be stored in the workspace.");
 
     }
 }
