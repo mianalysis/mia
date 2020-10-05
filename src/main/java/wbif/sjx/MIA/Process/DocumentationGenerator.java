@@ -31,13 +31,15 @@ import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.MacroOperation;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationGenerator {
     public static void main(String[] args) {
         try {
+            // Clearing existing HTML files
+            deleteFolders(new File("docs/html/"));
+
             // Creating README.md
             generateReadmeMarkdown();
 
@@ -51,6 +53,18 @@ public class DocumentationGenerator {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void deleteFolders(File root) {
+        if (root.isFile()) {
+            root.delete();
+
+        } else if (root.isDirectory()) {
+            for (File file : root.listFiles())
+                deleteFolders(file);
+
+            root.delete();
         }
     }
 

@@ -32,8 +32,8 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     public String getDescription() {
-        return "DEPRECATED: PLEASE USE \"" + new GlobalVariables(null).getName()
-                + "\" MODULE INSTEAD, WHICH ALLOWS CUSTOM VALUES TO BE ACCESSED USING THE V{[NAME]} NOTATION.  GLOBAL VARIABLES CAN ALSO BE STORED AS METADATA ITEMS FOR THE PURPOSE OF EXPORTING."
+        return "DEPRECATED: Please use \"" + new GlobalVariables(null).getName()
+                + "\" module instead, which allows custom values to be accessed using the V{[NAME]} notation.  Global variables can also be stored as metadata items for the purpose of exporting."
         
         + "<br><br>This module allows for a specific metadata item to be used.  An example of this would be to add a label " +
                 "for generic (metadata-based) filename generation in the image loader (i.e. all images to be loaded must have the word \"phase\" in them).";

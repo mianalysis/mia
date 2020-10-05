@@ -7,6 +7,7 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterByMeasurement;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutMeasurement;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Object.*;
@@ -402,7 +403,9 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     public String getDescription() {
-        return "Filter an object collection based on a variety of properties.  Objects that satisfy the relevant condition can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).";
+        return "DEPRECATED:  Please use individual filter modules instead (e.g. \""+new FilterByMeasurement(null).getName()+"\").<br><br>"
+        
+        +"Filter an object collection based on a variety of properties.  Objects that satisfy the relevant condition can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).";
     }
 
     @Override

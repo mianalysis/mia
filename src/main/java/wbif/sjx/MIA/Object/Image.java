@@ -123,24 +123,36 @@ public class Image <T extends RealType<T> & NativeType<T>> {
                             int imageID = (int) ipr.getPixelValue(x, y);
 
                             // If assigning a single object ID, this is the same value for all objects
-                            if (singleObject && imageID != 0) imageID = 1;
+                            if (singleObject && imageID != 0)
+                                imageID = 1;
 
                             if (imageID != 0) {
                                 // If not using optimised type, each link needs to be added here
-                                if (!links.containsKey(imageID)) links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
+                                if (!links.containsKey(imageID))
+                                    links.put(imageID, new IDLink(outputObjects.getAndIncrementID(), volumeType));
 
                                 IDLink link = links.get(imageID);
                                 int outID = link.getID();
                                 VolumeType outType = link.getVolumeType();
                                 int finalT = t;
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outType, outputObjectsName, outID, outputObjects.getSpatialCalibration(),outputObjects.getNFrames()).setT(finalT));
+                                outputObjects.computeIfAbsent(outID,
+                                        k -> new Obj(outType, outputObjectsName, outID,
+                                                outputObjects.getSpatialCalibration(), outputObjects.getNFrames())
+                                                        .setT(finalT));
                                 try {
                                     outputObjects.get(outID).add(x, y, z);
-                                } catch (PointOutOfRangeException e) {}
+                                } catch (PointOutOfRangeException e) {
+                                }
                             }
                         }
                     }
+
+                    // Finalising the object store for this slice (this only does something for
+                    // QuadTrees)
+                    for (Obj obj : outputObjects.values())
+                        obj.finalise(z);
+
                 }
             }
         }

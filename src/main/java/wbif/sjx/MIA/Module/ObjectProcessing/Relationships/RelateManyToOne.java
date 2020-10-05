@@ -45,7 +45,6 @@ public class RelateManyToOne extends Module {
     public static final String RELATIONSHIP_SEPARATOR = "Relationship settings";
     public static final String RELATE_MODE = "Method to relate objects";
     public static final String REFERENCE_MODE = "Reference mode";
-    public static final String TEST_CHILD_OBJECTS = "Child objects to test against";
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public static final String LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
@@ -57,14 +56,12 @@ public class RelateManyToOne extends Module {
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
-    
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
         String PROXIMITY = "Proximity";
-        String PROXIMITY_TO_CHILDREN = "Proximity to children";
         String SPATIAL_OVERLAP = "Spatial overlap";
 
-        String[] ALL = new String[] { MATCHING_IDS, PROXIMITY, PROXIMITY_TO_CHILDREN, SPATIAL_OVERLAP };
+        String[] ALL = new String[] { MATCHING_IDS, PROXIMITY, SPATIAL_OVERLAP };
 
     }
 
@@ -78,11 +75,15 @@ public class RelateManyToOne extends Module {
     }
 
     public interface InsideOutsideModes {
-        String INSIDE_AND_OUTSIDE = "Inside and outside";
-        String INSIDE_ONLY = "Inside only (set outside to zero)";
-        String OUTSIDE_ONLY = "Outside only (set inside to zero)";
+        String INSIDE_AND_OUTSIDE = "Inside and outside (all distances)";
+        String INSIDE_ONLY = "Inside only (distances < 0)";
+        String INSIDE_AND_ON_SURFACE = "Inside and on surface (distances <= 0)";
+        String ON_SURFACE_ONLY = "On surface only (distances = 0)";
+        String OUTSIDE_AND_ON_SURFACE = "Outside and on surface (distances >= 0)";
+        String OUTSIDE_ONLY = "Outside only (distances > 0)";
 
-        String[] ALL = new String[] { INSIDE_AND_OUTSIDE, INSIDE_ONLY, OUTSIDE_ONLY };
+        String[] ALL = new String[] { INSIDE_AND_OUTSIDE, INSIDE_ONLY, INSIDE_AND_ON_SURFACE, ON_SURFACE_ONLY,
+                OUTSIDE_AND_ON_SURFACE, OUTSIDE_ONLY };
 
     }
 
@@ -220,7 +221,10 @@ public class RelateManyToOne extends Module {
                 }
 
                 // Applying the inside outside mode
-                minDist = applyInsideOutsidePolicy(minDist, insideOutsideMode);
+                if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
+                    minDist = 0;
+                    minLink = null;
+                }
 
                 // Adding measurements to the input object
                 if (minLink != null) {
@@ -233,8 +237,7 @@ public class RelateManyToOne extends Module {
                     childObject.addMeasurement(new Measurement(measurementNameCal, Double.NaN));
                 }
                 writeStatus("Processed " + count + " of " + numberOfChildren + " ("
-                + Math.floorDiv(100 * count.getAndIncrement(), numberOfChildren) + "%)",
-                        moduleName);
+                        + Math.floorDiv(100 * count.getAndIncrement(), numberOfChildren) + "%)", moduleName);
             };
             pool.submit(task);
         }
@@ -264,7 +267,8 @@ public class RelateManyToOne extends Module {
             if (!parent.hasCalculatedSurface()) {
                 Runnable task = () -> {
                     parent.getCoordinateSet().calculateSurface(parent.is2D());
-                    writeStatus("Initialised " + count.getAndIncrement() + " of " + numberOfParents + " objects", moduleName);
+                    writeStatus("Initialised " + count.getAndIncrement() + " of " + numberOfParents + " objects",
+                            moduleName);
                 };
                 pool.submit(task);
             }
@@ -306,9 +310,11 @@ public class RelateManyToOne extends Module {
                 if (minLink != null && calcFrac)
                     calculateFractionalDistance(childObject, minLink, minDist);
 
-                // Applying the inside outside mode (doesn't apply for centroid-centroid
-                // linking)
-                minDist = applyInsideOutsidePolicy(minDist, insideOutsideMode);
+                // Applying the inside outside mode
+                if (!applyInsideOutsidePolicy(minDist, insideOutsideMode)) {
+                    minDist = 0;
+                    minLink = null;
+                }
 
                 // Adding measurements to the input object
                 if (minLink != null) {
@@ -360,42 +366,6 @@ public class RelateManyToOne extends Module {
         String measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObject.getName());
         childObject.addMeasurement(new Measurement(measurementName, frac));
 
-    }
-
-    public void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects) {
-        String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
-        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
-        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
-
-        // Runs through each child object against each parent object
-        for (Obj parentObject : parentObjects.values()) {
-            // Getting children of the parent to be used as references
-            ObjCollection testChildren = parentObject.getChildren(testChildObjectsName);
-
-            // Running through all proximal children
-            for (Obj testChild : testChildren.values()) {
-                // Getting centroid of the current child
-                double xCentTest = testChild.getXMean(true);
-                double yCentTest = testChild.getYMean(true);
-                double zCentTest = testChild.getZMean(true, true);
-
-                // Running through all children to relate
-                for (Obj childObject : childObjects.values()) {
-                    double xDist = xCentTest - childObject.getXMean(true);
-                    double yDist = yCentTest - childObject.getYMean(true);
-                    double zDist = zCentTest - childObject.getZMean(true, true);
-
-                    // If the test object and the current object is less than the linking distance,
-                    // assign the relationship
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-                    if (limitLinking && dist <= linkingDistance) {
-                        childObject.addParent(parentObject);
-                        parentObject.addChild(childObject);
-
-                    }
-                }
-            }
-        }
     }
 
     public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
@@ -467,17 +437,40 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    public static double applyInsideOutsidePolicy(double minDist, String insideOutsideMode) {
+    /**
+     * Returns false if the inside/outside policy fails (i.e. the policy is "inside
+     * only" and minDist is positive)
+     */
+    public static boolean applyInsideOutsidePolicy(double minDist, String insideOutsideMode) {
         switch (insideOutsideMode) {
-            case InsideOutsideModes.INSIDE_AND_OUTSIDE:
-                return minDist;
             case InsideOutsideModes.INSIDE_ONLY:
-                return Math.min(0, minDist);
+                if (minDist >= 0)
+                    return false;
+                break;
+
+            case InsideOutsideModes.INSIDE_AND_ON_SURFACE:
+                if (minDist > 0)
+                    return false;
+                break;
+
+            case InsideOutsideModes.ON_SURFACE_ONLY:
+                if (minDist != 0)
+                    return false;
+                break;
+
+            case InsideOutsideModes.OUTSIDE_AND_ON_SURFACE:
+                if (minDist < 0)
+                    return false;
+                break;
+
             case InsideOutsideModes.OUTSIDE_ONLY:
-                return Math.max(0, minDist);
+                if (minDist <= 0)
+                    return false;
+                break;
+
         }
 
-        return 0;
+        return true;
 
     }
 
@@ -505,6 +498,11 @@ public class RelateManyToOne extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object.  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
     }
 
     @Override
@@ -562,10 +560,6 @@ public class RelateManyToOne extends Module {
                 }
                 break;
 
-            case RelateModes.PROXIMITY_TO_CHILDREN:
-                proximityToChildren(parentObjects, childObjects);
-                break;
-
             case RelateModes.SPATIAL_OVERLAP:
                 spatialOverlap(parentObjects, childObjects, minOverlap, centroidOverlap, linkInSameFrame);
                 break;
@@ -590,23 +584,21 @@ public class RelateManyToOne extends Module {
         parameters.add(new InputObjectsP(CHILD_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
-        parameters.add(
-                new ChoiceP(RELATE_MODE, this, RelateModes.MATCHING_IDS, RelateModes.ALL));
-        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID,
-        ReferenceModes.ALL));
-        parameters.add(new ChildObjectsP(TEST_CHILD_OBJECTS, this));
+        parameters.add(new ChoiceP(RELATE_MODE, this, RelateModes.MATCHING_IDS, RelateModes.ALL));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID, ReferenceModes.ALL));
         parameters.add(new BooleanP(LIMIT_LINKING_BY_DISTANCE, this, false));
         parameters.add(new DoubleP(LINKING_DISTANCE, this, 1.0));
-        parameters.add(new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE,
-                InsideOutsideModes.ALL));
-        parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP, this, 0d,
-                "Percentage of total child volume overlapping with the parent object."));
+        parameters.add(
+                new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE, InsideOutsideModes.ALL));
+        parameters.add(new DoubleP(MINIMUM_PERCENTAGE_OVERLAP, this, 0d));
         parameters.add(new BooleanP(REQUIRE_CENTROID_OVERLAP, this, true));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
         parameters.add(new BooleanP(CALCULATE_FRACTIONAL_DISTANCE, this, true));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -635,23 +627,6 @@ public class RelateManyToOne extends Module {
                     returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
                     returnedParameters.add(parameters.getParameter(CALCULATE_FRACTIONAL_DISTANCE));
                 }
-
-                break;
-
-            case RelateModes.PROXIMITY_TO_CHILDREN:
-                returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
-                returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
-                if ((boolean) parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
-                    returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
-                }
-
-                if (referenceMode.equals(ReferenceModes.CENTROID_TO_SURFACE)
-                        || referenceMode.equals(ReferenceModes.SURFACE)) {
-                    returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
-                }
-
-                String parentObjectNames = parameters.getValue(PARENT_OBJECTS);
-                ((ChildObjectsP) parameters.getParameter(TEST_CHILD_OBJECTS)).setParentObjectsName(parentObjectNames);
 
                 break;
 
@@ -823,8 +798,65 @@ public class RelateManyToOne extends Module {
         return true;
     }
 
-    @Override
-    public String getDescription() {
-        return "";
+    void addParameterDescriptions() {
+        parameters.get(PARENT_OBJECTS).setDescription("Input reference objects.  The \"" + CHILD_OBJECTS
+                + "\" will be related to these, with children assigned one parent based on, for example, closest proximity or maximum spatial overlap.  There's no guarantee of each parent object being assigned at least one child.");
+
+        parameters.get(CHILD_OBJECTS).setDescription(
+                "Objects to relate to the parents.  Each child will be assigned at most one parent.  There's no guarantee a child will be assigned any parent, especially when using options such as \""
+                        + LIMIT_LINKING_BY_DISTANCE + "\".");
+
+        parameters.get(RELATE_MODE)
+                .setDescription("The metric by which parent and child objects will be related:<br><ul>"
+
+                        + "<li>\"" + RelateModes.MATCHING_IDS
+                        + "\" Parents and children will be related if they have the same ID number.  Since object ID numbers are unique within an object collection there will always be no more than one parent to a child.</li>"
+
+                        + "<li>\"" + RelateModes.PROXIMITY
+                        + "\" Children are related to the spatially-closest object from the parent collection.  The exact distances used (e.g. centroid to centroid or surface to surface) are controlled by the \""
+                        + REFERENCE_MODE + "\" parameter.</li>"
+
+                        + "<li>\"" + RelateModes.SPATIAL_OVERLAP
+                        + "\" Children are related to the object from the parent collection they have the greatest spatial overlap with.  Spatial overlap is defined as the number of coincident object coordinates.</li></ul>");
+
+        parameters.get(REFERENCE_MODE)
+                .setDescription("Controls the method used for determining proximity-based relationships:<br><ul>"
+
+                        + "<li>\"" + ReferenceModes.CENTROID
+                        + "\" Distances are from child object centroids to parent object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+
+                        + "<li>\"" + ReferenceModes.CENTROID_TO_SURFACE
+                        + "\" Distances are from child object centroids to the closest point on parent object surfaces.  These distances increase in magnitude the further from the parent surface a child centroid is; however, they are assigned a positive value if the child is outside the parent and a negative value if the child is inside the parent.  For example, a centroid 5px outside the object will be simply \"5px\", whereas a centroid 5px from the surface, but contained within the parent object will be recorded as \"-5px\".</li>"
+
+                        + "<li>\"" + ReferenceModes.SURFACE
+                        + "\" Distances are between the closest points on the child and parent surfaces.  These distances increase in magnitude the greater the minimum parent-child surface distance is; however, they are assigned a positive value if the closest child surface point is outside the parent and a negative value if the closest child surface point is inside the parent.  For example, a closest child surface point 5px outside the object will be simply \"5px\", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as \"-5px\".  Note: Any instances where the child and parent surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
+
+        parameters.get(LIMIT_LINKING_BY_DISTANCE).setDescription(
+                "When selected, objects will only be related if the distance between them (as calculated by the \""
+                        + REFERENCE_MODE + "\" metric) is less than or equal to the distance defined by \""
+                        + LINKING_DISTANCE + "\".");
+
+        parameters.get(LINKING_DISTANCE).setDescription("If \"" + LIMIT_LINKING_BY_DISTANCE
+                + "\" is selected, this is the maximum permitted distance between objects for them to be assigned a relationship.");
+
+        parameters.get(INSIDE_OUTSIDE_MODE).setDescription(
+                "When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Options are: "
+                        + String.join(", ", InsideOutsideModes.ALL) + ".");
+
+        parameters.get(MINIMUM_PERCENTAGE_OVERLAP)
+                .setDescription("Percentage of total child volume overlapping with the parent object.");
+
+        parameters.get(REQUIRE_CENTROID_OVERLAP).setDescription(
+                "When selected, child objects are only related to a parent if their centroid is inside the parent object (i.e. the child object centroid is coincident with a parent object coordinate).");
+
+        parameters.get(LINK_IN_SAME_FRAME).setDescription(
+                "When selected, child and parent objects must be in the same time frame for them to be linked.");
+
+        parameters.get(CALCULATE_FRACTIONAL_DISTANCE).setDescription(
+                "When selected, the fractional distance of the child object between the centre and surface of the parent is calculated.  This option is only available when relating children to the parent surface.  The calculation can be computationally intensive when dealing with many objects.");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription(
+                "Process multiple object relationships simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

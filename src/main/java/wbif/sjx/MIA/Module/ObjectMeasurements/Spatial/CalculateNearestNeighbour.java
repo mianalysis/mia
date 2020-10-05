@@ -477,8 +477,9 @@ public class CalculateNearestNeighbour extends Module {
             // Applying inside/outside policy
             for (LinkedHashMap<Obj,Double> collection:distances.values()) {
                 for (Obj obj : collection.keySet()) {
-                    double dist = RelateManyToOne.applyInsideOutsidePolicy(collection.get(obj), insideOutsideMode);
-                    collection.put(obj,dist);
+                    // Applying the inside outside mode
+                    if (!RelateManyToOne.applyInsideOutsidePolicy(collection.get(obj), insideOutsideMode))
+                        collection.put(obj, 0d);
                 }
             }            
 

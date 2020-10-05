@@ -126,7 +126,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
@@ -214,7 +214,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,true);
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,20.0);
 
@@ -303,7 +303,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
@@ -359,7 +359,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.SURFACE);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
@@ -395,7 +395,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.SURFACE);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
@@ -454,7 +454,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,true);
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,5.0);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
@@ -518,7 +518,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
@@ -566,7 +566,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_ONLY);
 
@@ -614,7 +614,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.OUTSIDE_ONLY);
 
@@ -662,7 +662,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID_TO_SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
@@ -721,7 +721,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID_TO_SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,true);
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,5.0);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
@@ -792,7 +792,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID_TO_SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
@@ -840,7 +840,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID_TO_SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_ONLY);
 
@@ -888,7 +888,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
-        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_MODE,RelateObjects.ReferenceModes.CENTROID_TO_SURFACE);
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.OUTSIDE_ONLY);
 
