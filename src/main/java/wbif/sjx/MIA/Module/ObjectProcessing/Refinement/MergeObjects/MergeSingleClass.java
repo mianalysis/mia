@@ -33,6 +33,11 @@ public class MergeSingleClass extends Module {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
     }
 
+    @Override
+    public String getDescription() {
+        return "Combines all objects at a single timepoint from a specific object collection into a single object.  Due to the fact objects are stored in 3D, there are still separate objects for each timepoint.";
+    }
+
     public static ObjCollection mergeSingleClass(ObjCollection inputObjects, String outputObjectsName) {
         // Creating a HashMap to store each timepoint object instance
         HashMap<Integer,Obj> objects = new HashMap<>();
@@ -43,7 +48,9 @@ public class MergeSingleClass extends Module {
         for (Obj inputObject:inputObjects.values()) {
             // Getting the current timepoint instance
             int t = inputObject.getT();
-            objects.putIfAbsent(t, outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
+
+            // If it doesn't already exist, creating a new object for this timepoint.  The ID of this object is the timepoint index (numbering starting at 1).
+            objects.putIfAbsent((t+1), outputObjects.createAndAddNewObject(inputObject.getVolumeType()).setT(t));
 
             // Adding coordinates to this object
             Obj outputObject = objects.get(t);
@@ -79,7 +86,9 @@ public class MergeSingleClass extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        
+        addParameterDescriptions();
 
     }
 
@@ -118,8 +127,10 @@ public class MergeSingleClass extends Module {
         return true;
     }
 
-    @Override
-    public String getDescription() {
-        return "";
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input object collection that will have all objects from each timepoint merged into a single object.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output merged objects (one per input timepoint).  These objects will be stored in the workspace and accessible via this name.");
+
     }
 }
