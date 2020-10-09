@@ -350,7 +350,7 @@ public class GlobalAutoThreshold extends Module {
                 "Name of the output image created during the thresholding process.  This image will be added to the workspace.");
 
         parameters.get(ALGORITHM).setDescription(
-                "Global thresholding algorithm to use.  Options are: " + String.join(", ", Algorithms.ALL) + ".");
+                "Global thresholding algorithm to use.  Choices are: " + String.join(", ", Algorithms.ALL) + ".");
 
         parameters.get(THRESHOLD_MULTIPLIER).setDescription(
                 "Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a \""

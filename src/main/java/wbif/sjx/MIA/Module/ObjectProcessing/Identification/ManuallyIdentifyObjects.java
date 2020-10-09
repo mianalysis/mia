@@ -643,7 +643,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
 
         parameters.get(SELECTOR_TYPE).setDescription(
-                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Options are: "+String.join(", ", SelectorTypes.ALL)+".");
+                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: "+String.join(", ", SelectorTypes.ALL)+".");
 
         parameters.get(MESSAGE_ON_IMAGE).setDescription("Message to display in title of image.");
 

@@ -277,7 +277,7 @@ public class SetLookupTable extends Module {
             
             parameters.get(CHANNEL).setDescription("When in \""+ChannelModes.SPECIFIC_CHANNELS+"\" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.");
             
-            parameters.get(LOOKUP_TABLE).setDescription("Look-up table to apply to the relevant channels.  Options are: "+String.join(", ", LookupTables.ALL)+".");
+            parameters.get(LOOKUP_TABLE).setDescription("Look-up table to apply to the relevant channels.  Choices are: "+String.join(", ", LookupTables.ALL)+".");
             
             parameters.get(DISPLAY_MODE)
             .setDescription("Controls how the minimum value in the look-up table should be rendered:<br>"

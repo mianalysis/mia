@@ -840,7 +840,7 @@ public class RelateManyToOne extends Module {
                 + "\" is selected, this is the maximum permitted distance between objects for them to be assigned a relationship.");
 
         parameters.get(INSIDE_OUTSIDE_MODE).setDescription(
-                "When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Options are: "
+                "When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: "
                         + String.join(", ", InsideOutsideModes.ALL) + ".");
 
         parameters.get(MINIMUM_PERCENTAGE_OVERLAP)

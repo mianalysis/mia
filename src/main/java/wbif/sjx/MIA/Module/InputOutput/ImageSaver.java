@@ -502,18 +502,27 @@ public class ImageSaver extends Module {
 
         parameters.get(SAVE_FILE_NAME).setDescription("Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.");
 
-        parameters.get(APPEND_SERIES_MODE).setDescription("Add the series number as a suffix to each filename.  Series numbers are prepended by \"S\".");
+        parameters.get(APPEND_SERIES_MODE).setDescription("Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: " +String.join(", ", AppendSeriesModes.ALL) + ".");
 
-        parameters.get(APPEND_DATETIME_MODE).setDescription("Add a timestamp suffix to each filename.  Timestamps are in the format \"yyyy-MM-dd_HH-mm-ss\".");
+        parameters.get(APPEND_DATETIME_MODE).setDescription("Controls under what conditions the time and date will be appended on to the end of the image filename.  This can be used to prevent accidental over-writing of images from previous runs:<br><ul>"
+
+                + "<li>\"" + AppendDateTimeModes.ALWAYS
+                + "\" Always append the time and date on to the end of the filename.</li>"
+
+                + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
+                + "\" Only append the time and date if the results file already exists.</li>"
+
+                + "<li>\"" + AppendDateTimeModes.NEVER
+                + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
 
         parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
 
         parameters.get(FILE_FORMAT).setDescription("The format the output image will be saved as:<br><ul>"
-        
+
                 + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"AVI Writer\" (https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java).  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
-        
+
                 + "<li>\"" + FileFormats.TIF + "\" Standard multidimensional (multi-page) TIF image saving.</li>"
-                
+
                 +"<li>\""+FileFormats.ZIP+"\" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul>");
 
         parameters.get(CHANNEL_MODE).setDescription("Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode.");
@@ -521,13 +530,13 @@ public class ImageSaver extends Module {
         parameters.get(SAVE_AS_RGB).setDescription("Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.");
 
         parameters.get(COMPRESSION_MODE).setDescription("Compression mode used when saving AVI videos (\""+FILE_FORMAT+"\" parameter):<br><ul>"
-        
+
                 + "<li>\"" + CompressionModes.JPEG + "\" Lossy video compression with quality specified by \"" + QUALITY
                 + "\" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li>"
-            
+
                 + "<li>\"" + CompressionModes.NONE
                 + "\" Frames are stored in their raw format (uncompressed).  This gives the highest quality, but also the largest file size.</li>"
-                
+
                 + "<li>\"" + CompressionModes.PNG + "\" PNG video compression.</li></ul>");
 
         parameters.get(QUALITY).setDescription("Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's \"File > Save As...\" menu uses a quality of 90.");

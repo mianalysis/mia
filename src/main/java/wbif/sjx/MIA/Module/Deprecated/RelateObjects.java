@@ -753,7 +753,7 @@ public class RelateObjects extends Module {
         parameters.get(LINKING_DISTANCE).setDescription("If \"" + LIMIT_LINKING_BY_DISTANCE
                 + "\" is selected, this is the maximum permitted distance between objects for them to be assigned a relationship.");
 
-        parameters.get(INSIDE_OUTSIDE_MODE).setDescription("When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Options are: " + String.join(", ", InsideOutsideModes.ALL)+".");
+        parameters.get(INSIDE_OUTSIDE_MODE).setDescription("When relating children to parent surfaces it's possible to only include children inside, outside or on the edge of the parent.This parameter controls which children are allowed to be related to the parents.  Choices are: " + String.join(", ", InsideOutsideModes.ALL)+".");
 
         parameters.get(MINIMUM_PERCENTAGE_OVERLAP)
                 .setDescription("Percentage of total child volume overlapping with the parent object.");

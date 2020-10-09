@@ -197,7 +197,7 @@ public abstract class AbstractOverlay extends Module {
 
         parameters.get(SINGLE_COLOUR)
                 .setDescription("Colour for all object overlays to be rendered using.  This parameter is used if \""
-                        + COLOUR_MODE + "\" is set to \"" + ColourModes.SINGLE_COLOUR + "\".  Options are: "
+                        + COLOUR_MODE + "\" is set to \"" + ColourModes.SINGLE_COLOUR + "\".  Choices are: "
                         + String.join(", ", SingleColours.ALL) + ".");
 
         parameters.get(CHILD_OBJECTS_FOR_COLOUR).setDescription(

@@ -236,7 +236,7 @@ public class AddText extends AbstractOverlay {
 
         parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
 
-        parameters.get(LABEL_COLOUR).setDescription("Colour of the text label.  Options are: "+String.join(", ", SingleColours.ALL)+".");
+        parameters.get(LABEL_COLOUR).setDescription("Colour of the text label.  Choices are: "+String.join(", ", SingleColours.ALL)+".");
         
     }
 }

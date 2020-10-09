@@ -718,9 +718,9 @@ public class AddRelationshipConnection extends AbstractOverlay {
         parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
 
         parameters.get(POINT_SIZE).setDescription(
-                "Size of each overlay marker.  Options are: " + String.join(", ", PointSizes.ALL) + ".");
+                "Size of each overlay marker.  Choices are: " + String.join(", ", PointSizes.ALL) + ".");
 
-        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Options are: "
+        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Choices are: "
                 + String.join(", ", PointTypes.ALL) + ".");
 
         parameters.get(OFFSET_BY_MEASUREMENT).setDescription("When selected, the lines at either end can start a fraction of the way between the two relevant object centroids.  Separate offsets are applied at each end, with measurements providing the offset values selected using the \""+MEASUREMENT_NAME_1+"\" and \""+MEASUREMENT_NAME_2+"\" parameters.  For example.  This is useful when it is preferable to not have the line extend all the way between centroids.");

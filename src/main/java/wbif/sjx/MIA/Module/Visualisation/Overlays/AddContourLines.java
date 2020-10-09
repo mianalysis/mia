@@ -733,7 +733,7 @@ public class AddContourLines extends Module {
         parameters.get(CONTOUR_COLOUR)
                 .setDescription("Contour colour used when \"" + CONTOUR_COLOUR_MODE + "\" is set to either \""
                         + ColourModes.SINGLE_COLOUR + "\" or \"" + ColourModes.SINGLE_COLOUR_GRADIENT
-                        + "\".  Options are: " + String.join(", ", SingleColours.ALL) + ".");
+                        + "\".  Choices are: " + String.join(", ", SingleColours.ALL) + ".");
 
         parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
 
@@ -782,7 +782,7 @@ public class AddContourLines extends Module {
 
         parameters.get(LABEL_COLOUR).setDescription("Contour line label colour used when \"" + CONTOUR_COLOUR_MODE
                 + "\" is set to either \"" + ColourModes.SINGLE_COLOUR + "\" or \"" + ColourModes.SINGLE_COLOUR_GRADIENT
-                + "\".  Options are: " + String.join(", ", SingleColours.ALL) + ".");
+                + "\".  Choices are: " + String.join(", ", SingleColours.ALL) + ".");
 
         parameters.get(LABEL_SIZE).setDescription("Font size of the text label.");
 
