@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -12,9 +13,10 @@ import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.FilePathP;
+import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -28,6 +30,8 @@ public class GlobalVariables extends Module {
     public static final String VARIABLE_NAME = "Variable name";
     public static final String CONTROL_TYPE = "Control type";
     public static final String VARIABLE_VALUE = "Variable value";
+    public static final String VARIABLE_FILE = "Variable file";
+    public static final String VARIABLE_FOLDER = "Variable folder";
     public static final String VARIABLE_CHOICES = "Variable choices";
     public static final String VARIABLE_CHOICE = "Variable choice";
     public static final String STORE_AS_METADATA_ITEM = "Store as metadata item";
@@ -36,9 +40,11 @@ public class GlobalVariables extends Module {
 
     public interface ControlTypes {
         String CHOICE = "Choice";
+        String FILE = "File";
+        String FOLDER = "Folder";
         String TEXT = "Text";
 
-        String[] ALL = new String[] { CHOICE, TEXT };
+        String[] ALL = new String[] { CHOICE, FILE, FOLDER, TEXT };
 
     }
 
@@ -138,6 +144,16 @@ public class GlobalVariables extends Module {
                     case ControlTypes.CHOICE:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_CHOICE));
                         break;
+                    case ControlTypes.FILE:
+                        String path = collection.getValue(VARIABLE_FILE);
+                        path = path.replace("\\", "\\\\");
+                        workspace.getMetadata().put(variableName, path);
+                        break;
+                    case ControlTypes.FOLDER:
+                        path = collection.getValue(VARIABLE_FOLDER);
+                        path = path.replace("\\", "\\\\");
+                        workspace.getMetadata().put(variableName, path);
+                        break;
                     case ControlTypes.TEXT:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_VALUE));
                         break;
@@ -155,6 +171,8 @@ public class GlobalVariables extends Module {
         parameterCollection.add(new StringP(VARIABLE_NAME, this));
         parameterCollection.add(new ChoiceP(CONTROL_TYPE, this, ControlTypes.TEXT, ControlTypes.ALL));
         parameterCollection.add(new StringP(VARIABLE_VALUE, this));
+        parameterCollection.add(new FilePathP(VARIABLE_FILE, this));
+        parameterCollection.add(new FolderPathP(VARIABLE_FOLDER, this));
         parameterCollection.add(new StringP(VARIABLE_CHOICES, this));
         parameterCollection.add(new ChoiceP(VARIABLE_CHOICE, this, "", new String[0]));
         parameterCollection.add(new BooleanP(STORE_AS_METADATA_ITEM, this, false));
@@ -178,6 +196,16 @@ public class GlobalVariables extends Module {
                 switch ((String) collection.getValue(CONTROL_TYPE)) {
                     case ControlTypes.CHOICE:
                         globalVariables.put(variableName, collection.getValue(VARIABLE_CHOICE));
+                        break;
+                    case ControlTypes.FILE:
+                        String path = collection.getValue(VARIABLE_FILE);
+                        path = path.replace("\\", "\\\\");
+                        globalVariables.put(variableName, path);
+                        break;
+                    case ControlTypes.FOLDER:
+                        path = collection.getValue(VARIABLE_FOLDER);
+                        path = path.replace("\\", "\\\\");
+                        globalVariables.put(variableName, path);
                         break;
                     case ControlTypes.TEXT:
                         globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE));
@@ -284,6 +312,12 @@ public class GlobalVariables extends Module {
                         String variableChoices = params.getValue(VARIABLE_CHOICES);
                         String[] choices = variableChoices.split(",");
                         ((ChoiceP) params.getParameter(VARIABLE_CHOICE)).setChoices(choices);
+                        break;
+                    case ControlTypes.FILE:
+                        returnedParameters.add(params.getParameter(VARIABLE_FILE));
+                        break;
+                    case ControlTypes.FOLDER:
+                        returnedParameters.add(params.getParameter(VARIABLE_FOLDER));
                         break;
                     case ControlTypes.TEXT:
                         returnedParameters.add(params.getParameter(VARIABLE_VALUE));

@@ -126,8 +126,8 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         if (macroMode.equals(RunMacroOnImage.MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
-        macroText = addVariables(macroText,inputVariables);
-
+        macroText = addVariables(macroText, inputVariables);
+        
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
         MacroHandler.setModules(modules);
@@ -159,6 +159,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
             // Running the macro
             CustomInterpreter interpreter = new CustomInterpreter();
             try {
+                MIA.log.writeDebug(finalMacroText);
                 inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
                 if (interpreter.wasError()) throw new RuntimeException();
             } catch (RuntimeException e) {
