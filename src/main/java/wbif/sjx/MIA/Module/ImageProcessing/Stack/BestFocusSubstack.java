@@ -46,6 +46,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -500,10 +501,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     public String getDescription() {
-        return "Extract a Z-substack from an input stack based on either manually-selected slices, "
-                + "or an automatically-calculated best-focus slice.  "
-                + "For automated methods, best focus is determined using the local 2D variance of pixels in each slice.  "
-                + "It is possible to extract a fixed number of slices above and below the determined best-focus slice.";
+        return "Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.  For automated methods, best focus is determined using intensity statistics (e.g. largest variance) of all pixels in each slice.  When in manual mode, only the best focus slice for the first and last timepoints need be specified (all others will be estimated using polynomial spline interpolation); however, more frames can be specified if preferred.<br><br>Irrespective of the calculation method (manual or automatic), it's possible to extract a fixed number of slices above and below the determined best-focus slice.";
     }
 
     @Override
@@ -537,6 +535,7 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
                 outputImage.showImage();
 
             return Status.PASS;
+
         }
 
         // Making sure the start and end are the right way round
@@ -615,63 +614,25 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to extract substack from."));
-        parameters
-                .add(new OutputImageP(OUTPUT_IMAGE, this, "", "Substack image to be added to the current workspace."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
-        parameters.add(new ChoiceP(BEST_FOCUS_CALCULATION, this, BestFocusCalculations.MAX_STDEV,
-                BestFocusCalculations.ALL, "Method for determining the best-focus slice.  \""
-                        + BestFocusCalculations.MAX_STDEV + "\" calculates the standard deviation of each slice."));// "Method
-                                                                                                                    // for
-                                                                                                                    // determining
-                                                                                                                    // the
-                                                                                                                    // best-focus
-                                                                                                                    // slice.
-                                                                                                                    // \""+BestFocusCalculations.MAX_MEAN_VARIANCE+"\"
-                                                                                                                    // calculates
-                                                                                                                    // the
-                                                                                                                    // mean
-                                                                                                                    // variance
-                                                                                                                    // of
-                                                                                                                    // each
-                                                                                                                    // slice,
-                                                                                                                    // then
-                                                                                                                    // takes
-                                                                                                                    // the
-                                                                                                                    // slice
-                                                                                                                    // with
-                                                                                                                    // the
-                                                                                                                    // largest
-                                                                                                                    // mean.
-                                                                                                                    // \""+BestFocusCalculations.MAX_VARIANCE+"\"
-                                                                                                                    // simply
-                                                                                                                    // takes
-                                                                                                                    // the
-                                                                                                                    // slice
-                                                                                                                    // with
-                                                                                                                    // the
-                                                                                                                    // largest
-                                                                                                                    // variance."));
-        parameters.add(new IntegerP(RELATIVE_START_SLICE, this, 0,
-                "Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus)."));
-        parameters.add(new IntegerP(RELATIVE_END_SLICE, this, 0,
-                "Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus)."));
-        parameters.add(new BooleanP(SMOOTH_TIMESERIES, this, false,
-                "Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames)."));
-        parameters.add(new IntegerP(SMOOTHING_RANGE, this, 5,
-                "Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1."));
+        parameters.add(
+                new ChoiceP(BEST_FOCUS_CALCULATION, this, BestFocusCalculations.MAX_STDEV, BestFocusCalculations.ALL));
+        parameters.add(new IntegerP(RELATIVE_START_SLICE, this, 0));
+        parameters.add(new IntegerP(RELATIVE_END_SLICE, this, 0));
 
         parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
-        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, UnwarpImages.CalculationSources.INTERNAL,
-                UnwarpImages.CalculationSources.ALL));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
-        parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.USE_SINGLE, ChannelModes.ALL,
-                "How many channels to use when calculating the best-focus slice.  \"" + ChannelModes.USE_ALL
-                        + "\" will use all channels, whereas \"" + ChannelModes.USE_SINGLE
-                        + "\" will base the calculation on a single, user-defined channel."));
-        parameters.add(new IntegerP(CHANNEL, this, 1, "Channel to base the best-focus calculation on."));
+        parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.USE_SINGLE, ChannelModes.ALL));
+        parameters.add(new IntegerP(CHANNEL, this, 1));
+        parameters.add(new BooleanP(SMOOTH_TIMESERIES, this, false));
+        parameters.add(new IntegerP(SMOOTHING_RANGE, this, 5));
+
+        addParameterDescriptions();
 
     }
 
@@ -698,11 +659,6 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
             case BestFocusCalculations.MAX_MEAN:
             case BestFocusCalculations.MIN_STDEV:
             case BestFocusCalculations.MAX_STDEV:
-                returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
-                if ((boolean) parameters.getValue(SMOOTH_TIMESERIES)) {
-                    returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
-                }
-
                 returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
                 switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
                     case UnwarpImages.CalculationSources.EXTERNAL:
@@ -717,6 +673,11 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
                         break;
                 }
                 break;
+        }
+
+        returnedParameters.add(parameters.getParameter(SMOOTH_TIMESERIES));
+        if ((boolean) parameters.getValue(SMOOTH_TIMESERIES)) {
+            returnedParameters.add(parameters.getParameter(SMOOTHING_RANGE));
         }
 
         return returnedParameters;
@@ -786,6 +747,65 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image to extract substack from.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Substack image to be added to the current workspace.");
+
+        parameters.get(BEST_FOCUS_CALCULATION).setDescription("Method for determining the best-focus slice.<br><ul>"
+
+                + "<li>\"" + BestFocusCalculations.MANUAL
+                + "\" Displays a control window, allowing the user to specify reference slices.  These slices should be at the same true z-plane.  Once complete, a substack will be extracted a specific number of slices above and below the reference plane (defined by \""
+                + RELATIVE_START_SLICE + "\" and \"" + RELATIVE_END_SLICE
+                + "\".  If references aren't specific for all timepoints, the missing frames will be estimated using polynomial spline interpolation.</li>"
+
+                + "<li>\"" + BestFocusCalculations.MIN_MEAN
+                + "\" The reference slice is taken as the slice with the minimum mean intensity.</li>"
+
+                + "<li>\"" + BestFocusCalculations.MAX_MEAN
+                + "\" The reference slice is taken as the slice with the maximum mean intensity.</li>"
+
+                + "<li>\"" + BestFocusCalculations.MIN_STDEV
+                + "\" The reference slice is taken as the slice with the minimum intensity standard deviation.</li>"
+
+                + "<li>\"" + BestFocusCalculations.MAX_STDEV
+                + "\" The reference slice is taken as the slice with the maximum intensity standard deviation.</li></ul>");
+
+        parameters.get(RELATIVE_START_SLICE).setDescription(
+                "Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus).");
+
+        parameters.get(RELATIVE_END_SLICE).setDescription(
+                "Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus).");
+
+        parameters.get(REFERENCE_IMAGE).setDescription("If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.");
+
+        parameters.get(CALCULATION_SOURCE).setDescription(
+                "When using automatic best focus slice determination this controls the image source:<br><ul>"
+
+                        + "<li>\"" + CalculationSources.EXTERNAL
+                        + "\" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li>"
+
+                        + "<li>\"" + CalculationSources.INTERNAL
+                        + "\" The same image will be used for determination of the best slice and generation of the output substack.</li></ul>");
+
+        parameters.get(EXTERNAL_SOURCE).setDescription("If using a separate image to determine the best focus slice (\""
+                + CALCULATION_SOURCE + "\" set to \"" + CalculationSources.EXTERNAL + "\").");
+
+        parameters.get(CHANNEL_MODE)
+                .setDescription("How many channels to use when calculating the best-focus slice.  \""
+                        + ChannelModes.USE_ALL + "\" will use all channels, whereas \"" + ChannelModes.USE_SINGLE
+                        + "\" will base the calculation on a single, user-defined channel.");
+
+        parameters.get(CHANNEL).setDescription("Channel to base the best-focus calculation on.");
+
+        parameters.get(SMOOTH_TIMESERIES).setDescription(
+                "Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames).");
+
+        parameters.get(SMOOTHING_RANGE).setDescription(
+                "Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1.");
+
     }
 
     @Override

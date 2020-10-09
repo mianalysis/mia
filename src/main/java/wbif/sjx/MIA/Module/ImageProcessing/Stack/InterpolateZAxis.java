@@ -83,7 +83,9 @@ public class InterpolateZAxis extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        
+        addParameterDescriptions();
 
     }
 
@@ -120,5 +122,12 @@ public class InterpolateZAxis extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Input image to which the Z-axis interpolation will be applied.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("Output image with Z-axis interpolation applied.  This image will be stored in the workspace and be accessible using this name.");
+
     }
 }
