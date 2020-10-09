@@ -25,7 +25,6 @@ import wbif.sjx.common.Object.Volume.VolumeType;
 public class ConvexHull2D extends Module {
     public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
 
@@ -49,6 +48,12 @@ public class ConvexHull2D extends Module {
 
     public ConvexHull2D(ModuleCollection modules) {
         super("Convex hull 2D", modules);
+    }
+
+    @Override
+    public String getDescription() {
+        return "Fit 2D convex hull to a 2D object.  If objects are in 3D, a Z-projection of the object is used.<br><br>" +
+                "Uses the ImageJ \"Fit convex hull\" function.";
     }
 
     @Override
@@ -85,7 +90,9 @@ public class ConvexHull2D extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -138,9 +145,10 @@ public class ConvexHull2D extends Module {
         return true;
     }
 
-    @Override
-    public String getDescription() {
-        return "Fit 2D convex hull to a 2D object.  If objects are in 3D, a Z-projection of the object is used.<br><br>" +
-                "Uses the ImageJ \"Fit convex hull\" function.";
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Input objects to create 2D convex hulls for.  Each convex hull will be a child of its respective input object.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output convex hull objects will be stored in the workspace with this name.  Each convex hull object will be a child of the input object it was created from.");
+
     }
 }
