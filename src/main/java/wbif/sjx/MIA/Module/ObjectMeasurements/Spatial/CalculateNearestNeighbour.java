@@ -79,26 +79,6 @@ public class CalculateNearestNeighbour extends Module {
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
 
-    public interface ReferenceModes {
-        String CENTROID = "Centroid";
-        String SURFACE = "Surface";
-
-        String[] ALL = new String[] { CENTROID, SURFACE };
-
-    }
-
-    public interface InsideOutsideModes extends RelateManyToOne.InsideOutsideModes {};
-
-    public interface SaveNameModes extends ImageSaver.SaveNameModes {}
-
-    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {}
-
-    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {}
-
-    public CalculateNearestNeighbour(ModuleCollection modules) {
-        super("Calculate nearest neighbour", modules);
-    }
-
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
         String DIFFERENT_SET = "Different object set";
@@ -107,10 +87,34 @@ public class CalculateNearestNeighbour extends Module {
 
     }
 
+    public interface ReferenceModes {
+        String CENTROID = "Centroid";
+        String SURFACE = "Surface";
+
+        String[] ALL = new String[] { CENTROID, SURFACE };
+
+    }
+
+    public interface InsideOutsideModes extends RelateManyToOne.InsideOutsideModes {
+    };
+
+    public interface SaveNameModes extends ImageSaver.SaveNameModes {
+    }
+
+    public interface AppendSeriesModes extends ImageSaver.AppendSeriesModes {
+    }
+
+    public interface AppendDateTimeModes extends ImageSaver.AppendDateTimeModes {
+    }
+
     public interface Measurements {
         String NN_DISTANCE_PX = "NN_DISTANCE_TO_${NEIGHBOUR}_(PX)";
         String NN_DISTANCE_CAL = "NN_DISTANCE_TO_${NEIGHBOUR}_(${CAL})";
         String NN_ID = "NN_${NEIGHBOUR}_ID";
+    }
+
+    public CalculateNearestNeighbour(ModuleCollection modules) {
+        super("Calculate nearest neighbour", modules);
     }
 
     public static String getFullName(String measurement, String neighbourObjectsName) {
@@ -351,7 +355,7 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Measures the shortest distance between all objects in the specified input collection and all other objects in the same, or a different collection.  The shortest distance (nearest neighbour distance) is recorded as a measurement associated with the input object.  Optionally, the distances between all objects can be calculated and exported as a standalone spreadsheet.";
     }
 
     @Override
@@ -475,13 +479,13 @@ public class CalculateNearestNeighbour extends Module {
             path = path + suffix + ".xlsx";
 
             // Applying inside/outside policy
-            for (LinkedHashMap<Obj,Double> collection:distances.values()) {
+            for (LinkedHashMap<Obj, Double> collection : distances.values()) {
                 for (Obj obj : collection.keySet()) {
                     // Applying the inside outside mode
                     if (!RelateManyToOne.applyInsideOutsidePolicy(collection.get(obj), insideOutsideMode))
                         collection.put(obj, 0d);
                 }
-            }            
+            }
 
             // Writing distances to file
             SXSSFWorkbook workbook = exportDistances(distances, inputObjectsName, nearestNeighbourName,
@@ -515,8 +519,8 @@ public class CalculateNearestNeighbour extends Module {
 
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(EXPORT_ALL_DISTANCES, this, false));
-        parameters.add(new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE,
-                InsideOutsideModes.ALL));
+        parameters.add(
+                new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE, InsideOutsideModes.ALL));
         parameters.add(new BooleanP(INCLUDE_TIMEPOINTS, this, false));
         parameters.add(new BooleanP(INCLUDE_INPUT_PARENT, this, false));
         parameters.add(new ParentObjectsP(INPUT_PARENT, this));
@@ -529,6 +533,8 @@ public class CalculateNearestNeighbour extends Module {
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -572,9 +578,9 @@ public class CalculateNearestNeighbour extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXPORT_ALL_DISTANCES));
         String referenceMode = parameters.getValue(REFERENCE_MODE);
-        if (referenceMode.equals(ReferenceModes.SURFACE)) 
+        if (referenceMode.equals(ReferenceModes.SURFACE))
             returnedParameters.add(parameters.getParameter(INSIDE_OUTSIDE_MODE));
-                        
+
         if ((boolean) parameters.getValue(EXPORT_ALL_DISTANCES)) {
             returnedParameters.add(parameters.getParameter(INCLUDE_TIMEPOINTS));
             returnedParameters.add(parameters.getParameter(INCLUDE_INPUT_PARENT));
@@ -665,5 +671,104 @@ public class CalculateNearestNeighbour extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Objects for which the distance to a closest neighbour will be calculated.  The closest distance will be stored as a measurement associated with this object.");
+
+        parameters.get(RELATIONSHIP_MODE).setDescription(
+                "Controls whether the nearest neighbour distance from each input object will be calculated relative to all other objects in that input collection (\""
+                        + RelationshipModes.WITHIN_SAME_SET + "\") or to all objects in another object collection (\""
+                        + RelationshipModes.DIFFERENT_SET + "\").");
+
+        parameters.get(NEIGHBOUR_OBJECTS).setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \""
+                + RelationshipModes.DIFFERENT_SET
+                + "\", the distance from the input objects to these objects will be calculated and the shortest distance recorded.");
+
+        parameters.get(REFERENCE_MODE)
+                .setDescription("Controls the method used for determining the nearest neighbour distances:<br><ul>"
+
+                        + "<li>\"" + ReferenceModes.CENTROID
+                        + "\" Distances are between the input and neighbour object centroids.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+
+                        + "<li>\"" + ReferenceModes.SURFACE
+                        + "\" Distances are between the closest points on the input and neighbour surfaces.  These distances increase in magnitude the greater the minimum input-neighbour object surface distance is; however, they are assigned a positive value if the closest input object surface point is outside the neighbour and a negative value if the closest input object surface point is inside the neighbour.  For example, a closest input object surface point 5px outside the neighbour will be simply \"5px\", whereas a closest input object surface point 5px from the surface, but contained within the neighbour object will be recorded as \"-5px\".  Note: Any instances where the input and neighbour object surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
+
+        parameters.get(CALCULATE_WITHIN_PARENT)
+                .setDescription("When selected, only distances between objects within the same parent (specified by \""
+                        + PARENT_OBJECTS + "\") will be considered.");
+
+        parameters.get(PARENT_OBJECTS).setDescription("When \"" + CALCULATE_WITHIN_PARENT
+                + "\" is selected, objects must have this same parent to have their nearest neighbour distances calculated.");
+
+        parameters.get(LIMIT_LINKING_DISTANCE).setDescription(
+                "When selected, nearest neighbour distances will only be calculated if that distance (as calculated by the \""
+                        + REFERENCE_MODE + "\" metric) is less than or equal to the distance defined by \""
+                        + MAXIMUM_LINKING_DISTANCE + "\".");
+
+        parameters.get(MAXIMUM_LINKING_DISTANCE).setDescription("If \"" + LIMIT_LINKING_DISTANCE
+                + "\" is selected, this is the maximum permitted distance between objects for them to have their nearest neighbour distance recorded.");
+
+        parameters.get(CALIBRATED_DISTANCE).setDescription(
+                "When selected, linking distances are to be specified in calibrated units; otherwise, units are specified as pixels.");
+
+        parameters.get(LINK_IN_SAME_FRAME)
+                .setDescription("When selected, objects must be in the same time frame for them to be linked.");
+
+        parameters.get(EXPORT_ALL_DISTANCES).setDescription(
+                "For each analysis run, create a separate spreadsheet file, which records the distance of all objects to all other objects.");
+
+        parameters.get(INSIDE_OUTSIDE_MODE).setDescription(
+                "When relating objects by surfaces it's possible to only consider objects inside, outside or on the edge of the neighbouring object.  This parameter controls which objects are allowed to be related to a neighbour.  Choices are: "
+                        + String.join(", ", InsideOutsideModes.ALL) + ".");
+
+        parameters.get(INCLUDE_TIMEPOINTS).setDescription(
+                "Include a column recording the timepoint that the objects were present in.  If only linking objects in the same frame, there will be a single timepoint column; however, if links are permitted between objects in different timepoints, a timepoint colummn for each of the related objects will be included.");
+
+        parameters.get(INCLUDE_INPUT_PARENT).setDescription(
+                "Include a column recording the ID number of a specific parent of the input object.  For example, this could be a track ID number.");
+
+        parameters.get(INPUT_PARENT).setDescription("Parent object collection of the input object.  If \""
+                + INCLUDE_INPUT_PARENT
+                + "\" is selected, the corresponding parent ID number will be included as a column in the output distances spreadsheet.");
+
+        parameters.get(INCLUDE_NEIGHBOUR_PARENT).setDescription(
+                "Include a column recording the ID number of a specific parent of the neighbour object.  For example, this could be a track ID number.");
+
+        parameters.get(NEIGHBOUR_PARENT).setDescription("Parent object collection of the neighbour object.  If \""
+                + INCLUDE_NEIGHBOUR_PARENT
+                + "\" is selected, the corresponding parent ID number will be included as a column in the output distances spreadsheet.");
+
+        parameters.get(SAVE_NAME_MODE)
+                .setDescription("Controls how saved distance file names will be generated.<br><ul>" +
+
+                        "<li>\"" + SaveNameModes.MATCH_INPUT
+                        + "\" Use the same name as the root file for this workspace (i.e. the input file in \"Input control\".</li>"
+
+                        + "<li>\"" + SaveNameModes.SPECIFIC_NAME
+                        + "\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.</li></ul>");
+
+        parameters.get(SAVE_FILE_NAME).setDescription(
+                "Filename for saved distance file.  Note: Care should be taken with this when working in batch mode as it's easy to continuously write over output files from other runs.");
+
+        parameters.get(APPEND_SERIES_MODE).setDescription(
+                "Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: "
+                        + String.join(", ", AppendSeriesModes.ALL) + ".");
+
+        parameters.get(APPEND_DATETIME_MODE).setDescription(
+                "Controls under what conditions the time and date will be appended on to the end of the distance file filename.  This can be used to prevent accidental over-writing of files from previous runs:<br><ul>"
+
+                        + "<li>\"" + AppendDateTimeModes.ALWAYS
+                        + "\" Always append the time and date on to the end of the filename.</li>"
+
+                        + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
+                        + "\" Only append the time and date if the results file already exists.</li>"
+
+                        + "<li>\"" + AppendDateTimeModes.NEVER
+                        + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
+
+        parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
+
     }
 }

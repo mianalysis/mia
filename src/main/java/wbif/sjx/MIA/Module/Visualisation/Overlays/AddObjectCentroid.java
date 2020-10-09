@@ -340,9 +340,9 @@ public class AddObjectCentroid extends AbstractOverlay {
                 "The name of the new image to be saved to the workspace (if not applying the changes directly to the input image).");
 
         parameters.get(POINT_SIZE).setDescription(
-                "Size of each overlay marker.  Options are: " + String.join(", ", PointSizes.ALL) + ".");
+                "Size of each overlay marker.  Choices are: " + String.join(", ", PointSizes.ALL) + ".");
 
-        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Options are: "
+        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Choices are: "
                 + String.join(", ", PointTypes.ALL) + ".");
 
         parameters.get(RENDER_IN_ALL_FRAMES).setDescription(

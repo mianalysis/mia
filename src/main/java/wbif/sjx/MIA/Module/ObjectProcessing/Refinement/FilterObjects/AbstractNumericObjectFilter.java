@@ -287,7 +287,7 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         parameters.get(FILTER_METHOD).setDescription(
                 "Numeric comparison used to determine which objects should be removed.  Objects with specified property (e.g. a measurement value) that passes this filter will be removed.  For example, an object with a measurement value of 7 would be removed if \""
                         + FILTER_METHOD + "\" is set to \"" + FilterMethods.LESS_THAN
-                        + "\" with a reference value of 10.  Options are: " + String.join(", ", FilterMethods.ALL)
+                        + "\" with a reference value of 10.  Choices are: " + String.join(", ", FilterMethods.ALL)
                         + ".");
 
         parameters.get(REFERENCE_MODE).setDescription("Type of reference value used to compare objects to:<br><ul>"

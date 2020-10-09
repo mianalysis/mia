@@ -340,9 +340,9 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
 
         parameters.get(LINE_WIDTH).setDescription("Width of the rendered lines.  Specified in pixel units.");
 
-        parameters.get(POINT_SIZE).setDescription("Size of each overlay marker.  Options are: "+String.join(", ", PointSizes.ALL)+".");
+        parameters.get(POINT_SIZE).setDescription("Size of each overlay marker.  Choices are: "+String.join(", ", PointSizes.ALL)+".");
 
-        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Options are: "+String.join(", ", PointTypes.ALL)+".");
+        parameters.get(POINT_TYPE).setDescription("Type of overlay marker used to represent each object.  Choices are: "+String.join(", ", PointTypes.ALL)+".");
 
         parameters.get(RENDER_IN_ALL_FRAMES).setDescription("Display the overlay elements in all frames (time axis) of the input image stack, irrespective of whether the object was present in that frame.");
 
