@@ -318,7 +318,9 @@ public class BinaryOperations extends Module {
     @Override
     public String getDescription() {
         return "DEPRECATED: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
-                "be removed in a future release.\r\n";
+                "be removed in a future release.<br><br>"
+                
+                + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed on a slice-by-slice manner.";
 
     }
 
@@ -427,6 +429,8 @@ public class BinaryOperations extends Module {
         parameters.add(new ChoiceP(CONNECTIVITY_3D,this,Connectivity3D.SIX,Connectivity3D.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X,this,true));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -506,5 +510,70 @@ public class BinaryOperations extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to apply binary operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+        parameters.get(OPERATION_MODE).setDescription(
+                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The operations are described in full at https://imagej.nih.gov/ij/docs/guide/146-29.html:<br><ul>"
+
+                        + "<li>\"" + OperationModes.DILATE_2D
+                        + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.DILATE_3D
+                        + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.DISTANCE_MAP_3D
+                        + "\" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.ERODE_2D
+                        + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.ERODE_3D
+                        + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.FILL_HOLES_2D
+                        + "\" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.FILL_HOLES_3D
+                        + "\" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.OUTLINE_2D
+                        + "\" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.SKELETONISE_2D
+                        + "\" Repeatedly applies the erode process until each foreground region is a single pixel wide.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.WATERSHED_2D
+                        + "\" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.WATERSHED_3D
+                        + "\" Peforms a watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  Unlike the 2D ImageJ implementation, this version can use specific markers and be run in either distance or intensity-based modes.  Uses MorphoLibJ implementation.</li></ul>");
+
+        parameters.get(NUM_ITERATIONS).setDescription(
+                "Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.");
+
+        parameters.get(USE_MARKERS).setDescription("");
+
+        parameters.get(MARKER_IMAGE).setDescription("");
+
+        parameters.get(INTENSITY_MODE).setDescription("");
+
+        parameters.get(INTENSITY_IMAGE).setDescription("");
+
+        parameters.get(DYNAMIC).setDescription("");
+
+        parameters.get(CONNECTIVITY_3D).setDescription("");
+
+        parameters.get(MATCH_Z_TO_X).setDescription("");
+
     }
 }

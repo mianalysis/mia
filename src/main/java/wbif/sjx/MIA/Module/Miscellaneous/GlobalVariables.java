@@ -281,11 +281,27 @@ public class GlobalVariables extends Module {
                 + "\" Select the output variable from a pre-determined list of options (specified with the \""
                 + VARIABLE_CHOICES + "\" parameter).</li>"
 
+                + "<li>\"" + ControlTypes.FILE
+                + "\" Select a specific file on the computer for this variable using the \"" + VARIABLE_FILE
+                + "\" parameter.  The variable will be set to the full path to this file.  Note: backslash characters will be escaped (i.e. \"\\\" will appear as \"\\\\\").</li>"
+
+                + "<li>\"" + ControlTypes.FOLDER
+                + "\" Select a specific folder on the computer for this variable using the \"" + VARIABLE_FOLDER
+                + "\" parameter.  The variable will be set to the full path to this folder.  Note: backslash characters will be escaped (i.e. \"\\\" will appear as \"\\\\\").</li>"
+                
                 + "<li>\"" + ControlTypes.TEXT + "\" Specify a fixed text value for this variable using the \""
                 + VARIABLE_VALUE + "\" parameter.</li></ul>");
 
         collection.get(VARIABLE_VALUE).setDescription("Fixed value for the corresponding global variable when \""
                 + CONTROL_TYPE + "\" is in \"" + ControlTypes.TEXT + "\" mode.");
+
+        collection.get(VARIABLE_FILE)
+                .setDescription("Fixed value file location for the corresponding global variable when \"" + CONTROL_TYPE
+                        + "\" is in \"" + ControlTypes.FILE + "\" mode.");
+
+        collection.get(VARIABLE_FOLDER)
+                .setDescription("Fixed value folder location for the corresponding global variable when \""
+                        + CONTROL_TYPE + "\" is in \"" + ControlTypes.FOLDER + "\" mode.");
 
         collection.get(VARIABLE_CHOICE)
                 .setDescription("Pre-defined list of choices to select global variable value from when \""
