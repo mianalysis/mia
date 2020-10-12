@@ -103,8 +103,7 @@ public class BinaryOperations2D extends Module {
 
     @Override
     public String getDescription() {
-        return "Expects black objects on a white background." +
-                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions.";
+        return "Applies stock ImageJ binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.";
 
     }
 
@@ -157,6 +156,8 @@ public class BinaryOperations2D extends Module {
         parameters.add(new ChoiceP(OPERATION_MODE,this,OperationModes.DILATE,OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS,this,1));
         parameters.add(new IntegerP(COUNT,this,1));
+
+        addParameterDescriptions();
 
     }
 
@@ -217,5 +218,38 @@ public class BinaryOperations2D extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+    -bitparameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply binary operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+      parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""+OUTPUT_IMAGE+"\" parameter.");
+
+      parameters.get(OUTPUT_IMAGE).setDescription("If \""+APPLY_TO_INPUT+"\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+      parameters.get(OPERATION_MODE).setDescription("Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The operations are described in full at [WEBSITE]:<br><ul>" +
+
+      "<li>\""+OperationModes.DILATE+"\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li>"
+
+      "<li>\""+OperationModes.DISTANCE_MAP+"\" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.</li>"
+
+      "<li>\""+OperationModes.ERODE+"\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.</li>"
+
+      "<li>\""+OperationModes.FILL_HOLES+"\" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.</li>"
+
+      "<li>\""+OperationModes.OUTLINE+"\" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.</li>"
+
+      "<li>\""+OperationModes.SKELETONISE+"\" Repeatedly applies the erode process until each foreground region is a single pixel wide.</li>"
+
+      "<li>\""+OperationModes.ULTIMATE_POINTS+"\" Repeatedly applies the erode process until each foreground is reduced to a single pixel.  The value of the remaining, isolated foreground pixels are equal to their equivalent, pre-erosion distance map values.  This process outputs a 32-bit greyscale image.</li>"
+
+      "<li>\""+OperationModes.VORONOI+"\" Creates an image subdivided by lines such that all pixels contained within an enclosed region are closest to the same contiguous object in the input binary image.</li>"
+
+      "<li>\""+OperationModes.WATERSHED+"\" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.</li></ul>");
+
+      parameters.get(NUM_ITERATIONS).setDescription("Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.");
+
+      parameters.get(COUNT).setDescription("The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.");
+
     }
 }
