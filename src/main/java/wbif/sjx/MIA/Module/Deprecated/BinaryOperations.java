@@ -319,7 +319,7 @@ public class BinaryOperations extends Module {
     public String getDescription() {
         return "DEPRECATED: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
                 "be removed in a future release.<br><br>"
-                
+
                 + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed on a slice-by-slice manner.";
 
     }
@@ -561,19 +561,27 @@ public class BinaryOperations extends Module {
         parameters.get(NUM_ITERATIONS).setDescription(
                 "Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.");
 
-        parameters.get(USE_MARKERS).setDescription("");
+        parameters.get(USE_MARKERS).setDescription("(3D watershed only) When selected, this option allows the use of markers to define the starting point of each region.  The marker image to use is specified using the \""+MARKER_IMAGE+"\" parameter.  If not selected, a distance map will be generated for the input binary image and extended minima created according to the dynamic specified by \""+DYNAMIC+"\".");
 
-        parameters.get(MARKER_IMAGE).setDescription("");
+        parameters.get(MARKER_IMAGE).setDescription("(3D watershed only) Marker image to be used if \""+USE_MARKERS+"\" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  The image must be 8-bit binary with markers in black (intensity 0) on a white background (intensity 255).");
 
-        parameters.get(INTENSITY_MODE).setDescription("");
+        parameters.get(INTENSITY_MODE).setDescription("(3D watershed only) Controls the source for the intensity image against which the watershed transform will be computed.  Irrespective of mode, the image (raw image or object distance map) will act as a surface that the starting points will evolve up until adjacent regions come into contact (at which point creating a dividing line between the two):<br><ul>"
 
-        parameters.get(INTENSITY_IMAGE).setDescription("");
+        +"<li>\""+IntensityModes.DISTANCE+"\" A distance map will be created from the input binary image and used as the surface against which the watershed regions will evolve.</li>"
 
-        parameters.get(DYNAMIC).setDescription("");
+        +"<li>\""+IntensityModes.INTENSITY_IMAGE+"\" The watershed regions will evolve against an image from the workspace.  This image will be unaffected by this process.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions. </li></ul>");
 
-        parameters.get(CONNECTIVITY_3D).setDescription("");
+        parameters.get(INTENSITY_IMAGE).setDescription("(3D watershed only) If \""+INTENSITY_MODE+"\" is set to \""+IntensityModes.INTENSITY_IMAGE+"\", this is the image from the workspace against which the watershed regions will evolve.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions.");
 
-        parameters.get(MATCH_Z_TO_X).setDescription("");
+        parameters.get(DYNAMIC).setDescription("(3D watershed only) If \""+USE_MARKERS+"\" is not selected, the initial region markers will be created by generating a distance map for the input binary image and calculating the extended minima.  This parameter specifies the maximum permitted pixel intensity difference for a single marker.  Local intensity differences greater than this will result in creation of more markers.  The smaller the dynamic value is, the more the watershed transform will split the image.");
+
+        parameters.get(CONNECTIVITY_3D).setDescription("(3D watershed only) Controls which adjacent pixels are considered:<br><ul>"
+
+        +"<li>\""+Connectivity3D.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+
+        +"<li>\""+Connectivity3D.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+
+        parameters.get(MATCH_Z_TO_X).setDescription("When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
 
     }
 }
