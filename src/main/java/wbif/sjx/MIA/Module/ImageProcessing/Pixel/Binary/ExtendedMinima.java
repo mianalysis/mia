@@ -249,9 +249,9 @@ returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
 
         parameters.get(CONNECTIVITY_3D).setDescription("Controls which adjacent pixels are considered:<br><ul>"
 
-        +"<li>\""+Connectivity3D.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+        +"<li>\""+Connectivity.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
 
-        +"<li>\""+Connectivity3D.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+        +"<li>\""+Connectivity.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
 
         parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 

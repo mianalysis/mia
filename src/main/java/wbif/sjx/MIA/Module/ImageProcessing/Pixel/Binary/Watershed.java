@@ -320,9 +320,9 @@ public class Watershed extends Module {
 
         +"<li>\""+IntensityModes.DISTANCE+"\" A distance map will be created from the input binary image and used as the surface against which the watershed regions will evolve.</li>"
 
-        +"<li>\""+IntensityModes.INTENSITY_IMAGE+"\" The watershed regions will evolve against an image from the workspace.  This image will be unaffected by this process.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions. </li></ul>");
+        +"<li>\""+IntensityModes.INPUT_IMAGE+"\" The watershed regions will evolve against an image from the workspace.  This image will be unaffected by this process.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions. </li></ul>");
 
-        parameters.get(INTENSITY_IMAGE).setDescription("If \""+INTENSITY_MODE+"\" is set to \""+IntensityModes.INTENSITY_IMAGE+"\", this is the image from the workspace against which the watershed regions will evolve.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions.");
+        parameters.get(INTENSITY_IMAGE).setDescription("If \""+INTENSITY_MODE+"\" is set to \""+IntensityModes.INPUT_IMAGE+"\", this is the image from the workspace against which the watershed regions will evolve.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions.");
 
         parameters.get(DYNAMIC).setDescription("If \""+USE_MARKERS+"\" is not selected, the initial region markers will be created by generating a distance map for the input binary image and calculating the extended minima.  This parameter specifies the maximum permitted pixel intensity difference for a single marker.  Local intensity differences greater than this will result in creation of more markers.  The smaller the dynamic value is, the more the watershed transform will split the image.");
 
