@@ -2,42 +2,36 @@
 
 package wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.measure.Calibration;
-import ij.plugin.Duplicator;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AbstractOverlay;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.LUTs;
-import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.util.HashMap;
 
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class ConvertObjectsToImage extends Module {
+public class ConvertImageToObjects extends Module {
     public static final String INPUT_SEPARATOR = "Image input/object output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String VOLUME_TYPE = "Volume type";
 
-    public ConvertObjectsToImage(ModuleCollection modules) {
+    public ConvertImageToObjects(ModuleCollection modules) {
         super("Convert image to objects", modules);
     }
 

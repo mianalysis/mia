@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AbstractOverlay;
+import wbif.sjx.MIA.Module.Visualisation.Overlays.AddAllObjectPoints;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
@@ -307,31 +308,21 @@ public class ConvertObjectsToImage extends Module {
 
     +"<li>\""+OutputModes.WHOLE_OBJECT+"\" All coordinates of each object are added to the output image.</li></ul>");
 
-    String description = new AbstractOverlay(null).getParameter(AbstractOverlay.COLOUR_MODE).getDescription();
-    description = description.Replace("Colour","Intensity");
-    description = description.Replace("colour","intensity");
+    String description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.COLOUR_MODE).getDescription();
     parameters.get(COLOUR_MODE).setDescription(description);
 
     parameters.get(SINGLE_COLOUR_MODE).setDescription("When \""+COLOUR_MODE+"\" is set to \""+ColourModes.SINGLE_COLOUR+"\", the input objects will be converted to a binary image.  This parameter controls if the output image will have the logic \""+SingleColourModes.B_ON_W+"\" or \""+SingleColourModes.W_ON_B+"\".");
 
-    description = new AbstractOverlay(null).getParameter(AbstractOverlay.CHILD_OBJECTS_FOR_COLOUR).getDescription();
-    description = description.Replace("Colour","Intensity");
-    description = description.Replace("colour","intensity");
+    description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.CHILD_OBJECTS_FOR_COLOUR).getDescription();
     parameters.get(CHILD_OBJECTS_FOR_COLOUR).setDescription(description);
 
-    description = new AbstractOverlay(null).getParameter(AbstractOverlay.MEASUREMENT_FOR_COLOUR).getDescription();
-    description = description.Replace("Colour","Intensity");
-    description = description.Replace("colour","intensity");
+    description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.MEASUREMENT_FOR_COLOUR).getDescription();
     parameters.get(MEASUREMENT).setDescription(description);
 
-    description = new AbstractOverlay(null).getParameter(AbstractOverlay.PARENT_OBJECT_FOR_COLOUR).getDescription();
-    description = description.Replace("Colour","Intensity");
-    description = description.Replace("colour","intensity");
+    description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.PARENT_OBJECT_FOR_COLOUR).getDescription();
     parameters.get(PARENT_OBJECT_FOR_COLOUR).setDescription(description);
 
-    description = new AbstractOverlay(null).getParameter(AbstractOverlay.PARTNER_OBJECTS_FOR_COLOUR).getDescription();
-    description = description.Replace("Colour","Intensity");
-    description = description.Replace("colour","intensity");
+    description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.PARTNER_OBJECTS_FOR_COLOUR).getDescription();
     parameters.get(PARTNER_OBJECTS_FOR_COLOUR).setDescription(description);
 
   }
