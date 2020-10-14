@@ -88,9 +88,7 @@ public class ObjectLoader extends Module {
     public static final String RELATIONSHIP_SEPARATOR = "Relationship controls";
     public static final String CREATE_PARENTS = "Create parent objects";
     public static final String PARENT_TYPE = "Parent objects type";
-    public static final String PARENT_CLUSTERS_NAME = "Output parent clusters name";
     public static final String PARENT_OBJECTS_NAME = "Output parent objects name";
-    public static final String PARENT_TRACKS_NAME = "Output parent tracks name";
     public static final String PARENTS_COLUMN_INDEX = "Parent object ID index";
 
     public ObjectLoader(ModuleCollection modules) {
@@ -375,19 +373,7 @@ public class ObjectLoader extends Module {
         String calSource = parameters.getValue(CALIBRATION_SOURCE);
         boolean createParents = parameters.getValue(CREATE_PARENTS);
         String parentType = parameters.getValue(PARENT_TYPE);
-
-        String parentObjectsName = null;
-        switch (parentType) {
-            case ParentTypes.CLUSTER:
-                parentObjectsName = parameters.getValue(PARENT_CLUSTERS_NAME);
-                break;
-            case ParentTypes.NORMAL:
-                parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
-                break;
-            case ParentTypes.TRACK:
-                parentObjectsName = parameters.getValue(PARENT_TRACKS_NAME);
-                break;
-        }
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
 
         // Getting file to load
         File inputFile = getInputFile(workspace);
@@ -480,9 +466,7 @@ public class ObjectLoader extends Module {
         parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
         parameters.add(new BooleanP(CREATE_PARENTS,this,false));
         parameters.add(new ChoiceP(PARENT_TYPE,this,ParentTypes.NORMAL,ParentTypes.ALL));
-        parameters.add(new OutputClusterObjectsP(PARENT_CLUSTERS_NAME,this));
         parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME,this));
-        parameters.add(new OutputTrackObjectsP(PARENT_TRACKS_NAME,this));
         parameters.add(new IntegerP(PARENTS_COLUMN_INDEX,this,5));
 
     }
@@ -559,17 +543,7 @@ public class ObjectLoader extends Module {
         returnedParameters.add(parameters.get(CREATE_PARENTS));
         if ((boolean) parameters.getValue(CREATE_PARENTS)) {
             returnedParameters.add(parameters.get(PARENT_TYPE));
-            switch ((String) parameters.getValue(PARENT_TYPE)) {
-                case ParentTypes.CLUSTER:
-                    returnedParameters.add(parameters.get(PARENT_CLUSTERS_NAME));
-                    break;
-                case ParentTypes.NORMAL:
-                    returnedParameters.add(parameters.get(PARENT_OBJECTS_NAME));
-                    break;
-                case ParentTypes.TRACK:
-                    returnedParameters.add(parameters.get(PARENT_TRACKS_NAME));
-                    break;
-            }
+            returnedParameters.add(parameters.get(PARENT_OBJECTS_NAME));
             returnedParameters.add(parameters.get(PARENTS_COLUMN_INDEX));
         }
 
@@ -598,18 +572,8 @@ public class ObjectLoader extends Module {
 
         if ((boolean) parameters.getValue(CREATE_PARENTS)) {
             String childObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-            String parentObjectsName = null;
-            switch ((String) parameters.getValue(PARENT_TYPE)) {
-                case ParentTypes.CLUSTER:
-                    parentObjectsName = parameters.getValue(PARENT_CLUSTERS_NAME);
-                    break;
-                case ParentTypes.NORMAL:
-                    parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
-                    break;
-                case ParentTypes.TRACK:
-                    parentObjectsName = parameters.getValue(PARENT_TRACKS_NAME);
-                    break;
-            }
+            String parentObjectsName = parameters.getValue(PARENT_OBJECTS_NAME);
+
             returnedRelationships.add(parentChildRefs.getOrPut(parentObjectsName,childObjectsName));
         }
 
