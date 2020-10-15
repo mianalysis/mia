@@ -293,8 +293,10 @@ public class FillHolesByVolume extends Module {
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
-        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60,));
+        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60));
 
+        addParameterDescriptions();
+        
     }
 
     @Override
@@ -380,11 +382,11 @@ public class FillHolesByVolume extends Module {
 
       parameters.get(USE_MINIMUM_VOLUME).setDescription("");
 
-      parameters.get(MINIMUM_VOLUME).setDescription();
+      parameters.get(MINIMUM_VOLUME).setDescription("");
 
-      parameters.get(USE_MAXIMUM_VOLUME).setDescription();
+      parameters.get(USE_MAXIMUM_VOLUME).setDescription("");
 
-      parameters.get(MAXIMUM_VOLUME).setDescription();
+      parameters.get(MAXIMUM_VOLUME).setDescription("");
 
       parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are used.");
 
