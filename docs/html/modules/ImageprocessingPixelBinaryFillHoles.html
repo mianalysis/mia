@@ -22,9 +22,9 @@ layout: default
     <a href="../modulelist.html">Back to module list</a>
 <h1>Fill holes</h1>
 <h2>Description</h2>
-
+Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).
 <h2>Parameters</h2>
-<ul><li><b>Input image</b> (default = "") </li><br><li><b>Apply to input image</b> (default = "true") </li><br><li><b>Output image</b> (default = "") </li><br></ul>
+<ul><li><b>Input image</b> (default = "") Image from workspace to apply fill holes operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).</li><br><li><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.</li><br><li><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.</li><br></ul>
 
 </div>
 </body>

@@ -22,9 +22,9 @@ layout: default
     <a href="../modulelist.html">Back to module list</a>
 <h1>Calculate distance map</h1>
 <h2>Description</h2>
-
+Creates a 32-bit greyscale image from an input binary image, where the value of each foreground pixel in the input image is equal to its Euclidean distance to the nearest background pixel.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The output image will have pixel values of 0 coincident with background pixels in the input image and values greater than zero coincident with foreground pixels.  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).
 <h2>Parameters</h2>
-<ul><li><b>Input image</b> (default = "") </li><br><li><b>Output image</b> (default = "") </li><br><li><b>Match Z to XY</b> (default = "true") </li><br></ul>
+<ul><li><b>Input image</b> (default = "") Image from workspace to calculate distance map for.  This must be an 8-bit binary image (255 = background, 0 = foreground).</li><br><li><b>Output image</b> (default = "") The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.</li><br><li><b>Match Z to XY</b> (default = "true") When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.</li><br></ul>
 
 </div>
 </body>
