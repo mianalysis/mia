@@ -111,7 +111,7 @@ public class ImageMath extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: "+String.join(", ", CalculationTypes.ALL);
     }
 
     @Override
@@ -243,5 +243,29 @@ public class ImageMath extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription(
+              "Image from workspace to apply calculation to.  This image can be of any bit depth.");
+
+      parameters.get(APPLY_TO_INPUT).setDescription(
+              "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+      parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+              + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+      parameters.get(CALCULATION_TYPE).setDescription("Controls the mathematical operation being applied to all pixels of this image.  Choices are: "+String.join(", ",CalculationTypes.ALL));
+
+      parameters.get(VALUE_SOURCE).setDescription("For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul>"
+
+      +"<li>\""+ValueSources.FIXED+"\" A fixed value is specified using the \""+MATH_VALUE+"\" parameter.  This value is the same for all images processed by this module..</li>"
+
+      +"<li>\""+ValueSources.MEASUREMENT+"\" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul>");
+
+      parameters.get(MEASUREMENT).setDescription("If \""+VALUE_SOURCE+"\" is set to \""+ValueSources.MEASUREMENT+"\", this is the measurement associated with the input image that will be used in the calculation.");
+
+      parameters.get(MATH_VALUE).setDescription("If \""+VALUE_SOURCE+"\" is set to \""+ValueSources.FIXED+"\", this is the value that will be used in the calculation.");
+
     }
 }

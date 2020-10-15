@@ -17,6 +17,7 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
@@ -164,7 +165,7 @@ public class FillHolesByVolume extends Module {
                         int idx = ipl.getStackIndex(finalC, finalZ, finalT);
                         ImageProcessor ipr = ipl.getImageStack().getProcessor(idx);
                         ImageProcessor labelIpr = labelIst.getProcessor(finalZ);
-                        
+
                         for (int x = 0; x < labelIst.getWidth(); x++) {
                             for (int y = 0; y < labelIst.getHeight(); y++) {
                                 int label = labelIpr.get(x, y);
@@ -291,10 +292,8 @@ public class FillHolesByVolume extends Module {
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true,
-                "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores."));
-        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60,
-                "Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units."));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60,));
 
     }
 
@@ -361,5 +360,37 @@ public class FillHolesByVolume extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription(
+              "Image from workspace to apply fill holes operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+      parameters.get(APPLY_TO_INPUT).setDescription(
+              "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+      parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+              + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+      parameters.get(BLACK_WHITE_MODE).setDescription("Controls which contiguous, enclosed regions of pixels will be removed:<br><ul>"
+
+              +"<li>\""+BlackWhiteModes.FILL_BLACK_HOLES+"\" Fully enclosed regions of black pixels (0 intensity) matching the size criteria will be removed.</li>"
+
+              +"<li>\""+BlackWhiteModes.FILL_WHITE_HOLES+"\" Fully enclosed regions of white pixels (255 intensity) matching the size criteria will be removed.</li></ul>");
+
+      parameters.get(USE_MINIMUM_VOLUME).setDescription("");
+
+      parameters.get(MINIMUM_VOLUME).setDescription();
+
+      parameters.get(USE_MAXIMUM_VOLUME).setDescription();
+
+      parameters.get(MAXIMUM_VOLUME).setDescription();
+
+      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are used.");
+
+      parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
+
+      parameters.get(MIN_STRIP_WIDTH).setDescription("Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.");
+
     }
 }

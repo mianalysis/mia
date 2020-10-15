@@ -28,13 +28,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by sc13967 on 07/03/2018.
  */
 public class ExtendedMinima extends Module {
-  public static final String INPUT_SEPARATOR = "Image input/output";
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
     public static final String EXTENDED_MINIMA_SEPARATOR = "Extended minima controls";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+
     public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
@@ -166,7 +168,7 @@ public class ExtendedMinima extends Module {
 
     @Override
     protected void initialiseParameters() {
-      parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));

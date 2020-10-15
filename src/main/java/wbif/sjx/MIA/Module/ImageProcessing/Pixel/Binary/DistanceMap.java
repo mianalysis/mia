@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -23,8 +24,10 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class DistanceMap extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String DISTANCE_MAP_SEPARATOR = "Distance map controls";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public DistanceMap(ModuleCollection modules) {
@@ -67,7 +70,8 @@ public class DistanceMap extends Module {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Creates a 32-bit greyscale image from an input binary image, where the value of each foreground pixel in the input image is equal to its Euclidean distance to the nearest background pixel.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The output image will have pixel values of 0 coincident with background pixels in the input image and values greater than zero coincident with foreground pixels.  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).";
+
     }
 
     @Override
@@ -96,9 +100,14 @@ public class DistanceMap extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(DISTANCE_MAP_SEPARATOR,this));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -136,5 +145,14 @@ public class DistanceMap extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription("Image from workspace to calculate distance map for.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+      parameters.get(OUTPUT_IMAGE).setDescription("The output distance map will be saved to the workspace with this name.  This image will be 32-bit format.");
+
+      parameters.get(MATCH_Z_TO_X).setDescription("When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of the distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
+
     }
 }

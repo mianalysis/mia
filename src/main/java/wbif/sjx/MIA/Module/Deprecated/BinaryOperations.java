@@ -523,7 +523,7 @@ public class BinaryOperations extends Module {
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
         parameters.get(OPERATION_MODE).setDescription(
-                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The operations are described in full at https://imagej.nih.gov/ij/docs/guide/146-29.html:<br><ul>"
+                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The 2D operations are described in full at https://imagej.nih.gov/ij/docs/guide/146-29.html:<br><ul>"
 
                         + "<li>\"" + OperationModes.DILATE_2D
                         + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses ImageJ implementation.</li>"
