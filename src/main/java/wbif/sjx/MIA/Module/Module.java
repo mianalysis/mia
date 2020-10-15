@@ -199,12 +199,7 @@ public abstract class Module extends Ref implements Comparable {
     }
 
     public boolean invalidParameterIsVisible() {
-        for (Parameter parameter : updateAndGetParameters().values()) {
-            if (!parameter.isValid() && parameter.isVisible())
-                return true;
-        }
-
-        return false;
+        return updateAndGetParameters().invalidParameterIsVisible();
 
     }
 
