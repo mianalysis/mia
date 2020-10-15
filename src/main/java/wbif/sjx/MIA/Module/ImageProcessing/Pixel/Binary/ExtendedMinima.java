@@ -28,11 +28,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by sc13967 on 07/03/2018.
  */
 public class ExtendedMinima extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String EXTENDED_MINIMA_SEPARATOR = "Extended minima controls";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+
+    public static final String EXECUTION_SEPARATOR = "Execution controls";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public ExtendedMinima(ModuleCollection modules) {
@@ -122,7 +127,7 @@ public class ExtendedMinima extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Creates an extended minima image for a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).";
     }
 
     @Override
@@ -163,18 +168,27 @@ public class ExtendedMinima extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new ParamSeparatorP(EXTENDED_MINIMA_SEPARATOR,this));
         parameters.add(new IntegerP(DYNAMIC, this,1));
         parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+
+        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -182,8 +196,11 @@ public class ExtendedMinima extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
         returnedParameters.add(parameters.getParameter(DYNAMIC));
         returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+
+        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -218,5 +235,27 @@ public class ExtendedMinima extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).");
+
+        parameters.get(DYNAMIC).setDescription("This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.");
+
+        parameters.get(CONNECTIVITY_3D).setDescription("Controls which adjacent pixels are considered:<br><ul>"
+
+        +"<li>\""+Connectivity.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+
+        +"<li>\""+Connectivity.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

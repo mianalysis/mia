@@ -32,9 +32,8 @@ public class BinaryOperations2D extends Module {
     public static final String COUNT = "Count";
 
     public BinaryOperations2D(ModuleCollection modules) {
-        super("Binary operations 2D",modules);
+        super("Binary operations 2D", modules);
     }
-
 
     public interface OperationModes {
         String DILATE = "Dilate";
@@ -47,12 +46,13 @@ public class BinaryOperations2D extends Module {
         String VORONOI = "Voronoi";
         String WATERSHED = "Watershed";
 
-        String[] ALL = new String[]{DILATE, DISTANCE_MAP, ERODE, FILL_HOLES, OUTLINE, SKELETONISE, ULTIMATE_POINTS, VORONOI, WATERSHED};
+        String[] ALL = new String[] { DILATE, DISTANCE_MAP, ERODE, FILL_HOLES, OUTLINE, SKELETONISE, ULTIMATE_POINTS,
+                VORONOI, WATERSHED };
 
     }
 
     public static void process(ImagePlus ipl, String operationMode, int numIterations, int count) {
-        process(new Image("Image",ipl),operationMode,numIterations,count);
+        process(new Image("Image", ipl), operationMode, numIterations, count);
     }
 
     public static void process(Image image, String operationMode, int numIterations, int count) {
@@ -61,40 +61,39 @@ public class BinaryOperations2D extends Module {
         // Applying processAutomatic to stack
         switch (operationMode) {
             case OperationModes.DILATE:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=Dilate stack");
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Dilate stack");
                 break;
 
             case OperationModes.ERODE:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=Erode stack");
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Erode stack");
                 break;
 
             case OperationModes.FILL_HOLES:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=[Fill Holes] stack");
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=[Fill Holes] stack");
                 break;
 
             case OperationModes.OUTLINE:
-                IJ.run(ipl,"Outline", "stack");
+                IJ.run(ipl, "Outline", "stack");
                 break;
 
             case OperationModes.SKELETONISE:
-                IJ.run(ipl,"Options...", "iterations="+numIterations+" count="+count+" do=Skeletonize stack");
+                IJ.run(ipl, "Options...", "iterations=" + numIterations + " count=" + count + " do=Skeletonize stack");
                 break;
 
             case OperationModes.VORONOI:
-                IJ.run(ipl,"Voronoi", "stack");
+                IJ.run(ipl, "Voronoi", "stack");
                 break;
 
             case OperationModes.ULTIMATE_POINTS:
-                IJ.run(ipl,"Ultimate Points", "stack");
+                IJ.run(ipl, "Ultimate Points", "stack");
                 break;
 
             case OperationModes.WATERSHED:
-                IJ.run(ipl,"Watershed", "stack");
+                IJ.run(ipl, "Watershed", "stack");
                 break;
 
         }
     }
-
 
     @Override
     public String getPackageName() {
@@ -103,8 +102,7 @@ public class BinaryOperations2D extends Module {
 
     @Override
     public String getDescription() {
-        return "Expects black objects on a white background." +
-                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions.";
+        return "Applies stock ImageJ binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.";
 
     }
 
@@ -123,23 +121,26 @@ public class BinaryOperations2D extends Module {
         int count = parameters.getValue(COUNT);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+        if (!applyToInput)
+            inputImagePlus = new Duplicator().run(inputImagePlus);
 
         if (operationMode.equals(OperationModes.DISTANCE_MAP)) {
-            IJ.run(inputImagePlus,"Distance Map", "stack");
+            IJ.run(inputImagePlus, "Distance Map", "stack");
         } else {
-            process(inputImagePlus,operationMode,numIterations,count);
+            process(inputImagePlus, operationMode, numIterations, count);
         }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeStatus("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            writeStatus("Adding image (" + outputImageName + ") to workspace");
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput)
+                outputImage.showImage();
 
         } else {
-            if (showOutput) inputImage.showImage();
+            if (showOutput)
+                inputImage.showImage();
 
         }
 
@@ -149,14 +150,16 @@ public class BinaryOperations2D extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new ParamSeparatorP(OPERATION_SEPARATOR,this));
-        parameters.add(new ChoiceP(OPERATION_MODE,this,OperationModes.DILATE,OperationModes.ALL));
-        parameters.add(new IntegerP(NUM_ITERATIONS,this,1));
-        parameters.add(new IntegerP(COUNT,this,1));
+        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ParamSeparatorP(OPERATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(OPERATION_MODE, this, OperationModes.DILATE, OperationModes.ALL));
+        parameters.add(new IntegerP(NUM_ITERATIONS, this, 1));
+        parameters.add(new IntegerP(COUNT, this, 1));
+
+        addParameterDescriptions();
 
     }
 
@@ -217,5 +220,53 @@ public class BinaryOperations2D extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to apply binary operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+        parameters.get(OPERATION_MODE).setDescription(
+                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The operations are described in full at [WEBSITE]:<br><ul>"
+
+                        + "<li>\"" + OperationModes.DILATE
+                        + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li>"
+
+                        + "<li>\"" + OperationModes.DISTANCE_MAP
+                        + "\" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.</li>"
+
+                        + "<li>\"" + OperationModes.ERODE
+                        + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.</li>"
+
+                        + "<li>\"" + OperationModes.FILL_HOLES
+                        + "\" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.</li>"
+
+                        + "<li>\"" + OperationModes.OUTLINE
+                        + "\" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.</li>"
+
+                        + "<li>\"" + OperationModes.SKELETONISE
+                        + "\" Repeatedly applies the erode process until each foreground region is a single pixel wide.</li>"
+
+                        + "<li>\"" + OperationModes.ULTIMATE_POINTS
+                        + "\" Repeatedly applies the erode process until each foreground is reduced to a single pixel.  The value of the remaining, isolated foreground pixels are equal to their equivalent, pre-erosion distance map values.  This process outputs a 32-bit greyscale image.</li>"
+
+                        + "<li>\"" + OperationModes.VORONOI
+                        + "\" Creates an image subdivided by lines such that all pixels contained within an enclosed region are closest to the same contiguous object in the input binary image.</li>"
+
+                        + "<li>\"" + OperationModes.WATERSHED
+                        + "\" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.</li></ul>");
+
+        parameters.get(NUM_ITERATIONS).setDescription(
+                "Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.");
+
+        parameters.get(COUNT).setDescription(
+                "The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.");
+
     }
 }

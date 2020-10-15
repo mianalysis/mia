@@ -318,7 +318,9 @@ public class BinaryOperations extends Module {
     @Override
     public String getDescription() {
         return "DEPRECATED: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
-                "be removed in a future release.\r\n";
+                "be removed in a future release.<br><br>"
+
+                + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed on a slice-by-slice manner.";
 
     }
 
@@ -427,6 +429,8 @@ public class BinaryOperations extends Module {
         parameters.add(new ChoiceP(CONNECTIVITY_3D,this,Connectivity3D.SIX,Connectivity3D.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X,this,true));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -506,5 +510,78 @@ public class BinaryOperations extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to apply binary operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+        parameters.get(OPERATION_MODE).setDescription(
+                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The 2D operations are described in full at https://imagej.nih.gov/ij/docs/guide/146-29.html:<br><ul>"
+
+                        + "<li>\"" + OperationModes.DILATE_2D
+                        + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.DILATE_3D
+                        + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.DISTANCE_MAP_3D
+                        + "\" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.ERODE_2D
+                        + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.ERODE_3D
+                        + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.FILL_HOLES_2D
+                        + "\" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.FILL_HOLES_3D
+                        + "\" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  Uses MorphoLibJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.OUTLINE_2D
+                        + "\" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.SKELETONISE_2D
+                        + "\" Repeatedly applies the erode process until each foreground region is a single pixel wide.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.WATERSHED_2D
+                        + "\" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  Uses ImageJ implementation.</li>"
+
+                        + "<li>\"" + OperationModes.WATERSHED_3D
+                        + "\" Peforms a watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  Unlike the 2D ImageJ implementation, this version can use specific markers and be run in either distance or intensity-based modes.  Uses MorphoLibJ implementation.</li></ul>");
+
+        parameters.get(NUM_ITERATIONS).setDescription(
+                "Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.");
+
+        parameters.get(USE_MARKERS).setDescription("(3D watershed only) When selected, this option allows the use of markers to define the starting point of each region.  The marker image to use is specified using the \""+MARKER_IMAGE+"\" parameter.  If not selected, a distance map will be generated for the input binary image and extended minima created according to the dynamic specified by \""+DYNAMIC+"\".");
+
+        parameters.get(MARKER_IMAGE).setDescription("(3D watershed only) Marker image to be used if \""+USE_MARKERS+"\" is selected.  This image must be of equal dimensions to the input image (to which the transform will be applied).  The image must be 8-bit binary with markers in black (intensity 0) on a white background (intensity 255).");
+
+        parameters.get(INTENSITY_MODE).setDescription("(3D watershed only) Controls the source for the intensity image against which the watershed transform will be computed.  Irrespective of mode, the image (raw image or object distance map) will act as a surface that the starting points will evolve up until adjacent regions come into contact (at which point creating a dividing line between the two):<br><ul>"
+
+        +"<li>\""+IntensityModes.DISTANCE+"\" A distance map will be created from the input binary image and used as the surface against which the watershed regions will evolve.</li>"
+
+        +"<li>\""+IntensityModes.INPUT_IMAGE+"\" The watershed regions will evolve against an image from the workspace.  This image will be unaffected by this process.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions. </li></ul>");
+
+        parameters.get(INTENSITY_IMAGE).setDescription("(3D watershed only) If \""+INTENSITY_MODE+"\" is set to \""+IntensityModes.INPUT_IMAGE+"\", this is the image from the workspace against which the watershed regions will evolve.  The image should have lower intensity coincident with the markers, rising to higher intensity along the boundaries between regions.");
+
+        parameters.get(DYNAMIC).setDescription("(3D watershed only) If \""+USE_MARKERS+"\" is not selected, the initial region markers will be created by generating a distance map for the input binary image and calculating the extended minima.  This parameter specifies the maximum permitted pixel intensity difference for a single marker.  Local intensity differences greater than this will result in creation of more markers.  The smaller the dynamic value is, the more the watershed transform will split the image.");
+
+        parameters.get(CONNECTIVITY_3D).setDescription("(3D watershed only) Controls which adjacent pixels are considered:<br><ul>"
+
+        +"<li>\""+Connectivity3D.SIX+"\" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four \"cardinal\" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li>"
+
+        +"<li>\""+Connectivity3D.TWENTYSIX+"\" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li>");
+
+        parameters.get(MATCH_Z_TO_X).setDescription("When selected, an image is interpolated in Z (so that all pixels are isotropic) prior to calculation of a distance map.  This prevents warping of the distance map along the Z-axis if XY and Z sampling aren't equal.");
+
     }
 }

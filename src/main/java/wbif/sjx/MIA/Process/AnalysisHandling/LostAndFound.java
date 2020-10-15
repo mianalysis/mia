@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
+import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
 
@@ -16,17 +17,25 @@ public class LostAndFound {
         // Populating hard-coded module reassignments
         lostModules.put("ConditionalAnalysisTermination", "WorkflowHandling");
 
-        // Populating hard-coded parameter reassignments
+        //// Populating hard-coded parameter reassignments ////
+        
         // CalculateNearestNeighbour
         HashMap<String, String> currentParameters = new HashMap<>();
         currentParameters.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);
         String moduleName = new CalculateNearestNeighbour(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
-        
+
         // ExpandShrinkObjects
         currentParameters = new HashMap<>();
-        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);        
+        currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);
         moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);
+
+        // ObjectLoader
+        currentParameters = new HashMap<>();
+        currentParameters.put("Output parent clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
+        currentParameters.put("Output tracks clusters name", ObjectLoader.PARENT_OBJECTS_NAME);
+        moduleName = new ObjectLoader(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
 
         // RelateManyToOne
@@ -34,13 +43,13 @@ public class LostAndFound {
         currentParameters.put("Reference point", RelateManyToOne.REFERENCE_MODE);
         moduleName = new RelateManyToOne(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
-        
+
         // ReplaceMeasurementValue
         currentParameters = new HashMap<>();
         currentParameters.put("Value to replace", ReplaceMeasurementValue.REFERENCE_VALUE);
         moduleName = new ReplaceMeasurementValue(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
-        
+
 
     }
 
@@ -62,11 +71,11 @@ public class LostAndFound {
     public String findParameter(String moduleName, String oldName) {
         // If no name is found, return the old name
         HashMap<String, String> currentParameters = lostParameters.get(moduleName);
-        if (currentParameters == null) 
+        if (currentParameters == null)
             return oldName;
 
         String newName = currentParameters.get(oldName);
-        if (newName == null) 
+        if (newName == null)
             newName = oldName;
 
         return newName;

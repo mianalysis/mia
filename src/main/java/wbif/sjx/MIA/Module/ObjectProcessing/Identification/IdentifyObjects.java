@@ -160,7 +160,7 @@ public class IdentifyObjects extends Module {
                 for (int y = 0; y < stripL.getHeight(); y++) {
                     Double valL = (Double) stripL.getVoxel(currW - 1, y, z);
                     Double valR = (Double) stripR.getVoxel(0, y, z);
-                    
+
                     // If both are labelled regions, create a link
                     if (valL > 0 & valR > 0) {
                         Fragment fragmentL = fragments.get(stripIdx - 1).get(valL);
@@ -370,36 +370,20 @@ public class IdentifyObjects extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this, "",
-                "Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255."));
-        parameters
-                .add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Name of output objects to be stored in workspace."));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
         parameters.add(new ParamSeparatorP(IDENTIFICATION_SEPARATOR, this));
-        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true,
-                "When selected, \"foreground\" pixels are considered to have intensities of 0 and background 255 (i.e. black objects on a white background).  When not selected, the inverse is true."));
-        parameters.add(new BooleanP(SINGLE_OBJECT, this, false,
-                "Add all pixels to a single output object.  Enabling this skips the connected-components step."));
-        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL,
-                "When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br><ul>"
-                        + "<li>\"" + Connectivity.SIX
-                        + "\" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.</li>"
-                        + "<li> - \"" + Connectivity.TWENTYSIX
-                        + "\" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity.</li></ul>"));
-        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL,
-                "The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
-                        + "<li>\"" + VolumeTypes.POINTLIST
-                        + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
-                        + "<li>\"" + VolumeTypes.OCTREE
-                        + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
-                        + "<li>\"" + VolumeTypes.QUADTREE
-                        + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>"));
+        parameters.add(new BooleanP(WHITE_BACKGROUND, this, true));
+        parameters.add(new BooleanP(SINGLE_OBJECT, this, false));
+        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
+        parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
 
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true,
-                "Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores."));
-        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60,
-                "Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units."));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+        parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60));
+
+        addParameterDescriptions();
 
     }
 
@@ -455,6 +439,35 @@ public class IdentifyObjects extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription("Input binary image from which objects will be identified.  This image must be 8-bit and only contain values 0 and 255.");
+
+      parameters.get(OUTPUT_OBJECTS).setDescription("Name of output objects to be stored in workspace.");
+
+      parameters.get(WHITE_BACKGROUND).setDescription("When selected, \"foreground\" pixels are considered to have intensities of 0 and background 255 (i.e. black objects on a white background).  When not selected, the inverse is true.");
+
+      parameters.get(SINGLE_OBJECT).setDescription("Add all pixels to a single output object.  Enabling this skips the connected-components step.");
+
+      parameters.get(CONNECTIVITY).setDescription("When performing connected components labelling, the connectivity determines which neighbouring pixels are considered to be in contact.<br><ul>"
+              + "<li>\"" + Connectivity.SIX
+              + "\" considers immediate neighbours to lie in the cardinal directions (i.e. left, right, in-front, behind, above and below).  In 2D this is actually 4-way connectivity.</li>"
+              + "<li> - \"" + Connectivity.TWENTYSIX
+              + "\" (default) considers neighbours to include the cardinal directions as well as diagonal to the pixel in question.  In 2D this is actually 8-way connectivity.</li></ul>");
+
+      parameters.get(VOLUME_TYPE).setDescription("The method used to store pixel coordinates.  This only affects performance and memory usage, there is no difference in results obtained using difference storage methods.<br><ul>"
+              + "<li>\"" + VolumeTypes.POINTLIST
+              + "\" (default) stores object coordinates as a list of XYZ coordinates.  This is most efficient for small objects, very thin objects or objects with lots of holes.</li>"
+              + "<li>\"" + VolumeTypes.OCTREE
+              + "\" stores objects in an octree format.  Here, the coordinate space is broken down into cubes of different sizes, each of which is marked as foreground (i.e. an object) or background.  Octrees are most efficient when there are lots of large cubic regions of the same label, as the space can be represented by larger (and thus fewer) cubes.  This is best used when there are large, completely solid objects.  If z-axis sampling is much larger than xy-axis sampling, it's typically best to opt for the quadtree method.</li>"
+              + "<li>\"" + VolumeTypes.QUADTREE
+              + "\" stores objects in a quadtree format.  Here, each Z-plane of the object is broken down into squares of different sizes, each of which is marked as foreground (i.e. an object) or background.  Quadtrees are most efficient when there are lots of large square regions of the same label, as the space can be represented by larger (and thus fewer) squares.  This is best used when there are large, completely solid objects.</li></ul>");
+
+      parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
+
+      parameters.get(MIN_STRIP_WIDTH).setDescription("Minimum width of each strip to be processed on a separate CPU thread.  Measured in pixel units.");
+
     }
 }
 
