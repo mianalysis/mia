@@ -8,8 +8,7 @@ import wbif.sjx.MIA.Object.References.Collections.RefCollection;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class ParameterCollection extends LinkedHashMap<String, Parameter>
-        implements RefCollection<Parameter> {
+public class ParameterCollection extends LinkedHashMap<String, Parameter> implements RefCollection<Parameter> {
 
     // PUBLIC METHODS
 
@@ -54,6 +53,23 @@ public class ParameterCollection extends LinkedHashMap<String, Parameter>
 
     public void updateVisible(String name, boolean visible) {
         get(name).setVisible(visible);
+    }
+
+    public boolean invalidParameterIsVisible() {
+        for (Parameter parameter : values()) {
+            if (!parameter.isValid() && parameter.isVisible())
+                return true;
+
+            if (parameter instanceof ParameterGroup) {
+                for (ParameterCollection collection : ((ParameterGroup) parameter).getCollections(true).values()) {
+                    if (collection.invalidParameterIsVisible())
+                        return true;
+                }
+            }
+        }
+
+        return false;
+
     }
 
     public boolean hasVisibleParameters() {
