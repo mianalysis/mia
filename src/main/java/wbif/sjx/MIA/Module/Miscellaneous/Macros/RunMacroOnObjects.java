@@ -12,6 +12,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -98,7 +99,15 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the \"" + new RunMacroOnImage(null).getName()
+        + "\" module, which runs once per analysis run).  This module can optionally open an image into ImageJ for the macro to run on.  Variables assigned during the macro can be extracted and stored as measurements associated with the current object.<br><br>"
+
+        + "Note: ImageJ can only run one macro at a time, so by using this module the \""
+        + InputControl.SIMULTANEOUS_JOBS + "\" parameter of the \"" + new InputControl(null).getName()
+        + "\" module must be set to 1.<br><br>"
+
+                + "Note: When this module runs, all windows currently open in ImageJ will be automatically hidden, then re-opened upon macro completion.  This is to prevent accidental interference while the macro is running.  It also allows the macro to run much faster (batch mode).  To keep images open while the macro is running (for example, during debugging) start the macro with the command \"setBatchMode(false)\".";
+        
     }
 
     @Override
@@ -210,7 +219,9 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();
         collection.add(new StringP(VARIABLE,this));
-        parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE,this,collection));
+        parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE, this, collection));
+        
+        addParameterDescriptions();
 
     }
 
@@ -291,5 +302,50 @@ public class RunMacroOnObjects extends CoreMacroRunner {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {        
+        parameters.get(INPUT_OBJECTS).setDescription("The specified macro will be run once on each of the objects from this object collection.  No information (e.g. assigned variables) is transferred between macro runs.");
+
+        parameters.get(PROVIDE_INPUT_IMAGE).setDescription(
+                "When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the \"active\" image the macro runs on.");
+
+        parameters.get(INPUT_IMAGE).setDescription("If \"" + PROVIDE_INPUT_IMAGE
+                + "\" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.");
+
+        ParameterGroup group = (ParameterGroup) parameters.get(ADD_VARIABLE);
+        ParameterCollection collection = group.getTemplateParameters();
+        collection.get(VARIABLE_NAME).setDescription(
+                "The variable value can be accessed from within the macro by using this variable name.");
+
+        collection.get(VARIABLE_VALUE).setDescription("Value assigned to this variable.");
+
+        parameters.get(ADD_VARIABLE).setDescription(
+                "Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""
+                        + getName() + "\" panel.");
+
+        parameters.get(MACRO_MODE)
+                .setDescription("Select the source for the macro code:<br><ul>" + "<li>\"" + MacroModes.MACRO_FILE
+                        + "\" Load the macro from the file specified by the \"" + MACRO_FILE + "\" parameter.</li>"
+
+                        + "<li>\"" + MacroModes.MACRO_TEXT + "\" Macro code is written directly into the \""
+                        + MACRO_TEXT + "\" box.</li></ul>");
+
+        parameters.get(MACRO_TEXT).setDescription(
+                "Macro code to be executed.  MIA macro commands are enabled using the \"run(\"Enable MIA Extensions\");\" command which is included by default.  This should always be the first line of a macro if these commands are needed.");
+
+        parameters.get(MACRO_FILE)
+                .setDescription("Select a macro file (.ijm) to run once, after all analysis runs have completed.");
+
+        parameters.get(REFRESH_BUTTON).setDescription(
+                "This button refreshes the macro code as stored within MIA.  Clicking this will create an \"undo\" checkpoint.");
+
+        parameters.get(ADD_INTERCEPTED_VARIABLE).setDescription(
+                "This allows variables assigned in the macro to be stored as measurements associated with the current object.");
+
+        group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
+        collection = group.getTemplateParameters();
+        collection.get(VARIABLE).setDescription(
+                "Variable assigned in the macro to be stored as a measurement associated with the current object.  This name must exactly match (including case) the name as written in the macro.");
     }
 }

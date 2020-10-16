@@ -5,10 +5,17 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -168,7 +175,9 @@ public class ImageMath extends Module {
         parameters.add(new ChoiceP(CALCULATION_TYPE,this,CalculationTypes.ADD,CalculationTypes.ALL));
         parameters.add(new ChoiceP(VALUE_SOURCE,this, ValueSources.FIXED, ValueSources.ALL));
         parameters.add(new ImageMeasurementP(MEASUREMENT,this));
-        parameters.add(new DoubleP(MATH_VALUE,this,1.0));
+        parameters.add(new DoubleP(MATH_VALUE, this, 1.0));
+        
+        addParameterDescriptions();
 
     }
 

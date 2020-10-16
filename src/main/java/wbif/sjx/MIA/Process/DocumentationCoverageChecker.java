@@ -37,7 +37,7 @@ public class DocumentationCoverageChecker {
         DecimalFormat df = new DecimalFormat("0.00");
 
         // classNames = new ArrayList<>();
-        // classNames.add("wbif.sjx.MIA.Module.WorkflowHandling.FixedTextCondition");
+        // classNames.add("wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage");
 
         // Converting the list of classes to a list of Modules
         for (String className : classNames) {
