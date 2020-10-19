@@ -519,7 +519,7 @@ public class ImageSaver extends Module {
 
         parameters.get(FILE_FORMAT).setDescription("The format the output image will be saved as:<br><ul>"
 
-                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"AVI Writer\" (https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java).  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
+                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"<a href=\"https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java\">AVI Writer</a>\".  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
 
                 + "<li>\"" + FileFormats.TIF + "\" Standard multidimensional (multi-page) TIF image saving.</li>"
 

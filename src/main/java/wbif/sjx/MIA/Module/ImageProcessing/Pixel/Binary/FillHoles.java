@@ -76,7 +76,7 @@ public class FillHoles extends Module {
 
     @Override
     public String getDescription() {
-        return "Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).";
+        return "Performs a 3D fill holes operation on an input binary image.  This operation will change all background pixels in a region which is fully enclosed by foreground pixels to foreground.  The input image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override

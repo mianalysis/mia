@@ -507,7 +507,7 @@ public class MeasureSkeleton extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses the AnalyzeSkeleton plugin by Ignacio Arganda-Carreras (https://imagej.net/AnalyzeSkeleton)."
+        return "Uses the <a href=\"https://imagej.net/AnalyzeSkeleton\">AnalyzeSkeleton</a> plugin by Ignacio Arganda-Carreras."
                 + "<br><br>The optional, output skeleton object acts solely as a linking object for the edge, junction and loop objects.  It doesn't itself hold any coordinate data.";
     }
 

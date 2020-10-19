@@ -55,7 +55,7 @@ public class ApplyCLAHE extends Module {
 
     @Override
     public String getDescription() {
-        return "Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  See https://imagej.net/Enhance_Local_Contrast_(CLAHE)";
+        return "Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image \"<a href=\"https://imagej.net/Enhance_Local_Contrast_(CLAHE)\">CLAHE</a>\" plugin.";
     }
 
     @Override

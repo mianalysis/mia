@@ -149,7 +149,7 @@ public class GlobalAutoThreshold extends Module {
     @Override
     public String getDescription() {
         return "Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the "
-                + "built-in ImageJ global auto-thresholding algorithms (https://imagej.net/Auto_Threshold)." + "<br>"
+                + "built-in ImageJ global <a href=\"https://imagej.net/Auto_Threshold\">auto-thresholding algorithms</a>." + "<br>"
                 + "<br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically "
                 + "converted to 8-bit based on the \"" + ImageTypeConverter.ScalingModes.FILL
                 + "\" scaling method from the " + "\"" + new ImageTypeConverter(null).getName() + "\" module.";

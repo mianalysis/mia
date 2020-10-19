@@ -177,6 +177,6 @@ public class WhiteBalanceCorrection extends Module {
     @Override
     public String getDescription() {
         return "Apply whitebalance correction to an image based on a reference region (specified as an object).<br>" +
-                "<br>Method based on macro by Patrice Mascalchi (https://github.com/pmascalchi/ImageJ_Auto-white-balance-correction).";
+                "<br>Method based on the <a href=\"https://github.com/pmascalchi/ImageJ_Auto-white-balance-correction\">macro</a> by Patrice Mascalchi ().";
     }
 }

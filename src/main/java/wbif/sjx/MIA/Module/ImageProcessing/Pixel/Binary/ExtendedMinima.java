@@ -127,7 +127,7 @@ public class ExtendedMinima extends Module {
 
     @Override
     public String getDescription() {
-        return "Creates an extended minima image for a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).";
+        return "Creates an extended minima image for a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override

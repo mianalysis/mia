@@ -308,8 +308,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses the TrackMate plugin included with Fiji to detect and track spots in images." +
-                "<br><br>For more on TrackMate, go to https://imagej.net/TrackMate";
+        return "Uses the <a href=\"https://imagej.net/TrackMate\">TrackMate</a> plugin included with Fiji to detect and track spots in images.";
     }
 
     @Override

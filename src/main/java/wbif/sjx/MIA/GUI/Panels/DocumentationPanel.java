@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.GUI.Panels;
 
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.GUI.HyperlinkOpener;
 import wbif.sjx.MIA.Process.DocumentationGenerator;
 
 import javax.swing.*;
@@ -45,18 +46,7 @@ public class DocumentationPanel {
             editorPane.setText(textToDisplay);
             editorPane.setCaretPosition(0);
             editorPane.setMargin(new Insets(10,10,10,10));
-            editorPane.addHyperlinkListener(new HyperlinkListener() {
-                @Override
-                public void hyperlinkUpdate(HyperlinkEvent e) {
-                    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
-                        try {
-                            Desktop.getDesktop().browse(e.getURL().toURI());
-                        } catch (IOException | URISyntaxException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-            });
+            editorPane.addHyperlinkListener(new HyperlinkOpener());
 
             JScrollPane scrollPane = new JScrollPane(editorPane);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

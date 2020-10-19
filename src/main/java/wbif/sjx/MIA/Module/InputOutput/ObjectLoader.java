@@ -601,10 +601,10 @@ public class ObjectLoader extends Module {
       parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
 
               + "<li>\"" + NameFormats.GENERIC
-              + "\" (default) will generate a name from metadata values stored in the current workspace.</li>
+              + "\" (default) will generate a name from metadata values stored in the current workspace.</li>"
 
               + "<li>\"" + NameFormats.INPUT_FILE_PREFIX
-              + "\" will load a file with the same name as the input image, but with an additional prefix, specified by the \""+PREFIX+"\" parameter.</li>
+              + "\" will load a file with the same name as the input image, but with an additional prefix, specified by the \""+PREFIX+"\" parameter.</li>"
 
               + "<li>\"" + NameFormats.INPUT_FILE_SUFFIX
               + "\" will load a file with the same name as the input image, but with an additional suffix, specified by the \""+SUFFIX+"\" parameter.</li></ul>");

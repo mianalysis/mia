@@ -53,7 +53,7 @@ public class RunSingleMacroCommand extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Run a single macro command on an image from the workspace.   This module only runs commands of the format \"run([MACRO TITLE], [ARGUMENTS])\".  For example, the command \"run(\"Subtract Background...\", \"rolling=50 stack\");\" would be specified with the \""+MACRO_TITLE+"\" parameter set to \"Subtract Background...\" and the \""+ARGUMENTS+"\" parameter set to \"rolling=50 stack\".  For more advanced macro processing please use the \""+new RunMacroOnImage(null).getName()+"\" module.";
     }
 
     public void runMacroMultithreaded(ImagePlus inputImagePlus, String macroTitle, String arguments) {
@@ -201,15 +201,15 @@ public class RunSingleMacroCommand extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply macro to.  This image is duplicated prior to application of the macro, so won't be updated by default.  To store any changes back onto this image, select the \""+APPLY_TO_INPUT+"\ parameter.");
+      parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply macro to.  This image is duplicated prior to application of the macro, so won't be updated by default.  To store any changes back onto this image, select the \""+APPLY_TO_INPUT+"\" parameter.");
 
       parameters.get(APPLY_TO_INPUT).setDescription("When selected, the image returned by the macro will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.");
 
-      parameters.get(OUTPUT_IMAGE).setDescription("When \""+APPLY_TO_INPUT+"\ is not selected this will store the macro output image into the MIA workspace with the name specified by this parameter.");
+      parameters.get(OUTPUT_IMAGE).setDescription("When \""+APPLY_TO_INPUT+"\" is not selected this will store the macro output image into the MIA workspace with the name specified by this parameter.");
 
-      parameters.get(MACRO_TITLE).setDescription("The macro command to run.  This must be the exact name as given by the ImageJ macro recorder.");
+      parameters.get(MACRO_TITLE).setDescription("The macro command to run.  This must be the exact name as given by the ImageJ macro recorder.  Note: Only commands of the format \"run([MACRO TITLE], [ARGUMENTS])\" can be run by this module.  For more advanced macro processing please use the \""+new RunMacroOnImage(null).getName()+"\" module.");
 
-      parameters.get(ARGUMENTS).setDescription("The arguments to pass to the macro.");
+      parameters.get(ARGUMENTS).setDescription("The options to pass to the macro.");
 
       parameters.get(ENABLE_MULTITHREADING).setDescription("When running a macro which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for macros containing the \"stack\" argument.");
 
