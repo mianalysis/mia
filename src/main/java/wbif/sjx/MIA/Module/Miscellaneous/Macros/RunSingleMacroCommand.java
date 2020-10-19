@@ -97,12 +97,18 @@ public class RunSingleMacroCommand extends Module {
         String arguments = parameters.getValue(ARGUMENTS);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        // Only multithread the operation if it's being conducted on a single slice at a time.
+        if (!arguments.contains("stack"))
+            multithread = false;
+
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {
             inputImagePlus = new Duplicator().run(inputImagePlus);
         }
 
         if (multithread) {
+            // If multithreading, remove the "stack" argument
+            arguments = arguments.replace("stack","");
             runMacroMultithreaded(inputImagePlus, macroTitle, arguments);
         } else {
             IJ.run(inputImagePlus, macroTitle, arguments);
@@ -135,6 +141,8 @@ public class RunSingleMacroCommand extends Module {
         parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -152,8 +160,11 @@ public class RunSingleMacroCommand extends Module {
         returnedParameters.add(parameters.getParameter(MACRO_TITLE));
         returnedParameters.add(parameters.getParameter(ARGUMENTS));
 
-        returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
+        String arguments = parameters.getValue(ARGUMENTS);
+        if (arguments.contains("stack")) {
+            returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
+            returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
+        }
 
         return returnedParameters;
 
@@ -187,5 +198,20 @@ public class RunSingleMacroCommand extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply macro to.  This image is duplicated prior to application of the macro, so won't be updated by default.  To store any changes back onto this image, select the \""+APPLY_TO_INPUT+"\ parameter.");
+
+      parameters.get(APPLY_TO_INPUT).setDescription("When selected, the image returned by the macro will be stored back into the MIA workspace at the same name as the input image.  This will update the input image.");
+
+      parameters.get(OUTPUT_IMAGE).setDescription("When \""+APPLY_TO_INPUT+"\ is not selected this will store the macro output image into the MIA workspace with the name specified by this parameter.");
+
+      parameters.get(MACRO_TITLE).setDescription("The macro command to run.  This must be the exact name as given by the ImageJ macro recorder.");
+
+      parameters.get(ARGUMENTS).setDescription("The arguments to pass to the macro.");
+
+      parameters.get(ENABLE_MULTITHREADING).setDescription("When running a macro which operates on a single slice at a time, multithreading will create a new thread for each slice.  This can provide a speed improvement when working on a computer with a multi-core CPU.  Note: Multithreading is only available for macros containing the \"stack\" argument.");
+
     }
 }

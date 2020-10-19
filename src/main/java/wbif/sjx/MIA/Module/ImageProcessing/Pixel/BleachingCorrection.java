@@ -38,7 +38,8 @@ public class BleachingCorrection extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses the Fiji bleaching correction plugin (by Kota Miura)";
+        return "Apply histogram matching bleaching correction to a specified image.  This adjusts intensities in all frames (after the first) to match the histogram distribution of the first frame.  It is intended to account for any fluorophore bleaching that occurs during acquisition of a timecourse.<br><br>
+        This macro runs the Fiji bleaching correction plugin, <a href=\"https://imagej.net/Bleach_Correction\">\"Bleach Correction\"</a>, in histogram matching mode.";
     }
 
     @Override

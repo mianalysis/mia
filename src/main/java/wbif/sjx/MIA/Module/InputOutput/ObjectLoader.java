@@ -460,14 +460,16 @@ public class ObjectLoader extends Module {
         parameters.add(new IntegerP(N_FRAMES,this,1));
         parameters.add(new ChoiceP(CALIBRATION_SOURCE,this,CalibrationSources.FROM_IMAGE,CalibrationSources.ALL));
         parameters.add(new InputImageP(CALIBRATION_REFERENCE_IMAGE,this));
-        parameters.add(new DoubleP(XY_CAL, this, 1d, "Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module."));
-        parameters.add(new DoubleP(Z_CAL, this, 1d, "Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module."));
+        parameters.add(new DoubleP(XY_CAL, this, 1d));
+        parameters.add(new DoubleP(Z_CAL, this, 1d));
 
         parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
         parameters.add(new BooleanP(CREATE_PARENTS,this,false));
         parameters.add(new ChoiceP(PARENT_TYPE,this,ParentTypes.NORMAL,ParentTypes.ALL));
         parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME,this));
         parameters.add(new IntegerP(PARENTS_COLUMN_INDEX,this,5));
+
+        addParameterDescriptions();
 
     }
 
@@ -589,5 +591,75 @@ public class ObjectLoader extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(OUTPUT_OBJECTS).setDescription("");
+
+      parameters.get(COORDINATE_SOURCE).setDescription("");
+
+      parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
+
+              + "<li>\"" + NameFormats.GENERIC
+              + "\" (default) will generate a name from metadata values stored in the current workspace.</li>
+
+              + "<li>\"" + NameFormats.INPUT_FILE_PREFIX
+              + "\" will load a file with the same name as the input image, but with an additional prefix, specified by the \""+PREFIX+"\" parameter.</li>
+
+              + "<li>\"" + NameFormats.INPUT_FILE_SUFFIX
+              + "\" will load a file with the same name as the input image, but with an additional suffix, specified by the \""+SUFFIX+"\" parameter.</li></ul>");
+
+      parameters.get(GENERIC_FORMAT).setDescription("Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
+
+      parameters.get(AVAILABLE_METADATA_FIELDS).setDescription("List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
+
+      parameters.get(PREFIX).setDescription("Prefix to use when generating coordinate file filename in \""+NameFormats.INPUT_FILE_PREFIX+"\" mode.");
+
+      parameters.get(SUFFIX).setDescription("Suffix to use when generating coordinate file filename in \""+NameFormats.INPUT_FILE_SUFFIX+"\" mode.");
+
+      parameters.get(EXTENSION).setDescription("Extension for the generated filename.");
+
+      parameters.get(INCLUDE_SERIES_NUMBER).setDescription("Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file.");
+
+      parameters.get(INPUT_FILE).setDescription("Path to specific file to be loaded when \""+COORDINATE_SOURCE+"\" is in \""+CoordinateSources.SPECIFIC_FILE+"\" mode.");
+
+      parameters.get(ID_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object ID number.");
+
+      parameters.get(X_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object x-centroid location (pixel units).");
+
+      parameters.get(Y_COLUMN_INDEX).setDescription("");
+
+      parameters.get(Z_COLUMN_INDEX).setDescription("");
+
+      parameters.get(T_COLUMN_INDEX).setDescription("");
+
+      parameters.get(LIMITS_SOURCE).setDescription("");
+
+      parameters.get(LIMITS_REFERENCE_IMAGE).setDescription("");
+
+      parameters.get(WIDTH).setDescription("");
+
+      parameters.get(HEIGHT).setDescription("");
+
+      parameters.get(N_SLICES).setDescription("");
+
+      parameters.get(N_FRAMES).setDescription("");
+
+      parameters.get(CALIBRATION_SOURCE).setDescription("");
+
+      parameters.get(CALIBRATION_REFERENCE_IMAGE).setDescription("");
+
+      parameters.get(XY_CAL).setDescription("Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module.");
+
+      parameters.get(Z_CAL).setDescription("Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module.");
+
+      parameters.get(CREATE_PARENTS).setDescription("");
+
+      parameters.get(PARENT_TYPE).setDescription("");
+
+      parameters.get(PARENT_OBJECTS_NAME).setDescription("");
+
+      parameters.get(PARENTS_COLUMN_INDEX).setDescription("");
+
     }
 }
