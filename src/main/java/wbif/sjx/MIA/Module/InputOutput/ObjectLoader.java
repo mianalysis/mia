@@ -362,7 +362,7 @@ public class ObjectLoader extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Load centroid coordinates of pre-detected objects from file.  Loaded objects are stored in a single object collection and are represented by a single coordinate point.  For example, this module could be used to import detections from another piece of software or from a previous analysis run.";
     }
 
     @Override
@@ -594,9 +594,17 @@ public class ObjectLoader extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(OUTPUT_OBJECTS).setDescription("");
+      parameters.get(OUTPUT_OBJECTS).setDescription("Objects loaded into the workspace will be stored with this name.  They will be accessible by subsequent modules using this name.");
 
-      parameters.get(COORDINATE_SOURCE).setDescription("");
+      parameters.get(COORDINATE_SOURCE).setDescription("Controls where the coordinates for the output object collection will be loaded from:<br><ul>"
+
+      + "<li>\"" + CoordinateSources.CURRENT_FILE
+      + "\" (default option) will use the current root-file for the workspace (this is the file specified in the \""+ getInputControl().getName()+"\" module).</li>"
+
+      + "<li>\"" + ImportModes.MATCHING_FORMAT
+      + "\" will load the coordinate file matching a filename based on the root-file for the workspace and a series of rules.</li>"
+
+      + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the coordinate file at the location specified by \""+INPUT_FILE+"\".</li></ul>");
 
       parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
 
@@ -627,39 +635,49 @@ public class ObjectLoader extends Module {
 
       parameters.get(X_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object x-centroid location (pixel units).");
 
-      parameters.get(Y_COLUMN_INDEX).setDescription("");
+      parameters.get(Y_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object y-centroid location (pixel units).");
 
-      parameters.get(Z_COLUMN_INDEX).setDescription("");
+      parameters.get(Z_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object z-centroid location (slice units).");
 
-      parameters.get(T_COLUMN_INDEX).setDescription("");
+      parameters.get(T_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the timepoint the object appears in.  Timepoint numbering starts at 0.");
 
-      parameters.get(LIMITS_SOURCE).setDescription("");
+      parameters.get(LIMITS_SOURCE).setDescription("Controls how the spatial limits (width, height, number of slices and number of timepoints) for the output object collection are defined:<br><ul>"
 
-      parameters.get(LIMITS_REFERENCE_IMAGE).setDescription("");
+      +"<li>\""+LimitsSources.FROM_IMAGE+"\" limits match the spatial and temporal dimensions of an image in the workspace (specified with the \""+LIMITS_REFERENCE_IMAGE+"\" parameter).  This is equivalent to how spatial limits are determined when identifying objects directly from an image.</li>"
 
-      parameters.get(WIDTH).setDescription("");
+      +"<li>\""+LimitsSources.MANUAL+"\" limits are specified using the \""+WIDTH+"\", \""+HEIGHT+"\", \""+N_SLICES+"\" and \""+N_FRAMES+"\" parameters.</li>"
 
-      parameters.get(HEIGHT).setDescription("");
+      +"<li>\""+LimitsSources.MAXIMUM_COORDINATE+"\" limits are determined from the maximum x,y,z coordinates and timepoint present in the loaded coordinate set.</li></ul>");
 
-      parameters.get(N_SLICES).setDescription("");
+      parameters.get(LIMITS_REFERENCE_IMAGE).setDescription("Image used to determine spatial and temporal limits of the output object collection if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.FROM_IMAGE+"\".");
 
-      parameters.get(N_FRAMES).setDescription("");
+      parameters.get(WIDTH).setDescription("Output object collection spatial width to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".  Specified in pixel units.");
 
-      parameters.get(CALIBRATION_SOURCE).setDescription("");
+      parameters.get(HEIGHT).setDescription("Output object collection spatial height to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".  Specified in pixel units.");
 
-      parameters.get(CALIBRATION_REFERENCE_IMAGE).setDescription("");
+      parameters.get(N_SLICES).setDescription("Output object collection number of slices (depth) to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".  Specified in slice units.");
+
+      parameters.get(N_FRAMES).setDescription("Output object collection number of frames to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".");
+
+      parameters.get(CALIBRATION_SOURCE).setDescription("Controls how the spatial calibration for the output object collection are defined:<br><ul>"
+
+      +"<li>\""+CalibrationSources.FROM_IMAGE+"\" spatial calibrations match those of an image in the workspace (specified with the \""+CALIBRATION_REFERENCE_IMAGE+"\" parameter).  This is equivalent to how calibrations are determined when identifying objects directly from an image.</li>"
+
+      +"<li>\""+CalibrationSources.MANUAL+"\" spatial calibrations are specified using the \""+XY_CAL+"\" and \""+Z_CAL+"\" parameters.</li></ul>");
+
+      parameters.get(CALIBRATION_REFERENCE_IMAGE).setDescription("Image used to determine spatial calibrations of the output object collection if \""+CALIBRATION_SOURCE+"\" is set to \""+CalibrationSources.FROM_IMAGE+"\".");
 
       parameters.get(XY_CAL).setDescription("Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module.");
 
       parameters.get(Z_CAL).setDescription("Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module.");
 
-      parameters.get(CREATE_PARENTS).setDescription("");
+      parameters.get(CREATE_PARENTS).setDescription("When selected, an output parent object collection can also be specified which allows objects to be linked.  These parent objectcs can only perform a linking function for the output objects; the parent objects themselves do not contain any coordinate information.  For example, the loaded parent objects could be tracks or clusters.");
 
-      parameters.get(PARENT_TYPE).setDescription("");
+      parameters.get(PARENT_TYPE).setDescription("Controls the type of parent objects being used if the \""+CREATE_PARENTS+"\" parameter is selected.  Choices are: "+String.join(", ", ParentTypes.ALL+"."));
 
-      parameters.get(PARENT_OBJECTS_NAME).setDescription("");
+      parameters.get(PARENT_OBJECTS_NAME).setDescription("Name of the output parent objects collection.");
 
-      parameters.get(PARENTS_COLUMN_INDEX).setDescription("");
+      parameters.get(PARENTS_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the parent object ID number.");
 
     }
 }

@@ -699,7 +699,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // If name includes "*" get first instance of wildcard
         if (filename.contains("*")) {
             String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
-            
+
             // Checking if any filenames were found
             if (filenames == null)
                 return null;
@@ -1181,10 +1181,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     void addParameterDescriptions() {
         parameters.get(OUTPUT_IMAGE).setDescription("Name assigned to the image.");
 
-        parameters.get(IMPORT_MODE).setDescription("File reader mode to use.<br><ul>"
+        parameters.get(IMPORT_MODE).setDescription("Controls where the image will be loaded from:<br><ul>"
 
                 + "<li>\"" + ImportModes.CURRENT_FILE
-                + "\" (default option) will import the current root-file for the workspace.</li>"
+                + "\" (default option) will import the current root-file for the workspace (this is the file specified in the \""+ getInputControl().getName()+"\" module).</li>"
 
                 + "<li>\"" + ImportModes.IMAGEJ + "\" will load the active image fromm ImageJ.</li>"
 
@@ -1194,7 +1194,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 + "<li>\"" + ImportModes.MATCHING_FORMAT
                 + "\" will load the image matching a filename based on the root-file for the workspace and a series of rules.</li>"
 
-                + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the image at a specific location.</li></ul>");
+                + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the image at the location specified by \""+FILE_PATH+"\".</li></ul>");
 
         parameters.get(READER).setDescription("Set the reader for importing the image:<br><ul>"
 
@@ -1274,7 +1274,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         parameters.get(SCALE_MODE).setDescription(
                 "Controls if the input image is scaled upon importing.  This only works for scaling in X and Y (magnitudes determined by the \""+SCALE_FACTOR_X+"\" and \""+SCALE_FACTOR_Y+"\" parameters):<br><ul>"
-                
+
                         + "<li>\"" + ScaleModes.BICUBIC + "\" Scales the input images using a bicubic filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
 
                         + "<li>\"" + ScaleModes.BILINEAR + "\" Scales the input images using a bilinear filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
