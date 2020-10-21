@@ -204,7 +204,7 @@ public class ObjectMeasurementCalculator extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Perform a mathematical operation on measurements associated with each object of an object collection in the workspace.  The calculation can replace either or both values with fixed values, measurements associated with an image or a statistic of all measurements associated with another object collection (e.g. the mean volume of all objects).  The resulting measurements are associated with the corresponding input objects as new measurements.";
     }
 
     @Override
@@ -326,6 +326,8 @@ public class ObjectMeasurementCalculator extends Module {
         parameters.add(new StringP(OUTPUT_MEASUREMENT, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.ADD, CalculationModes.ALL));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -440,5 +442,62 @@ public class ObjectMeasurementCalculator extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_OBJECTS).setDescription("Object collection from the workspace to perform the measurement calculation for.  The specified calculation will be performed once per object in the collection.");
+
+      parameters.get(VALUE_MODE_1).setDescription("Controls how the first value in the calculation is defined:<br><ul>"
+
+      +"<li>\""+ValueModes.FIXED+"\" A single, fixed value defined by \""+FIXED_VALUE_1+"\"is used.</li>"
+
+      +"<li>\""+ValueModes.IMAGE_MEASUREMENT+"\" A measurement associated with an image (specified by \""+IMAGE_1+"\") and defined by \""+IMAGE_MEASUREMENT_1+"\" is used.</li>"
+
+      +"<li>\""+ValueModes.MEASUREMENT+"\" A measurement associated with the input object and defined by \""+MEASUREMENT_1+"\" is used.</li>"
+
+      +"<li>\""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" A statistic (specified by \""+STATISTIC_MODE_1+"\") of a measurement (specified by \""+REFERENCE_MEASUREMENT_1+"\") associated with all objects in an object collection (specified by \""+REFERENCE_OBJECTS_1+"\") is used.  For example, the mean object volume.  Note: The object collection used to calculate the statistic doesn't have to be the same as the input object collection.</li></ul>");
+
+      parameters.get(FIXED_VALUE_1).setDescription("Fixed value to use in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.FIXED+"\" mode.");
+
+      parameters.get(IMAGE_1).setDescription("A measurement associated with this image will be used in the calculated when \""+VALUE_MODE_1+"\" is in \""+ValueModes.IMAGE_MEASUREMENT+"\" mode.");
+
+      parameters.get(IMAGE_MEASUREMENT_1).setDescription("Measurement associated with an image (specified by \""+IMAGE_1+"\") to use in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.IMAGE_MEASUREMENT+"\" mode.");
+
+      parameters.get(MEASUREMENT_1).setDescription("Measurement, associated with the current object, to use in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.MEASUREMENT+"\" mode.");
+
+      parameters.get(REFERENCE_OBJECTS_1).setDescription("Object collection for which a statistic of an associated measurement will be used in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" mode.");
+
+      parameters.get(REFERENCE_MEASUREMENT_1).setDescription("Measurement associated with the objects in the collection specified by \""+REFERENCE_OBJECTS_1+"\".  A statistic of all object measurements will be used in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" mode.");
+
+      parameters.get(STATISTIC_MODE_1).setDescription("Statistic to apply to all measurements (specified by \""+REFERENCE_MEASUREMENT_1+"\") of an object collection (specified by \""+REFERENCE_OBJECTS_1+"\").  The resulting value will be used in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" mode.  Choices are: "+ String.join(", ", StatisticModes.ALL)+"."");
+
+      parameters.get(VALUE_MODE_2).setDescription("Controls how the second value in the calculation is defined:<br><ul>"
+
+      +"<li>\""+ValueModes.FIXED+"\" A single, fixed value defined by \""+FIXED_VALUE_2+"\"is used.</li>"
+
+      +"<li>\""+ValueModes.IMAGE_MEASUREMENT+"\" A measurement associated with an image (specified by \""+IMAGE_2+"\") and defined by \""+IMAGE_MEASUREMENT_2+"\" is used.</li>"
+
+      +"<li>\""+ValueModes.MEASUREMENT+"\" A measurement associated with the input object and defined by \""+MEASUREMENT_2+"\" is used.</li>"
+
+      +"<li>\""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" A statistic (specified by \""+STATISTIC_MODE_2+"\") of a measurement (specified by \""+REFERENCE_MEASUREMENT_2+"\") associated with all objects in an object collection (specified by \""+REFERENCE_OBJECTS_2+"\") is used.  For example, the mean object volume.  Note: The object collection used to calculate the statistic doesn't have to be the same as the input object collection.</li></ul>");
+
+      parameters.get(FIXED_VALUE_2).setDescription("Fixed value to use in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.FIXED+"\" mode.");
+
+      parameters.get(IMAGE_2).setDescription("A measurement associated with this image will be used in the calculated when \""+VALUE_MODE_2+"\" is in \""+ValueModes.IMAGE_MEASUREMENT+"\" mode.");
+
+      parameters.get(IMAGE_MEASUREMENT_2).setDescription("Measurement associated with an image (specified by \""+IMAGE_2+"\") to use in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.IMAGE_MEASUREMENT+"\" mode.");
+
+      parameters.get(MEASUREMENT_2).setDescription("Measurement, associated with the current object, to use in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.MEASUREMENT+"\" mode.");
+
+      parameters.get(REFERENCE_OBJECTS_2).setDescription("Object collection for which a statistic of an associated measurement will be used in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" mode.");
+
+      parameters.get(REFERENCE_MEASUREMENT_2).setDescription("Measurement associated with the objects in the collection specified by \""+REFERENCE_OBJECTS_2+"\".  A statistic of all object measurements will be used in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" mode.");
+
+      parameters.get(STATISTIC_MODE_2).setDescription("Statistic to apply to all measurements (specified by \""+REFERENCE_MEASUREMENT_2+"\") of an object collection (specified by \""+REFERENCE_OBJECTS_2+"\").  The resulting value will be used in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.OBJECT_COLLECTION_STATISTIC+"\" mode.  Choices are: "+ String.join(", ", StatisticModes.ALL)+".");
+
+      parameters.get(OUTPUT_MEASUREMENT).setDescription("The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the corresponding object from the input object collection.");
+
+      parameters.get(CALCULATION_MODE).setDescription("Calculation to perform.  Choices are: "+ String.join(", ",CalculationModes.ALL) + ".");
+
     }
 }

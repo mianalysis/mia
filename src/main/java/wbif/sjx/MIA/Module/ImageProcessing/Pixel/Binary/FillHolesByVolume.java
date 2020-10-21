@@ -296,7 +296,7 @@ public class FillHolesByVolume extends Module {
         parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60));
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
@@ -388,7 +388,7 @@ public class FillHolesByVolume extends Module {
 
       parameters.get(MAXIMUM_VOLUME).setDescription("");
 
-      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are used.");
+      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are assumed.");
 
       parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 

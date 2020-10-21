@@ -711,7 +711,7 @@ public class CalculateNearestNeighbour extends Module {
                 + "\" is selected, this is the maximum permitted distance between objects for them to have their nearest neighbour distance recorded.");
 
         parameters.get(CALIBRATED_DISTANCE).setDescription(
-                "When selected, linking distances are to be specified in calibrated units; otherwise, units are specified as pixels.");
+                "When selected, linking distances are to be specified in calibrated units; otherwise, units are specified in pixels.");
 
         parameters.get(LINK_IN_SAME_FRAME)
                 .setDescription("When selected, objects must be in the same time frame for them to be linked.");
