@@ -5,6 +5,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -78,9 +79,10 @@ public class MeasureSpotIntensity extends Module {
     public String getDescription() {
         return "Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements."
 
-        + "<br><br>Note: This module differs from the \""+ new MeasureObjectIntensity(null).getName() + "\" module, which measures the intensity of all coordinates of an object."
+                + "<br><br>Note: This module differs from the \"" + new MeasureObjectIntensity(null).getName()
+                + "\" module, which measures the intensity of all coordinates of an object."
 
-        +"<br><br>* 2D objects are defined as objects identified from a single-slice image.  Objects with coordinates confined to a single plane, but identified from a 3D image stack are still considered 3D objects.";
+                + "<br><br>* 2D objects are defined as objects identified from a single-slice image.  Objects with coordinates confined to a single plane, but identified from a 3D image stack are still considered 3D objects.";
 
     }
 
@@ -319,37 +321,61 @@ public class MeasureSpotIntensity extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_IMAGE).setDescription("Image from the workspace to measure the intensity of.");
+        parameters.get(INPUT_IMAGE).setDescription("Image from the workspace to measure the intensity of.");
 
-      parameters.get(INPUT_OBJECTS).setDescription("Object collection from the workspace for which spot intensities will be measured.  One spot will be measured for each object.");
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "Object collection from the workspace for which spot intensities will be measured.  One spot will be measured for each object.");
 
-      parameters.get(RADIUS_SOURCE).setDescription("Controls how the radius of the spot is defined:<br><ul>"
+        parameters.get(RADIUS_SOURCE).setDescription("Controls how the radius of the spot is defined:<br><ul>"
 
-        +"<li>\""+RadiusSources.FIXED_VALUE+"\" A single radius, defined by \""+FIXED_VALUE+"\" will be used for all objects.</li>"
+                + "<li>\"" + RadiusSources.FIXED_VALUE + "\" A single radius, defined by \"" + FIXED_VALUE
+                + "\" will be used for all objects.</li>"
 
-        +"<li>\""+RadiusSources.MEASUREMENT+"\" The radius will be equal to the value of a measurement (specified by \""+RADIUS_MEASUREMENT+"\") associated with the object being measured.  Radii will potentially be different for each object.</li>"
+                + "<li>\"" + RadiusSources.MEASUREMENT
+                + "\" The radius will be equal to the value of a measurement (specified by \"" + RADIUS_MEASUREMENT
+                + "\") associated with the object being measured.  Radii will potentially be different for each object.</li>"
 
-        +"<li>\""+RadiusSources.PARENT_MEASUREMENT+"\" The radius will be equal to the value of a measurement (specified by \""+PARENT_RADIUS_MEASUREMENT+"\") associated a parent of the object being measured (specified by \""+PARENT_OBJECT+"\").  Radii will potentially be different for each object..</li></ul>");
+                + "<li>\"" + RadiusSources.PARENT_MEASUREMENT
+                + "\" The radius will be equal to the value of a measurement (specified by \""
+                + PARENT_RADIUS_MEASUREMENT + "\") associated a parent of the object being measured (specified by \""
+                + PARENT_OBJECT + "\").  Radii will potentially be different for each object..</li></ul>");
 
-      parameters.get(FIXED_VALUE).setDescription("Fixed spot radius to use for all object measurements when \""+RADIUS_SOURCE+"\" is in \""+RadiusSources.FIXED_VALUE+"\" mode.");
+        parameters.get(FIXED_VALUE).setDescription("Fixed spot radius to use for all object measurements when \""
+                + RADIUS_SOURCE + "\" is in \"" + RadiusSources.FIXED_VALUE + "\" mode.");
 
-      parameters.get(RADIUS_MEASUREMENT).setDescription("Measurement associated with the input object.  This will be used as spot the radius for spot intensity measurements when \""+RADIUS_SOURCE+"\" is in \""+RadiusSources.MEASUREMENT+"\" mode.");
+        parameters.get(RADIUS_MEASUREMENT).setDescription(
+                "Measurement associated with the input object.  This will be used as spot the radius for spot intensity measurements when \""
+                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.MEASUREMENT + "\" mode.");
 
-      parameters.get(PARENT_OBJECT).setDescription("Parent object of the input object being measured.  This parent will provide the measurement (specified by \""+PARENT_RADIUS_MEASUREMENT+"\") to be used as the spot radius for spot intensity measurements when \""+RADIUS_SOURCE+"\" is in \""+RadiusSources.PARENT_RADIUS_MEASUREMENT+"\" mode."");
+        parameters.get(PARENT_OBJECT).setDescription(
+                "Parent object of the input object being measured.  This parent will provide the measurement (specified by \""
+                        + PARENT_RADIUS_MEASUREMENT
+                        + "\") to be used as the spot radius for spot intensity measurements when \"" + RADIUS_SOURCE
+                        + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
 
-      parameters.get(PARENT_RADIUS_MEASUREMENT).setDescription("Measurement associated with a parent of the input object.  This will be used as the spot radius for spot intensity measurements when \""+RADIUS_SOURCE+"\" is in \""+RadiusSources.PARENT_RADIUS_MEASUREMENT+"\" mode.");
+        parameters.get(PARENT_RADIUS_MEASUREMENT).setDescription(
+                "Measurement associated with a parent of the input object.  This will be used as the spot radius for spot intensity measurements when \""
+                        + RADIUS_SOURCE + "\" is in \"" + RadiusSources.PARENT_MEASUREMENT + "\" mode.");
 
-      parameters.get(CALIBRATED_UNITS).setDescription("When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are assumed.");
+        parameters.get(CALIBRATED_UNITS).setDescription(
+                "When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the \""
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                        + "\").  Otherwise, pixel units are assumed.");
 
-      parameters.get(MEASURE_MEAN).setDescription("When selected, the mean intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
+        parameters.get(MEASURE_MEAN).setDescription(
+                "When selected, the mean intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
 
-      parameters.get(MEASURE_STDEV).setDescription("When selected, the standard deviation of intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
+        parameters.get(MEASURE_STDEV).setDescription(
+                "When selected, the standard deviation of intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
 
-      parameters.get(MEASURE_MIN).setDescription("When selected, the minimum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
+        parameters.get(MEASURE_MIN).setDescription(
+                "When selected, the minimum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
 
-      parameters.get(MEASURE_MAX).setDescription("When selected, the maximum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
+        parameters.get(MEASURE_MAX).setDescription(
+                "When selected, the maximum intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
 
-      parameters.get(MEASURE_SUM).setDescription("When selected, the summed intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
+        parameters.get(MEASURE_SUM).setDescription(
+                "When selected, the summed intensity of all coordinates in the spot is calculated and stored as a measurement associated with the input object.");
 
     }
 }
