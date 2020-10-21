@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +18,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -599,12 +599,12 @@ public class ObjectLoader extends Module {
       parameters.get(COORDINATE_SOURCE).setDescription("Controls where the coordinates for the output object collection will be loaded from:<br><ul>"
 
       + "<li>\"" + CoordinateSources.CURRENT_FILE
-      + "\" (default option) will use the current root-file for the workspace (this is the file specified in the \""+ getInputControl().getName()+"\" module).</li>"
+      + "\" (default option) will use the current root-file for the workspace (this is the file specified in the \""+ new InputControl(null).getName() + "\" module).</li>"
 
-      + "<li>\"" + ImportModes.MATCHING_FORMAT
+      + "<li>\"" + CoordinateSources.MATCHING_FORMAT
       + "\" will load the coordinate file matching a filename based on the root-file for the workspace and a series of rules.</li>"
 
-      + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the coordinate file at the location specified by \""+INPUT_FILE+"\".</li></ul>");
+      + "<li>\"" + CoordinateSources.SPECIFIC_FILE + "\" will load the coordinate file at the location specified by \""+INPUT_FILE+"\".</li></ul>");
 
       parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
 

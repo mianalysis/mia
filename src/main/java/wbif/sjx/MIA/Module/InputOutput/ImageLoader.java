@@ -43,6 +43,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
@@ -1184,7 +1185,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(IMPORT_MODE).setDescription("Controls where the image will be loaded from:<br><ul>"
 
                 + "<li>\"" + ImportModes.CURRENT_FILE
-                + "\" (default option) will import the current root-file for the workspace (this is the file specified in the \""+ getInputControl().getName()+"\" module).</li>"
+                + "\" (default option) will import the current root-file for the workspace (this is the file specified in the \""+ new InputControl(null).getName() +"\" module).</li>"
 
                 + "<li>\"" + ImportModes.IMAGEJ + "\" will load the active image fromm ImageJ.</li>"
 
