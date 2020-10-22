@@ -222,7 +222,7 @@ public class RunTrackMate extends Module {
                 spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)));
                 spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_CAL,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY));
                 spotObject.addMeasurement(new Measurement(Measurements.QUALITY, spot.getFeature(Spot.QUALITY)));
-                
+
                 // Getting coordinates
                 int x = (int) Math.round(spot.getDoublePosition(0));
                 int y = (int) Math.round(spot.getDoublePosition(1));
@@ -396,9 +396,9 @@ public class RunTrackMate extends Module {
 
         parameters.add(new ParamSeparatorP(TRACK_SEPARATOR, this));
         parameters.add(new BooleanP(DO_TRACKING, this,true, "Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information."));
-        parameters.add(new ChoiceP(TRACKING_METHOD,this, TrackingMethods.SIMPLE, TrackingMethods.ALL, "Method with which spots are tracked between frames<br>" +
-                "<br>- \""+ TrackingMethods.KALMAN+"\" uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.<br>" +
-                "<br>- \""+ TrackingMethods.SIMPLE+"\" (default) calculates links between spot positions in the previous and current frames.  This does not take motion into account.<br>"));
+        parameters.add(new ChoiceP(TRACKING_METHOD,this, TrackingMethods.SIMPLE, TrackingMethods.ALL, "Method with which spots are tracked between frames:<br><ul>"
+        + "<li>\""+ TrackingMethods.KALMAN+"\" Uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.</li>"
+        + "<li>\""+ TrackingMethods.SIMPLE+"\" (default) Calculates links between spot positions in the previous and current frames.  This does not take motion into account.</li></ul>"));
         parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,10.0, "Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
         parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,10.0, "Maximum distance a spot can travel between \""+MAX_FRAME_GAP+"\" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected."));
         parameters.add(new DoubleP(INITIAL_SEARCH_RADIUS,this,10.0, "Minimum spot separation required for creation of a new track."));
@@ -514,4 +514,3 @@ public class RunTrackMate extends Module {
         return true;
     }
 }
-

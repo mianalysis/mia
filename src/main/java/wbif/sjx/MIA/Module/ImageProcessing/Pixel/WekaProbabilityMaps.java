@@ -264,10 +264,9 @@ public class WekaProbabilityMaps extends Module {
                 "Class (image channel) to be output.  Channel numbering starts at 1."));
         parameters.add(new ParamSeparatorP(CLASSIFIER_SEPARATOR, this));
         parameters.add(new ChoiceP(PATH_TYPE, this, PathTypes.SPECIFIC_FILE, PathTypes.ALL,
-                "Method to use for generation of the classifier filename.<br>" + "<br>- \"" + PathTypes.MATCHING_FORMAT
-                        + "\" will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.<br>"
-                        + "<br>- \"" + PathTypes.SPECIFIC_FILE
-                        + "\" will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files."));
+                "Method to use for generation of the classifier filename:<br><ul>"
+                + "<li>\"" + PathTypes.MATCHING_FORMAT + "\" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li>"
+                + "<li>\"" + PathTypes.SPECIFIC_FILE + "\" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul>"));
         parameters.add(new StringP(GENERIC_FORMAT, this, "",
                 "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,

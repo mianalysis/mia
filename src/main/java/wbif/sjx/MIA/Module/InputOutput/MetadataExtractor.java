@@ -396,6 +396,8 @@ public class MetadataExtractor extends Module {
         parameters.add(new StringP(METADATA_VALUE_NAME,this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -651,6 +653,43 @@ public class MetadataExtractor extends Module {
     public boolean verify() {
         return true;
     }
+
+    void addParameterDescriptions() {
+      parameters.get(EXTRACTOR_MODE).setDescription("");
+
+      parameters.get(FILENAME_EXTRACTOR).setDescription("");
+
+      parameters.get(FOLDERNAME_EXTRACTOR).setDescription("");
+
+      parameters.get(KEYWORD_LIST).setDescription("");
+
+      parameters.get(KEYWORD_SOURCE).setDescription("");
+
+      parameters.get(METADATA_FILE_EXTRACTOR).setDescription("");
+
+      parameters.get(INPUT_SOURCE).setDescription("");
+
+      parameters.get(METADATA_FILE).setDescription("");
+
+      parameters.get(METADATA_FILE_NAME).setDescription("");
+
+      parameters.get(METADATA_ITEM_TO_MATCH).setDescription("");
+
+      parameters.get(PATTERN).setDescription("");
+
+      parameters.get(GROUPS).setDescription("");
+
+      parameters.get(SHOW_TEST).setDescription("");
+
+      parameters.get(EXAMPLE_STRING).setDescription("");
+
+      parameters.get(IDENTIFIED_GROUPS).setDescription("");
+
+      parameters.get(REGEX_SPLITTING).setDescription("");
+
+      parameters.get(METADATA_VALUE_NAME).setDescription("");
+
+      parameters.get(REFRESH_BUTTON).setDescription("");
+
+    }
 }
-
-
