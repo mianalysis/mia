@@ -121,7 +121,7 @@
 //         Image inputImage = workspace.getImage(inputImageName);
 
 //         RegisterImages.Param param = new RegisterImages.Param();
-//         param.transformationMode = RegisterImages.TransformationModes.TRANSLATION;
+//         param.transformationMode = RegisterImages.TransformationModes.RIGID;
 //         param.initialSigma = 1.6f;
 //         param.steps = 3;
 //         param.minOctaveSize = 64;
