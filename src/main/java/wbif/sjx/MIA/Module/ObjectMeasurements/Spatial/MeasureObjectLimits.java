@@ -83,16 +83,16 @@ public class MeasureObjectLimits extends Module {
         if (showOutput) inputObjects.showMeasurements(this,modules);
 
         return Status.PASS;
-        
+
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "Objects to measure."));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "Objects from workspace to measure centroid of.  Measurements will be associated with the corresponding object in this collection."));
 
         addParameterDescriptions();
-        
+
     }
 
     @Override

@@ -33,6 +33,8 @@ public class ReplaceMeasurementValue extends Module {
     public static final String REPLACEMENT_VALUE = "Replacement value";
 
     public interface ReplacementConditions {
+        String IS_INFINITE = "Is infinite";
+        String IS_NOT_INFINITE = "Is not infinite";
         String IS_NAN = "Is NaN";
         String IS_NOT_NAN = "Is not NaN";
         String LESS_THAN = "Less than";
@@ -49,7 +51,7 @@ public class ReplaceMeasurementValue extends Module {
 
     public interface ReplacementValueTypes {
         String NUMBER = "Number";
-        String NAN = "NaN (not a number)";      
+        String NAN = "NaN (not a number)";
         String NEGATIVE_INFINITY = "Negative infinity";
         String POSITIVE_INFINITY = "Positive infinity";
 
@@ -68,7 +70,7 @@ public class ReplaceMeasurementValue extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Replaces measurement values matching specific criteria with different values.  This can be used to replace instances of NaN (not a number) values with numeric values or to replace all measurement values failing a numeric test (e.g. less than) with, for example, NaN.<br><br>Note: \"NaN\" stands for \"Not a Number\" and can arise from certain calculations (e.g. division of 0 by 0) or if a measurement couldn't be made (e.g. fitting an ellipse to an object with too few coordinates).";
     }
 
     @Override
@@ -91,6 +93,12 @@ public class ReplaceMeasurementValue extends Module {
 
             boolean replace = false;
             switch (replacementCondition) {
+                case ReplacementConditions.IS_INFINITE:
+                    replace = Double.isInfinite(currentValue);
+                    break;
+                case ReplacementConditions.IS_NOT_INFINITE:
+                    replace = !Double.isInfinite(currentValue);
+                    break;
                 case ReplacementConditions.IS_NAN:
                     replace = Double.isNaN(currentValue);
                     break;
@@ -107,7 +115,7 @@ public class ReplaceMeasurementValue extends Module {
                             replacementCondition);
                     break;
             }
-            
+
             if (replace) {
                 switch (replacementValueType) {
                     case ReplacementValueTypes.NUMBER:
@@ -121,7 +129,7 @@ public class ReplaceMeasurementValue extends Module {
                         break;
                     case ReplacementValueTypes.POSITIVE_INFINITY:
                         measurement.setValue(Double.POSITIVE_INFINITY);
-                        break;                        
+                        break;
                 }
             }
         }
@@ -145,6 +153,8 @@ public class ReplaceMeasurementValue extends Module {
         parameters.add(
                 new ChoiceP(REPLACEMENT_VALUE_TYPE, this, ReplacementValueTypes.NUMBER, ReplacementValueTypes.ALL));
         parameters.add(new DoubleP(REPLACEMENT_VALUE, this, 0));
+
+        addParameterDescriptions();
 
     }
 
@@ -213,5 +223,28 @@ public class ReplaceMeasurementValue extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_OBJECTS).setDescription("Objects from the workspace for which specific measurement values will be replaced.  Any object measurements with values matching the specified criteria will be replaced by another specified value.");
+
+      parameters.get(MEASUREMENT).setDescription("Measurement associated with the input objects.  Any object measurements with values matching the specified criteria will be replaced by another specified value.");
+
+      parameters.get(REPLACEMENT_CONDITION).setDescription("Controls under what condition the input object measurement (specified by \""+MEASUREMENT+"\") will be replaced by the specified value.  Note: \"NaN\" stands for \"Not a Number\" and can arise from certain calculations (e.g. division of 0 by 0) or if a measurement couldn't be made (e.g. fitting an ellipse to an object with too few coordinates).  Choices are: "+ String.join(", ", ReplacementConditions.ALL)+".");
+
+      parameters.get(REFERENCE_VALUE).setDescription("If \""+REPLACEMENT_CONDITION+"\" is set to a numeric condition (e.g. less than), this value will be used as the threshold against which the measurement value will be tested.");
+
+      parameters.get(REPLACEMENT_VALUE_TYPE).setDescription("Controls what type of value any measurements identified for replacement will be replaced by:<br><ul>"
+
+      +"<li>\""+ReplacementValueTypes.NAN+"\" Measurement values will be replaced by NaN (not a number).</li>"
+
+      +"<li>\""+ReplacementValueTypes.NUMBER+"\" Measurement values will be replaced by the numeric value specified by \""+REPLACEMENT_VALUE+"\".</li>"
+
+      +"<li>\""+ReplacementValueTypes.NEGATIVE_INFINITY+"\" Measurement values will be replaced by the specific \"negative infinity\" value.</li>"
+
+      +"<li>\""+ReplacementValueTypes.POSITIVE_INFINITY+"\" Measurement values will be replaced by the specific \"positive infinity\" value.</li></ul>");
+
+      parameters.get(REPLACEMENT_VALUE).setDescription("Value to replace identified measurements with if \""+REPLACEMENT_VALUE_TYPE+"\" is set to \""+ReplacementValueTypes.NUMBER+"\" mode.");
+
     }
 }

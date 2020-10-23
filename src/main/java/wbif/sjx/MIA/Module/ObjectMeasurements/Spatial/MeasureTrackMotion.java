@@ -2,9 +2,11 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
 import java.util.TreeMap;
 
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.RegisterImages;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.TrackObjects;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -95,7 +97,7 @@ public class MeasureTrackMotion extends Module {
 
             int t = spotObject.getT();
             track.addTimepoint(x, y, z, t);
-            
+
         }
 
         // Create track object
@@ -388,7 +390,8 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.";
+        
     }
 
     @Override
@@ -437,6 +440,8 @@ public class MeasureTrackMotion extends Module {
 
         parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(SUBTRACT_AVERAGE_MOTION,this,false));
+
+        addParameterDescriptions();
 
     }
 
@@ -647,5 +652,14 @@ public class MeasureTrackMotion extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    addParameterDescriptions() {
+      parameters.get(INPUT_TRACK_OBJECTS).setDescription("Input track objects to measure motion for.  These must be specific \"track\" class objects as output by modules such as \""+ new TrackObjects(null).getName() +"\".  The track objects are parents of individual timepoint instance objects, which are specified using the \""+INPUT_SPOT_OBJECTS+"\" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.");
+
+      parameters.get(INPUT_SPOT_OBJECTS).setDescription("Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by \""+INPUT_TRACK_OBJECTS+"\".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.");
+
+      parameters.get(SUBTRACT_AVERAGE_MOTION).setDescription("When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration (\""+ new RegisterImages(null).getName()+"\" module) prior to object detection.");
+
     }
 }

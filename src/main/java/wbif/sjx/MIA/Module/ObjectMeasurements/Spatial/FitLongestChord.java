@@ -1,13 +1,9 @@
 package wbif.sjx.MIA.Module.ObjectMeasurements.Spatial;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
-import wbif.sjx.MIA.Module.Visualisation.Overlays.AddFromPositionMeasurement;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.References.*;
@@ -34,12 +30,6 @@ public class FitLongestChord extends Module {
     public static final String MEASURE_OBJECT_ORIENTATION = "Measure object orientation";
     public static final String STORE_END_POINTS = "Store end points";
 
-    public static final String RENDERING_SEPARATOR = "Longest chord rendering";
-    public static final String ADD_ENDPOINTS_AS_OVERLAY = "Add endpoints as overlay";
-    public static final String INPUT_IMAGE = "Input image";
-    public static final String APPLY_TO_INPUT = "Apply to input";
-    public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
-    public static final String OUTPUT_IMAGE = "Output image";
 
     public FitLongestChord(ModuleCollection modules) {
         super("Fit longest chord", modules);
@@ -117,16 +107,6 @@ public class FitLongestChord extends Module {
         }
     }
 
-    public void addEndpointsOverlay(Obj object, ImagePlus imagePlus) {
-        String[] pos1 = new String[] { Measurements.X1_PX, Measurements.Y1_PX, Measurements.Z1_SLICE, "" };
-        String[] pos2 = new String[] { Measurements.X2_PX, Measurements.Y2_PX, Measurements.Z2_SLICE, "" };
-
-        String size = AddFromPositionMeasurement.PointSizes.SMALL;
-        String type = AddFromPositionMeasurement.PointTypes.CIRCLE;
-        AddFromPositionMeasurement.addOverlay(object, imagePlus, Color.ORANGE, size, type, 1, pos1, null, false);
-        AddFromPositionMeasurement.addOverlay(object, imagePlus, Color.CYAN, size, type, 1, pos2, null, false);
-
-    }
 
     @Override
     public String getPackageName() {
@@ -135,7 +115,8 @@ public class FitLongestChord extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Measures the longest chord of each object in a specified object collection from the workspace.  The longest chord of an object is defined as the line passing between the two furthest-spaced points on the surface of the object.  This can act as an approximate measure of object length.  In addition to the longest chord length, the distance of all object surface points from the longest chord can be measured, which themselves act as an approximation of object width.";
+        
     }
 
     @Override
@@ -148,21 +129,6 @@ public class FitLongestChord extends Module {
         boolean measureWidth = parameters.getValue(MEASURE_OBJECT_WIDTH);
         boolean measureOrientation = parameters.getValue(MEASURE_OBJECT_ORIENTATION);
         boolean storeEndPoints = parameters.getValue(STORE_END_POINTS);
-        boolean addOverlay = parameters.getValue(ADD_ENDPOINTS_AS_OVERLAY);
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-
-        // If necessary, getting image for overlay
-        ImagePlus inputImagePlus = null;
-        if (addOverlay) {
-            inputImagePlus = workspace.getImage(inputImageName).getImagePlus();
-
-            // If the overlay shouldn't be added to the input image, a duplicate is created
-            if (!applyToInput)
-                inputImagePlus = new Duplicator().run(inputImagePlus);
-        }
 
         // Running through each object, taking measurements and adding new object to the
         // workspace where necessary
@@ -170,27 +136,10 @@ public class FitLongestChord extends Module {
         int total = inputObjects.size();
         for (Obj inputObject : inputObjects.values()) {
             processObject(inputObject, measureWidth, measureOrientation, storeEndPoints);
-            if (addOverlay)
-                addEndpointsOverlay(inputObject, inputImagePlus);
+
             ++count;
             writeStatus("Processed object " + count + " of " + total + " (" + Math.floorDiv(100 * count, total) + "%)");
-        }
 
-        if (addOverlay) {
-            if (showOutput) {
-                ImagePlus dispIpl = inputImagePlus.duplicate();
-                dispIpl.setTitle(inputImageName);
-                IntensityMinMax.run(dispIpl, true);
-                dispIpl.setPosition(1, 1, 1);
-                dispIpl.updateChannelAndDraw();
-                dispIpl.show();
-            }
-
-            // If the user requested, the output image can be added to the workspace
-            if (!applyToInput && addToWorkspace) {
-                Image outputImage = new Image(outputImageName, inputImagePlus);
-                workspace.addImage(outputImage);
-            }
         }
 
         if (showOutput)
@@ -204,46 +153,19 @@ public class FitLongestChord extends Module {
     protected void initialiseParameters() {
         parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+
         parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new BooleanP(MEASURE_OBJECT_WIDTH, this, true));
         parameters.add(new BooleanP(MEASURE_OBJECT_ORIENTATION, this, true));
         parameters.add(new BooleanP(STORE_END_POINTS, this, true));
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
-        parameters.add(new BooleanP(ADD_ENDPOINTS_AS_OVERLAY, this, false));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
-        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-
-        returnedParameters.add(parameters.getParameter(CALCULATION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(MEASURE_OBJECT_WIDTH));
-        returnedParameters.add(parameters.getParameter(MEASURE_OBJECT_ORIENTATION));
-        returnedParameters.add(parameters.getParameter(STORE_END_POINTS));
-
-        returnedParameters.add(parameters.getParameter(RENDERING_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_ENDPOINTS_AS_OVERLAY));
-        if ((boolean) parameters.getValue(ADD_ENDPOINTS_AS_OVERLAY)) {
-            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-
-            returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-            if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-                returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
-                if ((boolean) parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
-                    returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-                }
-            }
-        }
-
-        return returnedParameters;
+        return parameters;
 
     }
 
@@ -393,5 +315,16 @@ public class FitLongestChord extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_OBJECTS).setDescription("Objects from workspace to measure longest chord for.  Measurements will be associated with the corresponding object in this collection.");
+
+      parameters.get(MEASURE_OBJECT_WIDTH).setDescription("When selected the width of the object from the longest chord will be estimated.  The distance of all object surface points (those with at least one non-object neighbour in 4/6-way connectivity) from the longest chord are calculated.  Statistics (mean, minimum, maximum, sum and standard deviation) of these distances for an object are stored as measurements associated with that object.");
+
+      parameters.get(MEASURE_OBJECT_ORIENTATION).setDescription("When selected, the orientation of the line in the XY plane is measured and this measurement associated with the corresponding object.  Orientations are reported in degree units and are relative to positive x-axis (positive above x-axis, negative below x-axis).");
+
+      parameters.get(STORE_END_POINTS).setDescription("When selected, the two coordinates corresponding to the end points of the longest chord (the two furthest-spaced points on the object surface) are stored as measurements associated with the corresponding input object.");
+
     }
 }

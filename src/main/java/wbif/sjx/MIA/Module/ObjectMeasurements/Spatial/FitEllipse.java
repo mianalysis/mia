@@ -453,7 +453,7 @@ public class FitEllipse extends Module {
 
       +"<li>\""+FittingModes.FIT_TO_WHOLE+"\" All coordinates for the input object are passed to the ellipse fitter.<.li>"
 
-      +"<li>\""+FittingModes.FIT_TO_SURFACE+"\" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>");
+      +"<li>\""+FittingModes.FIT_TO_SURFACE+"\ (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul>");
 
       parameters.get(LIMIT_AXIS_LENGTH).setDescription("When selected, all axes of the the fit ellipses must be shorter than the length specified by \""+MAXIMUM_AXIS_LENGTH+"\".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.");
 
