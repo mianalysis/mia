@@ -476,7 +476,7 @@ public class FitEllipsoid extends Module {
 
       +"<li>\""+FittingModes.FIT_TO_WHOLE+"\" All coordinates for the input object are passed to the ellipsoid fitter.<.li>"
 
-      +"<li>\""+FittingModes.FIT_TO_SURFACE+"\ (default) Only surface coordinates of the input object are passed to the ellipsoid fitter.  Surface coordinates are calculated using 6-way connectivity.</li></ul>");
+      +"<li>\""+FittingModes.FIT_TO_SURFACE+"\" (default) Only surface coordinates of the input object are passed to the ellipsoid fitter.  Surface coordinates are calculated using 6-way connectivity.</li></ul>");
 
       parameters.get(LIMIT_AXIS_LENGTH).setDescription("When selected, all axes of the the fit ellipsoids must be shorter than the length specified by \""+MAXIMUM_AXIS_LENGTH+"\".  This helps filter out mis-fit ellipsoids and prevents unnecessary, massive memory use when storing ellipsoids.");
 

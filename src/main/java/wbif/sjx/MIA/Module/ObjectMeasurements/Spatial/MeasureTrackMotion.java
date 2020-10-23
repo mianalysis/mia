@@ -654,7 +654,7 @@ public class MeasureTrackMotion extends Module {
         return true;
     }
 
-    addParameterDescriptions() {
+    void addParameterDescriptions() {
       parameters.get(INPUT_TRACK_OBJECTS).setDescription("Input track objects to measure motion for.  These must be specific \"track\" class objects as output by modules such as \""+ new TrackObjects(null).getName() +"\".  The track objects are parents of individual timepoint instance objects, which are specified using the \""+INPUT_SPOT_OBJECTS+"\" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.");
 
       parameters.get(INPUT_SPOT_OBJECTS).setDescription("Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by \""+INPUT_TRACK_OBJECTS+"\".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.");
