@@ -29,7 +29,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
@@ -430,10 +430,10 @@ public class ObjectLoader extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(COORDINATE_SEPARATOR,this));
+        parameters.add(new SeparatorP(COORDINATE_SEPARATOR,this));
         parameters.add(new ChoiceP(COORDINATE_SOURCE,this,CoordinateSources.CURRENT_FILE,CoordinateSources.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT,this, NameFormats.GENERIC, NameFormats.ALL));
         parameters.add(new StringP(GENERIC_FORMAT,this));
@@ -444,14 +444,14 @@ public class ObjectLoader extends Module {
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(INPUT_FILE,this));
 
-        parameters.add(new ParamSeparatorP(COLUMN_SEPARATOR,this));
+        parameters.add(new SeparatorP(COLUMN_SEPARATOR,this));
         parameters.add(new IntegerP(ID_COLUMN_INDEX,this,0));
         parameters.add(new IntegerP(X_COLUMN_INDEX,this,1));
         parameters.add(new IntegerP(Y_COLUMN_INDEX,this,2));
         parameters.add(new IntegerP(Z_COLUMN_INDEX,this,3));
         parameters.add(new IntegerP(T_COLUMN_INDEX,this,4));
 
-        parameters.add(new ParamSeparatorP(LIMIT_SEPARATOR,this));
+        parameters.add(new SeparatorP(LIMIT_SEPARATOR,this));
         parameters.add(new ChoiceP(LIMITS_SOURCE,this,LimitsSources.FROM_IMAGE,LimitsSources.ALL));
         parameters.add(new InputImageP(LIMITS_REFERENCE_IMAGE,this));
         parameters.add(new IntegerP(WIDTH,this,512));
@@ -463,7 +463,7 @@ public class ObjectLoader extends Module {
         parameters.add(new DoubleP(XY_CAL, this, 1d));
         parameters.add(new DoubleP(Z_CAL, this, 1d));
 
-        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
+        parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR,this));
         parameters.add(new BooleanP(CREATE_PARENTS,this,false));
         parameters.add(new ChoiceP(PARENT_TYPE,this,ParentTypes.NORMAL,ParentTypes.ALL));
         parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME,this));

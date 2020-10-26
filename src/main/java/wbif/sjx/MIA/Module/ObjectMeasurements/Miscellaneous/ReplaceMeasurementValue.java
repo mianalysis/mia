@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -142,11 +142,11 @@ public class ReplaceMeasurementValue extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
 
-        parameters.add(new ParamSeparatorP(REPLACEMENT_SEPARATOR, this));
+        parameters.add(new SeparatorP(REPLACEMENT_SEPARATOR, this));
         parameters
                 .add(new ChoiceP(REPLACEMENT_CONDITION, this, ReplacementConditions.IS_NAN, ReplacementConditions.ALL));
         parameters.add(new DoubleP(REFERENCE_VALUE, this, 0d));

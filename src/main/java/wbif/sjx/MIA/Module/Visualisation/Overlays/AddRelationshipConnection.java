@@ -26,7 +26,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.PartnerObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -478,7 +478,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(LINE_MODE, this, LineModes.PARENT_TO_CHILD, LineModes.ALL));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
@@ -487,12 +487,12 @@ public class AddRelationshipConnection extends AbstractOverlay {
         parameters.add(new InputObjectsP(PARTNER_OBJECTS_1, this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_2, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
+        parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
         parameters.add(new ChoiceP(RENDER_MODE, this, RenderModes.FULL_LINE, RenderModes.ALL));
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
         parameters.add(new ChoiceP(POINT_SIZE, this, PointSizes.SMALL, PointSizes.ALL));
@@ -502,7 +502,7 @@ public class AddRelationshipConnection extends AbstractOverlay {
         parameters.add(new ObjectMeasurementP(MEASUREMENT_NAME_2, this));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES, this, false));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();

@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -325,7 +325,7 @@ public class OutputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(POSTPROCESSING_SEPARATOR, this));
+        parameters.add(new SeparatorP(POSTPROCESSING_SEPARATOR, this));
 
         parameters.add(new BooleanP(RUN_MACRO, this, false));
         ParameterCollection variableCollection = new ParameterCollection();
@@ -339,7 +339,7 @@ public class OutputControl extends Module {
         parameters.add(new FilePathP(MACRO_FILE, this));
         parameters.add(new GenericButtonP(TEST_BUTTON, this, "Test macro", GenericButtonP.DefaultModes.TEST_MACRO));
 
-        parameters.add(new ParamSeparatorP(EXPORT_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXPORT_SEPARATOR, this));
         parameters.add(new ChoiceP(EXPORT_MODE, this, ExportModes.ALL_TOGETHER, ExportModes.ALL));
         parameters.add(new ChoiceP(INDIVIDUAL_SAVE_LOCATION, this, IndividualSaveLocations.SAVE_WITH_INPUT,
                 IndividualSaveLocations.ALL));
@@ -354,14 +354,14 @@ public class OutputControl extends Module {
         parameters.add(new IntegerP(SAVE_EVERY_N, this, 10));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
 
-        parameters.add(new ParamSeparatorP(SUMMARY_SEPARATOR, this));
+        parameters.add(new SeparatorP(SUMMARY_SEPARATOR, this));
         parameters.add(new BooleanP(EXPORT_SUMMARY, this, true));
         parameters.add(new ChoiceP(SUMMARY_MODE, this, SummaryModes.ONE_AVERAGE_PER_FILE, SummaryModes.ALL));
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_SUMMARY, this));
         parameters.add(new BooleanP(SHOW_OBJECT_COUNTS, this, true));
         parameters.add(new BooleanP(EXPORT_INDIVIDUAL_OBJECTS, this, true));
 
-        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR, this));
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
 
         addParameterDescriptions();
 

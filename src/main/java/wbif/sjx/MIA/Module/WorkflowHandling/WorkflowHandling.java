@@ -25,7 +25,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -237,7 +237,7 @@ public class WorkflowHandling extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(TEST_MODE, this, TestModes.IMAGE_MEASUREMENT, TestModes.ALL));
 
         parameters.add(new InputImageP(INPUT_IMAGE, this));
@@ -252,7 +252,7 @@ public class WorkflowHandling extends Module {
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,
                 "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
 
-        parameters.add(new ParamSeparatorP(RESULT_SEPARATOR, this));
+        parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
         parameters.add(new ModuleP(REDIRECT_MODULE, this,true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));

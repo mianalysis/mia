@@ -151,10 +151,10 @@ public class FitLongestChord extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new BooleanP(MEASURE_OBJECT_WIDTH, this, true));
         parameters.add(new BooleanP(MEASURE_OBJECT_ORIENTATION, this, true));
         parameters.add(new BooleanP(STORE_END_POINTS, this, true));

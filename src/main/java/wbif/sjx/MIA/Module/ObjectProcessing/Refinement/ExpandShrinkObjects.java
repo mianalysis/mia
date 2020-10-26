@@ -17,7 +17,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -247,12 +247,12 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(UPDATE_INPUT_OBJECTS, this, true));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(PROCESSING_SEPARATOR, this));
+        parameters.add(new SeparatorP(PROCESSING_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.EXPAND_2D, Methods.ALL));
         parameters.add(new DoubleP(RADIUS_CHANGE, this, 1));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));

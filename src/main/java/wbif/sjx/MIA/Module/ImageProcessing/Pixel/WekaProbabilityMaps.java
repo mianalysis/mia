@@ -29,7 +29,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -249,12 +249,12 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply pixel classification to."));
         parameters.add(new BooleanP(CONVERT_TO_RGB, this, false,
                 "Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model."));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Output probability map image."));
         parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH, this, OutputBitDepths.THIRTY_TWO, OutputBitDepths.ALL,
                 "By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module."));
@@ -262,7 +262,7 @@ public class WekaProbabilityMaps extends Module {
                 "Allows a single class (image channel) to be output.  This is another feature for reducing memory usage."));
         parameters.add(new IntegerP(OUTPUT_CLASS, this, 1,
                 "Class (image channel) to be output.  Channel numbering starts at 1."));
-        parameters.add(new ParamSeparatorP(CLASSIFIER_SEPARATOR, this));
+        parameters.add(new SeparatorP(CLASSIFIER_SEPARATOR, this));
         parameters.add(new ChoiceP(PATH_TYPE, this, PathTypes.SPECIFIC_FILE, PathTypes.ALL,
                 "Method to use for generation of the classifier filename:<br><ul>"
                 + "<li>\"" + PathTypes.MATCHING_FORMAT + "\" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li>"

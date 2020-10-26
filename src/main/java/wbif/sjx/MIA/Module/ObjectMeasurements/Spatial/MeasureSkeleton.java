@@ -31,7 +31,7 @@ import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputSkeletonObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -383,19 +383,19 @@ public class MeasureSkeleton extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(ADD_SKELETONS_TO_WORKSPACE, this, false));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_SKELETON_OBJECTS, this));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_EDGE_OBJECTS, this));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_JUNCTION_OBJECTS, this));
         parameters.add(new BooleanP(EXPORT_LOOP_OBJECTS, this, true));
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_LOOP_OBJECTS, this));
-        parameters.add(new ParamSeparatorP(ANALYSIS_SEPARATOR, this));
+        parameters.add(new SeparatorP(ANALYSIS_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_BRANCH_LENGTH, this, 0d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }

@@ -10,7 +10,7 @@ import java.util.List;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -154,7 +154,7 @@ public class DocumentationCoverageChecker {
         int nCoveredParams = 0;
 
         for (Parameter parameter : module.getAllParameters().values()) {
-            if (parameter instanceof ParamSeparatorP || parameter instanceof MessageP) {
+            if (parameter instanceof SeparatorP || parameter instanceof MessageP) {
                 nParams--;
                 continue;
             }

@@ -57,7 +57,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -613,17 +613,17 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(
                 new ChoiceP(BEST_FOCUS_CALCULATION, this, BestFocusCalculations.MAX_STDEV, BestFocusCalculations.ALL));
         parameters.add(new IntegerP(RELATIVE_START_SLICE, this, 0));
         parameters.add(new IntegerP(RELATIVE_END_SLICE, this, 0));
 
-        parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR, this));
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));

@@ -159,10 +159,10 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to be projected."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name for the projected image to be stored in the workspace with."));
-        parameters.add(new ParamSeparatorP(PROJECTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(PROJECTION_SEPARATOR,this));
         parameters.add(new ChoiceP(PROJECTION_MODE,this,ProjectionModes.MAX,ProjectionModes.ALL,"Statistic for calculation of the intensity projection."));
 
     }

@@ -59,7 +59,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
@@ -531,10 +531,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(VOLUME_TYPE, this, VolumeTypes.POINTLIST, VolumeTypes.ALL));
         parameters.add(new BooleanP(OUTPUT_TRACKS, this, false));
@@ -542,7 +542,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         parameters.add(new BooleanP(SPATIAL_INTERPOLATION, this, false));
         parameters.add(new BooleanP(TEMPORAL_INTERPOLATION, this, false));
 
-        parameters.add(new ParamSeparatorP(SELECTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(SELECTION_SEPARATOR, this));
         parameters.add(new ChoiceP(SELECTOR_TYPE, this, SelectorTypes.FREEHAND_REGION, SelectorTypes.ALL));
         parameters.add(new StringP(MESSAGE_ON_IMAGE, this, "Draw objects on this image"));
 

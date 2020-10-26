@@ -108,7 +108,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
@@ -509,7 +509,7 @@ public class RelateManyToMany extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters
                 .add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
@@ -517,7 +517,7 @@ public class RelateManyToMany extends Module {
         parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS, this, true));
         parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME, this));
 
-        parameters.add(new ParamSeparatorP(SPATIAL_LINKING_SEPARATOR, this));
+        parameters.add(new SeparatorP(SPATIAL_LINKING_SEPARATOR, this));
         parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE, this, SpatialSeparationModes.SPATIAL_OVERLAP,
                 SpatialSeparationModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
@@ -525,14 +525,14 @@ public class RelateManyToMany extends Module {
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
 
-        parameters.add(new ParamSeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
+        parameters.add(new SeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
         ParameterCollection collection = new ParameterCollection();
         collection.add(new ObjectMeasurementP(MEASUREMENT, this));
         collection.add(new ChoiceP(CALCULATION, this, Calculations.DIFFERENCE, Calculations.ALL));
         collection.add(new DoubleP(MEASUREMENT_LIMIT, this, 1));
         parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection, 0));
 
-        parameters.add(new ParamSeparatorP(MISCELLANEOUS_SEPARATOR, this));
+        parameters.add(new SeparatorP(MISCELLANEOUS_SEPARATOR, this));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
 
     }

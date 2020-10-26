@@ -14,7 +14,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -434,11 +434,11 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
 
-        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(SUBTRACT_AVERAGE_MOTION,this,false));
 
         addParameterDescriptions();

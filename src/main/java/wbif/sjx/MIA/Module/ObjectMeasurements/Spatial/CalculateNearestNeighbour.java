@@ -33,7 +33,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -503,12 +503,12 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.WITHIN_SAME_SET, RelationshipModes.ALL));
         parameters.add(new InputObjectsP(NEIGHBOUR_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
+        parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR, this));
         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID, ReferenceModes.ALL));
         parameters.add(new BooleanP(CALCULATE_WITHIN_PARENT, this, false));
         parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
@@ -517,7 +517,7 @@ public class CalculateNearestNeighbour extends Module {
         parameters.add(new BooleanP(CALIBRATED_DISTANCE, this, false));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, false));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(EXPORT_ALL_DISTANCES, this, false));
         parameters.add(
                 new ChoiceP(INSIDE_OUTSIDE_MODE, this, InsideOutsideModes.INSIDE_AND_OUTSIDE, InsideOutsideModes.ALL));
@@ -527,7 +527,7 @@ public class CalculateNearestNeighbour extends Module {
         parameters.add(new BooleanP(INCLUDE_NEIGHBOUR_PARENT, this, false));
         parameters.add(new ParentObjectsP(NEIGHBOUR_PARENT, this));
 
-        parameters.add(new ParamSeparatorP(FILE_SAVING_SEPARATOR, this));
+        parameters.add(new SeparatorP(FILE_SAVING_SEPARATOR, this));
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));

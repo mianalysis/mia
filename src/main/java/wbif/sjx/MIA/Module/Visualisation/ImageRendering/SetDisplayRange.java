@@ -164,12 +164,12 @@ public class SetDisplayRange extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
+        parameters.add(new SeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
         parameters.add(new DoubleP(CLIP_FRACTION_MIN,this,0d));
         parameters.add(new DoubleP(CLIP_FRACTION_MAX,this,0d));

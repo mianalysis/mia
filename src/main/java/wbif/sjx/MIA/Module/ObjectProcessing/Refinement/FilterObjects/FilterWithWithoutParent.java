@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParentObjectsP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -120,7 +120,7 @@ public class FilterWithWithoutParent extends AbstractObjectFilter {
     protected void initialiseParameters() {
         super.initialiseParameters();
         
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR,this));
+        parameters.add(new SeparatorP(FILTER_SEPARATOR,this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITH_PARENT, FilterMethods.ALL));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));

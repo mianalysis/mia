@@ -590,17 +590,17 @@ public class TrackObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new OutputTrackObjectsP(TRACK_OBJECTS,this));
 
-        parameters.add(new ParamSeparatorP(TRACKING_SEPARATOR,this));
+        parameters.add(new SeparatorP(TRACKING_SEPARATOR,this));
         parameters.add(new IntegerP(MAXIMUM_MISSING_FRAMES,this,0));
         parameters.add(new ChoiceP(LINKING_METHOD,this,LinkingMethods.CENTROID,LinkingMethods.ALL));
         parameters.add(new DoubleP(MINIMUM_OVERLAP,this,1.0));
         parameters.add(new DoubleP(MAXIMUM_LINKING_DISTANCE,this,20.0));
 
-        parameters.add(new ParamSeparatorP(WEIGHTS_SEPARATOR,this));
+        parameters.add(new SeparatorP(WEIGHTS_SEPARATOR,this));
         parameters.add(new BooleanP(USE_VOLUME,this,false));
         parameters.add(new DoubleP(VOLUME_WEIGHTING, this,1.0));
         parameters.add(new DoubleP(MAXIMUM_VOLUME_CHANGE, this,1.0));
@@ -613,7 +613,7 @@ public class TrackObjects extends Module {
         parameters.add(new DoubleP(MEASUREMENT_WEIGHTING, this,1.0));
         parameters.add(new DoubleP(MAXIMUM_MEASUREMENT_CHANGE, this,1.0));
 
-        parameters.add(new ParamSeparatorP(ORIENTATION_SEPARATOR,this));
+        parameters.add(new SeparatorP(ORIENTATION_SEPARATOR,this));
         parameters.add(new BooleanP(IDENTIFY_LEADING_POINT,this,false));
         parameters.add(new ChoiceP(ORIENTATION_MODE,this,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
 

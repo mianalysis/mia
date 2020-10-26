@@ -226,13 +226,13 @@ public class GlobalAutoThreshold extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, ""));
         parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.CALCULATE_AND_APPLY, OutputModes.ALL));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, ""));
 
-        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR, this));
+        parameters.add(new SeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(ALGORITHM, this, Algorithms.HUANG, Algorithms.ALL));
         parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this, 1.0));
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));

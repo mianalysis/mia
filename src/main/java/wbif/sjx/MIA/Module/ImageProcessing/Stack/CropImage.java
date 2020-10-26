@@ -19,7 +19,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -137,11 +137,11 @@ public class CropImage<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new ParamSeparatorP(CROP_SEPARATOR, this));
+        parameters.add(new SeparatorP(CROP_SEPARATOR, this));
         parameters.add(new IntegerP(LEFT, this, 0));
         parameters.add(new IntegerP(TOP, this, 0));
         parameters.add(new IntegerP(WIDTH, this, 512));

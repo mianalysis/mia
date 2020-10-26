@@ -36,7 +36,7 @@ import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -86,7 +86,7 @@ public class ComponentFactory {
             c.insets = new Insets(10, 3, 5, 5);
             paramPanel.add(parameterComponent, c);
 
-        } else if (parameter instanceof ParamSeparatorP) {
+        } else if (parameter instanceof SeparatorP) {
             if (module.updateAndGetParameters().values().iterator().next() == parameter) {
                 c.insets = new Insets(0, 5, 5, 8);
             } else {

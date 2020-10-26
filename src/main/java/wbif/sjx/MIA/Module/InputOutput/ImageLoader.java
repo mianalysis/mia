@@ -57,7 +57,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -960,7 +960,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR, this));
+        parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL));
         parameters.add(new ChoiceP(READER, this, Readers.BIOFORMATS, Readers.ALL));
@@ -973,7 +973,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
         parameters.add(new FilePathP(FILE_PATH, this));
 
-        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR, this));
+        parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
         parameters.add(new StringP(CHANNELS, this, "1-end"));
         parameters.add(new StringP(SLICES, this, "1-end"));
         parameters.add(new StringP(FRAMES, this, "1-end"));
@@ -989,7 +989,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new DoubleP(SCALE_FACTOR_X, this, 1));
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
 
-        parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
         parameters.add(new DoubleP(Z_CAL, this, 1d));

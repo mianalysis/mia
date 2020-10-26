@@ -6,7 +6,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -52,7 +52,7 @@ public class AddCustomMetadataItem extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(METADATA_SEPARATOR, this));
+        parameters.add(new SeparatorP(METADATA_SEPARATOR, this));
         parameters.add(new StringP(METADATA_NAME, this));
         parameters.add(new StringP(METADATA_VALUE, this));
 

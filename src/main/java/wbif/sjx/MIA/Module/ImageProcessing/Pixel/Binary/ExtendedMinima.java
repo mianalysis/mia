@@ -168,16 +168,16 @@ public class ExtendedMinima extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(EXTENDED_MINIMA_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXTENDED_MINIMA_SEPARATOR,this));
         parameters.add(new IntegerP(DYNAMIC, this,1));
         parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.TWENTYSIX, Connectivity.ALL));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();

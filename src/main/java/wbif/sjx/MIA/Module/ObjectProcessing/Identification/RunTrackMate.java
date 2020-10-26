@@ -382,11 +382,11 @@ public class RunTrackMate extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image in which to detect spots."));
         parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this, "", "Spot objects that will be added to the workspace.  If tracking is enabled, each spot will have a parent track object."));
 
-        parameters.add(new ParamSeparatorP(SPOT_SEPARATOR, this));
+        parameters.add(new SeparatorP(SPOT_SEPARATOR, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false, "Enable if spatial parameters (e.g. \""+RADIUS+"\" or \""+LINKING_MAX_DISTANCE+"\") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units."));
         parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true, "Enable TrackMate's \"Subpixel localisation\" functionality."));
         parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false, "Enable TrackMate's \"Median filtering\" functionality."));
@@ -394,7 +394,7 @@ public class RunTrackMate extends Module {
         parameters.add(new DoubleP(THRESHOLD, this,10.0,"Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified \""+RADIUS+"\" value.  Increase this value to make detection more selective (i.e. detect fewer spots)."));
         parameters.add(new BooleanP(ESTIMATE_SIZE, this,false,"When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter."));
 
-        parameters.add(new ParamSeparatorP(TRACK_SEPARATOR, this));
+        parameters.add(new SeparatorP(TRACK_SEPARATOR, this));
         parameters.add(new BooleanP(DO_TRACKING, this,true, "Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information."));
         parameters.add(new ChoiceP(TRACKING_METHOD,this, TrackingMethods.SIMPLE, TrackingMethods.ALL, "Method with which spots are tracked between frames:<br><ul>"
         + "<li>\""+ TrackingMethods.KALMAN+"\" Uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.</li>"

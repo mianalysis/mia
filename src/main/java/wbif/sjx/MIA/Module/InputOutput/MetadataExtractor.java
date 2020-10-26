@@ -16,7 +16,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -371,14 +371,14 @@ public class MetadataExtractor extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(EXTRACTOR_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXTRACTOR_SEPARATOR,this));
         parameters.add(new ChoiceP(EXTRACTOR_MODE,this,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
 
         parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
         parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.GENERIC,FoldernameExtractors.ALL));
         parameters.add(new StringP(KEYWORD_LIST,this));
 
-        parameters.add(new ParamSeparatorP(SOURCE_SEPARATOR,this));
+        parameters.add(new SeparatorP(SOURCE_SEPARATOR,this));
         parameters.add(new ChoiceP(KEYWORD_SOURCE, this,KeywordSources.FILENAME,KeywordSources.ALL));
         parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR,this,MetadataFileExtractors.CSV_FILE,MetadataFileExtractors.ALL));
         parameters.add(new ChoiceP(INPUT_SOURCE,this,InputSources.FILE_IN_INPUT_FOLDER,InputSources.ALL));
@@ -386,7 +386,7 @@ public class MetadataExtractor extends Module {
         parameters.add(new StringP(METADATA_FILE_NAME,this));
         parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH,this));
 
-        parameters.add(new ParamSeparatorP(REGEX_SEPARATOR,this));
+        parameters.add(new SeparatorP(REGEX_SEPARATOR,this));
         parameters.add(new StringP(PATTERN,this));
         parameters.add(new StringP(GROUPS,this));
         parameters.add(new BooleanP(SHOW_TEST,this,false));

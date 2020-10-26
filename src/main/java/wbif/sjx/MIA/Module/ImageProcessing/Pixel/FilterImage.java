@@ -398,13 +398,13 @@ public class FilterImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply filter to."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true,
                 "Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
                 "Name of the output image created during the filtering process.  This image will be added to the workspace."));
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.DOG2D, FilterModes.ALL,
                 "Filter to be applied to the image.<br>" + "<br>- " + FilterModes.DOG2D
                         + " Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for \""

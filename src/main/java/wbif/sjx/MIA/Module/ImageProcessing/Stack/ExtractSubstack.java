@@ -31,7 +31,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -283,11 +283,11 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image from which the substack will be taken."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Output substack image."));
 
-        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR,this));
+        parameters.add(new SeparatorP(RANGE_SEPARATOR,this));
         parameters.add(new ChoiceP(SELECTION_MODE,this, SelectionModes.FIXED, SelectionModes.ALL,"Method for selection of substack dimension ranges.<br>" +
                 "<br>- \""+SelectionModes.FIXED+"\" (default) will apply the pre-specified dimension ranges to the input image.<br>" +
                 "<br>- \""+SelectionModes.MANUAL+"\" will display a dialog asking the user to select the dimension ranges at runtime.  Each dimension (channel, slice or frame) can be fixed (i.e. not presented as an option to the user) using the \"enable\" toggles."));

@@ -112,7 +112,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -392,13 +392,13 @@ public class RelateOneToOne extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
         parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS, this, true));
         parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME, this));
 
-        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
+        parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.SPATIAL_OVERLAP, RelationshipModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));

@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -147,20 +147,20 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_1, this));
+        parameters.add(new SeparatorP(VALUE_SEPARATOR_1, this));
         parameters.add(new ChoiceP(VALUE_MODE_1, this, ValueModes.MEASUREMENT, ValueModes.ALL));
         parameters.add(new DoubleP(FIXED_VALUE_1, this, 0));
         parameters.add(new ImageMeasurementP(MEASUREMENT_1, this));
 
-        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_2, this));
+        parameters.add(new SeparatorP(VALUE_SEPARATOR_2, this));
         parameters.add(new ChoiceP(VALUE_MODE_2, this, ValueModes.MEASUREMENT, ValueModes.ALL));
         parameters.add(new DoubleP(FIXED_VALUE_2, this, 0));
         parameters.add(new ImageMeasurementP(MEASUREMENT_2, this));
 
-        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new StringP(OUTPUT_MEASUREMENT, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.ADD, CalculationModes.ALL));
 

@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
@@ -101,7 +101,7 @@ public class FixedTextCondition extends CoreWorkspaceHandler {
         collection.addAll(super.updateAndGetParameters());
 
         parameters.add(new StringP(TEST_VALUE, this));
-        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));     
+        parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));     
         parameters.add(new ParameterGroup(ADD_CONDITION, this, collection, 1, getUpdaterAndGetter()));
 
         addParameterDescriptions();

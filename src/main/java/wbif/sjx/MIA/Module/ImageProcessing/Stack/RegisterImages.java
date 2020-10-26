@@ -620,18 +620,18 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(REGISTRATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
         parameters.add(new ChoiceP(ALIGNMENT_MODE, this, AlignmentModes.AUTOMATIC, AlignmentModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
-        parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR, this));
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.FIRST_FRAME, RelativeModes.ALL));
         parameters.add(new ChoiceP(ROLLING_CORRECTION, this, RollingCorrectionModes.NONE, RollingCorrectionModes.ALL));
         parameters.add(new IntegerP(CORRECTION_INTERVAL, this, 1));
@@ -640,7 +640,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
 
-        parameters.add(new ParamSeparatorP(FEATURE_SEPARATOR, this));
+        parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));
         parameters.add(new DoubleP(INITIAL_SIGMA, this, 1.6));
         parameters.add(new IntegerP(STEPS, this, 3));
         parameters.add(new IntegerP(MINIMUM_IMAGE_SIZE, this, 64));

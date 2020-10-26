@@ -30,7 +30,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.InputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.MessageP;
@@ -199,11 +199,11 @@ public class MergeTracks extends Module implements ActionListener, WindowListene
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputTrackObjectsP(INPUT_TRACK_OBJECTS,this));
         parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
 
-        parameters.add(new ParamSeparatorP(DISPLAY_SEPARATOR,this));
+        parameters.add(new SeparatorP(DISPLAY_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
         parameters.add(new MessageP(MEASUREMENT_WARNING,this,"Previously-acquired measurements for merged objects may become invalid.  During merging, the measurement associated with the object specified first will be retained.", Colours.RED));

@@ -26,7 +26,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -579,11 +579,11 @@ public class RelateManyToOne extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
         parameters.add(new InputObjectsP(CHILD_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR, this));
+        parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATE_MODE, this, RelateModes.MATCHING_IDS, RelateModes.ALL));
         parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.CENTROID, ReferenceModes.ALL));
         parameters.add(new BooleanP(LIMIT_LINKING_BY_DISTANCE, this, false));
@@ -595,7 +595,7 @@ public class RelateManyToOne extends Module {
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
         parameters.add(new BooleanP(CALCULATE_FRACTIONAL_DISTANCE, this, true));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();

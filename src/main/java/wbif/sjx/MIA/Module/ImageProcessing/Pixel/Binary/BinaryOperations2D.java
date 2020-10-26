@@ -150,11 +150,11 @@ public class BinaryOperations2D extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new ParamSeparatorP(OPERATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(OPERATION_SEPARATOR, this));
         parameters.add(new ChoiceP(OPERATION_MODE, this, OperationModes.DILATE, OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS, this, 1));
         parameters.add(new IntegerP(COUNT, this, 1));

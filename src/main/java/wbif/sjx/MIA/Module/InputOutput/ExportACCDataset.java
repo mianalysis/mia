@@ -24,7 +24,7 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
 import wbif.sjx.MIA.Object.Parameters.ObjMeasurementSelectorP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -248,16 +248,16 @@ public class ExportACCDataset extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new InputImageP(INPUT_RAW_IMAGE, this));
         parameters.add(new InputImageP(INPUT_OVERLAY_IMAGE, this));
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new FolderPathP(ROOT_DATASET_FOLDER, this));
         parameters.add(new MetadataItemP(PLATE_NAME, this));
         parameters.add(new MetadataItemP(ROW_LETTER, this));
         parameters.add(new MetadataItemP(COLUMN_NUMBER, this));
-        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR, this));
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_MEASUREMENTS, this, true));
         parameters.add(new ObjMeasurementSelectorP(MEASUREMENTS, this));
 

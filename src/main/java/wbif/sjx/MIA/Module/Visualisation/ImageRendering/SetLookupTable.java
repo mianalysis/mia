@@ -12,7 +12,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -196,10 +196,10 @@ public class SetLookupTable extends Module {
         
         @Override
         protected void initialiseParameters() {
-            parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+            parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
             parameters.add(new InputImageP(INPUT_IMAGE, this));
             
-            parameters.add(new ParamSeparatorP(LUT_SEPARATOR, this));
+            parameters.add(new SeparatorP(LUT_SEPARATOR, this));
             parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.ALL_CHANNELS, ChannelModes.ALL));
             parameters.add(new IntegerP(CHANNEL, this, 1));
             parameters.add(new ChoiceP(LOOKUP_TABLE, this, LookupTables.GREY, LookupTables.ALL));

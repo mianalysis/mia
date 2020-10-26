@@ -182,19 +182,19 @@ public class MeasureSpotIntensity extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
-        parameters.add(new ParamSeparatorP(SPOT_SEPARATOR, this));
+        parameters.add(new SeparatorP(SPOT_SEPARATOR, this));
         parameters.add(new ChoiceP(RADIUS_SOURCE, this, RadiusSources.FIXED_VALUE, RadiusSources.ALL));
         parameters.add(new DoubleP(FIXED_VALUE, this, 2.0));
         parameters.add(new ObjectMeasurementP(RADIUS_MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
         parameters.add(new ObjectMeasurementP(PARENT_RADIUS_MEASUREMENT, this));
 
-        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR, this));
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
         parameters.add(new BooleanP(MEASURE_MEAN, this, true));
         parameters.add(new BooleanP(MEASURE_MIN, this, true));
         parameters.add(new BooleanP(MEASURE_MAX, this, true));

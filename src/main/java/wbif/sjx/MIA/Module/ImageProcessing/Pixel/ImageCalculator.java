@@ -298,7 +298,7 @@ public class ImageCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE1, this, "", "First image to be processed as part of calculation."));
         parameters.add(new InputImageP(INPUT_IMAGE2, this, "", "Second image to be processed as part of calculation."));
         parameters.add(new ChoiceP(OVERWRITE_MODE, this, OverwriteModes.CREATE_NEW, OverwriteModes.ALL,
@@ -316,7 +316,7 @@ public class ImageCalculator extends Module {
                 "Name of the output image created during the image calculation.  This image will be added to the workspace."));
         parameters.add(new BooleanP(OUTPUT_32BIT, this, false,
                 "When enabled, the calculation will be performed on 32-bit float values.  This is useful if the calculation is likely to create negative or decimal values.  The output image will also be stored in the workspace as a 32-bit float image."));
-        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new ChoiceP(CALCULATION_METHOD, this, CalculationMethods.ADD, CalculationMethods.ALL,
                 "The calculation to apply to the two input images."));
         parameters.add(new BooleanP(SET_NAN_TO_ZERO, this, false,

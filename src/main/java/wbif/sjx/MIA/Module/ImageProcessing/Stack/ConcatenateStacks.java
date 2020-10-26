@@ -31,7 +31,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
@@ -347,14 +347,14 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();
         collection.add(new CustomInputImageP(INPUT_IMAGE,this,"","Image for concatenation."));
         parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2,"Add another image for concatenation."));
         parameters.add(new BooleanP(ALLOW_MISSING_IMAGES,this,false,"If enabled, the moduule can ignore any images specified for inclusion that aren't present in the workspace.  This is useful if an image's existence is dependent on optional modules."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","The resultant image of concatenation to be added to the workspace."));
 
-        parameters.add(new ParamSeparatorP(CONCAT_SEPARATOR,this));
+        parameters.add(new SeparatorP(CONCAT_SEPARATOR,this));
         parameters.add(new ChoiceP(AXIS_MODE,this,AxisModes.X,AxisModes.ALL,"Axis along which to concatenate input images."));
 
     }

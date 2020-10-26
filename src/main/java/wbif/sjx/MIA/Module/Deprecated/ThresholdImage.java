@@ -347,12 +347,12 @@ public class ThresholdImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply threshold to."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true, "Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "", "Name of the output image created during the thresholding process.  This image will be added to the workspace."));
 
-        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR,this));
+        parameters.add(new SeparatorP(THRESHOLD_SEPARATOR,this));
         parameters.add(new ChoiceP(THRESHOLD_TYPE,this,ThresholdTypes.GLOBAL,ThresholdTypes.ALL, "Class of threshold to be applied.<br>" +
                 "<br> - \""+ThresholdTypes.GLOBAL+"\" (default) will apply a constant, automatically-determined threshold value to all pixels in the image.  This is best when the image is uniformly illuminated.<br>" +
                 "<br> - \" "+ThresholdTypes.LOCAL+"\" will apply a variable threshold to each pixel in the image based on the local intensity around that pixel.  This is best when one region of the image is brighter than another, for example, due to heterogeneous illumination.  The size of the local region is determined by the user.<br>" +

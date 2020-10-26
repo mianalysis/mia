@@ -3,13 +3,15 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -45,7 +47,7 @@ public class CombineObjectSets extends Module {
         for (Obj obj : inputObjects.values()) {
             int ID = outputObjects.getAndIncrementID();
             Obj newObj = new Obj(outputObjects.getName(), ID, obj);
-            newObj.setCoordinateSet(obj.getCoordinateSet());
+            newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
             outputObjects.add(obj);
         }
@@ -55,7 +57,7 @@ public class CombineObjectSets extends Module {
         for (Obj obj : sourceObjects.values()) {
             int ID = targetObjects.getAndIncrementID();
             Obj newObj = new Obj(targetObjects.getName(), ID, obj);
-            newObj.setCoordinateSet(obj.getCoordinateSet());
+            newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
             targetObjects.add(obj);
         }
@@ -119,13 +121,15 @@ public class CombineObjectSets extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.CREATE_NEW, OutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -177,5 +181,16 @@ public class CombineObjectSets extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        // parameters.get(INPUT_OBJECTS_1).setDescription();
+
+        // parameters.get(INPUT_OBJECTS_2).setDescription();
+
+        // parameters.get(OUTPUT_MODE).setDescription();
+
+        // parameters.get(OUTPUT_OBJECTS).setDescription();
+
     }
 }

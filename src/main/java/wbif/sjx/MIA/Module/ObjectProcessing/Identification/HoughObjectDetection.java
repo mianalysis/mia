@@ -22,7 +22,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -245,13 +245,13 @@ public class HoughObjectDetection extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
         parameters.add(new BooleanP(OUTPUT_TRANSFORM_IMAGE,this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
-        parameters.add(new ParamSeparatorP(DETECTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(DETECTION_SEPARATOR,this));
         parameters.add(new IntegerP(MIN_RADIUS,this,10));
         parameters.add(new IntegerP(MAX_RADIUS,this,20));
         parameters.add(new IntegerP(SAMPLING_RATE,this,1));
@@ -259,10 +259,10 @@ public class HoughObjectDetection extends Module {
         parameters.add(new IntegerP(EXCLUSION_RADIUS,this,10));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
-        parameters.add(new ParamSeparatorP(POST_PROCESSING_SEPARATOR,this));
+        parameters.add(new SeparatorP(POST_PROCESSING_SEPARATOR,this));
         parameters.add(new IntegerP(RADIUS_RESIZE,this,0,"Radius of output objects will be adjusted by this value.  For example, a detected circle of radius 5 with a \"radius resize\" of 2 will have an output of 7.  Similarly, setting \"radius resize\" to -3 would produce a circle of radius 2."));
 
-        parameters.add(new ParamSeparatorP(VISUALISATION_SEPARATOR,this));
+        parameters.add(new SeparatorP(VISUALISATION_SEPARATOR,this));
         parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,true));
         parameters.add(new BooleanP(SHOW_DETECTION_IMAGE,this,true));
         parameters.add(new BooleanP(SHOW_HOUGH_SCORE,this,false));

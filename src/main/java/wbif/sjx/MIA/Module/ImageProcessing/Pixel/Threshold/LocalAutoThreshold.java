@@ -204,12 +204,12 @@ public class LocalAutoThreshold extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR,this));
+        parameters.add(new SeparatorP(THRESHOLD_SEPARATOR,this));
         parameters.add(new ChoiceP(THRESHOLD_MODE,this,ThresholdModes.SLICE,ThresholdModes.ALL));
         parameters.add(new ChoiceP(ALGORITHM_SLICE,this,AlgorithmsSlice.BERNSEN,AlgorithmsSlice.ALL));
         parameters.add(new ChoiceP(ALGORITHM_3D,this,Algorithms3D.BERNSEN,Algorithms3D.ALL));
