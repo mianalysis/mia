@@ -302,12 +302,12 @@
         </dependency>
 
         <dependency>
-            <!-- <groupId>com.github.SJCross</groupId>
+            <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.6.18</version> -->
-            <groupId>wbif.sjx</groupId>
+            <version>v1.6.19</version>
+            <!-- <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.6.19</version>
+            <version>1.6.19</version> -->
         </dependency>
     </dependencies>
 

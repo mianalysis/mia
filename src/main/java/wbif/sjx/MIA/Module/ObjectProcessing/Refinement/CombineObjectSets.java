@@ -49,7 +49,7 @@ public class CombineObjectSets extends Module {
             Obj newObj = new Obj(outputObjects.getName(), ID, obj);
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
-            outputObjects.add(obj);
+            outputObjects.add(newObj);
         }
     }
 
@@ -59,7 +59,7 @@ public class CombineObjectSets extends Module {
             Obj newObj = new Obj(targetObjects.getName(), ID, obj);
             newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
-            targetObjects.add(obj);
+            targetObjects.add(newObj);
         }
     }
 
