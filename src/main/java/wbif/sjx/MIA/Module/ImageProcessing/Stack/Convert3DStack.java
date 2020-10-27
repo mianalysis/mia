@@ -7,14 +7,15 @@ import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -25,12 +26,12 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
  * Created by sc13967 on 19/06/2017.
  */
 public class Convert3DStack extends Module {
-    public static final String IMAGE_INPUT = "Image input/output";
+    public static final String IMAGE_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    public static final String CONVERTER = "Stack conversion";
+    public static final String CONVERSION_SEPARTOR = "Stack conversion";
     public static final String MODE = "Mode";
 
     public interface Modes {
@@ -52,8 +53,7 @@ public class Convert3DStack extends Module {
 
     @Override
     public String getDescription() {
-        return "Checks if there is only 1 frame, but multiple Z-sections.  "
-                + "In this case, the Z and T ordering will be switched";
+        return "Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";
     }
 
     public static void process(ImagePlus inputImagePlus, String mode) {
@@ -117,13 +117,15 @@ public class Convert3DStack extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(IMAGE_INPUT, this));
+        parameters.add(new SeparatorP(IMAGE_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(CONVERTER, this));
+        parameters.add(new SeparatorP(CONVERSION_SEPARTOR, this));
         parameters.add(new ChoiceP(MODE, this, Modes.OUTPUT_TIMESERIES, Modes.ALL));
+
+        addParameterDescriptions();
 
     }
 
@@ -131,7 +133,7 @@ public class Convert3DStack extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(IMAGE_INPUT));
+        returnedParameters.add(parameters.getParameter(IMAGE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -139,7 +141,7 @@ public class Convert3DStack extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.add(parameters.getParameter(CONVERTER));
+        returnedParameters.add(parameters.getParameter(CONVERSION_SEPARTOR));
         returnedParameters.add(parameters.getParameter(MODE));
 
         return returnedParameters;
@@ -174,5 +176,19 @@ public class Convert3DStack extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to test T and Z inversion of.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+        + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+        parameters.get(MODE).setDescription(
+                "Controls the expected stack output type.  Any input stacks which do not match this format are updated to give the expected order.  Choices are: "
+                        + String.join(", ", Modes.ALL) + ".");
+
     }
 }

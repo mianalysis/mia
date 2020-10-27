@@ -70,7 +70,8 @@ public class CombineObjectSets extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the \"other\" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information, but do not contain the relationship or measurement information of the originals.  The original objects are unaffected by this module.";
+        
     }
 
     @Override
@@ -184,13 +185,35 @@ public class CombineObjectSets extends Module {
     }
 
     void addParameterDescriptions() {
-        // parameters.get(INPUT_OBJECTS_1).setDescription();
+        parameters.get(INPUT_OBJECTS_1)
+                .setDescription("First of two object collections to combine.  Depending on the choice for parameter \""
+                        + OUTPUT_MODE
+                        + "\", this collection may be updated to include the objects from the second collection (\""
+                        + INPUT_OBJECTS_2 + "\").");
 
-        // parameters.get(INPUT_OBJECTS_2).setDescription();
+        parameters.get(INPUT_OBJECTS_2)
+                .setDescription("Second of two object collections to combine.  Depending on the choice for parameter \""
+                        + OUTPUT_MODE
+                        + "\", this collection may be updated to include the objects from the first collection (\""
+                        + INPUT_OBJECTS_2 + "\").");
 
-        // parameters.get(OUTPUT_MODE).setDescription();
+        parameters.get(OUTPUT_MODE).setDescription("Controls where the combined object collections are stored:<br><ul>"
 
-        // parameters.get(OUTPUT_OBJECTS).setDescription();
+                + "<li>\"" + OutputModes.ADD_TO_OBJECTS_1 + "\" Duplicates of all objects in the second collection (\""
+                + INPUT_OBJECTS_2 + "\") are made and added to the first collection (\"" + INPUT_OBJECTS_1 + "\").</li>"
+
+                + "<li>\"" + OutputModes.ADD_TO_OBJECTS_2 + "\" Duplicates of all objects in the first collection (\""
+                + INPUT_OBJECTS_1 + "\") are made and added to the second collection (\"" + INPUT_OBJECTS_1
+                + "\").</li>"
+
+                + "<li>\"" + OutputModes.CREATE_NEW + "\". Duplicates of all objects in the first (\"" + INPUT_OBJECTS_1
+                + "\") and second (\"" + INPUT_OBJECTS_2
+                + "\") collections are made and added to a new collection with name specified by \"" + OUTPUT_OBJECTS
+                + "\"</li></ul>");
+
+        parameters.get(OUTPUT_OBJECTS)
+                .setDescription("Name of the combined output collection to be added to the workspace if \""
+                        + OUTPUT_MODE + "\" is set to \"" + OutputModes.CREATE_NEW + "\".");
 
     }
 }

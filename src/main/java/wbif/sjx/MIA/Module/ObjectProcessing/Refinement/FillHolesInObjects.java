@@ -55,9 +55,9 @@ public class FillHolesInObjects extends Module {
 
     }
 
-    public static Obj processObject(Obj inputObject, String method)
-            throws IntegerOverflowException {
-        // Convert each object to an image, do the hole filling, then convert back to an object
+    public static Obj processObject(Obj inputObject, String method) throws IntegerOverflowException {
+        // Convert each object to an image, do the hole filling, then convert back to an
+        // object
         Image objectImage = inputObject.getAsTightImage("Temp");
         InvertIntensity.process(objectImage);
 
@@ -119,7 +119,7 @@ public class FillHolesInObjects extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Fills holes in all objects in a collection.  Holes are considered as non-object regions bounded on all sides by object coordinates.  This operation is performed on an object-by-object basis, so only holes bounded by coordinates of the same object will be filled.  Holes can be filled slice-by-slice in 2D (considering only coordiantes in a single XY plane using 4-way connectivity) or in full 3D (considering all surrounding coordinates using 6-way connectivity).  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.";
     }
 
     @Override
@@ -140,7 +140,7 @@ public class FillHolesInObjects extends Module {
         Obj firstObj = inputObjects.getFirst();
         if (firstObj == null)
             return Status.PASS;
-        
+
         // Iterating over all objects
         int count = 1;
         int total = inputObjects.size();
@@ -206,6 +206,8 @@ public class FillHolesInObjects extends Module {
         parameters.add(new SeparatorP(PROCESSING_SEPARATOR, this));
         parameters.add(new ChoiceP(METHOD, this, Methods.FILL_HOLES_2D, Methods.ALL));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -263,5 +265,26 @@ public class FillHolesInObjects extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS)
+                .setDescription("Object collection from the workspace to apply fill holes operation to.");
+
+        parameters.get(UPDATE_INPUT_OBJECTS).setDescription(
+                "When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the \""
+                        + OUTPUT_OBJECTS + "\" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("If \"" + UPDATE_INPUT_OBJECTS
+                + "\" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.");
+
+        parameters.get(METHOD).setDescription("Controls whether the holes are filled in 2D or 3D:<br><ul>"
+
+                + "<li>\"" + Methods.FILL_HOLES_2D
+                + "\" Holes are considered on a slice-by-slice basis (i.e. 4-way connectivity within a slice).  This can be applied to both 2D and 3D objects.</li>"
+
+                + "<li>\"" + Methods.FILL_HOLES_2D
+                + "\" Holes are considered in 3D (i.e. 6-way connectivity).  Note: If a 2D object (either from a 2D or 3D source) is loaded, no holes will be filled, as the top and bottom will be considered \"open\".</li></ul>");
+
     }
 }
