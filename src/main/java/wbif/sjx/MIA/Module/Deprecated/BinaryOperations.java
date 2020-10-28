@@ -320,7 +320,7 @@ public class BinaryOperations extends Module {
         return "DEPRECATED: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
                 "be removed in a future release.<br><br>"
 
-                + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed on a slice-by-slice manner.";
+                + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.";
 
     }
 

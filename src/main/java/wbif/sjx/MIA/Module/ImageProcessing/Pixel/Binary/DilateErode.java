@@ -20,6 +20,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -28,9 +29,12 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class DilateErode extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+
+    public static final String OPERATION_SEPARATOR = "Operation controls";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
 
@@ -122,7 +126,10 @@ public class DilateErode extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Applies binary dilate or erode operations to an image in the workspace.  Dilate will expand all foreground-labelled regions by a specified number of pixels, while erode will shrink all foreground-labelled regions by the same ammount."
+
+        +"<br><br>This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.  All operations (both 2D and 3D) use the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
+
     }
 
     @Override
@@ -161,17 +168,23 @@ public class DilateErode extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        parameters.add(new SeparatorP(OPERATION_SEPARATOR,this));
         parameters.add(new ChoiceP(OPERATION_MODE, this,OperationModes.DILATE_3D,OperationModes.ALL));
         parameters.add(new IntegerP(NUM_ITERATIONS, this,1));
+
+        addParameterDescriptions();
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -179,6 +192,7 @@ public class DilateErode extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(OPERATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
         returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
 
@@ -214,5 +228,31 @@ public class DilateErode extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply dilate or erode operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+      parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+      parameters.get(OUTPUT_IMAGE).setDescription(If \"" + APPLY_TO_INPUT
+              + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).");
+
+      parameters.get(OPERATION_MODE).setDescription("Controls what sort of dilate or erode operation is performed on the input image:<br><ul>"
+
+      + "<li>\"" + OperationModes.DILATE_2D
+      + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses ImageJ implementation.</li>"
+
+      + "<li>\"" + OperationModes.DILATE_3D
+      + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses MorphoLibJ implementation.</li>"
+
+      + "<li>\"" + OperationModes.ERODE_2D
+      + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses ImageJ implementation.</li>"
+
+      + "<li>\"" + OperationModes.ERODE_3D
+      + "\" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.  Uses MorphoLibJ implementation.</li></ul>");
+
+      parameters.get(NUM_ITERATIONS).setDescription("Number of times the operation will be run on a single image.  Effectively, this allows objects to be dilated or eroded by a specific number of pixels.");
+
     }
 }
