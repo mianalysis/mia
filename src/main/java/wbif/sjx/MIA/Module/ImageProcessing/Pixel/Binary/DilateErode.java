@@ -235,7 +235,7 @@ public class DilateErode extends Module {
 
       parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
 
-      parameters.get(OUTPUT_IMAGE).setDescription(If \"" + APPLY_TO_INPUT
+      parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
               + "\" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).");
 
       parameters.get(OPERATION_MODE).setDescription("Controls what sort of dilate or erode operation is performed on the input image:<br><ul>"

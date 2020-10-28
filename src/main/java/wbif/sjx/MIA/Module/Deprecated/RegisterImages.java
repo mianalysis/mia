@@ -1,6 +1,15 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Stack;
+package wbif.sjx.MIA.Module.Deprecated;
+
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.drew.lang.annotations.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
@@ -13,37 +22,45 @@ import mpicbg.ij.SIFT;
 import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
-import mpicbg.models.*;
+import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.AffineModel2D;
+import mpicbg.models.IllDefinedDataPointsException;
+import mpicbg.models.NotEnoughDataPointsException;
+import mpicbg.models.PointMatch;
+import mpicbg.models.RigidModel2D;
+import mpicbg.models.SimilarityModel2D;
+import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ManualUnwarp;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
-
-import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -52,6 +69,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
+    public static final String REGISTRATION_AXIS = "Registration axis";
+    public static final String OTHER_AXIS_MODE = "Other axis mode";
     public static final String ALIGNMENT_MODE = "Alignment mode";
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
@@ -82,6 +101,22 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     public RegisterImages(ModuleCollection modules) {
         super("Register images", modules);
+    }
+
+    public interface RegistrationAxes {
+        String TIME = "Time";
+        String Z = "Z";
+
+        String[] ALL = new String[] { TIME, Z };
+
+    }
+
+    public interface OtherAxisModes {
+        String INDEPENDENT = "Independent";
+        String LINKED = "Linked";
+
+        String[] ALL = new String[] { INDEPENDENT, LINKED };
+
     }
 
     public interface AlignmentModes {
@@ -521,7 +556,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
@@ -533,13 +568,12 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     public Status process(Workspace workspace) {
         IJ.setBackgroundColor(255, 255, 255);
 
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        inputImage = workspace.getImage(inputImageName);
-
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String regAxis = parameters.getValue(REGISTRATION_AXIS);
+        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
         String alignmentMode = parameters.getValue(ALIGNMENT_MODE);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
         String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
@@ -556,6 +590,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
+        inputImage = workspace.getImage(inputImageName);
         if (!applyToInput)
             inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
 
@@ -626,6 +661,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
+        parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
         parameters.add(new ChoiceP(ALIGNMENT_MODE, this, AlignmentModes.AUTOMATIC, AlignmentModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
@@ -665,6 +702,8 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         }
 
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
+        returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
         returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));

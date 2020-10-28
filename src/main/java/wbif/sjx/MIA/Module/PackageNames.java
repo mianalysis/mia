@@ -7,6 +7,7 @@ public class PackageNames {
     public final static String IMAGE_PROCESSING_PIXEL_BINARY = ".Image processing\\.Pixel\\.Binary\\";
     public final static String IMAGE_PROCESSING_PIXEL_THRESHOLD = ".Image processing\\.Pixel\\.Threshold\\";
     public final static String IMAGE_PROCESSING_STACK = ".Image processing\\.Stack\\";
+    public final static String IMAGE_PROCESSING_STACK_REGISTRATION = ".Image processing\\.Stack\\.Registration\\";
     public final static String INPUT_OUTPUT = ".Input output\\";
     public final static String MISCELLANEOUS_MACROS = ".Miscellaneous\\.Macros\\";
     public final static String MISCELLANEOUS = ".Miscellaneous\\";
