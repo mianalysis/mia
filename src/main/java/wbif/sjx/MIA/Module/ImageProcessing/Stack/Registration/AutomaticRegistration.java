@@ -1,51 +1,34 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.Prefs;
-import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
-import mpicbg.ij.Mapping;
 import mpicbg.ij.SIFT;
-import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.AffineModel2D;
-import mpicbg.models.IllDefinedDataPointsException;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import mpicbg.models.RigidModel2D;
-import mpicbg.models.SimilarityModel2D;
-import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ManualUnwarp;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -55,7 +38,6 @@ import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extends CoreRegistrationHandler {
     public static final String INPUT_SEPARATOR = "Image input/output";
@@ -153,115 +135,141 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
     }
 
-    public void processIndependent(Image inputImage, String regAxis, int calculationChannel, String relativeMode,
-            Param param, int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference,
-            @Nullable Image externalSource) {
-        // Creating a reference image
-        Image currReference = null;
+    boolean testReferenceValidity(Image inputImage, Image calculationImage, String otherAxisMode) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus calculationIpl = calculationImage.getImagePlus();
 
-        // Assigning source image
-        Image source = externalSource == null ? inputImage : externalSource;
-
-        // Getting non-registration axis length
-        int nReg = getRegistrationAxisLength(inputImage, regAxis);
-        int nOther = getNonRegistrationAxisLength(inputImage, regAxis);
-        
-        int count = 0;
-        int total = source.getImagePlus().getNFrames()*source.getImagePlus().getNSlices();
-
-        // Iterating over all non-registration axis indices, applying the sorting
-        for (int i = 0; i < nOther; i++) {
-            // Assigning fixed reference images
-            switch (relativeMode) {
-                case RelativeModes.FIRST_FRAME:
-                    currReference = getReferenceImageIndependent(source, calculationChannel, regAxis, i);
-                    break;
-                case RelativeModes.SPECIFIC_IMAGE:
-                    currReference = reference;
-                    break;
-            }
-
-            for (int j = 1; j < nReg; j++) {
-                writeStatus("Processing frame " + (++count) + " of " + total);
-
-                // If the reference image is the previous frame, calculate this now
-                if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                    reference = ExtractSubstack.extractSubstack(source, "ExportableRef",
-                            String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
-                    currReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
-                            ProjectImage.ProjectionModes.MAX);
+        // Stacks should already be ordered such that the registration axis is along the
+        // time axis. Calculation image should have equal number of frames as the input.
+        // Also, if "slices" are linked, it should only have one slice. If "slices" are
+        // independent, it should have the same number of slices as the input.
+        switch (otherAxisMode) {
+            case OtherAxisModes.INDEPENDENT:
+                if (calculationIpl.getNSlices() != inputIpl.getNSlices()) {
+                    MIA.log.writeWarning(
+                            "Non-registration axis of calculation image stack is different length to input image stack.  Calculation stack has "
+                                    + calculationIpl.getNSlices() + " images, input stack has " + inputIpl.getNSlices()
+                                    + " images.  In \"" + OtherAxisModes.INDEPENDENT
+                                    + "\" mode, calculation and input stacks should be the same length along non-registration axis.");
+                    return false;
                 }
-            
-            }
+                break;
+
+            case OtherAxisModes.LINKED:
+                if (calculationIpl.getNSlices() > 1) {
+                    MIA.log.writeWarning("Non-registration axis of calculation image stack is too large ("
+                            + calculationIpl.getNSlices() + ").  In \"" + OtherAxisModes.LINKED
+                            + "\" mode, calculation stack should have a single image along non-registration axis.");
+                    return false;
+                }
+                break;
         }
 
-        // Iterate over each time-step        
-        for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
-            // If the reference image is the previous frame, calculate this now
-            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                // Can't processAutomatic if this is the first frame
-                if (t == 1)
-                    continue;
+        // Irrespective of other axis mode, "time" axis should be the same length
+        if (calculationIpl.getNFrames() != inputIpl.getNFrames()) {
+            MIA.log.writeWarning("Calculation image stack has different length to input image.  Calculation stack has "
+                    + calculationIpl.getNFrames() + " images and, input stack has " + inputIpl.getNFrames()
+                    + " images.");
+            return false;
+        }
 
-                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel),
-                        "1-end", String.valueOf(t - 1));
-                currReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
-                        ProjectImage.ProjectionModes.MAX);
-            }
+        // Reference stack is valid
+        return true;
 
-            // Getting the projected image at this time-point
-            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel),
-                    "1-end", String.valueOf(t));
-            Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped",
-                    ProjectImage.ProjectionModes.MAX);
+    }
+
+    public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, Param param,
+            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
+        // This works in a very similar manner to processLinked, except it's performed
+        // one slice at a time
+        for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
+            // Getting the current slices (input and calculation)
+            Image currInputImage = ExtractSubstack.extractSubstack(inputImage, inputImage.getName(), "1-end",
+                    String.valueOf(z + 1), "1-end");
+            Image currCalcImage = ExtractSubstack.extractSubstack(calculationImage, calculationImage.getName(), "1-end",
+                    String.valueOf(z + 1), "1-end");
+
+            // Performing the registration on this slice
+            processLinked(currInputImage, currCalcImage, relativeMode, param, correctionInterval, fillMode, multithread,
+                    reference);
+
+            // Replacing all images in this slice of the input with the registered images
+            replaceSlice(inputImage, currInputImage, z);
+
+        }
+    }
+
+    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, Param param,
+            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
+        // Assigning fixed reference images
+        switch (relativeMode) {
+            case RelativeModes.FIRST_FRAME:
+                reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", "1");
+                break;
+
+            case RelativeModes.SPECIFIC_IMAGE:
+                if (reference == null)
+                    return;
+                break;
+        }
+
+        // Iterate over each time-step
+        int count = 0;
+        int nFrames = calculationImage.getImagePlus().getNFrames();
+        for (int t = 0; t < nFrames; t++) {
+            writeStatus("Processing frame " + (++count) + " of " + nFrames);
+
+            // If the reference image is the previous frame, get this now
+            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && t != 0)
+                reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", String.valueOf(t));
+
+            // Getting the calculation image at this time-point
+            Image warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
 
             // Calculating the transformation for this image pair
-            if (currReference == null)
-                return;
-
-            AbstractAffineModel2D model = getAffineModel2D(currReference.getImagePlus().getProcessor(),
-                    projectedWarped.getImagePlus().getProcessor(), param);
+            AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
+                    warped.getImagePlus().getProcessor(), param);
             InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
+            // By default the calculated registration will only be applied to the current
+            // timepoint; however, if using the previous frame and in rolling correction
+            // mode (and at the specified interval) we apply the registration to all
+            // subsequent frames.
             int t2 = t;
             switch (relativeMode) {
                 case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
-                    if (correctionInterval != -1 && t % correctionInterval == 0) {
-                        t2 = source.getImagePlus().getNFrames();
-                    }
+                    if (correctionInterval != -1 && t % correctionInterval == 0)
+                        t2 = nFrames;
                     break;
             }
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
-            for (int tt = t; tt <= t2; tt++) {
-                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+            for (int tt = t; tt < t2; tt++) {
+                for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
-                            String.valueOf(tt));
+                            String.valueOf(tt + 1));
                     try {
-                        applyTransformation(warped, currReference, mapping, fillMode, multithread);
+                        applyTransformation(warped, mapping, fillMode, multithread);
                     } catch (InterruptedException e) {
                         return;
                     }
                     replaceStack(inputImage, warped, c, tt);
-
                 }
             }
 
             // Need to apply the warp to an external image
-            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && externalSource != null) {
-                for (int tt = t; tt <= t2; tt++) {
-                    for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
-                        warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end",
-                                String.valueOf(tt));
-                        try {
-                            applyTransformation(warped, currReference, mapping, fillMode, multithread);
-                        } catch (InterruptedException e) {
-                            return;
-                        }
-                        replaceStack(source, warped, c, tt);
+            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
+                for (int tt = t; tt < t2; tt++) {
+                    warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1",
+                            String.valueOf(tt + 1));
+                    try {
+                        applyTransformation(warped, mapping, fillMode, multithread);
+                    } catch (InterruptedException e) {
+                        return;
                     }
+                    replaceStack(calculationImage, warped, 0, tt);
                 }
             }
 
@@ -351,37 +359,95 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        Image inputImage = workspace.getImage(inputImageName);
-        if (!applyToInput)
-            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
-
-        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
-                : null;
-
         // If the rolling correction mode is off, set the interval to -1
         if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE))
             correctionInterval = -1;
 
-        // Setting up the parameters
-        Param param = new Param();
-        param.transformationMode = transformationMode;
-        param.initialSigma = (float) initialSigma;
-        param.steps = parameters.getValue(STEPS);
-        param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-        param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-        param.fdSize = parameters.getValue(FD_SIZE);
-        param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
-        param.rod = (float) rod;
-        param.maxEpsilon = (float) maxEpsilon;
-        param.minInlierRatio = (float) minInlierRatio;
+        // Getting the input image and duplicating if the output will be stored
+        // separately
+        Image inputImage = workspace.getImage(inputImageName);
+        if (!applyToInput)
+            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
 
-        // Getting external source image
-        Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
-                ? new Image(externalSourceName, workspace.getImage(externalSourceName).getImagePlus().duplicate())
+        // If comparing to a fixed image, get this now
+        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
                 : null;
 
-        processIndependent(inputImage, regAxis, calculationChannel, relativeMode, param, correctionInterval, fillMode,
-                multithread, reference, externalSource);
+        // Getting the image the registration will be calculated from.
+        String calcC = String.valueOf(calculationChannel);
+        Image calculationImage = null;
+        switch (calculationSource) {
+            case CalculationSources.EXTERNAL:
+                Image externalImage = workspace.getImage(externalSourceName);
+                calculationImage = ExtractSubstack.extractSubstack(externalImage, "CalcIm", calcC, "1-end", "1-end");
+                break;
+
+            case CalculationSources.INTERNAL:
+                calculationImage = ExtractSubstack.extractSubstack(inputImage, "CalcIm", calcC, "1-end", "1-end");
+                break;
+        }
+
+        // Registration will be performed in time, so ensure actual axis to be
+        // registered is reordered to be in time axis
+        switch (regAxis) {
+            case RegistrationAxes.Z:
+                changeStackOrder(inputImage);
+                changeStackOrder(calculationImage);
+                break;
+        }
+
+        // If non-registration dimension is "linked", calculation image potentially
+        // needs to be projected. Since the images have been transformed such that the
+        // registration dimension is always "Time", then this is a Z projection. A
+        // maximum intensity projection is used. It only needs be performed if there is
+        // at least one Z-slice.
+        if (calculationImage.getImagePlus().getNSlices() > 1) {
+            switch (otherAxisMode) {
+                case OtherAxisModes.LINKED:
+                    calculationImage = ProjectImage.projectImageInZ(calculationImage, "CalcIm",
+                            ProjectImage.ProjectionModes.MAX);
+                    break;
+            }
+        }
+
+        // Ensuring calculation image has the correct dimensions
+        if (testReferenceValidity(inputImage, calculationImage, otherAxisMode)) {
+            // Setting up the parameters
+            Param param = new Param();
+            param.transformationMode = transformationMode;
+            param.initialSigma = (float) initialSigma;
+            param.steps = parameters.getValue(STEPS);
+            param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
+            param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
+            param.fdSize = parameters.getValue(FD_SIZE);
+            param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
+            param.rod = (float) rod;
+            param.maxEpsilon = (float) maxEpsilon;
+            param.minInlierRatio = (float) minInlierRatio;
+
+            switch (otherAxisMode) {
+                case OtherAxisModes.INDEPENDENT:
+                    processIndependent(inputImage, calculationImage, relativeMode, param, correctionInterval, fillMode,
+                            multithread, reference);
+                    break;
+
+                case OtherAxisModes.LINKED:
+                    processLinked(inputImage, calculationImage, relativeMode, param, correctionInterval, fillMode,
+                            multithread, reference);
+                    break;
+            }
+
+            // If stack order was adjusted, now swap it back
+            switch (regAxis) {
+                case RegistrationAxes.Z:
+                    changeStackOrder(inputImage);
+                    changeStackOrder(calculationImage);
+                    break;
+            }
+
+        } else {
+            MIA.log.writeWarning("Input stack has not been registered");
+        }
 
         if (showOutput) {
             if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {

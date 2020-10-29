@@ -6,8 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.drew.lang.annotations.Nullable;
 
+import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Prefs;
+import ij.plugin.HyperStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import mpicbg.ij.Mapping;
@@ -22,8 +25,6 @@ import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -33,7 +34,6 @@ import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 
 public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType<T>> extends Module {
-
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -49,7 +49,6 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
 
     public CoreRegistrationHandler(String name, ModuleCollection modules) {
         super(name, modules);
-        // TODO Auto-generated constructor stub
     }
 
     public interface RegistrationAxes {
@@ -94,58 +93,35 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
 
     }
 
-    protected int getRegistrationAxisLength(Image inputImage, String regAxis) {
-        switch (regAxis) {
-            case RegistrationAxes.TIME:
-                return inputImage.getImagePlus().getNFrames());
-            case RegistrationAxes.Z:
-                return inputImage.getImagePlus().getNSlices();
+    public static void changeStackOrder(Image image) {
+        ImagePlus inputIpl = image.getImagePlus();
+
+        // InputIpl must be a HyperStack
+        if (!inputIpl.isHyperStack()) {
+            int nChannels = inputIpl.getNChannels();
+            int nSlices = inputIpl.getNSlices();
+            int nFrames = inputIpl.getNFrames();
+
+            // Converting to a HyperStack
+            inputIpl = HyperStackConverter.toHyperStack(inputIpl, nChannels, nSlices, nFrames);
+
         }
 
-        return 0;
+        // Applying stack reordering
+        inputIpl = Hyperstack_rearranger.reorderHyperstack(inputIpl, "CTZ", true, false);
+
+        // Updating image of inputIpl
+        image.setImagePlus(inputIpl);
 
     }
 
-    protected int getNonRegistrationAxisLength(Image inputImage, String regAxis) {
-        switch (regAxis) {
-            case RegistrationAxes.TIME:
-                return inputImage.getImagePlus().getNSlices();
-            case RegistrationAxes.Z:
-                return inputImage.getImagePlus().getNFrames();
-        }
-
-        return 0;
-
-    }
-
-    protected Image getReferenceImageIndependent(Image referenceImage, int calculationChannel, String regAxis, int regIdx, int otherAxisIdx) {
-
-        // Extracting the relevant slice or timepoint orthogonal to our registration axis
-        switch (regAxis) {
-            case RegistrationAxes.TIME:
-                return ExtractSubstack.extractSubstack(referenceImage, "Reference",
-                        String.valueOf(calculationChannel + 1), String.valueOf(otherAxisIdx + 1), String.valueOf(regIdx + 1));
-
-            case RegistrationAxes.Z:
-                return ExtractSubstack.extractSubstack(referenceImage, "Reference",
-                        String.valueOf(calculationChannel + 1), String.valueOf(regIdx + 1), String.valueOf(otherAxisIdx + 1));
-        }
-
-        return null;
-
-    }
-
-    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, String fillMode,
-            boolean multithread) throws InterruptedException {
+    public static void applyTransformation(Image inputImage, Mapping mapping, String fillMode, boolean multithread)
+            throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
-
-        // Getting reference ImageProcessor. The output image will be the same size as
-        // this.
-        ImageProcessor referenceIpr = referenceImage.getImagePlus().getProcessor();
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
@@ -164,8 +140,7 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
                     Runnable task = () -> {
                         ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
                         slice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(),
-                                referenceIpr.getHeight());
+                        ImageProcessor alignedSlice = slice.createProcessor(slice.getWidth(), slice.getHeight());
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
                         mapping.mapInterpolated(slice, alignedSlice);
 
@@ -212,16 +187,35 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
         }
     }
 
-    public static void replaceStack(Image inputImage, Image newStack, int channel, int timepoint) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-        ImagePlus newStackImagePlus = newStack.getImagePlus();
+    public static void replaceStack(Image targetImage, Image sourceImage, int channel, int timepoint) {
+        ImagePlus targetIpl = targetImage.getImagePlus();
+        ImagePlus sourceIpl = sourceImage.getImagePlus();
+        ImageStack targetIst = targetIpl.getStack();
+        ImageStack sourceIst = sourceIpl.getStack();
 
-        for (int z = 1; z <= newStackImagePlus.getNSlices(); z++) {
-            inputImagePlus.setPosition(channel, z, timepoint);
-            newStackImagePlus.setPosition(1, z, 1);
+        for (int z = 0; z < sourceIpl.getNSlices(); z++) {
+            int sourceIdx = sourceIpl.getStackIndex(channel + 1, z + 1, timepoint + 1);
+            int targetIdx = targetIpl.getStackIndex(1, z + 1, 1);
 
-            inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
+            targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
 
+        }
+    }
+
+    public static void replaceSlice(Image targetImage, Image sourceSlice, int slice) {
+        ImagePlus targetIpl = targetImage.getImagePlus();
+        ImagePlus sourceIpl = sourceSlice.getImagePlus();
+        ImageStack targetIst = targetIpl.getStack();
+        ImageStack sourceIst = sourceIpl.getStack();
+
+        for (int channel = 0; channel < targetIpl.getNChannels(); channel++) {
+            for (int timepoint = 0; timepoint < targetIpl.getNFrames(); timepoint++) {
+                int sourceIdx = sourceIpl.getStackIndex(channel + 1, 1, timepoint + 1);
+                int targetIdx = targetIpl.getStackIndex(channel + 1, slice + 1, timepoint + 1);
+
+                targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
+
+            }
         }
     }
 

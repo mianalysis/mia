@@ -158,7 +158,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends C
                 Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
                         String.valueOf(t));
                 try {
-                    applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
+                    applyTransformation(warped, mapping, fillMode, multithread);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -242,7 +242,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends C
                 Image warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end",
                         String.valueOf(t));
                 try {
-                    applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
+                    applyTransformation(warped, mapping, fillMode, multithread);
                 } catch (InterruptedException e) {
                     return;
                 }

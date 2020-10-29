@@ -1,8 +1,8 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Stack;
+package wbif.sjx.MIA.Module.Deprecated;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import wbif.sjx.MIA.Module.ModuleTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterImagesTest extends ModuleTest {
 
