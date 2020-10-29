@@ -239,23 +239,26 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             switch (relativeMode) {
                 case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
                     if (correctionInterval != -1 && t % correctionInterval == 0)
-                        t2 = nFrames;
+                        t2 = nFrames-1;
                     break;
             }
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
-            for (int tt = t; tt < t2; tt++) {
+            for (int tt = t; tt <= t2; tt++) {
                 for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
-                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
+                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c+1), "1-end",
                             String.valueOf(tt + 1));
+                    
                     try {
                         applyTransformation(warped, mapping, fillMode, multithread);
                     } catch (InterruptedException e) {
                         return;
                     }
+
                     replaceStack(inputImage, warped, c, tt);
+
                 }
             }
 

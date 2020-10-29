@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.drew.lang.annotations.Nullable;
 
 import fiji.stacks.Hyperstack_rearranger;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -22,6 +23,7 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -194,8 +196,8 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
         ImageStack sourceIst = sourceIpl.getStack();
 
         for (int z = 0; z < sourceIpl.getNSlices(); z++) {
-            int sourceIdx = sourceIpl.getStackIndex(channel + 1, z + 1, timepoint + 1);
-            int targetIdx = targetIpl.getStackIndex(1, z + 1, 1);
+            int sourceIdx = sourceIpl.getStackIndex(1, z + 1, 1);
+            int targetIdx = targetIpl.getStackIndex(channel + 1, z + 1, timepoint + 1);
 
             targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
 

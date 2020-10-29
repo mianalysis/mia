@@ -69,8 +69,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     public static final String OUTPUT_IMAGE = "Output image";
 
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
-    public static final String REGISTRATION_AXIS = "Registration axis";
-    public static final String OTHER_AXIS_MODE = "Other axis mode";
     public static final String ALIGNMENT_MODE = "Alignment mode";
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
@@ -101,22 +99,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     public RegisterImages(ModuleCollection modules) {
         super("Register images", modules);
-    }
-
-    public interface RegistrationAxes {
-        String TIME = "Time";
-        String Z = "Z";
-
-        String[] ALL = new String[] { TIME, Z };
-
-    }
-
-    public interface OtherAxisModes {
-        String INDEPENDENT = "Independent";
-        String LINKED = "Linked";
-
-        String[] ALL = new String[] { INDEPENDENT, LINKED };
-
     }
 
     public interface AlignmentModes {
@@ -572,8 +554,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        String regAxis = parameters.getValue(REGISTRATION_AXIS);
-        String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
         String alignmentMode = parameters.getValue(ALIGNMENT_MODE);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
         String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
@@ -661,8 +641,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
-        parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
-        parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
         parameters.add(new ChoiceP(ALIGNMENT_MODE, this, AlignmentModes.AUTOMATIC, AlignmentModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
@@ -697,13 +675,10 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
-
+        
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
-        returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
         returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
