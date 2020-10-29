@@ -220,8 +220,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             writeStatus("Processing frame " + (++count) + " of " + nFrames);
 
             // If the reference image is the previous frame, get this now
-            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && t != 0)
+            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
+                if (t==0)
+                    continue;
+                
                 reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", String.valueOf(t));
+
+            }
 
             // Getting the calculation image at this time-point
             Image warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
