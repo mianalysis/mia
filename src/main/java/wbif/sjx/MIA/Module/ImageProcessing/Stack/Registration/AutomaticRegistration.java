@@ -269,7 +269,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
             // Need to apply the warp to an external image
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                for (int tt = t; tt < t2; tt++) {
+                for (int tt = t; tt <= t2; tt++) {
                     warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1",
                             String.valueOf(tt + 1));
                     try {
