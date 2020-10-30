@@ -542,7 +542,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
 
                     outputIst.setProcessor(tempIst.getProcessor(tempIdx), outputIdx);
-                    
+
                 }
             }
 
@@ -935,12 +935,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (ipl.getBitDepth() == 24)
             ipl = CompositeConverter.makeComposite(ipl);
 
-        // If either number of slices or timepoints is 1 check it's the right dimension
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
-            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
-            ipl.getCalibration().pixelDepth = 1;
-        } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
-            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+        // If either number of slices or timepoints is 1 check it's the right dimension.
+        // This should only be wrong if a Stack rather than Hyperstack was loaded, so if
+        // there are multiple channels it shouldn't be an issue.
+        if (ipl.getNChannels() == 1) {
+            if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
+                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
+                ipl.getCalibration().pixelDepth = 1;
+            } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
+                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+            }
         }
 
         // Adding image to workspace

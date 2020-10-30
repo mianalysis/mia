@@ -11,6 +11,7 @@ import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.SIFT;
 import mpicbg.imagefeatures.Feature;
+import mpicbg.imagefeatures.FloatArray2DMOPS;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;

@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -383,7 +384,12 @@ public class MeasureObjectCurvature extends Module {
 
             if (fitSpline) {
                 CurvatureCalculator calculator = getCurvatureCalculator(longestPath, splineFittingMethod, nNeighbours, iterations, accuracy);
-                TreeMap<Double,Double> curvature = calculator.getCurvature();
+                TreeMap<Double, Double> curvature = calculator.getCurvature();
+                
+                // If the path was too short for the number of neighbours curvature will be null
+                if (curvature == null)
+                    continue;
+                
                 measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
                 measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
 
