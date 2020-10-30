@@ -9,7 +9,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
@@ -95,7 +95,7 @@ public class GUICondition extends CoreWorkspaceHandler {
         collection.add(new StringP(CHOICE_NAME, this, ""));
         collection.addAll(super.updateAndGetParameters());
 
-        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
         parameters.getParameter(CHOICE).setVisible(true);
         parameters.add(new ParameterGroup(ADD_CHOICE, this, collection, 0, getUpdaterAndGetter()));

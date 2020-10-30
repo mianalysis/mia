@@ -29,7 +29,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -339,7 +339,7 @@ public class InputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(IMPORT_SEPARATOR, this));
+        parameters.add(new SeparatorP(IMPORT_SEPARATOR, this));
         parameters.add(new FileFolderPathP(INPUT_PATH, this));
         // parameters.add(new FileListP(FILE_LIST,this));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS, this, 1));
@@ -350,7 +350,7 @@ public class InputControl extends Module {
         parameters.add(new SeriesListSelectorP(SERIES_LIST, this, "1"));
         parameters.add(new BooleanP(LOAD_FIRST_PER_FOLDER, this, false));
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         ParameterCollection collection = new ParameterCollection();
         collection.add(new ChoiceP(FILTER_SOURCE, this, FilterSources.EXTENSION, FilterSources.ALL));
         collection.add(new StringP(FILTER_VALUE, this));

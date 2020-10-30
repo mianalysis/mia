@@ -146,7 +146,7 @@ public class Watershed extends Module {
 
     @Override
     public String getDescription() {
-        return "Peforms a watershed transform on a specified input image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  This can use specific markers and be run in either distance or intensity-based modes.  Uses MorphoLibJ implementation (https://github.com/ijpb/MorphoLibJ).";
+        return "Peforms a watershed transform on a specified input image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.  This can use specific markers and be run in either distance or intensity-based modes.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -212,12 +212,12 @@ public class Watershed extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         
-        parameters.add(new ParamSeparatorP(WATERSHED_SEPARATOR,this));
+        parameters.add(new SeparatorP(WATERSHED_SEPARATOR,this));
         parameters.add(new BooleanP(USE_MARKERS, this,false));
         parameters.add(new InputImageP(MARKER_IMAGE, this));
         parameters.add(new ChoiceP(INTENSITY_MODE, this,IntensityModes.DISTANCE,IntensityModes.ALL));
@@ -226,7 +226,7 @@ public class Watershed extends Module {
         parameters.add(new ChoiceP(CONNECTIVITY, this,Connectivity.TWENTYSIX,Connectivity.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();

@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.PartnerObjectsP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -133,11 +133,11 @@ public class CalculateStatsForPartners extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));
         
-        parameters.add(new ParamSeparatorP(STATISTIC_SEPARATOR, this));
+        parameters.add(new SeparatorP(STATISTIC_SEPARATOR, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
         parameters.add(new BooleanP(CALCULATE_MEAN,this,true));
         parameters.add(new BooleanP(CALCULATE_STD,this,true));

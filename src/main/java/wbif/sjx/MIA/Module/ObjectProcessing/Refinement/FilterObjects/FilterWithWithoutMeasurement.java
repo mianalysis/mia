@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -113,7 +113,7 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.WITHOUT_MEASUREMENT, FilterMethods.ALL));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));

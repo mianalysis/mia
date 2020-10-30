@@ -528,12 +528,12 @@ public class FilterObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.REMOVE_FILTERED_OBJECTS, FilterModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new ChoiceP(FILTER_METHOD, this, FilterMethods.REMOVE_ON_IMAGE_EDGE_2D, FilterMethods.ALL));
         parameters.add(new BooleanP(INCLUDE_Z_POSITION, this, false));
         parameters.add(new ObjectMeasurementP(MEASUREMENT, this));

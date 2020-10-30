@@ -8,7 +8,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -89,7 +89,7 @@ public class AddPause extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(PAUSE_SEPARATOR, this));
+        parameters.add(new SeparatorP(PAUSE_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
 

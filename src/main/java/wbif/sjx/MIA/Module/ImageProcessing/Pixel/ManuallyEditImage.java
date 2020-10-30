@@ -6,12 +6,14 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -19,14 +21,14 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class ManuallyEditImage extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
     public ManuallyEditImage(ModuleCollection modules) {
-        super("Manually edit image",modules);
+        super("Manually edit image", modules);
     }
-
 
     @Override
     public String getPackageName() {
@@ -35,7 +37,7 @@ public class ManuallyEditImage extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Displays an image from the workspace, allowing the user to make manual edits, before saving it back into the workspace.  Edited images can either be stored as a new image in the workspace or overwrite the input image.  Once the image has been displayed, the user makes edits until clicking \"OK\" in the dialog box that appears.  As such, this module is only suitable for running in GUI mode.";
     }
 
     @Override
@@ -50,25 +52,29 @@ public class ManuallyEditImage extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+        if (!applyToInput)
+            inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Displaying image to edit
         inputImagePlus.show();
 
-        // When the edits have been made, the user needs to click on the following button to proceed
-        IJ.runMacro("waitForUser(getArgument())","Click \"OK\" once edits complete");
+        // When the edits have been made, the user needs to click on the following
+        // button to proceed
+        IJ.runMacro("waitForUser(getArgument())", "Click \"OK\" once edits complete");
 
         inputImagePlus.hide();
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeStatus("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            writeStatus("Adding image (" + outputImageName + ") to workspace");
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput)
+                outputImage.showImage();
 
         } else {
-            if (showOutput) inputImage.showImage();
+            if (showOutput)
+                inputImage.showImage();
 
         }
 
@@ -78,15 +84,19 @@ public class ManuallyEditImage extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
+        returnedParameters.add(parameters.get(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -126,5 +136,15 @@ public class ManuallyEditImage extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the \""+APPLY_TO_INPUT+"\" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+        + "\" is not selected, the edited image will be saved to the workspace with this name.");
+        
     }
 }

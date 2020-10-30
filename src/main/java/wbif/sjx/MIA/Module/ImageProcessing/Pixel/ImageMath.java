@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -166,12 +166,12 @@ public class ImageMath extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR,this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR,this));
         parameters.add(new ChoiceP(CALCULATION_TYPE,this,CalculationTypes.ADD,CalculationTypes.ALL));
         parameters.add(new ChoiceP(VALUE_SOURCE,this, ValueSources.FIXED, ValueSources.ALL));
         parameters.add(new ImageMeasurementP(MEASUREMENT,this));

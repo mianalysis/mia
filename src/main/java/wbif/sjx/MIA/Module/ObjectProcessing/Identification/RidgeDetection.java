@@ -360,11 +360,11 @@ public class RidgeDetection extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
 
-        parameters.add(new ParamSeparatorP(DETECTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(DETECTION_SEPARATOR,this));
         parameters.add(new ChoiceP(CONTOUR_CONTRAST,this,ContourContrast.DARK_LINE,ContourContrast.ALL));
         parameters.add(new DoubleP(LOWER_THRESHOLD,this, 0.5));
         parameters.add(new DoubleP(UPPER_THRESHOLD,this, 0.85));
@@ -373,7 +373,7 @@ public class RidgeDetection extends Module {
         parameters.add(new BooleanP(EXTEND_LINE,this,false));
         parameters.add(new BooleanP(ESTIMATE_WIDTH,this,false));
 
-        parameters.add(new ParamSeparatorP(REFINEMENT_SEPARATOR,this));
+        parameters.add(new SeparatorP(REFINEMENT_SEPARATOR,this));
         parameters.add(new DoubleP(MIN_LENGTH,this, 0d));
         parameters.add(new DoubleP(MAX_LENGTH,this, 0d));
         parameters.add(new BooleanP(LINK_CONTOURS,this, false));

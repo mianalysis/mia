@@ -19,7 +19,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -231,7 +231,7 @@ public class FitEllipsoid extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Fit ellipsoids to all objects in a collection using \"<a href=\"https://imagej.net/BoneJ\">BoneJ</a>\".  FFit ellipsoids can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipsoid coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.";
     }
 
     @Override
@@ -300,20 +300,22 @@ public class FitEllipsoid extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(FITTING_SEPARATOR, this));
+        parameters.add(new SeparatorP(FITTING_SEPARATOR, this));
         parameters.add(new ChoiceP(FITTING_MODE, this, FittingModes.FIT_TO_SURFACE, FittingModes.ALL));
         parameters.add(new BooleanP(LIMIT_AXIS_LENGTH, this, false));
         parameters.add(new DoubleP(MAXIMUM_AXIS_LENGTH, this, 1000d));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new ChoiceP(OBJECT_OUTPUT_MODE, this, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -465,5 +467,32 @@ public class FitEllipsoid extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_OBJECTS).setDescription("Objects from workspace to which ellipsoids will be fit.  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipsoids are also stored as objects.");
+
+      parameters.get(FITTING_MODE).setDescription("Controls which object coordinates are used for ellipsoid fitting:<br><ul>"
+
+      +"<li>\""+FittingModes.FIT_TO_WHOLE+"\" All coordinates for the input object are passed to the ellipsoid fitter.<.li>"
+
+      +"<li>\""+FittingModes.FIT_TO_SURFACE+"\" (default) Only surface coordinates of the input object are passed to the ellipsoid fitter.  Surface coordinates are calculated using 6-way connectivity.</li></ul>");
+
+      parameters.get(LIMIT_AXIS_LENGTH).setDescription("When selected, all axes of the the fit ellipsoids must be shorter than the length specified by \""+MAXIMUM_AXIS_LENGTH+"\".  This helps filter out mis-fit ellipsoids and prevents unnecessary, massive memory use when storing ellipsoids.");
+
+      parameters.get(MAXIMUM_AXIS_LENGTH).setDescription("Maximum length of any fit ellipsoid axis as measured in pixel units.  This is onyl used if \""+LIMIT_AXIS_LENGTH+"\" is selected.");
+
+      parameters.get(OBJECT_OUTPUT_MODE).setDescription("Controls whether the fit ellipsoid is stored as an object in the workspace:<br><ul>"
+
+      +"<li>\""+OutputModes.CREATE_NEW_OBJECT+"\" Fit ellipsoids are stored as new objects in the workspace (name specified by \""+OUTPUT_OBJECTS+"\").  Ellipsoids are \"solid\" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipsoid objects are children of the input objects to which they were fit.  If outputting ellipsoid objects, any measurements are still only applied to the corresponding input objects.</li>"
+
+      +"<li>\""+OutputModes.DO_NOT_STORE+"\" (default) The ellipsoid coordinates are not stored.</li>"
+
+      +"<li>\""+OutputModes.UPDATE_INPUT+"\" The coordinates of the input object are removed and replaced with the fit ellipsoid coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul>");
+
+      parameters.get(OUTPUT_OBJECTS).setDescription("Name assigned to output ellipsoid objects if \""+OBJECT_OUTPUT_MODE+"\" is in \""+OutputModes.CREATE_NEW_OBJECT+"\" mode.");
+
+      parameters.get(ENABLE_MULTITHREADING).setDescription("Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
+
     }
 }

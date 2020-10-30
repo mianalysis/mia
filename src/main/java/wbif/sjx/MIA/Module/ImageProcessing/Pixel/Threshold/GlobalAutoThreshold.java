@@ -149,7 +149,7 @@ public class GlobalAutoThreshold extends Module {
     @Override
     public String getDescription() {
         return "Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the "
-                + "built-in ImageJ global auto-thresholding algorithms (https://imagej.net/Auto_Threshold)." + "<br>"
+                + "built-in ImageJ global <a href=\"https://imagej.net/Auto_Threshold\">auto-thresholding algorithms</a>." + "<br>"
                 + "<br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically "
                 + "converted to 8-bit based on the \"" + ImageTypeConverter.ScalingModes.FILL
                 + "\" scaling method from the " + "\"" + new ImageTypeConverter(null).getName() + "\" module.";
@@ -226,13 +226,13 @@ public class GlobalAutoThreshold extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, ""));
         parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.CALCULATE_AND_APPLY, OutputModes.ALL));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, ""));
 
-        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR, this));
+        parameters.add(new SeparatorP(THRESHOLD_SEPARATOR, this));
         parameters.add(new ChoiceP(ALGORITHM, this, Algorithms.HUANG, Algorithms.ALL));
         parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this, 1.0));
         parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));

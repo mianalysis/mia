@@ -15,6 +15,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -22,6 +23,7 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class Skeletonise extends Module {
+    public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -68,7 +70,7 @@ public class Skeletonise extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Creates an skeletonised representation of a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin \"<a href=\"https://github.com/ijpb/MorphoLibJ\">MorphoLibJ</a>\".";
     }
 
     @Override
@@ -103,9 +105,12 @@ public class Skeletonise extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -113,6 +118,7 @@ public class Skeletonise extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -152,5 +158,17 @@ public class Skeletonise extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription(
+              "Image from workspace to apply 3D skeletonisation operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+
+      parameters.get(APPLY_TO_INPUT).setDescription(
+              "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+      parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+              + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
     }
 }

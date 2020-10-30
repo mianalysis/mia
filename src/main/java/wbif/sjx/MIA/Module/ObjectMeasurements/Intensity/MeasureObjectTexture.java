@@ -172,11 +172,11 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(MEASUREMENT_SEPARATOR,this));
+        parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(POINT_MEASUREMENT, this,false));
         parameters.add(new BooleanP(CALIBRATED_RADIUS, this,false));
         parameters.add(new DoubleP(MEASUREMENT_RADIUS, this,10.0));

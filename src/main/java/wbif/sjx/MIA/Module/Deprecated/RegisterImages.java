@@ -1,6 +1,16 @@
-package wbif.sjx.MIA.Module.ImageProcessing.Stack;
+package wbif.sjx.MIA.Module.Deprecated;
 
-import com.drew.lang.annotations.Nullable;import ij.IJ;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import com.drew.lang.annotations.Nullable;
+
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
@@ -12,38 +22,49 @@ import mpicbg.ij.SIFT;
 import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
-import mpicbg.models.*;
+import mpicbg.models.AbstractAffineModel2D;
+import mpicbg.models.AffineModel2D;
+import mpicbg.models.IllDefinedDataPointsException;
+import mpicbg.models.NotEnoughDataPointsException;
+import mpicbg.models.PointMatch;
+import mpicbg.models.RigidModel2D;
+import mpicbg.models.SimilarityModel2D;
+import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ManualUnwarp;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AutomaticRegistration;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.ManualRegistration;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Measurement;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 import wbif.sjx.MIA.Process.Interactable.Interactable;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
-import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
+public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Module implements Interactable {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -79,15 +100,14 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
     private Image reference;
 
     public RegisterImages(ModuleCollection modules) {
-        super("Register images",modules);
+        super("Register images", modules);
     }
-
 
     public interface AlignmentModes {
         final String AUTOMATIC = "Automatic (feature extraction)";
         final String MANUAL = "Manual (landmarks)";
 
-        final String[] ALL = new String[]{AUTOMATIC,MANUAL};
+        final String[] ALL = new String[] { AUTOMATIC, MANUAL };
 
     }
 
@@ -96,7 +116,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         final String PREVIOUS_FRAME = "Previous frame";
         final String SPECIFIC_IMAGE = "Specific image";
 
-        final String[] ALL = new String[]{FIRST_FRAME,PREVIOUS_FRAME,SPECIFIC_IMAGE};
+        final String[] ALL = new String[] { FIRST_FRAME, PREVIOUS_FRAME, SPECIFIC_IMAGE };
 
     }
 
@@ -104,7 +124,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         final String NONE = "None";
         final String EVERY_NTH_FRAME = "Every nth frame";
 
-        final String[] ALL = new String[]{NONE,EVERY_NTH_FRAME};
+        final String[] ALL = new String[] { NONE, EVERY_NTH_FRAME };
 
     }
 
@@ -112,7 +132,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         String INTERNAL = "Internal";
         String EXTERNAL = "External";
 
-        String[] ALL = new String[]{INTERNAL,EXTERNAL};
+        String[] ALL = new String[] { INTERNAL, EXTERNAL };
 
     }
 
@@ -122,7 +142,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         String SIMILARITY = "Similarity";
         String TRANSLATION = "Translation";
 
-        String[] ALL = new String[]{AFFINE,RIGID,SIMILARITY,TRANSLATION};
+        String[] ALL = new String[] { AFFINE, RIGID, SIMILARITY, TRANSLATION };
 
     }
 
@@ -130,10 +150,9 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         String BLACK = "Black";
         String WHITE = "White";
 
-        String[] ALL = new String[]{BLACK,WHITE};
+        String[] ALL = new String[] { BLACK, WHITE };
 
     }
-
 
     public interface Measurements {
         String TRANSLATE_X = "REGISTER // TRANSLATE_X";
@@ -145,8 +164,9 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
     }
 
-
-    public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) {
+    public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param,
+            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference,
+            @Nullable Image externalSource) {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -156,13 +176,17 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", "1");
-                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel),
+                        "1-end", "1");
+                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                        ProjectImage.ProjectionModes.MAX);
                 break;
 
             case RelativeModes.SPECIFIC_IMAGE:
-                if (reference == null) return;
-                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+                if (reference == null)
+                    return;
+                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                        ProjectImage.ProjectionModes.MAX);
                 break;
         }
 
@@ -170,42 +194,51 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         int count = 0;
         int total = source.getImagePlus().getNFrames();
         for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint " + (++count) + " of " + total);
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
                 // Can't processAutomatic if this is the first frame
-                if (t == 1) continue;
+                if (t == 1)
+                    continue;
 
-                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
-                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+                reference = ExtractSubstack.extractSubstack(source, "ExportableRef", String.valueOf(calculationChannel),
+                        "1-end", String.valueOf(t - 1));
+                projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                        ProjectImage.ProjectionModes.MAX);
             }
 
             // Getting the projected image at this time-point
-            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel), "1-end", String.valueOf(t));
-            Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped", ProjectImage.ProjectionModes.MAX);
+            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel),
+                    "1-end", String.valueOf(t));
+            Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped",
+                    ProjectImage.ProjectionModes.MAX);
 
             // Calculating the transformation for this image pair
-            if (projectedReference == null) return;
+            if (projectedReference == null)
+                return;
 
-            Mapping mapping = getFeatureTransformation(projectedReference,projectedWarped,param);
+            AbstractAffineModel2D model = getAffineModel2D(projectedReference.getImagePlus().getProcessor(), projectedWarped.getImagePlus().getProcessor(), param);
+            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
             int t2 = t;
             switch (relativeMode) {
                 case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
-                    if (correctionInterval != -1 && t%correctionInterval == 0) {
+                    if (correctionInterval != -1 && t % correctionInterval == 0) {
                         t2 = source.getImagePlus().getNFrames();
                     }
                     break;
             }
 
             // Applying the transformation to the whole stack.
-            // All channels should move in the same way, so are processed with the same transformation.
+            // All channels should move in the same way, so are processed with the same
+            // transformation.
             for (int tt = t; tt <= t2; tt++) {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
+                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
+                            String.valueOf(tt));
                     try {
-                        applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
+                        applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
                     } catch (InterruptedException e) {
                         return;
                     }
@@ -218,9 +251,10 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && externalSource != null) {
                 for (int tt = t; tt <= t2; tt++) {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
-                        warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
+                        warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end",
+                                String.valueOf(tt));
                         try {
-                            applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
+                            applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
                         } catch (InterruptedException e) {
                             return;
                         }
@@ -234,19 +268,22 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         }
     }
 
-    public void processManual(Image inputImage, String transformationMode, boolean multithread, String fillMode, Image reference) {
+    public void processManual(Image inputImage, String transformationMode, boolean multithread, String fillMode,
+            Image reference) {
         // Creating a reference image
-        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                ProjectImage.ProjectionModes.MAX);
 
         // Creating a projection of the main image
-        Image projectedWarped = ProjectImage.projectImageInZ(inputImage, "ProjectedWarped", ProjectImage.ProjectionModes.MAX);
+        Image projectedWarped = ProjectImage.projectImageInZ(inputImage, "ProjectedWarped",
+                ProjectImage.ProjectionModes.MAX);
 
         ImagePlus ipl1 = new Duplicator().run(projectedWarped.getImagePlus());
         ImagePlus ipl2 = new Duplicator().run(projectedReference.getImagePlus());
-        ArrayList<PointPair> pairs = new PointPairSelector(this,true).getPointPairs(ipl1,ipl2);
+        ArrayList<PointPair> pairs = new PointPairSelector(this, true).getPointPairs(ipl1, ipl2);
 
         // Getting transform
-        Object[] output = getLandmarkTransformation(pairs,transformationMode);
+        Object[] output = getLandmarkTransformation(pairs, transformationMode);
         InverseTransformMapping mapping = (InverseTransformMapping) output[0];
         AbstractAffineModel2D model = (AbstractAffineModel2D) output[1];
 
@@ -254,14 +291,16 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         int count = 0;
         int total = inputImage.getImagePlus().getNFrames();
         for (int t = 1; t <= inputImage.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint " + (++count) + " of " + total);
 
             // Applying the transformation to the whole stack.
-            // All channels should move in the same way, so are processed with the same transformation.
+            // All channels should move in the same way, so are processed with the same
+            // transformation.
             for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-                Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
+                Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end",
+                        String.valueOf(t));
                 try {
-                    applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
+                    applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -272,7 +311,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
         }
 
-        addManualMeasurements(inputImage,model);
+        addManualMeasurements(inputImage, model);
 
     }
 
@@ -290,47 +329,42 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         }
     }
 
-    public InverseTransformMapping getFeatureTransformation(Image referenceImage, Image warpedImage, Param param) {
-        ImagePlus referenceIpl = referenceImage.getImagePlus();
-        ImagePlus warpedIpl = warpedImage.getImagePlus();
-
+    public static AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr, Param param) {
         // Initialising SIFT feature extractor
         FloatArray2DSIFT sift = new FloatArray2DSIFT(param);
         SIFT ijSIFT = new SIFT(sift);
 
         // Extracting features
         ArrayList<Feature> featureList1 = new ArrayList<Feature>();
-        ijSIFT.extractFeatures(referenceIpl.getProcessor(),featureList1);
+        ijSIFT.extractFeatures(referenceIpr, featureList1);
         ArrayList<Feature> featureList2 = new ArrayList<Feature>();
-        ijSIFT.extractFeatures(warpedIpl.getProcessor(),featureList2);
+        ijSIFT.extractFeatures(warpedIpr, featureList2);
 
         // Running registration
         AbstractAffineModel2D model = getModel(param.transformationMode);
-
-        InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2,featureList1,1.5f,null, Float.MAX_VALUE,param.rod);
+        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2, featureList1, 1.5f, null,
+                Float.MAX_VALUE, param.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
 
         try {
-            model.filterRansac(candidates,inliers,1000,param.maxEpsilon,param.minInlierRatio);
+            model.filterRansac(candidates, inliers, 1000, param.maxEpsilon, param.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
             e.printStackTrace();
             return null;
         }
 
-        return mapping;
+        return model;
 
     }
 
     public static Object[] getLandmarkTransformation(List<PointPair> pairs, String transformationMode) {
         // Getting registration model
         AbstractAffineModel2D model = getModel(transformationMode);
-
         InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-        final ArrayList< PointMatch > candidates = new ArrayList< PointMatch >();
+        final ArrayList<PointMatch> candidates = new ArrayList<PointMatch>();
 
-        for (PointPair pair:pairs) {
-            candidates.addAll(Util.pointRoisToPointMatches(pair.getPoint1(),pair.getPoint2()));
+        for (PointPair pair : pairs) {
+            candidates.addAll(Util.pointRoisToPointMatches(pair.getPoint1(), pair.getPoint2()));
         }
 
         try {
@@ -340,31 +374,32 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
             return null;
         }
 
-        return new Object[]{mapping,model};
+        return new Object[] { mapping, model };
 
     }
 
-    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, String fillMode, boolean multithread) throws InterruptedException {
+    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, String fillMode,
+            boolean multithread) throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
 
-        // Getting reference ImageProcessor.  The output image will be the same size as this.
+        // Getting reference ImageProcessor. The output image will be the same size as
+        // this.
         ImageProcessor referenceIpr = referenceImage.getImagePlus().getProcessor();
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
 
-        int nTotal = nChannels*nFrames;
-        AtomicInteger count = new AtomicInteger();
+        if (fillMode.equals(ManualUnwarp.FillModes.WHITE))
+            InvertIntensity.process(inputImage);
 
-        if (fillMode.equals(ManualUnwarp.FillModes.WHITE)) InvertIntensity.process(inputImage);
-
-        for (int c=1;c<=nChannels;c++) {
-            for (int z=1;z<=nSlices;z++) {
-                for (int t=1;t<=nFrames;t++) {
+        for (int c = 1; c <= nChannels; c++) {
+            for (int z = 1; z <= nSlices; z++) {
+                for (int t = 1; t <= nFrames; t++) {
                     int finalC = c;
                     int finalZ = z;
                     int finalT = t;
@@ -372,7 +407,8 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
                     Runnable task = () -> {
                         ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
                         slice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(), referenceIpr.getHeight());
+                        ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(),
+                                referenceIpr.getHeight());
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
                         mapping.mapInterpolated(slice, alignedSlice);
 
@@ -387,16 +423,19 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-        if (fillMode.equals(ManualUnwarp.FillModes.WHITE)) InvertIntensity.process(inputImage);
+        if (fillMode.equals(ManualUnwarp.FillModes.WHITE))
+            InvertIntensity.process(inputImage);
 
     }
 
-    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice, @Nullable ImageProcessor toPut) {
+    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice,
+            @Nullable ImageProcessor toPut) {
         if (toPut == null) {
             // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice, timepoint + "-" + timepoint);
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice,
+                    timepoint + "-" + timepoint);
         } else {
-            inputImagePlus.setPosition(channel,slice,timepoint);
+            inputImagePlus.setPosition(channel, slice, timepoint);
             inputImagePlus.setProcessor(toPut);
             return null;
         }
@@ -406,9 +445,9 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         ImagePlus newStackImagePlus = newStack.getImagePlus();
 
-        for (int z=1;z<=newStackImagePlus.getNSlices();z++) {
-            inputImagePlus.setPosition(channel,z,timepoint);
-            newStackImagePlus.setPosition(1,z,1);
+        for (int z = 1; z <= newStackImagePlus.getNSlices(); z++) {
+            inputImagePlus.setPosition(channel, z, timepoint);
+            newStackImagePlus.setPosition(1, z, 1);
 
             inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
 
@@ -418,12 +457,12 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
     static void addManualMeasurements(Image image, AbstractAffineModel2D model) {
         AffineTransform transform = model.createAffine();
 
-        image.addMeasurement(new Measurement(Measurements.TRANSLATE_X,transform.getTranslateX()));
-        image.addMeasurement(new Measurement(Measurements.TRANSLATE_Y,transform.getTranslateY()));
-        image.addMeasurement(new Measurement(Measurements.SCALE_X,transform.getScaleX()));
-        image.addMeasurement(new Measurement(Measurements.SCALE_Y,transform.getScaleY()));
-        image.addMeasurement(new Measurement(Measurements.SHEAR_X,transform.getShearX()));
-        image.addMeasurement(new Measurement(Measurements.SHEAR_Y,transform.getShearY()));
+        image.addMeasurement(new Measurement(Measurements.TRANSLATE_X, transform.getTranslateX()));
+        image.addMeasurement(new Measurement(Measurements.TRANSLATE_Y, transform.getTranslateY()));
+        image.addMeasurement(new Measurement(Measurements.SCALE_X, transform.getScaleX()));
+        image.addMeasurement(new Measurement(Measurements.SCALE_Y, transform.getScaleY()));
+        image.addMeasurement(new Measurement(Measurements.SHEAR_X, transform.getShearX()));
+        image.addMeasurement(new Measurement(Measurements.SHEAR_Y, transform.getShearY()));
 
     }
 
@@ -437,7 +476,7 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
             ArrayList<Image<T>> images = new ArrayList<>();
             images.add(inputImage);
             images.add(referenceImage);
-            return ConcatenateStacks.concatenateImages(images,axis,"Overlay");
+            return ConcatenateStacks.concatenateImages(images, axis, "Overlay");
         }
 
         return inputImage;
@@ -455,14 +494,15 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
 
         // Creating a reference image
-        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference",
+                ProjectImage.ProjectionModes.MAX);
 
         // Duplicating image
         ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
-        Image<T> dupImage = new Image<T>("Registered",dupIpl);
+        Image<T> dupImage = new Image<T>("Registered", dupIpl);
 
         // Getting transform
-        Object[] output = getLandmarkTransformation(pairs,transformationMode);
+        Object[] output = getLandmarkTransformation(pairs, transformationMode);
         InverseTransformMapping mapping = (InverseTransformMapping) output[0];
         AbstractAffineModel2D model = (AbstractAffineModel2D) output[1];
 
@@ -470,14 +510,16 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         int count = 0;
         int total = dupImage.getImagePlus().getNFrames();
         for (int t = 1; t <= dupImage.getImagePlus().getNFrames(); t++) {
-            writeStatus("Processing timepoint "+(++count)+" of "+total);
+            writeStatus("Processing timepoint " + (++count) + " of " + total);
 
             // Applying the transformation to the whole stack.
-            // All channels should move in the same way, so are processed with the same transformation.
+            // All channels should move in the same way, so are processed with the same
+            // transformation.
             for (int c = 1; c <= dupImage.getImagePlus().getNChannels(); c++) {
-                Image warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
+                Image warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end",
+                        String.valueOf(t));
                 try {
-                    applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
+                    applyTransformation(warped, projectedReference, mapping, fillMode, multithread);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -491,30 +533,39 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         ArrayList<Image<T>> images = new ArrayList<>();
         images.add(reference);
         images.add(dupImage);
-        ConcatenateStacks.concatenateImages(images,ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
+        ConcatenateStacks.concatenateImages(images, ConcatenateStacks.AxisModes.CHANNEL, "Registration comparison")
+                .showImage();
 
     }
 
-
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
     public String getDescription() {
-        return "Uses SIFT image registration toolbox";
+        return "DEPRECATED: Please use separate automatic (\""+ new AutomaticRegistration<>(null).getName()+"\") and manual (\""+ new ManualRegistration<>(null)+"\") modules instead."
+        
+        + "<br><br>Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration is performed along the time axes and applied equally to all Z-slices.  For greater control (including registration along Z) please use separate automatic (\""+ new AutomaticRegistration<>(null).getName()+"\") and manual (\""+ new ManualRegistration<>(null)+"\") modules instead."
+
+        + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> and <a href=\"https://imagej.net/Linear_Stack_Alignment_with_SIFT\">Linear Stack Alignment with SIFT</a> plugins to detect SIFT (\"Scale Invariant Feature Transform\") features from the input images and calculate and apply the necessary 2D affine transforms."
+
+        + "<br><br>Note: The SIFT-algorithm is protected by U.S. Patent 6,711,293: Method and apparatus for identifying scale invariant features in an image and use of same for locating an object in an image by the University of British Columbia. That is, for commercial applications the permission of the author is required. Anything else is published under the terms of the GPL, so feel free to use it for academic or personal purposes."
+
+        + "<br><br>References:<ul>"
+
+        + "<li>Lowe, David G. \"Object recognition from local scale-invariant features\". <i>Proceedings of the International Conference on Computer Vision</i> <b>2</b> (1999) 1150–1157.</li>"
+
+        + "<li>Lowe, David G. \"Distinctive Image Features from Scale-Invariant Keypoints\". <i>International Journal of Computer Vision</i> <b>60</b> (2004) 91–110.</li></ul>";
     }
 
     @Override
     public Status process(Workspace workspace) {
-        IJ.setBackgroundColor(255,255,255);
-
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        inputImage = workspace.getImage(inputImageName);
+        IJ.setBackgroundColor(255, 255, 255);
 
         // Getting parameters
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String alignmentMode = parameters.getValue(ALIGNMENT_MODE);
@@ -533,14 +584,18 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
+        inputImage = workspace.getImage(inputImageName);
+        if (!applyToInput)
+            inputImage = new Image(outputImageName, inputImage.getImagePlus().duplicate());
 
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
-                reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
+                reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName)
+                        : null;
 
                 // If the rolling correction mode is off, set the interval to -1
-                if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
+                if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE))
+                    correctionInterval = -1;
 
                 // Setting up the parameters
                 Param param = new Param();
@@ -557,10 +612,12 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
                 // Getting external source image
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL)
-                        ? new Image(externalSourceName,workspace.getImage(externalSourceName).getImagePlus().duplicate())
+                        ? new Image(externalSourceName,
+                                workspace.getImage(externalSourceName).getImagePlus().duplicate())
                         : null;
 
-                processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference, externalSource);
+                processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode,
+                        multithread, reference, externalSource);
 
                 if (showOutput) {
                     if (relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)) {
@@ -574,15 +631,17 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
             case AlignmentModes.MANUAL:
                 reference = workspace.getImage(referenceImageName);
-                processManual(inputImage,transformationMode,multithread,fillMode,reference);
+                processManual(inputImage, transformationMode, multithread, fillMode, reference);
 
-                if (showOutput) inputImage.showImage();
+                if (showOutput)
+                    inputImage.showImage();
 
                 break;
         }
 
         // Dealing with module outputs
-        if (!applyToInput) workspace.addImage(inputImage);
+        if (!applyToInput)
+            workspace.addImage(inputImage);
 
         return Status.PASS;
 
@@ -590,36 +649,38 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(REGISTRATION_SEPARATOR,this));
-        parameters.add(new ChoiceP(TRANSFORMATION_MODE,this,TransformationModes.RIGID,TransformationModes.ALL));
-        parameters.add(new ChoiceP(ALIGNMENT_MODE,this,AlignmentModes.AUTOMATIC,AlignmentModes.ALL));
-        parameters.add(new ChoiceP(FILL_MODE,this,FillModes.BLACK,FillModes.ALL));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
+        parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
+        parameters.add(new ChoiceP(ALIGNMENT_MODE, this, AlignmentModes.AUTOMATIC, AlignmentModes.ALL));
+        parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
-        parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR,this));
-        parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
-        parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
-        parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
-        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
-        parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
-        parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
-        parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
+        parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.FIRST_FRAME, RelativeModes.ALL));
+        parameters.add(new ChoiceP(ROLLING_CORRECTION, this, RollingCorrectionModes.NONE, RollingCorrectionModes.ALL));
+        parameters.add(new IntegerP(CORRECTION_INTERVAL, this, 1));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
+        parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
 
-        parameters.add(new ParamSeparatorP(FEATURE_SEPARATOR,this));
-        parameters.add(new DoubleP(INITIAL_SIGMA,this,1.6));
-        parameters.add(new IntegerP(STEPS,this,3));
-        parameters.add(new IntegerP(MINIMUM_IMAGE_SIZE,this,64));
-        parameters.add(new IntegerP(MAXIMUM_IMAGE_SIZE,this,1024));
-        parameters.add(new IntegerP(FD_SIZE,this,4));
-        parameters.add(new IntegerP(FD_ORIENTATION_BINS,this,8));
-        parameters.add(new DoubleP(ROD,this,0.92));
-        parameters.add(new DoubleP(MAX_EPSILON,this,25.0));
-        parameters.add(new DoubleP(MIN_INLIER_RATIO,this,0.05));
+        parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));
+        parameters.add(new DoubleP(INITIAL_SIGMA, this, 1.6));
+        parameters.add(new IntegerP(STEPS, this, 3));
+        parameters.add(new IntegerP(MINIMUM_IMAGE_SIZE, this, 64));
+        parameters.add(new IntegerP(MAXIMUM_IMAGE_SIZE, this, 1024));
+        parameters.add(new IntegerP(FD_SIZE, this, 4));
+        parameters.add(new IntegerP(FD_ORIENTATION_BINS, this, 8));
+        parameters.add(new DoubleP(ROD, this, 0.92));
+        parameters.add(new DoubleP(MAX_EPSILON, this, 25.0));
+        parameters.add(new DoubleP(MIN_INLIER_RATIO, this, 0.05));
+
+        addParameterDescriptions();
 
     }
 
@@ -630,10 +691,9 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
-        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        }
-
+        
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
         returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
@@ -735,7 +795,76 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
         return true;
     }
 
-    private class Param extends FloatArray2DSIFT.Param {
+    void addParameterDescriptions() {
+        String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
+
+        parameters.get(INPUT_IMAGE).setDescription("");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("");
+
+        parameters.get(TRANSFORMATION_MODE).setDescription("");
+
+        parameters.get(ALIGNMENT_MODE).setDescription("");
+
+        parameters.get(FILL_MODE).setDescription("");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("");
+
+        parameters.get(RELATIVE_MODE).setDescription("");
+
+        parameters.get(ROLLING_CORRECTION).setDescription("");
+
+        parameters.get(CORRECTION_INTERVAL).setDescription("");
+
+        parameters.get(REFERENCE_IMAGE).setDescription("");
+
+        parameters.get(CALCULATION_SOURCE).setDescription("");
+
+        parameters.get(EXTERNAL_SOURCE).setDescription("");
+
+        parameters.get(CALCULATION_CHANNEL).setDescription("");
+
+        parameters.get(INITIAL_SIGMA).setDescription(
+                "\"Accurate localization of keypoints requires initial smoothing of the image. If your images are blurred already, you might lower the initial blur σ0 slightly to get more but eventually less stable keypoints. Increasing σ0 increases the computational cost for Gaussian blur, setting it to σ0=3.2px is equivalent to keep σ0=1.6px and use half maximum image size. Tip: Keep the default value σ0=1.6px as suggested by Lowe (2004).\".  "
+                        + siteRef);
+
+        parameters.get(STEPS).setDescription(
+                "\"Keypoint candidates are extracted at all scales between maximum image size and minimum image size. This Scale Space is represented in octaves each covering a fixed number of discrete scale steps from σ0 to 2σ0. More steps result in more but eventually less stable keypoint candidates. Tip: Keep 3 as suggested by Lowe (2004) and do not use more than 10.\".  "
+                        + siteRef);
+
+        parameters.get(MINIMUM_IMAGE_SIZE).setDescription(
+                "\"The Scale Space stops if the size of the octave would be smaller than minimum image size. Tip: Increase the minimum size to discard large features (i.e. those extracted from looking at an image from far, such as the overall shape).\".  "
+                        + siteRef);
+
+        parameters.get(MAXIMUM_IMAGE_SIZE).setDescription(
+                "\"The Scale Space starts with the first octave equal or smaller than the maximum image size. Tip: By reducing the size, fine scaled features will be discarded. Increasing the size beyond that of the actual images has no effect.\".  "
+                        + siteRef);
+
+        parameters.get(FD_SIZE).setDescription(
+                "\"The SIFT-descriptor consists of n×n gradient histograms, each from a 4×4px block. n is this value. Lowe (2004) uses n=4. We found larger descriptors with n=8 perform better for Transmission Electron Micrographs from serial sections.\".  "
+                        + siteRef);
+
+        parameters.get(FD_ORIENTATION_BINS).setDescription(
+                "\"For SIFT-descriptors, this is the number of orientation bins b per 4×4px block as described above. Tip: Keep the default value b=8 as suggested by Lowe (2004).\".  "
+                        + siteRef);
+
+        parameters.get(ROD).setDescription(
+                "\"Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.\".  "
+                        + siteRef);
+
+        parameters.get(MAX_EPSILON).setDescription(
+                "\"Matching local descriptors gives many false positives, but true positives are consistent with respect to a common transformation while false positives are not. This consistent set and the underlying transformation are identified using RANSAC. This value is the maximal allowed transfer error of a match to be counted as a good one. Tip: Set this to about 10% of the image size.\".  "
+                        + siteRef);
+
+        parameters.get(MIN_INLIER_RATIO).setDescription(
+                "\"The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.\".  "
+                        + siteRef);
+
+    }
+
+    public static class Param extends FloatArray2DSIFT.Param {
         /**
          *
          */
@@ -747,4 +876,3 @@ public class RegisterImages <T extends RealType<T> & NativeType<T>> extends Modu
 
     }
 }
-

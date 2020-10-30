@@ -142,7 +142,7 @@ public class FocusStack extends Module {
     @Override
     public String getDescription() {
         return "Channels will be focused individually.\n" +
-                "Uses the StackFocuser plugin created by Mikhail Umorin.\n" +
+                "Uses the <a href=\"https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java\">StackFocuser</a> plugin created by Mikhail Umorin.\n" +
                 "Source downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2018";
     }
 

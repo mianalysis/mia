@@ -7,7 +7,7 @@ import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ModuleP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -87,11 +87,11 @@ public class ModuleIsEnabled extends CoreWorkspaceHandler {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(CONDITION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(TEST_MODE, this, TestModes.MODULE_IS_ENABLED, TestModes.ALL));
         parameters.add(new ModuleP(TEST_MODULE, this, true));
         
-        parameters.add(new ParamSeparatorP(RESULT_SEPARATOR, this));
+        parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
         parameters.addAll(super.updateAndGetParameters());
 
         addParameterDescriptions();

@@ -5,8 +5,8 @@ import wbif.sjx.MIA.GUI.ParameterControls.SeparatorParameter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
-public class ParamSeparatorP extends Parameter {
-    public ParamSeparatorP(String name, Module module) {
+public class SeparatorP extends Parameter {
+    public SeparatorP(String name, Module module) {
         super(name, module);
         setExported(false);
 
@@ -45,7 +45,7 @@ public class ParamSeparatorP extends Parameter {
 
     @Override
     public <T extends Parameter> T duplicate(Module newModule) {
-        ParamSeparatorP newParameter = new ParamSeparatorP(name,newModule);
+        SeparatorP newParameter = new SeparatorP(name,newModule);
 
         newParameter.setNickname(getNickname());
         newParameter.setVisible(isVisible());

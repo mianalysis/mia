@@ -25,7 +25,7 @@ import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -194,29 +194,29 @@ public class RunMacroOnImage extends CoreMacroRunner {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE, this, true));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(VARIABLE_SEPARATOR, this));
+        parameters.add(new SeparatorP(VARIABLE_SEPARATOR, this));
         ParameterCollection variableCollection = new ParameterCollection();
         variableCollection.add(new StringP(VARIABLE_NAME, this));
         variableCollection.add(new StringP(VARIABLE_VALUE, this));
         parameters.add(new ParameterGroup(ADD_VARIABLE, this, variableCollection));
 
-        parameters.add(new ParamSeparatorP(MACRO_SEPARATOR, this));
+        parameters.add(new SeparatorP(MACRO_SEPARATOR, this));
         parameters.add(new ChoiceP(MACRO_MODE, this, MacroModes.MACRO_TEXT, MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT, this, "// A variable has been pre-defined for the input image name."
                 + "\n\nrun(\"Enable MIA Extensions\");\n\n", true));
         parameters.add(new FilePathP(MACRO_FILE, this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
-        parameters.add(new ParamSeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(IMAGE_OUTPUT_SEPARATOR, this));
         parameters.add(new BooleanP(INTERCEPT_OUTPUT_IMAGE, this, true));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         ParameterCollection measurementCollection = new ParameterCollection();
         measurementCollection.add(new StringP(VARIABLE, this));
         parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE, this, measurementCollection));

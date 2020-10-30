@@ -27,7 +27,7 @@ import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -191,7 +191,7 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(FILTER_SEPARATOR, this));
+        parameters.add(new SeparatorP(FILTER_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_IMAGE, this, true));
         parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
         parameters.add(new BooleanP(STORE_RESULTS, this, false));

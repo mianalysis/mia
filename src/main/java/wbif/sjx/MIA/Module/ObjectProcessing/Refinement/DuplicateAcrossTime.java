@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -175,17 +175,17 @@ public class DuplicateAcrossTime extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
         parameters.add(new ChoiceP(STORAGE_MODE, this, StorageModes.COMMON_ACROSS_ALL_OBJECTS, StorageModes.ALL));
         parameters.add(new MessageP(COMMON_WARNING, this,
                 "\"Common\" coordinate storage will use a single set of coordinates for all copies of an object.  Therefore, changes made to one object will be reflected in all objects.",
                 Colours.RED));
 
-        parameters.add(new ParamSeparatorP(FRAME_SEPARATOR, this));
+        parameters.add(new SeparatorP(FRAME_SEPARATOR, this));
         parameters.add(new ChoiceP(START_FRAME_MODE, this, FrameModes.FIXED_VALUE, FrameModes.ALL));
         parameters.add(new IntegerP(START_FRAME_FIXED_VALUE, this, 0));
         parameters.add(new InputImageP(START_FRAME_IMAGE, this));

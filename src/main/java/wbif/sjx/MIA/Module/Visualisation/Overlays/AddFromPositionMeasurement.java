@@ -206,29 +206,29 @@ public class AddFromPositionMeasurement extends AbstractOverlay {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(POSITION_SEPARATOR,this));
+        parameters.add(new SeparatorP(POSITION_SEPARATOR,this));
         parameters.add(new ObjectMeasurementP(X_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
         parameters.add(new BooleanP(USE_RADIUS, this,true));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_RADIUS, this));
 
-        parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR,this));
+        parameters.add(new SeparatorP(RENDERING_SEPARATOR,this));
         parameters.add(new DoubleP(LINE_WIDTH,this,1));
         parameters.add(new ChoiceP(POINT_SIZE,this,PointSizes.SMALL,PointSizes.ALL));
         parameters.add(new ChoiceP(POINT_TYPE,this,PointTypes.CIRCLE,PointTypes.ALL));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR,this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR,this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addParameterDescriptions();

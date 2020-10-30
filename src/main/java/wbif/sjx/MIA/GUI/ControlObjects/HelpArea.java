@@ -3,6 +3,7 @@ package wbif.sjx.MIA.GUI.ControlObjects;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
+import wbif.sjx.MIA.GUI.HyperlinkOpener;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
@@ -20,6 +21,7 @@ public class HelpArea extends JTextPane {
 
     public HelpArea(Module module, ModuleCollection modules) {
         setContentType("text/html");
+        addHyperlinkListener(new HyperlinkOpener());
 
         if (module != null) {
             setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(module,modules)+"</font></body></html>");

@@ -187,10 +187,10 @@ public class ConvertObjectsToImage extends Module {
 
   @Override
   protected void initialiseParameters() {
-    parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+    parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
     parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
     parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-    parameters.add(new ParamSeparatorP(RENDERING_SEPARATOR, this));
+    parameters.add(new SeparatorP(RENDERING_SEPARATOR, this));
     parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.WHOLE_OBJECT, OutputModes.ALL));
     parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
     parameters.add(new ChoiceP(SINGLE_COLOUR_MODE, this, SingleColourModes.W_ON_B, SingleColourModes.ALL));

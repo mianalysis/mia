@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
@@ -270,10 +270,10 @@ public class MeasureSpecificWidth extends Module {
     
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         
-        parameters.add(new ParamSeparatorP(REFERENCE_SEPARATOR,this));
+        parameters.add(new SeparatorP(REFERENCE_SEPARATOR,this));
         parameters.add(new ChoiceP(REFERENCE_MODE_1,this,ReferenceModes.CENTROID,ReferenceModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE_1,this));
         parameters.add(new ImageMeasurementP(X_POSITION_MEASUREMENT_IM_1,this));
@@ -291,7 +291,7 @@ public class MeasureSpecificWidth extends Module {
         parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT_OBJ_2,this));
         parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT_OBJ_2,this));
         
-        parameters.add(new ParamSeparatorP(MISCELLANEOUS_SEPARATOR,this));
+        parameters.add(new SeparatorP(MISCELLANEOUS_SEPARATOR,this));
         parameters.add(new StringP(MEASUREMENT_PREFIX,this));
         
     }

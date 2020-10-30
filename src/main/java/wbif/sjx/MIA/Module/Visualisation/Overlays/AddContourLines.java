@@ -31,7 +31,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -569,13 +569,13 @@ public class AddContourLines extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this, false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(CONTOUR_SEPARATOR, this));
+        parameters.add(new SeparatorP(CONTOUR_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_INTENSITY, this, 0));
         parameters.add(new DoubleP(MAXIMUM_INTENSITY, this, 255));
         parameters.add(new IntegerP(NUMBER_OF_CONTOURS, this, 9));
@@ -584,7 +584,7 @@ public class AddContourLines extends Module {
         parameters.add(new DoubleP(LINE_WIDTH, this, 1));
         parameters.add(new IntegerP(DRAW_EVERY_N_POINTS, this, 1));
 
-        parameters.add(new ParamSeparatorP(LABEL_SEPARATOR, this));
+        parameters.add(new SeparatorP(LABEL_SEPARATOR, this));
         parameters.add(new BooleanP(SHOW_LABELS, this, true));
         parameters.add(new IntegerP(DECIMAL_PLACES, this, 0));
         parameters.add(new BooleanP(USE_SCIENTIFIC, this, false));

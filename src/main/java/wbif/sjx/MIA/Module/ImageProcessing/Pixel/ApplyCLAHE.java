@@ -21,7 +21,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -55,7 +55,7 @@ public class ApplyCLAHE extends Module {
 
     @Override
     public String getDescription() {
-        return "Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  See https://imagej.net/Enhance_Local_Contrast_(CLAHE)";
+        return "Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image \"<a href=\"https://imagej.net/Enhance_Local_Contrast_(CLAHE)\">CLAHE</a>\" plugin.";
     }
 
     @Override
@@ -153,14 +153,14 @@ public class ApplyCLAHE extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this, "", "Image to apply CLAHE to."));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true,
                 "Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace."));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this, "",
                 "Name of the output image created during the CLAHE process.  This image will be added to the workspace."));
 
-        parameters.add(new ParamSeparatorP(CLAHE_SEPARATOR, this));
+        parameters.add(new SeparatorP(CLAHE_SEPARATOR, this));
         parameters.add(new DoubleP(BLOCK_SIZE, this, 127));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,
                 "Choose if block size is specified in pixel (set to \"false\") or calibrated (set to \"true\") units.  What units are used are controlled from \"Input control\"."));
@@ -170,7 +170,7 @@ public class ApplyCLAHE extends Module {
         parameters.add(new InputImageP(MASK_IMAGE, this));
         parameters.add(new BooleanP(FAST_MODE, this, true));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }

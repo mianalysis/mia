@@ -321,18 +321,18 @@ public class MeasureObjectIntensity extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(WEIGHTED_CENTRE_SEPARATOR,this));
+        parameters.add(new SeparatorP(WEIGHTED_CENTRE_SEPARATOR,this));
         parameters.add(new BooleanP(MEASURE_WEIGHTED_CENTRE, this, false));
 
-        parameters.add(new ParamSeparatorP(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR,this));
+        parameters.add(new SeparatorP(WEIGHTED_DISTANCE_TO_EDGE_SEPARATOR,this));
         parameters.add(new BooleanP(MEASURE_WEIGHTED_EDGE_DISTANCE, this, false));
         parameters.add(new ChoiceP(EDGE_DISTANCE_MODE,this,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
 
-        parameters.add(new ParamSeparatorP(INTENSITY_PROFILE_SEPARATOR,this));
+        parameters.add(new SeparatorP(INTENSITY_PROFILE_SEPARATOR,this));
         parameters.add(new BooleanP(MEASURE_EDGE_INTENSITY_PROFILE,this,false));
         parameters.add(new DoubleP(MINIMUM_DISTANCE,this,0d));
         parameters.add(new DoubleP(MAXIMUM_DISTANCE,this,1d));

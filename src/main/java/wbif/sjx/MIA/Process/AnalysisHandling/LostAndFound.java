@@ -2,11 +2,12 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
-import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
+import wbif.sjx.MIA.Module.WorkflowHandling.WorkflowHandling;
 
 public class LostAndFound {
     private HashMap<String, String> lostModules = new HashMap<>();
@@ -14,11 +15,11 @@ public class LostAndFound {
 
 
     public LostAndFound() {
-        // Populating hard-coded module reassignments
-        lostModules.put("ConditionalAnalysisTermination", "WorkflowHandling");
+        //// Populating hard-coded module reassignments ////
+        lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getName());
+
 
         //// Populating hard-coded parameter reassignments ////
-        
         // CalculateNearestNeighbour
         HashMap<String, String> currentParameters = new HashMap<>();
         currentParameters.put("ParentChildRef mode", CalculateNearestNeighbour.RELATIONSHIP_MODE);

@@ -320,7 +320,7 @@ public class BinaryOperations extends Module {
         return "DEPRECATED: This Module has been superseeded by separate Modules for 2D and 3D binary operations.  It will " +
                 "be removed in a future release.<br><br>"
 
-                + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed on a slice-by-slice manner.";
+                + "Applies stock binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  Operations labelled \"2D\" are performed using the stock ImageJ implementations, while those labelled \"3D\" use the MorphoLibJ implementations.  If 2D operations are applied on higher dimensionality images the operations will be performed in a slice-by-slice manner.";
 
     }
 
@@ -523,7 +523,7 @@ public class BinaryOperations extends Module {
                 + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
         parameters.get(OPERATION_MODE).setDescription(
-                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The 2D operations are described in full at https://imagej.nih.gov/ij/docs/guide/146-29.html:<br><ul>"
+                "Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The 2D operations are described in full at <a href=\"https://imagej.nih.gov/ij/docs/guide/146-29.html\">https://imagej.nih.gov/ij/docs/guide/146-29.html</a>:<br><ul>"
 
                         + "<li>\"" + OperationModes.DILATE_2D
                         + "\" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.  Uses ImageJ implementation.</li>"

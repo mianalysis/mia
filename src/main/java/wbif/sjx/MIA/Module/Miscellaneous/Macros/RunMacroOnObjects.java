@@ -25,7 +25,7 @@ import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -197,18 +197,18 @@ public class RunMacroOnObjects extends CoreMacroRunner {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
 
-        parameters.add(new ParamSeparatorP(VARIABLE_SEPARATOR,this));
+        parameters.add(new SeparatorP(VARIABLE_SEPARATOR,this));
         ParameterCollection variableCollection = new ParameterCollection();
         variableCollection.add(new StringP(VARIABLE_NAME,this));
         variableCollection.add(new StringP(VARIABLE_VALUE,this));
         parameters.add(new ParameterGroup(ADD_VARIABLE,this,variableCollection));
 
-        parameters.add(new ParamSeparatorP(MACRO_SEPARATOR,this));
+        parameters.add(new SeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT,this,"// Variables have been pre-defined for the input object name " +
                 "(\"objectName\") and its ID number (\"ID\")." +
@@ -216,7 +216,7 @@ public class RunMacroOnObjects extends CoreMacroRunner {
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
         ParameterCollection collection = new ParameterCollection();
         collection.add(new StringP(VARIABLE,this));
         parameters.add(new ParameterGroup(ADD_INTERCEPTED_VARIABLE, this, collection));

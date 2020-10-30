@@ -3,13 +3,15 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Obj;
+import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -45,9 +47,9 @@ public class CombineObjectSets extends Module {
         for (Obj obj : inputObjects.values()) {
             int ID = outputObjects.getAndIncrementID();
             Obj newObj = new Obj(outputObjects.getName(), ID, obj);
-            newObj.setCoordinateSet(obj.getCoordinateSet());
+            newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
-            outputObjects.add(obj);
+            outputObjects.add(newObj);
         }
     }
 
@@ -55,9 +57,9 @@ public class CombineObjectSets extends Module {
         for (Obj obj : sourceObjects.values()) {
             int ID = targetObjects.getAndIncrementID();
             Obj newObj = new Obj(targetObjects.getName(), ID, obj);
-            newObj.setCoordinateSet(obj.getCoordinateSet());
+            newObj.setCoordinateSet(obj.getCoordinateSet().duplicate());
             newObj.setT(obj.getT());
-            targetObjects.add(obj);
+            targetObjects.add(newObj);
         }
     }
 
@@ -68,7 +70,8 @@ public class CombineObjectSets extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the \"other\" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information, but do not contain the relationship or measurement information of the originals.  The original objects are unaffected by this module.";
+        
     }
 
     @Override
@@ -119,13 +122,15 @@ public class CombineObjectSets extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
 
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR, this));
         parameters.add(new ChoiceP(OUTPUT_MODE, this, OutputModes.CREATE_NEW, OutputModes.ALL));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -177,5 +182,38 @@ public class CombineObjectSets extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS_1)
+                .setDescription("First of two object collections to combine.  Depending on the choice for parameter \""
+                        + OUTPUT_MODE
+                        + "\", this collection may be updated to include the objects from the second collection (\""
+                        + INPUT_OBJECTS_2 + "\").");
+
+        parameters.get(INPUT_OBJECTS_2)
+                .setDescription("Second of two object collections to combine.  Depending on the choice for parameter \""
+                        + OUTPUT_MODE
+                        + "\", this collection may be updated to include the objects from the first collection (\""
+                        + INPUT_OBJECTS_2 + "\").");
+
+        parameters.get(OUTPUT_MODE).setDescription("Controls where the combined object collections are stored:<br><ul>"
+
+                + "<li>\"" + OutputModes.ADD_TO_OBJECTS_1 + "\" Duplicates of all objects in the second collection (\""
+                + INPUT_OBJECTS_2 + "\") are made and added to the first collection (\"" + INPUT_OBJECTS_1 + "\").</li>"
+
+                + "<li>\"" + OutputModes.ADD_TO_OBJECTS_2 + "\" Duplicates of all objects in the first collection (\""
+                + INPUT_OBJECTS_1 + "\") are made and added to the second collection (\"" + INPUT_OBJECTS_1
+                + "\").</li>"
+
+                + "<li>\"" + OutputModes.CREATE_NEW + "\". Duplicates of all objects in the first (\"" + INPUT_OBJECTS_1
+                + "\") and second (\"" + INPUT_OBJECTS_2
+                + "\") collections are made and added to a new collection with name specified by \"" + OUTPUT_OBJECTS
+                + "\"</li></ul>");
+
+        parameters.get(OUTPUT_OBJECTS)
+                .setDescription("Name of the combined output collection to be added to the workspace if \""
+                        + OUTPUT_MODE + "\" is set to \"" + OutputModes.CREATE_NEW + "\".");
+
     }
 }

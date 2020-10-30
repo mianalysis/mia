@@ -1,7 +1,7 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.Colours;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.awt.*;
 public class SeparatorParameter extends ParameterControl {
     protected JPanel control;
 
-    public SeparatorParameter(ParamSeparatorP parameter) {
+    public SeparatorParameter(SeparatorP parameter) {
         super(parameter);
 
         control = new JPanel(new GridBagLayout());

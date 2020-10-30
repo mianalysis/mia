@@ -28,7 +28,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -278,12 +278,12 @@ public class FillHolesByVolume extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(HOLE_FILLING_SEPARATOR, this));
+        parameters.add(new SeparatorP(HOLE_FILLING_SEPARATOR, this));
         parameters.add(new ChoiceP(BLACK_WHITE_MODE, this, BlackWhiteModes.FILL_WHITE_HOLES, BlackWhiteModes.ALL));
         parameters.add(new BooleanP(USE_MINIMUM_VOLUME, this, true));
         parameters.add(new DoubleP(MINIMUM_VOLUME, this, 0d));
@@ -291,12 +291,12 @@ public class FillHolesByVolume extends Module {
         parameters.add(new DoubleP(MAXIMUM_VOLUME, this, 1000d));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
-        parameters.add(new ParamSeparatorP(EXECUTION_SEPARATOR, this));
+        parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
         parameters.add(new IntegerP(MIN_STRIP_WIDTH, this, 60));
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
@@ -388,7 +388,7 @@ public class FillHolesByVolume extends Module {
 
       parameters.get(MAXIMUM_VOLUME).setDescription("");
 
-      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are used.");
+      parameters.get(CALIBRATED_UNITS).setDescription("When selected, hole size limits are assumed to be specified in calibrated units (as defined by the \""+new InputControl(null).getName()+"\" parameter \""+InputControl.SPATIAL_UNITS+"\").  Otherwise, pixel units are assumed.");
 
       parameters.get(ENABLE_MULTITHREADING).setDescription("Break the image down into strips, each one processed on a separate CPU thread.  The overhead required to do this means it's best for large multi-core CPUs, but should be left disabled for small images or on CPUs with few cores.");
 

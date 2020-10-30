@@ -1,6 +1,5 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +18,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -29,7 +29,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
@@ -362,7 +362,7 @@ public class ObjectLoader extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Load centroid coordinates of pre-detected objects from file.  Loaded objects are stored in a single object collection and are represented by a single coordinate point.  For example, this module could be used to import detections from another piece of software or from a previous analysis run.";
     }
 
     @Override
@@ -430,10 +430,10 @@ public class ObjectLoader extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(OUTPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(OUTPUT_SEPARATOR,this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
-        parameters.add(new ParamSeparatorP(COORDINATE_SEPARATOR,this));
+        parameters.add(new SeparatorP(COORDINATE_SEPARATOR,this));
         parameters.add(new ChoiceP(COORDINATE_SOURCE,this,CoordinateSources.CURRENT_FILE,CoordinateSources.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT,this, NameFormats.GENERIC, NameFormats.ALL));
         parameters.add(new StringP(GENERIC_FORMAT,this));
@@ -444,14 +444,14 @@ public class ObjectLoader extends Module {
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
         parameters.add(new FilePathP(INPUT_FILE,this));
 
-        parameters.add(new ParamSeparatorP(COLUMN_SEPARATOR,this));
+        parameters.add(new SeparatorP(COLUMN_SEPARATOR,this));
         parameters.add(new IntegerP(ID_COLUMN_INDEX,this,0));
         parameters.add(new IntegerP(X_COLUMN_INDEX,this,1));
         parameters.add(new IntegerP(Y_COLUMN_INDEX,this,2));
         parameters.add(new IntegerP(Z_COLUMN_INDEX,this,3));
         parameters.add(new IntegerP(T_COLUMN_INDEX,this,4));
 
-        parameters.add(new ParamSeparatorP(LIMIT_SEPARATOR,this));
+        parameters.add(new SeparatorP(LIMIT_SEPARATOR,this));
         parameters.add(new ChoiceP(LIMITS_SOURCE,this,LimitsSources.FROM_IMAGE,LimitsSources.ALL));
         parameters.add(new InputImageP(LIMITS_REFERENCE_IMAGE,this));
         parameters.add(new IntegerP(WIDTH,this,512));
@@ -460,14 +460,16 @@ public class ObjectLoader extends Module {
         parameters.add(new IntegerP(N_FRAMES,this,1));
         parameters.add(new ChoiceP(CALIBRATION_SOURCE,this,CalibrationSources.FROM_IMAGE,CalibrationSources.ALL));
         parameters.add(new InputImageP(CALIBRATION_REFERENCE_IMAGE,this));
-        parameters.add(new DoubleP(XY_CAL, this, 1d, "Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module."));
-        parameters.add(new DoubleP(Z_CAL, this, 1d, "Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module."));
+        parameters.add(new DoubleP(XY_CAL, this, 1d));
+        parameters.add(new DoubleP(Z_CAL, this, 1d));
 
-        parameters.add(new ParamSeparatorP(RELATIONSHIP_SEPARATOR,this));
+        parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR,this));
         parameters.add(new BooleanP(CREATE_PARENTS,this,false));
         parameters.add(new ChoiceP(PARENT_TYPE,this,ParentTypes.NORMAL,ParentTypes.ALL));
         parameters.add(new OutputObjectsP(PARENT_OBJECTS_NAME,this));
         parameters.add(new IntegerP(PARENTS_COLUMN_INDEX,this,5));
+
+        addParameterDescriptions();
 
     }
 
@@ -589,5 +591,93 @@ public class ObjectLoader extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(OUTPUT_OBJECTS).setDescription("Objects loaded into the workspace will be stored with this name.  They will be accessible by subsequent modules using this name.");
+
+      parameters.get(COORDINATE_SOURCE).setDescription("Controls where the coordinates for the output object collection will be loaded from:<br><ul>"
+
+      + "<li>\"" + CoordinateSources.CURRENT_FILE
+      + "\" (default option) will use the current root-file for the workspace (this is the file specified in the \""+ new InputControl(null).getName() + "\" module).</li>"
+
+      + "<li>\"" + CoordinateSources.MATCHING_FORMAT
+      + "\" will load the coordinate file matching a filename based on the root-file for the workspace and a series of rules.</li>"
+
+      + "<li>\"" + CoordinateSources.SPECIFIC_FILE + "\" will load the coordinate file at the location specified by \""+INPUT_FILE+"\".</li></ul>");
+
+      parameters.get(NAME_FORMAT).setDescription("Method to use for generation of the input filename:<br><ul>"
+
+              + "<li>\"" + NameFormats.GENERIC
+              + "\" (default) will generate a name from metadata values stored in the current workspace.</li>"
+
+              + "<li>\"" + NameFormats.INPUT_FILE_PREFIX
+              + "\" will load a file with the same name as the input image, but with an additional prefix, specified by the \""+PREFIX+"\" parameter.</li>"
+
+              + "<li>\"" + NameFormats.INPUT_FILE_SUFFIX
+              + "\" will load a file with the same name as the input image, but with an additional suffix, specified by the \""+SUFFIX+"\" parameter.</li></ul>");
+
+      parameters.get(GENERIC_FORMAT).setDescription("Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
+
+      parameters.get(AVAILABLE_METADATA_FIELDS).setDescription("List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
+
+      parameters.get(PREFIX).setDescription("Prefix to use when generating coordinate file filename in \""+NameFormats.INPUT_FILE_PREFIX+"\" mode.");
+
+      parameters.get(SUFFIX).setDescription("Suffix to use when generating coordinate file filename in \""+NameFormats.INPUT_FILE_SUFFIX+"\" mode.");
+
+      parameters.get(EXTENSION).setDescription("Extension for the generated filename.");
+
+      parameters.get(INCLUDE_SERIES_NUMBER).setDescription("Option to include the current series number when compiling filenames.  This may be necessary when working with multi-series files, as there will be multiple analyses completed for the same root file.");
+
+      parameters.get(INPUT_FILE).setDescription("Path to specific file to be loaded when \""+COORDINATE_SOURCE+"\" is in \""+CoordinateSources.SPECIFIC_FILE+"\" mode.");
+
+      parameters.get(ID_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object ID number.");
+
+      parameters.get(X_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object x-centroid location (pixel units).");
+
+      parameters.get(Y_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object y-centroid location (pixel units).");
+
+      parameters.get(Z_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the object z-centroid location (slice units).");
+
+      parameters.get(T_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the timepoint the object appears in.  Timepoint numbering starts at 0.");
+
+      parameters.get(LIMITS_SOURCE).setDescription("Controls how the spatial limits (width, height, number of slices and number of timepoints) for the output object collection are defined:<br><ul>"
+
+      +"<li>\""+LimitsSources.FROM_IMAGE+"\" limits match the spatial and temporal dimensions of an image in the workspace (specified with the \""+LIMITS_REFERENCE_IMAGE+"\" parameter).  This is equivalent to how spatial limits are determined when identifying objects directly from an image.</li>"
+
+      +"<li>\""+LimitsSources.MANUAL+"\" limits are specified using the \""+WIDTH+"\", \""+HEIGHT+"\", \""+N_SLICES+"\" and \""+N_FRAMES+"\" parameters.</li>"
+
+      +"<li>\""+LimitsSources.MAXIMUM_COORDINATE+"\" limits are determined from the maximum x,y,z coordinates and timepoint present in the loaded coordinate set.</li></ul>");
+
+      parameters.get(LIMITS_REFERENCE_IMAGE).setDescription("Image used to determine spatial and temporal limits of the output object collection if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.FROM_IMAGE+"\".");
+
+      parameters.get(WIDTH).setDescription("Output object collection spatial width to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".  Specified in pixel units.");
+
+      parameters.get(HEIGHT).setDescription("Output object collection spatial height to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".  Specified in pixel units.");
+
+      parameters.get(N_SLICES).setDescription("Output object collection number of slices (depth) to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".  Specified in slice units.");
+
+      parameters.get(N_FRAMES).setDescription("Output object collection number of frames to be used if \""+LIMITS_SOURCE+"\" is set to \""+LimitsSources.MANUAL+"\".");
+
+      parameters.get(CALIBRATION_SOURCE).setDescription("Controls how the spatial calibration for the output object collection are defined:<br><ul>"
+
+      +"<li>\""+CalibrationSources.FROM_IMAGE+"\" spatial calibrations match those of an image in the workspace (specified with the \""+CALIBRATION_REFERENCE_IMAGE+"\" parameter).  This is equivalent to how calibrations are determined when identifying objects directly from an image.</li>"
+
+      +"<li>\""+CalibrationSources.MANUAL+"\" spatial calibrations are specified using the \""+XY_CAL+"\" and \""+Z_CAL+"\" parameters.</li></ul>");
+
+      parameters.get(CALIBRATION_REFERENCE_IMAGE).setDescription("Image used to determine spatial calibrations of the output object collection if \""+CALIBRATION_SOURCE+"\" is set to \""+CalibrationSources.FROM_IMAGE+"\".");
+
+      parameters.get(XY_CAL).setDescription("Distance per pixel in the XY plane.  Units for this are specified in the main \"Input control\" module.");
+
+      parameters.get(Z_CAL).setDescription("Distance per slice (Z-axis).  Units for this are specified in the main \"Input control\" module.");
+
+      parameters.get(CREATE_PARENTS).setDescription("When selected, an output parent object collection can also be specified which allows objects to be linked.  These parent objectcs can only perform a linking function for the output objects; the parent objects themselves do not contain any coordinate information.  For example, the loaded parent objects could be tracks or clusters.");
+
+      parameters.get(PARENT_TYPE).setDescription("Controls the type of parent objects being used if the \""+CREATE_PARENTS+"\" parameter is selected.  Choices are: "+String.join(", ", ParentTypes.ALL+"."));
+
+      parameters.get(PARENT_OBJECTS_NAME).setDescription("Name of the output parent objects collection.");
+
+      parameters.get(PARENTS_COLUMN_INDEX).setDescription("Index of column in input coordinates file specifying the parent object ID number.");
+
     }
 }

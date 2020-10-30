@@ -24,7 +24,7 @@ import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -353,20 +353,20 @@ public class ImageSaver extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR, this));
+        parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));
         parameters.add(new FolderPathP(SAVE_FILE_PATH, this));
 
-        parameters.add(new ParamSeparatorP(NAME_SEPARATOR, this));
+        parameters.add(new SeparatorP(NAME_SEPARATOR, this));
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
 
-        parameters.add(new ParamSeparatorP(FORMAT_SEPARATOR, this));
+        parameters.add(new SeparatorP(FORMAT_SEPARATOR, this));
         parameters.add(new ChoiceP(FILE_FORMAT, this, FileFormats.TIF, FileFormats.ALL));
         parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.COMPOSITE, ChannelModes.ALL));
         parameters.add(new BooleanP(SAVE_AS_RGB, this, false));
@@ -519,7 +519,7 @@ public class ImageSaver extends Module {
 
         parameters.get(FILE_FORMAT).setDescription("The format the output image will be saved as:<br><ul>"
 
-                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"AVI Writer\" (https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java).  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
+                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"<a href=\"https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java\">AVI Writer</a>\".  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
 
                 + "<li>\"" + FileFormats.TIF + "\" Standard multidimensional (multi-page) TIF image saving.</li>"
 

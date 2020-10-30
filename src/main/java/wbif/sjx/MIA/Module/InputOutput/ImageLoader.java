@@ -18,6 +18,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
@@ -43,6 +44,7 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
@@ -56,7 +58,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
@@ -463,8 +465,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public ImagePlus getImageSequence(String rootName, Metadata metadata, String channels, String frames, int[] crop,
-            double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal)
+    public ImagePlus getImageSequence(String rootName, Metadata metadata, String channels, String slices, String frames,
+            int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
 
         String absolutePath = metadata.insertMetadataValues(rootName);
@@ -503,7 +505,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         // Determining the dimensions of the input image
-        String[] dimRanges = new String[] { channels, "1", "1" };
+        String[] dimRanges = new String[] { channels, slices, "1" };
 
         ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, 1, dimRanges, crop,
                 scaleFactors, scaleMode, intRange, manualCal, false);
@@ -511,6 +513,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         int height = rootIpl.getHeight();
         int bitDepth = rootIpl.getBitDepth();
         int nChannels = rootIpl.getNChannels();
+        int nSlices = rootIpl.getNSlices();
 
         if (crop != null) {
             width = crop[2];
@@ -520,7 +523,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Creating the new image
         int i = 0;
         int count = framesList.length;
-        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, count, 1, bitDepth);
+        ImagePlus outputIpl = IJ.createHyperStack("Image", width, height, nChannels, nSlices, count, bitDepth);
+        ImageStack outputIst = outputIpl.getStack();
 
         for (int frame : framesList) {
             writeStatus("Loading image " + (i + 1) + " of " + count);
@@ -528,16 +532,17 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
             ImagePlus tempIpl = getBFImage(currentPath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
                     manualCal, false);
-            tempIpl.updateChannelAndDraw();
+            ImageStack tempIst = tempIpl.getStack();
+
+            // tempIpl.updateChannelAndDraw();
 
             for (int c = 0; c < nChannels; c++) {
-                outputIpl.setPosition(c + 1, i + 1, 1);
-                if (tempIpl.isComposite()) {
-                    ImageProcessor ipr = ((CompositeImage) tempIpl).getProcessor(c + 1);
-                    outputIpl.setProcessor(ipr);
-                } else {
-                    tempIpl.setPosition(c + 1, 1, 1);
-                    outputIpl.setProcessor(tempIpl.getProcessor());
+                for (int z = 0; z < nSlices; z++) {
+                    int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
+                    int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
+
+                    outputIst.setProcessor(tempIst.getProcessor(tempIdx), outputIdx);
+
                 }
             }
 
@@ -699,7 +704,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // If name includes "*" get first instance of wildcard
         if (filename.contains("*")) {
             String[] filenames = new File(filepath).list(new WildcardFileFilter(filename));
-            
+
             // Checking if any filenames were found
             if (filenames == null)
                 return null;
@@ -837,8 +842,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                 case ImportModes.IMAGE_SEQUENCE:
                     Metadata metadata = (Metadata) workspace.getMetadata().clone();
-                    ipl = getImageSequence(sequenceRootName, metadata, channels, frames, crop, scaleFactors, scaleMode,
-                            intRange, setCalibration);
+                    ipl = getImageSequence(sequenceRootName, metadata, channels, slices, frames, crop, scaleFactors,
+                            scaleMode, intRange, setCalibration);
 
                     break;
 
@@ -930,12 +935,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (ipl.getBitDepth() == 24)
             ipl = CompositeConverter.makeComposite(ipl);
 
-        // If either number of slices or timepoints is 1 check it's the right dimension
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
-            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
-            ipl.getCalibration().pixelDepth = 1;
-        } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
-            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+        // If either number of slices or timepoints is 1 check it's the right dimension.
+        // This should only be wrong if a Stack rather than Hyperstack was loaded, so if
+        // there are multiple channels it shouldn't be an issue.
+        if (ipl.getNChannels() == 1) {
+            if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
+                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
+                ipl.getCalibration().pixelDepth = 1;
+            } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
+                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+            }
         }
 
         // Adding image to workspace
@@ -959,7 +968,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(LOADER_SEPARATOR, this));
+        parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this, ImportModes.CURRENT_FILE, ImportModes.ALL));
         parameters.add(new ChoiceP(READER, this, Readers.BIOFORMATS, Readers.ALL));
@@ -972,7 +981,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
         parameters.add(new FilePathP(FILE_PATH, this));
 
-        parameters.add(new ParamSeparatorP(RANGE_SEPARATOR, this));
+        parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
         parameters.add(new StringP(CHANNELS, this, "1-end"));
         parameters.add(new StringP(SLICES, this, "1-end"));
         parameters.add(new StringP(FRAMES, this, "1-end"));
@@ -988,7 +997,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new DoubleP(SCALE_FACTOR_X, this, 1));
         parameters.add(new DoubleP(SCALE_FACTOR_Y, this, 1));
 
-        parameters.add(new ParamSeparatorP(CALIBRATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALIBRATION_SEPARATOR, this));
         parameters.add(new BooleanP(SET_CAL, this, false));
         parameters.add(new DoubleP(XY_CAL, this, 1d));
         parameters.add(new DoubleP(Z_CAL, this, 1d));
@@ -1065,6 +1074,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)) {
             returnedParameters.add(parameters.getParameter(CHANNELS));
+            returnedParameters.add(parameters.getParameter(SLICES));
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
@@ -1181,10 +1191,11 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     void addParameterDescriptions() {
         parameters.get(OUTPUT_IMAGE).setDescription("Name assigned to the image.");
 
-        parameters.get(IMPORT_MODE).setDescription("File reader mode to use.<br><ul>"
+        parameters.get(IMPORT_MODE).setDescription("Controls where the image will be loaded from:<br><ul>"
 
                 + "<li>\"" + ImportModes.CURRENT_FILE
-                + "\" (default option) will import the current root-file for the workspace.</li>"
+                + "\" (default option) will import the current root-file for the workspace (this is the file specified in the \""
+                + new InputControl(null).getName() + "\" module).</li>"
 
                 + "<li>\"" + ImportModes.IMAGEJ + "\" will load the active image fromm ImageJ.</li>"
 
@@ -1194,7 +1205,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                 + "<li>\"" + ImportModes.MATCHING_FORMAT
                 + "\" will load the image matching a filename based on the root-file for the workspace and a series of rules.</li>"
 
-                + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the image at a specific location.</li></ul>");
+                + "<li>\"" + ImportModes.SPECIFIC_FILE + "\" will load the image at the location specified by \""
+                + FILE_PATH + "\".</li></ul>");
 
         parameters.get(READER).setDescription("Set the reader for importing the image:<br><ul>"
 
@@ -1273,19 +1285,28 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.get(HEIGHT).setDescription("Height of the final cropped region (specified in pixel units).");
 
         parameters.get(SCALE_MODE).setDescription(
-                "Controls if the input image is scaled upon importing.  This only works for scaling in X and Y (magnitudes determined by the \""+SCALE_FACTOR_X+"\" and \""+SCALE_FACTOR_Y+"\" parameters):<br><ul>"
-                
-                        + "<li>\"" + ScaleModes.BICUBIC + "\" Scales the input images using a bicubic filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
+                "Controls if the input image is scaled upon importing.  This only works for scaling in X and Y (magnitudes determined by the \""
+                        + SCALE_FACTOR_X + "\" and \"" + SCALE_FACTOR_Y + "\" parameters):<br><ul>"
 
-                        + "<li>\"" + ScaleModes.BILINEAR + "\" Scales the input images using a bilinear filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
+                        + "<li>\"" + ScaleModes.BICUBIC
+                        + "\" Scales the input images using a bicubic filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
 
-                        + "<li>\"" + ScaleModes.NONE + "\" (default) Input images are not scaled.  They are loaded into the workspace at their native resolutions.</li>"
+                        + "<li>\"" + ScaleModes.BILINEAR
+                        + "\" Scales the input images using a bilinear filter.  This leads to smooth intensity transitions between interpolated pixels.</li>"
 
-                        + "<li>\"" + ScaleModes.NO_INTERPOLATION + "\" Scales the input images using a nearest-neighbour approach.  This leads to a \"blocky\" apppearance to scaled images.</li></ul>");
+                        + "<li>\"" + ScaleModes.NONE
+                        + "\" (default) Input images are not scaled.  They are loaded into the workspace at their native resolutions.</li>"
 
-        parameters.get(SCALE_FACTOR_X).setDescription("Scale factor applied to X-axis of input images (if \""+SCALE_MODE+"\" is in an image scaling mode).  Values <1 will reduce image width, while values >1 will increase it.");
+                        + "<li>\"" + ScaleModes.NO_INTERPOLATION
+                        + "\" Scales the input images using a nearest-neighbour approach.  This leads to a \"blocky\" apppearance to scaled images.</li></ul>");
 
-        parameters.get(SCALE_FACTOR_Y).setDescription("Scale factor applied to Y-axis of input images (if \""+SCALE_MODE+"\" is in an image scaling mode).  Values <1 will reduce image height, while values >1 will increase it.");
+        parameters.get(SCALE_FACTOR_X).setDescription("Scale factor applied to X-axis of input images (if \""
+                + SCALE_MODE
+                + "\" is in an image scaling mode).  Values <1 will reduce image width, while values >1 will increase it.");
+
+        parameters.get(SCALE_FACTOR_Y).setDescription("Scale factor applied to Y-axis of input images (if \""
+                + SCALE_MODE
+                + "\" is in an image scaling mode).  Values <1 will reduce image height, while values >1 will increase it.");
 
         parameters.get(SET_CAL).setDescription(
                 "Option to use the automatically-applied spatial calibration or manually specify these values.");

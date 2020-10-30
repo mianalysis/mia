@@ -204,12 +204,12 @@ public class LocalAutoThreshold extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(THRESHOLD_SEPARATOR,this));
+        parameters.add(new SeparatorP(THRESHOLD_SEPARATOR,this));
         parameters.add(new ChoiceP(THRESHOLD_MODE,this,ThresholdModes.SLICE,ThresholdModes.ALL));
         parameters.add(new ChoiceP(ALGORITHM_SLICE,this,AlgorithmsSlice.BERNSEN,AlgorithmsSlice.ALL));
         parameters.add(new ChoiceP(ALGORITHM_3D,this,Algorithms3D.BERNSEN,Algorithms3D.ALL));
@@ -311,9 +311,9 @@ public class LocalAutoThreshold extends Module {
         
         + "<li>\""+ThresholdModes.THREE_D+"\" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul>");
 
-        parameters.get(ALGORITHM_SLICE).setDescription("Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at \"https://imagej.net/Auto_Local_Threshold\".  Algorithms available: "+String.join(", ",AlgorithmsSlice.ALL));
+        parameters.get(ALGORITHM_SLICE).setDescription("Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at <a href=\"https://imagej.net/Auto_Local_Threshold\">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: "+String.join(", ",AlgorithmsSlice.ALL));
 
-        parameters.get(ALGORITHM_3D).setDescription("Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at \"https://imagej.net/Auto_Local_Threshold\".  Algorithms available: "+String.join(", ",Algorithms3D.ALL));
+        parameters.get(ALGORITHM_3D).setDescription("Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at <a href=\"https://imagej.net/Auto_Local_Threshold\">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: "+String.join(", ",Algorithms3D.ALL));
 
         parameters.get(THRESHOLD_MULTIPLIER).setDescription("Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a \""+THRESHOLD_MULTIPLIER+"\" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.");
 

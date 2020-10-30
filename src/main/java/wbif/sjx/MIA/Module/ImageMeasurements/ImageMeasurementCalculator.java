@@ -10,7 +10,7 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ImageMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.ParamSeparatorP;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -50,10 +50,10 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     public interface CalculationModes {
-        String ADD = "Add measurement 1 and measurement 2";
-        String DIVIDE = "Divide measurement 1 by measurement 2";
-        String MULTIPLY = "Multiply measurement 1 and measurement 2";
-        String SUBTRACT = "Subtract measurement 2 from measurement 1";
+        String ADD = "Add value 1 and value 2";
+        String DIVIDE = "Divide value 1 by value 2";
+        String MULTIPLY = "Multiply value 1 and value 2";
+        String SUBTRACT = "Subtract value 2 from value 1";
 
         String[] ALL = new String[] { ADD, DIVIDE, MULTIPLY, SUBTRACT };
 
@@ -89,7 +89,8 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Perform a mathematical operation on measurements associated with an image.  The calculation can replace either or both input image measurements with fixed values.  The resulting measurement is associated with the input image as a new measurement.";
+
     }
 
     @Override
@@ -146,22 +147,24 @@ public class ImageMeasurementCalculator extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new ParamSeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
-        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_1, this));
+        parameters.add(new SeparatorP(VALUE_SEPARATOR_1, this));
         parameters.add(new ChoiceP(VALUE_MODE_1, this, ValueModes.MEASUREMENT, ValueModes.ALL));
         parameters.add(new DoubleP(FIXED_VALUE_1, this, 0));
         parameters.add(new ImageMeasurementP(MEASUREMENT_1, this));
 
-        parameters.add(new ParamSeparatorP(VALUE_SEPARATOR_2, this));
+        parameters.add(new SeparatorP(VALUE_SEPARATOR_2, this));
         parameters.add(new ChoiceP(VALUE_MODE_2, this, ValueModes.MEASUREMENT, ValueModes.ALL));
         parameters.add(new DoubleP(FIXED_VALUE_2, this, 0));
         parameters.add(new ImageMeasurementP(MEASUREMENT_2, this));
 
-        parameters.add(new ParamSeparatorP(CALCULATION_SEPARATOR, this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
         parameters.add(new StringP(OUTPUT_MEASUREMENT, this));
         parameters.add(new ChoiceP(CALCULATION_MODE, this, CalculationModes.ADD, CalculationModes.ALL));
+
+        addParameterDescriptions();
 
     }
 
@@ -245,5 +248,34 @@ public class ImageMeasurementCalculator extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_IMAGE).setDescription("Image from the workspace to perform the measurement calculation for.");
+
+      parameters.get(VALUE_MODE_1).setDescription("Controls how the first value in the calculation is defined:<br><ul>"
+
+      +"<li>\""+ValueModes.FIXED+"\" A single, fixed value defined by \""+FIXED_VALUE_1+"\"is used.</li>"
+
+      +"<li>\""+ValueModes.MEASUREMENT+"\" A measurement associated with the input image and defined by \""+MEASUREMENT_1+"\" is used.</li></ul>");
+
+      parameters.get(FIXED_VALUE_1).setDescription("Fixed value to use in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.FIXED+"\" mode.");
+
+      parameters.get(MEASUREMENT_1).setDescription("Measurement associated with the input image to use in the calculation when \""+VALUE_MODE_1+"\" is in \""+ValueModes.MEASUREMENT+"\" mode.");
+
+      parameters.get(VALUE_MODE_2).setDescription("Controls how the second value in the calculation is defined:<br><ul>"
+
+      +"<li>\""+ValueModes.FIXED+"\" A single, fixed value defined by \""+FIXED_VALUE_2+"\"is used.</li>"
+
+      +"<li>\""+ValueModes.MEASUREMENT+"\" A measurement associated with the input image and defined by \""+MEASUREMENT_2+"\" is used.</li></ul>");
+
+      parameters.get(FIXED_VALUE_2).setDescription("Fixed value to use in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.FIXED+"\" mode.");
+
+      parameters.get(MEASUREMENT_2).setDescription("Measurement associated with the input image to use in the calculation when \""+VALUE_MODE_2+"\" is in \""+ValueModes.MEASUREMENT+"\" mode.");
+
+      parameters.get(OUTPUT_MEASUREMENT).setDescription("The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the input image");
+
+      parameters.get(CALCULATION_MODE).setDescription("Calculation to perform.  Choices are: "+ String.join(", ",CalculationModes.ALL) + ".");
+
     }
 }
