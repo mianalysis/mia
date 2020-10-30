@@ -1,27 +1,5 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack;
 
-import bunwarpj.Param;
-import bunwarpj.Transformation;
-import bunwarpj.bUnwarpJ_;
-import com.drew.lang.annotations.Nullable;import ij.ImagePlus;
-import ij.Prefs;
-import ij.plugin.SubHyperstackMaker;
-import ij.process.ImageProcessor;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
-import wbif.sjx.MIA.Module.Module;
-import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
-import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
-import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -29,6 +7,35 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import com.drew.lang.annotations.Nullable;
+
+import bunwarpj.Param;
+import bunwarpj.Transformation;
+import bunwarpj.bUnwarpJ_;
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.plugin.SubHyperstackMaker;
+import ij.process.ImageProcessor;
+import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
+import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
+import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
+import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class UnwarpImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
