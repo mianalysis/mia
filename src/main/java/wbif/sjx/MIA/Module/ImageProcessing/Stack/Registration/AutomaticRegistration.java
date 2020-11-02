@@ -1,6 +1,7 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.drew.lang.annotations.Nullable;
@@ -9,10 +10,11 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
+import mpicbg.ij.MOPS;
 import mpicbg.ij.SIFT;
 import mpicbg.imagefeatures.Feature;
+import mpicbg.imagefeatures.FloatArray2DMOPS;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
-import mpicbg.imagefeatures.FloatArray2DSIFT.Param;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
@@ -40,8 +42,7 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
-public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
-        extends AbstractRegistrationHandler {
+public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extends AbstractRegistrationHandler<T> {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -63,18 +64,20 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
 
-    public static final String FEATURE_SEPARATOR = "Feature detection (SIFT)";
+    public static final String FEATURE_SEPARATOR = "Feature detection";
+    public static final String FEATURE_EXTRACTOR = "Feature extractor";
     public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
     public static final String STEPS = "Steps per scale";
     public static final String MINIMUM_IMAGE_SIZE = "Minimum image size (px)";
     public static final String MAXIMUM_IMAGE_SIZE = "Maximum image size (px)";
-    public static final String FD_SIZE = "Feature descriptor size";
+    public static final String FD_SIZE_SIFT = "Feature descriptor size (SIFT)";
+    public static final String FD_SIZE_MOPS = "Feature descriptor size (MOPS)";
     public static final String FD_ORIENTATION_BINS = "Feature descriptor orientation bins";
     public static final String ROD = "Closest/next closest ratio";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public AutomaticRegistration(String name, ModuleCollection modules) {
+    public AutomaticRegistration(ModuleCollection modules) {
         super("Automatic registration", modules);
     }
 
@@ -134,6 +137,14 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
         String WHITE = "White";
 
         String[] ALL = new String[] { BLACK, WHITE };
+
+    }
+
+    public interface FeatureExtractors {
+        String MOPS = "MOPS";
+        String SIFT = "SIFT";
+
+        String[] ALL = new String[] { MOPS, SIFT };
 
     }
 
@@ -238,7 +249,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
             AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param);
 
-                    if (model == null) {
+            if (model == null) {
                 if (prevModel == null) {
                     // This model couldn't be defined and there was no previous model.
                     MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
@@ -256,7 +267,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
                 }
             }
 
-            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);        
+            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
 
             // By default the calculated registration will only be applied to the current
             // timepoint; however, if using the previous frame and in rolling correction
@@ -309,17 +320,72 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
         }
     }
 
-    public static AbstractAffineModel2D getAffineSIFTModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+    public static AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
             Param param) {
+        switch (param.featureExtractor) {
+            case FeatureExtractors.MOPS:
+                return getAffineMOPSModel2D(referenceIpr, warpedIpr, param);
+
+            case FeatureExtractors.SIFT:
+            default:
+                return getAffineSIFTModel2D(referenceIpr, warpedIpr, param);
+
+        }
+    }
+
+    public static AbstractAffineModel2D getAffineMOPSModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+            Param param) {
+        // Creating SIFT parameter structure
+        FloatArray2DMOPS.Param siftParam = new FloatArray2DMOPS.Param();
+        siftParam.fdSize = param.fdSize;
+        siftParam.initialSigma = param.initialSigma;
+        siftParam.maxOctaveSize = param.maxOctaveSize;
+        siftParam.minOctaveSize = param.minOctaveSize;
+        siftParam.steps = param.steps;
+
         // Initialising SIFT feature extractor
-        FloatArray2DSIFT sift = new FloatArray2DSIFT(param);
-        SIFT ijSIFT = new SIFT(sift);
+        MOPS mops = new MOPS(new FloatArray2DMOPS(siftParam));
 
         // Extracting features
         ArrayList<Feature> featureList1 = new ArrayList<Feature>();
-        ijSIFT.extractFeatures(referenceIpr, featureList1);
+        mops.extractFeatures(referenceIpr, featureList1);
         ArrayList<Feature> featureList2 = new ArrayList<Feature>();
-        ijSIFT.extractFeatures(warpedIpr, featureList2);
+        mops.extractFeatures(warpedIpr, featureList2);
+
+        // Running registration
+        AbstractAffineModel2D model = getModel(param.transformationMode);
+        List<PointMatch> candidates = FloatArray2DMOPS.createMatches(featureList1, featureList2, 1.5f, null, Double.MAX_VALUE, param.rod);      
+        Vector<PointMatch> inliers = new Vector<PointMatch>();
+
+        try {
+            model.filterRansac(candidates, inliers, 1000, param.maxEpsilon, param.minInlierRatio);
+        } catch (NotEnoughDataPointsException e) {
+            return null;
+        }
+
+        return model;
+
+    }
+
+    public static AbstractAffineModel2D getAffineSIFTModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+            Param param) {
+        // Creating SIFT parameter structure
+        FloatArray2DSIFT.Param siftParam = new FloatArray2DSIFT.Param();
+        siftParam.fdBins = param.fdBins_sift;
+        siftParam.fdSize = param.fdSize;
+        siftParam.initialSigma = param.initialSigma;
+        siftParam.maxOctaveSize = param.maxOctaveSize;
+        siftParam.minOctaveSize = param.minOctaveSize;
+        siftParam.steps = param.steps;
+
+        // Initialising SIFT feature extractor
+        SIFT sift = new SIFT(new FloatArray2DSIFT(siftParam));
+
+        // Extracting features
+        ArrayList<Feature> featureList1 = new ArrayList<Feature>();
+        sift.extractFeatures(referenceIpr, featureList1);
+        ArrayList<Feature> featureList2 = new ArrayList<Feature>();
+        sift.extractFeatures(warpedIpr, featureList2);
 
         // Running registration
         AbstractAffineModel2D model = getModel(param.transformationMode);
@@ -391,6 +457,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
+        String featureExtractor = parameters.getValue(FEATURE_EXTRACTOR);
         double initialSigma = parameters.getValue(INITIAL_SIGMA);
         String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         double rod = parameters.getValue(ROD);
@@ -459,8 +526,17 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
             param.steps = parameters.getValue(STEPS);
             param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
             param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-            param.fdSize = parameters.getValue(FD_SIZE);
-            param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
+
+            switch (featureExtractor) {
+                case FeatureExtractors.MOPS:
+                    param.fdSize = parameters.getValue(FD_SIZE_MOPS);
+                    break;
+                case FeatureExtractors.SIFT:
+                    param.fdSize = parameters.getValue(FD_SIZE_SIFT);
+                    break;
+            }
+
+            param.fdBins_sift = parameters.getValue(FD_ORIENTATION_BINS);
             param.rod = (float) rod;
             param.maxEpsilon = (float) maxEpsilon;
             param.minInlierRatio = (float) minInlierRatio;
@@ -519,11 +595,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
         parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
 
         parameters.add(new SeparatorP(FEATURE_SEPARATOR, this));
+        parameters.add(new ChoiceP(FEATURE_EXTRACTOR, this, FeatureExtractors.SIFT, FeatureExtractors.ALL));
         parameters.add(new DoubleP(INITIAL_SIGMA, this, 1.6));
         parameters.add(new IntegerP(STEPS, this, 3));
         parameters.add(new IntegerP(MINIMUM_IMAGE_SIZE, this, 64));
         parameters.add(new IntegerP(MAXIMUM_IMAGE_SIZE, this, 1024));
-        parameters.add(new IntegerP(FD_SIZE, this, 4));
+        parameters.add(new IntegerP(FD_SIZE_SIFT, this, 4));
+        parameters.add(new IntegerP(FD_SIZE_MOPS, this, 16));
         parameters.add(new IntegerP(FD_ORIENTATION_BINS, this, 8));
         parameters.add(new DoubleP(ROD, this, 0.92));
         parameters.add(new DoubleP(MAX_EPSILON, this, 25.0));
@@ -566,12 +644,21 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
 
         returnedParameters.add(parameters.getParameter(FEATURE_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(FEATURE_EXTRACTOR));
         returnedParameters.add(parameters.getParameter(INITIAL_SIGMA));
         returnedParameters.add(parameters.getParameter(STEPS));
         returnedParameters.add(parameters.getParameter(MINIMUM_IMAGE_SIZE));
         returnedParameters.add(parameters.getParameter(MAXIMUM_IMAGE_SIZE));
-        returnedParameters.add(parameters.getParameter(FD_SIZE));
-        returnedParameters.add(parameters.getParameter(FD_ORIENTATION_BINS));
+
+        switch ((String) parameters.getValue(FEATURE_EXTRACTOR)) {
+            case FeatureExtractors.MOPS:
+                returnedParameters.add(parameters.getParameter(FD_SIZE_MOPS));
+                break;
+            case FeatureExtractors.SIFT:
+                returnedParameters.add(parameters.getParameter(FD_SIZE_SIFT));
+                returnedParameters.add(parameters.getParameter(FD_ORIENTATION_BINS));
+                break;
+        }
         returnedParameters.add(parameters.getParameter(ROD));
         returnedParameters.add(parameters.getParameter(MAX_EPSILON));
         returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
@@ -643,7 +730,9 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
                 "\"The Scale Space starts with the first octave equal or smaller than the maximum image size. Tip: By reducing the size, fine scaled features will be discarded. Increasing the size beyond that of the actual images has no effect.\".  "
                         + siteRef);
 
-        parameters.get(FD_SIZE).setDescription(
+        parameters.get(FD_SIZE_MOPS).setDescription("");
+
+        parameters.get(FD_SIZE_SIFT).setDescription(
                 "\"The SIFT-descriptor consists of n×n gradient histograms, each from a 4×4px block. n is this value. Lowe (2004) uses n=4. We found larger descriptors with n=8 perform better for Transmission Electron Micrographs from serial sections.\".  "
                         + siteRef);
 
@@ -665,20 +754,24 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
 
     }
 
-
-    abstract class AbstractParam {
+    public static class Param {
+        // Fitting parameters
+        String featureExtractor = FeatureExtractors.SIFT;
         String transformationMode = TransformationModes.RIGID;
         float rod = 0.92f;
         float maxEpsilon = 25.0f;
         float minInlierRatio = 0.05f;
 
+        // General parameters
+        float initialSigma = 1.6f;
+        int fdSize = 4; // Default 4 for SIFT, 16 for MOPS
+        int maxOctaveSize = 1024;
+        int minOctaveSize = 64;
+        int steps = 3;
+
+        // SIFT-specific parameters
+        int fdBins_sift = 8;
+
     }
 
-    public class SIFTParam {
-        String transformationMode = TransformationModes.RIGID;
-        float rod = 0.92f;
-        float maxEpsilon = 25.0f;
-        float minInlierRatio = 0.05f;
-
-    }
 }
