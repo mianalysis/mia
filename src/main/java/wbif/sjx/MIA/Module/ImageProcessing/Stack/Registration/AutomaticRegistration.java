@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -30,6 +31,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -76,6 +78,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
     public static final String ROD = "Closest/next closest ratio";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
+
+    public static final String LIMITS_SEPARATOR = "Transform limits";
+    public static final String MIN_NUM_MATCHING = "Minimum number of matching points";
+    public static final String MAXIMUM_X_TRANSLATION = "Maximum X-axis translation (px)";
+    public static final String MAXIMUM_Y_TRANSLATION = "Maximum Y-axis translation (px)";
+    public static final String MAXIMUM_ROTATION = "Maximum rotation (degs))";
+    public static final String SHOW_WARNINGS = "Show warnings";
 
     public AutomaticRegistration(ModuleCollection modules) {
         super("Automatic registration", modules);
@@ -192,7 +201,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
     }
 
     public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, Param param,
-            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
+            Limits limits, int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
         // This works in a very similar manner to processLinked, except it's performed
         // one slice at a time
         for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
@@ -203,8 +212,8 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
                     String.valueOf(z + 1), "1-end");
 
             // Performing the registration on this slice
-            processLinked(currInputImage, currCalcImage, relativeMode, param, correctionInterval, fillMode, multithread,
-                    reference);
+            processLinked(currInputImage, currCalcImage, relativeMode, param, limits, correctionInterval, fillMode,
+                    multithread, reference);
 
             // Replacing all images in this slice of the input with the registered images
             replaceSlice(inputImage, currInputImage, z);
@@ -212,7 +221,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         }
     }
 
-    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, Param param,
+    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, Param param, Limits limits,
             int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
         // Assigning fixed reference images
         switch (relativeMode) {
@@ -247,28 +256,40 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
             // Calculating the transformation for this image pair
             AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
-                    warped.getImagePlus().getProcessor(), param);
+                    warped.getImagePlus().getProcessor(), param, limits);
 
+            // Handling models which didn't have enough points
             if (model == null) {
                 if (prevModel == null) {
                     // This model couldn't be defined and there was no previous model.
-                    MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
+                    if (limits.showWarnings) MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
                             + " registration.  No transform applied.");
-
                     continue;
-
                 } else {
                     // This model couldn't be defined, so we'll apply the previous model.
-                    MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
-                            + " registration.  No transform applied.");
-
+                    if (limits.showWarnings) MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
+                            + " registration.  Applying previous frame transform.");
                     model = prevModel;
+                }
+            }
 
+            // Checking limits
+            if (!testLimits(model, limits)) {
+                if (prevModel == null) {
+                    // This model couldn't be defined and there was no previous model.
+                    if (limits.showWarnings) MIA.log.writeWarning("Transform exceeds limits for t=" + (t + 1)
+                            + " registration.  No transform applied.");
+                    continue;
+                } else {
+                    // This model couldn't be defined, so we'll apply the previous model.
+                    if (limits.showWarnings) MIA.log.writeWarning("Transform exceeds limits for t=" + (t + 1)
+                            + " registration.  Applying previous frame transform.");
+                    model = prevModel;
                 }
             }
 
             InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-
+            
             // By default the calculated registration will only be applied to the current
             // timepoint; however, if using the previous frame and in rolling correction
             // mode (and at the specified interval) we apply the registration to all
@@ -321,20 +342,20 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
     }
 
     public static AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
-            Param param) {
+            Param param, Limits limits) {
         switch (param.featureExtractor) {
             case FeatureExtractors.MOPS:
-                return getAffineMOPSModel2D(referenceIpr, warpedIpr, param);
+                return getAffineMOPSModel2D(referenceIpr, warpedIpr, param, limits);
 
             case FeatureExtractors.SIFT:
             default:
-                return getAffineSIFTModel2D(referenceIpr, warpedIpr, param);
+                return getAffineSIFTModel2D(referenceIpr, warpedIpr, param, limits);
 
         }
     }
 
     public static AbstractAffineModel2D getAffineMOPSModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
-            Param param) {
+            Param param, Limits limits) {
         // Creating SIFT parameter structure
         FloatArray2DMOPS.Param siftParam = new FloatArray2DMOPS.Param();
         siftParam.fdSize = param.fdSize;
@@ -354,7 +375,8 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
         // Running registration
         AbstractAffineModel2D model = getModel(param.transformationMode);
-        List<PointMatch> candidates = FloatArray2DMOPS.createMatches(featureList1, featureList2, 1.5f, null, Double.MAX_VALUE, param.rod);      
+        List<PointMatch> candidates = FloatArray2DMOPS.createMatches(featureList1, featureList2, 1.5f, null,
+                Double.MAX_VALUE, param.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
 
         try {
@@ -363,12 +385,16 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             return null;
         }
 
+        // Also skip this registration if an insufficient number of points were matched
+        if (inliers.size() < limits.minNumMatching)
+            return null;
+
         return model;
 
     }
 
     public static AbstractAffineModel2D getAffineSIFTModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
-            Param param) {
+            Param param, Limits limits) {
         // Creating SIFT parameter structure
         FloatArray2DSIFT.Param siftParam = new FloatArray2DSIFT.Param();
         siftParam.fdBins = param.fdBins_sift;
@@ -399,7 +425,33 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             return null;
         }
 
+        // Also skip this registration if an insufficient number of points were matched
+        if (inliers.size() < limits.minNumMatching)
+            return null;
+
         return model;
+
+    }
+
+    static boolean testLimits(AbstractAffineModel2D model, Limits limits) {
+        AffineTransform affineTransform = model.createAffine();
+
+        // Testing x translation
+        if (Math.abs(affineTransform.getTranslateX()) > limits.maxXTranslation)
+            return false;
+
+        // Testing y translation
+        if (Math.abs(affineTransform.getTranslateY()) > limits.maxYTranslation)
+            return false;
+
+        // Testing rotation
+        double[] flatMatrix = new double[6];
+        affineTransform.getMatrix(flatMatrix);
+        if (Math.abs(Math.toDegrees(Math.atan2(flatMatrix[1], flatMatrix[0]))) > limits.maxRotation)
+            return false;
+
+        // Otherwise, return true
+        return true;
 
     }
 
@@ -450,6 +502,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String regAxis = parameters.getValue(REGISTRATION_AXIS);
         String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
         String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
         int correctionInterval = parameters.getValue(CORRECTION_INTERVAL);
@@ -460,11 +513,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         String featureExtractor = parameters.getValue(FEATURE_EXTRACTOR);
         double initialSigma = parameters.getValue(INITIAL_SIGMA);
         String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        double rod = parameters.getValue(ROD);
-        double maxEpsilon = parameters.getValue(MAX_EPSILON);
-        double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO);
         String fillMode = parameters.getValue(FILL_MODE);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // If the rolling correction mode is off, set the interval to -1
         if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE))
@@ -537,19 +586,26 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             }
 
             param.fdBins_sift = parameters.getValue(FD_ORIENTATION_BINS);
-            param.rod = (float) rod;
-            param.maxEpsilon = (float) maxEpsilon;
-            param.minInlierRatio = (float) minInlierRatio;
+            param.rod = (float) (double) parameters.getValue(ROD);
+            param.maxEpsilon = (float) (double) parameters.getValue(MAX_EPSILON);
+            param.minInlierRatio = (float) (double) parameters.getValue(MIN_INLIER_RATIO);
+
+            Limits limits = new Limits();
+            limits.minNumMatching = parameters.getValue(MIN_NUM_MATCHING);
+            limits.maxXTranslation = parameters.getValue(MAXIMUM_X_TRANSLATION);
+            limits.maxYTranslation = parameters.getValue(MAXIMUM_Y_TRANSLATION);
+            limits.maxRotation = parameters.getValue(MAXIMUM_ROTATION);
+            limits.showWarnings = parameters.getValue(SHOW_WARNINGS);
 
             switch (otherAxisMode) {
                 case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, param, correctionInterval, fillMode,
-                            multithread, reference);
+                    processIndependent(inputImage, calculationImage, relativeMode, param, limits, correctionInterval,
+                            fillMode, multithread, reference);
                     break;
 
                 case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, param, correctionInterval, fillMode,
-                            multithread, reference);
+                    processLinked(inputImage, calculationImage, relativeMode, param, limits, correctionInterval,
+                            fillMode, multithread, reference);
                     break;
             }
 
@@ -607,6 +663,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         parameters.add(new DoubleP(MAX_EPSILON, this, 25.0));
         parameters.add(new DoubleP(MIN_INLIER_RATIO, this, 0.05));
 
+        parameters.add(new SeparatorP(LIMITS_SEPARATOR, this));
+        parameters.add(new IntegerP(MIN_NUM_MATCHING, this, 3));
+        parameters.add(new DoubleP(MAXIMUM_X_TRANSLATION, this, 10000d));
+        parameters.add(new DoubleP(MAXIMUM_Y_TRANSLATION, this, 10000d));
+        parameters.add(new DoubleP(MAXIMUM_ROTATION, this, 360d));
+        parameters.add(new BooleanP(SHOW_WARNINGS, this, true));
+
         addAutomaticParameterDescriptions();
 
     }
@@ -662,6 +725,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         returnedParameters.add(parameters.getParameter(ROD));
         returnedParameters.add(parameters.getParameter(MAX_EPSILON));
         returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
+
+        returnedParameters.add(parameters.getParameter(LIMITS_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(MIN_NUM_MATCHING));
+        returnedParameters.add(parameters.getParameter(MAXIMUM_X_TRANSLATION));
+        returnedParameters.add(parameters.getParameter(MAXIMUM_Y_TRANSLATION));
+        returnedParameters.add(parameters.getParameter(MAXIMUM_ROTATION));
+        returnedParameters.add(parameters.getParameter(SHOW_WARNINGS));
 
         return returnedParameters;
 
@@ -774,4 +844,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
     }
 
+    public static class Limits {
+        int minNumMatching = 3;
+        double maxXTranslation = Double.MAX_VALUE;
+        double maxYTranslation = Double.MAX_VALUE;
+        double maxRotation = Double.MAX_VALUE;
+
+        boolean showWarnings = true;
+
+    }
 }

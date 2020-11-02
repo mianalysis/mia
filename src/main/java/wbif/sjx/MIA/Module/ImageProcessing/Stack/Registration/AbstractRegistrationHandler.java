@@ -22,6 +22,7 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -87,8 +88,8 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
     public static void changeStackOrder(Image image) {
         ImagePlus inputIpl = image.getImagePlus();
 
-        // InputIpl must be a HyperStack
-        if (!inputIpl.isHyperStack()) {
+        // InputIpl must be a HyperStack (but at least be a stack)
+        if (!inputIpl.isHyperStack() && (inputIpl.getNFrames() > 1 || inputIpl.getNSlices() > 1)) {
             int nChannels = inputIpl.getNChannels();
             int nSlices = inputIpl.getNSlices();
             int nFrames = inputIpl.getNFrames();
