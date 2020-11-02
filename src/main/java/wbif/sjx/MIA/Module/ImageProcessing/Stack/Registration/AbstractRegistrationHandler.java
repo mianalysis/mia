@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import com.drew.lang.annotations.Nullable;
 
 import fiji.stacks.Hyperstack_rearranger;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -23,7 +22,6 @@ import mpicbg.models.SimilarityModel2D;
 import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -35,7 +33,7 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 
-public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType<T>> extends Module {
+public abstract class AbstractRegistrationHandler<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -49,7 +47,7 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String FILL_MODE = "Fill mode";
 
-    public CoreRegistrationHandler(String name, ModuleCollection modules) {
+    public AbstractRegistrationHandler(String name, ModuleCollection modules) {
         super(name, modules);
     }
 
@@ -258,18 +256,6 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
-
-    }
-
-    protected static class Param extends FloatArray2DSIFT.Param {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -9039231442503621671L;
-        String transformationMode = TransformationModes.RIGID;
-        float rod = 0.92f;
-        float maxEpsilon = 25.0f;
-        float minInlierRatio = 0.05f;
 
     }
 }

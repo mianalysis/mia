@@ -12,6 +12,7 @@ import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.SIFT;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
+import mpicbg.imagefeatures.FloatArray2DSIFT.Param;
 import mpicbg.models.AbstractAffineModel2D;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
@@ -39,7 +40,8 @@ import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
-public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extends CoreRegistrationHandler {
+public class AutomaticRegistration<T extends RealType<T> & NativeType<T>>
+        extends AbstractRegistrationHandler {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -72,7 +74,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
 
-    public AutomaticRegistration(ModuleCollection modules) {
+    public AutomaticRegistration(String name, ModuleCollection modules) {
         super("Automatic registration", modules);
     }
 
@@ -216,6 +218,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         // Iterate over each time-step
         int count = 0;
         int nFrames = calculationImage.getImagePlus().getNFrames();
+        AbstractAffineModel2D prevModel = null; // If a slice is missed, we can use the previous transform.
         for (int t = 0; t < nFrames; t++) {
             writeStatus("Processing frame " + (++count) + " of " + nFrames);
 
@@ -234,7 +237,26 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             // Calculating the transformation for this image pair
             AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param);
-            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+
+                    if (model == null) {
+                if (prevModel == null) {
+                    // This model couldn't be defined and there was no previous model.
+                    MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
+                            + " registration.  No transform applied.");
+
+                    continue;
+
+                } else {
+                    // This model couldn't be defined, so we'll apply the previous model.
+                    MIA.log.writeWarning("Insufficient reference points detected for t=" + (t + 1)
+                            + " registration.  No transform applied.");
+
+                    model = prevModel;
+
+                }
+            }
+
+            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);        
 
             // By default the calculated registration will only be applied to the current
             // timepoint; however, if using the previous frame and in rolling correction
@@ -282,11 +304,12 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             }
 
             mapping = null;
+            prevModel = model;
 
         }
     }
 
-    public static AbstractAffineModel2D getAffineModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
+    public static AbstractAffineModel2D getAffineSIFTModel2D(ImageProcessor referenceIpr, ImageProcessor warpedIpr,
             Param param) {
         // Initialising SIFT feature extractor
         FloatArray2DSIFT sift = new FloatArray2DSIFT(param);
@@ -307,7 +330,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         try {
             model.filterRansac(candidates, inliers, 1000, param.maxEpsilon, param.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
-            e.printStackTrace();
             return null;
         }
 
@@ -507,7 +529,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         parameters.add(new DoubleP(MAX_EPSILON, this, 25.0));
         parameters.add(new DoubleP(MIN_INLIER_RATIO, this, 0.05));
 
-        addParameterDescriptions();
+        addAutomaticParameterDescriptions();
 
     }
 
@@ -588,7 +610,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         return true;
     }
 
-    void addParameterDescriptions() {
+    void addAutomaticParameterDescriptions() {
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
         parameters.get(RELATIVE_MODE).setDescription("");
@@ -640,6 +662,23 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         parameters.get(MIN_INLIER_RATIO).setDescription(
                 "\"The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.\".  "
                         + siteRef);
+
+    }
+
+
+    abstract class AbstractParam {
+        String transformationMode = TransformationModes.RIGID;
+        float rod = 0.92f;
+        float maxEpsilon = 25.0f;
+        float minInlierRatio = 0.05f;
+
+    }
+
+    public class SIFTParam {
+        String transformationMode = TransformationModes.RIGID;
+        float rod = 0.92f;
+        float maxEpsilon = 25.0f;
+        float minInlierRatio = 0.05f;
 
     }
 }
