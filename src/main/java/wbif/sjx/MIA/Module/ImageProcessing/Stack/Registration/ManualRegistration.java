@@ -3,43 +3,23 @@ package wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import com.drew.lang.annotations.Nullable;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.plugin.Duplicator;
-import ij.plugin.SubHyperstackMaker;
-import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
-import mpicbg.ij.Mapping;
-import mpicbg.ij.SIFT;
 import mpicbg.ij.util.Util;
-import mpicbg.imagefeatures.Feature;
-import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.AbstractAffineModel2D;
-import mpicbg.models.AffineModel2D;
 import mpicbg.models.IllDefinedDataPointsException;
 import mpicbg.models.NotEnoughDataPointsException;
 import mpicbg.models.PointMatch;
-import mpicbg.models.RigidModel2D;
-import mpicbg.models.SimilarityModel2D;
-import mpicbg.models.TranslationModel2D;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ManualUnwarp;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -227,7 +207,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends C
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
         InverseTransformMapping mapping = (InverseTransformMapping) output[0];
-        AbstractAffineModel2D model = (AbstractAffineModel2D) output[1];
 
         // Iterate over each time-step
         int count = 0;

@@ -798,19 +798,28 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     void addParameterDescriptions() {
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
-        parameters.get(INPUT_IMAGE).setDescription("");
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply registration to.");
 
-        parameters.get(APPLY_TO_INPUT).setDescription("");
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
 
-        parameters.get(OUTPUT_IMAGE).setDescription("");
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+        + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
-        parameters.get(TRANSFORMATION_MODE).setDescription("");
+        parameters.get(TRANSFORMATION_MODE).setDescription("Controls the type of registration being applied:<br><ul>"
+        
+        + "<li>\"" + TransformationModes.AFFINE + "\" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li>"
+
+        + "<li>\"" + TransformationModes.RIGID + "\" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li>"
+        
+        + "<li>\"" + TransformationModes.SIMILARITY +"\" Applies translation, rotating and linear scaling to the input image.</li>"
+        
+        +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li>");
 
         parameters.get(ALIGNMENT_MODE).setDescription("");
 
-        parameters.get(FILL_MODE).setDescription("");
+        parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
 
-        parameters.get(ENABLE_MULTITHREADING).setDescription("");
+        parameters.get(ENABLE_MULTITHREADING).setDescription("When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
         parameters.get(RELATIVE_MODE).setDescription("");
 

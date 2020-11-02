@@ -70,22 +70,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
 
-    private int getAxesIndex(ImgPlus<T> img, String axis) {
-        switch (axis) {
-            case AxisModes.X:
-            default:
-                return img.dimensionIndex(Axes.X);
-            case AxisModes.Y:
-                return img.dimensionIndex(Axes.Y);
-            case AxisModes.Z:
-                return img.dimensionIndex(Axes.Z);
-            case AxisModes.CHANNEL:
-                return img.dimensionIndex(Axes.CHANNEL);
-            case AxisModes.TIME:
-                return img.dimensionIndex(Axes.TIME);
-        }
-    }
-
     static <T extends RealType<T> & NativeType<T>> ArrayList<Image<T>> getAvailableImages(Workspace workspace, LinkedHashMap<Integer,ParameterCollection> collections) {
         ArrayList<Image<T>> available = new ArrayList<>();
 

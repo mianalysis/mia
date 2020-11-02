@@ -328,8 +328,7 @@ public class Image <T extends RealType<T> & NativeType<T>> {
     public String getName() {
         return name;
     }
-
-    @Deprecated
+    
     public ImagePlus getImagePlus() {
         return imagePlus;
     }
