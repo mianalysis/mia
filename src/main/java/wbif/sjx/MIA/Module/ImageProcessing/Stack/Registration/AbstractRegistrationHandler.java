@@ -42,7 +42,6 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String REGISTRATION_AXIS = "Registration axis";
     public static final String OTHER_AXIS_MODE = "Other axis mode";
-    public static final String ALIGNMENT_MODE = "Alignment mode";
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String FILL_MODE = "Fill mode";
@@ -64,14 +63,6 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         String LINKED = "Linked";
 
         String[] ALL = new String[] { INDEPENDENT, LINKED };
-
-    }
-
-    public interface AlignmentModes {
-        final String AUTOMATIC = "Automatic (feature extraction)";
-        final String MANUAL = "Manual (landmarks)";
-
-        final String[] ALL = new String[] { AUTOMATIC, MANUAL };
 
     }
 
@@ -230,10 +221,11 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
         parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
-        parameters.add(new ChoiceP(ALIGNMENT_MODE, this, AlignmentModes.AUTOMATIC, AlignmentModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        addAbstractParameterDescriptions();
+        
     }
 
     @Override
@@ -251,11 +243,42 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
         returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
-        returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
+
+    }
+
+    void addAbstractParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply registration to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+        + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+        parameters.get(REGISTRATION_AXIS).setDescription("Controls which stack axis the registration will be applied in.  For example, when \""+RegistrationAxes.TIME+"\" is selected, all images along the time axis will be aligned.  Choices are: " + String.join(", ", RegistrationAxes.ALL) + ".");
+
+        parameters.get(OTHER_AXIS_MODE).setDescription("For stacks with non-registration axis lengths longer than 1 (e.g. the \"Z\" axis when registering in time) the behaviour of this other axis is controlled by this parameter:<br><ul>"
+        
+        +"<li>\""+OtherAxisModes.INDEPENDENT+"\" Each non-registration axis is registered independently.  For example, applying separate Z-registrations for each timepoint of a 4D stack.</li>"
+        
+        +"<li>\""+OtherAxisModes.LINKED+"\" All elements of the non-registration axis are registered with a single transform.  For example, applying the same registration at a timepoint to all slices of a 4D stack.</li></ul>");
+
+        parameters.get(TRANSFORMATION_MODE).setDescription("Controls the type of registration being applied:<br><ul>"
+        
+                + "<li>\"" + TransformationModes.AFFINE + "\" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li>"
+        
+                + "<li>\"" + TransformationModes.RIGID + "\" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li>"
+                
+                + "<li>\"" + TransformationModes.SIMILARITY +"\" Applies translation, rotating and linear scaling to the input image.</li>"
+                
+                +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li>");
+
+        parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
     }
 }

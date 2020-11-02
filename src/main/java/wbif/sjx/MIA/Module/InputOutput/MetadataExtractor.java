@@ -321,7 +321,7 @@ public class MetadataExtractor extends Module {
                 if (foldernameExtractorName.equals(FoldernameExtractors.GENERIC)) {
                     extractGeneric(metadata,metadata.getFile().getParent(),pattern,groups);
                 } else {
-                    extractFilename(metadata, foldernameExtractorName);
+                    extractFoldername(metadata, foldernameExtractorName);
                 }
                 break;
 

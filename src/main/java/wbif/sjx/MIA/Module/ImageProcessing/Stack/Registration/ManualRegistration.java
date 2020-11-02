@@ -207,7 +207,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs, transformationMode);
         InverseTransformMapping mapping = (InverseTransformMapping) output[0];
-        AbstractAffineModel2D model = (AbstractAffineModel2D) output[1];
 
         // Iterate over each time-step
         int count = 0;

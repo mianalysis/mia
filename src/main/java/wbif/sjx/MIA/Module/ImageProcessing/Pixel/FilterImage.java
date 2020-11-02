@@ -6,20 +6,30 @@ package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.plugin.*;
+import ij.plugin.Duplicator;
+import ij.plugin.Filters3D;
+import ij.plugin.GaussianBlur3D;
+import ij.plugin.SubHyperstackMaker;
+import ij.plugin.ZProjector;
 import ij.plugin.filter.RankFilters;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -93,6 +103,8 @@ public class FilterImage extends Module {
     }
 
     public static void apply2DFilter(ImagePlus inputImagePlus, String filterMode, double filterRadius) {
+        String moduleName = new FilterImage(null).getName();
+
         // Determining which rank filter ID to use
         int rankFilter = 0;
         switch (filterMode) {
@@ -113,6 +125,8 @@ public class FilterImage extends Module {
                 break;
         }
 
+        int count = 0;
+        int total = inputImagePlus.getStack().size();
         RankFilters filter = new RankFilters();
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
@@ -120,6 +134,10 @@ public class FilterImage extends Module {
                     inputImagePlus.setPosition(c, z, t);
                     filter.rank(inputImagePlus.getProcessor(), filterRadius, rankFilter);
 
+                    count++;
+                    writeStatus("Processed " + count + " of " + total + " image ("
+                            + Math.floorDiv(100 * count, total) + "%)", moduleName);
+                    
                 }
             }
         }
@@ -127,6 +145,8 @@ public class FilterImage extends Module {
     }
 
     public static void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
+        String moduleName = new FilterImage(null).getName();
+
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
         int nChannels = inputImagePlus.getNChannels();
@@ -157,6 +177,8 @@ public class FilterImage extends Module {
             ImageTypeConverter.applyConversion(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
         }
 
+        int count = 0;
+        int total = inputImagePlus.getNChannels() * inputImagePlus.getNFrames();
         for (int c = 1; c <= nChannels; c++) {
             for (int t = 1; t <= nFrames; t++) {
                 ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c + "-" + c, "1-" + nSlices,
@@ -175,6 +197,11 @@ public class FilterImage extends Module {
                         }
                     }
                 }
+
+                count++;
+                    writeStatus("Processed " + count + " of " + total + " image ("
+                            + Math.floorDiv(100 * count, total) + "%)", moduleName);
+                            
             }
         }
 

@@ -10,11 +10,11 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -383,7 +383,12 @@ public class MeasureObjectCurvature extends Module {
 
             if (fitSpline) {
                 CurvatureCalculator calculator = getCurvatureCalculator(longestPath, splineFittingMethod, nNeighbours, iterations, accuracy);
-                TreeMap<Double,Double> curvature = calculator.getCurvature();
+                TreeMap<Double, Double> curvature = calculator.getCurvature();
+                
+                // If the path was too short for the number of neighbours curvature will be null
+                if (curvature == null)
+                    continue;
+                
                 measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
                 measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
 

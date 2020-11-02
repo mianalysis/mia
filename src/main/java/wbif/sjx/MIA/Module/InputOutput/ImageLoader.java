@@ -48,8 +48,6 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
@@ -58,8 +56,8 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -542,7 +540,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     int outputIdx = outputIpl.getStackIndex(c + 1, z + 1, i + 1);
 
                     outputIst.setProcessor(tempIst.getProcessor(tempIdx), outputIdx);
-                    
+
                 }
             }
 
@@ -722,15 +720,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         image.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
         image.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
         image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
-    }
-
-    private void addCropMeasurements(ObjCollection objects, int[] crop) {
-        for (Obj obj : objects.values()) {
-            obj.addMeasurement(new Measurement(Measurements.ROI_LEFT, crop[0]));
-            obj.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
-            obj.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
-            obj.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
-        }
     }
 
     @Override
@@ -935,12 +924,16 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (ipl.getBitDepth() == 24)
             ipl = CompositeConverter.makeComposite(ipl);
 
-        // If either number of slices or timepoints is 1 check it's the right dimension
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
-            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
-            ipl.getCalibration().pixelDepth = 1;
-        } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
-            Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+        // If either number of slices or timepoints is 1 check it's the right dimension.
+        // This should only be wrong if a Stack rather than Hyperstack was loaded, so if
+        // there are multiple channels it shouldn't be an issue.
+        if (ipl.getNChannels() == 1) {
+            if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
+                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
+                ipl.getCalibration().pixelDepth = 1;
+            } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
+                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+            }
         }
 
         // Adding image to workspace
