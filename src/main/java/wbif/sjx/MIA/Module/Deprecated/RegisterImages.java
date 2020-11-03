@@ -837,7 +837,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         parameters.get(CALCULATION_SOURCE).setDescription("Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"
 
-        +"<li>\""+CalculationSources.EXTERNAL+"\" The transform is calculated from a separate image from the workspace (specified using \""+EXTERNAL_SOURCE+"\").  This could be an image with enhanced contrast (to enable better feature extraction), but where the enhancements are not desired in the output registered image.  When \""+OTHER_AXIS_MODE+"\" is set to \""+OtherAxisModes.LINKED+"\", the external image must be the same length along the registration axis and have single-valued length along the non-registration axis.  However, when set to \""+OtherAxisModes.INDEPENDENT+"\", the external image must have the same axis lengths for both the registration and non-registration axes.</li>"
+        +"<li>\""+CalculationSources.EXTERNAL+"\" The transform is calculated from a separate image from the workspace (specified using \""+EXTERNAL_SOURCE+"\").  This could be an image with enhanced contrast (to enable better feature extraction), but where the enhancements are not desired in the output registered image.  The external image must be the same length along the registration axis.  The non-registration axis will have a maximum intensity projection applied prior to calculation of transform.</li>"
 
         +"<li>\""+CalculationSources.INTERNAL+"\" The transform is calculated from the input image.</li></ul>");
 
