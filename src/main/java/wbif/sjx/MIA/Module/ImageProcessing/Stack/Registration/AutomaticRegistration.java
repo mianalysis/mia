@@ -59,8 +59,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
     public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String RELATIVE_MODE = "Relative mode";
-    public static final String ROLLING_CORRECTION = "Rolling correction";
-    public static final String CORRECTION_INTERVAL = "Correction interval";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
@@ -112,14 +110,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         final String SPECIFIC_IMAGE = "Specific image";
 
         final String[] ALL = new String[] { FIRST_FRAME, PREVIOUS_FRAME, SPECIFIC_IMAGE };
-
-    }
-
-    public interface RollingCorrectionModes {
-        final String NONE = "None";
-        final String EVERY_NTH_FRAME = "Every nth frame";
-
-        final String[] ALL = new String[] { NONE, EVERY_NTH_FRAME };
 
     }
 
@@ -201,7 +191,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
     }
 
     public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, Param param,
-            Limits limits, int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
+            Limits limits, String fillMode, boolean multithread, @Nullable Image reference) {
         // This works in a very similar manner to processLinked, except it's performed
         // one slice at a time
         for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
@@ -212,7 +202,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
                     String.valueOf(z + 1), "1-end");
 
             // Performing the registration on this slice
-            processLinked(currInputImage, currCalcImage, relativeMode, param, limits, correctionInterval, fillMode,
+            processLinked(currInputImage, currCalcImage, relativeMode, param, limits, fillMode,
                     multithread, reference);
 
             // Replacing all images in this slice of the input with the registered images
@@ -221,8 +211,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         }
     }
 
-    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, Param param, Limits limits,
-            int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference) {
+    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, Param param, Limits limits, String fillMode, boolean multithread, @Nullable Image reference) {
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
@@ -289,26 +278,13 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
             }
 
             InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-            
-            // By default the calculated registration will only be applied to the current
-            // timepoint; however, if using the previous frame and in rolling correction
-            // mode (and at the specified interval) we apply the registration to all
-            // subsequent frames.
-            int t2 = t;
-            switch (relativeMode) {
-                case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
-                    if (correctionInterval != -1 && t % correctionInterval == 0)
-                        t2 = nFrames - 1;
-                    break;
-            }
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
-            for (int tt = t; tt <= t2; tt++) {
                 for (int c = 0; c < inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c + 1), "1-end",
-                            String.valueOf(tt + 1));
+                            String.valueOf(t + 1));
 
                     try {
                         applyTransformation(warped, mapping, fillMode, multithread);
@@ -316,24 +292,21 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
                         return;
                     }
 
-                    replaceStack(inputImage, warped, c, tt);
+                    replaceStack(inputImage, warped, c, t);
 
                 }
-            }
 
             // Need to apply the warp to an external image
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                for (int tt = t; tt <= t2; tt++) {
                     warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1",
-                            String.valueOf(tt + 1));
+                            String.valueOf(t + 1));
                     try {
                         applyTransformation(warped, mapping, fillMode, multithread);
                     } catch (InterruptedException e) {
                         return;
                     }
-                    replaceStack(calculationImage, warped, 0, tt);
+                    replaceStack(calculationImage, warped, 0, t);
                 }
-            }
 
             mapping = null;
             prevModel = model;
@@ -504,8 +477,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
-        String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
-        int correctionInterval = parameters.getValue(CORRECTION_INTERVAL);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
@@ -514,10 +485,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         double initialSigma = parameters.getValue(INITIAL_SIGMA);
         String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         String fillMode = parameters.getValue(FILL_MODE);
-
-        // If the rolling correction mode is off, set the interval to -1
-        if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE))
-            correctionInterval = -1;
 
         // Getting the input image and duplicating if the output will be stored
         // separately
@@ -599,12 +566,12 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
             switch (otherAxisMode) {
                 case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, param, limits, correctionInterval,
+                    processIndependent(inputImage, calculationImage, relativeMode, param, limits,
                             fillMode, multithread, reference);
                     break;
 
                 case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, param, limits, correctionInterval,
+                    processLinked(inputImage, calculationImage, relativeMode, param, limits,
                             fillMode, multithread, reference);
                     break;
             }
@@ -643,8 +610,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
 
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.FIRST_FRAME, RelativeModes.ALL));
-        parameters.add(new ChoiceP(ROLLING_CORRECTION, this, RollingCorrectionModes.NONE, RollingCorrectionModes.ALL));
-        parameters.add(new IntegerP(CORRECTION_INTERVAL, this, 1));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
@@ -670,7 +635,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         parameters.add(new DoubleP(MAXIMUM_ROTATION, this, 360d));
         parameters.add(new BooleanP(SHOW_WARNINGS, this, true));
 
-        addAutomaticParameterDescriptions();
+        addParameterDescriptions();
 
     }
 
@@ -683,15 +648,6 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
         switch ((String) parameters.getValue(RELATIVE_MODE)) {
-            case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
-                returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
-                switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
-                    case UnwarpImages.RollingCorrectionModes.EVERY_NTH_FRAME:
-                        returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
-                        break;
-                }
-                break;
-
             case UnwarpImages.RelativeModes.SPECIFIC_IMAGE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
@@ -767,22 +723,28 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         return true;
     }
 
-    void addAutomaticParameterDescriptions() {
+    void addParameterDescriptions() {
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
-        parameters.get(RELATIVE_MODE).setDescription("");
+        parameters.get(RELATIVE_MODE).setDescription("Controls what reference image each image will be compared to:<br><ul>"
 
-        parameters.get(ROLLING_CORRECTION).setDescription("");
+        +"<li>\""+RelativeModes.FIRST_FRAME+"\" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li>"
 
-        parameters.get(CORRECTION_INTERVAL).setDescription("");
+        +"<li>\""+RelativeModes.PREVIOUS_FRAME+"\" Each image will be compared to the frame (or slice when in Z-axis mode) immediately before it.  This copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
 
-        parameters.get(REFERENCE_IMAGE).setDescription("");
+        +"<li>\""+RelativeModes.SPECIFIC_IMAGE+"\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""+REFERENCE_IMAGE+"\" parameter.</li></ul>");
 
-        parameters.get(CALCULATION_SOURCE).setDescription("");
+        parameters.get(REFERENCE_IMAGE).setDescription("If \""+RELATIVE_MODE+"\" is set to \""+RelativeModes.SPECIFIC_IMAGE+"\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
 
-        parameters.get(EXTERNAL_SOURCE).setDescription("");
+        parameters.get(CALCULATION_SOURCE).setDescription("Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"
 
-        parameters.get(CALCULATION_CHANNEL).setDescription("");
+        +"<li>\""+CalculationSources.EXTERNAL+"\" The transform is calculated from a separate image from the workspace (specified using \""+EXTERNAL_SOURCE+"\").  This could be an image with enhanced contrast (to enable better feature extraction), but where the enhancements are not desired in the output registered image.  When \""+OTHER_AXIS_MODE+"\" is set to \""+OtherAxisModes.LINKED+"\", the external image must be the same length along the registration axis and have single-valued length along the non-registration axis.  However, when set to \""+OtherAxisModes.INDEPENDENT+"\", the external image must have the same axis lengths for both the registration and non-registration axes.</li>"
+
+        +"<li>\""+CalculationSources.INTERNAL+"\" The transform is calculated from the input image.</li></ul>");
+
+        parameters.get(EXTERNAL_SOURCE).setDescription("If \""+CALCULATION_SOURCE+"\" is set to \""+CalculationSources.EXTERNAL+"\", registration transforms will be calculated using this image from the workspace.  This image will be unaffected by the process.");
+
+        parameters.get(CALCULATION_CHANNEL).setDescription("If calculating the registration transform from a multi-channel image stack, the transform will be determined from this channel only.  Irrespectively, for multi-channel image stacks, the calculated transform will be applied equally to all channels.");
 
         parameters.get(INITIAL_SIGMA).setDescription(
                 "\"Accurate localization of keypoints requires initial smoothing of the image. If your images are blurred already, you might lower the initial blur σ0 slightly to get more but eventually less stable keypoints. Increasing σ0 increases the computational cost for Gaussian blur, setting it to σ0=3.2px is equivalent to keep σ0=1.6px and use half maximum image size. Tip: Keep the default value σ0=1.6px as suggested by Lowe (2004).\".  "
@@ -800,7 +762,8 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
                 "\"The Scale Space starts with the first octave equal or smaller than the maximum image size. Tip: By reducing the size, fine scaled features will be discarded. Increasing the size beyond that of the actual images has no effect.\".  "
                         + siteRef);
 
-        parameters.get(FD_SIZE_MOPS).setDescription("");
+        parameters.get(FD_SIZE_MOPS).setDescription("\"The MOPS-descriptor is simply a nxn intensity patch with normalized intensities. Brown (2005) suggests n=8.  We found larger descriptors with n>16 perform better for Transmission Electron Micrographs from serial sections.\".  "
+                + siteRef);
 
         parameters.get(FD_SIZE_SIFT).setDescription(
                 "\"The SIFT-descriptor consists of n×n gradient histograms, each from a 4×4px block. n is this value. Lowe (2004) uses n=4. We found larger descriptors with n=8 perform better for Transmission Electron Micrographs from serial sections.\".  "
