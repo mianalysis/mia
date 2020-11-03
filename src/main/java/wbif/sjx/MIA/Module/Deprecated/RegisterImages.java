@@ -546,7 +546,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     @Override
     public String getDescription() {
         return "DEPRECATED: Please use separate automatic (\""+ new AutomaticRegistration(null).getName()+"\") and manual (\""+ new ManualRegistration(null)+"\") modules instead."
-        
+
         + "<br><br>Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration is performed along the time axes and applied equally to all Z-slices.  For greater control (including registration along Z) please use separate automatic (\""+ new AutomaticRegistration(null).getName()+"\") and manual (\""+ new ManualRegistration<>(null)+"\") modules instead."
 
         + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> and <a href=\"https://imagej.net/Linear_Stack_Alignment_with_SIFT\">Linear Stack Alignment with SIFT</a> plugins to detect SIFT (\"Scale Invariant Feature Transform\") features from the input images and calculate and apply the necessary 2D affine transforms."
@@ -693,7 +693,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT))
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        
+
         returnedParameters.add(parameters.getParameter(REGISTRATION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
         returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
@@ -798,33 +798,52 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     void addParameterDescriptions() {
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
-        parameters.get(INPUT_IMAGE).setDescription("");
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply registration to.");
 
-        parameters.get(APPLY_TO_INPUT).setDescription("");
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
 
-        parameters.get(OUTPUT_IMAGE).setDescription("");
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+        + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
-        parameters.get(TRANSFORMATION_MODE).setDescription("");
+        parameters.get(TRANSFORMATION_MODE).setDescription("Controls the type of registration being applied:<br><ul>"
+
+                + "<li>\"" + TransformationModes.AFFINE + "\" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li>"
+
+                + "<li>\"" + TransformationModes.RIGID + "\" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li>"
+
+                + "<li>\"" + TransformationModes.SIMILARITY +"\" Applies translation, rotating and linear scaling to the input image.</li>"
+
+                +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
 
         parameters.get(ALIGNMENT_MODE).setDescription("");
 
-        parameters.get(FILL_MODE).setDescription("");
+        parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
 
-        parameters.get(ENABLE_MULTITHREADING).setDescription("");
+        parameters.get(ENABLE_MULTITHREADING).setDescription("When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
-        parameters.get(RELATIVE_MODE).setDescription("");
+        parameters.get(RELATIVE_MODE).setDescription("Controls what reference image each image will be compared to:<br><ul>"
+
+        +"<li>\""+RelativeModes.FIRST_FRAME+"\" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li>"
+
+        +"<li>\""+RelativeModes.PREVIOUS_FRAME+"\" Each image will be compared to the frame (or slice when in Z-axis mode) immediately before it.  This copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
+
+        +"<li>\""+RelativeModes.SPECIFIC_IMAGE+"\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""+REFERENCE_IMAGE+"\" parameter.</li></ul>");
 
         parameters.get(ROLLING_CORRECTION).setDescription("");
 
         parameters.get(CORRECTION_INTERVAL).setDescription("");
 
-        parameters.get(REFERENCE_IMAGE).setDescription("");
+        parameters.get(REFERENCE_IMAGE).setDescription("If \""+RELATIVE_MODE+"\" is set to \""+RelativeModes.SPECIFIC_IMAGE+"\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
 
-        parameters.get(CALCULATION_SOURCE).setDescription("");
+        parameters.get(CALCULATION_SOURCE).setDescription("Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"
 
-        parameters.get(EXTERNAL_SOURCE).setDescription("");
+        +"<li>\""+CalculationSources.EXTERNAL+"\" The transform is calculated from a separate image from the workspace (specified using \""+EXTERNAL_SOURCE+"\").  This could be an image with enhanced contrast (to enable better feature extraction), but where the enhancements are not desired in the output registered image.  When \""+OTHER_AXIS_MODE+"\" is set to \""+OtherAxisModes.LINKED+"\", the external image must be the same length along the registration axis and have single-valued length along the non-registration axis.  However, when set to \""+OtherAxisModes.INDEPENDENT+"\", the external image must have the same axis lengths for both the registration and non-registration axes.</li>"
 
-        parameters.get(CALCULATION_CHANNEL).setDescription("");
+        +"<li>\""+CalculationSources.INTERNAL+"\" The transform is calculated from the input image.</li></ul>");
+
+        parameters.get(EXTERNAL_SOURCE).setDescription("If \""+CALCULATION_SOURCE+"\" is set to \""+CalculationSources.EXTERNAL+"\", registration transforms will be calculated using this image from the workspace.  This image will be unaffected by the process.");
+
+        parameters.get(CALCULATION_CHANNEL).setDescription("If calculating the registration transform from a multi-channel image stack, the transform will be determined from this channel only.  Irrespectively, for multi-channel image stacks, the calculated transform will be applied equally to all channels.");
 
         parameters.get(INITIAL_SIGMA).setDescription(
                 "\"Accurate localization of keypoints requires initial smoothing of the image. If your images are blurred already, you might lower the initial blur σ0 slightly to get more but eventually less stable keypoints. Increasing σ0 increases the computational cost for Gaussian blur, setting it to σ0=3.2px is equivalent to keep σ0=1.6px and use half maximum image size. Tip: Keep the default value σ0=1.6px as suggested by Lowe (2004).\".  "

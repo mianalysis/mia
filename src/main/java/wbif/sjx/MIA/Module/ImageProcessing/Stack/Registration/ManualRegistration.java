@@ -40,18 +40,6 @@ import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
 public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends AbstractRegistrationHandler implements Interactable {
-    public static final String INPUT_SEPARATOR = "Image input/output";
-    public static final String INPUT_IMAGE = "Input image";
-    public static final String APPLY_TO_INPUT = "Apply to input image";
-    public static final String OUTPUT_IMAGE = "Output image";
-
-    public static final String REGISTRATION_SEPARATOR = "Registration controls";
-    // public static final String REGISTRATION_AXIS = "Registration axis";
-    // public static final String OTHER_AXIS_MODE = "Other axis mode";
-    public static final String TRANSFORMATION_MODE = "Transformation mode";
-    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
-    public static final String FILL_MODE = "Fill mode";
-
     public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String REFERENCE_IMAGE = "Reference image";
 
@@ -286,18 +274,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
     @Override
     protected void initialiseParameters() {
         super.initialiseParameters();
-
-        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-
-        parameters.add(new SeparatorP(REGISTRATION_SEPARATOR, this));
-        // parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
-        // parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
-        parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
-        parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));

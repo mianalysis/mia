@@ -226,7 +226,7 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
         addAbstractParameterDescriptions();
-        
+
     }
 
     @Override
@@ -262,20 +262,20 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         parameters.get(REGISTRATION_AXIS).setDescription("Controls which stack axis the registration will be applied in.  For example, when \""+RegistrationAxes.TIME+"\" is selected, all images along the time axis will be aligned.  Choices are: " + String.join(", ", RegistrationAxes.ALL) + ".");
 
         parameters.get(OTHER_AXIS_MODE).setDescription("For stacks with non-registration axis lengths longer than 1 (e.g. the \"Z\" axis when registering in time) the behaviour of this other axis is controlled by this parameter:<br><ul>"
-        
+
         +"<li>\""+OtherAxisModes.INDEPENDENT+"\" Each non-registration axis is registered independently.  For example, applying separate Z-registrations for each timepoint of a 4D stack.</li>"
-        
+
         +"<li>\""+OtherAxisModes.LINKED+"\" All elements of the non-registration axis are registered with a single transform.  For example, applying the same registration at a timepoint to all slices of a 4D stack.</li></ul>");
 
         parameters.get(TRANSFORMATION_MODE).setDescription("Controls the type of registration being applied:<br><ul>"
-        
+
                 + "<li>\"" + TransformationModes.AFFINE + "\" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li>"
-        
+
                 + "<li>\"" + TransformationModes.RIGID + "\" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li>"
-                
+
                 + "<li>\"" + TransformationModes.SIMILARITY +"\" Applies translation, rotating and linear scaling to the input image.</li>"
-                
-                +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li>");
+
+                +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
 
         parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
 
