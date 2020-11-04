@@ -102,7 +102,7 @@ public class CalculateStatsForPartners extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Calculates statistics for a measurement associated with all partner objects of an input object.  The calculated statistics are stored as new measurements, associated with the relevant input object.  For example, calculating the summed volume of all partner objects (from a specified collection) of each input object.";
     }
 
     @Override
@@ -136,7 +136,7 @@ public class CalculateStatsForPartners extends Module {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS, this));
-        
+
         parameters.add(new SeparatorP(STATISTIC_SEPARATOR, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
         parameters.add(new BooleanP(CALCULATE_MEAN,this,true));
@@ -144,6 +144,8 @@ public class CalculateStatsForPartners extends Module {
         parameters.add(new BooleanP(CALCULATE_MIN,this,true));
         parameters.add(new BooleanP(CALCULATE_MAX,this,true));
         parameters.add(new BooleanP(CALCULATE_SUM,this,true));
+
+        addParameterDescriptions();
 
     }
 
@@ -239,5 +241,24 @@ public class CalculateStatsForPartners extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(INPUT_OBJECTS).setDescription("Input object collection from the workspace for which statistics of partner object measurements will be calculated.  This object collection is a partner to those selected by the \""+PARTNER_OBJECTS+"\" parameter.  Statistics for one measurement associated with all partners of each input object will be calculated and added to this object as a new measurement.");
+
+      parameters.get(PARTNER_OBJECTS).setDescription("Input object collection from the workspace, where these objects are partners of the collection selected by the \""+INPUT_OBJECTS+"\" parameter.)");
+
+      parameters.get(MEASUREMENT).setDescription("Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.");
+
+      parameters.get(CALCULATE_MEAN).setDescription("When selected, the mean value of the measurements will be calculated and added to the relevant input object.");
+
+      parameters.get(CALCULATE_STD).setDescription("When selected, the standard deviation of the measurements will be calculated and added to the relevant input object.");
+
+      parameters.get(CALCULATE_MIN).setDescription("When selected, the minimum value of the measurements will be calculated and added to the relevant input object.");
+
+      parameters.get(CALCULATE_MAX).setDescription("When selected, the maximum value of the measurements will be calculated and added to the relevant input object.");
+
+      parameters.get(CALCULATE_SUM).setDescription("When selected, the sum of the measurements will be calculated and added to the relevant input object.");
+
     }
 }

@@ -138,7 +138,7 @@ public class ExtendedMinima extends Module {
         return "Applies a 3D (or 2D for single slice images) binary skeletonisation operation to an image in the workspace.  All foreground labelled regions will be reduced to a single, pixel-wide strip, which runs along the former centre of the region."
 
         +"<br><br>This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The skeletonise operation uses the plugin \"<a href=\"https://imagej.net/Skeletonize3D\">Skeletonize3D</a>\".";
-        
+
     }
 
     @Override
@@ -250,7 +250,7 @@ returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+                "Image from workspace to apply extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");

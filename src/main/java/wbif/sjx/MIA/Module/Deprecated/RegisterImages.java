@@ -815,7 +815,7 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
                 +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
 
-        parameters.get(ALIGNMENT_MODE).setDescription("");
+        parameters.get(ALIGNMENT_MODE).setDescription("Controls whether the registration is determined automatically through SIFT feature extraction or manually, by a user selecting reference points on a pair of images.");
 
         parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
 
@@ -829,9 +829,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
         +"<li>\""+RelativeModes.SPECIFIC_IMAGE+"\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""+REFERENCE_IMAGE+"\" parameter.</li></ul>");
 
-        parameters.get(ROLLING_CORRECTION).setDescription("");
+        parameters.get(ROLLING_CORRECTION).setDescription("Controls whether the entire stack is moved at specific intervals.  When enabled (\""+RollingCorrectionModes.EVERY_NTH_FRAME+"\"), any remaining unregistered images will be moved to match the present transform.  This is only available when registering relative to the previous frame and is intended to prevent the difference between the previous frame (registered) and unregistered images becoming too large.  The frame interval at which this transformation is applied to the unregistered images is specified using \""+CORRECTION_INTERVAL+"\".  Note: This can lead to images becoming increasingly blurry as they are passed through multiple interpolation steps.");
 
-        parameters.get(CORRECTION_INTERVAL).setDescription("");
+        parameters.get(CORRECTION_INTERVAL).setDescription("If applying rolling correction, this is the frame interval at which the transformation will be applied to the unregistered images.");
 
         parameters.get(REFERENCE_IMAGE).setDescription("If \""+RELATIVE_MODE+"\" is set to \""+RelativeModes.SPECIFIC_IMAGE+"\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
 

@@ -629,7 +629,7 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         parameters.add(new DoubleP(MIN_INLIER_RATIO, this, 0.05));
 
         parameters.add(new SeparatorP(LIMITS_SEPARATOR, this));
-        parameters.add(new IntegerP(MIN_NUM_MATCHING, this, 3));
+        parameters.add(new IntegerP(MIN_NUM_MATCHING, this, 2));
         parameters.add(new DoubleP(MAXIMUM_X_TRANSLATION, this, 10000d));
         parameters.add(new DoubleP(MAXIMUM_Y_TRANSLATION, this, 10000d));
         parameters.add(new DoubleP(MAXIMUM_ROTATION, this, 360d));
@@ -784,6 +784,16 @@ public class AutomaticRegistration<T extends RealType<T> & NativeType<T>> extend
         parameters.get(MIN_INLIER_RATIO).setDescription(
                 "\"The ratio of the number of true matches to the number of all matches including both true and false used by RANSAC. 0.05 means that minimally 5% of all matches are expected to be good while 0.9 requires that 90% of the matches were good. Only transformations with this minimal ratio of true consent matches are accepted. Tip: Do not go below 0.05 (and only if 5% is more than about 7 matches) except with a very small maximal alignment error to avoid wrong solutions.\".  "
                         + siteRef);
+
+        parameters.get(MIN_NUM_MATCHING).setDescription("The minimum number of feature matches between two images that are necessary for the calculated transform to be applied.  The larger this number, the more confident the transform is correct; however, this will also lead to fewer successful transforms.  For images that fail this test the previous transform (from the preceeding image) will be applied if there is one.  If there isn't a previous transform (e.g. for the first image in a sequence), no transform will be applied.");
+
+        parameters.get(MAXIMUM_X_TRANSLATION).setDescription("The maximum distance an image can move along the x-axis (measured in pixel units).  For images that fail this test the previous transform (from the preceeding image) will be applied if there is one.  If there isn't a previous transform (e.g. for the first image in a sequence), no transform will be applied.");
+
+        parameters.get(MAXIMUM_Y_TRANSLATION).setDescription("The maximum distance an image can move along the y-axis (measured in pixel units).  For images that fail this test the previous transform (from the preceeding image) will be applied if there is one.  If there isn't a previous transform (e.g. for the first image in a sequence), no transform will be applied.");
+
+        parameters.get(MAXIMUM_ROTATION).setDescription("The maximum angle an image can be rotated by (measured in degrees).  For images that fail this test the previous transform (from the preceeding image) will be applied if there is one.  If there isn't a previous transform (e.g. for the first image in a sequence), no transform will be applied.");
+
+        parameters.get(SHOW_WARNINGS).setDescription("When selected, any images that fail to have a transform applied will be recorded in the log window as a warning.");
 
     }
 
