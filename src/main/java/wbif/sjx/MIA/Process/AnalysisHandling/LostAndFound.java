@@ -2,6 +2,7 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import java.util.HashMap;
 
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
@@ -17,6 +18,7 @@ public class LostAndFound {
     public LostAndFound() {
         //// Populating hard-coded module reassignments ////
         lostModules.put("ConditionalAnalysisTermination", new WorkflowHandling(null).getName());
+        lostModules.put("AutomaticRegistration", new SIFTRegistration(null).getName());
 
 
         //// Populating hard-coded parameter reassignments ////

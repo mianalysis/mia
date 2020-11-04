@@ -41,8 +41,6 @@ import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ManualUnwarp;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AutomaticRegistration;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.ManualRegistration;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
@@ -545,9 +543,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public String getDescription() {
-        return "DEPRECATED: Please use separate automatic (\""+ new AutomaticRegistration(null).getName()+"\") and manual (\""+ new ManualRegistration(null)+"\") modules instead."
+        return "DEPRECATED: Please use separate automatic and manual modules instead."
 
-        + "<br><br>Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration is performed along the time axes and applied equally to all Z-slices.  For greater control (including registration along Z) please use separate automatic (\""+ new AutomaticRegistration(null).getName()+"\") and manual (\""+ new ManualRegistration<>(null)+"\") modules instead."
+        + "<br><br>Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration is performed along the time axes and applied equally to all Z-slices.  For greater control (including registration along Z) please use separate automatic and manual modules instead."
 
         + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> and <a href=\"https://imagej.net/Linear_Stack_Alignment_with_SIFT\">Linear Stack Alignment with SIFT</a> plugins to detect SIFT (\"Scale Invariant Feature Transform\") features from the input images and calculate and apply the necessary 2D affine transforms."
 
