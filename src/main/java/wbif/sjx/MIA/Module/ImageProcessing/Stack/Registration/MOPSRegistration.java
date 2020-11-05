@@ -42,7 +42,14 @@ public class MOPSRegistration extends AutomaticRegistration {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
+
+                + "<br><br>This module uses the <a href=\"https://imagej.net/Feature_Extraction\">Feature Extraction</a> plugin and associated MPICBG tools to detect MOPS (\"Multi-Scale Oriented Patches\") features from the input images and calculate and apply the necessary 2D affine transforms."
+
+                + "<br><br>References:<ul>"
+
+                + "<li>Brown, Matthew & Szeliski, Richard \"Multi-image feature matching using multi-scale oriented patches\". US Patent 7,382,897 (June 3, 2008). Asignee: Microsoft Corporation.</li></ul>";
+
     }
 
     @Override

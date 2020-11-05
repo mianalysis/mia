@@ -35,9 +35,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
     public static final String MAX_CURVATURE = "Maximal curvature ratio";
     public static final String ROD = "Closest/next closest ratio";
     public static final String LOCAL_REGION_SIGMA = "Local region sigma";
-    public static final String MAX_LOCAL_DISPLACEMENT_ABS = "Maximal absolute local displacement (px)";
-    public static final String MAX_LOCAL_DISPLACEMENT_REL = "Maximal relative local displacement (px)";
-
+    public static final String MAX_ABS_LOCAL_DISPLACEMENT = "Maximal absolute local displacement (px)";
+    public static final String MAX_REL_LOCAL_DISPLACEMENT = "Maximal relative local displacement (px)";
 
     public BlockMatchingRegistration(ModuleCollection modules) {
         super("Automatic block-matching registration", modules);
@@ -45,7 +44,9 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Apply slice-by-slice (2D) affine-based image registration to a multi-dimensional stack.  Images can be aligned relative to the first frame in the stack, the previous frame or a separate image in the workspace.  The registration transform can also be calculated from a separate stack to the one that it will be applied to.  Registration can be performed along either the time or Z axes.  The non-registered axis (e.g. time axis when registering in Z) can be \"linked\" (all frames given the same registration) or \"independent\" (each stack registered separately)."
+
+                + "<br><br>This module uses the <a href=\"https://github.com/fiji/blockmatching\">Block Matching</a> plugin and associated MPICBG tools to detect matching regions from the input images and calculate and apply the necessary 2D affine transforms.";
     }
 
     @Override
@@ -53,8 +54,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         BMParam p = (BMParam) param;
 
         // Converting to FloatProcessors and padding
-        FloatProcessor ipr1 = padImage(referenceIpr,p).convertToFloatProcessor();
-        FloatProcessor ipr2 = padImage(warpedIpr,p).convertToFloatProcessor();
+        FloatProcessor ipr1 = padImage(referenceIpr, p).convertToFloatProcessor();
+        FloatProcessor ipr2 = padImage(warpedIpr, p).convertToFloatProcessor();
 
         TranslationModel2D transform = new TranslationModel2D();
         SpringMesh mesh = new SpringMesh(24, ipr1.getWidth(), ipr2.getHeight(), 1, 1000, 0.9f);
@@ -79,7 +80,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
     }
 
     static ImageProcessor padImage(ImageProcessor iprIn, BMParam param) {
-        int padR = param.searchR+ param.blockR;
+        int padR = param.searchR + param.blockR;
 
         int widthIn = iprIn.getWidth();
         int heightIn = iprIn.getHeight();
@@ -92,7 +93,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         // Setting pixel intensities
         for (int x = 0; x < widthIn; x++) {
             for (int y = 0; y < heightIn; y++) {
-                iprOut.setf(x+padR, y+padR, iprIn.getf(x,y));
+                iprOut.setf(x + padR, y + padR, iprIn.getf(x, y));
             }
         }
 
@@ -177,8 +178,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
             param.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
             param.rod = (float) (double) parameters.getValue(ROD);
             param.sigma = (float) (double) parameters.getValue(LOCAL_REGION_SIGMA);
-            param.maxAbsDisp = (float) (double) parameters.getValue(MAX_LOCAL_DISPLACEMENT_ABS);
-            param.maxRelDisp = (float) (double) parameters.getValue(MAX_LOCAL_DISPLACEMENT_REL);
+            param.maxAbsDisp = (float) (double) parameters.getValue(MAX_ABS_LOCAL_DISPLACEMENT);
+            param.maxRelDisp = (float) (double) parameters.getValue(MAX_REL_LOCAL_DISPLACEMENT);
 
             switch (otherAxisMode) {
                 case OtherAxisModes.INDEPENDENT:
@@ -231,8 +232,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         parameters.add(new DoubleP(MAX_CURVATURE, this, 1000.0));
         parameters.add(new DoubleP(ROD, this, 1.0));
         parameters.add(new DoubleP(LOCAL_REGION_SIGMA, this, 65.0));
-        parameters.add(new DoubleP(MAX_LOCAL_DISPLACEMENT_ABS, this, 12.0));
-        parameters.add(new DoubleP(MAX_LOCAL_DISPLACEMENT_REL, this, 3.0));
+        parameters.add(new DoubleP(MAX_ABS_LOCAL_DISPLACEMENT, this, 12.0));
+        parameters.add(new DoubleP(MAX_REL_LOCAL_DISPLACEMENT, this, 3.0));
 
         addParameterDescriptions();
 
@@ -252,20 +253,35 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
         returnedParameters.add(parameters.getParameter(ROD));
         returnedParameters.add(parameters.getParameter(LOCAL_REGION_SIGMA));
-        returnedParameters.add(parameters.getParameter(MAX_LOCAL_DISPLACEMENT_ABS));
-        returnedParameters.add(parameters.getParameter(MAX_LOCAL_DISPLACEMENT_REL));
+        returnedParameters.add(parameters.getParameter(MAX_ABS_LOCAL_DISPLACEMENT));
+        returnedParameters.add(parameters.getParameter(MAX_REL_LOCAL_DISPLACEMENT));
 
         return returnedParameters;
 
     }
 
     void addParameterDescriptions() {
-        String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
+        String siteRef1 = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
+
+        parameters.get(LAYER_SCALE).setDescription("");
+
+        parameters.get(SEARCH_RADIUS).setDescription("");
+
+        parameters.get(BLOCK_RADIUS).setDescription("");
+
+        parameters.get(MIN_PMCC_R).setDescription("");
+
+        parameters.get(MAX_CURVATURE).setDescription("");
 
         parameters.get(ROD).setDescription(
                 "\"Correspondence candidates from local descriptor matching are accepted only if the Euclidean distance to the nearest neighbour is significantly smaller than that to the next nearest neighbour. Lowe (2004) suggests a ratio of r=0.8 which requires some increase when matching things that appear significantly distorted.\".  "
-                        + siteRef);
+                        + siteRef1);
 
+        parameters.get(LOCAL_REGION_SIGMA).setDescription("");
+
+        parameters.get(MAX_ABS_LOCAL_DISPLACEMENT).setDescription("");
+
+        parameters.get(MAX_REL_LOCAL_DISPLACEMENT).setDescription("");
 
     }
 
