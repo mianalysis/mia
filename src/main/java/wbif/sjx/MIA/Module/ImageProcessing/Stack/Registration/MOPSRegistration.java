@@ -247,7 +247,10 @@ public class MOPSRegistration extends AutomaticRegistration {
 
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         String siteRef = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
         parameters.get(INITIAL_SIGMA).setDescription(

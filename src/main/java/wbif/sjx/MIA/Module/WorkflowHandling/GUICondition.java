@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-public class GUICondition extends CoreWorkspaceHandler {
+public class GUICondition extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String CHOICE = "Choice";
     public static final String ADD_CHOICE = "Add choice";
@@ -151,7 +151,10 @@ public class GUICondition extends CoreWorkspaceHandler {
         return true;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(CHOICE).setDescription("Currently-selected choice from the available set (all choices added via \""+ADD_CHOICE+"\" option).  The relevant workflow operation (e.g. termination/redirection) will be implemented for the selected condition.  This control can be made visible in the basic view, so users can select between a set of pre-determined outcomes.");
 
         parameters.get(ADD_CHOICE).setDescription("Add another condition that \""+CHOICE+"\" can select from.  Each choice can have its own handling outcome (e.g. termination/redirection).");

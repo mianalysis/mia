@@ -274,8 +274,6 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL, this, 1));
 
-        addAbstractAutomaticParameterDescriptions();
-
     }
 
     @Override
@@ -335,7 +333,10 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         return true;
     }
 
-    void addAbstractAutomaticParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(RELATIVE_MODE)
                 .setDescription("Controls what reference image each image will be compared to:<br><ul>"
 

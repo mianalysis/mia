@@ -169,7 +169,10 @@ public class FilterByChildren extends AbstractNumericObjectFilter {
         return returnedRefs;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(CHILD_OBJECTS).setDescription("Objects will be filtered against the number of children they have from this object collection.");
 
     }

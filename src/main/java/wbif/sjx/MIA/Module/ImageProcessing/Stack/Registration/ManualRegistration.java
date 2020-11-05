@@ -278,6 +278,8 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
 
+        addParameterDescriptions();
+        
     }
 
     @Override

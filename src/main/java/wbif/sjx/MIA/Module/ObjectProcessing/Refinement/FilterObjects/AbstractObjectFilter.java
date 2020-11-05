@@ -88,8 +88,6 @@ public abstract class AbstractObjectFilter extends Module {
         // specific type (e.g. OutputTrackObjectsP) to match the input object type
         parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
 
-        addAbstractParameterDescriptions();
-
     }
 
     @Override
@@ -212,7 +210,7 @@ public abstract class AbstractObjectFilter extends Module {
         return true;
     }
 
-    void addAbstractParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(INPUT_OBJECTS).setDescription("Objects to be filtered.");
 
         parameters.get(FILTER_MODE)

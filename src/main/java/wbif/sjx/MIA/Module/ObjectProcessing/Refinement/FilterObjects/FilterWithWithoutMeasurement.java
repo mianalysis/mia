@@ -170,7 +170,10 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
 
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(FILTER_METHOD).setDescription(
                 "Controls whether objects are removed when a specific measurement is present or not:<br>"
 

@@ -260,7 +260,10 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
 
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         String siteRef1 = "Description taken from <a href=\"https://imagej.net/Feature_Extraction\">https://imagej.net/Feature_Extraction</a>";
 
         parameters.get(LAYER_SCALE).setDescription("");

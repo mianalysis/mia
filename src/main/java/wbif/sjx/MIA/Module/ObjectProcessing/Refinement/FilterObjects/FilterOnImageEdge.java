@@ -225,7 +225,10 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(MAXIMUM_CONTACT).setDescription(
                 "Maximum number of object pixels which can lie along any of the specified edges without the object being removed.  This provides tolerance for objects which only just make contact with the image edge.");
 

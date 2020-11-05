@@ -171,7 +171,10 @@ public class FilterByPartners extends AbstractNumericObjectFilter {
 
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(PARTNER_OBJECTS).setDescription("Objects will be filtered against the number of partners they have from this object collection.");
 
     }

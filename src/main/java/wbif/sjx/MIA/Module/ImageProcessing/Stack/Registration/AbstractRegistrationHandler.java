@@ -225,8 +225,6 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
-        addAbstractParameterDescriptions();
-
     }
 
     @Override
@@ -251,7 +249,7 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
 
     }
 
-    void addAbstractParameterDescriptions() {
+    protected void addParameterDescriptions() {        
         parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply registration to.");
 
         parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");

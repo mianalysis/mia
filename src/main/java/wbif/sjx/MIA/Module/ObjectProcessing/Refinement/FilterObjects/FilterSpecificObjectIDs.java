@@ -244,7 +244,10 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
         return returnedRefs;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(SHOW_IMAGE).setDescription("When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the \""+DISPLAY_IMAGE_NAME+"\" parameter.");
 
         parameters.get(DISPLAY_IMAGE_NAME).setDescription("Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the \""+new AddLabels(null).getName()+"\" module.");

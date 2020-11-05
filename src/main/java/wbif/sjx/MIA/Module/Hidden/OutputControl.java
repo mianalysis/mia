@@ -13,7 +13,7 @@ import wbif.sjx.MIA.Macro.General.MIA_GetListOfWorkspaceIDs;
 import wbif.sjx.MIA.Macro.General.MIA_SetActiveWorkspace;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Miscellaneous.Macros.CoreMacroRunner;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage.MacroModes;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -266,7 +266,7 @@ public class OutputControl extends Module {
 
         // Getting a Map of input variable names and their values
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        LinkedHashMap<String, String> inputVariables = CoreMacroRunner.inputVariables(variableGroup, VARIABLE_NAME,
+        LinkedHashMap<String, String> inputVariables = AbstractMacroRunner.inputVariables(variableGroup, VARIABLE_NAME,
                 VARIABLE_VALUE);
 
         // Setting the MacroHandler to the current workspace
@@ -278,7 +278,7 @@ public class OutputControl extends Module {
             macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
-        String finalMacroText = CoreMacroRunner.addVariables(macroText, inputVariables);
+        String finalMacroText = AbstractMacroRunner.addVariables(macroText, inputVariables);
 
         // Running the macro
         CustomInterpreter interpreter = new CustomInterpreter();

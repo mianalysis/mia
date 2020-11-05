@@ -142,7 +142,7 @@ public class AddPause extends Module {
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(SHOW_IMAGE).setDescription("When selected, an image from the workspace can be automatically displayed when this module executes.");
 
         parameters.get(INPUT_IMAGE).setDescription("If \""+SHOW_IMAGE+"\" is selected, this image will be displayed when the module executes.");

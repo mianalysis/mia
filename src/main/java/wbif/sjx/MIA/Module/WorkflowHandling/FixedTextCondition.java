@@ -23,7 +23,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-public class FixedTextCondition extends CoreWorkspaceHandler {
+public class FixedTextCondition extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_VALUE = "Test value";
     public static final String ADD_CONDITION = "Add condition";
@@ -150,7 +150,10 @@ public class FixedTextCondition extends CoreWorkspaceHandler {
         return true;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(TEST_VALUE).setDescription("Text value that will tested.  If this matches any of the reference values listed within this module the relevant workflow operation (e.g. termination/redirection) will be implemented.  This text value could be a global variable.");
 
         parameters.get(ADD_CONDITION).setDescription("Add another condition that \""+TEST_VALUE+"\" can be compared against.  Each condition can have its own handling outcome (e.g. termination/redirection).");
