@@ -174,7 +174,10 @@ public class FilterByMeasurementExtremes extends AbstractObjectFilter {
         return null;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(FILTER_METHOD).setDescription("Controls what happens to objects which don't pass the filter:<br>"
                 + "<br>- \"" + FilterMethods.REMOVE_LARGEST
                 + "\" Remove the object with the largest value measurement specified by \""+MEASUREMENT+"\".<br>"

@@ -1,5 +1,12 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.drew.lang.annotations.Nullable;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -11,21 +18,21 @@ import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-
-import com.drew.lang.annotations.Nullable;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Watershed extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";

@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import com.drew.lang.annotations.Nullable;
 
 import fiji.stacks.Hyperstack_rearranger;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -35,7 +34,7 @@ import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 
-public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType<T>> extends Module {
+public abstract class AbstractRegistrationHandler<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_SEPARATOR = "Image input/output";
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
@@ -44,12 +43,11 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
     public static final String REGISTRATION_SEPARATOR = "Registration controls";
     public static final String REGISTRATION_AXIS = "Registration axis";
     public static final String OTHER_AXIS_MODE = "Other axis mode";
-    public static final String ALIGNMENT_MODE = "Alignment mode";
     public static final String TRANSFORMATION_MODE = "Transformation mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
     public static final String FILL_MODE = "Fill mode";
 
-    public CoreRegistrationHandler(String name, ModuleCollection modules) {
+    public AbstractRegistrationHandler(String name, ModuleCollection modules) {
         super(name, modules);
     }
 
@@ -66,14 +64,6 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
         String LINKED = "Linked";
 
         String[] ALL = new String[] { INDEPENDENT, LINKED };
-
-    }
-
-    public interface AlignmentModes {
-        final String AUTOMATIC = "Automatic (feature extraction)";
-        final String MANUAL = "Manual (landmarks)";
-
-        final String[] ALL = new String[] { AUTOMATIC, MANUAL };
 
     }
 
@@ -98,8 +88,8 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
     public static void changeStackOrder(Image image) {
         ImagePlus inputIpl = image.getImagePlus();
 
-        // InputIpl must be a HyperStack
-        if (!inputIpl.isHyperStack()) {
+        // InputIpl must be a HyperStack (but at least be a stack)
+        if (!inputIpl.isHyperStack() && (inputIpl.getNFrames() > 1 || inputIpl.getNSlices() > 1)) {
             int nChannels = inputIpl.getNChannels();
             int nSlices = inputIpl.getNSlices();
             int nFrames = inputIpl.getNFrames();
@@ -232,7 +222,6 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
         parameters.add(new ChoiceP(REGISTRATION_AXIS, this, RegistrationAxes.TIME, RegistrationAxes.ALL));
         parameters.add(new ChoiceP(OTHER_AXIS_MODE, this, OtherAxisModes.INDEPENDENT, OtherAxisModes.ALL));
         parameters.add(new ChoiceP(TRANSFORMATION_MODE, this, TransformationModes.RIGID, TransformationModes.ALL));
-        parameters.add(new ChoiceP(ALIGNMENT_MODE, this, AlignmentModes.AUTOMATIC, AlignmentModes.ALL));
         parameters.add(new ChoiceP(FILL_MODE, this, FillModes.BLACK, FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
@@ -253,7 +242,6 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
         returnedParameters.add(parameters.getParameter(REGISTRATION_AXIS));
         returnedParameters.add(parameters.getParameter(OTHER_AXIS_MODE));
         returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
-        returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
         returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
@@ -261,15 +249,35 @@ public abstract class CoreRegistrationHandler<T extends RealType<T> & NativeType
 
     }
 
-    protected static class Param extends FloatArray2DSIFT.Param {
-        /**
-         *
-         */
-        private static final long serialVersionUID = -9039231442503621671L;
-        String transformationMode = TransformationModes.RIGID;
-        float rod = 0.92f;
-        float maxEpsilon = 25.0f;
-        float minInlierRatio = 0.05f;
+    protected void addParameterDescriptions() {        
+        parameters.get(INPUT_IMAGE).setDescription("Image from workspace to apply registration to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription("When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+        + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+        parameters.get(REGISTRATION_AXIS).setDescription("Controls which stack axis the registration will be applied in.  For example, when \""+RegistrationAxes.TIME+"\" is selected, all images along the time axis will be aligned.  Choices are: " + String.join(", ", RegistrationAxes.ALL) + ".");
+
+        parameters.get(OTHER_AXIS_MODE).setDescription("For stacks with non-registration axis lengths longer than 1 (e.g. the \"Z\" axis when registering in time) the behaviour of this other axis is controlled by this parameter:<br><ul>"
+
+        +"<li>\""+OtherAxisModes.INDEPENDENT+"\" Each non-registration axis is registered independently.  For example, applying separate Z-registrations for each timepoint of a 4D stack.</li>"
+
+        +"<li>\""+OtherAxisModes.LINKED+"\" All elements of the non-registration axis are registered with a single transform.  For example, applying the same registration at a timepoint to all slices of a 4D stack.</li></ul>");
+
+        parameters.get(TRANSFORMATION_MODE).setDescription("Controls the type of registration being applied:<br><ul>"
+
+                + "<li>\"" + TransformationModes.AFFINE + "\" Applies the full affine transformation, whereby the input image can undergo translation, rotation, reflection, scaling and shear.</li>"
+
+                + "<li>\"" + TransformationModes.RIGID + "\" Applies only translation and rotation to the input image.  As such, all features should remain the same size.</li>"
+
+                + "<li>\"" + TransformationModes.SIMILARITY +"\" Applies translation, rotating and linear scaling to the input image.</li>"
+
+                +"<li>\""+TransformationModes.TRANSLATION+"\" Applies only translation (motion within the 2D plane) to the input image.</li></ul>");
+
+        parameters.get(FILL_MODE).setDescription("Controls what intensity any border pixels will have.  \"Borders\" in this case correspond to strips/wedges at the image edge corresponding to regions outside the initial image (e.g. the right-side of an output image when the input was translated to the left).   Choices are: "+String.join(", ",FillModes.ALL)+".");
+
+        parameters.get(ENABLE_MULTITHREADING).setDescription("When selected, certain parts of the registration process will be run on multiple threads of the CPU.  This can provide a speed improvement when working on a computer with a multi-core CPU.");
 
     }
 }

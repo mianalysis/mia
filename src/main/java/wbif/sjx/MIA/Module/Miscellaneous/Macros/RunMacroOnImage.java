@@ -40,7 +40,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 /**
  * Created by Stephen on 31/01/2018.
  */
-public class RunMacroOnImage extends CoreMacroRunner {
+public class RunMacroOnImage extends AbstractMacroRunner {
     public static final String INPUT_SEPARATOR = "Image input";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";

@@ -409,7 +409,10 @@ public class AddLine extends AbstractOverlay {
         return "Draws an overlay line between two specified points.<br><br>" + "Note: This currently only works in 2D.";
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+
         parameters.get(INPUT_IMAGE)
                 .setDescription("Image onto which overlay will be rendered.  Input image will only be updated if \""
                         + APPLY_TO_INPUT

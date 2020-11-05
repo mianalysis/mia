@@ -167,7 +167,10 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
 
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(MEASUREMENT).setDescription(
                 "Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module \""+new FilterWithWithoutMeasurement(null).getName()+"\".");
 

@@ -228,8 +228,6 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
         parameters.add(new BooleanP(STORE_SUMMARY_RESULTS, this, false));
         parameters.add(new BooleanP(STORE_INDIVIDUAL_RESULTS, this, false));
 
-        addAbstractNumericParameterDescriptions();
-
     }
 
     @Override
@@ -283,7 +281,10 @@ public abstract class AbstractNumericObjectFilter extends AbstractObjectFilter {
 
     }
 
-    protected void addAbstractNumericParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(FILTER_METHOD).setDescription(
                 "Numeric comparison used to determine which objects should be removed.  Objects with specified property (e.g. a measurement value) that passes this filter will be removed.  For example, an object with a measurement value of 7 would be removed if \""
                         + FILTER_METHOD + "\" is set to \"" + FilterMethods.LESS_THAN

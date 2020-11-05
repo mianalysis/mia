@@ -81,6 +81,8 @@ public class BleachingCorrection extends Module {
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -126,4 +128,16 @@ public class BleachingCorrection extends Module {
     public boolean verify() {
         return true;
     }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription(
+                "Image from workspace to apply bleaching correction process to.");
+
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+
+      }
 }

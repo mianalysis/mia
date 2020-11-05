@@ -87,8 +87,6 @@ public abstract class AbstractOverlay extends Module {
         parameters.add(new PartnerObjectsP(PARTNER_OBJECTS_FOR_COLOUR, this));
         parameters.add(new DoubleP(OPACITY, this, 100));
 
-        addAbstractParameterDescriptions();
-
     }
 
     public ParameterCollection updateAndGetParameters(String inputObjectsName) {
@@ -144,7 +142,7 @@ public abstract class AbstractOverlay extends Module {
 
     }
 
-    void addAbstractParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(COLOUR_MODE)
                 .setDescription("Method for assigning colour of each object:<br><ul>"
 

@@ -11,7 +11,7 @@ import wbif.sjx.MIA.Object.Parameters.ModuleP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 
-public abstract class CoreWorkspaceHandler extends Module {
+public abstract class AbstractWorkspaceHandler extends Module {
     public static final String CONTINUATION_MODE = "Continuation mode";
     public static final String REDIRECT_MODULE = "Redirect module";
     public static final String SHOW_REDIRECT_MESSAGE = "Show redirect message";
@@ -28,7 +28,7 @@ public abstract class CoreWorkspaceHandler extends Module {
 
     }
 
-    public CoreWorkspaceHandler(String name, ModuleCollection modules) {
+    public AbstractWorkspaceHandler(String name, ModuleCollection modules) {
         super(name, modules);
     }
 
@@ -73,8 +73,6 @@ public abstract class CoreWorkspaceHandler extends Module {
         parameters.add(new BooleanP(REMOVE_IMAGES, this, false));
         parameters.add(new BooleanP(REMOVE_OBJECTS, this, false));
 
-        addAbstractParameterDescriptions();
-
     }
 
     @Override
@@ -82,7 +80,7 @@ public abstract class CoreWorkspaceHandler extends Module {
         return parameters;
     }
 
-    void addAbstractParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(CONTINUATION_MODE).setDescription(
                 "Controls what happens if the termination/redirection condition is met:<br>"
 

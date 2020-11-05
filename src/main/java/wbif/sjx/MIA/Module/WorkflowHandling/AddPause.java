@@ -1,23 +1,25 @@
 package wbif.sjx.MIA.Module.WorkflowHandling;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.References.*;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-
-import javax.swing.*;
 
 /**
  * Created by sc13967 on 09/02/2018.
@@ -140,7 +142,7 @@ public class AddPause extends Module {
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
         parameters.get(SHOW_IMAGE).setDescription("When selected, an image from the workspace can be automatically displayed when this module executes.");
 
         parameters.get(INPUT_IMAGE).setDescription("If \""+SHOW_IMAGE+"\" is selected, this image will be displayed when the module executes.");

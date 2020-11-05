@@ -12,8 +12,8 @@ import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
-public abstract class CoreMacroRunner extends Module {
-    protected CoreMacroRunner(String name, ModuleCollection modules) {
+public abstract class AbstractMacroRunner extends Module {
+    protected AbstractMacroRunner(String name, ModuleCollection modules) {
         super(name, modules);
     }
 

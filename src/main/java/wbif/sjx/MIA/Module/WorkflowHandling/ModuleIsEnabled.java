@@ -18,7 +18,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 /**
  * Created by Stephen Cross on 23/11/2018.
  */
-public class ModuleIsEnabled extends CoreWorkspaceHandler {
+public class ModuleIsEnabled extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_MODE = "Test mode";
     public static final String TEST_MODULE = "Test module";
@@ -159,7 +159,10 @@ public class ModuleIsEnabled extends CoreWorkspaceHandler {
         return true;
     }
 
-    void addParameterDescriptions() {
+    @Override
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+        
         parameters.get(TEST_MODE).setDescription(
                 "Controls whether the specified workflow handling outcome is applied if another module is enabled or disabled:<br><ul>"
         +"<li>\""+TestModes.MODULE_IS_ENABLED+"\" Execute specified outcome if another module is enabled.</li>"

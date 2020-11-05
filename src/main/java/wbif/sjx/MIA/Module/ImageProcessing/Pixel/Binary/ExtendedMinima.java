@@ -1,6 +1,13 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary;
 
-import com.drew.lang.annotations.Nullable;import ij.IJ;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.drew.lang.annotations.Nullable;
+
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
@@ -9,20 +16,21 @@ import inra.ijpb.morphology.MinimaAndMaxima3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
-import wbif.sjx.MIA.Object.*;
-import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
+import wbif.sjx.MIA.Object.Parameters.InputImageP;
+import wbif.sjx.MIA.Object.Parameters.OutputImageP;
+import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
-import wbif.sjx.MIA.Object.References.*;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
-
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by sc13967 on 07/03/2018.
@@ -130,7 +138,7 @@ public class ExtendedMinima extends Module {
         return "Applies a 3D (or 2D for single slice images) binary skeletonisation operation to an image in the workspace.  All foreground labelled regions will be reduced to a single, pixel-wide strip, which runs along the former centre of the region."
 
         +"<br><br>This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The skeletonise operation uses the plugin \"<a href=\"https://imagej.net/Skeletonize3D\">Skeletonize3D</a>\".";
-        
+
     }
 
     @Override
@@ -242,7 +250,7 @@ returnedParameters.add(parameters.getParameter(EXTENDED_MINIMA_SEPARATOR));
 
     void addParameterDescriptions() {
         parameters.get(INPUT_IMAGE).setDescription(
-                "Image from workspace to extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
+                "Image from workspace to apply extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).");
 
         parameters.get(APPLY_TO_INPUT).setDescription(
                 "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");

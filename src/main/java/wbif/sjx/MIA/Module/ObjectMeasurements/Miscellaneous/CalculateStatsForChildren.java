@@ -13,6 +13,7 @@ import wbif.sjx.MIA.Object.Parameters.ChildObjectsP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ObjectMeasurementP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -101,7 +102,7 @@ public class CalculateStatsForChildren extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Calculates statistics for a measurement associated with all child objects of parent object.  The calculated statistics are stored as new measurements, associated with the relevant parent object.  For example, calculating the summed volume of all child objects (from a specified collection) of each parent object.";
     }
 
     @Override
@@ -132,14 +133,19 @@ public class CalculateStatsForChildren extends Module {
 
     @Override
     protected void initialiseParameters() {
+        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(PARENT_OBJECTS,this));
         parameters.add(new ChildObjectsP(CHILD_OBJECTS,this));
+
+        parameters.add(new SeparatorP(STATISTIC_SEPARATOR,this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
         parameters.add(new BooleanP(CALCULATE_MEAN,this,true));
         parameters.add(new BooleanP(CALCULATE_STD,this,true));
         parameters.add(new BooleanP(CALCULATE_MIN,this,true));
         parameters.add(new BooleanP(CALCULATE_MAX,this,true));
         parameters.add(new BooleanP(CALCULATE_SUM,this,true));
+
+        addParameterDescriptions();
 
     }
 
@@ -235,5 +241,24 @@ public class CalculateStatsForChildren extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+      parameters.get(PARENT_OBJECTS).setDescription("Input object collection from the workspace for which statistics of child object measurements will be calculated.  This object collection is a parent to those selected by the \""+CHILD_OBJECTS+"\" parameter.  Statistics for one measurement associated with all children of each input parent object will be calculated and added to this object as a new measurement.");
+
+      parameters.get(CHILD_OBJECTS).setDescription("Input object collection from the workspace, where these objects are children of the collection selected by the \""+PARENT_OBJECTS+"\" parameter.)");
+
+      parameters.get(MEASUREMENT).setDescription("Measurement associated with the child objects for which statistics will be calculated.  Statistics will be calculated for all children of a parent object.");
+
+      parameters.get(CALCULATE_MEAN).setDescription("When selected, the mean value of the measurements will be calculated and added to the relevant parent object.");
+
+      parameters.get(CALCULATE_STD).setDescription("When selected, the standard deviation of the measurements will be calculated and added to the relevant parent object.");
+
+      parameters.get(CALCULATE_MIN).setDescription("When selected, the minimum value of the measurements will be calculated and added to the relevant parent object.");
+
+      parameters.get(CALCULATE_MAX).setDescription("When selected, the maximum value of the measurements will be calculated and added to the relevant parent object.");
+
+      parameters.get(CALCULATE_SUM).setDescription("When selected, the sum of the measurements will be calculated and added to the relevant parent object.");
+
     }
 }

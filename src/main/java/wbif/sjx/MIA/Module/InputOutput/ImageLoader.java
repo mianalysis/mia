@@ -48,8 +48,6 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
-import wbif.sjx.MIA.Object.Obj;
-import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
 import wbif.sjx.MIA.Object.Workspace;
@@ -58,8 +56,8 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -722,15 +720,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         image.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
         image.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
         image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
-    }
-
-    private void addCropMeasurements(ObjCollection objects, int[] crop) {
-        for (Obj obj : objects.values()) {
-            obj.addMeasurement(new Measurement(Measurements.ROI_LEFT, crop[0]));
-            obj.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
-            obj.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
-            obj.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
-        }
     }
 
     @Override
