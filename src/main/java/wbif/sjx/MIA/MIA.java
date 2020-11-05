@@ -55,7 +55,7 @@ public class MIA implements Command {
     private UIService uiService;
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {        
         debug = true;
 
         try {
@@ -118,6 +118,8 @@ public class MIA implements Command {
         if (DependencyValidator.run())
             return;
     
+        MIA.log.writeDebug("Automatic registration, update description for RELATIVE MODE - previous N frames");
+            
         try {            
             new GUI();
         } catch (InstantiationException | IllegalAccessException e) {
