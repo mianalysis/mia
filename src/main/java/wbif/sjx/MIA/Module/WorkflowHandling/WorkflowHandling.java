@@ -44,11 +44,13 @@ public class WorkflowHandling extends Module {
     public static final String TEST_MODE = "Test mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String FILTER_MODE = "Reference image measurement mode";
+    public static final String NUMERIC_FILTER_MODE = "Numeric filter mode";
+    public static final String TEXT_FILTER_MODE = "Text filter mode";
     public static final String REFERENCE_IMAGE_MEASUREMENT = "Reference image measurement";
     public static final String REFERENCE_OBJECT_COUNT_MODE = "Reference object count mode";
     public static final String REFERENCE_METADATA_VALUE = "Reference metadata value";
-    public static final String REFERENCE_VALUE = "Reference value";
+    public static final String REFERENCE_NUMERIC_VALUE = "Reference numeric value";
+    public static final String REFERENCE_TEXT_VALUE = "Reference text value";
     public static final String FIXED_VALUE = "Fixed value";
     public static final String GENERIC_FORMAT = "Generic format";
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
@@ -68,18 +70,27 @@ public class WorkflowHandling extends Module {
 
     public interface TestModes {
         String IMAGE_MEASUREMENT = "Image measurement";
-        String METADATA_VALUE = "Metadata value";
+        String METADATA_NUMERIC_VALUE = "Metadata numeric value";
+        String METADATA_TEXT_VALUE = "Metadata text value";
         String FILE_EXISTS = "File exists";
         String FILE_DOES_NOT_EXIST = "File doesn't exist";
         String FIXED_VALUE = "Fixed value";
         String OBJECT_COUNT = "Object count";
 
         String[] ALL = new String[] { FILE_DOES_NOT_EXIST, FILE_EXISTS, FIXED_VALUE, IMAGE_MEASUREMENT,
-                METADATA_VALUE, OBJECT_COUNT };
+                METADATA_NUMERIC_VALUE, METADATA_TEXT_VALUE, OBJECT_COUNT };
 
     }
 
-    public interface FilterModes extends AbstractNumericObjectFilter.FilterMethods {
+    public interface NumericFilterModes extends AbstractNumericObjectFilter.FilterMethods {
+    }
+
+    public interface TextFilterModes {
+      String EQUAL_TO = "Equal to";
+      String NOT_EQUAL_TO = "Not equal to";
+
+      String[] ALL = new String[] { EQUAL_TO, NOT_EQUAL_TO };
+
     }
 
     public interface ContinuationModes {
@@ -153,7 +164,7 @@ public class WorkflowHandling extends Module {
 
     }
 
-    public static boolean testMetadata(String metadataValue, String referenceMode, double referenceValue) {
+    public static boolean testNumericMetadata(String metadataValue, String referenceMode, double referenceValue) {
         try {
             double testValue = Double.parseDouble(metadataValue);
             return AbstractNumericObjectFilter.testFilter(testValue, referenceValue, referenceMode);
@@ -165,6 +176,18 @@ public class WorkflowHandling extends Module {
             return false;
 
         }
+    }
+
+    public static boolean testTextMetadata(String metadataValue, String referenceMode, String referenceValue) {
+        switch (referenceMode) {
+            case TextFilterModes.EQUAL_TO:
+                return metadataValue.equals(referenceValue);
+            case TextFilterModes.NOT_EQUAL_TO:
+                return !metadataValue.equals(referenceValue);
+        }
+
+        return false;
+
     }
 
     public static boolean testObjectCount(ObjCollection inputObjects, String referenceMode, double referenceValue) {
@@ -192,10 +215,11 @@ public class WorkflowHandling extends Module {
         String testMode = parameters.getValue(TEST_MODE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        String filterMode = parameters.getValue(FILTER_MODE);
+        String numericFilterMode = parameters.getValue(NUMERIC_FILTER_MODE);
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String referenceMetadataValue = parameters.getValue(REFERENCE_METADATA_VALUE);
-        double referenceValueNumber = parameters.getValue(REFERENCE_VALUE);
+        double referenceValueNumber = parameters.getValue(REFERENCE_NUMERIC_VALUE);
+        String referenceValueText = parameters.getValue(REFERENCE_TEXT_VALUE);
         double fixedValueNumber = parameters.getValue(FIXED_VALUE);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
@@ -214,16 +238,20 @@ public class WorkflowHandling extends Module {
                 break;
             case TestModes.IMAGE_MEASUREMENT:
                 Image inputImage = workspace.getImage(inputImageName);
-                terminate = testImageMeasurement(inputImage, referenceImageMeasurement, filterMode,
+                terminate = testImageMeasurement(inputImage, referenceImageMeasurement, numericFilterMode,
                         referenceValueNumber);
                 break;
-            case TestModes.METADATA_VALUE:
+            case TestModes.METADATA_NUMERIC_VALUE:
                 String metadataValue = workspace.getMetadata().get(referenceMetadataValue).toString();
-                terminate = testMetadata(metadataValue, filterMode, referenceValueNumber);
+                terminate = testNumericMetadata(metadataValue, numericFilterMode, referenceValueNumber);
+                break;
+            case TestModes.METADATA_TEXT_VALUE:
+                metadataValue = workspace.getMetadata().get(referenceMetadataValue).toString();
+                terminate = testTextMetadata(metadataValue, textFilterMode, referenceValueText);
                 break;
             case TestModes.OBJECT_COUNT:
                 ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-                terminate = testObjectCount(inputObjects, filterMode, referenceValueNumber);
+                terminate = testObjectCount(inputObjects, numericFilterMode, referenceValueNumber);
                 break;
         }
 
@@ -241,13 +269,14 @@ public class WorkflowHandling extends Module {
 
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
-        parameters.add(new ChoiceP(FILTER_MODE, this, FilterModes.LESS_THAN, FilterModes.ALL));
+        parameters.add(new ChoiceP(NUMERIC_FILTER_MODE, this, NumericFilterModes.LESS_THAN, NumericFilterModes.ALL));
+        parameters.add(new ChoiceP(TEXT_FILTER_MODE, this, TextFilterModes.EQUAL_TO, TextFilterModes.ALL));
         parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT, this));
         parameters.add(new MetadataItemP(REFERENCE_METADATA_VALUE, this));
-        parameters.add(new DoubleP(REFERENCE_VALUE, this, 0d));
+        parameters.add(new DoubleP(REFERENCE_NUMERIC_VALUE, this, 0d));
+        parameters.add(new StringP(REFERENCE_TEXT_VALUE, this));
         parameters.add(new DoubleP(FIXED_VALUE, this, 0d));
-        parameters.add(new StringP(GENERIC_FORMAT, this, "",
-                "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation."));
+        parameters.add(new StringP(GENERIC_FORMAT, this));
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,
                 "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
 
@@ -281,30 +310,36 @@ public class WorkflowHandling extends Module {
 
             case TestModes.FIXED_VALUE:
                 returnedParameters.add(parameters.getParameter(FIXED_VALUE));
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
                 break;
 
             case TestModes.IMAGE_MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-                returnedParameters.add(parameters.getParameter(FILTER_MODE));
+                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
 
                 String inputImageName = parameters.getValue(INPUT_IMAGE);
                 ImageMeasurementP parameter = parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT);
                 parameter.setImageName(inputImageName);
                 break;
 
-            case TestModes.METADATA_VALUE:
-                returnedParameters.add(parameters.getParameter(FILTER_MODE));
+            case TestModes.METADATA_NUMERIC_VALUE:
+                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
                 returnedParameters.add(parameters.getParameter(REFERENCE_METADATA_VALUE));
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
+                break;
+
+            case TestModes.METADATA_TEXT_VALUE:
+                returnedParameters.add(parameters.getParameter(TEXT_FILTER_MODE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_METADATA_VALUE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_TEXT_VALUE));
                 break;
 
             case TestModes.OBJECT_COUNT:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-                returnedParameters.add(parameters.getParameter(FILTER_MODE));
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                returnedParameters.add(parameters.getParameter(NUMERIC_FILTER_MODE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_NUMERIC_VALUE));
                 break;
         }
 
@@ -362,19 +397,36 @@ public class WorkflowHandling extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(TEST_MODE).setDescription("");
+
+        parameters.get(TEST_MODE).setDescription("Controls what condition is being tested:<br><ul>"
+
+        +"<li>\""+TestModes.IMAGE_MEASUREMENT+"\" Numeric filter against a measurement (specified by \""+REFERENCE_IMAGE_MEASUREMENT+"\") associated with an image from the workspace (specified by \""+INPUT_IMAGE+"\").</li>"
+
+        +"<li>\""+TestModes.METADATA_NUMERIC_VALUE+"\" Numeric filter against a metadata value (specified by \""+REFERENCE_METADATA_VALUE+"\") associated with the workspace.  Metadata values are stored as text, but this filter will attempt to parse any numeric values as numbers.  Text comparison can be done using \""+TestModes.METADATA_TEXT_VALUE+"\" mode.</li>"
+
+        +"<li>\""+TestModes.METADATA_TEXT_VALUE+"\" Text filter against a metadata value (specified by \""+REFERENCE_METADATA_VALUE+"\") associated with the workspace.  This filter compares for exact text matches to a reference, specified by \""+REFERENCE_TEXT_VALUE+"\"</li>"
+
+        +"<li>\""+TestModes.FILE_EXISTS+"\" Checks if a specified file exists on the accessible computer filesystem.</li>"
+
+        +"<li>\""+TestModes.FILE_DOES_NOT_EXIST+"\" Checks if a specified file doesn't exist on the accessible computer filesystem.</li>"
+
+        +"<li>\""+TestModes.FIXED_VALUE+"\" Numeric filter against a fixed value.</li>"
+
+        +"<li>\""+TestModes.OBJECT_COUNT+"\" Numeric filter against the number of objects contained in an object collection stored in the workspace (specified by \""+INPUT_OBJECTS+"\").</li></ul>");
 
         parameters.get(INPUT_IMAGE).setDescription("");
 
         parameters.get(INPUT_OBJECTS).setDescription("");
 
-        parameters.get(FILTER_MODE).setDescription("");
+        parameters.get(NUMERIC_FILTER_MODE).setDescription("");
 
         parameters.get(REFERENCE_IMAGE_MEASUREMENT).setDescription("");
 
         parameters.get(REFERENCE_METADATA_VALUE).setDescription("");
 
-        parameters.get(REFERENCE_VALUE).setDescription("");
+        parameters.get(REFERENCE_NUMERIC_VALUE).setDescription("");
+
+        parameters.get(REFERENCE_TEXT_VALUE).setDescription("");
 
         parameters.get(FIXED_VALUE).setDescription("");
 
@@ -386,7 +438,7 @@ public class WorkflowHandling extends Module {
                         + "<br>- \"" + ContinuationModes.REDIRECT_TO_MODULE
                         + "The analysis workflow will skip to the module specified by the \"" + REDIRECT_MODULE
                         + "\" parameter.  Any modules between the present module and the target module will not be evaluated.<br>"
-                        
+
                         + "<br>- \"" + ContinuationModes.TERMINATE
                         + "The analysis will stop evaluating any further modules.<br>");
 

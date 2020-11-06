@@ -207,7 +207,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
                         minT + "-" + t);
                 Convert3DStack.process(referenceStack.getImagePlus(), Convert3DStack.Modes.OUTPUT_Z_STACK);
                 reference = ProjectImage.projectImageInZ(referenceStack, "Reference", prevFrameStatMode);
-                
+
                 break;
             }
 
@@ -283,7 +283,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
     @Override
     protected void initialiseParameters() {
         super.initialiseParameters();
-        
+
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.FIRST_FRAME, RelativeModes.ALL));
         parameters.add(new IntegerP(NUM_PREV_FRAMES, this, 1));
@@ -358,8 +358,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     @Override
     protected void addParameterDescriptions() {
-        super.addParameterDescriptions();        
-        
+        super.addParameterDescriptions();
+
         parameters.get(RELATIVE_MODE)
                 .setDescription("Controls what reference image each image will be compared to:<br><ul>"
 
@@ -367,7 +367,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
                         + "\" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li>"
 
                         + "<li>\"" + RelativeModes.PREVIOUS_N_FRAMES
-                        + "\" Each image will be compared to the N frames (or slice when in Z-axis mode) immediately before it.  This copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
+                        + "\" Each image will be compared to the N frames (or slice when in Z-axis mode) immediately before it (number of frames specified by \""+NUM_PREV_FRAMES+"\").  These reference frames are consolidated into a single reference image using a projection based on the statistic specified by \""+PREV_FRAMES_STAT_MODE+"\".  This mode copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
 
                         + "<li>\"" + RelativeModes.SPECIFIC_IMAGE
                         + "\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""
@@ -376,6 +376,10 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         parameters.get(REFERENCE_IMAGE).setDescription("If \"" + RELATIVE_MODE + "\" is set to \""
                 + RelativeModes.SPECIFIC_IMAGE
                 + "\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
+
+        parameters.get(NUM_PREV_FRAMES).setDescription("Number of previous frames (or slices) to use as reference image when \""+RELATIVE_MODE+"\" is set to \""+RelativeModes.PREVIOUS_N_FRAMES+"\".  If there are insufficient previous frames (e.g. towards the beginning of the stack) the maximum available frames will be used.  Irrespective of the number of frames used, the images will be projected into a single reference image using the statistic specified by \""+PREV_FRAMES_STAT_MODE+"\".");
+
+        parameters.get(PREV_FRAMES_STAT_MODE).setDescription("Statistic to use when combining multiple previous frames as a reference (\""+RELATIVE_MODE+"\" set to \""+RelativeModes.PREVIOUS_N_FRAMES+"\").");
 
         parameters.get(CALCULATION_SOURCE).setDescription(
                 "Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"

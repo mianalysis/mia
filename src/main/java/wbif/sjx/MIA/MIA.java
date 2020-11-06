@@ -55,7 +55,7 @@ public class MIA implements Command {
     private UIService uiService;
 
 
-    public static void main(String[] args) throws Exception {        
+    public static void main(String[] args) throws Exception {
         debug = true;
 
         try {
@@ -77,7 +77,7 @@ public class MIA implements Command {
     @Override
     public void run() {
         setLookAndFeel();
-        
+
         // Waiting for UIService to become available
         while (uiService == null) {
             try {
@@ -117,10 +117,8 @@ public class MIA implements Command {
         // Run the dependency validator.  If updates were required, return.
         if (DependencyValidator.run())
             return;
-    
-        MIA.log.writeDebug("Automatic registration, update description for RELATIVE MODE - previous N frames");
-            
-        try {            
+                
+        try {
             new GUI();
         } catch (InstantiationException | IllegalAccessException e) {
             MIA.log.writeError(e);
