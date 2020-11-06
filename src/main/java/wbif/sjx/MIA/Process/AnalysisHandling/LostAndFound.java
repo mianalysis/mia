@@ -55,7 +55,7 @@ public class LostAndFound {
         // WorkflowHandling
         currentParameters = new HashMap<>();
         currentParameters.put("Reference image measurement mode", WorkflowHandling.NUMERIC_FILTER_MODE);
-        currentParameters.put("Reference value", WorkflowHandling.REFERENCE_VALUE);
+        currentParameters.put("Reference value", WorkflowHandling.REFERENCE_NUMERIC_VALUE);
         moduleName = new WorkflowHandling(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
 

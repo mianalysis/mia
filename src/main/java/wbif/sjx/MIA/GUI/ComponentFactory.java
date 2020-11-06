@@ -100,7 +100,7 @@ public class ComponentFactory {
             parameterName.setOpaque(false);
             parameterName.setPreferredSize(new Dimension(0, elementHeight));
             parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-            parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
+            parameterName.setToolTipText("<html><div style=\"width:500;\">" + parameter.getDescription() + "</div></html>");
             paramPanel.add(parameterName, c);
 
             if (parameter.isValid())
@@ -195,7 +195,7 @@ public class ComponentFactory {
             title.setForeground(Color.BLACK);
         else
             title.setForeground(Colours.RED);
-        title.setToolTipText("<html><p width=\"500\">" + module.getDescription() + "</p></html>");
+        title.setToolTipText("<html><div style=\"width:500px;\">" + module.getDescription() + "</div></html>");
         c.insets = new Insets(0, 0, 0, 0);
         c.weightx = 1;
         c.gridx++;
@@ -636,7 +636,7 @@ public class ComponentFactory {
         ExportName exportName = new ExportName(ref);
         exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
-        exportName.setToolTipText("<html><p width=\"500\">" + ref.getDescription() + "</p></html>");
+        exportName.setToolTipText("<html><div style=\"width:500px;\">" + ref.getDescription() + "</div></html>");
         exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.weightx = 1;
@@ -677,7 +677,7 @@ public class ComponentFactory {
         ExportName exportName = new ExportName(ref);
         exportName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         exportName.setPreferredSize(new Dimension(-1, elementHeight));
-        exportName.setToolTipText("<html><p width=\"500\">" + ref.getDescription() + "</p></html>");
+        exportName.setToolTipText("<html><div style=\"width:500px;\">" + ref.getDescription() + "</div></html>");
         exportName.setEnabled(ref.isExportGlobal());
         c.gridx++;
         c.weightx = 1;

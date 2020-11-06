@@ -86,10 +86,10 @@ public class WorkflowHandling extends Module {
     }
 
     public interface TextFilterModes {
-      String EQUAL_TO = "Equal to";
-      String NOT_EQUAL_TO = "Not equal to";
+        String EQUAL_TO = "Equal to";
+        String NOT_EQUAL_TO = "Not equal to";
 
-      String[] ALL = new String[] { EQUAL_TO, NOT_EQUAL_TO };
+        String[] ALL = new String[] { EQUAL_TO, NOT_EQUAL_TO };
 
     }
 
@@ -216,6 +216,7 @@ public class WorkflowHandling extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String numericFilterMode = parameters.getValue(NUMERIC_FILTER_MODE);
+        String textFilterMode = parameters.getValue(TEXT_FILTER_MODE);
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String referenceMetadataValue = parameters.getValue(REFERENCE_METADATA_VALUE);
         double referenceValueNumber = parameters.getValue(REFERENCE_NUMERIC_VALUE);
@@ -282,7 +283,7 @@ public class WorkflowHandling extends Module {
 
         parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
-        parameters.add(new ModuleP(REDIRECT_MODULE, this,true));
+        parameters.add(new ModuleP(REDIRECT_MODULE, this, true));
         parameters.add(new BooleanP(SHOW_REDIRECT_MESSAGE, this, false));
         parameters.add(new StringP(REDIRECT_MESSAGE, this, ""));
         parameters.add(new BooleanP(EXPORT_WORKSPACE, this, true));
@@ -400,19 +401,31 @@ public class WorkflowHandling extends Module {
 
         parameters.get(TEST_MODE).setDescription("Controls what condition is being tested:<br><ul>"
 
-        +"<li>\""+TestModes.IMAGE_MEASUREMENT+"\" Numeric filter against a measurement (specified by \""+REFERENCE_IMAGE_MEASUREMENT+"\") associated with an image from the workspace (specified by \""+INPUT_IMAGE+"\").</li>"
+                + "<li>\"" + TestModes.IMAGE_MEASUREMENT + "\" Numeric filter against a measurement (specified by \""
+                + REFERENCE_IMAGE_MEASUREMENT + "\") associated with an image from the workspace (specified by \""
+                + INPUT_IMAGE + "\").</li>"
 
-        +"<li>\""+TestModes.METADATA_NUMERIC_VALUE+"\" Numeric filter against a metadata value (specified by \""+REFERENCE_METADATA_VALUE+"\") associated with the workspace.  Metadata values are stored as text, but this filter will attempt to parse any numeric values as numbers.  Text comparison can be done using \""+TestModes.METADATA_TEXT_VALUE+"\" mode.</li>"
+                + "<li>\"" + TestModes.METADATA_NUMERIC_VALUE
+                + "\" Numeric filter against a metadata value (specified by \"" + REFERENCE_METADATA_VALUE
+                + "\") associated with the workspace.  Metadata values are stored as text, but this filter will attempt to parse any numeric values as numbers.  Text comparison can be done using \""
+                + TestModes.METADATA_TEXT_VALUE + "\" mode.</li>"
 
-        +"<li>\""+TestModes.METADATA_TEXT_VALUE+"\" Text filter against a metadata value (specified by \""+REFERENCE_METADATA_VALUE+"\") associated with the workspace.  This filter compares for exact text matches to a reference, specified by \""+REFERENCE_TEXT_VALUE+"\"</li>"
+                + "<li>\"" + TestModes.METADATA_TEXT_VALUE + "\" Text filter against a metadata value (specified by \""
+                + REFERENCE_METADATA_VALUE
+                + "\") associated with the workspace.  This filter compares for exact text matches to a reference, specified by \""
+                + REFERENCE_TEXT_VALUE + "\"</li>"
 
-        +"<li>\""+TestModes.FILE_EXISTS+"\" Checks if a specified file exists on the accessible computer filesystem.</li>"
+                + "<li>\"" + TestModes.FILE_EXISTS
+                + "\" Checks if a specified file exists on the accessible computer filesystem.</li>"
 
-        +"<li>\""+TestModes.FILE_DOES_NOT_EXIST+"\" Checks if a specified file doesn't exist on the accessible computer filesystem.</li>"
+                + "<li>\"" + TestModes.FILE_DOES_NOT_EXIST
+                + "\" Checks if a specified file doesn't exist on the accessible computer filesystem.</li>"
 
-        +"<li>\""+TestModes.FIXED_VALUE+"\" Numeric filter against a fixed value.</li>"
+                + "<li>\"" + TestModes.FIXED_VALUE + "\" Numeric filter against a fixed value.</li>"
 
-        +"<li>\""+TestModes.OBJECT_COUNT+"\" Numeric filter against the number of objects contained in an object collection stored in the workspace (specified by \""+INPUT_OBJECTS+"\").</li></ul>");
+                + "<li>\"" + TestModes.OBJECT_COUNT
+                + "\" Numeric filter against the number of objects contained in an object collection stored in the workspace (specified by \""
+                + INPUT_OBJECTS + "\").</li></ul>");
 
         parameters.get(INPUT_IMAGE).setDescription("");
 
@@ -430,17 +443,18 @@ public class WorkflowHandling extends Module {
 
         parameters.get(FIXED_VALUE).setDescription("");
 
-        parameters.get(GENERIC_FORMAT).setDescription("Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
+        parameters.get(GENERIC_FORMAT).setDescription(
+                "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
 
-        parameters.get(CONTINUATION_MODE).setDescription(
-                "Controls what happens if the termination/redirection condition is met:<br>"
+        parameters.get(CONTINUATION_MODE)
+                .setDescription("Controls what happens if the termination/redirection condition is met:<br><ul>"
 
-                        + "<br>- \"" + ContinuationModes.REDIRECT_TO_MODULE
-                        + "The analysis workflow will skip to the module specified by the \"" + REDIRECT_MODULE
-                        + "\" parameter.  Any modules between the present module and the target module will not be evaluated.<br>"
+                        + "<li>\"" + ContinuationModes.REDIRECT_TO_MODULE
+                        + "\" The analysis workflow will skip to the module specified by the \"" + REDIRECT_MODULE
+                        + "\" parameter.  Any modules between the present module and the target module will not be evaluated.</li>"
 
-                        + "<br>- \"" + ContinuationModes.TERMINATE
-                        + "The analysis will stop evaluating any further modules.<br>");
+                        + "<li>\"" + ContinuationModes.TERMINATE
+                        + "\"The analysis will stop evaluating any further modules.</li></ul>");
 
         parameters.get(REDIRECT_MODULE).setDescription(
                 "If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.");

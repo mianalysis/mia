@@ -193,7 +193,6 @@ public class EvalButton extends JButton implements ActionListener {
             case FAIL:
             case TERMINATE:
                 status = false;
-                GUI.setLastModuleEval(GUI.getLastModuleEval() - 1);
                 break;
         }
 
