@@ -179,9 +179,14 @@ public class ExpandShrinkObjects extends Module {
 
         // Storing the image calibration
         Obj firstObj = inputObjects.getFirst();
-        if (firstObj == null)
-            return Status.PASS;
+        if (firstObj == null) {
+            if (!updateInputObjects)
+                workspace.addObjects(outputObjects);
 
+            return Status.PASS;
+            
+        }
+            
         if (calibratedUnits)
             radiusChange = radiusChange / firstObj.getDppXY();
 
