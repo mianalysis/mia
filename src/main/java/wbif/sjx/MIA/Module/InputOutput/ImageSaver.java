@@ -38,18 +38,14 @@ import wbif.sjx.common.Process.IntensityMinMax;
 /**
  * Created by sc13967 on 26/06/2017.
  */
-public class ImageSaver extends Module {
-    public static final String LOADER_SEPARATOR = "Image saving";
-    public static final String INPUT_IMAGE = "Input image";
+public class ImageSaver extends AbstractImageSaver {
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
 
-    public static final String NAME_SEPARATOR = "Output image name";
     public static final String SAVE_NAME_MODE = "Save name mode";
     public static final String SAVE_FILE_NAME = "File name";
     public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
 
     public static final String FORMAT_SEPARATOR = "Output image format";
@@ -92,47 +88,6 @@ public class ImageSaver extends Module {
 
     }
 
-    public interface AppendDateTimeModes {
-        String ALWAYS = "Always";
-        String IF_FILE_EXISTS = "If file exists";
-        String NEVER = "Never";
-
-        String[] ALL = new String[] { ALWAYS, IF_FILE_EXISTS, NEVER };
-
-    }
-
-    public interface FileFormats {
-        String AVI = "AVI"; // avi
-        // String BITMAP = "Bitmap"; // bmp
-        // String FITS = "FITS"; // fits
-        // String JPEG = "JPEG"; // jpeg
-        // String PGM = "PGM"; // pgm
-        // String PNG = "PNG"; // png
-        // String RAW = "Raw"; // raw
-        // String TEXT_IMAGE = "Text image"; // text image
-        String TIF = "TIF"; // tif
-        String ZIP = "ZIP"; // zip
-
-        String[] ALL = new String[] { AVI, TIF, ZIP };
-
-    }
-
-    public interface ChannelModes {
-        String COLOUR = "Colour (separate channels)";
-        String COMPOSITE = "Composite";
-
-        String[] ALL = new String[] { COLOUR, COMPOSITE };
-
-    }
-
-    public interface CompressionModes {
-        String NONE = "None";
-        String JPEG = "JPEG";
-        String PNG = "PNG";
-
-        String[] ALL = new String[] { NONE, JPEG, PNG };
-
-    }
 
     public static String appendSeries(String inputName, Workspace workspace, String appendSeriesMode) {
         switch (appendSeriesMode) {
@@ -145,59 +100,6 @@ public class ImageSaver extends Module {
             case AppendSeriesModes.SERIES_NUMBER:
                 int seriesNumber = workspace.getMetadata().getSeriesNumber();
                 return inputName + "_S" + seriesNumber;
-        }
-    }
-
-    public static String appendDateTime(String inputName, String appendDateTimeMode) {
-        switch (appendDateTimeMode) {
-            case AppendDateTimeModes.IF_FILE_EXISTS:
-                File file = new File(inputName);
-                if (!file.exists())
-                    return inputName;
-            case AppendDateTimeModes.ALWAYS:
-                String nameWithoutExtension = FilenameUtils.removeExtension(inputName);
-                String extension = FilenameUtils.getExtension(inputName);
-                String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-                return nameWithoutExtension + "_(" + dateTime + ")." + extension;
-            case AppendDateTimeModes.NEVER:
-            default:
-                return inputName;
-        }
-    }
-
-    public static void saveImage(ImagePlus inputImagePlus, String fileFormat, String path) {
-        switch (fileFormat) {
-            case FileFormats.TIF:
-                IJ.saveAs(inputImagePlus, "tif", path);
-                break;
-            case FileFormats.ZIP:
-                IJ.saveAs(inputImagePlus, "zip", path);
-                break;
-        }
-    }
-
-    public static void saveVideo(ImagePlus inputImagePlus, String compressionMode, int frameRate, int jpegQuality,
-            String path) {
-        AVI_Writer writer = new AVI_Writer();
-        int compressionType = getVideoCompressionType(compressionMode);
-        inputImagePlus.getCalibration().fps = frameRate;
-
-        try {
-            writer.writeImage(inputImagePlus, path, compressionType, jpegQuality);
-        } catch (IOException e) {
-            MIA.log.writeError(e);
-        }
-    }
-
-    public static int getVideoCompressionType(String compressionMode) {
-        switch (compressionMode) {
-            case CompressionModes.NONE:
-            default:
-                return AVI_Writer.NO_COMPRESSION;
-            case CompressionModes.JPEG:
-                return AVI_Writer.JPEG_COMPRESSION;
-            case CompressionModes.PNG:
-                return AVI_Writer.PNG_COMPRESSION;
         }
     }
 
@@ -353,27 +255,16 @@ public class ImageSaver extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(LOADER_SEPARATOR, this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        super.initialiseParameters();
+
         parameters.add(new ChoiceP(SAVE_LOCATION, this, SaveLocations.SAVE_WITH_INPUT, SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT, this));
         parameters.add(new FolderPathP(SAVE_FILE_PATH, this));
 
-        parameters.add(new SeparatorP(NAME_SEPARATOR, this));
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
-        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
-
-        parameters.add(new SeparatorP(FORMAT_SEPARATOR, this));
-        parameters.add(new ChoiceP(FILE_FORMAT, this, FileFormats.TIF, FileFormats.ALL));
-        parameters.add(new ChoiceP(CHANNEL_MODE, this, ChannelModes.COMPOSITE, ChannelModes.ALL));
-        parameters.add(new BooleanP(SAVE_AS_RGB, this, false));
-        parameters.add(new ChoiceP(COMPRESSION_MODE, this, CompressionModes.NONE, CompressionModes.ALL));
-        parameters.add(new IntegerP(QUALITY, this, 100));
-        parameters.add(new IntegerP(FRAME_RATE, this, 25));
-        parameters.add(new BooleanP(FLATTEN_OVERLAY, this, false));
 
         addParameterDescriptions();
 
@@ -410,29 +301,7 @@ public class ImageSaver extends Module {
         returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
         returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
 
-        returnedParameters.add(parameters.getParameter(FORMAT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(FILE_FORMAT));
-
-        switch ((String) parameters.getValue(FILE_FORMAT)) {
-            case FileFormats.TIF:
-            case FileFormats.ZIP:
-                returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
-                returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
-                if (!((boolean) parameters.getValue(FLATTEN_OVERLAY))) {
-                    returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
-                }
-
-                break;
-
-            case FileFormats.AVI:
-                returnedParameters.add(parameters.getParameter(COMPRESSION_MODE));
-                if ((boolean) parameters.getValue(COMPRESSION_MODE).equals(CompressionModes.JPEG)) {
-                    returnedParameters.add(parameters.getParameter(QUALITY));
-                }
-                returnedParameters.add(parameters.getParameter(FRAME_RATE));
-                returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
-                break;
-        }
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         return returnedParameters;
 
@@ -469,7 +338,7 @@ public class ImageSaver extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_IMAGE).setDescription("Image to be saved to file.");
+        super.addParameterDescriptions();
 
         parameters.get(SAVE_LOCATION).setDescription("Select where the image should be saved.<br><ul>" +
 
@@ -504,46 +373,7 @@ public class ImageSaver extends Module {
 
         parameters.get(APPEND_SERIES_MODE).setDescription("Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: " +String.join(", ", AppendSeriesModes.ALL) + ".");
 
-        parameters.get(APPEND_DATETIME_MODE).setDescription("Controls under what conditions the time and date will be appended on to the end of the image filename.  This can be used to prevent accidental over-writing of images from previous runs:<br><ul>"
-
-                + "<li>\"" + AppendDateTimeModes.ALWAYS
-                + "\" Always append the time and date on to the end of the filename.</li>"
-
-                + "<li>\"" + AppendDateTimeModes.IF_FILE_EXISTS
-                + "\" Only append the time and date if the results file already exists.</li>"
-
-                + "<li>\"" + AppendDateTimeModes.NEVER
-                + "\" Never append time and date (unless the file is open and unwritable).</li></ul>");
-
         parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
-
-        parameters.get(FILE_FORMAT).setDescription("The format the output image will be saved as:<br><ul>"
-
-                + "<li>\"" + FileFormats.AVI + "\" Video written using the stock ImageJ \"<a href=\"https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java\">AVI Writer</a>\".  Videos can use different compression algorithms specified using \""+COMPRESSION_MODE+"\".  Framerate specified by \""+FRAME_RATE+"\" parameter.</li>"
-
-                + "<li>\"" + FileFormats.TIF + "\" Standard multidimensional (multi-page) TIF image saving.</li>"
-
-                +"<li>\""+FileFormats.ZIP+"\" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul>");
-
-        parameters.get(CHANNEL_MODE).setDescription("Control whether saved images should be in ImageJ \"Composite\" (display all channels simultaneously) or \"Color\" (display one channel at a time) mode.");
-
-        parameters.get(SAVE_AS_RGB).setDescription("Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.");
-
-        parameters.get(COMPRESSION_MODE).setDescription("Compression mode used when saving AVI videos (\""+FILE_FORMAT+"\" parameter):<br><ul>"
-
-                + "<li>\"" + CompressionModes.JPEG + "\" Lossy video compression with quality specified by \"" + QUALITY
-                + "\" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li>"
-
-                + "<li>\"" + CompressionModes.NONE
-                + "\" Frames are stored in their raw format (uncompressed).  This gives the highest quality, but also the largest file size.</li>"
-
-                + "<li>\"" + CompressionModes.PNG + "\" PNG video compression.</li></ul>");
-
-        parameters.get(QUALITY).setDescription("Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's \"File > Save As...\" menu uses a quality of 90.");
-
-        parameters.get(FRAME_RATE).setDescription("Output video framerate (frames per second).");
-
-        parameters.get(FLATTEN_OVERLAY).setDescription("Flatten any overlay elements onto the image prior to saving.");
 
     }
 }
