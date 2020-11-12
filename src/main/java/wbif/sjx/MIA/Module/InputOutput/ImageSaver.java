@@ -1,32 +1,22 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.commons.io.FilenameUtils;
 
 import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.filter.AVI_Writer;
 import ij.process.ImageConverter;
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -110,7 +100,7 @@ public class ImageSaver extends AbstractImageSaver {
 
     @Override
     public String getDescription() {
-        return "Save an image/stack from the workspace to file.";
+        return "Save an image/stack from the workspace to file.  These files can be placed in the same folder as the input file, located in a specific folder or placed in a directory structure mirroring the input structure, but based at a new location.  For greater flexibility in output file locations and filenames, the \""+ new GenericImageSaver(null).getName() +"\" module can be used.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
     }
 
     @Override

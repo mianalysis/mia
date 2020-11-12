@@ -244,9 +244,9 @@ public class RidgeDetection extends Module {
 
     @Override
     public String getDescription() {
-        return "Uses the RidgeDetection Fiji plugin by Thorsten Wagner, which implements Carsten " +
-                "\nSteger's paper \"An Unbiased Detector of Curvilinear Structures\"" +
-                "\nINCOMPLETE";
+        return "Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the \"<a href=\"https://imagej.net/Ridge_Detection\">Ridge Detection</a>\" plugin, which itself is based on the paper \"An Unbiased Detector of Curvilinear Structures\" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125)."
+        
+        +"<br><br>Note: This module detects ridges in 2D, but can be run on multi-dimensional images.  For higher dimensionality images than 2D, ridge detection is performed slice-by-slice, with output objects confined to a single slice.";
 
     }
 
@@ -381,6 +381,8 @@ public class RidgeDetection extends Module {
         parameters.add(new IntegerP(ALIGNMENT_RANGE,this,3));
         parameters.add(new DoubleP(MAXIMUM_END_MISALIGNMENT,this,10));
 
+        addParameterDescriptions();
+
     }
 
     @Override
@@ -493,5 +495,38 @@ public class RidgeDetection extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_IMAGE).setDescription("Image from the workspace on which ridges will be identified.  This can be a multi-dimensional image, although ridges are currently only detected in 2D.  In the case of higher-dimensionality images, ridges are detected on a slice-by-slice basis.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output ridge objects, which will be added to the workspace.  These objects will have measurements associated with them.");
+
+        parameters.get(CONTOUR_CONTRAST).setDescription("Controls if we are detecting dark lines on a lighter background or light lines on a darker background.");
+
+        parameters.get(LOWER_THRESHOLD).setDescription("Lower response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.");
+
+        parameters.get(UPPER_THRESHOLD).setDescription("Upper response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.");
+
+        parameters.get(SIGMA).setDescription("Sigma of the derivatives to be applied to the input image when detecting ridges.  This is related to the width of the lines to be detected and is greater than or equal to \"width/(2*sqrt(3))\".");
+
+        parameters.get(CALIBRATED_UNITS).setDescription("Enable if spatial parameters are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.");
+
+        parameters.get(EXTEND_LINE).setDescription("Lines are extended in an attempt to locate more junction points.");
+
+        parameters.get(ESTIMATE_WIDTH).setDescription("When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.");
+
+        parameters.get(MIN_LENGTH).setDescription("Minimum length of a detected line for it to be retained and output.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected.");
+
+        parameters.get(MAX_LENGTH).setDescription("Maximum length of a detected line for it to be retained and output.  Specified in pixel units, unless \""+CALIBRATED_UNITS+"\" is selected.");
+
+        parameters.get(LINK_CONTOURS).setDescription("When selected, ridges with ends in close proximity will be linked into a single object.");
+
+        parameters.get(LIMIT_END_MISALIGNMENT).setDescription("When selected (and \""+LINK_CONTOURS+"\" is also enabled), this limits the permitted difference in the orientation of any linked ends.  This filter helps allow ridge linking where the ends are pointing in the same direction, whilst excluding those that are oriented very differently (e.g. at a junction).  The maximum allowed orientation difference is specified by \""+MAXIMUM_END_MISALIGNMENT+"\".");
+
+        parameters.get(ALIGNMENT_RANGE).setDescription("If linking contours, but limiting the end misalignment, this is the number of points from each contour end for which the orientation of that end is calculated.");
+
+        parameters.get(MAXIMUM_END_MISALIGNMENT).setDescription("If linking contours, but limiting the end misalignment, this is the maximum permitted misalignment of each contour end.");
+        
     }
 }

@@ -278,8 +278,7 @@ public class WorkflowHandling extends Module {
         parameters.add(new StringP(REFERENCE_TEXT_VALUE, this));
         parameters.add(new DoubleP(FIXED_VALUE, this, 0d));
         parameters.add(new StringP(GENERIC_FORMAT, this));
-        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false,
-                "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename."));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false));
 
         parameters.add(new SeparatorP(RESULT_SEPARATOR, this));
         parameters.add(new ChoiceP(CONTINUATION_MODE, this, ContinuationModes.TERMINATE, ContinuationModes.ALL));
@@ -446,6 +445,9 @@ public class WorkflowHandling extends Module {
         parameters.get(GENERIC_FORMAT).setDescription(
                 "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
 
+                parameters.get(AVAILABLE_METADATA_FIELDS).setDescription(
+                        "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
+                
         parameters.get(CONTINUATION_MODE)
                 .setDescription("Controls what happens if the termination/redirection condition is met:<br><ul>"
 

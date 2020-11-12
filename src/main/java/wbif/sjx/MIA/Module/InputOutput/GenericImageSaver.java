@@ -1,30 +1,16 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.commons.io.FilenameUtils;
 
 import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.filter.AVI_Writer;
 import ij.process.ImageConverter;
-import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
-import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -72,7 +58,7 @@ public class GenericImageSaver extends AbstractImageSaver {
 
     @Override
     public String getDescription() {
-        return "Save an image/stack from the workspace to file.";
+        return "Save an image/stack from the workspace to file.  Output file locations and filenames are generated from metadata items and fixed values.  This gives greater flexibility to output image locations than the standard \""+ new ImageSaver(null).getName() +"\" module.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
     }
 
     @Override
@@ -200,5 +186,8 @@ public class GenericImageSaver extends AbstractImageSaver {
         parameters.get(GENERIC_FORMAT).setDescription(
                 "Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the \"V{name}\" notation, where \"name\" is the name of the variable to insert.  Similarly, metadata values are specified with the \"M{name}\" notation.");
 
+        parameters.get(AVAILABLE_METADATA_FIELDS).setDescription(
+                "List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.");
+        
     }
 }
