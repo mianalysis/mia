@@ -100,6 +100,7 @@ import com.drew.lang.annotations.Nullable;
 
 import fiji.plugin.trackmate.tracking.sparselap.costmatrix.DefaultCostMatrixCreator;
 import fiji.plugin.trackmate.tracking.sparselap.linker.JaqamanLinker;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -292,7 +293,7 @@ public class RelateOneToOne extends Module {
         outputObject.addChild(object2);
         object1.addParent(outputObject);
         object2.addParent(outputObject);
-        
+
         // Adding measurements
         double nPoints1 = (double) object1.size();
         double nPoints2 = (double) object2.size();
@@ -401,7 +402,7 @@ public class RelateOneToOne extends Module {
         parameters.add(new SeparatorP(RELATIONSHIP_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.SPATIAL_OVERLAP, RelationshipModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS + "\").  Otherwise, pixel units are assumed."));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
 

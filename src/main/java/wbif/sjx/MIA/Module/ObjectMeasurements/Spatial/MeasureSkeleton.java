@@ -13,6 +13,7 @@ import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -392,7 +393,8 @@ public class MeasureSkeleton extends Module {
         parameters.add(new OutputSkeletonObjectsP(OUTPUT_LOOP_OBJECTS, this));
         parameters.add(new SeparatorP(ANALYSIS_SEPARATOR, this));
         parameters.add(new DoubleP(MINIMUM_BRANCH_LENGTH, this, 0d));
-        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS + "\").  Otherwise, pixel units are assumed."
+));
         parameters.add(new SeparatorP(EXECUTION_SEPARATOR, this));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 

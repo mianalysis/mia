@@ -96,6 +96,7 @@ import java.util.LinkedHashMap;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -147,19 +148,6 @@ public class RelateManyToMany extends Module {
     public static final String MISCELLANEOUS_SEPARATOR = "Miscellaneous settings";
     public static final String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-    public static final String OUTPUT_SEPARATOR = "Data output";
-    public static final String EXPORT_ALL_DISTANCES = "Export all distances";
-    public static final String INCLUDE_TIMEPOINTS = "Include timepoints";
-    public static final String INCLUDE_INPUT_PARENT = "Include input object parent";
-    public static final String INPUT_PARENT = "Input object parent";
-    public static final String INCLUDE_NEIGHBOUR_PARENT = "Include neighbour object parent";
-    public static final String NEIGHBOUR_PARENT = "Neighbour object parent";
-    public static final String SAVE_NAME_MODE = "Save name mode";
-    public static final String SAVE_FILE_NAME = "File name";
-    public static final String APPEND_SERIES_MODE = "Append series mode";
-    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
-    public static final String SAVE_SUFFIX = "Add filename suffix";
-
     public interface ObjectSourceModes {
         String DIFFERENT_CLASSES = "Different classes";
         String SAME_CLASS = "Same class";
@@ -169,12 +157,11 @@ public class RelateManyToMany extends Module {
     }
 
     public interface SpatialSeparationModes {
-        String NONE = "None";
         String CENTROID_SEPARATION = "Centroid separation";
         String SPATIAL_OVERLAP = "Spatial overlap";
         String SURFACE_SEPARATION = "Surface separation";
 
-        String[] ALL = new String[] { NONE, CENTROID_SEPARATION, SPATIAL_OVERLAP, SURFACE_SEPARATION };
+        String[] ALL = new String[] {CENTROID_SEPARATION, SPATIAL_OVERLAP, SURFACE_SEPARATION };
 
     }
 
@@ -357,12 +344,14 @@ public class RelateManyToMany extends Module {
         }
     }
 
-    static void createUnlinkedClusters() {
-
-    }
 
     public RelateManyToMany(ModuleCollection modules) {
         super("Relate many-to-many", modules);
+    }
+
+    @Override
+    public String getDescription() {
+        return "";
     }
 
     @Override
@@ -510,16 +499,14 @@ public class RelateManyToMany extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters
-                .add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));
+        parameters.add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
         parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS, this, true));
         parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME, this));
 
         parameters.add(new SeparatorP(SPATIAL_LINKING_SEPARATOR, this));
-        parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE, this, SpatialSeparationModes.SPATIAL_OVERLAP,
-                SpatialSeparationModes.ALL));
+        parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE, this, SpatialSeparationModes.SPATIAL_OVERLAP,SpatialSeparationModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
@@ -534,6 +521,8 @@ public class RelateManyToMany extends Module {
 
         parameters.add(new SeparatorP(MISCELLANEOUS_SEPARATOR, this));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
+
+        addParameterDescriptions();
 
     }
 
@@ -662,8 +651,49 @@ public class RelateManyToMany extends Module {
         return true;
     }
 
-    @Override
-    public String getDescription() {
-        return "";
+    void addParameterDescriptions() {
+      parameters.get(OBJECT_SOURCE_MODE).setDescription("Controls whether the objects from the same class should be related to each other, or whether objects from two different classes should be related.");
+
+      parameters.get(INPUT_OBJECTS_1).setDescription("First objection collection from the workspace to relate objects for.  If \""+ OBJECT_SOURCE_MODE +"\" is set to \""+ObjectSourceModes.DIFFERENT_CLASSES+"\", these objects will be related to the objects from the collection specified by \""+INPUT_OBJECTS_2+"\"; however, if set to \""+ObjectSourceModes.SAME_CLASS+"\", the objects from this collection will be related to each other.  Related objects will be given partner relationships.");
+
+      parameters.get(INPUT_OBJECTS_2).setDescription("Second object collection from the workspace to relate objects for.  This object collection will only be used if \""+ OBJECT_SOURCE_MODE +"\" is set to \""+ObjectSourceModes.DIFFERENT_CLASSES+"\", in which case these objects will be related to those from the collection specified by \""+INPUT_OBJECTS_1+"\".  Related objects will be given partner relationships.");
+
+      parameters.get(CREATE_CLUSTER_OBJECTS).setDescription("When selected, new \"cluster\" objects will be created and added to the workspace.  These objects contain no spatial information, but act as links between all objects that were related.  All objects identified as relating to each other are stored as children of the same cluster object.");
+
+      parameters.get(OUTPUT_OBJECTS_NAME).setDescription("If storing cluster objects (when \""+CREATE_CLUSTER_OBJECTS+"\" is selected), the output cluster objects will be added to the workspace with this name.");
+
+      parameters.get(SPATIAL_SEPARATION_MODE).setDescription("Controls the type of calculation used when determining which objects are related:<br><ul>"
+
+      + "<li>\"" + SpatialSeparationModes.CENTROID_SEPARATION
+      + "\" Distances are calculated from object centroid to object centroid.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+
+      + "<li>\"" + SpatialSeparationModes.SPATIAL_OVERLAP
+      + "\" The percentage of each object, which overlaps with another object is calculated.</li>"
+
+      + "<li>\"" + SpatialSeparationModes.SURFACE_SEPARATION
+      + "\" Distances are calculated between the closest points on the object surfaces.  These distances increase in magnitude the greater the minimum object-object surface distance is; however, they are assigned a positive value if the objects do not overlap and a negative value if they do (i.e. if each closest surface point is ).  For example, a closest child surface point 5px outside the object will be simply \"5px\", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as \"-5px\".  Note: Any instances where the child and parent surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
+
+      parameters.get(MAXIMUM_SEPARATION).setDescription("If \""+SPATIAL_SEPARATION_MODE+"\" is set to \""+SpatialSeparationModes.CENTROID_SEPARATION+"\" or \""+SpatialSeparationModes.SURFACE_SEPARATION+"\", this is the maximum separation two objects can have and still be related.");
+
+      parameters.get(CALIBRATED_UNITS).setDescription("Was this \"" + inputObjectsName1 + "\" object linked with a \"" + inputObjectsName2
+              + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+
+      parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \""+SPATIAL_SEPARATION_MODE+"\" is set to \""+SpatialSeparationModes.SPATIAL_OVERLAP+"\", this is the minimum percentage overlap the first object must have with the other object for the two objects to be related.");
+
+      parameters.get(MINIMUM_OVERLAP_PC_2).setDescription("If \""+SPATIAL_SEPARATION_MODE+"\" is set to \""+SpatialSeparationModes.SPATIAL_OVERLAP+"\", this is the minimum percentage overlap the second object must have with the other object for the two objects to be related.");
+
+      parameters.get(ADD_MEASUREMENT).setDescription("Add additional measurement criteria the two objects must satisfy in order to be related.");
+
+      ParameterGroup group = (ParameterGroup) parameters.get(ADD_MEASUREMENT);
+      ParameterCollection collection = group.getTemplateParameters();
+
+      collection.get(MEASUREMENT).setDescription("Measurement associated with each object that will be used for this test.");
+
+      collection.get(CALCULATION).setDescription("Controls the calculation used to compare the measurements values for the two objects being tested.  The two measurements can either be summed together or the difference between them taken.");
+
+      collection.get(MEASUREMENT_LIMIT).setDescription("The combined measurement (summed or difference, based on \""+CALCULATION+"\" parameter) must be smaller than this value for the two objects to be linked.");
+
+      parameters.get(LINK_IN_SAME_FRAME).setDescription("When selected, child and parent objects must be in the same time frame for them to be linked.");
+
     }
 }

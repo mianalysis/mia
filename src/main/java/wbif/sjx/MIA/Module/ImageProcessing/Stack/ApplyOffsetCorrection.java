@@ -14,6 +14,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -169,7 +170,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         parameters.add(new DoubleP(X_SHIFT,this,0.0));
         parameters.add(new DoubleP(Y_SHIFT,this,0.0));
         parameters.add(new DoubleP(Z_SHIFT,this,0.0));
-        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
+        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS + "\").  Otherwise, pixel units are assumed."));
 
     }
 

@@ -7,6 +7,7 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -245,7 +246,7 @@ public class RidgeDetection extends Module {
     @Override
     public String getDescription() {
         return "Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the \"<a href=\"https://imagej.net/Ridge_Detection\">Ridge Detection</a>\" plugin, which itself is based on the paper \"An Unbiased Detector of Curvilinear Structures\" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125)."
-        
+
         +"<br><br>Note: This module detects ridges in 2D, but can be run on multi-dimensional images.  For higher dimensionality images than 2D, ridge detection is performed slice-by-slice, with output objects confined to a single slice.";
 
     }
@@ -510,7 +511,9 @@ public class RidgeDetection extends Module {
 
         parameters.get(SIGMA).setDescription("Sigma of the derivatives to be applied to the input image when detecting ridges.  This is related to the width of the lines to be detected and is greater than or equal to \"width/(2*sqrt(3))\".");
 
-        parameters.get(CALIBRATED_UNITS).setDescription("Enable if spatial parameters are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.");
+        parameters.get(CALIBRATED_UNITS).setDescription("When selected, spatial values are assumed to be specified in calibrated units (as defined by the \""
+                + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                + "\").  Otherwise, pixel units are assumed.");
 
         parameters.get(EXTEND_LINE).setDescription("Lines are extended in an attempt to locate more junction points.");
 
@@ -527,6 +530,6 @@ public class RidgeDetection extends Module {
         parameters.get(ALIGNMENT_RANGE).setDescription("If linking contours, but limiting the end misalignment, this is the number of points from each contour end for which the orientation of that end is calculated.");
 
         parameters.get(MAXIMUM_END_MISALIGNMENT).setDescription("If linking contours, but limiting the end misalignment, this is the maximum permitted misalignment of each contour end.");
-        
+
     }
 }
