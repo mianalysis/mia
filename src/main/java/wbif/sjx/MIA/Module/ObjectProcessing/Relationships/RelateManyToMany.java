@@ -113,6 +113,7 @@ import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputClusterObjectsP;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -136,12 +137,14 @@ public class RelateManyToMany extends Module {
     public static final String SPATIAL_SEPARATION_MODE = "Spatial separation mode";
     public static final String MAXIMUM_SEPARATION = "Maximum separation";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String ACCEPT_ALL_INSIDE = "Accept all fully enclosed objects";
     public static final String MINIMUM_OVERLAP_PC_1 = "Minimum overlap of object 1 (%)";
     public static final String MINIMUM_OVERLAP_PC_2 = "Minimum overlap of object 2 (%)";
 
     public static final String ADDITIONAL_MEASUREMENTS_SEPARATOR = "Additional measurement settings";
     public static final String ADD_MEASUREMENT = "Add measurement";
-    public static final String MEASUREMENT = "Measurement";
+    public static final String MEASUREMENT_1 = "Measurement 1";
+    public static final String MEASUREMENT_2 = "Measurement 2";
     public static final String CALCULATION = "Calculation";
     public static final String MEASUREMENT_LIMIT = "Measurement limit";
 
@@ -161,7 +164,7 @@ public class RelateManyToMany extends Module {
         String SPATIAL_OVERLAP = "Spatial overlap";
         String SURFACE_SEPARATION = "Surface separation";
 
-        String[] ALL = new String[] {CENTROID_SEPARATION, SPATIAL_OVERLAP, SURFACE_SEPARATION };
+        String[] ALL = new String[] { CENTROID_SEPARATION, SPATIAL_OVERLAP, SURFACE_SEPARATION };
 
     }
 
@@ -216,7 +219,7 @@ public class RelateManyToMany extends Module {
 
     }
 
-    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation) {
+    static boolean testSurfaceSeparation(Obj object1, Obj object2, double maxSeparation, boolean acceptAllInside) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
             return false;
@@ -224,28 +227,38 @@ public class RelateManyToMany extends Module {
         // Calculating the separation between the two objects
         double overlap = object1.getSurfaceSeparation(object2, true);
 
+        // If accepting all inside, any negative distances are automatically accepted
+        if (acceptAllInside & overlap < 0)
+            return true;
+
+        // If not accepting all inside, test against the magnitude of the distance
+        if (!acceptAllInside)
+            overlap = Math.abs(overlap);
+
+        MIA.log.writeDebug(overlap);
+
         // Test if this point is within linking distance
         return overlap <= maxSeparation;
 
     }
 
-    static boolean testGeneric(Obj object1, Obj object2, String measurement, String calculation,
+    static boolean testGeneric(Obj object1, Obj object2, String measurement1, String measurement2, String calculation,
             double measurementLimit) {
         // If comparing objects in the same class they will eventually test themselves
         if (object1 == object2)
             return false;
 
         // Getting measurements
-        if (object1.getMeasurement(measurement) == null)
+        if (object1.getMeasurement(measurement1) == null)
             return false;
-        double measurement1 = object1.getMeasurement(measurement).getValue();
-        if (Double.isNaN(measurement1))
+        double measurementValue1 = object1.getMeasurement(measurement1).getValue();
+        if (Double.isNaN(measurementValue1))
             return false;
 
-        if (object2.getMeasurement(measurement) == null)
+        if (object2.getMeasurement(measurement2) == null)
             return false;
-        double measurement2 = object2.getMeasurement(measurement).getValue();
-        if (Double.isNaN(measurement2))
+        double measurementValue2 = object2.getMeasurement(measurement2).getValue();
+        if (Double.isNaN(measurementValue2))
             return false;
 
         // Perform calculation
@@ -254,10 +267,10 @@ public class RelateManyToMany extends Module {
             default:
                 return false;
             case Calculations.DIFFERENCE:
-                value = Math.abs(measurement1 - measurement2);
+                value = Math.abs(measurementValue1 - measurementValue2);
                 break;
             case Calculations.SUM:
-                value = measurement1 + measurement2;
+                value = measurementValue1 + measurementValue2;
                 break;
         }
 
@@ -344,7 +357,6 @@ public class RelateManyToMany extends Module {
         }
     }
 
-
     public RelateManyToMany(ModuleCollection modules) {
         super("Relate many-to-many", modules);
     }
@@ -390,10 +402,11 @@ public class RelateManyToMany extends Module {
         String spatialSeparationMode = parameters.getValue(SPATIAL_SEPARATION_MODE);
         double maximumSeparation = parameters.getValue(MAXIMUM_SEPARATION);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
+        boolean acceptAllInside = parameters.getValue(ACCEPT_ALL_INSIDE);
         double minOverlap1 = parameters.getValue(MINIMUM_OVERLAP_PC_1);
         double minOverlap2 = parameters.getValue(MINIMUM_OVERLAP_PC_2);
         ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-        LinkedHashMap<Integer,ParameterCollection> parameterCollections = parameterGroup.getCollections(false);
+        LinkedHashMap<Integer, ParameterCollection> parameterCollections = parameterGroup.getCollections(false);
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         // Skipping the module if no objects are present in one collection
@@ -430,17 +443,20 @@ public class RelateManyToMany extends Module {
                             linkable = false;
                         break;
                     case SpatialSeparationModes.SURFACE_SEPARATION:
-                        if (!testSurfaceSeparation(object1, object2, maximumSeparation))
+                        if (!testSurfaceSeparation(object1, object2, maximumSeparation, acceptAllInside))
                             linkable = false;
                         break;
                 }
 
                 // Testing additional measurements
                 for (ParameterCollection collection : parameterCollections.values()) {
-                    String measurement = collection.getValue(MEASUREMENT);
+                    String measurement1 = collection.getValue(MEASUREMENT_1);
+                    String measurement2 = objectSourceMode.equals(ObjectSourceModes.SAME_CLASS) ? measurement1
+                            : collection.getValue(MEASUREMENT_2);
+
                     String calculation = collection.getValue(CALCULATION);
                     double measurementLimit = collection.getValue(MEASUREMENT_LIMIT);
-                    if (!testGeneric(object1, object2, measurement, calculation, measurementLimit))
+                    if (!testGeneric(object1, object2, measurement1, measurement2, calculation, measurementLimit))
                         linkable = false;
                 }
 
@@ -499,25 +515,30 @@ public class RelateManyToMany extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
-        parameters.add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));
+        parameters
+                .add(new ChoiceP(OBJECT_SOURCE_MODE, this, ObjectSourceModes.DIFFERENT_CLASSES, ObjectSourceModes.ALL));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_1, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS_2, this));
         parameters.add(new BooleanP(CREATE_CLUSTER_OBJECTS, this, true));
         parameters.add(new OutputClusterObjectsP(OUTPUT_OBJECTS_NAME, this));
 
         parameters.add(new SeparatorP(SPATIAL_LINKING_SEPARATOR, this));
-        parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE, this, SpatialSeparationModes.SPATIAL_OVERLAP,SpatialSeparationModes.ALL));
+        parameters.add(new ChoiceP(SPATIAL_SEPARATION_MODE, this, SpatialSeparationModes.SPATIAL_OVERLAP,
+                SpatialSeparationModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION, this, 1.0));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
+        parameters.add(new BooleanP(ACCEPT_ALL_INSIDE, this, true));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1, this, 50.0));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2, this, 50.0));
 
         parameters.add(new SeparatorP(ADDITIONAL_MEASUREMENTS_SEPARATOR, this));
+
         ParameterCollection collection = new ParameterCollection();
-        collection.add(new ObjectMeasurementP(MEASUREMENT, this));
+        collection.add(new ObjectMeasurementP(MEASUREMENT_1, this));
+        collection.add(new ObjectMeasurementP(MEASUREMENT_2, this));
         collection.add(new ChoiceP(CALCULATION, this, Calculations.DIFFERENCE, Calculations.ALL));
         collection.add(new DoubleP(MEASUREMENT_LIMIT, this, 1));
-        parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection, 0));
+        parameters.add(new ParameterGroup(ADD_MEASUREMENT, this, collection, 0, getUpdaterAndGetter()));
 
         parameters.add(new SeparatorP(MISCELLANEOUS_SEPARATOR, this));
         parameters.add(new BooleanP(LINK_IN_SAME_FRAME, this, true));
@@ -554,6 +575,7 @@ public class RelateManyToMany extends Module {
             case SpatialSeparationModes.SURFACE_SEPARATION:
                 returnedParameters.add(parameters.getParameter(MAXIMUM_SEPARATION));
                 returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+                returnedParameters.add(parameters.getParameter(ACCEPT_ALL_INSIDE));
                 break;
             case SpatialSeparationModes.SPATIAL_OVERLAP:
                 returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC_1));
@@ -563,13 +585,6 @@ public class RelateManyToMany extends Module {
 
         returnedParameters.add(parameters.getParameter(ADDITIONAL_MEASUREMENTS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(ADD_MEASUREMENT));
-
-        // Updating measurement sources
-        String objectName = parameters.getValue(INPUT_OBJECTS_1);
-        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
-        for (ParameterCollection collection : parameterGroup.getCollections(false).values()) {
-            ((ObjectMeasurementP) collection.getParameter(MEASUREMENT)).setObjectName(objectName);
-        }
 
         returnedParameters.add(parameters.getParameter(MISCELLANEOUS_SEPARATOR));
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
@@ -652,48 +667,112 @@ public class RelateManyToMany extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(OBJECT_SOURCE_MODE).setDescription("Controls whether the objects from the same class should be related to each other, or whether objects from two different classes should be related.");
+        parameters.get(OBJECT_SOURCE_MODE).setDescription(
+                "Controls whether the objects from the same class should be related to each other, or whether objects from two different classes should be related.");
 
-      parameters.get(INPUT_OBJECTS_1).setDescription("First objection collection from the workspace to relate objects for.  If \""+ OBJECT_SOURCE_MODE +"\" is set to \""+ObjectSourceModes.DIFFERENT_CLASSES+"\", these objects will be related to the objects from the collection specified by \""+INPUT_OBJECTS_2+"\"; however, if set to \""+ObjectSourceModes.SAME_CLASS+"\", the objects from this collection will be related to each other.  Related objects will be given partner relationships.");
+        parameters.get(INPUT_OBJECTS_1)
+                .setDescription("First objection collection from the workspace to relate objects for.  If \""
+                        + OBJECT_SOURCE_MODE + "\" is set to \"" + ObjectSourceModes.DIFFERENT_CLASSES
+                        + "\", these objects will be related to the objects from the collection specified by \""
+                        + INPUT_OBJECTS_2 + "\"; however, if set to \"" + ObjectSourceModes.SAME_CLASS
+                        + "\", the objects from this collection will be related to each other.  Related objects will be given partner relationships.");
 
-      parameters.get(INPUT_OBJECTS_2).setDescription("Second object collection from the workspace to relate objects for.  This object collection will only be used if \""+ OBJECT_SOURCE_MODE +"\" is set to \""+ObjectSourceModes.DIFFERENT_CLASSES+"\", in which case these objects will be related to those from the collection specified by \""+INPUT_OBJECTS_1+"\".  Related objects will be given partner relationships.");
+        parameters.get(INPUT_OBJECTS_2).setDescription(
+                "Second object collection from the workspace to relate objects for.  This object collection will only be used if \""
+                        + OBJECT_SOURCE_MODE + "\" is set to \"" + ObjectSourceModes.DIFFERENT_CLASSES
+                        + "\", in which case these objects will be related to those from the collection specified by \""
+                        + INPUT_OBJECTS_1 + "\".  Related objects will be given partner relationships.");
 
-      parameters.get(CREATE_CLUSTER_OBJECTS).setDescription("When selected, new \"cluster\" objects will be created and added to the workspace.  These objects contain no spatial information, but act as links between all objects that were related.  All objects identified as relating to each other are stored as children of the same cluster object.");
+        parameters.get(CREATE_CLUSTER_OBJECTS).setDescription(
+                "When selected, new \"cluster\" objects will be created and added to the workspace.  These objects contain no spatial information, but act as links between all objects that were related.  All objects identified as relating to each other are stored as children of the same cluster object.");
 
-      parameters.get(OUTPUT_OBJECTS_NAME).setDescription("If storing cluster objects (when \""+CREATE_CLUSTER_OBJECTS+"\" is selected), the output cluster objects will be added to the workspace with this name.");
+        parameters.get(OUTPUT_OBJECTS_NAME)
+                .setDescription("If storing cluster objects (when \"" + CREATE_CLUSTER_OBJECTS
+                        + "\" is selected), the output cluster objects will be added to the workspace with this name.");
 
-      parameters.get(SPATIAL_SEPARATION_MODE).setDescription("Controls the type of calculation used when determining which objects are related:<br><ul>"
+        parameters.get(SPATIAL_SEPARATION_MODE).setDescription(
+                "Controls the type of calculation used when determining which objects are related:<br><ul>"
 
-      + "<li>\"" + SpatialSeparationModes.CENTROID_SEPARATION
-      + "\" Distances are calculated from object centroid to object centroid.  These distances are always positive; increasing as the distance between centroids increases.</li>"
+                        + "<li>\"" + SpatialSeparationModes.CENTROID_SEPARATION
+                        + "\" Distances are calculated from object centroid to object centroid.  These distances are always positive; increasing as the distance between centroids increases.</li>"
 
-      + "<li>\"" + SpatialSeparationModes.SPATIAL_OVERLAP
-      + "\" The percentage of each object, which overlaps with another object is calculated.</li>"
+                        + "<li>\"" + SpatialSeparationModes.SPATIAL_OVERLAP
+                        + "\" The percentage of each object, which overlaps with another object is calculated.</li>"
 
-      + "<li>\"" + SpatialSeparationModes.SURFACE_SEPARATION
-      + "\" Distances are calculated between the closest points on the object surfaces.  These distances increase in magnitude the greater the minimum object-object surface distance is; however, they are assigned a positive value if the objects do not overlap and a negative value if they do (i.e. if each closest surface point is ).  For example, a closest child surface point 5px outside the object will be simply \"5px\", whereas a closest child surface point 5px from the surface, but contained within the parent object will be recorded as \"-5px\".  Note: Any instances where the child and parent surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
+                        + "<li>\"" + SpatialSeparationModes.SURFACE_SEPARATION
+                        + "\" Distances are calculated between the closest points on the object surfaces.  These distances increase in magnitude the greater the minimum object-object surface distance is; however, they are assigned a negative value if the one of the closest surface points is inside the other object (this should only occur if one object is entirely enclosed by the other) or a positive value otherwise (i.e. if the objects are separate).  Note: Any instances where the object surfaces overlap will be recorded as \"0px\" distance.</li></ul>");
 
-      parameters.get(MAXIMUM_SEPARATION).setDescription("If \""+SPATIAL_SEPARATION_MODE+"\" is set to \""+SpatialSeparationModes.CENTROID_SEPARATION+"\" or \""+SpatialSeparationModes.SURFACE_SEPARATION+"\", this is the maximum separation two objects can have and still be related.");
+        parameters.get(MAXIMUM_SEPARATION).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
+                + SpatialSeparationModes.CENTROID_SEPARATION + "\" or \"" + SpatialSeparationModes.SURFACE_SEPARATION
+                + "\", this is the maximum separation two objects can have and still be related.");
 
-      parameters.get(CALIBRATED_UNITS).setDescription("Was this \"" + inputObjectsName1 + "\" object linked with a \"" + inputObjectsName2
-              + "\" object.  Linked objects have a value of \"1\" and unlinked objects have a value of \"0\".");
+        parameters.get(CALIBRATED_UNITS).setDescription(
+                "When selected, spatial values are assumed to be specified in calibrated units (as defined by the \""
+                        + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
+                        + "\").  Otherwise, pixel units are assumed.");
 
-      parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \""+SPATIAL_SEPARATION_MODE+"\" is set to \""+SpatialSeparationModes.SPATIAL_OVERLAP+"\", this is the minimum percentage overlap the first object must have with the other object for the two objects to be related.");
+        parameters.get(ACCEPT_ALL_INSIDE)
+                .setDescription("When selected and \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
+                        + SpatialSeparationModes.SURFACE_SEPARATION
+                        + "\", any instances of objects fully enclosed within another are accepted as being related.  Otherwise, the absolute distance between object surfaces will be used.");
 
-      parameters.get(MINIMUM_OVERLAP_PC_2).setDescription("If \""+SPATIAL_SEPARATION_MODE+"\" is set to \""+SpatialSeparationModes.SPATIAL_OVERLAP+"\", this is the minimum percentage overlap the second object must have with the other object for the two objects to be related.");
+        parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
+                + SpatialSeparationModes.SPATIAL_OVERLAP
+                + "\", this is the minimum percentage overlap the first object must have with the other object for the two objects to be related.");
 
-      parameters.get(ADD_MEASUREMENT).setDescription("Add additional measurement criteria the two objects must satisfy in order to be related.");
+        parameters.get(MINIMUM_OVERLAP_PC_2).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
+                + SpatialSeparationModes.SPATIAL_OVERLAP
+                + "\", this is the minimum percentage overlap the second object must have with the other object for the two objects to be related.");
 
-      ParameterGroup group = (ParameterGroup) parameters.get(ADD_MEASUREMENT);
-      ParameterCollection collection = group.getTemplateParameters();
+        parameters.get(ADD_MEASUREMENT).setDescription(
+                "Add additional measurement criteria the two objects must satisfy in order to be related.");
 
-      collection.get(MEASUREMENT).setDescription("Measurement associated with each object that will be used for this test.");
+        ParameterGroup group = (ParameterGroup) parameters.get(ADD_MEASUREMENT);
+        ParameterCollection collection = group.getTemplateParameters();
 
-      collection.get(CALCULATION).setDescription("Controls the calculation used to compare the measurements values for the two objects being tested.  The two measurements can either be summed together or the difference between them taken.");
+        collection.get(MEASUREMENT_1).setDescription(
+                "Measurement associated with objects from the first collection that will be used for this test.");
 
-      collection.get(MEASUREMENT_LIMIT).setDescription("The combined measurement (summed or difference, based on \""+CALCULATION+"\" parameter) must be smaller than this value for the two objects to be linked.");
+        collection.get(MEASUREMENT_2).setDescription(
+                "Measurement associated with objects from the second collection that will be used for this test.");
 
-      parameters.get(LINK_IN_SAME_FRAME).setDescription("When selected, child and parent objects must be in the same time frame for them to be linked.");
+        collection.get(CALCULATION).setDescription(
+                "Controls the calculation used to compare the measurements values for the two objects being tested.  The two measurements can either be summed together or the difference between them taken.");
 
+        collection.get(MEASUREMENT_LIMIT).setDescription("The combined measurement (summed or difference, based on \""
+                + CALCULATION + "\" parameter) must be smaller than this value for the two objects to be linked.");
+
+        parameters.get(LINK_IN_SAME_FRAME).setDescription(
+                "When selected, child and parent objects must be in the same time frame for them to be linked.");
+
+    }
+
+    private ParameterUpdaterAndGetter getUpdaterAndGetter() {
+        return new ParameterUpdaterAndGetter() {
+
+            @Override
+            public ParameterCollection updateAndGet(ParameterCollection params) {
+                ParameterCollection returnedParameters = new ParameterCollection();
+
+                String objectName1 = parameters.getValue(INPUT_OBJECTS_1);
+                String objectName2 = parameters.getValue(INPUT_OBJECTS_2);
+
+                returnedParameters.add(params.getParameter(MEASUREMENT_1));
+                ((ObjectMeasurementP) params.getParameter(MEASUREMENT_1)).setObjectName(objectName1);
+
+                switch ((String) parameters.getValue(OBJECT_SOURCE_MODE)) {
+                    case ObjectSourceModes.DIFFERENT_CLASSES:
+                        returnedParameters.add(params.getParameter(MEASUREMENT_2));
+                        ((ObjectMeasurementP) params.getParameter(MEASUREMENT_2)).setObjectName(objectName2);
+                        break;
+                }
+
+                returnedParameters.add(params.getParameter(CALCULATION));
+                returnedParameters.add(params.getParameter(MEASUREMENT_LIMIT));
+
+                return returnedParameters;
+
+            }
+        };
     }
 }
