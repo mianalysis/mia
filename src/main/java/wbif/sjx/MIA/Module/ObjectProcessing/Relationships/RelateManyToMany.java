@@ -100,6 +100,8 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateOneToOne;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -363,7 +365,7 @@ public class RelateManyToMany extends Module {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can be linked to an unlimited number of other objects (see \""+ new RelateManyToOne(null).getName() +"\" and \""+ new RelateOneToOne(null).getName() +"\" modules for alternatives).  As such, the assigned relationships can form a network of relationships, with each object connected to multiple others.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with these relationship (e.g. a record of whether each object was linked) are stored as measurements of the relevant object.";
     }
 
     @Override

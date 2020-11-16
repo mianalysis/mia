@@ -11,6 +11,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToMany;
+import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateOneToOne;
 import wbif.sjx.MIA.Module.Deprecated.RelateObjects;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
@@ -501,7 +503,7 @@ public class RelateManyToOne extends Module {
 
     @Override
     public String getDescription() {
-        return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object.  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
+        return "Relate objects of two classes based on a variety of metrics (e.g. spatial overlap or proximity).  The assigned relationships are of the form many-to-one, where many input \"child\" objects can be related to at most, one \"parent\" object (see \""+ new RelateManyToMany(null).getName() +"\" and \""+ new RelateOneToOne(null).getName() +"\" modules for alternatives).  Measurements associated with this relationship (e.g. distance from child to parent surface) are stored as measurements of the relevant child object.";
     }
 
     @Override
