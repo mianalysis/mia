@@ -322,7 +322,9 @@ public class RelateOneToOne extends Module {
 
     @Override
     public String getDescription() {
-        return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can only be linked to one other object (see \""+ new RelateManyToMany(null).getName() +"\" and \""+ new RelateManyToOne(null).getName() +"\" modules for alternatives).  The assignments are chosen to give the optimal overall relationship connectivity.  As such, an object may not be linked to its own best match if that best match is itself closer still to another object.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with this relationship (e.g. distance to the related object) are stored as measurements of the relevant object.";
+        return "Relate objects of two classes based on spatial proximity or overlap.  With this module, each object from a collection can only be linked to one other object (see \""
+                + new RelateManyToMany(null).getName() + "\" and \"" + new RelateManyToOne(null).getName()
+                + "\" modules for alternatives).  The assignments are chosen to give the optimal overall relationship connectivity.  As such, an object may not be linked to its own best match if that best match is itself closer still to another object.  Related objects are assigned partner relationships and can optionally also be related by a common cluster (parent) object.  Measurements associated with this relationship (e.g. distance to the related object) are stored as measurements of the relevant object.";
 
     }
 
@@ -544,12 +546,17 @@ public class RelateOneToOne extends Module {
     }
 
     void addParameterDescriptions() {
-        parameters.get(INPUT_OBJECTS_1)
-                .setDescription("First objection collection from the workspace to relate objects for.  These objects will be related to the objects from the collection specified by \""
-                        + INPUT_OBJECTS_2 + "\".  Related objects will be given partner relationships and optionally (depending on the state of \""+CREATE_CLUSTER_OBJECTS+"\") be related by a common parent cluster object.");
+        parameters.get(INPUT_OBJECTS_1).setDescription(
+                "First objection collection from the workspace to relate objects for.  These objects will be related to the objects from the collection specified by \""
+                        + INPUT_OBJECTS_2
+                        + "\".  Related objects will be given partner relationships and optionally (depending on the state of \""
+                        + CREATE_CLUSTER_OBJECTS + "\") be related by a common parent cluster object.");
 
-        parameters.get(INPUT_OBJECTS_2).setDescription("Second objection collection from the workspace to relate objects for.  These objects will be related to the objects from the collection specified by \""
-                + INPUT_OBJECTS_1 + "\".  Related objects will be given partner relationships and optionally (depending on the state of \""+CREATE_CLUSTER_OBJECTS+"\") be related by a common parent cluster object.");
+        parameters.get(INPUT_OBJECTS_2).setDescription(
+                "Second objection collection from the workspace to relate objects for.  These objects will be related to the objects from the collection specified by \""
+                        + INPUT_OBJECTS_1
+                        + "\".  Related objects will be given partner relationships and optionally (depending on the state of \""
+                        + CREATE_CLUSTER_OBJECTS + "\") be related by a common parent cluster object.");
 
         parameters.get(CREATE_CLUSTER_OBJECTS).setDescription(
                 "When selected, new \"cluster\" objects will be created and added to the workspace.  These objects contain no spatial information, but act as links between all objects that were related.  Both objects identified as relating to each other are stored as children of the same cluster object.");
@@ -567,21 +574,21 @@ public class RelateOneToOne extends Module {
                         + "<li>\"" + RelationshipModes.SPATIAL_OVERLAP
                         + "\" The percentage of each object, which overlaps with another object is calculated.</li>");
 
-        parameters.get(MAXIMUM_SEPARATION).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
-                + SpatialSeparationModes.CENTROID_SEPARATION + "\" or \"" + SpatialSeparationModes.SURFACE_SEPARATION
-                + "\", this is the maximum separation two objects can have and still be related.");
+        parameters.get(MAXIMUM_SEPARATION)
+                .setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \"" + RelationshipModes.CENTROID_SEPARATION
+                        + "\", this is the maximum separation two objects can have and still be related.");
 
         parameters.get(CALIBRATED_UNITS).setDescription(
                 "When selected, spatial values are assumed to be specified in calibrated units (as defined by the \""
                         + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS
                         + "\").  Otherwise, pixel units are assumed.");
 
-        parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
-                + SpatialSeparationModes.SPATIAL_OVERLAP
+        parameters.get(MINIMUM_OVERLAP_PC_1).setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \""
+                + RelationshipModes.SPATIAL_OVERLAP
                 + "\", this is the minimum percentage overlap the first object must have with the other object for the two objects to be related.");
 
-        parameters.get(MINIMUM_OVERLAP_PC_2).setDescription("If \"" + SPATIAL_SEPARATION_MODE + "\" is set to \""
-                + SpatialSeparationModes.SPATIAL_OVERLAP
+        parameters.get(MINIMUM_OVERLAP_PC_2).setDescription("If \"" + RELATIONSHIP_MODE + "\" is set to \""
+                + RelationshipModes.SPATIAL_OVERLAP
                 + "\", this is the minimum percentage overlap the second object must have with the other object for the two objects to be related.");
 
     }
