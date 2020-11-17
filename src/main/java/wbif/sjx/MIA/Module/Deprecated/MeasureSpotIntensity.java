@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
@@ -6,6 +6,7 @@ import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
+import wbif.sjx.MIA.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -44,18 +45,7 @@ public class MeasureSpotIntensity extends Module {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
-    public MeasureSpotIntensity(ModuleCollection modules) {
-        super("Measure spot intensity", modules);
-    }
-
-    public interface RadiusSources {
-        String FIXED_VALUE = "Fixed value";
-        String MEASUREMENT = "Measurement";
-        String PARENT_MEASUREMENT = "Parent measurement";
-
-        String[] ALL = new String[] { FIXED_VALUE, MEASUREMENT, PARENT_MEASUREMENT };
-
-    }
+    public interface RadiusSources extends GetLocalObjectRegion.RadiusSources {}
 
     public interface Measurements {
         String MEAN = "MEAN";
@@ -66,18 +56,24 @@ public class MeasureSpotIntensity extends Module {
 
     }
 
-    private String getFullName(String imageName, String measurement) {
+    public static String getFullName(String imageName, String measurement) {
         return "SPOT_INTENSITY // " + imageName + "_" + measurement;
+    }
+
+    public MeasureSpotIntensity(ModuleCollection modules) {
+        super("Measure spot intensity", modules);
     }
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
     public String getDescription() {
-        return "Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements."
+        return "DEPRECATED: Please use separate \""+ new GetLocalObjectRegion(null).getName() +"\" and \""+ new MeasureObjectIntensity(null).getName() +"\" modules."
+        
+                + "<br><br>Measures the intensity of an image for a circular (2D object*) or spherical (3D object*) region coincident with the mean centroid of each object in a specified object collection.  Measurements are associated with the corresponding input objects.  The radius of the measurement region can be specified as a fixed value or determined on an object-by-object basis from associated object (or parent) measurements."
 
                 + "<br><br>Note: This module differs from the \"" + new MeasureObjectIntensity(null).getName()
                 + "\" module, which measures the intensity of all coordinates of an object."
@@ -137,11 +133,10 @@ public class MeasureSpotIntensity extends Module {
                     break;
                 case RadiusSources.PARENT_MEASUREMENT:
                     Obj parentObject = inputObject.getParent(parentObjectsName);
-                    if (parentObject == null) {
+                    if (parentObject == null)
                         radius = Double.NaN;
-                        break;
-                    }
-                    radius = parentObject.getMeasurement(parentRadiusMeasurement).getValue();
+                    else
+                        radius = parentObject.getMeasurement(parentRadiusMeasurement).getValue();
                     break;
             }
 
@@ -193,6 +188,7 @@ public class MeasureSpotIntensity extends Module {
         parameters.add(new ObjectMeasurementP(RADIUS_MEASUREMENT, this));
         parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
         parameters.add(new ObjectMeasurementP(PARENT_RADIUS_MEASUREMENT, this));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR, this));
         parameters.add(new BooleanP(MEASURE_MEAN, this, true));
@@ -215,7 +211,6 @@ public class MeasureSpotIntensity extends Module {
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         returnedParameters.add(parameters.getParameter(SPOT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RADIUS_SOURCE));
@@ -237,6 +232,7 @@ public class MeasureSpotIntensity extends Module {
                         .setObjectName(parentObjectsName);
                 break;
         }
+        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MEASURE_MEAN));

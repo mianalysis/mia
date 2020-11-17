@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.ObjectMeasurements.Intensity;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import wbif.sjx.MIA.Module.ModuleTest;
 
