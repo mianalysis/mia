@@ -36,24 +36,25 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationGenerator {
     public static void main(String[] args) {
-        try {
-            // Clearing existing HTML files
-            deleteFolders(new File("docs/html/"));
+        System.out.println("DOCUMENTATION AUTOGENERATION DISABLED");
+        // try {
+        //     // Clearing existing HTML files
+        //     deleteFolders(new File("docs/html/"));
 
-            // Creating README.md
-            generateReadmeMarkdown();
+        //     // Creating README.md
+        //     generateReadmeMarkdown();
 
-            // Creating website content
-            generateIndexPage();
-            generateGettingStartedPage();
-            generateModuleList();
-            generateModulePages();
-            generateMacroList();
-            generateMacroPages();
+        //     // Creating website content
+        //     generateIndexPage();
+        //     generateGettingStartedPage();
+        //     generateModuleList();
+        //     generateModulePages();
+        //     generateMacroList();
+        //     generateMacroPages();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
     }
 
     private static void deleteFolders(File root) {
