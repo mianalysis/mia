@@ -1,7 +1,9 @@
-.footer {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    bottom: 0;
-        
+.mia-name, .mia-name:link, .mia-name:visited, .mia-name:hover, .mia-name:active {
+    color:#424242;
+    font-family:'Calibri';
+    text-decoration: none;
+}
+
+footer {
+    background-color: #424242;
 }

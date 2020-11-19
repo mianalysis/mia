@@ -24,7 +24,10 @@
   <!-- Navigation bar -->
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#"><img height="32" src="img/logo.png"></a>
+      <a class="navbar-brand d-none d-sm-block mia-name" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;"></a>
       <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
         <span class="navbar-toggler-icon"></span>
       </buton>
@@ -41,9 +44,6 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Modules</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Macros</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">About</a>
@@ -102,21 +102,23 @@
 
 
   <!-- Footer -->
-  <div class="footer">
-    <div class="container-fluid bg-dark padding">
+  <footer>
+    <div class="container-fluid padding">
       <div class="row text-center text-light align-items-center">
-          <div class="col-md-6 mt-4 mb-4">
-            <a href="http://www.bristol.ac.uk/wolfson-bioimaging/"><h5>Developed @ <img src="img/wbif.png"></h5></a>
-            </h5>
-          </div>
-          <div class="col-md-6">
-            <a href="http://www.bristol.ac.uk/wolfson-bioimaging/"><h5>MIA @ <img src="img/GitHub-Mark-32px.png"><img
-                src="img/GitHub_Logo.png" height="32px"></h5></a>
-            </h5>
-          </div>
+        <div class="col-sm-6 mt-4 mb-sm-4">
+          <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
+            <img height="48" src="img/wbif.png">
+          </a>
+        </div>
+        <div class="col-sm-6 mt-4 mb-4 align-items-center">
+          <a href="https://github.com/sjcross/MIA/">
+            <img height="48" src="img/GitHub-Mark-Light-64px.png"><img height="32" src="img/GitHub_Logo_White.png"
+              height="32px">
+          </a>
+        </div>
       </div>
     </div>
-    </footer>
+  </footer>
 
 </body>
 

@@ -12,7 +12,7 @@
    inkscape:export-xdpi="9.4073963"
    inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\logo.png"
    sodipodi:docname="Logo.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    id="svg8"
    version="1.1"
    viewBox="0 0 210 297"
@@ -379,6 +379,22 @@
          x="-339.85941"
          y="785.69849" />
     </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="a">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5455"
+         d="M 360,1945 V 5440 H 12440 V 1945 Z" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="a-7">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5455-5"
+         d="M 360,1945 V 5440 H 12440 V 1945 Z" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      inkscape:document-rotation="0"
@@ -390,18 +406,18 @@
      inkscape:snap-intersection-paths="true"
      inkscape:guide-bbox="true"
      showguides="false"
-     inkscape:window-maximized="0"
-     inkscape:window-y="0"
-     inkscape:window-x="114"
-     inkscape:window-height="1041"
-     inkscape:window-width="1274"
+     inkscape:window-maximized="1"
+     inkscape:window-y="-9"
+     inkscape:window-x="69"
+     inkscape:window-height="1051"
+     inkscape:window-width="1842"
      inkscape:snap-global="false"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="4334.1627"
-     inkscape:cx="1944.5571"
-     inkscape:zoom="0.3535534"
+     inkscape:cy="-4151.5916"
+     inkscape:cx="283.32847"
+     inkscape:zoom="0.1767767"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -489,6 +505,13 @@
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
     <rect
+       style="opacity:0.47000002;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.27013958;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6757"
+       width="336.75958"
+       height="139.19395"
+       x="386.151"
+       y="843.29889" />
+    <rect
        style="fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:1.5023"
        id="rect3379-0"
        width="637.61298"
@@ -526,8 +549,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-0-3"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-7-5"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -543,8 +565,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-9"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>    </g>
     <g
        transform="translate(-249.95061,237.56593)"
        id="g1194-4">
@@ -564,8 +585,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-7-9"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-71"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -581,8 +601,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-6"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>
-      <text
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>      <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:0.264583;stroke-opacity:1"
          x="-307.68634"
@@ -624,8 +643,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-2-0"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-0"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -641,8 +659,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-26"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>    </g>
     <rect
        inkscape:export-filename="F:\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_wide_32.png"
        inkscape:export-ydpi="6.7761564"
@@ -672,8 +689,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-2"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -689,8 +705,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>    </g>
     <g
        transform="translate(-14.576158,-46.868543)"
        id="g1061">
@@ -710,8 +725,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-0"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-7"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -727,8 +741,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>    </g>
     <g
        transform="translate(41.226849,-28.675191)"
        id="g1194">
@@ -748,8 +761,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-7"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -765,8 +777,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>
-      <text
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>      <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:0.264583;stroke-opacity:1"
          x="-307.68634"
@@ -1283,8 +1294,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.333px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.333px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>    </g>
     <image
        inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\wbif.png"
        inkscape:export-ydpi="20.069113"
@@ -1366,8 +1376,7 @@
          id="flowPara4801"
          style="font-size:40px" /><flowPara
          style="font-size:40px"
-         id="flowPara1794" /></flowRoot>
-    <path
+         id="flowPara1794" /></flowRoot>    <path
        inkscape:export-ydpi="40.138256"
        inkscape:export-xdpi="40.138256"
        transform="matrix(1.0685267,0,0,1.0685267,-459.87351,156.71379)"
@@ -1456,8 +1465,7 @@
            width="2722"
            id="rect910-6-1" /></flowRegion><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:133.333px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1"
-         id="flowPara912-6-3">Modular Image Analysis</flowPara></flowRoot>
-    <rect
+         id="flowPara912-6-3">Modular Image Analysis</flowPara></flowRoot>    <rect
        inkscape:export-ydpi="40.16"
        inkscape:export-xdpi="40.16"
        y="1552.3033"
@@ -1485,8 +1493,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-0-1"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Initialising modules</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-7-71"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -1502,8 +1509,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-5-2"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Initialising modules</flowPara></flowRoot>    </g>
     <g
        transform="translate(-9.7287509,484.09322)"
        id="g1194-43">
@@ -1523,8 +1529,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-7-5"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Detecting modules</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-4"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -1540,8 +1545,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-1"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>
-      <text
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Detecting modules</flowPara></flowRoot>      <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;opacity:0.36;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:0.264583;stroke-opacity:1"
          x="-307.68634"
@@ -1583,8 +1587,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.33858299;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-2-8"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>
-      <flowRoot
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1;stroke:#404040;stroke-width:11.3386;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Creating interface</flowPara></flowRoot>      <flowRoot
          xml:space="preserve"
          id="flowRoot906-1-4-4-3-7-9"
          style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
@@ -1600,8 +1603,7 @@
              y="3848.5198"
              style="font-size:133.33332825px;fill:#ffffff;fill-opacity:1" /></flowRegion><flowPara
            id="flowPara912-6-2-1-6-8-58"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>
-    </g>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.6667px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#ffffff;fill-opacity:1">Creating interface</flowPara></flowRoot>    </g>
     <path
        inkscape:export-ydpi="40.138256"
        inkscape:export-xdpi="40.138256"
@@ -1731,65 +1733,58 @@
          inkscape:export-ydpi="12.090315" />
     </g>
     <g
-       inkscape:export-ydpi="31.357988"
-       inkscape:export-xdpi="31.357988"
-       inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\logo.png"
-       id="g1173">
-      <g
-         transform="translate(588.64982,416.28479)"
-         inkscape:export-ydpi="20.069113"
-         inkscape:export-xdpi="20.069113"
-         inkscape:export-filename="C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_wide_fade_35.png"
-         clip-path="url(#clipPath1236-2-73)"
-         id="g1186-2-5">
-        <path
-           sodipodi:nodetypes="ccccccccccc"
-           style="fill:#42b7d9;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           d="m -350.01457,884.28751 56.97662,-98.6847 12.32617,23.58006 13.86717,-23.78321 57.11734,98.93516 c -0.01,0.008 -20.28228,0.066 -20.28228,0.066 l -36.8917,-63.89958 -13.78905,23.8828 -12.86327,-22.68945 -36.16895,62.64844 z"
-           id="path981-3-5"
-           inkscape:connector-curvature="0" />
-        <path
-           sodipodi:nodetypes="ccccc"
-           style="fill:#e98e32;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           d="m -323.95095,884.34303 30.35639,-52.58009 10.0039,17.64453 -20.14968,34.90215 c 0,0 -20.21061,0.0334 -20.21061,0.0334 z"
-           id="path983-6-3"
-           inkscape:connector-curvature="0" />
-        <path
-           sodipodi:nodetypes="ccccccc"
-           style="fill:#59d844;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           d="m -298.00761,884.37706 31.1064,-53.87584 31.14613,53.84181 c 0,0 -21.66858,-2e-5 -21.63613,0.0562 l -10.21898,-17.70073 -10.21865,17.70014 z"
-           id="path985-1-2"
-           inkscape:connector-curvature="0" />
-        <rect
-           style="opacity:1;fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:8.31368;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-           id="rect1171-2-1"
-           width="119.50387"
-           height="98.740211"
-           x="-350.00467"
-           y="785.53015"
-           inkscape:export-filename="C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_left_47.png"
-           inkscape:export-xdpi="12.090315"
-           inkscape:export-ydpi="12.090315" />
-      </g>
-      <flowRoot
-         inkscape:export-ydpi="20.069113"
-         inkscape:export-xdpi="20.069113"
-         transform="matrix(0.26458333,0,0,0.26458333,652.27238,196.23185)"
-         style="font-style:normal;font-weight:normal;font-size:160px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#404040;fill-opacity:1;stroke:none"
-         id="flowRoot906-1-7"
-         xml:space="preserve"><flowRegion
-           style="fill:#404040;fill-opacity:1"
-           id="flowRegion908-3-3"><rect
-             style="fill:#404040;fill-opacity:1;"
-             y="3848.5198"
-             x="-1046"
-             height="401.99976"
-             width="2722"
-             id="rect910-6-3" /></flowRegion><flowPara
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1"
-           id="flowPara912-6-7">Modular Image Analysis</flowPara></flowRoot>
+       id="g1186-2-5"
+       clip-path="url(#clipPath1236-2-73)"
+       inkscape:export-filename="C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_wide_fade_35.png"
+       inkscape:export-xdpi="20.069113"
+       inkscape:export-ydpi="20.069113"
+       transform="translate(588.64982,416.28479)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path981-3-5"
+         d="m -350.01457,884.28751 56.97662,-98.6847 12.32617,23.58006 13.86717,-23.78321 57.11734,98.93516 c -0.01,0.008 -20.28228,0.066 -20.28228,0.066 l -36.8917,-63.89958 -13.78905,23.8828 -12.86327,-22.68945 -36.16895,62.64844 z"
+         style="fill:#42b7d9;fill-opacity:1;stroke:none;stroke-width:0.26458299px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path983-6-3"
+         d="m -323.95095,884.34303 30.35639,-52.58009 10.0039,17.64453 -20.14968,34.90215 c 0,0 -20.21061,0.0334 -20.21061,0.0334 z"
+         style="fill:#e98e32;fill-opacity:1;stroke:none;stroke-width:0.26458299px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path985-1-2"
+         d="m -298.00761,884.37706 31.1064,-53.87584 31.14613,53.84181 c 0,0 -21.66858,-2e-5 -21.63613,0.0562 l -10.21898,-17.70073 -10.21865,17.70014 z"
+         style="fill:#59d844;fill-opacity:1;stroke:none;stroke-width:0.26458299px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         sodipodi:nodetypes="ccccccc" />
+      <rect
+         inkscape:export-ydpi="12.090315"
+         inkscape:export-xdpi="12.090315"
+         inkscape:export-filename="C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\main\resources\Icons\Logo_left_47.png"
+         y="785.53015"
+         x="-350.00467"
+         height="98.740211"
+         width="119.50387"
+         id="rect1171-2-1"
+         style="opacity:1;fill:#ffffff;fill-opacity:0;stroke:none;stroke-width:8.3136797;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" />
     </g>
-    <g
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot906-1-7"
+       style="font-style:normal;font-weight:normal;font-size:160px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#404040;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,652.27238,196.23185)"
+       inkscape:export-xdpi="20.069113"
+       inkscape:export-ydpi="20.069113"><flowRegion
+         id="flowRegion908-3-3"
+         style="fill:#404040;fill-opacity:1"><rect
+           id="rect910-6-3"
+           width="2722"
+           height="401.99976"
+           x="-1046"
+           y="3848.5198"
+           style="fill:#404040;fill-opacity:1" /></flowRegion><flowPara
+         id="flowPara912-6-7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>    <g
        transform="matrix(2.4302303,0,0,2.4302303,-1318.5366,-595.90086)"
        id="g1173-4"
        inkscape:export-filename="D:\Documents\Java Projects\MIA\docs\img\logo.png"
@@ -1847,7 +1842,34 @@
              y="3848.5198"
              style="fill:#404040;fill-opacity:1;" /></flowRegion><flowPara
            id="flowPara912-6-7-1"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Calibri;-inkscape-font-specification:Calibri;fill:#404040;fill-opacity:1">Modular Image Analysis</flowPara></flowRoot>    </g>
+    <g
+       id="g5480"
+       transform="matrix(0.12110559,0,0,0.12110559,450.22461,867.23334)"
+       inkscape:export-filename="C:\Users\steph\Documents\Java Projects\MIA\docs\img\wbif.png"
+       inkscape:export-xdpi="20.069128"
+       inkscape:export-ydpi="20.069128">
+      <g
+         id="g5462"
+         transform="matrix(0.13333,0,0,-0.13333,0,800)"
+         clip-path="url(#a-7)"
+         style="fill:#ffffff">
+        <path
+           id="path5460"
+           d="m 4680.64,2712.25 h 222.57 c 241.18,0 362.8,-162.9 362.8,-321.6 0,-160.71 -78.34,-329.72 -350.4,-329.72 -173.17,0 -234.97,55.7 -234.97,212.28 z m -171.01,-498.77 c 0,-129.95 -33.02,-169.05 -201.96,-169.05 h -47.49 v -39.16 h 754.34 c 331.89,0 445.18,228.78 445.18,391.62 0,160.71 -113.29,286.49 -306.99,344.19 v 4.13 c 138.08,24.76 234.89,133.94 234.89,251.38 0,99 -41.19,169.12 -125.72,228.78 -74.21,53.64 -232.91,80.46 -414.24,80.46 -39.22,0 -195.82,-2.02 -309.25,-6.24 -59.71,-2.05 -201.96,-10.31 -259.67,-12.27 v -39.22 h 72.16 c 144.25,0 158.75,-61.82 158.75,-179.26 z m 171.01,1047 c 51.53,2.07 136.09,6.2 181.38,6.2 253.52,0 340.07,-131.93 340.07,-276.23 0,-160.77 -98.95,-239.05 -296.77,-239.05 h -224.68 v 509.08 m 1343.89,-678.1 c -47.48,0 -78.4,-2.04 -127.84,4.1 v 676.07 c 37.08,4.13 63.88,4.13 103.07,4.13 317.6,0 404.04,-148.48 404.04,-340.09 0,-247.32 -150.33,-344.21 -379.27,-344.21 z m 1522.95,665.72 v 39.22 h -500.85 v -39.22 c 115.4,-6.14 154.62,-37.03 154.62,-148.37 v -878.04 c 0,-133.93 -25.49,-168.84 -143.49,-176.53 -157.2,8.26 -223.95,69.93 -336.74,182.64 l -162.66,162.85 c -96.76,96.87 -158.61,154.65 -234.88,214.39 169.01,49.43 274.01,179.33 274.01,333.88 0,210.24 -171.01,366.91 -552.37,366.91 -134.05,0 -175.28,-2.02 -259.75,-6.24 -84.48,-4.06 -210.25,-12.27 -259.69,-12.27 v -39.22 h 45.36 c 119.53,0 154.57,-37.03 154.57,-164.91 v -867.7 c 0,-138.15 -43.32,-171.06 -164.88,-171.06 h -35.05 v -39.16 h 583.39 v 39.16 h -47.46 c -115.48,0 -164.92,30.94 -164.92,154.6 v 348.33 c 32.99,-2.06 59.77,-4.2 105.13,-4.2 55.72,0 88.69,2.14 140.27,4.2 49.5,-33 121.69,-92.72 212.34,-183.44 L 6490.4,2227.8 c 178.2,-178.31 254.22,-234.67 589.84,-222.53 h 467.24 v 39.16 c -142.21,0 -175.16,41.21 -175.16,162.81 v 873.89 c 0,138.1 45.36,166.97 175.16,166.97 m 140.15,-929.54 c 43.34,-183.47 187.53,-290.59 348.32,-290.59 138.12,0 284.36,80.33 284.36,243.15 0,296.84 -661.54,387.51 -661.54,748.17 0,171.14 156.65,298.9 366.91,298.9 173.02,0 208.14,-51.51 280.3,-51.51 16.42,0 24.66,4.11 37.07,20.64 h 32.97 l 35.01,-261.8 h -35.01 c -57.73,148.37 -189.61,243.17 -331.87,243.17 -136.06,0 -230.85,-78.26 -230.85,-193.71 0,-292.69 661.63,-371.06 661.63,-750.19 0,-202.01 -179.36,-352.5 -420.45,-352.5 -113.41,0 -257.56,55.68 -286.44,55.68 -18.57,0 -33.05,-10.27 -41.25,-22.7 h -35.05 l -43.22,313.29 h 39.11 m 1580.88,-123.68 c 0,-111.35 36.99,-150.45 162.72,-150.45 h 76.36 v -39.16 h -649.31 v 39.16 h 76.33 c 125.71,0 162.75,39.1 162.75,150.45 V 3213.01 H 8738.7 c -82.37,0 -119.5,-47.3 -150.47,-228.7 h -37.03 l 32.98,333.88 h 39.12 c 2.12,-12.36 10.36,-20.65 22.69,-24.73 12.4,-4.18 26.83,-6.14 41.21,-6.14 h 991.39 c 28.88,0 59.79,6.14 63.97,30.87 h 39.08 l 33.04,-333.88 h -37.16 c -30.86,181.4 -67.98,228.7 -150.36,228.7 H 9268.51 V 2194.88 m 2055.19,486.43 c 0,370.98 -333.9,636.88 -723.4,636.88 -439,0 -754.39,-290.59 -754.39,-700.74 0,-385.5 340.19,-645.16 744.09,-645.16 399.8,0 733.7,292.67 733.7,709.02 z m -193.7,-67.99 c 0,-292.65 -160.7,-589.42 -496.7,-589.42 -331.9,0 -593.6,271.95 -593.6,657.41 0,247.36 144.2,585.37 507,585.37 340.1,0 583.3,-270.09 583.3,-653.36 m 1151.4,-608.05 H 11360 v 39.16 h 68 c 94.8,0 129.9,30.94 129.9,136.05 v 913.11 c 0,109.18 -33,154.51 -162.8,154.51 h -28.9 v 39.22 h 608 v -39.22 h -76.3 c -133.9,0 -169,-14.42 -169,-142.23 v -950.11 c 0,-55.67 22.8,-76.31 82.5,-76.31 h 302.9 c 121.6,0 158.7,47.44 288.6,226.72 h 37.1 l -158.6,-300.9 M 2653.15,3876.48 c -1.5,119.97 -42.22,365.17 -329.22,504.33 291.44,-92.6 431.61,-338.83 445.95,-522.55 305.96,-60.99 577.48,-204.98 1018.35,-52.92 l 1.54,0.96 c 0,0 -580.16,-5.27 -822.77,170.23 125.31,-4.73 269.53,23.64 316.8,94.57 50.38,75.57 55.59,153.62 179.7,157.61 69.73,2.26 306.18,-15.39 330.98,331.8 -75.66,-127.68 -157.6,-180.48 -281.35,-148.96 -78.99,20.13 -223.19,80.57 -326.25,-42.55 -85.12,-101.66 -176.52,-154.47 -322.32,-138.71 58.32,78.81 927.57,1207.35 927.57,1207.35 0,0 -1113.58,-893.7 -1175.03,-945.7 -11.82,163.13 37.03,223.02 102.44,294.74 53.52,58.67 146.57,138.12 72.49,305.78 -59.87,135.55 -52,217.51 111.14,347.54 -130.04,-9.46 -328.47,-96.92 -304.99,-335.72 14.18,-144.22 -88.01,-156.7 -125.32,-177.32 -96.93,-53.58 -109.55,-209.64 -112.69,-330.99 -11.04,39.4 -152.07,645.87 -201.72,842.1 -0.04,-0.11 -0.02,-1631.77 -0.02,-1631.77 h 3.74 c 188.99,74.42 346.21,85.81 490.98,70.18 m 2769.81,880.8 v -29.03 c -102.39,-1.53 -139.04,-42.79 -139.04,-140.62 v -412.65 c 0,-189.52 -120.78,-392.76 -452.42,-392.76 -291.91,0 -441.68,166.58 -441.68,385.12 v 446.28 c 0,97.81 -27.52,113.1 -131.43,114.63 v 29.03 h 392.78 v -29.03 h -13.77 c -84.03,0 -120.72,-22.94 -120.72,-111.59 V 4191.8 c 0,-206.34 120.72,-330.14 348.44,-330.14 172.71,0 348.48,71.85 348.48,331.67 v 356.1 c 0,146.72 -22.92,172.7 -149.79,178.82 v 29.03 h 359.15 m 200.86,-817.66 c 0,-84.05 19.86,-103.93 102.39,-103.93 v -29.03 h -307.18 v 29.03 c 67.24,0 102.39,36.69 102.39,96.29 v 320.95 c 0,56.54 -6.12,67.25 -45.87,74.9 l -51.95,10.68 v 24.46 l 175.76,64.19 h 24.46 v -119.21 c 102.39,64.19 187.98,120.75 262.88,120.75 103.94,0 163.5,-76.42 163.5,-229.26 0,-203.28 -10.68,-243.01 -12.2,-302.62 -1.52,-41.25 22.94,-61.13 85.57,-61.13 h 33.64 v -29.03 h -328.59 v 29.03 c 44.31,1.53 70.29,12.23 87.1,29.04 29.03,29.05 32.1,140.61 32.1,343.9 0,122.26 -59.61,160.46 -120.74,160.46 -48.91,0 -123.79,-42.8 -203.26,-97.83 v -331.64 m 763.03,840.59 c 36.69,0 67.24,-25.98 67.24,-58.08 0,-32.09 -30.55,-58.08 -67.24,-58.08 -36.69,0 -65.73,25.99 -65.73,58.08 0,32.1 29.04,58.08 65.73,58.08 z m 62.67,-857.4 c 0,-53.49 29.06,-87.12 110.03,-87.12 v -29.03 h -339.3 v 29.03 c 93.24,0 126.86,30.57 126.86,111.57 v 307.19 c 0,59.61 -7.64,67.25 -47.36,74.9 l -71.84,13.76 v 24.44 l 198.67,68.78 h 22.94 v -513.52 m 459.04,-129.92 -221.64,507.43 c -22.93,53.48 -42.8,71.82 -67.22,76.41 l -47.45,7.63 v 27.51 h 311.85 v -27.51 c -93.28,-3.05 -122.27,-15.27 -85.64,-87.11 l 162.04,-380.54 155.91,353.03 c 27.53,62.67 13.72,106.99 -97.84,114.62 v 27.51 h 265.9 v -27.51 c -58.01,-10.68 -91.68,-44.31 -120.71,-111.57 l -210.88,-479.9 h -44.32 m 946.09,401.96 v 35.17 c -50.42,50.42 -45.86,198.68 -252.17,198.68 -186.46,0 -294.96,-165.07 -294.96,-327.07 0,-177.29 116.12,-313.31 265.89,-313.31 111.59,0 207.87,76.41 272.05,157.42 l -16.8,18.34 c -58.06,-68.77 -117.67,-99.35 -194.09,-99.35 -120.75,0 -232.33,106.99 -232.33,265.92 0,19.89 3.08,41.27 6.12,64.2 z m -441.74,39.75 c 35.22,142.13 111.62,165.05 162.1,165.05 73.31,0 134.44,-65.72 151.26,-165.05 h -313.36 m 736.47,-316.38 c 0,-62.65 22.89,-82.53 99.33,-82.53 h 58.1 v -29.03 h -362.26 v 29.03 c 77.97,1.53 102.42,33.63 102.42,114.63 v 353.04 l -102.42,36.69 v 25.98 l 174.25,61.13 h 30.58 v -162 h 3.05 c 76.41,125.32 94.75,154.36 145.17,154.36 18.37,0 22.95,-1.52 51.97,-13.77 15.28,-6.1 42.81,-12.21 79.51,-22.91 l -36.7,-91.7 c -22.94,3.07 -51.95,10.7 -81,24.46 -16.82,7.63 -35.15,15.29 -53.49,15.29 -27.51,0 -44.36,-18.35 -59.63,-39.75 -19.87,-27.51 -36.67,-53.48 -48.88,-76.41 v -296.51 m 385.21,42.8 c 18.32,-91.7 76.38,-143.66 145.2,-143.66 61.1,0 108.5,45.85 108.5,100.86 0,32.1 -7.66,51.97 -48.94,93.23 -108.51,108.51 -229.22,119.2 -229.22,246.08 0,100.86 79.52,171.17 195.66,171.17 41.22,0 84.05,-9.18 122.22,-24.47 l 3.07,-139.07 h -25.96 c -10.74,77.95 -61.19,126.84 -122.29,126.84 -50.45,0 -93.18,-35.14 -93.18,-85.59 0,-134.49 284.19,-157.4 284.19,-343.86 0,-99.34 -82.5,-174.23 -189.49,-174.23 -29.02,0 -50.44,4.57 -67.26,10.7 -16.8,4.57 -28.98,9.17 -41.26,9.17 -9.15,0 -18.3,-6.12 -25.95,-18.35 h -22.93 l -16.82,171.18 h 24.46 m 599.46,819.19 c 36.74,0 67.29,-25.98 67.29,-58.08 0,-32.09 -30.55,-58.08 -67.29,-58.08 -36.6,0 -65.65,25.99 -65.65,58.08 0,32.1 29.05,58.08 65.65,58.08 z m 62.73,-857.4 c 0,-53.49 29.01,-87.12 110.02,-87.12 v -29.03 h -339.3 v 29.03 c 93.27,0 126.86,30.57 126.86,111.57 v 307.19 c 0,59.61 -7.63,67.25 -47.4,74.9 l -71.81,13.76 v 24.44 l 198.67,68.78 h 22.96 v -513.52 m 545.56,489.06 -24.45,-67.24 h -194.05 v -356.11 c 0,-96.27 68.75,-128.37 100.84,-128.37 33.61,0 64.23,25.98 93.21,76.42 l 24.45,-22.93 c -36.66,-79.46 -96.26,-125.32 -166.58,-125.32 -90.18,0 -154.35,74.89 -154.35,177.27 v 379.04 h -70.32 v 24.46 c 59.61,29.04 111.58,99.34 146.73,194.11 h 26.02 v -151.33 h 218.5 m 604.56,-169.64 c 45.8,116.16 16.8,139.08 -73.4,142.13 v 27.51 h 253.7 v -27.51 c -62.6,-7.63 -97.8,-50.43 -126.8,-122.25 l -259.8,-648.03 c -45.9,-113.12 -81,-163.51 -134.5,-163.51 -36.71,0 -62.65,22.89 -62.65,53.48 0,62.66 88.55,47.4 126.85,85.59 16.8,16.81 39.7,56.55 51.9,87.1 l 45.9,114.64 -236.93,502.83 c -28.99,62.65 -56.51,88.63 -120.74,90.15 v 27.51 h 307.27 v -27.51 c -93.3,-1.52 -103.9,-29.04 -73.4,-93.22 l 172.7,-372.92 129.9,324.01 m 523.4,-137.55 c 0,-178.82 145.1,-316.36 334.6,-316.36 181.9,0 324,139.07 324,319.41 0,181.9 -142.1,320.97 -328.6,320.97 -158.9,0 -330,-113.1 -330,-324.02 z m 114.6,51.98 c 0,131.42 93.2,235.34 194,235.34 128.4,0 235.4,-148.24 235.4,-322.48 0,-152.81 -102.4,-244.53 -192.5,-244.53 -131.5,0 -236.9,146.73 -236.9,331.67 m 987.2,187.97 h -165 v -418.77 c 0,-70.29 27.5,-90.17 113.1,-90.17 h 58.1 v -29.03 h -377.5 v 29.03 c 88.6,0 103.9,19.88 103.9,105.46 v 403.48 h -113.1 v 25.98 c 42.8,9.18 79.5,22.93 113.1,41.26 0,126.86 27.5,223.15 117.7,313.31 74.9,74.91 146.7,108.52 217,108.52 85.6,0 157.4,-48.91 157.4,-71.83 0,-12.23 -29,-73.35 -41.2,-73.35 -21.5,0 -78,74.87 -178.9,74.87 -110,0 -169.6,-87.12 -169.6,-235.35 v -116.17 h 154.4 l 10.6,-67.24 m -10411.74,210.8 c -12.61,67.79 -6.32,201.76 59.89,334.16 -244.31,-184.41 -247.46,-334.15 -247.46,-334.15 0,0 47.29,36.26 187.57,-0.01 z m -113.49,403.51 c 0,0 -296.32,-42.55 -381.42,-50.44 -58.72,-34.67 -126.106,-131.61 -126.106,-131.61 0,0 -69.344,-10.24 -208.047,-35.46 -96.434,-62.91 -154.473,-209.62 -34.688,-329.41 -37.82,7.87 -37.82,7.87 -92.98,17.34 -118.215,-75.67 -63.047,-215.95 182.828,-167.09 -69.344,2.37 -104.031,36.25 -103.242,80.4 -1.57,48.06 92.223,107.96 206.484,77.22 -108.765,205.69 11.817,286.87 11.817,286.87 0,0 -63.828,-169.84 75.664,-308.93 12.605,20.48 54.37,78.02 171.8,80.38 117,2.36 190.5,-55.11 192.28,-121.36 1.58,-58.33 -72.5,-119.8 -168.65,-119.8 l -1.57,139.35 c 0,0 -31.33,-11.27 -40.18,-23.63 0.14,-6.41 -0.79,-117.29 -0.79,-117.29 -37.84,0 -115.07,15.77 -156.047,81.18 -31.531,3.14 -207.265,29.16 -207.265,29.16 l 9.457,-46.5 c 0,0 61.473,-10.25 73.289,-71.72 14.309,-74.37 56.746,-142.64 94.574,-170.23 73.282,8.68 194.652,100.87 417.682,97.73 -204.9,-28.37 -412.951,-247.45 -712.436,-163.93 476.006,-162.35 524.876,198.61 1120.656,85.11 -92.98,56.75 -231.69,74.08 -231.69,74.08 0,0 74.07,80.39 77.23,203.33 9.46,0.6 22.06,1.58 45.71,3.94 7.88,39.41 13.4,79.4 13.4,79.4 0,0 -130.03,0.2 -239.18,0.2 -265.59,268.74 11.42,521.71 11.42,521.71 z m -665.14,4.73 c 74.868,-3.94 165.864,42.6 171.805,46.49 0,0 -31.539,-79.59 39.399,-74.86 76.996,5.14 165.626,44.6 178.106,50.43 v 102.46 c -6.87,-5.04 -81.9,-58.08 -167.06,-77.24 -31.113,-6.99 -20.503,20.5 -17.351,36.25 3.156,15.76 5.277,28.65 -50.434,5.52 -227.754,-94.57 -239.586,-29.95 -239.586,-22.06 -9.449,-11.04 -5.437,-62.21 85.121,-66.99 z m 1207.25,474.38 V 3806.3 c -656.47,258.49 -929.96,-242.74 -1628.98,0 l 0.016,1631.75 H 692.59 V 5261.9 h 190.734 l -0.027,176.15 h 187.583 l 0.02,-176.17 189.11,0.02 0.01,176.15 h 189.13 V 5261.9 l 205.69,-0.02 v 176.17 h 334.14 m 626.47,-2219.5 c 0,0 -7.77,3.85 7.04,16.24 1.81,1.52 4.67,-1.86 13.29,-1.96 11.59,-0.14 17.67,3.86 27.28,15.45 14.53,17.58 -15.77,24.31 -25.61,15.88 -10.81,-9.24 -18.56,-18.84 -27.83,-27.29 0,0 -15.57,-13.87 5.83,-18.32 z m 561.97,-824.29 c -26.01,-21.26 -106.38,-61.83 -126.49,-71.3 -20.09,-9.48 -26.54,-15.21 -41.37,-44.51 -18.14,-35.91 -35.48,-100.94 -30.74,-105.63 49.65,7.88 85.11,49.63 85.11,49.63 0,0 0.78,10.23 -10.25,27.64 -9.13,14.35 8.67,29.87 19.72,20.86 8.39,-6.92 20.08,-8.29 27.19,-2.36 7.08,5.91 161.95,104.41 169.04,115.82 -31.53,31.15 -55.57,62.67 -55.57,62.67 0,0 -10.64,-31.52 -36.64,-52.82 z m -605.25,431.89 c -66.21,26.81 -81.02,44.74 -93.4,50.03 -11.02,4.73 -56.6,-14.63 -64.23,-34.26 -20.47,-52.8 -66.19,-139.09 -72.88,-151.3 -3.61,-6.57 -7.48,-14.23 -6.71,-22.88 0.8,-8.67 3.36,-42.56 2.58,-50.44 -0.8,-7.91 0.39,-18.15 3.52,-26.02 3.15,-7.89 7.3,-41.75 24.64,-75.61 38.63,38.58 44.28,95.54 41.77,84.28 -0.07,-0.28 12.22,20.85 -18.52,30.37 -8.75,2.71 -7.46,25.44 1.96,28.38 11.44,3.51 17.36,6.69 22.87,27.13 5.51,20.54 26.31,94.16 33.1,108.4 1.03,2.16 2.95,5.86 6.77,7.64 5.9,2.71 12.97,4.64 18.85,5.58 2.9,0.48 8.44,-2.67 10.14,-4.39 10.5,-10.66 65.11,-54.92 65.11,-54.92 0,0 24.43,2.36 39.4,8.65 -9.45,14.99 -13.39,51.24 -14.97,69.36 z m -66.8,311.3 c 0,0 -23.05,-28.38 2.96,-35.5 0.6,-8.26 3.85,-24.52 7.1,-33.06 4.34,-11.44 11.82,-7.72 20.1,1.78 8.26,9.44 21.58,27.4 31.33,37.79 8.85,9.44 39.71,6.1 27.19,-12.97 -8.3,-12.61 -14.8,-15.99 -25.42,-18.34 -8.42,-1.86 -10.95,5.32 -20.09,-7.12 -9.65,-13.04 -19.95,-22.15 -2.97,-22.15 8.86,0 25.72,-8.27 36.95,-6.49 10.58,1.68 11.75,8.56 12.9,18.04 1.17,9.85 -0.74,15.55 10.25,21.67 14.17,7.87 35.07,26.79 41.37,33.49 7.25,7.67 16.55,5.89 26.01,5.89 9.46,0 55.16,-5.52 82.34,35.27 19.19,28.77 21.29,67.97 14.19,103.43 13.01,-12.99 30.49,-53.86 21.28,-92.18 -16.38,-68.23 -49.97,-72.05 -83.93,-79.2 -14.18,-20.09 -50.43,-71.73 -69.73,-165.55 -8.29,-5.48 -76.85,-71.68 -19.53,-180.27 -14.78,-4.9 -58.34,-23.49 -84.12,-29.3 -17.32,-3.96 -31.84,-4.84 -38.81,-13.2 -7.88,-9.47 -26.01,-40.21 -16.55,-55.58 6.71,-10.87 49.65,-106.96 53.19,-136.56 3.55,-29.52 14.24,-36.54 24.83,-46.11 11.81,-10.58 19.5,-10.04 36.06,-22.45 16.71,-12.54 30.62,-35.1 46.09,-47.25 16.57,-13.01 35.07,-18.92 48.08,-17.7 -3.15,48.02 -13.4,95.3 -28.37,111.06 -15.55,16.36 -35.06,-7.07 -39.79,-8.26 -4.74,-1.18 -11.32,3.35 -14.19,16.55 -2.96,13.59 9.45,24.82 -2.37,42.55 -22.01,33 -42.96,70.1 -45.51,75.09 -15.37,30.11 10.72,38.11 17.15,36.61 15.36,-3.53 107.56,-15.93 121.75,-17.11 14.18,-1.19 22.03,-3.58 28.36,3.52 19.51,21.88 30.75,37.84 41.98,60.32 20.69,-15.38 6.5,-44.93 0.59,-79.99 5.91,-5.16 139.48,-72.51 323.12,-23.66 76.69,20.38 67.95,4.31 75.25,-9.84 44.53,-86.31 76.04,-119.73 128.86,-161.97 15.75,-12.61 26.77,-33.08 33.89,-44.87 7.09,-11.87 8.87,-32.88 3.15,-46.53 -7.1,-16.93 -48.13,-90.5 -55.17,-100.87 -13.4,-19.74 -30.89,-36.27 -45.71,-44.14 -46.5,-24.83 -58.11,-47.13 -63.24,-64.44 h 119.39 c 0,0 2.79,6.19 1.37,21.11 -1.96,20.85 16.94,24.4 22.87,25.57 5.89,1.18 16.54,-3.51 26,18.91 17.78,42.25 87.07,159.99 93,170.65 5.89,10.65 27.56,39.09 6.3,51.6 -40.2,23.65 -63.79,62.53 -71.71,106.02 -3.17,17.31 -1.27,45.89 37.83,94.56 83.51,104.02 21.28,318.38 -164.71,314.43 -105.49,-2.24 -164.16,6.76 -232.88,20.51 -25.13,5.03 -29.42,18.55 -24.05,33.9 5.52,15.75 10.84,47.07 11.04,59.88 -18.12,16.54 -45.7,26.78 -59.11,31.5 -14.41,5.09 -21.68,16.59 -7.08,17.75 14.56,1.17 69.73,-4.74 69.73,-4.74 0,0 1.98,29.57 -5.91,72.9 -23.64,10.27 -53.6,18.94 -85.1,22.86 -8.31,1.03 -15.59,10.38 5.51,13.41 27.59,3.93 52.81,-0.43 72.5,0.8 1.18,2.33 -9.45,57.49 -28.96,79.79 -13.58,4.1 -20.79,6.01 -67.97,11.59 -16.56,1.94 -17.34,6.71 -6.3,10.27 12.81,4.08 34.07,8.26 60.69,6.52 -10.26,14.15 -78.83,139.25 -221.06,101.62 15.95,-19.48 23.62,-28.53 28.36,-41.95 4.24,-11.98 -8.44,-15.82 -20.1,-3.57 -44.92,47.31 -68.56,46.12 -97.52,51.46 18.9,-18.35 27.2,-36.69 33.68,-54.99 -32.49,-23.05 -78.6,-78 -85.1,-88.66 -12.37,-20.25 4.74,-31.14 4.74,-31.14 z m 919.1,316.78 c -145.39,-50.82 -123.95,-207.53 -84.7,-267.95 51.21,-78.81 94.57,-80.38 127.27,-172.97 25.5,-72.23 -20.1,-109.93 -65.02,-126.49 76.84,-47.32 156.04,1.59 184.41,48.89 52.24,69.62 -6.95,160.02 48.88,207.22 14.9,12.62 40.18,21.3 74.06,22.86 -33.9,48.1 -113.49,42.59 -145.39,-2.35 -22.47,52.02 -85.53,97.49 -62.65,178.12 14.97,52.78 98.5,72.51 130.01,29.17 17.26,-23.74 19.71,-70.16 -30.73,-93.83 31.53,2.37 91.42,56.77 50.44,130.87 -28.77,52.02 -77.23,55.93 -116.63,55.93 -71.72,0 -190.72,-81.98 -114.67,-258.88 -43.73,39 -114.66,174.96 4.72,249.41 z m 362.76,184.22 c 0,26.05 -0.03,-1633.6 0,-1633.7 -903.14,-219.88 -929.17,260.06 -1629,0 0.09,-21.21 -0.29,1633.85 0,1633.7 643.07,269.52 893.72,-241.15 1629,0 m -2834.621,-932 c 0,0 -28.589,-18.69 7.207,-97.21 35.782,-78.45 80.204,-151.57 2.887,-237.79 43.847,-0.51 139.567,57.31 37.152,229.63 -23.55,39.67 -48.984,67.17 -47.246,105.37 z m -96.879,-36.99 c 23.668,1.59 26.668,30.56 22.379,45.81 -5.039,17.98 -35.097,20.21 -42.328,-2.68 -7.156,-22.68 -0.898,-44.73 -0.898,-44.73 5.937,-21.87 30.551,-28.1 32.66,-25.9 -13.672,12.23 -9.965,19.3 -11.813,27.5 z m 22.762,-104.33 c -5.719,-69.4 -45.508,-79.6 -45.508,-79.6 -69.421,31.92 -106.671,-55.48 -48.41,-81.23 73.844,-32.62 119.035,62.81 123.422,80.44 12.445,50.03 13.617,85.4 8.055,166.66 -4.746,69.26 12.332,79.71 23.715,81.62 11.39,1.89 35.129,2.81 58.836,-69.33 23.738,-72.08 74.928,-82.53 74.928,-82.53 0,0 -74.124,120.61 28.98,231.98 47.94,51.77 145.68,81.18 127.58,153.67 0,0 -15.11,-25.99 -44.54,-33.58 -29.41,-7.6 -86.35,-16.14 -86.35,-16.14 0,0 136.65,64.55 161.33,138.57 0,0 42.7,-71.18 -14.25,-175.57 0,0 54.24,19.42 112.58,-6.93 148.73,-65.92 132.94,-277.77 -55.25,-328.28 -267.82,-71.88 -170.59,-279.06 -17.2,-291.76 -16.45,10.43 -20.19,72.92 6.74,109.99 13.44,12 37.49,36.18 52.75,-14.62 26.93,-89.8 105.51,-97.1 141.97,-85.88 -9.54,8.05 -27.48,35.38 -25.25,51.1 4.49,31.42 43.73,-1.2 57.99,-5.24 105.5,-29.93 161.61,-3.79 167.59,11.97 -23.56,4.88 -19.45,2.2 -34.41,5.99 -13.95,3.48 -41.02,22.8 9.73,34.42 93.18,21.33 144.42,117.44 83.07,191.51 -58.57,70.74 -132.42,59.9 -156.39,50.17 101.01,-21.72 106.1,-103.03 54.61,-144.42 -44.88,-33.68 -156.36,-47.13 -194.53,27.68 -24.14,-17.41 -32.55,-45.26 -28.43,-80.06 -10.11,3.78 -52.4,63.98 10.46,113.71 291.44,187.88 244.4,503.62 -2.25,633.57 l -3.06,1.34 c -223.76,128.54 -419.52,11.23 -419.52,11.23 138.34,138.55 377.42,56.12 411.82,38.92 0,0 -27.5,23.94 -42.14,45.9 -18.96,28.43 -18.24,55.58 -18.24,55.58 -94.92,-52.98 -119.4,28.43 -119.4,28.43 0,0 -82.2,-74.1 -135.54,-13.84 -46.63,52.73 28.87,124.24 28.87,124.24 -481.444,-158.02 -390.194,-429.86 -390.194,-429.86 0,0 -69.726,-64.06 -85.328,-218.37 -17.723,-175.29 69.598,-299.98 178.695,-265.73 24.985,7.84 37.399,19.74 42.211,32.92 z M 1989,3638.45 c 0.29,0.15 -0.09,-1654.91 0,-1633.7 -699.82,260.06 -725.86,-219.88 -1629,0 0.023,0.1 0,1659.75 0,1633.7 735.29,-241.15 985.92,269.52 1629,0"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text5466"
+         font-size="94"
+         font-weight="500"
+         transform="matrix(1.33333,0,0,1.33333,48,717.636)"
+         style="font-weight:500;font-size:94px;font-family:HelveticaNeue;-inkscape-font-specification:HelveticaNeue-Medium;fill:#ffffff">
+        <tspan
+           id="tspan5464"
+           x="0 87.04351 142.7843 165.43831 195.0471 243.8331 299.57391 353.5289 379.66092 445.83691 468.49091 524.23175 546.88574 628.66571 680.92975 736.67047 759.32446 813.2796 869.0202 895.15222 950.89307 1003.157 1055.421 1078.0751 1100.729 1123.3831 1154.6844"
+           y="0">Wolfson Bioimaging Facility</tspan>
+      </text>
     </g>
   </g>
 </svg>
