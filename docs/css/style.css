@@ -1,6 +1,7 @@
 .mia-name, .mia-name:link, .mia-name:visited, .mia-name:hover, .mia-name:active {
     color:#424242;
     font-family:'Calibri';
+    font-size: large;
     text-decoration: none;
 }
 
