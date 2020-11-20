@@ -15,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
-  <link src="css/style.css" rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
 
   <title>MIA (Modular Image Analysis)</title>
 </head>
@@ -24,13 +24,18 @@
   <!-- Navigation bar -->
   <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#"><img height="32" src="../img/logo.png"></a>
-      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+      <!-- <a class="navbar-brand d-none d-sm-block mia-name" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;"></a> -->
+          <a class="navbar-brand mia-name" href="../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img height="30" src="../img/logo_64.png"
+            style="padding-right:8px;">Modular Image Analysis</a>        
+      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" style="border: none;">
         <span class="navbar-toggler-icon"></span>
       </buton>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
+          <li class="nav-item active">
             <a class="nav-link" href="../index.html">Home</a>
           </li>
           <li class="nav-item">
@@ -43,9 +48,6 @@
             <a class="nav-link" href="modules.html">Modules</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="macros.html">Macros</a>
-          </li>
-          <li class="nav-item active">
             <a class="nav-link" href="about.html">About</a>
           </li>
         </ul>
@@ -53,8 +55,39 @@
     </div>
   </nav>
 
+
   <!-- Main content -->
-  About
-  
+
+  <p class="mb-4">
+    <h3>About</h3>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+    aliqua. Mauris cursus mattis molestie a iaculis at. Sollicitudin ac orci phasellus egestas tellus. At lectus urna
+    duis convallis convallis tellus id interdum. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget
+    egestas. Pellentesque habitant morbi tristique senectus et netus et. Nisl purus in mollis nunc sed id semper risus
+    in. Ultrices eros in cursus turpis. Interdum varius sit amet mattis vulputate enim. Id nibh tortor id aliquet lectus
+    proin.
+  </p>
+
+
+  <!-- Footer -->
+  <footer>
+    <div class="container-fluid padding">
+      <div class="row text-center text-light align-items-center">
+        <div class="col-6 mt-4 mb-4">
+          <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
+            <img height="48" src="../img/wbif.png">
+          </a>
+        </div>
+        <div class="col-6 mt-4 mb-4 align-items-center">
+          <a href="https://github.com/sjcross/MIA/">
+            <img height="48" src="../img/GitHub-Mark-Light-64px.png"><img height="32" src="../img/GitHub_Logo_White.png"
+              height="32px">
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
 </body>
+
 </html>
