@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - ActiveContourObjectDetection",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Module.ObjectProcessing.Identification.ActiveContourObjectDetection",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - FilterWithWithoutParentTest",
             "request": "launch",
             "mainClass": "wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutParentTest",
