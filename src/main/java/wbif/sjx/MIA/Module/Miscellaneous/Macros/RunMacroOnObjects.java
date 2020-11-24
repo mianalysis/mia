@@ -45,6 +45,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String UPDATE_INPUT_IMAGE = "Update image after each run";
     public static final String VARIABLE_SEPARATOR = "Variables input";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_VALUE = "Variable value";
@@ -116,6 +117,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        boolean updateInputImage = parameters.getValue(UPDATE_INPUT_IMAGE);
         String macroMode = parameters.getValue(MACRO_MODE);
         String macroText = parameters.getValue(MACRO_TEXT);
         String macroFile = parameters.getValue(MACRO_FILE);
@@ -179,11 +181,15 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
             }
 
             // Intercepting measurements
-            for (String expectedMeasurement:expectedMeasurements) {
+            for (String expectedMeasurement : expectedMeasurements) {
                 double value = interpreter.getVariable(expectedMeasurement);
-                Measurement measurement = new Measurement(getFullName(expectedMeasurement),value);
+                Measurement measurement = new Measurement(getFullName(expectedMeasurement), value);
                 inputObject.addMeasurement(measurement);
             }
+            
+            // If necessary, updating the input image
+            inputImage.setImagePlus(inputImagePlus);
+
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows
@@ -201,6 +207,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(UPDATE_INPUT_IMAGE, this,false));
 
         parameters.add(new SeparatorP(VARIABLE_SEPARATOR,this));
         ParameterCollection variableCollection = new ParameterCollection();
@@ -235,6 +242,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
         if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(UPDATE_INPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(VARIABLE_SEPARATOR));

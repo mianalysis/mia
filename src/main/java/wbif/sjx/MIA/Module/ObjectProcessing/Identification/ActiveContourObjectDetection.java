@@ -263,7 +263,7 @@ public class ActiveContourObjectDetection extends Module {
             returnedParameters.add(parameters.getParameter(MOTION_THRESHOLD_PX));
         }
         returnedParameters.add(parameters.getParameter(SHOW_CONTOURS_REALTIME));
-
+        
         return returnedParameters;
 
     }
@@ -330,40 +330,18 @@ class BalloonEnergy extends Energy {
         double xC = (xR - xL) / 2 + xL;
         double yC = (yR - yL) / 2 + yL;
 
-        // System.out.println(xT+"_"+yT+", "+ xL +"_"+yL+", "+xR+"_"+yR+", "+xC+"_"+yC+", ");        
-
         double dx = xR-xL;
         double dy = yR-yL;
         double mag = Math.sqrt(dx * dx + dy * dy);
-        double nx = -dx / mag;
-        double ny = dy / mag;
-
-        // System.out.println(nx + "_" + ny);
+        double nx = -dy / mag;
+        double ny = dx / mag;
         
         double shiftX = xT - xC;
-        double shiftY = yT - xC;
+        double shiftY = yT - yC;
 
-        // System.out.println(shiftX + "_" + shiftY);
+        double energy = weight * (shiftX * nx + shiftY * ny);
 
-        double energy = weight * (((node.getX() - xC) * nx) + ((node.getY() - yC) * ny));
-        // System.out.println(energy);
         return energy;
-        
-        // double x1 = node.getLeftNeighbour().getX();
-        // double x2 = node.getRightNeighbour().getX();
-        // double y1 = node.getLeftNeighbour().getY();
-        // double y2 = node.getRightNeighbour().getY();
-
-        // double dx = x2-x1;
-        // double dy = y2-y1;
-        // double mag = Math.sqrt(dx * dx + dy * dy);
-        // double nx = dx/mag;
-        // double ny = dy/mag;
-
-        // double xc = (x2 - x1) / 2 + x1;
-        // double yc = (y2 - y1) / 2 + y1;
-
-        // return weight * (((node.getX()-xc) * nx) + ((node.getY()-yc) * ny));
 
     }
 }
