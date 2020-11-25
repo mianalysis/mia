@@ -27,7 +27,7 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 public class GlobalVariables extends Module {
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
-    public static final String CONTROL_TYPE = "Control type";
+    public static final String VARIABLE_TYPE = "Variable type";
     public static final String VARIABLE_VALUE = "Variable value";
     public static final String VARIABLE_FILE = "Variable file";
     public static final String VARIABLE_FOLDER = "Variable folder";
@@ -37,7 +37,7 @@ public class GlobalVariables extends Module {
 
     private static final HashMap<StringP, String> globalVariables = new HashMap<>();
 
-    public interface ControlTypes {
+    public interface VariableTypes {
         String CHOICE = "Choice";
         String FILE = "File";
         String FOLDER = "Folder";
@@ -137,23 +137,23 @@ public class GlobalVariables extends Module {
         for (ParameterCollection collection : collections.values()) {
             if ((boolean) collection.getValue(STORE_AS_METADATA_ITEM)) {
                 String variableName = collection.getValue(VARIABLE_NAME);
-                String controlType = collection.getValue(CONTROL_TYPE);
+                String variableType = collection.getValue(VARIABLE_TYPE);
 
-                switch (controlType) {
-                    case ControlTypes.CHOICE:
+                switch (variableType) {
+                    case VariableTypes.CHOICE:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_CHOICE));
                         break;
-                    case ControlTypes.FILE:
+                    case VariableTypes.FILE:
                         String path = collection.getValue(VARIABLE_FILE);
                         path = path.replace("\\", "\\\\");
                         workspace.getMetadata().put(variableName, path);
                         break;
-                    case ControlTypes.FOLDER:
+                    case VariableTypes.FOLDER:
                         path = collection.getValue(VARIABLE_FOLDER);
                         path = path.replace("\\", "\\\\");
                         workspace.getMetadata().put(variableName, path);
                         break;
-                    case ControlTypes.TEXT:
+                    case VariableTypes.TEXT:
                         workspace.getMetadata().put(variableName, collection.getValue(VARIABLE_VALUE));
                         break;
                 }
@@ -168,7 +168,7 @@ public class GlobalVariables extends Module {
     protected void initialiseParameters() {
         ParameterCollection parameterCollection = new ParameterCollection();
         parameterCollection.add(new StringP(VARIABLE_NAME, this));
-        parameterCollection.add(new ChoiceP(CONTROL_TYPE, this, ControlTypes.TEXT, ControlTypes.ALL));
+        parameterCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
         parameterCollection.add(new StringP(VARIABLE_VALUE, this));
         parameterCollection.add(new FilePathP(VARIABLE_FILE, this));
         parameterCollection.add(new FolderPathP(VARIABLE_FOLDER, this));
@@ -192,21 +192,21 @@ public class GlobalVariables extends Module {
         for (ParameterCollection collection : collections.values()) {
             StringP variableName = (StringP) collection.get(VARIABLE_NAME);
             if (isEnabled()) {
-                switch ((String) collection.getValue(CONTROL_TYPE)) {
-                    case ControlTypes.CHOICE:
+                switch ((String) collection.getValue(VARIABLE_TYPE)) {
+                    case VariableTypes.CHOICE:
                         globalVariables.put(variableName, collection.getValue(VARIABLE_CHOICE));
                         break;
-                    case ControlTypes.FILE:
+                    case VariableTypes.FILE:
                         String path = collection.getValue(VARIABLE_FILE);
                         path = path.replace("\\", "\\\\");
                         globalVariables.put(variableName, path);
                         break;
-                    case ControlTypes.FOLDER:
+                    case VariableTypes.FOLDER:
                         path = collection.getValue(VARIABLE_FOLDER);
                         path = path.replace("\\", "\\\\");
                         globalVariables.put(variableName, path);
                         break;
-                    case ControlTypes.TEXT:
+                    case VariableTypes.TEXT:
                         globalVariables.put(variableName, collection.getValue(VARIABLE_VALUE));
                         break;
                 }
@@ -270,41 +270,41 @@ public class GlobalVariables extends Module {
                 "Name of this variable.  This is the name that will be used when referring to the variable in place of fixed values.  To refer to variables, use the form \"V{[VARIABLE_NAME]}\", where \"[VARIABLE_NAME]\" is replaced by the variable name.  For example, a variable called \"my_var\" would be referred to using the text \"V{my_var}\".");
 
         collection.get(VARIABLE_CHOICES)
-                .setDescription("When \"" + CONTROL_TYPE + "\" is set to \"" + ControlTypes.CHOICE
+                .setDescription("When \"" + VARIABLE_TYPE + "\" is set to \"" + VariableTypes.CHOICE
                         + "\" mode, these are the options that will be presented by the \"" + VARIABLE_CHOICE
                         + "\" drop-down parameter.  Choices are specified as a comma-separated list.");
 
-        collection.get(CONTROL_TYPE).setDescription("Controls how the variable is specified:<br><ul>"
+        collection.get(VARIABLE_TYPE).setDescription("Controls how the variable is specified:<br><ul>"
 
-                + "<li>\"" + ControlTypes.CHOICE
+                + "<li>\"" + VariableTypes.CHOICE
                 + "\" Select the output variable from a pre-determined list of options (specified with the \""
                 + VARIABLE_CHOICES + "\" parameter).</li>"
 
-                + "<li>\"" + ControlTypes.FILE
+                + "<li>\"" + VariableTypes.FILE
                 + "\" Select a specific file on the computer for this variable using the \"" + VARIABLE_FILE
                 + "\" parameter.  The variable will be set to the full path to this file.  Note: backslash characters will be escaped (i.e. \"\\\" will appear as \"\\\\\").</li>"
 
-                + "<li>\"" + ControlTypes.FOLDER
+                + "<li>\"" + VariableTypes.FOLDER
                 + "\" Select a specific folder on the computer for this variable using the \"" + VARIABLE_FOLDER
                 + "\" parameter.  The variable will be set to the full path to this folder.  Note: backslash characters will be escaped (i.e. \"\\\" will appear as \"\\\\\").</li>"
                 
-                + "<li>\"" + ControlTypes.TEXT + "\" Specify a fixed text value for this variable using the \""
+                + "<li>\"" + VariableTypes.TEXT + "\" Specify a fixed text value for this variable using the \""
                 + VARIABLE_VALUE + "\" parameter.</li></ul>");
 
         collection.get(VARIABLE_VALUE).setDescription("Fixed value for the corresponding global variable when \""
-                + CONTROL_TYPE + "\" is in \"" + ControlTypes.TEXT + "\" mode.");
+                + VARIABLE_TYPE + "\" is in \"" + VariableTypes.TEXT + "\" mode.");
 
         collection.get(VARIABLE_FILE)
-                .setDescription("Fixed value file location for the corresponding global variable when \"" + CONTROL_TYPE
-                        + "\" is in \"" + ControlTypes.FILE + "\" mode.");
+                .setDescription("Fixed value file location for the corresponding global variable when \"" + VARIABLE_TYPE
+                        + "\" is in \"" + VariableTypes.FILE + "\" mode.");
 
         collection.get(VARIABLE_FOLDER)
                 .setDescription("Fixed value folder location for the corresponding global variable when \""
-                        + CONTROL_TYPE + "\" is in \"" + ControlTypes.FOLDER + "\" mode.");
+                        + VARIABLE_TYPE + "\" is in \"" + VariableTypes.FOLDER + "\" mode.");
 
         collection.get(VARIABLE_CHOICE)
                 .setDescription("Pre-defined list of choices to select global variable value from when \""
-                        + CONTROL_TYPE + "\" is in \"" + ControlTypes.CHOICE + "\" mode.");
+                        + VARIABLE_TYPE + "\" is in \"" + VariableTypes.CHOICE + "\" mode.");
 
         collection.get(STORE_AS_METADATA_ITEM).setDescription(
                 "When selected, the variable will be stored as a metadata item.  This allows it to be exported to the final spreadsheet.");
@@ -319,22 +319,22 @@ public class GlobalVariables extends Module {
                 ParameterCollection returnedParameters = new ParameterCollection();
 
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
-                returnedParameters.add(params.getParameter(CONTROL_TYPE));
-                switch ((String) params.getValue(CONTROL_TYPE)) {
-                    case ControlTypes.CHOICE:
+                returnedParameters.add(params.getParameter(VARIABLE_TYPE));
+                switch ((String) params.getValue(VARIABLE_TYPE)) {
+                    case VariableTypes.CHOICE:
                         returnedParameters.add(params.getParameter(VARIABLE_CHOICES));
                         returnedParameters.add(params.getParameter(VARIABLE_CHOICE));
                         String variableChoices = params.getValue(VARIABLE_CHOICES);
                         String[] choices = variableChoices.split(",");
                         ((ChoiceP) params.getParameter(VARIABLE_CHOICE)).setChoices(choices);
                         break;
-                    case ControlTypes.FILE:
+                    case VariableTypes.FILE:
                         returnedParameters.add(params.getParameter(VARIABLE_FILE));
                         break;
-                    case ControlTypes.FOLDER:
+                    case VariableTypes.FOLDER:
                         returnedParameters.add(params.getParameter(VARIABLE_FOLDER));
                         break;
-                    case ControlTypes.TEXT:
+                    case VariableTypes.TEXT:
                         returnedParameters.add(params.getParameter(VARIABLE_VALUE));
                         break;
                 }

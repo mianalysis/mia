@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
@@ -41,6 +42,12 @@ public class LostAndFound {
         currentParameters.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
         moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
+
+        // GlobalVariables
+        currentParameters = new HashMap<>();
+        currentParameters.put("Control type", GlobalVariables.VARIABLE_TYPE);
+        moduleName = new GlobalVariables(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);        
 
         // ObjectLoader
         currentParameters = new HashMap<>();
