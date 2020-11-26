@@ -139,10 +139,6 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
         macroText = addVariables(macroText, variableGroup);
         
-        // Setting the MacroHandler to the current workspace
-        MacroHandler.setWorkspace(workspace);
-        MacroHandler.setModules(modules);
-
         // If providing the input image direct from the workspace, hide all open windows while the macro runs
         ArrayList<ImagePlus> openImages = new ArrayList<>();
         if (provideInputImage) {

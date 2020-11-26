@@ -2,7 +2,6 @@
 
 package wbif.sjx.MIA.Process.AnalysisHandling;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -18,6 +17,7 @@ import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.WorkspaceCollection;
 import wbif.sjx.MIA.Object.Parameters.FileFolderPathP;
@@ -62,23 +62,33 @@ public class AnalysisRunner {
         Module.setVerbose(jobs.size() == 1);
 
         // Setting up the pool
-        // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
+        // Set the number of Fiji threads to maximise the number of jobs, so it doesn't
+        // clash with MIA multi-threading. Also, check that no macros are being run
+        // (these don't work with simultaneous jobs).
         int nSimultaneousJobs = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
-        nSimultaneousJobs = Math.min(jobs.size(),nSimultaneousJobs);
-        int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
+        nSimultaneousJobs = Math.min(jobs.size(), nSimultaneousJobs);
+        if (analysis.getModules().hasModuleMatchingType(AbstractMacroRunner.class) && nSimultaneousJobs > 1) {
+            MIA.log.writeWarning(
+                    "Only 1 simultaneous job possible when using macros.  Setting \"Simultaneous jobs\" to 1.");
+            nSimultaneousJobs = 1;
+        }
+        int nThreads = Math.floorDiv(origThreads, nSimultaneousJobs);
         Prefs.setThreads(nThreads);
         Prefs.savePreferences();
 
-        pool = new ThreadPoolExecutor(nSimultaneousJobs,nSimultaneousJobs,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+        pool = new ThreadPoolExecutor(nSimultaneousJobs, nSimultaneousJobs, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
 
         // Restarting the WorkspaceCollection
         workspaces.clear();
 
-        // Runnables are first stored in a HashSet, then loaded all at once to the ThreadPoolExecutor.  This means the
+        // Runnables are first stored in a HashSet, then loaded all at once to the
+        // ThreadPoolExecutor. This means the
         // system isn't scanning files and reading for the analysis simultaneously.
-        for (Job job:jobs) {
-            // Iterating over all seriesNumber to analyse, adding each one as a new workspace
-            Workspace workspace = workspaces.getNewWorkspace(job.getFile(),job.getSeriesNumber());
+        for (Job job : jobs) {
+            // Iterating over all seriesNumber to analyse, adding each one as a new
+            // workspace
+            Workspace workspace = workspaces.getNewWorkspace(job.getFile(), job.getSeriesNumber());
             workspace.getMetadata().setSeriesName(job.getSeriesName());
             workspace.getMetadata().put("FILE_DEPTH", job.getFileDepth());
 
@@ -86,9 +96,11 @@ public class AnalysisRunner {
             workspace.setProgress(0);
         }
 
-        for (Workspace workspace:workspaces) pool.submit(createRunnable(analysis,workspace,exporter));
+        for (Workspace workspace : workspaces)
+            pool.submit(createRunnable(analysis, workspace, exporter));
 
-        // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
+        // Telling the pool not to accept any more jobs and to wait until all queued
+        // jobs have completed
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
         Prefs.setThreads(origThreads);
@@ -116,7 +128,8 @@ public class AnalysisRunner {
         InputControl inputControl = analysis.getModules().getInputControl();
 
         File inputFile = getInputFile(inputControl);
-        if (inputFile == null) return new HashSet<>();
+        if (inputFile == null)
+            return new HashSet<>();
 
         FileCrawler fileCrawler = new FileCrawler(inputFile);
         inputControl.addFilenameFilters(fileCrawler);
@@ -125,24 +138,26 @@ public class AnalysisRunner {
 
         File rootFolder = fileCrawler.getRootFolderAsFile();
         if (rootFolder.isFile()) {
-            TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder);
-            for (int seriesNumber:seriesNumbers.keySet()) {
-                jobs.add(new Job(rootFolder,seriesNumber,seriesNumbers.get(seriesNumber),0));
+            TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(rootFolder);
+            for (int seriesNumber : seriesNumbers.keySet()) {
+                jobs.add(new Job(rootFolder, seriesNumber, seriesNumbers.get(seriesNumber), 0));
             }
         } else {
             File next = fileCrawler.getNextValidFileInStructure();
             int loadTotal = 0;
             while (next != null && fileCrawler.getCurrentFolderAsFolder() != null) {
-                TreeMap<Integer,String> seriesNumbers = inputControl.getSeriesNumbers(next);
-                for (int seriesNumber:seriesNumbers.keySet()) {
-                    jobs.add(new Job(next,seriesNumber,seriesNumbers.get(seriesNumber),fileCrawler.getCurrentDepth()));
+                TreeMap<Integer, String> seriesNumbers = inputControl.getSeriesNumbers(next);
+                for (int seriesNumber : seriesNumbers.keySet()) {
+                    jobs.add(new Job(next, seriesNumber, seriesNumbers.get(seriesNumber),
+                            fileCrawler.getCurrentDepth()));
 
                     // Displaying the current progress
-                    MIA.log.writeStatus("Initialising "+dfInt.format(++loadTotal)+" jobs");
+                    MIA.log.writeStatus("Initialising " + dfInt.format(++loadTotal) + " jobs");
 
                 }
 
-                if (firstPerFolder) fileCrawler.goToNextValidFolder();
+                if (firstPerFolder)
+                    fileCrawler.goToNextValidFolder();
                 next = fileCrawler.getNextValidFileInStructure();
 
             }
@@ -155,7 +170,8 @@ public class AnalysisRunner {
     public File getInputFile(InputControl inputControl) {
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
 
-        if (!checkInputFileValidity(inputPath)) return null;
+        if (!checkInputFileValidity(inputPath))
+            return null;
         return new File(inputPath);
 
     }
@@ -220,7 +236,8 @@ public class AnalysisRunner {
 
                 case OutputControl.SummaryModes.GROUP_BY_METADATA:
                     exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
-                    exporter.setMetadataItemForSummary(outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
+                    exporter.setMetadataItemForSummary(
+                            outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
                     break;
             }
 
@@ -304,7 +321,6 @@ public class AnalysisRunner {
         MIA.log.writeStatus("Shutdown complete!");
 
     }
-
 
     // GETTERS AND SETTERS
 

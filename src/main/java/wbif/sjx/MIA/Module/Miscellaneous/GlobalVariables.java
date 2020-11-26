@@ -17,6 +17,7 @@ import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -25,6 +26,7 @@ import wbif.sjx.MIA.Object.References.Collections.ParentChildRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 
 public class GlobalVariables extends Module {
+    public static final String VARIABLE_SEPARATOR = "Variable settings";
     public static final String ADD_NEW_VARIABLE = "Add new variable";
     public static final String VARIABLE_NAME = "Variable name";
     public static final String VARIABLE_TYPE = "Variable type";
@@ -167,6 +169,7 @@ public class GlobalVariables extends Module {
     @Override
     protected void initialiseParameters() {
         ParameterCollection parameterCollection = new ParameterCollection();
+        parameterCollection.add(new SeparatorP(VARIABLE_SEPARATOR, this));
         parameterCollection.add(new StringP(VARIABLE_NAME, this));
         parameterCollection.add(new ChoiceP(VARIABLE_TYPE, this, VariableTypes.TEXT, VariableTypes.ALL));
         parameterCollection.add(new StringP(VARIABLE_VALUE, this));
@@ -318,6 +321,7 @@ public class GlobalVariables extends Module {
             public ParameterCollection updateAndGet(ParameterCollection params) {
                 ParameterCollection returnedParameters = new ParameterCollection();
 
+                returnedParameters.add(params.getParameter(VARIABLE_SEPARATOR));
                 returnedParameters.add(params.getParameter(VARIABLE_NAME));
                 returnedParameters.add(params.getParameter(VARIABLE_TYPE));
                 switch ((String) params.getValue(VARIABLE_TYPE)) {
