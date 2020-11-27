@@ -1,36 +1,59 @@
 package wbif.sjx.MIA.Process;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.xml.pull.XmlPullParserException;
+
 public class DocumentationGenerator2 {
+    private String version = "";
+
     public static void main(String[] args) {
-
-        try {
-            // Clearing existing HTML files
-            File root = new File("docs/html");
-            deleteFolders(root);
-            root.mkdir();
-
-            // Creating website content
-            generateIndexPage();
-            generateGettingStartedPage();
-            generateGuidesPage();
-            generateModulesPage();
-            generateAboutPage();
-
-            // Creating README.md
-            generateReadmeMarkdown();
-
+        try {   
+            DocumentationGenerator2 generator = new DocumentationGenerator2();
+            generator.run();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void deleteFolders(File root) {
+    public DocumentationGenerator2() {
+        try {
+            FileReader reader = new FileReader("pom.xml");
+            Model model = new MavenXpp3Reader().read(reader);
+            reader.close();
+            version = new MavenProject(model).getVersion();
+        } catch (XmlPullParserException | IOException | org.codehaus.plexus.util.xml.pull.XmlPullParserException e) {
+            version = getClass().getPackage().getImplementationVersion();
+        }
+    }
+
+    public void run() throws IOException {
+        // Clearing existing HTML files
+        File root = new File("docs/html");
+        deleteFolders(root);
+        root.mkdir();
+
+        // Creating website content
+        generateIndexPage();
+        generateGettingStartedPage();
+        generateGuidesPage();
+        generateModulesPage();
+        generateAboutPage();
+
+        // Creating README.md
+        generateReadmeMarkdown();
+    }
+
+    private void deleteFolders(File root) {
         if (root.isFile()) {
             root.delete();
 
@@ -42,17 +65,19 @@ public class DocumentationGenerator2 {
         }
     }
 
-    private static String getPageTemplate(String pathToTemplate, String pathToRoot) {
+    private String getPageTemplate(String pathToTemplate, String pathToRoot) {
         try {
             String page = new String(Files.readAllBytes(Paths.get(pathToTemplate)));
-            return page.replace("${PTR}", pathToRoot);
+            page = insertPathToRoot(page, pathToRoot);
+            page = insertMIAVersion(page);
+            return page;
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    public static void generateIndexPage() throws IOException {
+    public void generateIndexPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = ".";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -67,7 +92,7 @@ public class DocumentationGenerator2 {
 
     }
 
-    public static void generateGettingStartedPage() throws IOException {
+    public void generateGettingStartedPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -81,7 +106,7 @@ public class DocumentationGenerator2 {
 
     }
 
-    public static void generateGuidesPage() throws IOException {
+    public void generateGuidesPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -95,7 +120,7 @@ public class DocumentationGenerator2 {
 
     }
 
-    public static void generateModulesPage() throws IOException {
+    public void generateModulesPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -109,7 +134,7 @@ public class DocumentationGenerator2 {
 
     }
 
-    public static void generateAboutPage() throws IOException {
+    public void generateAboutPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -157,5 +182,13 @@ public class DocumentationGenerator2 {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    static String insertPathToRoot(String str, String pathToRoot) {
+        return str.replace("${PTR}", pathToRoot);
+    }
+
+    String insertMIAVersion(String str) {
+        return str.replace("${MIA_VERSION}", version);
     }
 }

@@ -38,8 +38,17 @@
           <li class="nav-item">
             <a class="nav-link" href="${PTR}/index.html">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="${PTR}/html/gettingstarted.html">Getting started</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="${PTR}/html/gettingstarted.html" id="navbarDropdownModules" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
+              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases/download/v${MIA_VERSION}/MIA_-${MIA_VERSION}.jar">Download latest</a>
+              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Section 1</a>
+              <a class="dropdown-item" href="#">Section 2</a>
+              <a class="dropdown-item" href="#">Section 3</a>  
+            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="${PTR}/html/guides.html">Guides</a>
@@ -48,7 +57,7 @@
             <a class="nav-link dropdown-toggle" href="${PTR}/html/modules.html" id="navbarDropdownModules" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="${PTR}/html/modules.html"><b>Modules</b></a>
+              <a class="dropdown-item" href="${PTR}/html/modules.html">All categories</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Package 1</a>
               <a class="dropdown-item" href="#">Package 2</a>
