@@ -37,7 +37,7 @@ public abstract class AbstractWorkspaceHandler extends Module {
 
     }
 
-    Status processTermination(ParameterCollection parameters, Workspace workspace, boolean showRedirectMessage) {
+    protected Status processTermination(ParameterCollection parameters, Workspace workspace, boolean showRedirectMessage) {
         String continuationMode = parameters.getValue(CONTINUATION_MODE);
         String redirectMessage = parameters.getValue(REDIRECT_MESSAGE);
         boolean exportWorkspace = parameters.getValue(EXPORT_WORKSPACE);
@@ -81,15 +81,15 @@ public abstract class AbstractWorkspaceHandler extends Module {
     }
 
     protected void addParameterDescriptions() {
-        parameters.get(CONTINUATION_MODE).setDescription(
-                "Controls what happens if the termination/redirection condition is met:<br>"
+        parameters.get(CONTINUATION_MODE)
+                .setDescription("Controls what happens if the termination/redirection condition is met:<br><ul>"
 
-                        + "<br>- \"" + ContinuationModes.REDIRECT_TO_MODULE
-                        + "The analysis workflow will skip to the module specified by the \"" + REDIRECT_MODULE
-                        + "\" parameter.  Any modules between the present module and the target module will not be evaluated.<br>"
-                        
-                        + "<br>- \"" + ContinuationModes.TERMINATE
-                        + "The analysis will stop evaluating any further modules.<br>");
+                        + "<li>\"" + ContinuationModes.REDIRECT_TO_MODULE
+                        + "\" The analysis workflow will skip to the module specified by the \"" + REDIRECT_MODULE
+                        + "\" parameter.  Any modules between the present module and the target module will not be evaluated.</li>"
+
+                        + "<li>\"" + ContinuationModes.TERMINATE
+                        + "\"The analysis will stop evaluating any further modules.</li></ul>");
 
         parameters.get(REDIRECT_MODULE).setDescription(
                 "If the condition is met, the workflow will redirect to this module.  In doing so, it will skip evaluation of any modules between the present module and this module.");

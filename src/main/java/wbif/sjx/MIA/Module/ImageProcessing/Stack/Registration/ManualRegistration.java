@@ -24,10 +24,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.OutputImageP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
@@ -39,7 +36,8 @@ import wbif.sjx.MIA.Process.Interactable.Interactable;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector;
 import wbif.sjx.MIA.Process.Interactable.PointPairSelector.PointPair;
 
-public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends AbstractRegistrationHandler implements Interactable {
+public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends AbstractRegistrationHandler
+        implements Interactable {
     public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String REFERENCE_IMAGE = "Reference image";
 
@@ -48,40 +46,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
     public ManualRegistration(ModuleCollection modules) {
         super("Manual registration", modules);
-    }
-
-    public interface RegistrationAxes {
-        String TIME = "Time";
-        String Z = "Z";
-
-        String[] ALL = new String[] { TIME, Z };
-
-    }
-
-    public interface OtherAxisModes {
-        String INDEPENDENT = "Independent";
-        String LINKED = "Linked";
-
-        String[] ALL = new String[] { INDEPENDENT, LINKED };
-
-    }
-
-    public interface TransformationModes {
-        String AFFINE = "Affine";
-        String RIGID = "Rigid";
-        String SIMILARITY = "Similarity";
-        String TRANSLATION = "Translation";
-
-        String[] ALL = new String[] { AFFINE, RIGID, SIMILARITY, TRANSLATION };
-
-    }
-
-    public interface FillModes {
-        String BLACK = "Black";
-        String WHITE = "White";
-
-        String[] ALL = new String[] { BLACK, WHITE };
-
     }
 
     public interface Measurements {
@@ -235,7 +199,12 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
     @Override
     public String getDescription() {
-        return "Uses SIFT image registration toolbox";
+        return "Align an image from the workspace to another image from the workspace using manually-selected reference points.  When the image runs, the input and reference images are displayed.  The user then selects matching points on each image and clicks \"Add pair(s)\".  Points must be added in the same order on each image (ID numbers next to each point provide a reference).  Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking \"Remove pair\".  The alignment can be tested by clicking \"Test process\".  Finally, the alignment is accepted by clicking \"Finish adding pairs\", at which point the images are closed and the transform is applied.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name."
+
+                + "Alignments are calculated using the <a href=\"https://github.com/axtimwalde/mpicbg\">MPICBG</a> image transformation library."
+
+                + "<br><br>Note: This module currently only aligns single slice images; however, a future update will add multi-slice processing.";
+
     }
 
     @Override
@@ -279,7 +248,7 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
 
         addParameterDescriptions();
-        
+
     }
 
     @Override
@@ -335,5 +304,11 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
     @Override
     public boolean verify() {
         return true;
+    }
+
+    @Override
+    protected void addParameterDescriptions() {
+        parameters.get(REFERENCE_IMAGE).setDescription(
+                "Reference image against which the input image will be aligned.  When the module runs, this image and the reference image will be displayed.  The user selects matching points on the two images, which will determine the final transform to be applied.");
     }
 }

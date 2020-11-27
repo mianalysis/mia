@@ -304,7 +304,8 @@ public class AnalysisReader_0p10p0_0p15p0 {
     }
 
     public static void convertRelationshipRefs(ModuleCollection modules, ArrayList<Node> relationshipsToCovert) {
-        boolean firstAdded = true; // As soon as one module is added, this is set to false.
+        Module separator = null;
+        int nAdded = 0;
 
         // Storing ParentChildRefs and PartnerRefs to prevent duplicate entries
         RefPairCollection parentChildRefs = new RefPairCollection();
@@ -334,13 +335,9 @@ public class AnalysisReader_0p10p0_0p15p0 {
                         && !lRef.isExportMin() && !lRef.isExportStd() && !lRef.isExportSum())
                     continue;
 
-                // Adding a GUI separator if necessary
-                if (firstAdded) {
-                    addRefSeparatorModule(modules);
-                    firstAdded = false;
-                    MIA.log.writeMessage(
-                            "Pre-v0.15.0 analysis loaded.  Analysis has been automatically updated to store exported child/partner counts and parent IDs as measurements.");
-                }
+                // Adding a GUI separator. If no relationships are added, this will be removed
+                if (separator == null)
+                    separator = addRefSeparatorModule(modules);
 
                 switch (node.getNodeName()) {
                     case "RELATIONSHIP":
@@ -366,6 +363,8 @@ public class AnalysisReader_0p10p0_0p15p0 {
                         addChildCountModule(modules, lRef, parentName, childName);
                         addParentIDModule(modules, lRef, parentName, childName);
 
+                        nAdded += 2;
+
                         break;
 
                     case "PARTNER":
@@ -390,13 +389,23 @@ public class AnalysisReader_0p10p0_0p15p0 {
                         addPartnerCountModule(modules, lRef, object1Name, object2Name);
                         addPartnerCountModule(modules, lRef, object2Name, object1Name);
 
+                        nAdded += 2;
+
                         break;
                 }
+
+                // Display a message if any relationship modules were added, otherwise remove the redundant separator
+                if (nAdded > 0)
+                    MIA.log.writeMessage(
+                            "Pre-v0.15.0 analysis loaded.  Analysis has been automatically updated to store exported child/partner counts and parent IDs as measurements.");
+                else
+                    modules.remove(separator);
+
             }
         }
     }
 
-    static void addRefSeparatorModule(ModuleCollection modules) {
+    static GUISeparator addRefSeparatorModule(ModuleCollection modules) {
         GUISeparator guiSeparator = new GUISeparator(modules);
         modules.add(guiSeparator);
 
@@ -404,6 +413,8 @@ public class AnalysisReader_0p10p0_0p15p0 {
         guiSeparator.setNickname("[AUTOGEN] Object relationships");
         guiSeparator.setNotes(
                 "The following modules were automatically added to aid compatibility with MIA v0.15.0 and above.  Child object counts, parent IDs and partner object counts are now stored as measurements.  The following modules add the same data exporting as present in the original analysis.  Note: Spreadsheet column headers may have changed.");
+
+        return guiSeparator;
 
     }
 

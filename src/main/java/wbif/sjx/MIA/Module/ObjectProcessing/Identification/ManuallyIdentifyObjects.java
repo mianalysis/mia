@@ -11,6 +11,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -27,6 +31,7 @@ import javax.swing.JList;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -59,8 +64,8 @@ import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputTrackObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -86,6 +91,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     private ImagePlus displayImagePlus;
     private Overlay overlay;
+    private Overlay origOverlay;
     private HashMap<Integer, ArrayList<ObjRoi>> rois;
     private int maxID;
 
@@ -125,13 +131,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         String FREEHAND_REGION = "Freehand region";
         String LINE = "Line";
         String OVAL = "Oval";
+        String POINTS = "Points";
         String POLYGON = "Polygon";
         String RECTANGLE = "Rectangle";
         String SEGMENTED_LINE = "Segmented line";
         String WAND = "Wand (tracing) tool";
 
-        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POLYGON, RECTANGLE, SEGMENTED_LINE,
-                WAND };
+        String[] ALL = new String[] { FREEHAND_LINE, FREEHAND_REGION, LINE, OVAL, POINTS, POLYGON, RECTANGLE,
+                SEGMENTED_LINE, WAND };
 
     }
 
@@ -182,6 +189,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 return;
             case SelectorTypes.OVAL:
                 IJ.setTool(Toolbar.OVAL);
+                return;
+            case SelectorTypes.POINTS:
+                IJ.setTool(Toolbar.POINT);
                 return;
             case SelectorTypes.RECTANGLE:
                 IJ.setTool(Toolbar.RECTANGLE);
@@ -469,11 +479,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle(messageOnImage);
 
-        overlay = displayImagePlus.getOverlay();
-        if (overlay == null) {
-            overlay = new Overlay();
-            displayImagePlus.setOverlay(overlay);
-        }
+        origOverlay = displayImagePlus.getOverlay();
+        overlay = new Overlay();
+        displayImagePlus.setOverlay(overlay);
+        updateOverlay();
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
@@ -519,11 +528,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Showing the selected objects
         if (showOutput) {
             if (outputTracks) {
-                TrackObjects.showObjects(outputObjects,outputTrackObjectsName,AbstractOverlay.ColourModes.PARENT_ID);
+                TrackObjects.showObjects(outputObjects, outputTrackObjectsName, AbstractOverlay.ColourModes.PARENT_ID);
             } else {
                 outputObjects.convertToImageRandomColours().showImage();
             }
-        }            
+        }
 
         return Status.PASS;
 
@@ -643,32 +652,33 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 "Interpolate objects across multiple frames.  Objects assigned the same ID will be interpolated to appear in all frames between the first and last specified timepoints.  Specified regions must contain a degree of overlap (higher overlap will give better results).");
 
         parameters.get(SELECTOR_TYPE).setDescription(
-                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: "+String.join(", ", SelectorTypes.ALL)+".");
+                "Default region drawing tool to enable.  This tool can be changed by the user when selecting regions.  Choices are: "
+                        + String.join(", ", SelectorTypes.ALL) + ".");
 
         parameters.get(MESSAGE_ON_IMAGE).setDescription("Message to display in title of image.");
 
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case (ADD_NEW):
-                addNewObject();
-                break;
+        public void actionPerformed(ActionEvent e) {
+            switch (e.getActionCommand()) {
+                case (ADD_NEW):
+                    addNewObject();
+                    break;
 
-            case (ADD_EXISTING):
-                addToExistingObject();
-                break;
+                case (ADD_EXISTING):
+                    addToExistingObject();
+                    break;
 
-            case (REMOVE):
-                removeObjects();
-                break;
+                case (REMOVE):
+                    removeObjects();
+                    break;
 
-            case (FINISH):
-                processObjectsAndFinish();
-                break;
+                case (FINISH):
+                    processObjectsAndFinish();
+                    break;
+            }
         }
-    }
 
     public void addNewObject() {
         // Getting the ROI
@@ -870,11 +880,17 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void updateOverlay() {
         overlay.clear();
 
-        for (ArrayList<ObjRoi> groups : rois.values()) {
-            for (ObjRoi objRoi : groups) {
-                addToOverlay(objRoi);
-            }
-        }
+        // Adding existing overlay components        
+        if (origOverlay != null)
+            for (Roi roi : origOverlay)
+                overlay.add(roi);
+
+        // Adding overlays for selected objects
+        if (rois != null)
+            for (ArrayList<ObjRoi> groups : rois.values())
+                for (ObjRoi objRoi : groups)
+                    addToOverlay(objRoi);
+
     }
 
     public void addToOverlay(ObjRoi objRoi) {

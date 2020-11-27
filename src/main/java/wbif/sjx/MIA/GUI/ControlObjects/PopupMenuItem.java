@@ -29,7 +29,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
         setText(module.getName());
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        setToolTipText("<html><p width=\"500\">" + module.getDescription() + "</p></html>");
+        setToolTipText("<html><div style=\"width:500px;\">" + module.getDescription() + "</div></html>");
         addActionListener(this);
 
 

@@ -5,6 +5,7 @@ package wbif.sjx.MIA.Module.Deprecated;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -281,7 +282,7 @@ public class ResolveCoOccurrence extends Module {
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS_NAME,this));
         parameters.add(new ChoiceP(OVERLAP_MODE,this,OverlapModes.SPATIAL_OVERLAP,OverlapModes.ALL));
         parameters.add(new DoubleP(MAXIMUM_SEPARATION,this,1.0));
-        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
+        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false,"When selected, spatial values are assumed to be specified in calibrated units (as defined by the \"" + new InputControl(null).getName() + "\" parameter \"" + InputControl.SPATIAL_UNITS + "\").  Otherwise, pixel units are assumed."));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_1,this,50.0));
         parameters.add(new DoubleP(MINIMUM_OVERLAP_PC_2,this,50.0));
 

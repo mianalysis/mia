@@ -9,6 +9,7 @@ import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -23,6 +24,7 @@ import wbif.sjx.common.Object.Volume.Volume;
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
  */
 public class ProjectObjects extends Module {
+    public static final String INPUT_SEPARATOR = "Object input/output";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
@@ -92,8 +94,11 @@ public class ProjectObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, this, "", "Objects to be projected into the xy-plane."));
-        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this, "", "Output projected objects to be stored in the workspace."));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+
+        addParameterDescriptions();
 
     }
 
@@ -135,5 +140,12 @@ public class ProjectObjects extends Module {
     @Override
     public boolean verify() {
         return true;
+    }
+
+    void addParameterDescriptions() {
+        parameters.get(INPUT_OBJECTS).setDescription("Objects to be projected into the xy-plane.  Tese are related as a parent of their respective projected object.");
+
+        parameters.get(OUTPUT_OBJECTS).setDescription("Output projected objects to be stored in the workspace.  These are related as children of the respective input object.");
+
     }
 }

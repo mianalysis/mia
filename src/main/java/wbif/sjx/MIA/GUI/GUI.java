@@ -19,6 +19,7 @@ import wbif.sjx.MIA.GUI.ControlObjects.StatusTextField;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.MIA.GUI.Panels.MainPanels.MainPanel;
+import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
@@ -121,7 +122,9 @@ public class GUI {
 
         updatePanel();
 
-        System.gc();
+        // Setting macro
+        MacroHandler.setWorkspace(GUI.getTestWorkspace());
+        MacroHandler.setModules(GUI.getModules());
 
     }
 
@@ -226,6 +229,7 @@ public class GUI {
 
     public static void setAnalysis(Analysis analysis) {
         GUI.analysis = analysis;
+        MacroHandler.setModules(analysis.getModules());
     }
 
     public static ModuleCollection getModules() {
@@ -293,6 +297,9 @@ public class GUI {
         lastModuleEval = -1;
         testWorkspace = new WorkspaceCollection().getNewWorkspace(nextFile, nextSeriesNumber);
         testWorkspace.getMetadata().setSeriesName(nextSeriesName);
+
+        // Setting macro
+        MacroHandler.setWorkspace(testWorkspace);        
 
     }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.drew.lang.annotations.Nullable;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import mpicbg.ij.InverseTransformMapping;
@@ -13,7 +14,9 @@ import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.UnwarpImages;
 import wbif.sjx.MIA.Object.Image;
@@ -43,6 +46,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     public static final String REFERENCE_SEPARATOR = "Reference image source";
     public static final String RELATIVE_MODE = "Relative mode";
+    public static final String NUM_PREV_FRAMES = "Number of previous frames";
+    public static final String PREV_FRAMES_STAT_MODE = "Previous frames statistic";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
@@ -70,13 +75,15 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
     }
 
     public interface RelativeModes {
-        final String FIRST_FRAME = "First frame";
-        final String PREVIOUS_FRAME = "Previous frame";
-        final String SPECIFIC_IMAGE = "Specific image";
+        String FIRST_FRAME = "First frame";
+        String PREVIOUS_N_FRAMES = "Previous N frames";
+        String SPECIFIC_IMAGE = "Specific image";
 
-        final String[] ALL = new String[] { FIRST_FRAME, PREVIOUS_FRAME, SPECIFIC_IMAGE };
+        String[] ALL = new String[] { FIRST_FRAME, PREVIOUS_N_FRAMES, SPECIFIC_IMAGE };
 
     }
+
+    public interface PrevFramesStatModes extends ProjectImage.ProjectionModes {}
 
     public interface CalculationSources {
         String INTERNAL = "Internal";
@@ -148,7 +155,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
-    public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, Param param, String fillMode, boolean multithread, @Nullable Image reference) {
+    public void processIndependent(Image inputImage, Image calculationImage, String relativeMode, int numPrevFrames, String prevFrameStatMode, Param param, String fillMode, boolean multithread, @Nullable Image reference) {
         // This works in a very similar manner to processLinked, except it's performed
         // one slice at a time
         for (int z = 0; z < inputImage.getImagePlus().getNSlices(); z++) {
@@ -159,7 +166,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
                     String.valueOf(z + 1), "1-end");
 
             // Performing the registration on this slice
-            processLinked(currInputImage, currCalcImage, relativeMode, param, fillMode, multithread, reference);
+            processLinked(currInputImage, currCalcImage, relativeMode, numPrevFrames, prevFrameStatMode, param, fillMode, multithread, reference);
 
             // Replacing all images in this slice of the input with the registered images
             replaceSlice(inputImage, currInputImage, z);
@@ -167,7 +174,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         }
     }
 
-    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, Param param,
+    public void processLinked(Image inputImage, Image calculationImage, String relativeMode, int numPrevFrames, String prevFrameStatMode,  Param param,
             String fillMode, boolean multithread, @Nullable Image reference) {
         // Assigning fixed reference images
         switch (relativeMode) {
@@ -186,15 +193,22 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         int nFrames = calculationImage.getImagePlus().getNFrames();
 
         for (int t = 0; t < nFrames; t++) {
+            MIA.log.writeDebug(t);
             writeStatus("Processing frame " + (++count) + " of " + nFrames);
 
             // If the reference image is the previous frame, get this now
-            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                if (t == 0)
+            switch (relativeMode) {
+                case RelativeModes.PREVIOUS_N_FRAMES:
+                 if (t == 0)
                     continue;
 
-                reference = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1", String.valueOf(t));
+                int minT = Math.max(1, t - numPrevFrames+1);
+                Image referenceStack = ExtractSubstack.extractSubstack(calculationImage, "Reference", "1", "1",
+                        minT + "-" + t);
+                Convert3DStack.process(referenceStack.getImagePlus(), Convert3DStack.Modes.OUTPUT_Z_STACK);
+                reference = ProjectImage.projectImageInZ(referenceStack, "Reference", prevFrameStatMode);
 
+                break;
             }
 
             // Getting the calculation image at this time-point
@@ -204,8 +218,11 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
             AbstractAffineModel2D model = getAffineModel2D(reference.getImagePlus().getProcessor(),
                     warped.getImagePlus().getProcessor(), param);
 
-            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+            if (model == null)
+                MIA.log.writeDebug("Model null");
 
+            InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+            MIA.log.writeDebug(mapping.getTransform());
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same
             // transformation.
@@ -224,7 +241,7 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
             }
 
             // Need to apply the warp to an external image
-            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
+            if (relativeMode.equals(RelativeModes.PREVIOUS_N_FRAMES)) {
                 warped = ExtractSubstack.extractSubstack(calculationImage, "Warped", "1", "1", String.valueOf(t + 1));
                 try {
                     applyTransformation(warped, mapping, fillMode, multithread);
@@ -269,6 +286,8 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
         parameters.add(new SeparatorP(REFERENCE_SEPARATOR, this));
         parameters.add(new ChoiceP(RELATIVE_MODE, this, RelativeModes.FIRST_FRAME, RelativeModes.ALL));
+        parameters.add(new IntegerP(NUM_PREV_FRAMES, this, 1));
+        parameters.add(new ChoiceP(PREV_FRAMES_STAT_MODE, this, PrevFramesStatModes.MAX, PrevFramesStatModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new ChoiceP(CALCULATION_SOURCE, this, CalculationSources.INTERNAL, CalculationSources.ALL));
         parameters.add(new InputImageP(EXTERNAL_SOURCE, this));
@@ -285,14 +304,18 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         returnedParameters.add(parameters.getParameter(REFERENCE_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
         switch ((String) parameters.getValue(RELATIVE_MODE)) {
-            case UnwarpImages.RelativeModes.SPECIFIC_IMAGE:
+            case RelativeModes.PREVIOUS_N_FRAMES:
+                returnedParameters.add(parameters.getParameter(NUM_PREV_FRAMES));
+                returnedParameters.add(parameters.getParameter(PREV_FRAMES_STAT_MODE));
+                break;
+            case RelativeModes.SPECIFIC_IMAGE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
         switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case UnwarpImages.CalculationSources.EXTERNAL:
+            case CalculationSources.EXTERNAL:
                 returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                 break;
         }
@@ -336,15 +359,15 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
     @Override
     protected void addParameterDescriptions() {
         super.addParameterDescriptions();
-        
+
         parameters.get(RELATIVE_MODE)
                 .setDescription("Controls what reference image each image will be compared to:<br><ul>"
 
                         + "<li>\"" + RelativeModes.FIRST_FRAME
                         + "\" All images will be compared to the first frame (or slice when in Z-axis mode).  For image sequences which continuously evolve over time (e.g. cells dividing) this can lead to reduced likelihood of successfully calculating the transform over time.</li>"
 
-                        + "<li>\"" + RelativeModes.PREVIOUS_FRAME
-                        + "\" Each image will be compared to the frame (or slice when in Z-axis mode) immediately before it.  This copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
+                        + "<li>\"" + RelativeModes.PREVIOUS_N_FRAMES
+                        + "\" Each image will be compared to the N frames (or slice when in Z-axis mode) immediately before it (number of frames specified by \""+NUM_PREV_FRAMES+"\").  These reference frames are consolidated into a single reference image using a projection based on the statistic specified by \""+PREV_FRAMES_STAT_MODE+"\".  This mode copes better with image sequences which continuously evolve over time, but can also lead to compounding errors over time (errors in registration get propagated to all remaining slices).</li>"
 
                         + "<li>\"" + RelativeModes.SPECIFIC_IMAGE
                         + "\" All images will be compared to a separate 2D image from the workspace.  The image to compare to is selected using the \""
@@ -353,6 +376,10 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         parameters.get(REFERENCE_IMAGE).setDescription("If \"" + RELATIVE_MODE + "\" is set to \""
                 + RelativeModes.SPECIFIC_IMAGE
                 + "\" mode, all input images will be registered relative to this image.  This image must only have a single channel, slice and timepoint.");
+
+        parameters.get(NUM_PREV_FRAMES).setDescription("Number of previous frames (or slices) to use as reference image when \""+RELATIVE_MODE+"\" is set to \""+RelativeModes.PREVIOUS_N_FRAMES+"\".  If there are insufficient previous frames (e.g. towards the beginning of the stack) the maximum available frames will be used.  Irrespective of the number of frames used, the images will be projected into a single reference image using the statistic specified by \""+PREV_FRAMES_STAT_MODE+"\".");
+
+        parameters.get(PREV_FRAMES_STAT_MODE).setDescription("Statistic to use when combining multiple previous frames as a reference (\""+RELATIVE_MODE+"\" set to \""+RelativeModes.PREVIOUS_N_FRAMES+"\").");
 
         parameters.get(CALCULATION_SOURCE).setDescription(
                 "Controls whether the input image will be used to calculate the registration transform or whether it will be determined from a separate image:<br><ul>"

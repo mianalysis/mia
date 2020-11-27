@@ -26,8 +26,11 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 public class FixedTextCondition extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String TEST_VALUE = "Test value";
+
+    public static final String CHOICE_SEPARATOR = "Choice settings";
     public static final String ADD_CONDITION = "Add condition";
     public static final String REFERENCE_VALUE = "Reference value";
+    
 
     public FixedTextCondition(ModuleCollection modules) {
         super("Fixed text condition", modules);
@@ -96,12 +99,13 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
+        parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));     
+        parameters.add(new StringP(TEST_VALUE, this));
+
         ParameterCollection collection = new ParameterCollection();
+        parameters.add(new SeparatorP(CHOICE_SEPARATOR, this));     
         collection.add(new StringP(REFERENCE_VALUE, this, ""));
         collection.addAll(super.updateAndGetParameters());
-
-        parameters.add(new StringP(TEST_VALUE, this));
-        parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));     
         parameters.add(new ParameterGroup(ADD_CONDITION, this, collection, 1, getUpdaterAndGetter()));
 
         addParameterDescriptions();
@@ -112,8 +116,9 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(TEST_VALUE));
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
+        returnedParameters.add(parameters.getParameter(TEST_VALUE));
+        
         returnedParameters.add(parameters.getParameter(ADD_CONDITION));
 
         return returnedParameters;
@@ -169,6 +174,7 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
             public ParameterCollection updateAndGet(ParameterCollection params) {
                 ParameterCollection returnedParameters = new ParameterCollection();
 
+                returnedParameters.add(params.getParameter(CHOICE_SEPARATOR));
                 returnedParameters.add(params.getParameter(REFERENCE_VALUE));
                 returnedParameters.add(params.getParameter(CONTINUATION_MODE));
                 switch ((String) params.getValue(CONTINUATION_MODE)) {

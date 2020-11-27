@@ -105,6 +105,8 @@ public class SIFTRegistration extends AutomaticRegistration {
         String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
+        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
+        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
@@ -175,12 +177,12 @@ public class SIFTRegistration extends AutomaticRegistration {
 
             switch (otherAxisMode) {
                 case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, param, fillMode, multithread,
+                    processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread,
                             reference);
                     break;
 
                 case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, param, fillMode, multithread, reference);
+                    processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread, reference);
                     break;
             }
 

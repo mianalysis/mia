@@ -26,6 +26,7 @@ import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.SeparatorP;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
@@ -45,10 +46,8 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
+    public static final String UPDATE_INPUT_IMAGE = "Update image after each run";
     public static final String VARIABLE_SEPARATOR = "Variables input";
-    public static final String VARIABLE_NAME = "Variable name";
-    public static final String VARIABLE_VALUE = "Variable value";
-    public static final String ADD_VARIABLE = "Add variable";
     public static final String MACRO_SEPARATOR = "Macro definition";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
@@ -56,9 +55,8 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     public static final String REFRESH_BUTTON = "Refresh parameters";
     public static final String OUTPUT_SEPARATOR = "Measurement output";
     public static final String ADD_INTERCEPTED_VARIABLE = "Intercept variable as measurement";
-//    public static final String VARIABLE_TYPE = "Variable type";
     public static final String VARIABLE = "Variable";
-
+    
 
     public interface MacroModes {
         String MACRO_FILE = "Macro file";
@@ -73,7 +71,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         super("Run macro on objects",modules);
     }
 
-    static String addObjectToMacroText(String macroString, String objectsName, int objectID) {
+    static String addObjectToMacroText(String macroString, String objectsName, int objectID, int count) {
         StringBuilder sb = new StringBuilder();
 
         // Adding the object name
@@ -86,6 +84,12 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         sb.append(objectID);
         sb.append(";\n");
 
+        // Adding the macro iteration count
+        sb.append("count=");
+        sb.append(count);
+        sb.append(";\n");
+
+        // Adding the main macro text
         sb.append(macroString);
 
         return sb.toString();
@@ -116,16 +120,13 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         boolean provideInputImage = parameters.getValue(PROVIDE_INPUT_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        boolean updateInputImage = parameters.getValue(UPDATE_INPUT_IMAGE);
         String macroMode = parameters.getValue(MACRO_MODE);
         String macroText = parameters.getValue(MACRO_TEXT);
         String macroFile = parameters.getValue(MACRO_FILE);
 
         // Getting the input objects
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
-
-        // Getting a Map of input variable names and their values
-        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        LinkedHashMap<String,String> inputVariables = inputVariables(variableGroup,VARIABLE_NAME,VARIABLE_VALUE);
 
         // Getting a list of measurement headings
         ParameterGroup group = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
@@ -135,12 +136,9 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         if (macroMode.equals(RunMacroOnImage.MacroModes.MACRO_FILE)) macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
-        macroText = addVariables(macroText, inputVariables);
+        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
+        macroText = addVariables(macroText, variableGroup);
         
-        // Setting the MacroHandler to the current workspace
-        MacroHandler.setWorkspace(workspace);
-        MacroHandler.setModules(modules);
-
         // If providing the input image direct from the workspace, hide all open windows while the macro runs
         ArrayList<ImagePlus> openImages = new ArrayList<>();
         if (provideInputImage) {
@@ -159,7 +157,7 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
             writeStatus("Running macro on object "+(count++)+" of "+nTotal);
 
             // Appending object name and ID number onto macro
-            String finalMacroText = addObjectToMacroText(macroText,inputObjectsName,inputObject.getID());
+            String finalMacroText = addObjectToMacroText(macroText,inputObjectsName,inputObject.getID(),count-1);
 
             // Get current image
             Image inputImage = provideInputImage ? workspace.getImage(inputImageName) : null;
@@ -168,7 +166,6 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
             // Running the macro
             CustomInterpreter interpreter = new CustomInterpreter();
             try {
-                MIA.log.writeDebug(finalMacroText);
                 inputImagePlus = interpreter.runBatchMacro(finalMacroText, inputImagePlus);
                 if (interpreter.wasError()) throw new RuntimeException();
             } catch (RuntimeException e) {
@@ -179,11 +176,16 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
             }
 
             // Intercepting measurements
-            for (String expectedMeasurement:expectedMeasurements) {
+            for (String expectedMeasurement : expectedMeasurements) {
                 double value = interpreter.getVariable(expectedMeasurement);
-                Measurement measurement = new Measurement(getFullName(expectedMeasurement),value);
+                Measurement measurement = new Measurement(getFullName(expectedMeasurement), value);
                 inputObject.addMeasurement(measurement);
             }
+            
+            // If necessary, updating the input image
+            if (updateInputImage)
+                inputImage.setImagePlus(inputImagePlus);
+
         }
 
         // If providing the input image direct from the workspace, re-opening all open windows
@@ -197,21 +199,20 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE,this,true));
         parameters.add(new InputImageP(INPUT_IMAGE,this));
-
-        parameters.add(new SeparatorP(VARIABLE_SEPARATOR,this));
-        ParameterCollection variableCollection = new ParameterCollection();
-        variableCollection.add(new StringP(VARIABLE_NAME,this));
-        variableCollection.add(new StringP(VARIABLE_VALUE,this));
-        parameters.add(new ParameterGroup(ADD_VARIABLE,this,variableCollection));
+        parameters.add(new BooleanP(UPDATE_INPUT_IMAGE, this, false));
+        
+        parameters.add(new SeparatorP(VARIABLE_SEPARATOR, this));
 
         parameters.add(new SeparatorP(MACRO_SEPARATOR,this));
         parameters.add(new ChoiceP(MACRO_MODE,this,MacroModes.MACRO_TEXT,MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT,this,"// Variables have been pre-defined for the input object name " +
-                "(\"objectName\") and its ID number (\"ID\")." +
+                "(\"objectName\"), its ID number (\"ID\") and the macro iteration count (\"count\")." +
                 "\n\nrun(\"Enable MIA Extensions\");\n\n",true));
         parameters.add(new FilePathP(MACRO_FILE,this));
         parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
@@ -235,10 +236,11 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         returnedParameters.add(parameters.getParameter(PROVIDE_INPUT_IMAGE));
         if ((boolean) parameters.getValue(PROVIDE_INPUT_IMAGE)) {
             returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(UPDATE_INPUT_IMAGE));
         }
 
         returnedParameters.add(parameters.getParameter(VARIABLE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
@@ -304,25 +306,17 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         return true;
     }
 
-    void addParameterDescriptions() {        
-        parameters.get(INPUT_OBJECTS).setDescription("The specified macro will be run once on each of the objects from this object collection.  No information (e.g. assigned variables) is transferred between macro runs.");
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+
+        parameters.get(INPUT_OBJECTS).setDescription(
+                "The specified macro will be run once on each of the objects from this object collection.  No information (e.g. assigned variables) is transferred between macro runs.");
 
         parameters.get(PROVIDE_INPUT_IMAGE).setDescription(
                 "When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the \"active\" image the macro runs on.");
 
         parameters.get(INPUT_IMAGE).setDescription("If \"" + PROVIDE_INPUT_IMAGE
                 + "\" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.");
-
-        ParameterGroup group = (ParameterGroup) parameters.get(ADD_VARIABLE);
-        ParameterCollection collection = group.getTemplateParameters();
-        collection.get(VARIABLE_NAME).setDescription(
-                "The variable value can be accessed from within the macro by using this variable name.");
-
-        collection.get(VARIABLE_VALUE).setDescription("Value assigned to this variable.");
-
-        parameters.get(ADD_VARIABLE).setDescription(
-                "Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""
-                        + getName() + "\" panel.");
 
         parameters.get(MACRO_MODE)
                 .setDescription("Select the source for the macro code:<br><ul>" + "<li>\"" + MacroModes.MACRO_FILE
@@ -343,8 +337,8 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
         parameters.get(ADD_INTERCEPTED_VARIABLE).setDescription(
                 "This allows variables assigned in the macro to be stored as measurements associated with the current object.");
 
-        group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
-        collection = group.getTemplateParameters();
+        ParameterGroup group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
+        ParameterCollection collection = group.getTemplateParameters();
         collection.get(VARIABLE).setDescription(
                 "Variable assigned in the macro to be stored as a measurement associated with the current object.  This name must exactly match (including case) the name as written in the macro.");
     }

@@ -61,6 +61,9 @@ public class Convert3DStack extends Module {
         int nFrames = inputImagePlus.getNFrames();
         int nSlices = inputImagePlus.getNSlices();
 
+        if (nSlices == 1 && nFrames == 1)
+            return;
+            
         switch (mode) {
             case Modes.OUTPUT_TIMESERIES:
                 if (inputImagePlus.getNSlices() == 1 && inputImagePlus.getNFrames() > 1)

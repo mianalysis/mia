@@ -31,6 +31,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
     public static final String LAYER_SCALE = "Layer scale";
     public static final String SEARCH_RADIUS = "Search radius (px)";
     public static final String BLOCK_RADIUS = "Block radius (px)";
+    public static final String RESOLUTION = "Resolution";
     public static final String MIN_PMCC_R = "Minimal PMCC r";
     public static final String MAX_CURVATURE = "Maximal curvature ratio";
     public static final String ROD = "Closest/next closest ratio";
@@ -58,7 +59,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         FloatProcessor ipr2 = padImage(warpedIpr, p).convertToFloatProcessor();
 
         TranslationModel2D transform = new TranslationModel2D();
-        SpringMesh mesh = new SpringMesh(24, ipr1.getWidth(), ipr2.getHeight(), 1, 1000, 0.9f);
+        SpringMesh mesh = new SpringMesh(p.resolution, ipr1.getWidth(), ipr2.getHeight(), 1, 1000, 0.9f);
         Collection<Vertex> vertices = mesh.getVertices();
         ArrayList<PointMatch> pointMatch = new ArrayList<PointMatch>();
 
@@ -113,6 +114,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         String otherAxisMode = parameters.getValue(OTHER_AXIS_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
+        int numPrevFrames = parameters.getValue(NUM_PREV_FRAMES);
+        String prevFramesStatMode = parameters.getValue(PREV_FRAMES_STAT_MODE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
@@ -174,6 +177,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
             param.scale = (float) (double) parameters.getValue(LAYER_SCALE);
             param.searchR = parameters.getValue(SEARCH_RADIUS);
             param.blockR = parameters.getValue(BLOCK_RADIUS);
+            param.resolution = parameters.getValue(RESOLUTION);
             param.minR = (float) (double) parameters.getValue(MIN_PMCC_R);
             param.maxCurvature = (float) (double) parameters.getValue(MAX_CURVATURE);
             param.rod = (float) (double) parameters.getValue(ROD);
@@ -183,12 +187,12 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
 
             switch (otherAxisMode) {
                 case OtherAxisModes.INDEPENDENT:
-                    processIndependent(inputImage, calculationImage, relativeMode, param, fillMode, multithread,
+                    processIndependent(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread,
                             reference);
                     break;
 
                 case OtherAxisModes.LINKED:
-                    processLinked(inputImage, calculationImage, relativeMode, param, fillMode, multithread, reference);
+                    processLinked(inputImage, calculationImage, relativeMode, numPrevFrames, prevFramesStatMode, param, fillMode, multithread, reference);
                     break;
             }
 
@@ -228,6 +232,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         parameters.add(new DoubleP(LAYER_SCALE, this, 1.0));
         parameters.add(new IntegerP(SEARCH_RADIUS, this, 50));
         parameters.add(new IntegerP(BLOCK_RADIUS, this, 50));
+        parameters.add(new IntegerP(RESOLUTION, this, 24));
         parameters.add(new DoubleP(MIN_PMCC_R, this, 0.1));
         parameters.add(new DoubleP(MAX_CURVATURE, this, 1000.0));
         parameters.add(new DoubleP(ROD, this, 1.0));
@@ -249,6 +254,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         returnedParameters.add(parameters.getParameter(LAYER_SCALE));
         returnedParameters.add(parameters.getParameter(SEARCH_RADIUS));
         returnedParameters.add(parameters.getParameter(BLOCK_RADIUS));
+        returnedParameters.add(parameters.getParameter(RESOLUTION));
         returnedParameters.add(parameters.getParameter(MIN_PMCC_R));
         returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
         returnedParameters.add(parameters.getParameter(ROD));
@@ -272,6 +278,8 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
 
         parameters.get(BLOCK_RADIUS).setDescription("");
 
+        parameters.get(RESOLUTION).setDescription("");
+
         parameters.get(MIN_PMCC_R).setDescription("");
 
         parameters.get(MAX_CURVATURE).setDescription("");
@@ -292,6 +300,7 @@ public class BlockMatchingRegistration extends AutomaticRegistration {
         float scale = 1.0f;
         int searchR = 50;
         int blockR = 50;
+        int resolution = 24;
         float minR = 0.1f;
         float maxCurvature = 1000.0f;
         float rod = 1.0f;

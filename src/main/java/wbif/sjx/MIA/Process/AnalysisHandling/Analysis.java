@@ -6,8 +6,10 @@ import java.util.Date;
 
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.GUI.GUI;
+import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Process.Logging.LogRenderer;
@@ -43,6 +45,13 @@ public class Analysis {
      */
     public boolean execute(Workspace workspace) {
         MIA.log.writeDebug("Processing file \"" + workspace.getMetadata().getFile().getAbsolutePath() + "\"");
+
+        // Setting the MacroHandler to the current workspace (only if macro modules are
+        // present)
+        if (modules.hasModuleMatchingType(AbstractMacroRunner.class)) {
+            MacroHandler.setWorkspace(workspace);
+            MacroHandler.setModules(modules);
+        }
 
         // Running through modules
         Status status = Status.PASS;
@@ -108,6 +117,12 @@ public class Analysis {
 
             MIA.log.write(memoryMessage, LogRenderer.Level.MEMORY);
 
+        }
+
+        // Transferring MacroHandler back to test workspace
+        if (modules.hasModuleMatchingType(AbstractMacroRunner.class)) {
+            MacroHandler.setWorkspace(GUI.getTestWorkspace());
+            MacroHandler.setModules(GUI.getModules());
         }
 
         return true;
