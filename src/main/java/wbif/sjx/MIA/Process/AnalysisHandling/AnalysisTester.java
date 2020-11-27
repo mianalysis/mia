@@ -2,9 +2,9 @@ package wbif.sjx.MIA.Process.AnalysisHandling;
 
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Module.Deprecated.GUICondition;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.WorkflowHandling.FixedTextCondition;
-import wbif.sjx.MIA.Module.WorkflowHandling.GUICondition;
 import wbif.sjx.MIA.Module.WorkflowHandling.ModuleIsEnabled;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 

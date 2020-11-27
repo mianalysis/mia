@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Parameters.OutputImageP;
@@ -19,8 +18,6 @@ import wbif.sjx.MIA.Object.Parameters.Objects.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.Objects.RemovedObjectsP;
 import wbif.sjx.MIA.Object.References.ImageMeasurementRef;
 import wbif.sjx.MIA.Object.References.ObjMeasurementRef;
-import wbif.sjx.MIA.Object.References.ParentChildRef;
-import wbif.sjx.MIA.Object.References.PartnerRef;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -408,6 +405,16 @@ public class ModuleCollection extends ArrayList<Module> implements RefCollection
         }
 
         return images;
+
+    }
+
+    public boolean hasModuleMatchingType(Class<? extends Module> clazz) {
+        for (Module module : this) {
+            if (clazz.isAssignableFrom(module.getClass()))
+                return true;
+        }
+
+        return false;
 
     }
 

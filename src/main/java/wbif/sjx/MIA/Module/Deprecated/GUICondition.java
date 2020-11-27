@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Module.WorkflowHandling;
+package wbif.sjx.MIA.Module.Deprecated;
 
 import java.util.LinkedHashMap;
 
@@ -6,13 +6,17 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
+import wbif.sjx.MIA.Module.WorkflowHandling.AbstractWorkspaceHandler;
+import wbif.sjx.MIA.Module.WorkflowHandling.FixedTextCondition;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup.ParameterUpdaterAndGetter;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
@@ -26,8 +30,13 @@ import wbif.sjx.MIA.Object.References.Collections.PartnerRefCollection;
 public class GUICondition extends AbstractWorkspaceHandler {
     public static final String CONDITION_SEPARATOR = "Condition";
     public static final String CHOICE = "Choice";
+    public static final String STORE_AS_METADATA_ITEM = "Store as metadata item";
+    public static final String METADATA_NAME = "Metadata name";
+
+    public static final String CHOICE_SEPARATOR = "Choice settings";
     public static final String ADD_CHOICE = "Add choice";
     public static final String CHOICE_NAME = "Choice name";
+    
 
     public GUICondition(ModuleCollection modules) {
         super("GUI condition", modules);
@@ -57,12 +66,14 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public String getPackageName() {
-        return PackageNames.WORKFLOW_HANDLING;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
     public String getDescription() {
-        return "Implement variable workflow handling outcomes based on a user-selectable drop-down list of choices.  Each choice has a unique workflow outcome, which can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis workflow to be skipped.<br><br>"
+        return "DEPRECATED: Please use \""+ new GlobalVariables(null).getName() +"\" module (in \""+GlobalVariables.VariableTypes.CHOICE+"\" mode) in conjunction with \""+ new FixedTextCondition(null).getName() +"\", which offer equivalent functionality."
+
+        +"<br><br>Implement variable workflow handling outcomes based on a user-selectable drop-down list of choices.  Each choice has a unique workflow outcome, which can include termination of the analysis and redirection of the active module to another part of the workflow.  Redirection allows parts of the analysis workflow to be skipped.<br><br>"
         
         + "An example usage case for GUI conditions is providing a drop-down box on the basic control view.  With this simple control, the user can execute different blocks of the workflow without having to fundamentally understand how they are assembled.";
 
@@ -72,18 +83,31 @@ public class GUICondition extends AbstractWorkspaceHandler {
     protected Status process(Workspace workspace) {
         // Getting parameters
         String choice = parameters.getValue(CHOICE);
+        boolean storeAsMetadata = parameters.getValue(STORE_AS_METADATA_ITEM);
+        String metadataName = parameters.getValue(METADATA_NAME);
         LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
         boolean showRedirectMessage = parameters.getValue(SHOW_REDIRECT_MESSAGE);
 
         // Getting choice parameters
+        Status status = Status.FAIL;
         for (ParameterCollection collection : collections.values()) {
             if (collection.getValue(CHOICE_NAME).equals(choice)) {
-                return processTermination(collection, workspace, showRedirectMessage);
+                 status = processTermination(collection, workspace, showRedirectMessage);
             }
         }
-        MIA.log.writeWarning("Did not find matching termination option");
 
-        return Status.PASS;
+        if (storeAsMetadata) 
+            workspace.getMetadata().put(metadataName, choice);
+        
+        if (showOutput && storeAsMetadata)
+            workspace.showMetadata(this);
+
+        if (status == Status.FAIL) {
+            MIA.log.writeWarning("Did not find matching termination option");
+            status = Status.PASS;
+        }
+
+        return status;
 
     }
 
@@ -91,13 +115,16 @@ public class GUICondition extends AbstractWorkspaceHandler {
     protected void initialiseParameters() {
         super.initialiseParameters();
 
-        ParameterCollection collection = new ParameterCollection();
-        collection.add(new StringP(CHOICE_NAME, this, ""));
-        collection.addAll(super.updateAndGetParameters());
-
         parameters.add(new SeparatorP(CONDITION_SEPARATOR, this));
         parameters.add(new ChoiceP(CHOICE, this, "", new String[0]));
+        parameters.add(new BooleanP(STORE_AS_METADATA_ITEM, this, false));
+        parameters.add(new StringP(METADATA_NAME, this, ""));
         parameters.getParameter(CHOICE).setVisible(true);
+
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new SeparatorP(CHOICE_SEPARATOR, this));
+        collection.add(new StringP(CHOICE_NAME, this, ""));
+        collection.addAll(super.updateAndGetParameters());
         parameters.add(new ParameterGroup(ADD_CHOICE, this, collection, 0, getUpdaterAndGetter()));
 
         addParameterDescriptions();
@@ -110,6 +137,10 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
         returnedParameters.add(parameters.getParameter(CONDITION_SEPARATOR));
         returnedParameters.add(parameters.getParameter(CHOICE));
+        returnedParameters.add(parameters.getParameter(STORE_AS_METADATA_ITEM));
+        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM)) {
+            returnedParameters.add(parameters.getParameter(METADATA_NAME));
+        }
         returnedParameters.add(parameters.getParameter(ADD_CHOICE));
 
         // Updating options in choice menu
@@ -133,7 +164,13 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public MetadataRefCollection updateAndGetMetadataReferences() {
-        return null;
+        MetadataRefCollection returnedRefs = new MetadataRefCollection();
+
+        if ((boolean) parameters.getValue(STORE_AS_METADATA_ITEM)) 
+            returnedRefs.add(metadataRefs.getOrPut(parameters.getValue(METADATA_NAME)));
+            
+        return returnedRefs;
+
     }
 
     @Override
@@ -170,6 +207,7 @@ public class GUICondition extends AbstractWorkspaceHandler {
             public ParameterCollection updateAndGet(ParameterCollection params) {
                 ParameterCollection returnedParameters = new ParameterCollection();
 
+                returnedParameters.add(params.getParameter(CHOICE_SEPARATOR));
                 returnedParameters.add(params.getParameter(CHOICE_NAME));
                 returnedParameters.add(params.getParameter(CONTINUATION_MODE));
                 switch ((String) params.getValue(CONTINUATION_MODE)) {

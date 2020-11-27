@@ -45,9 +45,6 @@ public class RunMacroOnImage extends AbstractMacroRunner {
     public static final String PROVIDE_INPUT_IMAGE = "Provide input image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String VARIABLE_SEPARATOR = "Variables input";
-    public static final String VARIABLE_NAME = "Variable name";
-    public static final String VARIABLE_VALUE = "Variable value";
-    public static final String ADD_VARIABLE = "Add variable";
     public static final String MACRO_SEPARATOR = "Macro definition";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
@@ -116,9 +113,6 @@ public class RunMacroOnImage extends AbstractMacroRunner {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        // Getting a Map of input variable names and their values
-        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        LinkedHashMap<String, String> inputVariables = inputVariables(variableGroup, VARIABLE_NAME, VARIABLE_VALUE);
 
         // Getting a list of measurement headings
         ParameterGroup measurementGroup = parameters.getParameter(ADD_INTERCEPTED_VARIABLE);
@@ -137,7 +131,8 @@ public class RunMacroOnImage extends AbstractMacroRunner {
             macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
-        String finalMacroText = addVariables(macroText, inputVariables);
+        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
+        String finalMacroText = addVariables(macroText, variableGroup);
 
         // If providing the input image direct from the workspace, hide all open windows
         // while the macro runs
@@ -194,15 +189,13 @@ public class RunMacroOnImage extends AbstractMacroRunner {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new BooleanP(PROVIDE_INPUT_IMAGE, this, true));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
 
         parameters.add(new SeparatorP(VARIABLE_SEPARATOR, this));
-        ParameterCollection variableCollection = new ParameterCollection();
-        variableCollection.add(new StringP(VARIABLE_NAME, this));
-        variableCollection.add(new StringP(VARIABLE_VALUE, this));
-        parameters.add(new ParameterGroup(ADD_VARIABLE, this, variableCollection));
 
         parameters.add(new SeparatorP(MACRO_SEPARATOR, this));
         parameters.add(new ChoiceP(MACRO_MODE, this, MacroModes.MACRO_TEXT, MacroModes.ALL));
@@ -236,7 +229,7 @@ public class RunMacroOnImage extends AbstractMacroRunner {
         }
 
         returnedParameters.add(parameters.getParameter(VARIABLE_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
+        returnedParameters.addAll(super.updateAndGetParameters());
 
         returnedParameters.add(parameters.getParameter(MACRO_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MACRO_MODE));
@@ -321,24 +314,15 @@ public class RunMacroOnImage extends AbstractMacroRunner {
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+
         parameters.get(PROVIDE_INPUT_IMAGE).setDescription(
                 "When selected, a specified image from the workspace will be opened prior to running the macro.  This image will be the \"active\" image the macro runs on.");
 
         parameters.get(INPUT_IMAGE).setDescription("If \"" + PROVIDE_INPUT_IMAGE
                 + "\" is selected, this is the image that will be loaded into the macro.  A duplicate of this image is made, so the image stored in the workspace will not be affected by any processing in the macro.  The final active image once the macro has completed can be stored in the workspace using the \""
                 + INTERCEPT_OUTPUT_IMAGE + "\" parameter.");
-
-        ParameterGroup group = (ParameterGroup) parameters.get(ADD_VARIABLE);
-        ParameterCollection collection = group.getTemplateParameters();
-        collection.get(VARIABLE_NAME).setDescription(
-                "The variable value can be accessed from within the macro by using this variable name.");
-
-        collection.get(VARIABLE_VALUE).setDescription("Value assigned to this variable.");
-
-        parameters.get(ADD_VARIABLE).setDescription(
-                "Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""
-                        + getName() + "\" panel.");
 
         parameters.get(MACRO_MODE)
                 .setDescription("Select the source for the macro code:<br><ul>" + "<li>\"" + MacroModes.MACRO_FILE
@@ -370,8 +354,8 @@ public class RunMacroOnImage extends AbstractMacroRunner {
         parameters.get(ADD_INTERCEPTED_VARIABLE).setDescription(
                 "This allows variables assigned in the macro to be stored as measurements associated with the input image.");
 
-        group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
-        collection = group.getTemplateParameters();
+        ParameterGroup group = (ParameterGroup) parameters.get(ADD_INTERCEPTED_VARIABLE);
+        ParameterCollection collection = group.getTemplateParameters();
         collection.get(VARIABLE).setDescription(
                 "Variable assigned in the macro to be stored as a measurement associated with the input image.  This name must exactly match (including case) the name as written in the macro.");
     }

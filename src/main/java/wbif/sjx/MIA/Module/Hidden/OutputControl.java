@@ -39,12 +39,9 @@ import wbif.sjx.common.Object.Metadata;
 /**
  * Created by Stephen on 29/07/2017.
  */
-public class OutputControl extends Module {
+public class OutputControl extends AbstractMacroRunner {
     public static final String POSTPROCESSING_SEPARATOR = "Post-processing";
     public static final String RUN_MACRO = "Run macro";
-    public static final String VARIABLE_NAME = "Variable name";
-    public static final String VARIABLE_VALUE = "Variable value";
-    public static final String ADD_VARIABLE = "Add variable";
     public static final String MACRO_MODE = "Macro mode";
     public static final String MACRO_TEXT = "Macro text";
     public static final String MACRO_FILE = "Macro file";
@@ -264,11 +261,6 @@ public class OutputControl extends Module {
         String macroText = parameters.getValue(MACRO_TEXT);
         String macroFile = parameters.getValue(MACRO_FILE);
 
-        // Getting a Map of input variable names and their values
-        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
-        LinkedHashMap<String, String> inputVariables = AbstractMacroRunner.inputVariables(variableGroup, VARIABLE_NAME,
-                VARIABLE_VALUE);
-
         // Setting the MacroHandler to the current workspace
         MacroHandler.setWorkspace(workspace);
         MacroHandler.setModules(modules);
@@ -278,7 +270,8 @@ public class OutputControl extends Module {
             macroText = IJ.openAsString(macroFile);
 
         // Appending variables to the front of the macro
-        String finalMacroText = AbstractMacroRunner.addVariables(macroText, inputVariables);
+        ParameterGroup variableGroup = parameters.getParameter(ADD_VARIABLE);
+        String finalMacroText = AbstractMacroRunner.addVariables(macroText, variableGroup);
 
         // Running the macro
         CustomInterpreter interpreter = new CustomInterpreter();
@@ -325,13 +318,11 @@ public class OutputControl extends Module {
 
     @Override
     protected void initialiseParameters() {
+        super.initialiseParameters();
+
         parameters.add(new SeparatorP(POSTPROCESSING_SEPARATOR, this));
 
         parameters.add(new BooleanP(RUN_MACRO, this, false));
-        ParameterCollection variableCollection = new ParameterCollection();
-        variableCollection.add(new StringP(VARIABLE_NAME, this));
-        variableCollection.add(new StringP(VARIABLE_VALUE, this));
-        parameters.add(new ParameterGroup(ADD_VARIABLE, this, variableCollection));
         parameters.add(new ChoiceP(MACRO_MODE, this, MacroModes.MACRO_TEXT, MacroModes.ALL));
         parameters.add(new TextAreaP(MACRO_TEXT, this,
                 "run(\"Enable MIA Extensions\");\n\n// Get a list of Workspace IDs with Ext.MIA_GetListOfWorkspaceIDs() and set active workspace with Ext.MIA_SetActiveWorkspace(ID).",
@@ -374,7 +365,7 @@ public class OutputControl extends Module {
         returnedParameters.add(parameters.getParameter(POSTPROCESSING_SEPARATOR));
         returnedParameters.add(parameters.getParameter(RUN_MACRO));
         if ((boolean) parameters.getValue(RUN_MACRO)) {
-            returnedParameters.add(parameters.getParameter(ADD_VARIABLE));
+            returnedParameters.addAll(super.updateAndGetParameters());
             returnedParameters.add(parameters.getParameter(MACRO_MODE));
             switch ((String) parameters.getValue(MACRO_MODE)) {
                 case MacroModes.MACRO_FILE:
@@ -491,23 +482,14 @@ public class OutputControl extends Module {
         return true;
     }
 
-    void addParameterDescriptions() {
+    protected void addParameterDescriptions() {
+        super.addParameterDescriptions();
+
         parameters.get(RUN_MACRO).setDescription(
                 "When selected, a final macro can be run once all the analysis runs (jobs) have been completed.  By using the workspace handling macros (\""
                         + MIA_GetListOfWorkspaceIDs.class.getSimpleName() + "\" and \""
                         + MIA_SetActiveWorkspace.class.getSimpleName()
                         + "\") it's possible to switch between workspaces, thus facilitating dataset-wide analyses.  This macro will be executed only once as part of the final data exporting phase of the analysis.");
-
-        ParameterGroup group = (ParameterGroup) parameters.get(ADD_VARIABLE);
-        ParameterCollection collection = group.getTemplateParameters();
-        collection.get(VARIABLE_NAME).setDescription(
-                "The variable value can be accessed from within the macro by using this variable name.");
-
-        collection.get(VARIABLE_VALUE).setDescription("Value assigned to this variable.");
-
-        parameters.get(ADD_VARIABLE).setDescription(
-                "Pre-define variables, which will be immediately accessible within the macro.  These can be used to provide user-controllable values to file-based macros or to prevent the need for editing macro code via the \""
-                        + getName() + "\" panel.");
 
         parameters.get(MACRO_MODE)
                 .setDescription("Select the source for the macro code:<br><ul>" + "<li>\"" + MacroModes.MACRO_FILE

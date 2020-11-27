@@ -4,8 +4,10 @@ import java.util.HashMap;
 
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.SIFTRegistration;
 import wbif.sjx.MIA.Module.InputOutput.ObjectLoader;
+import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous.ReplaceMeasurementValue;
 import wbif.sjx.MIA.Module.ObjectMeasurements.Spatial.CalculateNearestNeighbour;
+import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.ExpandShrinkObjects;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
 import wbif.sjx.MIA.Module.WorkflowHandling.WorkflowHandling;
@@ -32,6 +34,20 @@ public class LostAndFound {
         currentParameters.put("Radius change (px)", ExpandShrinkObjects.RADIUS_CHANGE);
         moduleName = new ExpandShrinkObjects(null).getClass().getSimpleName();
         lostParameters.put(moduleName, currentParameters);
+
+        // GetObjectLocalRegion
+        currentParameters = new HashMap<>();
+        currentParameters.put("Local radius", GetLocalObjectRegion.FIXED_VALUE);
+        currentParameters.put("Measurement name", GetLocalObjectRegion.RADIUS_MEASUREMENT);
+        currentParameters.put("Calibrated radius", GetLocalObjectRegion.CALIBRATED_UNITS);
+        moduleName = new GetLocalObjectRegion(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);
+
+        // GlobalVariables
+        currentParameters = new HashMap<>();
+        currentParameters.put("Control type", GlobalVariables.VARIABLE_TYPE);
+        moduleName = new GlobalVariables(null).getClass().getSimpleName();
+        lostParameters.put(moduleName, currentParameters);        
 
         // ObjectLoader
         currentParameters = new HashMap<>();
