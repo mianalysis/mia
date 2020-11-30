@@ -42,11 +42,13 @@ public class DocumentationGenerator2 {
         deleteFolders(root);
         root.mkdir();
 
-        // Creating website content
         generateIndexPage();
         generateGettingStartedPage();
         generateGuidesPage();
+
+        // Generating module pages
         generateModulesPage();
+
         generateAboutPage();
 
         // Creating README.md
@@ -121,13 +123,18 @@ public class DocumentationGenerator2 {
     }
 
     public void generateModulesPage() throws IOException {
+        // Setting the path and ensuring the folder exists
+        String pathToRoot = "../..";
+        String path = "docs/html/modules/";
+        new File(path).mkdir();
+        
         // Generate module list HTML document
-        String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/modulestemplate.html", pathToRoot);
 
-        page = page.replace("${MAIN_CONTENT}", "MODULES");
+        page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter("docs/html/modules.html");
+        FileWriter writer = new FileWriter(path+"modules.html");
         writer.write(page);
         writer.flush();
         writer.close();
