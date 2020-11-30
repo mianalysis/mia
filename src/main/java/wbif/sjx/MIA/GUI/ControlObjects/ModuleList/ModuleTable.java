@@ -81,10 +81,10 @@ public class ModuleTable extends JTable implements ActionListener, MouseListener
         KeyStroke delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0);
         registerKeyboardAction(this,"Delete",delete,JComponent.WHEN_FOCUSED);
 
-        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,InputEvent.CTRL_MASK,false);
+        KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,InputEvent.CTRL_DOWN_MASK,false);
         registerKeyboardAction(this,"Copy",copy,JComponent.WHEN_FOCUSED);
 
-        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V,InputEvent.CTRL_MASK,false);
+        KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V,InputEvent.CTRL_DOWN_MASK,false);
         registerKeyboardAction(this,"Paste",paste,JComponent.WHEN_FOCUSED);
 
         // Adding selection(s)
