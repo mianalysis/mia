@@ -5,6 +5,19 @@
     text-decoration: none;
 }
 
+.mia-card-container {
+  max-width: 960px;
+}
+
+.mia-card {
+  min-width: 18rem;
+  max-width: 18rem;
+}
+
+.mia-card-footer {
+  border:none;
+}
+
 .navbar {
   -webkit-box-shadow: 0 8px 0px 0px #aaa;
   -moz-box-shadow: 0 8px 0px 0px #aaa;
@@ -15,10 +28,6 @@
 
 .page-header {
   max-width: 700px;
-}
-
-.module-packages {
-  max-width: 960px;
 }
    
 .dropdown-toggle::after {
