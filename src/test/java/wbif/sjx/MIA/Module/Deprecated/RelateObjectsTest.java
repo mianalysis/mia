@@ -5,11 +5,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import ij.IJ;
+import ij.ImageJ;
 import wbif.sjx.MIA.ExpectedObjects.*;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Process.ColourFactory;
 import wbif.sjx.common.Object.Volume.VolumeType;
 
 import java.util.Arrays;

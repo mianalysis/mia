@@ -140,22 +140,25 @@ public class WekaProbabilityMaps extends Module {
             ImageTypeConverter.applyConversion(iplSingle, bitDepth, ImageTypeConverter.ScalingModes.SCALE);
             for (int cl = 1; cl <= nOutputClasses; cl++) {
                 for (int z = 1; z <= (endingBlock - startingBlock + 1); z++) {
-                    int[] pos = inputImagePlus.convertIndexToPosition(startingBlock + z - 1);                    
-                    int singleIdx;
-                    int probabilityIdx;
+                    int[] pos = inputImagePlus.convertIndexToPosition(startingBlock + z - 1);
                     if (outputClass == -1) {
                         // If outputting all classes
-                        singleIdx = nOutputClasses * (z - 1) + cl;
-                        probabilityIdx = probabilityMaps.getStackIndex((nOutputClasses * (pos[0] - 1) + cl), pos[1], pos[2]);
+                        iplSingle.setPosition(nOutputClasses * (z - 1) + cl);
+                        probabilityMaps.setPosition((nOutputClasses * (pos[0] - 1) + cl), pos[1], pos[2]);
                     } else {
                         // If outputting a single class
-                        singleIdx = nClasses * (z - 1) + outputClass;
-                        probabilityIdx = probabilityMaps.getStackIndex(1, pos[1], pos[2]);
+                        iplSingle.setPosition(nClasses * (z - 1) + outputClass);
+                        probabilityMaps.setPosition(1, pos[1], pos[2]);
                     }
 
-                    probabilityMaps.getStack().setProcessor(iplSingle.getStack().getProcessor(singleIdx),
-                            probabilityIdx);
+                    ImageProcessor iprSingle = iplSingle.getProcessor();
+                    ImageProcessor iprProbability = probabilityMaps.getProcessor();
 
+                    for (int x = 0; x < width; x++) {
+                        for (int y = 0; y < height; y++) {
+                            iprProbability.setf(x, y, iprSingle.getf(x, y));
+                        }
+                    }
                 }
             }
             

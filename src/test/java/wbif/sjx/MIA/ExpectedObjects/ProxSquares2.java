@@ -24,8 +24,8 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 26.66d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 4d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), 5.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 4d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 5.5d);
         expectedValues.put(51, obj);
@@ -34,8 +34,8 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 20.36d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 2d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), 3.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 2d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 3.5d);
         expectedValues.put(85, obj);
@@ -44,8 +44,8 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 14.58d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 1d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), 2.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 1d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 2.5d);
         expectedValues.put(221, obj);
@@ -54,9 +54,9 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 9.19d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 0d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), 1.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), 0d);
-        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), Double.NaN);
+        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 1.5d);
         expectedValues.put(59, obj);
 
@@ -64,30 +64,30 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 5.52d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 0d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), -0.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), -0.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
         expectedValues.put(144, obj);
 
         obj = new HashMap<>();
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 7.11d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 0d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), -0.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), -0.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
         expectedValues.put(168, obj);
 
         obj = new HashMap<>();
         obj.put(Measures.CENT_PROX_DIST_PX.name(), 12.02d);
         obj.put(Measures.SURF_PROX_DIST_PX_INOUT.name(), 0d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), -1.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), Double.NaN);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), -1.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
         expectedValues.put(123, obj);
 
         obj = new HashMap<>();
@@ -96,8 +96,8 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), -2.5d);
         obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), -1d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), -2.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
         expectedValues.put(29, obj);
 
         obj = new HashMap<>();
@@ -106,8 +106,8 @@ public class ProxSquares2 extends ExpectedObjects {
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_INOUT.name(), -4.5d);
         obj.put(Measures.SURF_PROX_DIST_PX_IN.name(), -3d);
         obj.put(Measures.CENT_SURF_PROX_DIST_PX_IN.name(), -4.5d);
-        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), 0d);
-        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), 0d);
+        obj.put(Measures.SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX_OUT.name(), Double.NaN);
         expectedValues.put(96, obj);
 
         return expectedValues;
