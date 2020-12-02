@@ -128,9 +128,10 @@ public class DocumentationGenerator2 {
 
     public void generateModuleCategoryPage(Category category) throws IOException {
         // Setting the path and ensuring the folder exists
-        String pathToRoot = "../..";
-        String path = "docs/html/modules/";
-        new File(path).mkdir();
+        String pathToRoot = getCatgoryPathToRoot(category) + "..";
+        String categoryPath = getCategoryPath(category);
+        String path = "docs/html/";
+        new File(path + categoryPath).mkdirs();
 
         // Initialise HTML document
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
@@ -146,22 +147,23 @@ public class DocumentationGenerator2 {
             String cardContent = getPageTemplate("src/main/resources/templatehtml/cardtemplate.html", pathToRoot);
             cardContent = cardContent.replace("${CARD_TITLE}", childCategory.getName());
             cardContent = cardContent.replace("${CARD_TEXT}", childCategory.getDescription());
+            cardContent = cardContent.replace("${TARGET_PATH}",
+                    getCategoryPath(childCategory) + "/" + childCategory.getName().toLowerCase());
             categoryContent = categoryContent + cardContent;
         }
         mainContent = mainContent.replace("${CATEGORY_CARDS}", categoryContent);
 
-        System.out.println("DOCUMENTATIONGENERATOR2.JAVA >>> NEED TO IMPLEMENT WRITING MODULE CARDS");
-
         // Add packages content to page
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter(path + "modules.html");
+        FileWriter writer = new FileWriter(path + categoryPath + "/" + category.getName().toLowerCase() + ".html");
         writer.write(page);
         writer.flush();
         writer.close();
 
         // For each child category, repeating the same process
-        System.out.println("DOCUMENTATIONGENERATOR2.JAVA >>> NEED TO IMPLEMENT WRITING SUB-PACKAGES");
+        for (Category childCategory : category.getChildren())
+            generateModuleCategoryPage(childCategory);
 
     }
 
@@ -221,5 +223,20 @@ public class DocumentationGenerator2 {
 
     String insertMIAVersion(String str) {
         return str.replace("${MIA_VERSION}", version);
+    }
+
+    String getCategoryPath(Category category) {
+        if (category == null)
+            return "";
+
+        return (getCategoryPath(category.getParent()) + "/" + category.getName()).toLowerCase();
+
+    }
+
+    String getCatgoryPathToRoot(Category category) {
+        if (category == null)
+            return "";
+
+        return getCatgoryPathToRoot(category.getParent()) + "../";
     }
 }
