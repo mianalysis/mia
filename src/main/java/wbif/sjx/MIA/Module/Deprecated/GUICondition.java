@@ -44,6 +44,13 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     @Override
     public Module getRedirectModule() {
+        // Default redirect module is the next one in the sequence
+        int idx = modules.indexOf(this) + 1;
+        if (idx >= modules.size())
+            redirectModule = null;
+        else
+            redirectModule = modules.get(idx);
+            
         String choice = parameters.getValue(CHOICE);
         LinkedHashMap<Integer, ParameterCollection> collections = parameters.getValue(ADD_CHOICE);
         for (ParameterCollection collection : collections.values()) {

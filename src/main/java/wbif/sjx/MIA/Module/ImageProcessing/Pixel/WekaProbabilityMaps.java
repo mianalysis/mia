@@ -140,28 +140,25 @@ public class WekaProbabilityMaps extends Module {
             ImageTypeConverter.applyConversion(iplSingle, bitDepth, ImageTypeConverter.ScalingModes.SCALE);
             for (int cl = 1; cl <= nOutputClasses; cl++) {
                 for (int z = 1; z <= (endingBlock - startingBlock + 1); z++) {
-                    int[] pos = inputImagePlus.convertIndexToPosition(startingBlock + z - 1);
+                    int[] pos = inputImagePlus.convertIndexToPosition(startingBlock + z - 1);                    
+                    int singleIdx;
+                    int probabilityIdx;
                     if (outputClass == -1) {
                         // If outputting all classes
-                        iplSingle.setPosition(nOutputClasses * (z - 1) + cl);
-                        probabilityMaps.setPosition((nOutputClasses * (pos[0] - 1) + cl), pos[1], pos[2]);
+                        singleIdx = nOutputClasses * (z - 1) + cl;
+                        probabilityIdx = probabilityMaps.getStackIndex((nOutputClasses * (pos[0] - 1) + cl), pos[1], pos[2]);
                     } else {
                         // If outputting a single class
-                        iplSingle.setPosition(nClasses * (z - 1) + outputClass);
-                        probabilityMaps.setPosition(1, startingBlock + z - 1, pos[2]);
+                        singleIdx = nClasses * (z - 1) + outputClass;
+                        probabilityIdx = probabilityMaps.getStackIndex(1, pos[1], pos[2]);
                     }
 
-                    ImageProcessor iprSingle = iplSingle.getProcessor();
-                    ImageProcessor iprProbability = probabilityMaps.getProcessor();
+                    probabilityMaps.getStack().setProcessor(iplSingle.getStack().getProcessor(singleIdx),
+                            probabilityIdx);
 
-                    for (int x = 0; x < width; x++) {
-                        for (int y = 0; y < height; y++) {
-                            iprProbability.setf(x, y, iprSingle.getf(x, y));
-                        }
-                    }
                 }
             }
-
+            
             count = count + endingBlock - startingBlock + 1;
             writeStatus("Processed " + count + " of " + slices + " images");
 
