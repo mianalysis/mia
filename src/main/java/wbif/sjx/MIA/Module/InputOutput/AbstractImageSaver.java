@@ -16,6 +16,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
@@ -158,6 +160,11 @@ public abstract class AbstractImageSaver extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.INPUT_OUTPUT;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.INPUT_OUTPUT;
     }
 
     @Override

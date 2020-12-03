@@ -11,6 +11,8 @@ import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddObjectOutline;
 import wbif.sjx.MIA.Object.Status;
@@ -84,6 +86,11 @@ public class HoughObjectDetection extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

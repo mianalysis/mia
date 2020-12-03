@@ -13,6 +13,8 @@ import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -49,6 +51,11 @@ public class RunSingleMacroCommand extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.MISCELLANEOUS_MACROS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.MISCELLANEOUS_MACROS;
     }
 
     @Override

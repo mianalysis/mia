@@ -1,5 +1,6 @@
 package wbif.sjx.MIA.Object.Parameters;
 
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Status;
@@ -18,6 +19,11 @@ public class ParamTest extends Module {
     @Override
     public String getPackageName() {
         return "Test";
+    }
+
+    @Override
+    public Category getCategory() {
+        return new Category("Test","",null);
     }
 
     @Override

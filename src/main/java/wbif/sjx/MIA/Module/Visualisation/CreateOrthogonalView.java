@@ -19,6 +19,8 @@ import net.imglib2.view.Views;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -164,6 +166,11 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
     @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.VISUALISATION;
     }
 
     @Override

@@ -35,6 +35,8 @@ import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
@@ -539,6 +541,11 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
     @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.DEPRECATED;
     }
 
     @Override

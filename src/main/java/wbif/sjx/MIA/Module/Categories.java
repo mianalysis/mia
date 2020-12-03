@@ -3,7 +3,9 @@ package wbif.sjx.MIA.Module;
 public class Categories {
     public final static Category ROOT = new Category("Modules", "All operations are performed using dedicated modules. Typically, a module will perform one specific task, such as loading an image or measuring the shapes of objects.", null);
 
-    public final static Category deprecated = new Category("Deprecated", "", ROOT);
+    public final static Category CORE = new Category("Core", "", ROOT);
+    
+    public final static Category DEPRECATED = new Category("Deprecated", "", ROOT);
 
     public final static Category IMAGE_MEASUREMENTS = new Category("Image measurements", "", ROOT);
 
@@ -28,7 +30,7 @@ public class Categories {
 
     public final static Category OBJECT_PROCESSING = new Category("Object processing", "", ROOT);
     public final static Category OBJECT_PROCESSING_IDENTIFICATION = new Category("Identification", "", OBJECT_PROCESSING);
-    public final static Category OBJECT_PROCESSING_MISCELLENAOUS = new Category("Miscellaneous", "", OBJECT_PROCESSING);
+    public final static Category OBJECT_PROCESSING_MISCELLANEOUS = new Category("Miscellaneous", "", OBJECT_PROCESSING);
     public final static Category OBJECT_PROCESSING_REFINEMENT = new Category("Refinement", "", OBJECT_PROCESSING);
     public final static Category OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS = new Category("Filter objects", "",
             OBJECT_PROCESSING_REFINEMENT);

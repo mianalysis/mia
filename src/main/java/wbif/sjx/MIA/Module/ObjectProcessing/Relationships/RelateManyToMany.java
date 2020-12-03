@@ -100,6 +100,8 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateOneToOne;
 import wbif.sjx.MIA.Object.Measurement;
@@ -371,6 +373,11 @@ public class RelateManyToMany extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_RELATIONSHIPS;
     }
 
     @Override

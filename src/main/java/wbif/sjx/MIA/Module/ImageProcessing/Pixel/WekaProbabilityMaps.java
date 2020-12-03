@@ -19,6 +19,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Object.Status;
@@ -177,6 +179,11 @@ public class WekaProbabilityMaps extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_PIXEL;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

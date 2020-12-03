@@ -19,6 +19,8 @@ import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -141,6 +143,11 @@ public class FilterSpecificObjectIDs extends AbstractObjectFilter implements Act
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
     }
 
     @Override

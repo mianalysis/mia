@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Manual registration</h1>
+<h2>Description</h2>
+Align an image from the workspace to another image from the workspace using manually-selected reference points.  When the image runs, the input and reference images are displayed.  The user then selects matching points on each image and clicks "Add pair(s)".  Points must be added in the same order on each image (ID numbers next to each point provide a reference).  Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking "Remove pair".  The alignment can be tested by clicking "Test process".  Finally, the alignment is accepted by clicking "Finish adding pairs", at which point the images are closed and the transform is applied.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name.Alignments are calculated using the <a href="https://github.com/axtimwalde/mpicbg">MPICBG</a> image transformation library.<br><br>Note: This module currently only aligns single slice images; however, a future update will add multi-slice processing.
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") </li><br><li><b>Apply to input image</b> (default = "true") </li><br><li><b>Output image</b> (default = "") </li><br><li><b>Registration axis</b> (default = "Time") </li><br><li><b>Other axis mode</b> (default = "Independent") </li><br><li><b>Transformation mode</b> (default = "Rigid") </li><br><li><b>Fill mode</b> (default = "Black") </li><br><li><b>Enable multithreading</b> (default = "true") </li><br><li><b>Reference image</b> (default = "") Reference image against which the input image will be aligned.  When the module runs, this image and the reference image will be displayed.  The user selects matching points on the two images, which will determine the final transform to be applied.</li><br></ul>
+
+</div>
+</body>

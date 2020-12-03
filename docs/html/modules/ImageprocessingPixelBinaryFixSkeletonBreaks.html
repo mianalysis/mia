@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Fix skeleton breaks</h1>
+<h2>Description</h2>
+
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image to apply break correction to.</li><br><li><b>Apply to input image</b> (default = "true") Select if the correction should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</li><br><li><b>Output image</b> (default = "") Name of the output image created during processing.  This image will be added to the workspace.</li><br><li><b>Number of end pixels to fit</b> (default = "5") Number of pixels at the end of a branch to be used for determination of branch orientation.</li><br><li><b>Maximum linking distance</b> (default = "10.0") Maximum break distance that can be bridged.  Specified in pixels unless "Calibrated units" is enabled.</li><br><li><b>Calibrated units</b> (default = "false") Select whether "Maximum linking distance" should be specified in pixel (false) or calibrated (true) units.</li><br><li><b>Maximum linking angle (degrees)</b> (default = "45.0") Maximum angular deviation of linking region relative to orientation of existing branch end.  Specified in degrees.</li><br><li><b>Only link ends</b> (default = "false") Only remove breaks between pixels at branch ends.  When disabled, an end can link into the middle of another branch.</li><br><li><b>Angle weight</b> (default = "1.0") </li><br><li><b>Distance weight</b> (default = "1.0") </li><br><li><b>End weight</b> (default = "20.0") </li><br></ul>
+
+</div>
+</body>

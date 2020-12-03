@@ -7,6 +7,8 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterByMeasurement;
 import wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects.FilterWithWithoutMeasurement;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;
@@ -399,6 +401,11 @@ public class FilterObjects extends Module implements ActionListener {
     @Override
     public String getPackageName() {
         return PackageNames.DEPRECATED;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.DEPRECATED;
     }
 
     @Override

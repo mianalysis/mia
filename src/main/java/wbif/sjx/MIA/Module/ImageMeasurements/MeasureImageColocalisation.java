@@ -6,6 +6,8 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
@@ -108,6 +110,11 @@ public class MeasureImageColocalisation extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.IMAGE_MEASUREMENTS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGE_MEASUREMENTS;
     }
 
     @Override
@@ -227,6 +234,7 @@ public class MeasureImageColocalisation extends Module {
 //import wbif.sjx.MIA.Module.Module;
 //import wbif.sjx.MIA.Module.ModuleCollection;
 //import wbif.sjx.MIA.Module.PackageNames;
+//import wbif.sjx.MIA.Module.Category;
 //import wbif.sjx.MIA.Object.*;
 //import wbif.sjx.MIA.Object.Parameters.*;
 //import wbif.sjx.MIA.Object.References.*;

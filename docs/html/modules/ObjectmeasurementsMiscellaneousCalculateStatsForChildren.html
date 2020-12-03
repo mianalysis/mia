@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Calculate statistics for children</h1>
+<h2>Description</h2>
+Calculates statistics for a measurement associated with all child objects of parent object.  The calculated statistics are stored as new measurements, associated with the relevant parent object.  For example, calculating the summed volume of all child objects (from a specified collection) of each parent object.
+<h2>Parameters</h2>
+<ul><li><b>Parent objects</b> (default = "") Input object collection from the workspace for which statistics of child object measurements will be calculated.  This object collection is a parent to those selected by the "Child objects" parameter.  Statistics for one measurement associated with all children of each input parent object will be calculated and added to this object as a new measurement.</li><br><li><b>Child objects</b> (default = "") Input object collection from the workspace, where these objects are children of the collection selected by the "Parent objects" parameter.)</li><br><li><b>Measurement</b> (default = "") Measurement associated with the child objects for which statistics will be calculated.  Statistics will be calculated for all children of a parent object.</li><br><li><b>Calculate mean</b> (default = "true") When selected, the mean value of the measurements will be calculated and added to the relevant parent object.</li><br><li><b>Calculate standard deviation</b> (default = "true") When selected, the standard deviation of the measurements will be calculated and added to the relevant parent object.</li><br><li><b>Calculate minimum</b> (default = "true") When selected, the minimum value of the measurements will be calculated and added to the relevant parent object.</li><br><li><b>Calculate maximum</b> (default = "true") When selected, the maximum value of the measurements will be calculated and added to the relevant parent object.</li><br><li><b>Calculate sum</b> (default = "true") When selected, the sum of the measurements will be calculated and added to the relevant parent object.</li><br></ul>
+
+</div>
+</body>

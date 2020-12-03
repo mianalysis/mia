@@ -17,6 +17,8 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.Skeletonise;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
@@ -278,6 +280,11 @@ public class MeasureSkeleton extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

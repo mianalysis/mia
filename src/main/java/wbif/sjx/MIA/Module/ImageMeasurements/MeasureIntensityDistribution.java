@@ -24,6 +24,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
@@ -413,6 +415,11 @@ public class MeasureIntensityDistribution extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.IMAGE_MEASUREMENTS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGE_MEASUREMENTS;
     }
 
     @Override

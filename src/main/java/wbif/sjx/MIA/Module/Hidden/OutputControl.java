@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.Module.Hidden;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -11,7 +10,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.General.MIA_GetListOfWorkspaceIDs;
 import wbif.sjx.MIA.Macro.General.MIA_SetActiveWorkspace;
-import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.AbstractMacroRunner;
 import wbif.sjx.MIA.Module.Miscellaneous.Macros.RunMacroOnImage.MacroModes;
@@ -23,9 +23,9 @@ import wbif.sjx.MIA.Object.Parameters.FilePathP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.GenericButtonP;
 import wbif.sjx.MIA.Object.Parameters.MetadataItemP;
-import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.SeparatorP;
 import wbif.sjx.MIA.Object.Parameters.Text.IntegerP;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
 import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
@@ -288,6 +288,11 @@ public class OutputControl extends AbstractMacroRunner {
     @Override
     public String getPackageName() {
         return "Hidden";
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.CORE;
     }
 
     @Override

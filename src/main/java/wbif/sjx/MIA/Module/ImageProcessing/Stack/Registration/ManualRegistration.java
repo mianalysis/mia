@@ -17,6 +17,8 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
@@ -195,6 +197,11 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
     @Override
     public String getPackageName() {
         return PackageNames.IMAGE_PROCESSING_STACK_REGISTRATION;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
     }
 
     @Override

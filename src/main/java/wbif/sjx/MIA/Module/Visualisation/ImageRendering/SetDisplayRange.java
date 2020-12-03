@@ -5,6 +5,8 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -103,6 +105,11 @@ public class SetDisplayRange extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_IMAGE_RENDERING;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.VISUALISATION_IMAGE_RENDERING;
     }
 
     @Override

@@ -36,25 +36,24 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 
 public class DocumentationGenerator {
     public static void main(String[] args) {
-        System.out.println("DOCUMENTATION AUTOGENERATION DISABLED");
-        // try {
-        //     // Clearing existing HTML files
-        //     deleteFolders(new File("docs/html/"));
+        try {
+            // Clearing existing HTML files
+            deleteFolders(new File("docs/html/"));
 
-        //     // Creating README.md
-        //     generateReadmeMarkdown();
+            // Creating README.md
+            generateReadmeMarkdown();
 
-        //     // Creating website content
-        //     generateIndexPage();
-        //     generateGettingStartedPage();
-        //     generateModuleList();
-        //     generateModulePages();
-        //     generateMacroList();
-        //     generateMacroPages();
+            // Creating website content
+            generateIndexPage();
+            generateGettingStartedPage();
+            generateModuleList();
+            generateModulePages();
+            generateMacroList();
+            generateMacroPages();
 
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void deleteFolders(File root) {
@@ -71,7 +70,7 @@ public class DocumentationGenerator {
 
     private static void generateIndexPage() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/index.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/index_orig.html")));
         String indexContent = getIndexContent();
         template = template.replace("${INSERT}", indexContent);
 
@@ -84,7 +83,7 @@ public class DocumentationGenerator {
     private static void generateGettingStartedPage() throws IOException {
         // Generate module list HTML document
         String template = new String(
-                Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted.html")));
+                Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted_orig.html")));
         String gettingStartedContent = getGettingStartedContent();
         template = template.replace("${INSERT}", gettingStartedContent);
 
@@ -98,7 +97,7 @@ public class DocumentationGenerator {
 
     private static void generateModuleList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modulelist.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modulelist_orig.html")));
         String moduleList = getModuleList();
         template = template.replace("${INSERT}", moduleList);
 
@@ -113,7 +112,7 @@ public class DocumentationGenerator {
     private static void generateModulePages() throws IOException {
         HashSet<Module> modules = getModules();
         for (Module module : modules) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modules.html")));
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modules_orig.html")));
             String moduleList = getModuleSummary(module);
             template = template.replace("${INSERT}", moduleList);
 
@@ -129,7 +128,7 @@ public class DocumentationGenerator {
 
     private static void generateMacroList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macrolist.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macrolist_orig.html")));
         String macroList = getMacroList();
         template = template.replace("${INSERT}", macroList);
 
@@ -144,7 +143,7 @@ public class DocumentationGenerator {
     private static void generateMacroPages() throws IOException {
         ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
         for (MacroOperation macro : macros) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros_orig.html")));
             String macroList = getMacroSummary(macro);
             template = template.replace("${INSERT}", macroList);
 

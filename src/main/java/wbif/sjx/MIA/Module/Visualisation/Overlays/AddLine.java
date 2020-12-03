@@ -8,6 +8,8 @@ import ij.gui.Line;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -85,6 +87,11 @@ public class AddLine extends AbstractOverlay {
     @Override
     public String getPackageName() {
         return PackageNames.VISUALISATION_OVERLAYS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.VISUALISATION_OVERLAYS;
     }
 
     public static Point<Double> getCentroid(final Obj obj) {

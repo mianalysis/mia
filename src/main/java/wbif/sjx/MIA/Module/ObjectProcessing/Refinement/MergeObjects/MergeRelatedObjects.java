@@ -3,6 +3,8 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.MergeObjects;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
@@ -108,6 +110,11 @@ public class MergeRelatedObjects extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
     }
 
     @Override

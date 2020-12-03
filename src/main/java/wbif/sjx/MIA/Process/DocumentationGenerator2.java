@@ -4,16 +4,24 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.xml.pull.XmlPullParserException;
 
+import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.ModuleCollection;
 
 public class DocumentationGenerator2 {
     private String version = "";
@@ -144,7 +152,7 @@ public class DocumentationGenerator2 {
         // Adding a card for each child category
         String categoryContent = "";
         for (Category childCategory : category.getChildren()) {
-            String cardContent = getPageTemplate("src/main/resources/templatehtml/cardtemplate.html", pathToRoot);
+            String cardContent = getPageTemplate("src/main/resources/templatehtml/categorycardtemplate.html", pathToRoot);
             cardContent = cardContent.replace("${CARD_TITLE}", childCategory.getName());
             cardContent = cardContent.replace("${CARD_TEXT}", childCategory.getDescription());
             cardContent = cardContent.replace("${TARGET_PATH}",
@@ -152,6 +160,21 @@ public class DocumentationGenerator2 {
             categoryContent = categoryContent + cardContent;
         }
         mainContent = mainContent.replace("${CATEGORY_CARDS}", categoryContent);
+
+        // Finding modules in this category and adding them to this page
+        TreeMap<String, Module> modules = getModules();
+        String moduleContent = "";
+        for (Module module : modules.values()) {
+            if (module.getCategory() == category) {
+                String cardContent = getPageTemplate("src/main/resources/templatehtml/modulecardtemplate.html", pathToRoot);
+                cardContent = cardContent.replace("${CARD_TITLE}", module.getName());
+                cardContent = cardContent.replace("${CARD_TEXT}", module.getDescription());
+                cardContent = cardContent.replace("${TARGET_PATH}",
+                        getCategoryPath(category) + "/" + module.getName().toLowerCase());
+                moduleContent = moduleContent + cardContent;
+            }
+        }
+        mainContent = mainContent.replace("${MODULE_CARDS}", moduleContent);
 
         // Add packages content to page
         page = page.replace("${MAIN_CONTENT}", mainContent);
@@ -239,4 +262,33 @@ public class DocumentationGenerator2 {
 
         return getCatgoryPathToRoot(category.getParent()) + "../";
     }
+
+    private static TreeMap<String, Module> getModules() {
+        // Get a list of Modules
+        List<String> classNames = ClassHunter.getModules(false);
+
+        // Converting the list of classes to a list of Modules
+        TreeMap<String, Module> modules = new TreeMap<>();
+        ModuleCollection tempCollection = new ModuleCollection();
+        for (String className : classNames) {
+            try {
+                Class<Module> clazz = (Class<Module>) Class.forName(className);
+
+                // Skip any abstract Modules
+                if (Modifier.isAbstract(clazz.getModifiers()))
+                    continue;
+
+                Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
+                Module module = (Module) constructor.newInstance(tempCollection);
+                modules.put(module.getName(), module);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException
+                    | InvocationTargetException e) {
+                MIA.log.writeError(e);
+            }
+        }
+
+        return modules;
+
+    }
+
 }

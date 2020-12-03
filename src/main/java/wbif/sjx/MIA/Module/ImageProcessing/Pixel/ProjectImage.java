@@ -10,6 +10,8 @@ import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -135,6 +137,11 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_PIXEL;
+    }
+
+    @Override
     public String getDescription() {
         return "Project an image along the z-axis into the xy-plane.  Various statistics are available at each pixel " +
                 "location (e.g. maximum, mean, etc.).";
@@ -234,6 +241,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 //import wbif.sjx.MIA.Module.Module;
 //import wbif.sjx.MIA.Module.ModuleCollection;
 //import wbif.sjx.MIA.Module.PackageNames;
+//import wbif.sjx.MIA.Module.Category;
 //import wbif.sjx.MIA.Object.*;
 //import wbif.sjx.MIA.Object.Parameters.*;
 //import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;

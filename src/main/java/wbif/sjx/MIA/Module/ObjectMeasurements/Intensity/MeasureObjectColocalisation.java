@@ -4,6 +4,8 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -54,6 +56,11 @@ public class MeasureObjectColocalisation extends Module {
     @Override
     public String getPackageName() {
         return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override

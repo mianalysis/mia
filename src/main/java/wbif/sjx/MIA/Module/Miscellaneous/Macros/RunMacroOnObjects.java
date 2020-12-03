@@ -12,6 +12,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
@@ -99,6 +101,11 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
     @Override
     public String getPackageName() {
         return PackageNames.MISCELLANEOUS_MACROS;
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.MISCELLANEOUS_MACROS;
     }
 
     @Override
