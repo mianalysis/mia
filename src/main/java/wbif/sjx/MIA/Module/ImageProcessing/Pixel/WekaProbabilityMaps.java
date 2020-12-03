@@ -148,7 +148,7 @@ public class WekaProbabilityMaps extends Module {
                     } else {
                         // If outputting a single class
                         iplSingle.setPosition(nClasses * (z - 1) + outputClass);
-                        probabilityMaps.setPosition(1, startingBlock + z - 1, pos[2]);
+                        probabilityMaps.setPosition(1, pos[1], pos[2]);
                     }
 
                     ImageProcessor iprSingle = iplSingle.getProcessor();
@@ -161,7 +161,7 @@ public class WekaProbabilityMaps extends Module {
                     }
                 }
             }
-
+            
             count = count + endingBlock - startingBlock + 1;
             writeStatus("Processed " + count + " of " + slices + " images");
 

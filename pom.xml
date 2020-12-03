@@ -10,7 +10,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>MIA_</artifactId>
-    <version>0.15.7</version>
+    <version>0.15.8</version>
     <packaging>jar</packaging>
     <name>MIA_</name>
     <url>https://github.com/SJCross/MIA</url>
@@ -126,14 +126,12 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -304,10 +302,10 @@
         <dependency>
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.6.19</version>
+            <version>v1.6.20</version>
             <!-- <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.6.19</version> -->
+            <version>1.6.20</version> -->
         </dependency>
     </dependencies>
 
