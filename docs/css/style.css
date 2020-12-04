@@ -18,6 +18,10 @@
   border:none;
 }
 
+.mia-text-container {
+  max-width: 960px;
+}
+
 .navbar {
   -webkit-box-shadow: 0 8px 0px 0px #aaa;
   -moz-box-shadow: 0 8px 0px 0px #aaa;

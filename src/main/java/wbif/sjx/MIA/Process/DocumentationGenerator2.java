@@ -18,13 +18,15 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.xml.pull.XmlPullParserException;
 
 import wbif.sjx.MIA.MIA;
-import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 public class DocumentationGenerator2 {
     private String version = "";
+    private TreeMap<String, Module> modules;
 
     public static void main(String[] args) {
         try {
@@ -37,6 +39,7 @@ public class DocumentationGenerator2 {
     }
 
     public DocumentationGenerator2() {
+        modules = getModules();
         try {
             FileReader reader = new FileReader("pom.xml");
             Model model = new MavenXpp3Reader().read(reader);
@@ -59,7 +62,8 @@ public class DocumentationGenerator2 {
 
         // Generating module pages
         Category rootCategory = Categories.getRootCategory();
-        generateModuleCategoryPage(rootCategory);
+        generateCategoryListPages(rootCategory);
+        generateModulePages();
 
         generateAboutPage();
 
@@ -134,9 +138,10 @@ public class DocumentationGenerator2 {
 
     }
 
-    public void generateModuleCategoryPage(Category category) throws IOException {
+    public void generateCategoryListPages(Category category) throws IOException {
         // Setting the path and ensuring the folder exists
         String pathToRoot = getCatgoryPathToRoot(category) + "..";
+        String categorySaveName = getSaveName(category);
         String categoryPath = getCategoryPath(category);
         String path = "docs/html/";
         new File(path + categoryPath).mkdirs();
@@ -145,32 +150,33 @@ public class DocumentationGenerator2 {
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
 
         // Populate module packages content
-        String mainContent = getPageTemplate("src/main/resources/templatehtml/modulestemplate.html", pathToRoot);
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/categorylisttemplate.html", pathToRoot);
         mainContent = mainContent.replace("${CATEGORY_NAME}", category.getName());
         mainContent = mainContent.replace("${CATEGORY_DESCRIPTION}", category.getDescription());
 
         // Adding a card for each child category
         String categoryContent = "";
         for (Category childCategory : category.getChildren()) {
-            String cardContent = getPageTemplate("src/main/resources/templatehtml/categorycardtemplate.html", pathToRoot);
+            String cardContent = getPageTemplate("src/main/resources/templatehtml/categorycardtemplate.html",
+                    pathToRoot);
             cardContent = cardContent.replace("${CARD_TITLE}", childCategory.getName());
             cardContent = cardContent.replace("${CARD_TEXT}", childCategory.getDescription());
             cardContent = cardContent.replace("${TARGET_PATH}",
-                    getCategoryPath(childCategory) + "/" + childCategory.getName().toLowerCase());
+                    getCategoryPath(childCategory) + "/" + getSaveName(childCategory));
             categoryContent = categoryContent + cardContent;
         }
         mainContent = mainContent.replace("${CATEGORY_CARDS}", categoryContent);
 
         // Finding modules in this category and adding them to this page
-        TreeMap<String, Module> modules = getModules();
         String moduleContent = "";
         for (Module module : modules.values()) {
             if (module.getCategory() == category) {
-                String cardContent = getPageTemplate("src/main/resources/templatehtml/modulecardtemplate.html", pathToRoot);
+                String cardContent = getPageTemplate("src/main/resources/templatehtml/modulecardtemplate.html",
+                        pathToRoot);
                 cardContent = cardContent.replace("${CARD_TITLE}", module.getName());
-                cardContent = cardContent.replace("${CARD_TEXT}", module.getDescription());
+                cardContent = cardContent.replace("${CARD_TEXT}", module.getShortDescription());
                 cardContent = cardContent.replace("${TARGET_PATH}",
-                        getCategoryPath(category) + "/" + module.getName().toLowerCase());
+                        getCategoryPath(category) + "/" + getSaveName(module));
                 moduleContent = moduleContent + cardContent;
             }
         }
@@ -179,15 +185,43 @@ public class DocumentationGenerator2 {
         // Add packages content to page
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter(path + categoryPath + "/" + category.getName().toLowerCase() + ".html");
+        FileWriter writer = new FileWriter(path + categoryPath + "/" + categorySaveName + ".html");
         writer.write(page);
         writer.flush();
         writer.close();
 
         // For each child category, repeating the same process
         for (Category childCategory : category.getChildren())
-            generateModuleCategoryPage(childCategory);
+            generateCategoryListPages(childCategory);
 
+    }
+
+    public void generateModulePages() throws IOException {
+        for (Module module : modules.values()) {
+            Category category = module.getCategory();
+            String pathToRoot = getCatgoryPathToRoot(category) + "..";
+            String categoryPath = getCategoryPath(category);
+            String path = "docs/html/";
+            String moduleSaveName = getSaveName(module);
+
+            // Initialise HTML document
+            String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+
+            // Populate module packages content
+            String mainContent = getPageTemplate("src/main/resources/templatehtml/moduletemplate.html", pathToRoot);
+            mainContent = mainContent.replace("${MODULE_NAME}", module.getName());
+            mainContent = mainContent.replace("${MODULE_SHORT_DESCRIPTION}", module.getShortDescription());
+            mainContent = mainContent.replace("${MODULE_FULL_DESCRIPTION}", module.getDescription());
+            
+            // Add module information to page
+            page = page.replace("${MAIN_CONTENT}", mainContent);
+
+            FileWriter writer = new FileWriter(path + categoryPath + "/" + moduleSaveName + ".html");
+            writer.write(page);
+            writer.flush();
+            writer.close();
+
+        }
     }
 
     public void generateAboutPage() throws IOException {
@@ -252,7 +286,7 @@ public class DocumentationGenerator2 {
         if (category == null)
             return "";
 
-        return (getCategoryPath(category.getParent()) + "/" + category.getName()).toLowerCase();
+        return (getCategoryPath(category.getParent()) + "/" + getSaveName(category));
 
     }
 
@@ -263,6 +297,10 @@ public class DocumentationGenerator2 {
         return getCatgoryPathToRoot(category.getParent()) + "../";
     }
 
+    String getSaveName(Ref ref) {
+        return ref.getName().toLowerCase().replace(" ","").replace("/","");
+    }
+    
     private static TreeMap<String, Module> getModules() {
         // Get a list of Modules
         List<String> classNames = ClassHunter.getModules(false);

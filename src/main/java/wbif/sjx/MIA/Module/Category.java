@@ -2,16 +2,15 @@ package wbif.sjx.MIA.Module;
 
 import java.util.TreeSet;
 
-public class Category implements Comparable {
-    private final String name;
-    private final String description;
+import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
+public class Category extends Ref implements Comparable {
     private final Category parent;
     private final TreeSet<Category> children = new TreeSet<>();
 
     public Category(String name, String description, Category parent) {
-        this.name = name;
-        this.description = description;
+        super(name);
+        this.setDescription(description);
         this.parent = parent;
         if (parent != null) 
             parent.addChild(this);
@@ -19,14 +18,6 @@ public class Category implements Comparable {
 
     public void addChild(Category child) {
         children.add(child);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Category getParent() {

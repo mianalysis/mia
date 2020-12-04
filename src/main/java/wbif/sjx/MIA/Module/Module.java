@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 
 import ij.Prefs;
 import wbif.sjx.MIA.MIA;
+import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
@@ -68,6 +69,19 @@ public abstract class Module extends Ref implements Comparable {
     public abstract Category getCategory();
 
     protected abstract Status process(Workspace workspace);
+
+    ////// WILL BE ABSTRACT EVENTUALLY //////
+    public String getShortDescription() {
+        String des = getDescription();
+        if (des.length() == 0)
+            return "";
+
+        if (!des.contains("."))
+            return des;
+
+        return des.substring(0, des.indexOf("."))+".";
+
+    }
 
     /*
      * Get a ParameterCollection of all the possible parameters this class requires
@@ -132,7 +146,7 @@ public abstract class Module extends Ref implements Comparable {
 
             String memoryMessage = df.format(usedMemory * 1E-6) + " MB of " + df.format(totalMemory * 1E-6) + " MB"
                     + ", MODULE = \"" + getName() + "\"" + ", DATE/TIME = " + dateTime + ", FILE = \""
-                    + workspace.getMetadata().getFile()+"\"";
+                    + workspace.getMetadata().getFile() + "\"";
 
             MIA.log.writeMemory(memoryMessage);
 
