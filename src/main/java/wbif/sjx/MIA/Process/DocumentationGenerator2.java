@@ -22,6 +22,8 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
+import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 public class DocumentationGenerator2 {
@@ -151,6 +153,10 @@ public class DocumentationGenerator2 {
 
         // Populate module packages content
         String mainContent = getPageTemplate("src/main/resources/templatehtml/categorylisttemplate.html", pathToRoot);
+        if (category.getParent() == null) // Just having a single link looks strange
+            mainContent = mainContent.replace("${CATEGORY_PATH}", "");
+        else
+            mainContent = mainContent.replace("${CATEGORY_PATH}", appendCategoryPath(category, pathToRoot));
         mainContent = mainContent.replace("${CATEGORY_NAME}", category.getName());
         mainContent = mainContent.replace("${CATEGORY_DESCRIPTION}", category.getDescription());
 
@@ -209,10 +215,16 @@ public class DocumentationGenerator2 {
 
             // Populate module packages content
             String mainContent = getPageTemplate("src/main/resources/templatehtml/moduletemplate.html", pathToRoot);
+            mainContent = mainContent.replace("${MODULE_PATH}", appendCategoryPath(module.getCategory(), pathToRoot));
             mainContent = mainContent.replace("${MODULE_NAME}", module.getName());
             mainContent = mainContent.replace("${MODULE_SHORT_DESCRIPTION}", module.getShortDescription());
             mainContent = mainContent.replace("${MODULE_FULL_DESCRIPTION}", module.getDescription());
-            
+
+            String parameterContent = "";
+            for (Parameter parameter : module.getAllParameters().values())
+                parameterContent = parameterContent + getParameterSummary(parameter);
+            mainContent = mainContent.replace("${MODULE_PARAMETERS}", parameterContent);
+
             // Add module information to page
             page = page.replace("${MAIN_CONTENT}", mainContent);
 
@@ -222,6 +234,33 @@ public class DocumentationGenerator2 {
             writer.close();
 
         }
+    }
+
+    String appendCategoryPath(Category category, String pathToRoot) {
+        String categoryPath = pathToRoot + "/html" + getCategoryPath(category) + "/" + getSaveName(category) + ".html";
+        String categoryContent = "<a href=\"" + categoryPath + "\">" + category.getName() + "</a>";
+
+        if (category.getParent() == null)
+            return categoryContent;
+
+        return appendCategoryPath(category.getParent(), pathToRoot) + " ➤ " + categoryContent;
+
+    }
+
+    String getParameterSummary(Parameter parameter) {
+        if (!parameter.isExported())
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<b>").append(parameter.getName()).append("</b> (default = \"").append(parameter.getRawStringValue())
+                .append("\") ").append(parameter.getDescription()).append("<br>");
+
+        if (parameter instanceof ParameterGroup)
+            for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values())
+                sb.append(getParameterSummary(collectionParam));
+
+        return sb.append("<br>").toString();
+
     }
 
     public void generateAboutPage() throws IOException {
@@ -298,9 +337,9 @@ public class DocumentationGenerator2 {
     }
 
     String getSaveName(Ref ref) {
-        return ref.getName().toLowerCase().replace(" ","").replace("/","");
+        return ref.getName().toLowerCase().replace(" ", "").replace("/", "");
     }
-    
+
     private static TreeMap<String, Module> getModules() {
         // Get a list of Modules
         List<String> classNames = ClassHunter.getModules(false);

@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   <title>MIA (Modular Image Analysis)</title>
+  <title>MIA (Modular Image Analysis)</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -32,9 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-          <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img height="30" src="../../../../img/logo_64.png"
-            style="padding-right:8px;">Modular Image Analysis</a>        
-      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" style="border: none;">
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
+          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        style="border: none;">
         <span class="navbar-toggler-icon"></span>
       </buton>
       <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -43,23 +44,25 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules" role="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download latest</a>
+              <a class="dropdown-item"
+                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
+                latest</a>
               <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Section 1</a>
               <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>  
+              <a class="dropdown-item" href="#">Section 3</a>
             </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/guides.html">Guides</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules</a>
+            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/modules/modules.html">All categories</a>
               <div class="dropdown-divider"></div>
@@ -76,17 +79,18 @@
     </div>
   </nav>
 
+  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/identification/identification.html">Identification</a></p>
     <h1 class="display-4">Ridge detection</h1>
     <p class="lead">Detects ridge objects in an image from the workspace.</p>
 </div>
 
-<div class="container mia-text-container text-justify">
-    <h2 class="display-6">Description</h2>
-    <p class="mb-4">Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the "<a href="https://imagej.net/Ridge_Detection">Ridge Detection</a>" plugin, which itself is based on the paper "An Unbiased Detector of Curvilinear Structures" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125).<br><br>Note: This module detects ridges in 2D, but can be run on multi-dimensional images.  For higher dimensionality images than 2D, ridge detection is performed slice-by-slice, with output objects confined to a single slice.</p>
-    <h2 class="display-6">Parameters</h2>
-    <p class="mb-4">${MODULE_PARAMETERS}</p>
-</div>
+<h2 class="display-6">Description</h2>
+<p class="mb-4">Detects ridge objects in an image from the workspace.  A ridge is considered as a line of higher (or lower) intensity pixels in an image.  Ridges are output as objects to the workspace with relevant measurements associated with each object (e.g. ridge length).  This module uses the "<a href="https://imagej.net/Ridge_Detection">Ridge Detection</a>" plugin, which itself is based on the paper "An Unbiased Detector of Curvilinear Structures" (Steger, C., <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i> (1998) <b>20</b> 113–125).<br><br>Note: This module detects ridges in 2D, but can be run on multi-dimensional images.  For higher dimensionality images than 2D, ridge detection is performed slice-by-slice, with output objects confined to a single slice.</p>
+<h2 class="display-6">Parameters</h2>
+<p class="mb-4"><b>Input image</b> (default = "") Image from the workspace on which ridges will be identified.  This can be a multi-dimensional image, although ridges are currently only detected in 2D.  In the case of higher-dimensionality images, ridges are detected on a slice-by-slice basis.<br><br><b>Output objects</b> (default = "") Output ridge objects, which will be added to the workspace.  These objects will have measurements associated with them.<br><br><b>Contour contrast</b> (default = "Dark line") Controls if we are detecting dark lines on a lighter background or light lines on a darker background.<br><br><b>Lower threshold</b> (default = "0.5") Lower response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.<br><br><b>Upper threshold</b> (default = "0.85") Upper response threshold for points on a line to be accepted.  This threshold is based on the value of points after the ridge enhancement filtering and is not a reflection of their absolute pixel intensities.<br><br><b>Sigma</b> (default = "3.0") Sigma of the derivatives to be applied to the input image when detecting ridges.  This is related to the width of the lines to be detected and is greater than or equal to "width/(2*sqrt(3))".<br><br><b>Calibrated units</b> (default = "false") When selected, spatial values are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial units").  Otherwise, pixel units are assumed.<br><br><b>Extend line</b> (default = "false") Lines are extended in an attempt to locate more junction points.<br><br><b>Estimate width</b> (default = "false") When this is selected, the width of each line is estimated.  All points within the width extents of each line are included in the output objects (i.e. output objects are broad).  When not selected, the output objects have single pixel width.  If estimating width, width-based measurements will be associated with each output object.<br><br><b>Minimum length</b> (default = "0.0") Minimum length of a detected line for it to be retained and output.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Maximum length</b> (default = "0.0") Maximum length of a detected line for it to be retained and output.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Link contours</b> (default = "false") When selected, ridges with ends in close proximity will be linked into a single object.<br><br><b>Limit end misalignment</b> (default = "false") When selected (and "Link contours" is also enabled), this limits the permitted difference in the orientation of any linked ends.  This filter helps allow ridge linking where the ends are pointing in the same direction, whilst excluding those that are oriented very differently (e.g. at a junction).  The maximum allowed orientation difference is specified by "Maximum end misalignment (degs)".<br><br><b>Alignment range (px)</b> (default = "3") If linking contours, but limiting the end misalignment, this is the number of points from each contour end for which the orientation of that end is calculated.<br><br><b>Maximum end misalignment (degs)</b> (default = "10.0") If linking contours, but limiting the end misalignment, this is the maximum permitted misalignment of each contour end.<br><br></p>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -99,8 +103,8 @@
         </div>
         <div class="col-6 mt-4 mb-4 align-items-center">
           <a href="https://github.com/sjcross/MIA/">
-            <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32" src="../../../../img/GitHub_Logo_White.png"
-              height="32px">
+            <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../../img/GitHub_Logo_White.png" height="32px">
           </a>
         </div>
       </div>

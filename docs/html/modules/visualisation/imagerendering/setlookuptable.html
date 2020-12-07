@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   <title>MIA (Modular Image Analysis)</title>
+  <title>MIA (Modular Image Analysis)</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
@@ -32,9 +32,10 @@
           style="padding-right:8px;">Modular Image Analysis</a>
       <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
           style="padding-right:8px;"></a> -->
-          <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img height="30" src="../../../../img/logo_64.png"
-            style="padding-right:8px;">Modular Image Analysis</a>        
-      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" style="border: none;">
+      <a class="navbar-brand mia-name" href="../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
+          height="30" src="../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        style="border: none;">
         <span class="navbar-toggler-icon"></span>
       </buton>
       <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -43,23 +44,25 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules" role="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download latest</a>
+              <a class="dropdown-item"
+                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
+                latest</a>
               <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Section 1</a>
               <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>  
+              <a class="dropdown-item" href="#">Section 3</a>
             </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/guides.html">Guides</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Modules</a>
+            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
               <a class="dropdown-item" href="../../../../html/modules/modules.html">All categories</a>
               <div class="dropdown-divider"></div>
@@ -76,17 +79,18 @@
     </div>
   </nav>
 
+  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/visualisation/visualisation.html">Visualisation</a> ➤ <a href="../../../../html/modules/visualisation/imagerendering/imagerendering.html">ImageRendering</a></p>
     <h1 class="display-4">Set lookup table</h1>
     <p class="lead">Set look-up table (LUT) for an image or a specific channel of an image.</p>
 </div>
 
-<div class="container mia-text-container text-justify">
-    <h2 class="display-6">Description</h2>
-    <p class="mb-4">Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.</p>
-    <h2 class="display-6">Parameters</h2>
-    <p class="mb-4">${MODULE_PARAMETERS}</p>
-</div>
+<h2 class="display-6">Description</h2>
+<p class="mb-4">Set look-up table (LUT) for an image or a specific channel of an image.  The look-up table determines what colour ImageJ will render each intensity value of an image.</p>
+<h2 class="display-6">Parameters</h2>
+<p class="mb-4"><b>Input image</b> (default = "") Image to set look-up table for.<br><br><b>Channel mode</b> (default = "All channels") Control if the same look-up table is applied to all channels, or just one:<br><br>- "All channels" Apply the same look-up table to all channels of the input image.<br><br>- "Specific channels" Only apply the look-up table to the channel specified by the "Channel" parameter.  All other channels will remain unaffected.<br><br><br><b>Channel</b> (default = "1") When in "Specific channels" mode, this is the channel the look-up table will be applied to.  Channel numbering starts at 1.<br><br><b>Lookup table</b> (default = "Grey") Look-up table to apply to the relevant channels.  Choices are: Grey, Red, Green, Blue, Cyan, Magenta, Yellow, Fire, Ice, Jet, Physics, Spectrum, Thermal, Random.<br><br><b>Display mode</b> (default = "Full range") Controls how the minimum value in the look-up table should be rendered:<br><br>- "Full range" Use the full colour range of the look-up table.  This is the default look-up table without modifications.<br><br>- "Set zero to black" Uses the standard look-up table, except for the lowest value, which is always set to black.  This is useful for cases where the background will be 0 or NaN and should be rendered as black.<br><br><br></p>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -99,8 +103,8 @@
         </div>
         <div class="col-6 mt-4 mb-4 align-items-center">
           <a href="https://github.com/sjcross/MIA/">
-            <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32" src="../../../../img/GitHub_Logo_White.png"
-              height="32px">
+            <img height="48" src="../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../../img/GitHub_Logo_White.png" height="32px">
           </a>
         </div>
       </div>
