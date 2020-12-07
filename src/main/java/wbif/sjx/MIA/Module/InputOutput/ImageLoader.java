@@ -11,9 +11,10 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import com.drew.lang.annotations.NotNull;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.poi.ss.usermodel.Color;
 
 import ij.CompositeImage;
 import ij.IJ;
@@ -24,12 +25,12 @@ import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
-import io.scif.DependencyException;
-import io.scif.FormatException;
-import io.scif.services.ServiceException;
 import loci.common.DebugTools;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
+import loci.formats.FormatException;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
@@ -37,8 +38,9 @@ import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import ome.units.quantity.Length;
+import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
-import ucar.units.Unit;
+import ome.xml.model.primitives.Color;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
@@ -896,7 +898,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     }
                     break;
             }
-        } catch (SecurityException | DependencyException | IOException | FormatException e) {
+        } catch (SecurityException | DependencyException | IOException | FormatException | ServiceException e) {
             MIA.log.writeWarning(e);
             return Status.FAIL;
         }
