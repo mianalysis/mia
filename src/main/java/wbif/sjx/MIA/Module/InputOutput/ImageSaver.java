@@ -1,12 +1,16 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
 
 import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
+import io.scif.DependencyException;
+import io.scif.FormatException;
+import io.scif.services.ServiceException;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -18,6 +22,7 @@ import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.FolderPathP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Object.Parameters.Text.StringP;
+import wbif.sjx.MIA.Object.Parameters.Text.TextAreaP;
 import wbif.sjx.MIA.Object.References.Collections.ImageMeasurementRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.MetadataRefCollection;
 import wbif.sjx.MIA.Object.References.Collections.ObjMeasurementRefCollection;
@@ -35,17 +40,9 @@ public class ImageSaver extends AbstractImageSaver {
 
     public static final String SAVE_NAME_MODE = "Save name mode";
     public static final String SAVE_FILE_NAME = "File name";
+    public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String APPEND_SERIES_MODE = "Append series mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
-
-    public static final String FORMAT_SEPARATOR = "Output image format";
-    public static final String FILE_FORMAT = "File format";
-    public static final String CHANNEL_MODE = "Channel mode";
-    public static final String SAVE_AS_RGB = "Save as RGB";
-    public static final String COMPRESSION_MODE = "Compression mode";
-    public static final String QUALITY = "Quality (0-100)";
-    public static final String FRAME_RATE = "Frame rate (fps)";
-    public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public ImageSaver(ModuleCollection modules) {
         super("Save image", modules);
@@ -78,7 +75,6 @@ public class ImageSaver extends AbstractImageSaver {
 
     }
 
-
     public static String appendSeries(String inputName, Workspace workspace, String appendSeriesMode) {
         switch (appendSeriesMode) {
             case AppendSeriesModes.NONE:
@@ -100,7 +96,9 @@ public class ImageSaver extends AbstractImageSaver {
 
     @Override
     public String getDescription() {
-        return "Save an image/stack from the workspace to file.  These files can be placed in the same folder as the input file, located in a specific folder or placed in a directory structure mirroring the input structure, but based at a new location.  For greater flexibility in output file locations and filenames, the \""+ new GenericImageSaver(null).getName() +"\" module can be used.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
+        return "Save an image/stack from the workspace to file.  These files can be placed in the same folder as the input file, located in a specific folder or placed in a directory structure mirroring the input structure, but based at a new location.  For greater flexibility in output file locations and filenames, the \""
+                + new GenericImageSaver(null).getName()
+                + "\" module can be used.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).";
     }
 
     @Override
@@ -209,17 +207,23 @@ public class ImageSaver extends AbstractImageSaver {
                 break;
         }
 
-        String name;
-        switch (saveNameMode) {
-            case SaveNameModes.MATCH_INPUT:
-            default:
-                File rootFile = workspace.getMetadata().getFile();
-                name = FilenameUtils.removeExtension(rootFile.getName());
-                break;
+        String name="";
+        try {            
+            switch (saveNameMode) {
+                case SaveNameModes.MATCH_INPUT:
+                default:
+                    File rootFile = workspace.getMetadata().getFile();
+                    name = FilenameUtils.removeExtension(rootFile.getName());
+                    break;
 
-            case SaveNameModes.SPECIFIC_NAME:
-                name = FilenameUtils.removeExtension(saveFileName);
-                break;
+                case SaveNameModes.SPECIFIC_NAME:
+                    saveFileName = ImageLoader.getGenericName(workspace.getMetadata(), saveFileName);
+                    name = FilenameUtils.removeExtension(saveFileName);
+                    break;
+            }
+        } catch (ServiceException | DependencyException | IOException | FormatException e) {
+            MIA.log.writeWarning(e);
+            return Status.FAIL;
         }
 
         // Adding last bits to name
@@ -253,6 +257,7 @@ public class ImageSaver extends AbstractImageSaver {
 
         parameters.add(new ChoiceP(SAVE_NAME_MODE, this, SaveNameModes.MATCH_INPUT, SaveNameModes.ALL));
         parameters.add(new StringP(SAVE_FILE_NAME, this));
+        parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false));
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
 
@@ -284,6 +289,9 @@ public class ImageSaver extends AbstractImageSaver {
         switch ((String) parameters.getValue(SAVE_NAME_MODE)) {
             case SaveNameModes.SPECIFIC_NAME:
                 returnedParameters.add(parameters.getParameter(SAVE_FILE_NAME));
+                returnedParameters.add(parameters.getParameter(AVAILABLE_METADATA_FIELDS));
+                metadataRefs = modules.getMetadataRefs(this);
+                parameters.getParameter(AVAILABLE_METADATA_FIELDS).setValue(metadataRefs.getMetadataValues());
                 break;
         }
 
@@ -359,9 +367,12 @@ public class ImageSaver extends AbstractImageSaver {
                 + "<li>\"" + SaveNameModes.SPECIFIC_NAME
                 + "\" Use a specific name for the output file.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.</li></ul>");
 
-        parameters.get(SAVE_FILE_NAME).setDescription("Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.");
+        parameters.get(SAVE_FILE_NAME).setDescription(
+                "Filename for saved image.  Care should be taken with this when working in batch mode as it's easy to continuously write over output images.");
 
-        parameters.get(APPEND_SERIES_MODE).setDescription("Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: " +String.join(", ", AppendSeriesModes.ALL) + ".");
+        parameters.get(APPEND_SERIES_MODE).setDescription(
+                "Controls if any series information should be appended to the end of the filename.  This is useful when working with multi-series files, as it should help prevent writing files from multiple runs with the same filename.  Series numbers are prepended by \"S\".  Choices are: "
+                        + String.join(", ", AppendSeriesModes.ALL) + ".");
 
         parameters.get(SAVE_SUFFIX).setDescription("A custom suffix to be added to each filename.");
 
