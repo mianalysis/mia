@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/identification/identification.html">Identification</a></p>
     <h1 class="display-4">Get local object region</h1>
     <p class="lead">Creates a local object region (sphere centred on the centroid of the input object) for each object in a specified object collection.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Creates a local object region (sphere centred on the centroid of the input object) for each object in a specified object collection.  The radius of each local region can be based on a fixed value, or taken from an object measurement.  Local object regions are stored as children of their respective input object.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input objects</b> (default = "") Object collection from the workspace for which local object regions will be generated.  One region will be generated for each object and assigned as a child of the respective input object.<br><br><b>Output objects</b> (default = "") Output local region objects to add to the workspace.  Each local object region is a sphere with centroid coincident with the centroid of the corresponding input object.  These objects are assigned as a child of their respective input object.<br><br><b>Radius value source</b> (default = "Fixed value") Controls how the radius of the spot is defined:<br><ul><li>"Fixed value" A single radius, defined by "Fixed value" will be used for all objects.</li><li>"Measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated with the object being measured.  Radii will potentially be different for each object.</li><li>"Parent measurement" The radius will be equal to the value of a measurement (specified by "Parent radius measurement") associated a parent of the object being measured (specified by "Parent object").  Radii will potentially be different for each object..</li></ul><br><br><b>Fixed value</b> (default = "2.0") Fixed spot radius to use for generating all local object regions when "Radius value source" is in "Fixed value" mode.<br><br><b>Radius measurement</b> (default = "") Measurement associated with the input object.  This will be used as spot the radius for generating the local object region when "Radius value source" is in "Measurement" mode.<br><br><b>Parent object</b> (default = "") Parent object of the input object being processed.  This parent will provide the measurement (specified by "Parent radius measurement") to be used as the spot radius for generating the local object region when "Radius value source" is in "Parent measurement" mode.<br><br><b>Parent radius measurement</b> (default = "") Measurement associated with a parent of the input object.  This will be used as the spot radius for generating the local object region when "Radius value source" is in "Parent measurement" mode.<br><br><b>Calibrated units</b> (default = "false") When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial units").  Otherwise, pixel units are assumed.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Creates a local object region (sphere centred on the centroid of the input object) for each object in a specified object collection.  The radius of each local region can be based on a fixed value, or taken from an object measurement.  Local object regions are stored as children of their respective input object.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input objects</b> (default = "") Object collection from the workspace for which local object regions will be generated.  One region will be generated for each object and assigned as a child of the respective input object.<br><br><b>Output objects</b> (default = "") Output local region objects to add to the workspace.  Each local object region is a sphere with centroid coincident with the centroid of the corresponding input object.  These objects are assigned as a child of their respective input object.<br><br><b>Radius value source</b> (default = "Fixed value") Controls how the radius of the spot is defined:<br><ul><li>"Fixed value" A single radius, defined by "Fixed value" will be used for all objects.</li><li>"Measurement" The radius will be equal to the value of a measurement (specified by "Radius measurement") associated with the object being measured.  Radii will potentially be different for each object.</li><li>"Parent measurement" The radius will be equal to the value of a measurement (specified by "Parent radius measurement") associated a parent of the object being measured (specified by "Parent object").  Radii will potentially be different for each object..</li></ul><br><br><b>Fixed value</b> (default = "2.0") Fixed spot radius to use for generating all local object regions when "Radius value source" is in "Fixed value" mode.<br><br><b>Radius measurement</b> (default = "") Measurement associated with the input object.  This will be used as spot the radius for generating the local object region when "Radius value source" is in "Measurement" mode.<br><br><b>Parent object</b> (default = "") Parent object of the input object being processed.  This parent will provide the measurement (specified by "Parent radius measurement") to be used as the spot radius for generating the local object region when "Radius value source" is in "Parent measurement" mode.<br><br><b>Parent radius measurement</b> (default = "") Measurement associated with a parent of the input object.  This will be used as the spot radius for generating the local object region when "Radius value source" is in "Parent measurement" mode.<br><br><b>Calibrated units</b> (default = "false") When selected, spot radius values (irrespective of whether they are fixed values, measurements or parent measurements) are assumed to be specified in calibrated units (as defined by the "Input control" parameter "Spatial units").  Otherwise, pixel units are assumed.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

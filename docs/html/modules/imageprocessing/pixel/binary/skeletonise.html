@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
     <h1 class="display-4">Skeletonise</h1>
     <p class="lead">Creates an skeletonised representation of a specific binary image in the workspace.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Creates an skeletonised representation of a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply 3D skeletonisation operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Creates an skeletonised representation of a specific binary image in the workspace.  The output 8-bit image will show black minima (intensity 0) on a white background (intensity 255).  Each minima will show the lowest local intensity region within a specific dynamic range.  Local variation greater than this dynamic will result in the creation of more minima.  Uses the plugin "<a href="https://github.com/ijpb/MorphoLibJ">MorphoLibJ</a>".</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply 3D skeletonisation operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../html/modules/inputoutput/inputoutput.html">Input output</a></p>
     <h1 class="display-4">Save image (generic)</h1>
     <p class="lead">Save an image/stack from the workspace to file.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Save an image/stack from the workspace to file.  Output file locations and filenames are generated from metadata items and fixed values.  This gives greater flexibility to output image locations than the standard "Save image" module.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image to be saved to file.<br><br><b>Append date/time mode</b> (default = "Never") Controls under what conditions the time and date will be appended on to the end of the image filename.  This can be used to prevent accidental over-writing of images from previous runs:<br><ul><li>"Always" Always append the time and date on to the end of the filename.</li><li>"If file exists" Only append the time and date if the results file already exists.</li><li>"Never" Never append time and date (unless the file is open and unwritable).</li></ul><br><br><b>File format</b> (default = "TIF") The format the output image will be saved as:<br><ul><li>"AVI" Video written using the stock ImageJ "<a href="https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java">AVI Writer</a>".  Videos can use different compression algorithms specified using "Compression mode".  Framerate specified by "Frame rate (fps)" parameter.</li><li>"TIF" Standard multidimensional (multi-page) TIF image saving.</li><li>"ZIP" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul><br><br><b>Channel mode</b> (default = "Composite") Control whether saved images should be in ImageJ "Composite" (display all channels simultaneously) or "Color" (display one channel at a time) mode.<br><br><b>Save as RGB</b> (default = "false") Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.<br><br><b>Compression mode</b> (default = "None") Compression mode used when saving AVI videos ("File format" parameter):<br><ul><li>"JPEG" Lossy video compression with quality specified by "Quality (0-100)" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li><li>"None" Frames are stored in their raw format (uncompressed).  This gives the highest quality, but also the largest file size.</li><li>"PNG" PNG video compression.</li></ul><br><br><b>Quality (0-100)</b> (default = "100") Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's "File > Save As..." menu uses a quality of 90.<br><br><b>Frame rate (fps)</b> (default = "25") Output video framerate (frames per second).<br><br><b>Flatten overlay</b> (default = "false") Flatten any overlay elements onto the image prior to saving.<br><br><b>Generic format</b> (default = "") Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.<br><br><b>Available metadata fields</b> (default = "") List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Save an image/stack from the workspace to file.  Output file locations and filenames are generated from metadata items and fixed values.  This gives greater flexibility to output image locations than the standard "Save image" module.  To prevent overwriting of previously-saved files, the current date and time can be appended to the end of each filename.  Images can be saved in a variety of formats (AVI, TIF and Zipped TIF).</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image to be saved to file.<br><br><b>Append date/time mode</b> (default = "Never") Controls under what conditions the time and date will be appended on to the end of the image filename.  This can be used to prevent accidental over-writing of images from previous runs:<br><ul><li>"Always" Always append the time and date on to the end of the filename.</li><li>"If file exists" Only append the time and date if the results file already exists.</li><li>"Never" Never append time and date (unless the file is open and unwritable).</li></ul><br><br><b>File format</b> (default = "TIF") The format the output image will be saved as:<br><ul><li>"AVI" Video written using the stock ImageJ "<a href="https://github.com/imagej/imagej1/blob/master/ij/plugin/filter/AVI_Writer.java">AVI Writer</a>".  Videos can use different compression algorithms specified using "Compression mode".  Framerate specified by "Frame rate (fps)" parameter.</li><li>"TIF" Standard multidimensional (multi-page) TIF image saving.</li><li>"ZIP" TIF images stored using ZIP compression.  For images with large homogeneous regions of pixel intensity this can greatly reduce file size in a lossless manner.  Zipped images can be read directly back into ImageJ/Fiji without the need for prior decompression.</li></ul><br><br><b>Channel mode</b> (default = "Composite") Control whether saved images should be in ImageJ "Composite" (display all channels simultaneously) or "Color" (display one channel at a time) mode.<br><br><b>Save as RGB</b> (default = "false") Convert images to RGB prior to saving.  This is useful for displaying multi-channel images to a format that can be easily viewed outside ImageJ.<br><br><b>Compression mode</b> (default = "None") Compression mode used when saving AVI videos ("File format" parameter):<br><ul><li>"JPEG" Lossy video compression with quality specified by "Quality (0-100)" parameter.  This option is good when reducing video size is more important than retaining perfect image quality.</li><li>"None" Frames are stored in their raw format (uncompressed).  This gives the highest quality, but also the largest file size.</li><li>"PNG" PNG video compression.</li></ul><br><br><b>Quality (0-100)</b> (default = "100") Quality of output JPEG-compressed video (values in range 0-100).  For reference, saving AVIs via ImageJ's "File > Save As..." menu uses a quality of 90.<br><br><b>Frame rate (fps)</b> (default = "25") Output video framerate (frames per second).<br><br><b>Flatten overlay</b> (default = "false") Flatten any overlay elements onto the image prior to saving.<br><br><b>Generic format</b> (default = "") Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.<br><br><b>Available metadata fields</b> (default = "") List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

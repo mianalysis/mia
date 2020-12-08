@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectmeasurements/objectmeasurements.html">Object measurements</a> ➤ <a href="../../../../html/modules/objectmeasurements/spatial/spatial.html">Spatial</a></p>
     <h1 class="display-4">Measure track motion</h1>
     <p class="lead">Measures various motion metrics for tracked objects.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input track objects</b> (default = "") Input track objects to measure motion for.  These must be specific "track" class objects as output by modules such as "Track objects".  The track objects are parents of individual timepoint instance objects, which are specified using the "Input spot objects" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.<br><br><b>Input spot objects</b> (default = "") Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by "Input track objects".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.<br><br><b>Subtract average motion</b> (default = "false") When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration prior to object detection.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Measures various motion metrics for tracked objects.  Global motion statistics (e.g. total path length) are stored as measurements associated with the input track objects, whilst instantaneous motion statistics (e.g. instantaneous x-velocity) are associated with the input spot objects.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input track objects</b> (default = "") Input track objects to measure motion for.  These must be specific "track" class objects as output by modules such as "Track objects".  The track objects are parents of individual timepoint instance objects, which are specified using the "Input spot objects" parameter.  Global track measurements (e.g. total path length) are associated with the corresponding track objects.<br><br><b>Input spot objects</b> (default = "") Input individual timepoint instance objects for the track.  These are the spatial records of the tracked objects in a single timepoint and are children of the track object specified by "Input track objects".  Instantaneous track measurements (e.g. instantaneous x-velociyty) are associated with the corresponding spot objects.<br><br><b>Subtract average motion</b> (default = "false") When selected, the average motion of all points between two frames is subtracted from the motion prior to calculation of any track measurements.  This can be used as a crude form of drift correction; however, it only works for global drift (where the whole sample moved together) and is less robust with few tracked objects.  Ideally, drift would be removed from the input images using image registration prior to object detection.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

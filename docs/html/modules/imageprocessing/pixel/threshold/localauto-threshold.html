@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/threshold/threshold.html">Threshold</a></p>
     <h1 class="display-4">Local auto-threshold</h1>
     <p class="lead">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global and 2D local auto-thresholding algorithms.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image to apply threshold to.<br><br><b>Apply to input image</b> (default = "true") Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><br><b>Threshold mode</b> (default = "Slice-by-slice") Local thresholding algorithm mode to use.<br><ul><li>"Slice-by-slice" Local thresholds are applied to a multidimensional image stack one 2D image at a time.  Images are processed independently.</li><li>"3D" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul><br><br><b>Algorithm (slice-by-slice)</b> (default = "Bernsen") Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, MidGrey, Niblack, Otsu, Phansalkar, Sauvola<br><br><b>Algorithm (3D)</b> (default = "Bernsen") Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, Phansalkar<br><br><b>Threshold multiplier</b> (default = "1.0") Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><br><b>Use lower threshold limit</b> (default = "false") Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><br><b>Lower threshold limit</b> (default = "0.0") Lowest absolute threshold value that can be applied.<br><br><b>Local radius</b> (default = "1.0") Radius of region to be used when calculating local intensity thresholds.  Units controlled by "Spatial units" control.<br><br><b>Spatial units</b> (default = "Pixel") Units that the local radius is specified using.<br><br><b>Use full Z-range ("Global Z")</b> (default = "false") When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the "Local radius" setting.<br><br><b>Black objects/white background</b> (default = "true") Controls the logic of the output image in terms of what is considered foreground and background.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global and 2D local auto-thresholding algorithms.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image to apply threshold to.<br><br><b>Apply to input image</b> (default = "true") Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><br><b>Threshold mode</b> (default = "Slice-by-slice") Local thresholding algorithm mode to use.<br><ul><li>"Slice-by-slice" Local thresholds are applied to a multidimensional image stack one 2D image at a time.  Images are processed independently.</li><li>"3D" Local threshold algorithms are calculated in 3D and applied to all slices of an image in a single run.  This is more computationally expensive.</li></ul><br><br><b>Algorithm (slice-by-slice)</b> (default = "Bernsen") Algorithms available for calculating local threshold on a slice-by-slice basis.  These are described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, MidGrey, Niblack, Otsu, Phansalkar, Sauvola<br><br><b>Algorithm (3D)</b> (default = "Bernsen") Algorithms available for calculating local threshold on 3D stack in a single run (all slices processed together).  These are 3D modifications of the algorithms described at <a href="https://imagej.net/Auto_Local_Threshold">https://imagej.net/Auto_Local_Threshold</a>.  Algorithms available: Bernsen, Contrast, Mean, Median, Phansalkar<br><br><b>Threshold multiplier</b> (default = "1.0") Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><br><b>Use lower threshold limit</b> (default = "false") Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><br><b>Lower threshold limit</b> (default = "0.0") Lowest absolute threshold value that can be applied.<br><br><b>Local radius</b> (default = "1.0") Radius of region to be used when calculating local intensity thresholds.  Units controlled by "Spatial units" control.<br><br><b>Spatial units</b> (default = "Pixel") Units that the local radius is specified using.<br><br><b>Use full Z-range ("Global Z")</b> (default = "false") When performing 3D local thresholding, this takes all z-values at a location into account.  If disabled, pixels will be sampled in z according to the "Local radius" setting.<br><br><b>Black objects/white background</b> (default = "true") Controls the logic of the output image in terms of what is considered foreground and background.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

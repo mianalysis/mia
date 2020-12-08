@@ -16,6 +16,8 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.xml.pull.XmlPullParserException;
+import org.commonmark.renderer.html.HtmlRenderer;
+import org.commonmark.parser.Parser;
 
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
@@ -27,8 +29,12 @@ import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
 
 public class DocumentationGenerator2 {
+    private Parser parser;
+    private HtmlRenderer renderer;
+    
     private String version = "";
     private TreeMap<String, Module> modules;
+        
 
     public static void main(String[] args) {
         try {
@@ -41,6 +47,9 @@ public class DocumentationGenerator2 {
     }
 
     public DocumentationGenerator2() {
+        parser = Parser.builder().build();
+        renderer = HtmlRenderer.builder().build();
+
         modules = getModules();
         try {
             FileReader reader = new FileReader("pom.xml");
@@ -102,6 +111,10 @@ public class DocumentationGenerator2 {
         String pathToRoot = ".";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
         String mainContent = getPageTemplate("src/main/resources/templatehtml/indextemplate.html", pathToRoot);
+        
+        String introductionContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
+        introductionContent = renderer.render(parser.parse(introductionContent));
+        mainContent = mainContent.replace("${INDEX_INTRODUCTION}", introductionContent);
 
         page = page.replace("${MAIN_CONTENT}", mainContent);
 

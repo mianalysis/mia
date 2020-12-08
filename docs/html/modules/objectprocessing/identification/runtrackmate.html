@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/objectprocessing/objectprocessing.html">Object processing</a> ➤ <a href="../../../../html/modules/objectprocessing/identification/identification.html">Identification</a></p>
     <h1 class="display-4">Run TrackMate</h1>
     <p class="lead">Uses the <a href="https://imagej.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Uses the <a href="https://imagej.net/TrackMate">TrackMate</a> plugin included with Fiji to detect and track spots in images.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image in which to detect spots.<br><br><b>Output spot objects</b> (default = "") Spot objects that will be added to the workspace.  If tracking is enabled, each spot will have a parent track object.<br><br><b>Calibrated units</b> (default = "false") Enable if spatial parameters (e.g. "Radius" or "Max linking distance") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.<br><br><b>Do sub-pixel localisation</b> (default = "true") Enable TrackMate's "Subpixel localisation" functionality.<br><br><b>Median filtering</b> (default = "false") Enable TrackMate's "Median filtering" functionality.<br><br><b>Radius</b> (default = "2.0") Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Threshold</b> (default = "10.0") Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).<br><br><b>Estimate spot size</b> (default = "false") When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.<br><br><b>Run tracking</b> (default = "true") Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information.<br><br><b>Tracking method</b> (default = "Simple") Method with which spots are tracked between frames:<br><ul><li>"Linear motion (Kalman)" Uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.</li><li>"Simple" (default) Calculates links between spot positions in the previous and current frames.  This does not take motion into account.</li></ul><br><br><b>Max linking distance</b> (default = "10.0") Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Gap closing max distance</b> (default = "10.0") Maximum distance a spot can travel between "Max frame gap" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Initial search radius</b> (default = "10.0") Minimum spot separation required for creation of a new track.<br><br><b>Search radius</b> (default = "10.0") Maximum distance between predicted spot location and location of spot in current frame.<br><br><b>Max frame gap</b> (default = "3") Maximum number of frames a spot can go undetected before it will be classed as a new track upon reappearance.<br><br><b>Output track objects</b> (default = "") Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Uses the <a href="https://imagej.net/TrackMate">TrackMate</a> plugin included with Fiji to detect and track spots in images.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image in which to detect spots.<br><br><b>Output spot objects</b> (default = "") Spot objects that will be added to the workspace.  If tracking is enabled, each spot will have a parent track object.<br><br><b>Calibrated units</b> (default = "false") Enable if spatial parameters (e.g. "Radius" or "Max linking distance") are being specified in calibrated units.  If disabled, parameters are assumed to be specified in pixel units.<br><br><b>Do sub-pixel localisation</b> (default = "true") Enable TrackMate's "Subpixel localisation" functionality.<br><br><b>Median filtering</b> (default = "false") Enable TrackMate's "Median filtering" functionality.<br><br><b>Radius</b> (default = "2.0") Expected radius of spots in the input image.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Threshold</b> (default = "10.0") Threshold for spot detection.  Threshold is applied to filtered image (Laplacian of Gaussian), so will be affected by the specified "Radius" value.  Increase this value to make detection more selective (i.e. detect fewer spots).<br><br><b>Estimate spot size</b> (default = "false") When enabled, output spot objects will have explicit size (rather than a single, centroid coordinate) determined by the TrackMate-calculated estimated diameter.<br><br><b>Run tracking</b> (default = "true") Track spot objects over time.  Spots in each frame will become children of a parent track object.  The track object itself won't contain any coordinate information.<br><br><b>Tracking method</b> (default = "Simple") Method with which spots are tracked between frames:<br><ul><li>"Linear motion (Kalman)" Uses the previous position of a spot and its current velocity to estimate where the spot will be in the next frame. These predicted spots are linked to the spots in the current frame.  When dealing with particles moving at roughly constant speeds, this method should be more accurate.</li><li>"Simple" (default) Calculates links between spot positions in the previous and current frames.  This does not take motion into account.</li></ul><br><br><b>Max linking distance</b> (default = "10.0") Maximum distance a spot can travel between frames and still be linked to its starting spot.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Gap closing max distance</b> (default = "10.0") Maximum distance a spot can travel between "Max frame gap" frames and still be linked to its starting spot.  This accounts for the greater distance a spot can move between detections when it's allowed to go undetected in some timepoints.  Specified in pixel units, unless "Calibrated units" is selected.<br><br><b>Initial search radius</b> (default = "10.0") Minimum spot separation required for creation of a new track.<br><br><b>Search radius</b> (default = "10.0") Maximum distance between predicted spot location and location of spot in current frame.<br><br><b>Max frame gap</b> (default = "3") Maximum number of frames a spot can go undetected before it will be classed as a new track upon reappearance.<br><br><b>Output track objects</b> (default = "") Track objects that will be added to the workspace.  These are parent objects to the spots in that track.  Track objects are simply used for linking spots to a common track and storing track-specific measurements.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

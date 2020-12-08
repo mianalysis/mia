@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Apply CLAHE</h1>
     <p class="lead">Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image to apply CLAHE to.<br><br><b>Apply to input image</b> (default = "true") Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the CLAHE process.  This image will be added to the workspace.<br><br><b>Blocksize</b> (default = "127.0") <br><br><b>Calibrated units</b> (default = "false") Choose if block size is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><br><b>Histogram bins</b> (default = "256") <br><br><b>Maximum slope</b> (default = "3.0") <br><br><b>Use mask</b> (default = "false") <br><br><b>Mask image</b> (default = "") <br><br><b>Fast (less accurate)</b> (default = "true") <br><br><b>Enable multithreading</b> (default = "true") <br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image "<a href="https://imagej.net/Enhance_Local_Contrast_(CLAHE)">CLAHE</a>" plugin.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image to apply CLAHE to.<br><br><b>Apply to input image</b> (default = "true") Select if CLAHE should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the CLAHE process.  This image will be added to the workspace.<br><br><b>Blocksize</b> (default = "127.0") <br><br><b>Calibrated units</b> (default = "false") Choose if block size is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><br><b>Histogram bins</b> (default = "256") <br><br><b>Maximum slope</b> (default = "3.0") <br><br><b>Use mask</b> (default = "false") <br><br><b>Mask image</b> (default = "") <br><br><b>Fast (less accurate)</b> (default = "true") <br><br><b>Enable multithreading</b> (default = "true") <br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

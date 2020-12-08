@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a></p>
     <h1 class="display-4">Weka probability maps</h1>
     <p class="lead">Performs pixel classification using the WEKA Trainable Segmentation plugin.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Performs pixel classification using the WEKA Trainable Segmentation plugin.<br><br>This module loads a previously-saved WEKA classifier model and applies it to the input image.  It then returns the multi-channel probability map.<br><br>Image stacks are processed in 2D, one slice at a time.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image to apply pixel classification to.<br><br><b>Convert to RGB</b> (default = "false") Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model.<br><br><b>Output image</b> (default = "") Output probability map image.<br><br><b>Output bit depth</b> (default = "32") By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module.<br><br><b>Output single class</b> (default = "false") Allows a single class (image channel) to be output.  This is another feature for reducing memory usage.<br><br><b>Output class</b> (default = "1") Class (image channel) to be output.  Channel numbering starts at 1.<br><br><b>Path type</b> (default = "Specific file") Method to use for generation of the classifier filename:<br><ul><li>"Matching format" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li><li>"Specific file" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul><br><br><b>Generic format</b> (default = "") Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.<br><br><b>Available metadata fields</b> (default = "") List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.<br><br><b>Classifier file path</b> (default = "") Path to the classifier file (.model extension).  This file needs to be created manually using the WEKA Trainable Segmentation plugin included with Fiji.<br><br><b>Block size (simultaneous slices)</b> (default = "1") Number of image slices to process at any given time.  This reduces the memory footprint of the module, but can slow down processing.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Performs pixel classification using the WEKA Trainable Segmentation plugin.<br><br>This module loads a previously-saved WEKA classifier model and applies it to the input image.  It then returns the multi-channel probability map.<br><br>Image stacks are processed in 2D, one slice at a time.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image to apply pixel classification to.<br><br><b>Convert to RGB</b> (default = "false") Converts a composite image to RGB format.  This should be set to match the image-type used for generation of the model.<br><br><b>Output image</b> (default = "") Output probability map image.<br><br><b>Output bit depth</b> (default = "32") By default images will be saved as floating point 32-bit (probabilities in the range 0-1); however, they can be converted to 8-bit (probabilities in the range 0-255) or 16-bit (probabilities in the range 0-65535).  This is useful for saving memory or if the output probability map will be passed to image threshold module.<br><br><b>Output single class</b> (default = "false") Allows a single class (image channel) to be output.  This is another feature for reducing memory usage.<br><br><b>Output class</b> (default = "1") Class (image channel) to be output.  Channel numbering starts at 1.<br><br><b>Path type</b> (default = "Specific file") Method to use for generation of the classifier filename:<br><ul><li>"Matching format" Will generate a name from metadata values stored in the current workspace.  This is useful if the classifier varies from input file to input file.</li><li>"Specific file" Will load the classifier file at a specific location.  This is useful if the same file is to be used for all input files.</li></ul><br><br><b>Generic format</b> (default = "") Format for a generic filename.  Plain text can be mixed with global variables or metadata values currently stored in the workspace.  Global variables are specified using the "V{name}" notation, where "name" is the name of the variable to insert.  Similarly, metadata values are specified with the "M{name}" notation.<br><br><b>Available metadata fields</b> (default = "") List of the currently-available metadata values for this workspace.  These can be used when compiling a generic filename.<br><br><b>Classifier file path</b> (default = "") Path to the classifier file (.model extension).  This file needs to be created manually using the WEKA Trainable Segmentation plugin included with Fiji.<br><br><b>Block size (simultaneous slices)</b> (default = "1") Number of image slices to process at any given time.  This reduces the memory footprint of the module, but can slow down processing.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/stack/stack.html">Stack</a> ➤ <a href="../../../../../html/modules/imageprocessing/stack/registration/registration.html">Registration</a></p>
     <h1 class="display-4">Manual registration</h1>
     <p class="lead">Align an image from the workspace to another image from the workspace using manually-selected reference points.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Align an image from the workspace to another image from the workspace using manually-selected reference points.  When the image runs, the input and reference images are displayed.  The user then selects matching points on each image and clicks "Add pair(s)".  Points must be added in the same order on each image (ID numbers next to each point provide a reference).  Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking "Remove pair".  The alignment can be tested by clicking "Test process".  Finally, the alignment is accepted by clicking "Finish adding pairs", at which point the images are closed and the transform is applied.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name.Alignments are calculated using the <a href="https://github.com/axtimwalde/mpicbg">MPICBG</a> image transformation library.<br><br>Note: This module currently only aligns single slice images; however, a future update will add multi-slice processing.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") <br><br><b>Apply to input image</b> (default = "true") <br><br><b>Output image</b> (default = "") <br><br><b>Registration axis</b> (default = "Time") <br><br><b>Other axis mode</b> (default = "Independent") <br><br><b>Transformation mode</b> (default = "Rigid") <br><br><b>Fill mode</b> (default = "Black") <br><br><b>Enable multithreading</b> (default = "true") <br><br><b>Reference image</b> (default = "") Reference image against which the input image will be aligned.  When the module runs, this image and the reference image will be displayed.  The user selects matching points on the two images, which will determine the final transform to be applied.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Align an image from the workspace to another image from the workspace using manually-selected reference points.  When the image runs, the input and reference images are displayed.  The user then selects matching points on each image and clicks "Add pair(s)".  Points must be added in the same order on each image (ID numbers next to each point provide a reference).  Points are shown in the control window and can be deleted by highlighting the relevant entry and clicking "Remove pair".  The alignment can be tested by clicking "Test process".  Finally, the alignment is accepted by clicking "Finish adding pairs", at which point the images are closed and the transform is applied.  The transformed input image can either overwrite the input image in the workspace, or be saved to the workspace with a new name.Alignments are calculated using the <a href="https://github.com/axtimwalde/mpicbg">MPICBG</a> image transformation library.<br><br>Note: This module currently only aligns single slice images; however, a future update will add multi-slice processing.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") <br><br><b>Apply to input image</b> (default = "true") <br><br><b>Output image</b> (default = "") <br><br><b>Registration axis</b> (default = "Time") <br><br><b>Other axis mode</b> (default = "Independent") <br><br><b>Transformation mode</b> (default = "Rigid") <br><br><b>Fill mode</b> (default = "Black") <br><br><b>Enable multithreading</b> (default = "true") <br><br><b>Reference image</b> (default = "") Reference image against which the input image will be aligned.  When the module runs, this image and the reference image will be displayed.  The user selects matching points on the two images, which will determine the final transform to be applied.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

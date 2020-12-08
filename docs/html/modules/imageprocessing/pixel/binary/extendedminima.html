@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
     <h1 class="display-4">Extended minima</h1>
     <p class="lead">Applies a 3D (or 2D for single slice images) binary skeletonisation operation to an image in the workspace.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Applies a 3D (or 2D for single slice images) binary skeletonisation operation to an image in the workspace.  All foreground labelled regions will be reduced to a single, pixel-wide strip, which runs along the former centre of the region.<br><br>This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The skeletonise operation uses the plugin "<a href="https://imagej.net/Skeletonize3D">Skeletonize3D</a>".</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).<br><br><b>Dynamic</b> (default = "1") This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.<br><br><b>Connectivity (3D)</b> (default = "26") Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li><br><br><b>Enable multithreading</b> (default = "true") Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Applies a 3D (or 2D for single slice images) binary skeletonisation operation to an image in the workspace.  All foreground labelled regions will be reduced to a single, pixel-wide strip, which runs along the former centre of the region.<br><br>This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  The skeletonise operation uses the plugin "<a href="https://imagej.net/Skeletonize3D">Skeletonize3D</a>".</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply extended minima operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.  This image will be 8-bit with black minima (intensity 0) on a white background (intensity 255).<br><br><b>Dynamic</b> (default = "1") This parameter specifies the maximum permitted pixel intensity difference for a single minima.  Local intensity differences greater than this will result in creation of more minima.  The smaller the dynamic value is, the more minima will be created.  As the dynamic value increases, minima will increase in size.<br><br><b>Connectivity (3D)</b> (default = "26") Controls which adjacent pixels are considered:<br><ul><li>"6" Only pixels immediately next to the active pixel are considered.  These are the pixels on the four "cardinal" directions plus the pixels immediately above and below the current pixel.  If working in 2D, 4-way connectivity is used.</li><li>"26" In addition to the core 6-pixels, all immediately diagonal pixels are used.  If working in 2D, 8-way connectivity is used.</li><br><br><b>Enable multithreading</b> (default = "true") Process multiple 3D stacks simultaneously.  Since the extended minima operation is applied on a single 3D stack at a time, multithreading only works for images with multiple channels or timepoints (other stacks will still work, but won't see a speed improvement).  This can provide a speed improvement when working on a computer with a multi-core CPU.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>

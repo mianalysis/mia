@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,16 +63,17 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <!-- TODO: Implement module search tool on a separate page (maybe with a search bar in the Module nav dropdown?), but link it here. -->
 
 <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -88,223 +82,224 @@
   <p class="lead"></p>
 </div>
 
-<div class="d-flex justify-content-center">
-  <div class="card-deck justify-content-center">
-    
-    <div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Calculate nearest neighbour</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measures the shortest distance between all objects in the specified input collection and all other objects in the same, or a different collection.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/calculatenearestneighbour.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Fit Gaussian 2D</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Gaussian spot fitting.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitgaussian2d.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Fit ellipse</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Fit ellipses to all objects in a collection using "<a href="https://imagej.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitellipse.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Fit ellipsoid</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Fit ellipsoids to all objects in a collection using "<a href="https://imagej.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitellipsoid.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Fit longest chord</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measures the longest chord of each object in a specified object collection from the workspace.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitlongestchord.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Fit spline</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        </p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitspline.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure object centroid</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measure mean XYZ centroid for all objects in an object colleciton.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectcentroid.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure object curvature</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        </p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectcurvature.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure object limits</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measures the XYZ spatial limits of each object relative to the origin (x = 0, y = 0, z = 0) of the original image.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectlimits.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure object overlap</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        </p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectoverlap.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure object shape</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measures various spatial metrics for each object in a specified object collection from the workspace.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectshape.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure relative orientation</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Currently only works for X-Y plane measurements</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measurerelativeorientation.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure skeleton</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Uses the <a href="https://imagej.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureskeleton.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure specific width</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measures the width of the object along the axis passing through the centroid and specified point.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measurespecificwidth.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Measure track motion</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Measures various motion metrics for tracked objects.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measuretrackmotion.html">
-        View
-      </a>
-    </div>
+<div class="container mia-card-container">
+  <div class="d-flex justify-content-center">
+    <div class="card-deck justify-content-center">
+      
+      <div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Calculate nearest neighbour</h4>
   </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measures the shortest distance between all objects in the specified input collection and all other objects in the same, or a different collection.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/calculatenearestneighbour.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Fit Gaussian 2D</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Gaussian spot fitting.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitgaussian2d.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Fit ellipse</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Fit ellipses to all objects in a collection using "<a href="https://imagej.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitellipse.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Fit ellipsoid</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Fit ellipsoids to all objects in a collection using "<a href="https://imagej.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitellipsoid.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Fit longest chord</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measures the longest chord of each object in a specified object collection from the workspace.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitlongestchord.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Fit spline</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      </p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/fitspline.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure object centroid</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measure mean XYZ centroid for all objects in an object colleciton.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectcentroid.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure object curvature</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      </p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectcurvature.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure object limits</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measures the XYZ spatial limits of each object relative to the origin (x = 0, y = 0, z = 0) of the original image.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectlimits.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure object overlap</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      </p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectoverlap.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure object shape</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measures various spatial metrics for each object in a specified object collection from the workspace.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureobjectshape.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure relative orientation</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Currently only works for X-Y plane measurements</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measurerelativeorientation.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure skeleton</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Uses the <a href="https://imagej.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measureskeleton.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure specific width</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measures the width of the object along the axis passing through the centroid and specified point.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measurespecificwidth.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Measure track motion</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Measures various motion metrics for tracked objects.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/objectmeasurements/spatial/measuretrackmotion.html">
+      View
+    </a>
   </div>
 </div>
+    </div>
   </div>
+</div>
 
   <!-- Footer -->
   <footer>

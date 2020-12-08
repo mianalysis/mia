@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,16 +63,17 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <!-- TODO: Implement module search tool on a separate page (maybe with a search bar in the Module nav dropdown?), but link it here. -->
 
 <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -88,55 +82,56 @@
   <p class="lead"></p>
 </div>
 
-<div class="d-flex justify-content-center">
-  <div class="card-deck justify-content-center">
-    
-    <div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Run macro on image</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Run a specific ImageJ macro once (as opposed to the "Run macro on objects" module, which runs once per object).</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/miscellaneous/macros/runmacroonimage.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Run macro on objects</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the "Run macro on image" module, which runs once per analysis run).</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/miscellaneous/macros/runmacroonobjects.html">
-        View
-      </a>
-    </div>
-  </div><div class="card mb-4 box-shadow mia-card">
-    <div class="card-header">
-      <h4 class="my-0 font-weight-normal">Run single macro command</h4>
-    </div>
-    <div class="card-body">
-      <p class="card-text mb-4">
-        Run a single macro command on an image from the workspace.</p>
-    </div>
-    <div class="card-footer bg-transparent mb-2 mia-card-footer">
-      <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
-      <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/miscellaneous/macros/runsinglemacrocommand.html">
-        View
-      </a>
-    </div>
+<div class="container mia-card-container">
+  <div class="d-flex justify-content-center">
+    <div class="card-deck justify-content-center">
+      
+      <div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Run macro on image</h4>
   </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Run a specific ImageJ macro once (as opposed to the "Run macro on objects" module, which runs once per object).</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/miscellaneous/macros/runmacroonimage.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Run macro on objects</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Run a specific ImageJ macro once per object from a specified input object collection (as opposed to the "Run macro on image" module, which runs once per analysis run).</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/miscellaneous/macros/runmacroonobjects.html">
+      View
+    </a>
+  </div>
+</div><div class="card mb-4 box-shadow mia-card">
+  <div class="card-header">
+    <h4 class="my-0 font-weight-normal">Run single macro command</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-text mb-4">
+      Run a single macro command on an image from the workspace.</p>
+  </div>
+  <div class="card-footer bg-transparent mb-2 mia-card-footer">
+    <!-- <button type="button" class="btn btn-lg btn-block btn-primary">See modules</button> -->
+    <a class="btn btn-lg btn-block btn-outline-primary" href="../../../../html/modules/miscellaneous/macros/runsinglemacrocommand.html">
+      View
+    </a>
   </div>
 </div>
+    </div>
   </div>
+</div>
 
   <!-- Footer -->
   <footer>

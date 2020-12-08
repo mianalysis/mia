@@ -45,22 +45,15 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
-              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Getting started</a>
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item"
-                href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download
-                latest</a>
-              <a class="dropdown-item" href="https://github.com/sjcross/MIA/releases">All releases</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Section 1</a>
-              <a class="dropdown-item" href="#">Section 2</a>
-              <a class="dropdown-item" href="#">Section 3</a>
+              <a class="dropdown-item" href="#">Getting started</a>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../../../html/guides.html">Guides</a>
+            <a class="nav-link" href="../../../../html/modules/modules.html">Modules</a>
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">Modules</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
@@ -70,27 +63,29 @@
               <a class="dropdown-item" href="#">Package 2</a>
               <a class="dropdown-item" href="#">Package 3</a>
             </div>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="../../../../html/about.html">About</a>
           </li>
         </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
       </div>
     </div>
   </nav>
 
-  <div class="container mia-text-container text-justify"></div>
   <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <p class="text-secondary"><a href="../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../html/modules/imageprocessing/stack/stack.html">Stack</a></p>
     <h1 class="display-4">Best focus stack</h1>
     <p class="lead">Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.</p>
 </div>
 
-<h2 class="display-6">Description</h2>
-<p class="mb-4">Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.  For automated methods, best focus is determined using intensity statistics (e.g. largest variance) of all pixels in each slice.  When in manual mode, only the best focus slice for the first and last timepoints need be specified (all others will be estimated using polynomial spline interpolation); however, more frames can be specified if preferred.<br><br>Irrespective of the calculation method (manual or automatic), it's possible to extract a fixed number of slices above and below the determined best-focus slice.</p>
-<h2 class="display-6">Parameters</h2>
-<p class="mb-4"><b>Input image</b> (default = "") Image to extract substack from.<br><br><b>Output image</b> (default = "") Substack image to be added to the current workspace.<br><br><b>Best-focus calculation</b> (default = "Largest standard deviation") Method for determining the best-focus slice.<br><ul><li>"Manual" Displays a control window, allowing the user to specify reference slices.  These slices should be at the same true z-plane.  Once complete, a substack will be extracted a specific number of slices above and below the reference plane (defined by "Relative start slice" and "Relative end slice".  If references aren't specific for all timepoints, the missing frames will be estimated using polynomial spline interpolation.</li><li>"Smallest mean intensity" The reference slice is taken as the slice with the minimum mean intensity.</li><li>"Largest mean intensity" The reference slice is taken as the slice with the maximum mean intensity.</li><li>"Smallest standard deviation" The reference slice is taken as the slice with the minimum intensity standard deviation.</li><li>"Largest standard deviation" The reference slice is taken as the slice with the maximum intensity standard deviation.</li></ul><br><br><b>Relative start slice</b> (default = "0") Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus).<br><br><b>Relative end slice</b> (default = "0") Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus).<br><br><b>Reference image</b> (default = "") If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.<br><br><b>Calculation source</b> (default = "Internal") When using automatic best focus slice determination this controls the image source:<br><ul><li>"External" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li><li>"Internal" The same image will be used for determination of the best slice and generation of the output substack.</li></ul><br><br><b>External source</b> (default = "") If using a separate image to determine the best focus slice ("Calculation source" set to "External").<br><br><b>Channel mode</b> (default = "Use single channel") How many channels to use when calculating the best-focus slice.  "Use all channels" will use all channels, whereas "Use single channel" will base the calculation on a single, user-defined channel.<br><br><b>Channel</b> (default = "1") Channel to base the best-focus calculation on.<br><br><b>Smooth timeseries</b> (default = "false") Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames).<br><br><b>Smoothing range (odd numbers)</b> (default = "5") Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1.<br><br></p>
-  </div>
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Extract a Z-substack from an input stack based on either manually-selected slices, or an automatically-calculated best-focus slice.  For automated methods, best focus is determined using intensity statistics (e.g. largest variance) of all pixels in each slice.  When in manual mode, only the best focus slice for the first and last timepoints need be specified (all others will be estimated using polynomial spline interpolation); however, more frames can be specified if preferred.<br><br>Irrespective of the calculation method (manual or automatic), it's possible to extract a fixed number of slices above and below the determined best-focus slice.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image to extract substack from.<br><br><b>Output image</b> (default = "") Substack image to be added to the current workspace.<br><br><b>Best-focus calculation</b> (default = "Largest standard deviation") Method for determining the best-focus slice.<br><ul><li>"Manual" Displays a control window, allowing the user to specify reference slices.  These slices should be at the same true z-plane.  Once complete, a substack will be extracted a specific number of slices above and below the reference plane (defined by "Relative start slice" and "Relative end slice".  If references aren't specific for all timepoints, the missing frames will be estimated using polynomial spline interpolation.</li><li>"Smallest mean intensity" The reference slice is taken as the slice with the minimum mean intensity.</li><li>"Largest mean intensity" The reference slice is taken as the slice with the maximum mean intensity.</li><li>"Smallest standard deviation" The reference slice is taken as the slice with the minimum intensity standard deviation.</li><li>"Largest standard deviation" The reference slice is taken as the slice with the maximum intensity standard deviation.</li></ul><br><br><b>Relative start slice</b> (default = "0") Index of start slice relative to determined best-focus slice (i.e. -5 is 5 slices below the best-focus).<br><br><b>Relative end slice</b> (default = "0") Index of end slice relative to determined best-focus slice (i.e. 5 is 5 slices above the best-focus).<br><br><b>Reference image</b> (default = "") If using manual selection of best focus slices, this is the image that will be shown to the user.  While it doesn't need to be the input image (the one the output substack will be generated from), it must have the same number of slices and timepoints as the input.<br><br><b>Calculation source</b> (default = "Internal") When using automatic best focus slice determination this controls the image source:<br><ul><li>"External" The image for which intensity statistics are calculated is different to the image that the final substack will be created from.  For example, this could be an filtered version of the input image to enhance structures when in focus.</li><li>"Internal" The same image will be used for determination of the best slice and generation of the output substack.</li></ul><br><br><b>External source</b> (default = "") If using a separate image to determine the best focus slice ("Calculation source" set to "External").<br><br><b>Channel mode</b> (default = "Use single channel") How many channels to use when calculating the best-focus slice.  "Use all channels" will use all channels, whereas "Use single channel" will base the calculation on a single, user-defined channel.<br><br><b>Channel</b> (default = "1") Channel to base the best-focus calculation on.<br><br><b>Smooth timeseries</b> (default = "false") Apply median filter to best focus slice index over time.  This should smooth the transitions over time (prevent large jumps between frames).<br><br><b>Smoothing range (odd numbers)</b> (default = "5") Number of frames over which to calculate the median.  If the specified number is even it will be increased by 1.<br><br></p>
+</div>
 
   <!-- Footer -->
   <footer>
