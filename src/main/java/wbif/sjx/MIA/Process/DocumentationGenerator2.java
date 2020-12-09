@@ -31,10 +31,13 @@ import wbif.sjx.MIA.Object.References.Abstract.Ref;
 public class DocumentationGenerator2 {
     private Parser parser;
     private HtmlRenderer renderer;
-    
+
     private String version = "";
     private TreeMap<String, Module> modules;
-        
+
+    private enum Page {
+        HOME, GUIDES, MODULES, ABOUT;
+    }
 
     public static void main(String[] args) {
         try {
@@ -68,7 +71,6 @@ public class DocumentationGenerator2 {
         root.mkdir();
 
         generateIndexPage();
-        generateGettingStartedPage();
         generateGuidesPage();
 
         // Generating module pages
@@ -110,9 +112,12 @@ public class DocumentationGenerator2 {
         // Generate module list HTML document
         String pathToRoot = ".";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.HOME);
+
         String mainContent = getPageTemplate("src/main/resources/templatehtml/indextemplate.html", pathToRoot);
-        
-        String introductionContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
+
+        String introductionContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
         introductionContent = renderer.render(parser.parse(introductionContent));
         mainContent = mainContent.replace("${INDEX_INTRODUCTION}", introductionContent);
 
@@ -125,24 +130,11 @@ public class DocumentationGenerator2 {
 
     }
 
-    public void generateGettingStartedPage() throws IOException {
-        // Generate module list HTML document
-        String pathToRoot = "..";
-        String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-
-        page = page.replace("${MAIN_CONTENT}", "GETTING STARTED");
-
-        FileWriter writer = new FileWriter("docs/html/gettingstarted.html");
-        writer.write(page);
-        writer.flush();
-        writer.close();
-
-    }
-
     public void generateGuidesPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.GUIDES);
 
         page = page.replace("${MAIN_CONTENT}", "GUIDES");
 
@@ -163,6 +155,7 @@ public class DocumentationGenerator2 {
 
         // Initialise HTML document
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.MODULES);
 
         // Populate module packages content
         String mainContent = getPageTemplate("src/main/resources/templatehtml/categorylisttemplate.html", pathToRoot);
@@ -225,6 +218,7 @@ public class DocumentationGenerator2 {
 
             // Initialise HTML document
             String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+            page = setNavbarActive(page, Page.MODULES);
 
             // Populate module packages content
             String mainContent = getPageTemplate("src/main/resources/templatehtml/moduletemplate.html", pathToRoot);
@@ -280,6 +274,7 @@ public class DocumentationGenerator2 {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
+        page = setNavbarActive(page, Page.ABOUT);
 
         page = page.replace("${MAIN_CONTENT}", "ABOUT");
 
@@ -290,6 +285,16 @@ public class DocumentationGenerator2 {
 
     }
 
+    String setNavbarActive(String content, Page page) {
+        content = content.replace("${ACTIVE_HOME}", page == Page.HOME ? "active" : "");
+        content = content.replace("${ACTIVE_GUIDES}", page == Page.GUIDES ? "active" : "");
+        content = content.replace("${ACTIVE_MODULES}", page == Page.MODULES ? "active" : "");
+        content = content.replace("${ACTIVE_ABOUT}", page == Page.ABOUT ? "active" : "");
+
+        return content;
+
+    }
+    
     public static void generateReadmeMarkdown() {
         try {
             StringBuilder sb = new StringBuilder();
