@@ -11,8 +11,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -20,8 +18,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -31,7 +27,6 @@ import javax.swing.JList;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -479,14 +474,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle(messageOnImage);
 
+        // Clearing any ROIs stored from previous runs
+        rois = new HashMap<>();
+        listModel.clear();
+
         origOverlay = displayImagePlus.getOverlay();
         overlay = new Overlay();
         displayImagePlus.setOverlay(overlay);
         updateOverlay();
-
-        // Clearing any ROIs stored from previous runs
-        rois = new HashMap<>();
-        listModel.clear();
 
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName, calibration, nFrames);

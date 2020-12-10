@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import com.drew.lang.annotations.NotNull;
-import com.drew.lang.annotations.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -897,7 +898,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     }
                     break;
             }
-        } catch (ServiceException | DependencyException | IOException | FormatException e) {
+        } catch (SecurityException | DependencyException | IOException | FormatException | ServiceException e) {
             MIA.log.writeWarning(e);
             return Status.FAIL;
         }
