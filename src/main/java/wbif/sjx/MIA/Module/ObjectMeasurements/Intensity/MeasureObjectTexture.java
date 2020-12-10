@@ -28,9 +28,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MeasureObjectTexture extends Module {
     public static final String INPUT_SEPARATOR = "Object and image input";
-    public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
-
+    public static final String INPUT_IMAGE = "Input image";
+    
     public static final String MEASUREMENT_SEPARATOR = "Measurement selection";
     public static final String POINT_MEASUREMENT = "Measurements based on centroid point";
     public static final String MEASUREMENT_RADIUS = "Measurement radius";
@@ -173,8 +173,8 @@ public class MeasureObjectTexture extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));        
 
         parameters.add(new SeparatorP(MEASUREMENT_SEPARATOR,this));
         parameters.add(new BooleanP(POINT_MEASUREMENT, this,false));
@@ -192,9 +192,9 @@ public class MeasureObjectTexture extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_SEPARATOR));
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        
         returnedParameters.add(parameters.getParameter(MEASUREMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(POINT_MEASUREMENT));
 
