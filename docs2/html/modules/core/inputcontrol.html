@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>MIA (Modular Image Analysis)</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link href="../../../css/style.css" rel="stylesheet">
+  <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">  -->
+
+  <!-- Javascript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand d-none d-sm-block mia-name" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;"></a> -->
+      <a class="navbar-brand mia-name" href="../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
+          height="30" src="../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        style="border: none;">
+        <span class="navbar-toggler-icon"></span>
+      </buton>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item ">
+            <a class="nav-link" href="../../../index.html">Home</a>
+          </li>
+          <li class="nav-item dropdown ">
+            <a class="nav-link dropdown-toggle" href="../../../html/gettingstarted.html" id="navbarDropdownModules"
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
+              <a class="dropdown-item" href="#">Getting started</a>
+            </div>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="../../../html/modules/modules.html">Modules</a>
+          </li>
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Modules</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
+              <a class="dropdown-item" href="../../../html/modules/modules.html">All categories</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Package 1</a>
+              <a class="dropdown-item" href="#">Package 2</a>
+              <a class="dropdown-item" href="#">Package 3</a>
+            </div>
+          </li> -->
+          <li class="nav-item ">
+            <a class="nav-link" href="../../../html/about.html">About</a>
+          </li>
+        </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <p class="text-secondary"><a href="../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../html/modules/core/core.html">Core</a></p>
+    <h1 class="display-4">Input control</h1>
+    <p class="lead">Select which file(s) or folder(s) MIA will process through.</p>
+</div>
+
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input path</b> (default = "") The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.<br><br><b>Simultaneous jobs</b> (default = "1") The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.<br><br><b>Series mode</b> (default = "All series") For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul><br><br><b>Series list</b> (default = "1") Comma-separated list of series numbers to be processed.<br><br><b>Only load first file per folder</b> (default = "false") Only load the (alphabetically) first file in each folder.<br><br><b>Add filter</b> (default = "") Add another filename filter.  All images to be processed will pass all filters.<br><b>Filter source</b> (default = "Extension") Type of filter to add.<br><br><b>Filter value</b> (default = "") Value to filter filenames against.<br><br><b>Filter type</b> (default = "Matches partially (include)") Control how the present filter operates:<li>"Matches partially (include)" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li><li>"Matches completely (include)" will process an image if the filter value is exactly the same as the source.</li><li>"Matches partially (exclude)" will not process an image if the filter value is partially present in the source.</li><li>"Matches completely (exclude)" will not process an image if the filter value is exactly the same as the source.</li></ul><br><br><br><b>Spatial units</b> (default = "MICROMETRE") Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<br><br></p>
+</div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container-fluid padding">
+      <div class="row text-center text-light align-items-center">
+        <div class="col-6 mt-4 mb-4">
+          <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
+            <img height="48" src="../../../img/wbif.png">
+          </a>
+        </div>
+        <div class="col-6 mt-4 mb-4 align-items-center">
+          <a href="https://github.com/sjcross/MIA/">
+            <img height="48" src="../../../img/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../img/GitHub_Logo_White.png" height="32px">
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../../js/script.js" type="text/javascript"></script>
+
+</body>
+
+</html>
