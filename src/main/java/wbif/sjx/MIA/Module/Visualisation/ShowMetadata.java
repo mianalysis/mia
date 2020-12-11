@@ -36,10 +36,6 @@ public class ShowMetadata extends Module {
         return "Displays all measurements associated with an image.";
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION;
-    }
 
     @Override
     public Category getCategory() {

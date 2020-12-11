@@ -26,10 +26,6 @@ public class FilterByMeasurement extends AbstractNumericObjectFilter {
     }
         
         
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
-    }
 
     @Override
     public Category getCategory() {

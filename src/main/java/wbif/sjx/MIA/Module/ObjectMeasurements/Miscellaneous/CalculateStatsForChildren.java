@@ -97,10 +97,6 @@ public class CalculateStatsForChildren extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

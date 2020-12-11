@@ -36,10 +36,6 @@ public class ShowObjectMeasurements extends Module {
         return "Displays all measurements associated with all objects of the specified object collection.";
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION;
-    }
 
     @Override
     public Category getCategory() {

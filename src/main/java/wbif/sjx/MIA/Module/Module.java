@@ -64,8 +64,6 @@ public abstract class Module extends Ref implements Comparable {
 
     // ABSTRACT METHODS
 
-    public abstract String getPackageName();
-
     public abstract Category getCategory();
 
     protected abstract Status process(Workspace workspace);

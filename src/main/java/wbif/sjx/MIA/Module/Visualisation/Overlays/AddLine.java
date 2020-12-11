@@ -84,10 +84,6 @@ public class AddLine extends AbstractOverlay {
         super("Add line", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION_OVERLAYS;
-    }
 
     @Override
     public Category getCategory() {

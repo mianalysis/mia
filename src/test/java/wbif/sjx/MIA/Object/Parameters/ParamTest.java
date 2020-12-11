@@ -17,11 +17,6 @@ public class ParamTest extends Module {
     }
 
     @Override
-    public String getPackageName() {
-        return "Test";
-    }
-
-    @Override
     public Category getCategory() {
         return new Category("Test","",null);
     }

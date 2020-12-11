@@ -212,10 +212,6 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

@@ -39,10 +39,6 @@ public class ParentObjectID extends Module {
         return "PARENT_ID // "+ parentObjectsName;
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

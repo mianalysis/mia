@@ -316,11 +316,6 @@ public class InputControl extends Module {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return "Hidden";
-    }
-
 
     @Override
     public Category getCategory() {

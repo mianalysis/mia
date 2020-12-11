@@ -113,10 +113,6 @@ public class ImageMath extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
-    }
 
     @Override
     public Category getCategory() {

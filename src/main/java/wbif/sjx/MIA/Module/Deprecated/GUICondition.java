@@ -73,10 +73,6 @@ public class GUICondition extends AbstractWorkspaceHandler {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

@@ -66,10 +66,6 @@ public class MeasureSpotIntensity extends Module {
         super("Measure spot intensity", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

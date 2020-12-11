@@ -85,10 +85,6 @@ public class RunMacroOnImage extends AbstractMacroRunner {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.MISCELLANEOUS_MACROS;
-    }
 
     @Override
     public Category getCategory() {

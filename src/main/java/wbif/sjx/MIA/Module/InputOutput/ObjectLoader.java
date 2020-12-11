@@ -355,10 +355,6 @@ public class ObjectLoader extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
-    }
 
     @Override
     public Category getCategory() {

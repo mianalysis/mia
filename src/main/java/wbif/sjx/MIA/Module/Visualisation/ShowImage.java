@@ -60,10 +60,6 @@ public class ShowImage extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION;
-    }
 
     @Override
     public Category getCategory() {

@@ -85,10 +85,6 @@ public class AddAllObjectPoints extends AbstractOverlay {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION_OVERLAYS;
-    }
 
     @Override
     public Category getCategory() {

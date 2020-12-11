@@ -53,10 +53,6 @@ public class ExportACCDataset extends Module {
         super("Export ACC dataset", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
-    }
 
     @Override
     public Category getCategory() {

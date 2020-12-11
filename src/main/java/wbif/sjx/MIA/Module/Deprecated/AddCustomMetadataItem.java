@@ -27,10 +27,6 @@ public class AddCustomMetadataItem extends Module {
         super("Add custom metadata item",modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

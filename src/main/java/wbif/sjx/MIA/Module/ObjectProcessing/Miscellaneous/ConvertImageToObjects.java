@@ -40,10 +40,6 @@ public class ConvertImageToObjects extends Module {
     public interface VolumeTypes extends Image.VolumeTypes {
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

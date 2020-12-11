@@ -142,10 +142,6 @@ public class FocusStack extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

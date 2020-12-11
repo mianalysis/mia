@@ -34,10 +34,6 @@ public class RemoveImage extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

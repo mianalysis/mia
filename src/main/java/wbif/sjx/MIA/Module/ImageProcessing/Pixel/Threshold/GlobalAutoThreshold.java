@@ -143,10 +143,6 @@ public class GlobalAutoThreshold extends Module {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL_THRESHOLD;
-    }
 
     @Override
     public Category getCategory() {

@@ -117,10 +117,6 @@ public class DuplicateAcrossTime extends Module {
         super("Duplicate objects across time", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
-    }
 
     @Override
     public Category getCategory() {

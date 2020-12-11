@@ -220,10 +220,6 @@ public class ThresholdImage extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

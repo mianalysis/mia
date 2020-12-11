@@ -121,10 +121,6 @@ public class DilateErode extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
-    }
 
     @Override
     public Category getCategory() {

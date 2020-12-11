@@ -102,10 +102,6 @@ public class SetDisplayRange extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION_IMAGE_RENDERING;
-    }
 
     @Override
     public Category getCategory() {

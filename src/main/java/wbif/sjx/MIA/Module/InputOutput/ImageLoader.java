@@ -724,10 +724,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
-    }
 
     @Override
     public Category getCategory() {

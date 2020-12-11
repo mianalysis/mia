@@ -37,8 +37,8 @@ import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
-* Created by sc13967 on 04/05/2017.
-*/
+ * Created by sc13967 on 04/05/2017.
+ */
 public class ConvertObjectsToImage extends Module {
   public static final String INPUT_SEPARATOR = "Object input/image output";
   public static final String INPUT_OBJECTS = "Input objects";
@@ -77,18 +77,15 @@ public class ConvertObjectsToImage extends Module {
   }
 
   @Override
-  public String getPackageName() {
-    return PackageNames.OBJECT_PROCESSING_MISCELLANEOUS;
+  public Category getCategory() {
+    return Categories.OBJECT_PROCESSING_MISCELLANEOUS;
   }
 
   @Override
-    public Category getCategory() {
-        return Categories.OBJECT_PROCESSING_MISCELLANEOUS;
-    }
-
-  @Override
   public String getDescription() {
-    return "Creates an image showing all objects in a specified collection.  The value (intensity) of each pixel can be based on object (or relative) ID numbers as well as various metrics, such as measurements or relationship counts.  Output images will be 32-bit type, except when in \""+ColourModes.RANDOM_COLOUR+"\" or \""+ColourModes.SINGLE_COLOUR+"\" modes, which are 8-bit as the extra precision is not required.<br><br>Note: This output method is unable to correctly render overlapping objects (those with any matching coordinates); as such, the output image will show the result for one of objects for these coordinates.";
+    return "Creates an image showing all objects in a specified collection.  The value (intensity) of each pixel can be based on object (or relative) ID numbers as well as various metrics, such as measurements or relationship counts.  Output images will be 32-bit type, except when in \""
+        + ColourModes.RANDOM_COLOUR + "\" or \"" + ColourModes.SINGLE_COLOUR
+        + "\" modes, which are 8-bit as the extra precision is not required.<br><br>Note: This output method is unable to correctly render overlapping objects (those with any matching coordinates); as such, the output image will show the result for one of objects for these coordinates.";
 
   }
 
@@ -112,49 +109,48 @@ public class ConvertObjectsToImage extends Module {
     int bitDepth = 8;
     switch (colourMode) {
       case ColourModes.CHILD_COUNT:
-      hues = ColourFactory.getChildCountHues(inputObjects, childObjectsForColour, false);
-      bitDepth = 32;
-      break;
+        hues = ColourFactory.getChildCountHues(inputObjects, childObjectsForColour, false);
+        bitDepth = 32;
+        break;
       case ColourModes.ID:
-      hues = ColourFactory.getIDHues(inputObjects, false);
-      bitDepth = 32;
-      break;
+        hues = ColourFactory.getIDHues(inputObjects, false);
+        bitDepth = 32;
+        break;
       case ColourModes.RANDOM_COLOUR:
-      hues = ColourFactory.getRandomHues(inputObjects);
-      break;
+        hues = ColourFactory.getRandomHues(inputObjects);
+        break;
       case ColourModes.MEASUREMENT_VALUE:
-      nanBackground = true;
-      hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, false);
-      bitDepth = 32;
-      break;
+        nanBackground = true;
+        hues = ColourFactory.getMeasurementValueHues(inputObjects, measurementForColour, false);
+        bitDepth = 32;
+        break;
       case ColourModes.PARENT_ID:
-      hues = ColourFactory.getParentIDHues(inputObjects, parentForColour, false);
-      bitDepth = 32;
-      break;
+        hues = ColourFactory.getParentIDHues(inputObjects, parentForColour, false);
+        bitDepth = 32;
+        break;
       case ColourModes.PARENT_MEASUREMENT_VALUE:
-      hues = ColourFactory.getParentMeasurementValueHues(inputObjects, parentForColour,
-      measurementForColour, false);
-      bitDepth = 32;
-      break;
+        hues = ColourFactory.getParentMeasurementValueHues(inputObjects, parentForColour, measurementForColour, false);
+        bitDepth = 32;
+        break;
       case ColourModes.PARTNER_COUNT:
-      hues = ColourFactory.getPartnerCountHues(inputObjects, partnerForColour, false);
-      bitDepth = 32;
-      break;
+        hues = ColourFactory.getPartnerCountHues(inputObjects, partnerForColour, false);
+        bitDepth = 32;
+        break;
       case ColourModes.SINGLE_COLOUR:
       default:
-      hues = ColourFactory.getSingleColourHues(inputObjects, ColourFactory.SingleColours.WHITE);
-      break;
+        hues = ColourFactory.getSingleColourHues(inputObjects, ColourFactory.SingleColours.WHITE);
+        break;
     }
 
     Image outputImage = null;
     switch (outputMode) {
       case OutputModes.CENTROID:
-      outputImage = inputObjects.convertCentroidsToImage(outputImageName, hues, bitDepth, nanBackground);
-      break;
+        outputImage = inputObjects.convertCentroidsToImage(outputImageName, hues, bitDepth, nanBackground);
+        break;
       case OutputModes.WHOLE_OBJECT:
       default:
-      outputImage = inputObjects.convertToImage(outputImageName, hues, bitDepth, nanBackground);
-      break;
+        outputImage = inputObjects.convertToImage(outputImageName, hues, bitDepth, nanBackground);
+        break;
     }
 
     if (colourMode.equals(ColourModes.SINGLE_COLOUR) && singleColourMode.equals(SingleColourModes.B_ON_W)) {
@@ -176,17 +172,17 @@ public class ConvertObjectsToImage extends Module {
         case ColourModes.ID:
         case ColourModes.PARENT_ID:
         case ColourModes.RANDOM_COLOUR:
-        dispIpl.setLut(LUTs.Random(true));
-        break;
+          dispIpl.setLut(LUTs.Random(true));
+          break;
 
         case ColourModes.CHILD_COUNT:
         case ColourModes.MEASUREMENT_VALUE:
-        dispIpl.setLut(LUTs.BlackFire());
-        break;
+          dispIpl.setLut(LUTs.BlackFire());
+          break;
 
         case ColourModes.SINGLE_COLOUR:
-        IJ.run(dispIpl, "Grays", "");
-        break;
+          IJ.run(dispIpl, "Grays", "");
+          break;
       }
 
       IntensityMinMax.run(dispIpl, dispIpl.getNSlices() > 1);
@@ -235,48 +231,45 @@ public class ConvertObjectsToImage extends Module {
     returnedParameters.add(parameters.getParameter(COLOUR_MODE));
     switch ((String) parameters.getValue(COLOUR_MODE)) {
       case ColourModes.CHILD_COUNT:
-      returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
-      if (parameters.getValue(INPUT_OBJECTS) != null) {
-        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR))
-        .setParentObjectsName(inputObjectsName);
-      }
-      break;
+        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR));
+        if (parameters.getValue(INPUT_OBJECTS) != null) {
+          ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS_FOR_COLOUR)).setParentObjectsName(inputObjectsName);
+        }
+        break;
       case ColourModes.MEASUREMENT_VALUE:
-      returnedParameters.add(parameters.getParameter(MEASUREMENT));
-      if (parameters.getValue(INPUT_OBJECTS) != null) {
-        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
-      }
-      break;
+        returnedParameters.add(parameters.getParameter(MEASUREMENT));
+        if (parameters.getValue(INPUT_OBJECTS) != null) {
+          ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
+        }
+        break;
 
       case ColourModes.PARENT_ID:
-      returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-      ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
-      .setChildObjectsName(inputObjectsName);
-      break;
+        returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+        ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
+        break;
 
       case ColourModes.PARENT_MEASUREMENT_VALUE:
-      returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-      ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR))
-      .setChildObjectsName(inputObjectsName);
+        returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+        ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
 
-      returnedParameters.add(parameters.getParameter(MEASUREMENT));
-      if (parentObjectsName != null) {
-        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
-      }
+        returnedParameters.add(parameters.getParameter(MEASUREMENT));
+        if (parentObjectsName != null) {
+          ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
+        }
 
-      break;
+        break;
 
       case ColourModes.PARTNER_COUNT:
-      returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
-      if (parameters.getValue(INPUT_OBJECTS) != null) {
-        ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
-        .setPartnerObjectsName(inputObjectsName);
-      }
-      break;
+        returnedParameters.add(parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR));
+        if (parameters.getValue(INPUT_OBJECTS) != null) {
+          ((PartnerObjectsP) parameters.getParameter(PARTNER_OBJECTS_FOR_COLOUR))
+              .setPartnerObjectsName(inputObjectsName);
+        }
+        break;
 
       case ColourModes.SINGLE_COLOUR:
-      returnedParameters.add(parameters.getParameter(SINGLE_COLOUR_MODE));
-      break;
+        returnedParameters.add(parameters.getParameter(SINGLE_COLOUR_MODE));
+        break;
     }
 
     return returnedParameters;
@@ -313,20 +306,27 @@ public class ConvertObjectsToImage extends Module {
   }
 
   void addParameterDescriptions() {
-    parameters.get(INPUT_OBJECTS).setDescription("Object collection to convert to an image.  All objects will be rendered onto the same output image.");
+    parameters.get(INPUT_OBJECTS).setDescription(
+        "Object collection to convert to an image.  All objects will be rendered onto the same output image.");
 
-    parameters.get(OUTPUT_IMAGE).setDescription("Image showing all objects in the input collection.  Note: This output method is unable to correctly render overlapping objects (those with any matching coordinates); as such, the output image will show the result for one of objects for these coordinates.");
+    parameters.get(OUTPUT_IMAGE).setDescription(
+        "Image showing all objects in the input collection.  Note: This output method is unable to correctly render overlapping objects (those with any matching coordinates); as such, the output image will show the result for one of objects for these coordinates.");
 
     parameters.get(OUTPUT_MODE).setDescription("Controls what coordinates are used to represent each object.<br><ul>"
 
-    +"<li>\""+OutputModes.CENTROID+"\" Only the pixel closest to the centroid (mean XYZ coordinate) of each object is added to the output image.</li>"
+        + "<li>\"" + OutputModes.CENTROID
+        + "\" Only the pixel closest to the centroid (mean XYZ coordinate) of each object is added to the output image.</li>"
 
-    +"<li>\""+OutputModes.WHOLE_OBJECT+"\" All coordinates of each object are added to the output image.</li></ul>");
+        + "<li>\"" + OutputModes.WHOLE_OBJECT
+        + "\" All coordinates of each object are added to the output image.</li></ul>");
 
     String description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.COLOUR_MODE).getDescription();
     parameters.get(COLOUR_MODE).setDescription(description);
 
-    parameters.get(SINGLE_COLOUR_MODE).setDescription("When \""+COLOUR_MODE+"\" is set to \""+ColourModes.SINGLE_COLOUR+"\", the input objects will be converted to a binary image.  This parameter controls if the output image will have the logic \""+SingleColourModes.B_ON_W+"\" or \""+SingleColourModes.W_ON_B+"\".");
+    parameters.get(SINGLE_COLOUR_MODE).setDescription("When \"" + COLOUR_MODE + "\" is set to \""
+        + ColourModes.SINGLE_COLOUR
+        + "\", the input objects will be converted to a binary image.  This parameter controls if the output image will have the logic \""
+        + SingleColourModes.B_ON_W + "\" or \"" + SingleColourModes.W_ON_B + "\".");
 
     description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.CHILD_OBJECTS_FOR_COLOUR).getDescription();
     parameters.get(CHILD_OBJECTS_FOR_COLOUR).setDescription(description);
@@ -337,7 +337,8 @@ public class ConvertObjectsToImage extends Module {
     description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.PARENT_OBJECT_FOR_COLOUR).getDescription();
     parameters.get(PARENT_OBJECT_FOR_COLOUR).setDescription(description);
 
-    description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.PARTNER_OBJECTS_FOR_COLOUR).getDescription();
+    description = new AddAllObjectPoints(null).getParameter(AbstractOverlay.PARTNER_OBJECTS_FOR_COLOUR)
+        .getDescription();
     parameters.get(PARTNER_OBJECTS_FOR_COLOUR).setDescription(description);
 
   }

@@ -58,10 +58,6 @@ public class ConvexHull2D extends Module {
                 "Uses the ImageJ \"Fit convex hull\" function.";
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
-    }
 
     @Override
     public Category getCategory() {

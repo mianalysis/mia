@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Measurement extremes</h1>
+<h2>Description</h2>
+Filter an object collection to remove/retain the object with the largest/smallest value for a specific measurement.  The objects identified for removal can be indeed removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).
+<h2>Parameters</h2>
+<ul><li><b>Input objects</b> (default = "") Objects to be filtered.</li><br><li><b>Filter mode</b> (default = "Remove filtered objects") Controls what happens to objects which don't pass the filter:<br><ul><li>"Do nothing" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li><li>"Move filtered objects to new class" Objects failing the filter are moved to a new object class.  The name of the class is determined by the "Output (filtered) objects" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li><li>"Remove filtered objects" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul></li><br><li><b>Output (filtered) objects</b> (default = "") New object collection containing input objects which did not pass the filter.  These objects are only stored if "Filter mode" is set to "Move filtered objects to new class".</li><br><li><b>Method for filtering</b> (default = "Remove object with largest measurement") Controls what happens to objects which don't pass the filter:<br><br>- "Remove object with largest measurement" Remove the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Remove object with smallest measurement" Remove the object with the smallest value measurement specified by "Measurement to filter on".<br><br>- "Retain object with largest measurement" Retain only the object with the largest value measurement specified by "Measurement to filter on".<br><br>- "Retain object with smallest measurement" Retain only the object with the smallest value measurement specified by "Measurement to filter on".<br></li><br><li><b>Measurement to filter on</b> (default = "") Objects will be filtered against their value of this measurement.  Objects missing this measurement are not removed; however, they can be removed by using the module "With / without measurement".</li><br></ul>
+
+</div>
+</body>

@@ -538,10 +538,6 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

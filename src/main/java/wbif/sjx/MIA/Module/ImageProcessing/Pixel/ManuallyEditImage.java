@@ -32,10 +32,6 @@ public class ManuallyEditImage extends Module {
         super("Manually edit image", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
-    }
 
     @Override
     public Category getCategory() {

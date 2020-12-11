@@ -84,10 +84,6 @@ public class ImageMeasurementCalculator extends Module {
         return "MEASUREMENT_CALCULATOR // " + measurementName;
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_MEASUREMENTS;
-    }
 
     @Override
     public Category getCategory() {

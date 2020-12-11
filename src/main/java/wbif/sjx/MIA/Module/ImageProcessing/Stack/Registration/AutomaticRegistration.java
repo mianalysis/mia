@@ -277,10 +277,6 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK_REGISTRATION;
-    }
 
     @Override
     public Category getCategory() {

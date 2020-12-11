@@ -107,10 +107,6 @@ public class MergeRelatedObjects extends Module {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
-    }
 
     @Override
     public Category getCategory() {

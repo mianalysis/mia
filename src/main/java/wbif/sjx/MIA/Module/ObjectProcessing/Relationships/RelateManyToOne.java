@@ -498,10 +498,6 @@ public class RelateManyToOne extends Module {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
-    }
 
     @Override
     public Category getCategory() {

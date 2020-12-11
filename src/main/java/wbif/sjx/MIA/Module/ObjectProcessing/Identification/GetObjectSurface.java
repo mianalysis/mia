@@ -40,10 +40,6 @@ public class GetObjectSurface extends Module {
         super("Get object surface", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
-    }
 
     @Override
     public Category getCategory() {

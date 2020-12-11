@@ -285,10 +285,6 @@ public class OutputControl extends AbstractMacroRunner {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return "Hidden";
-    }
 
     @Override
     public Category getCategory() {

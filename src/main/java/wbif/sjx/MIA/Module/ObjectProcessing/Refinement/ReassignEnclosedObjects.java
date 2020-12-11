@@ -86,10 +86,6 @@ public class ReassignEnclosedObjects extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
-    }
 
     @Override
     public Category getCategory() {

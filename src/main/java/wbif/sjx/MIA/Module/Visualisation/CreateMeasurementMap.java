@@ -282,10 +282,6 @@ public class CreateMeasurementMap extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION;
-    }
 
     @Override
     public Category getCategory() {

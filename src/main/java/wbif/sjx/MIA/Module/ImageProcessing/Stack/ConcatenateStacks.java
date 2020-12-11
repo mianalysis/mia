@@ -287,10 +287,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

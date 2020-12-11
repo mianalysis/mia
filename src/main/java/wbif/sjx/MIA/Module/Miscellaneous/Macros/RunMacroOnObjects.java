@@ -98,10 +98,6 @@ public class RunMacroOnObjects extends AbstractMacroRunner {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.MISCELLANEOUS_MACROS;
-    }
 
     @Override
     public Category getCategory() {

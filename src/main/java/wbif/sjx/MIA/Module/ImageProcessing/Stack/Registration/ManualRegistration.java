@@ -194,10 +194,6 @@ public class ManualRegistration<T extends RealType<T> & NativeType<T>> extends A
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK_REGISTRATION;
-    }
 
     @Override
     public Category getCategory() {

@@ -398,10 +398,6 @@ public class FilterObjects extends Module implements ActionListener {
         iterator.remove();
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

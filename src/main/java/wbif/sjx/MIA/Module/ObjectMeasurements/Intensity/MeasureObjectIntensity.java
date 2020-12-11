@@ -272,10 +272,6 @@ public class MeasureObjectIntensity extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
-    }
 
     @Override
     public Category getCategory() {

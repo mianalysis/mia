@@ -163,10 +163,6 @@ public class CreateOrthogonalView<T extends RealType<T> & NativeType<T>> extends
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION;
-    }
 
     @Override
     public Category getCategory() {

@@ -30,10 +30,6 @@ public class MergeSingleClass extends Module {
         super("Merge single class", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
-    }
 
     @Override
     public Category getCategory() {

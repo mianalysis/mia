@@ -95,10 +95,6 @@ public class ImageSaver extends AbstractImageSaver {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
-    }
 
     @Override
     public Category getCategory() {

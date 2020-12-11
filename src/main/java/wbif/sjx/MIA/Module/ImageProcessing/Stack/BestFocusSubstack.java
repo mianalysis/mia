@@ -495,10 +495,6 @@ public class BestFocusSubstack<T extends RealType<T> & NativeType<T>> extends Mo
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

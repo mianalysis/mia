@@ -322,10 +322,6 @@ public class IdentifyObjects extends Module {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
-    }
 
     @Override
     public Category getCategory() {

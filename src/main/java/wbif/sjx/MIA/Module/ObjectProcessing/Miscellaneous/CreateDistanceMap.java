@@ -224,10 +224,6 @@ public class CreateDistanceMap extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

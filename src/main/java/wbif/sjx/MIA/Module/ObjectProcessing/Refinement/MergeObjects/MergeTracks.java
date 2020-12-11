@@ -150,10 +150,6 @@ public class MergeTracks extends Module implements ActionListener, WindowListene
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT_MERGE_OBJECTS;
-    }
 
     @Override
     public Category getCategory() {

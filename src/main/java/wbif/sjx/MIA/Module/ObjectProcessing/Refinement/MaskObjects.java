@@ -82,10 +82,6 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
         super("Mask objects", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
-    }
 
     @Override
     public Category getCategory() {

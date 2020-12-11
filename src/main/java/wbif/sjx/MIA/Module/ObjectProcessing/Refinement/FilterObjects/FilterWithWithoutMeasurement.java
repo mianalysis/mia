@@ -49,10 +49,6 @@ public class FilterWithWithoutMeasurement extends AbstractObjectFilter {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
-    }
 
     @Override
     public Category getCategory() {

@@ -118,10 +118,6 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

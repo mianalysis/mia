@@ -33,10 +33,6 @@ public class ChannelExtractor extends Module {
         super("Channel extractor",modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

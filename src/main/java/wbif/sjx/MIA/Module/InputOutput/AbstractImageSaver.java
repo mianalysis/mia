@@ -157,10 +157,6 @@ public abstract class AbstractImageSaver extends Module {
         }
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
-    }
 
     @Override
     public Category getCategory() {

@@ -37,10 +37,6 @@ public class ChildObjectCount extends Module {
         return "COUNT // " + childObjectsName;
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

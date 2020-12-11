@@ -201,10 +201,6 @@ public class WorkflowHandling extends Module {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.WORKFLOW_HANDLING;
-    }
 
     @Override
     public Category getCategory() {

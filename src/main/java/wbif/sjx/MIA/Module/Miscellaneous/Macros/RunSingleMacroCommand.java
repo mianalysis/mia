@@ -48,10 +48,6 @@ public class RunSingleMacroCommand extends Module {
         super("Run single macro command", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.MISCELLANEOUS_MACROS;
-    }
 
     @Override
     public Category getCategory() {

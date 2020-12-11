@@ -94,10 +94,6 @@ public class GUISeparator extends Module {
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

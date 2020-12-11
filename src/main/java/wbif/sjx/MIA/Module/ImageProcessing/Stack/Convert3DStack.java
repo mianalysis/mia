@@ -48,10 +48,6 @@ public class Convert3DStack extends Module {
         super("Convert 3D stack (switch Z and T)", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
     @Override
     public Category getCategory() {

@@ -131,10 +131,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
-    }
 
     @Override
     public Category getCategory() {

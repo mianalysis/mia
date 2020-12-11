@@ -412,10 +412,6 @@ public class MeasureIntensityDistribution extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_MEASUREMENTS;
-    }
 
     @Override
     public Category getCategory() {

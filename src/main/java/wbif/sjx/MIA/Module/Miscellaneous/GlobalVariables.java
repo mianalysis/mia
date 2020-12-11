@@ -124,10 +124,6 @@ public class GlobalVariables extends Module {
         return globalVariables.size();
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.MISCELLANEOUS;
-    }
 
     @Override
     public Category getCategory() {

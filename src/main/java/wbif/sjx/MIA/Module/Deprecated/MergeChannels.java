@@ -160,10 +160,6 @@ public class MergeChannels<T extends RealType<T> & NativeType<T>> extends Module
 
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
-    }
 
     @Override
     public Category getCategory() {

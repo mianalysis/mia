@@ -35,10 +35,6 @@ public class FixedTextCondition extends AbstractWorkspaceHandler {
         super("Fixed text condition", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.WORKFLOW_HANDLING;
-    }
 
     @Override
     public Category getCategory() {

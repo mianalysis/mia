@@ -302,10 +302,6 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
-    }
 
     @Override
     public Category getCategory() {

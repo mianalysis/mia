@@ -66,7 +66,7 @@ public class DocumentationGenerator2 {
 
     public void run() throws IOException {
         // Clearing existing HTML files
-        File root = new File("docs/html");
+        File root = new File("docs2/html");
         deleteFolders(root);
         root.mkdir();
 
@@ -123,7 +123,7 @@ public class DocumentationGenerator2 {
 
         page = page.replace("${MAIN_CONTENT}", mainContent);
 
-        FileWriter writer = new FileWriter("docs/index.html");
+        FileWriter writer = new FileWriter("docs2/index.html");
         writer.write(page);
         writer.flush();
         writer.close();
@@ -138,7 +138,7 @@ public class DocumentationGenerator2 {
 
         page = page.replace("${MAIN_CONTENT}", "GUIDES");
 
-        FileWriter writer = new FileWriter("docs/html/guides.html");
+        FileWriter writer = new FileWriter("docs2/html/guides.html");
         writer.write(page);
         writer.flush();
         writer.close();
@@ -150,7 +150,7 @@ public class DocumentationGenerator2 {
         String pathToRoot = getCatgoryPathToRoot(category) + "..";
         String categorySaveName = getSaveName(category);
         String categoryPath = getCategoryPath(category);
-        String path = "docs/html/";
+        String path = "docs2/html/";
         new File(path + categoryPath).mkdirs();
 
         // Initialise HTML document
@@ -213,7 +213,7 @@ public class DocumentationGenerator2 {
             Category category = module.getCategory();
             String pathToRoot = getCatgoryPathToRoot(category) + "..";
             String categoryPath = getCategoryPath(category);
-            String path = "docs/html/";
+            String path = "docs2/html/";
             String moduleSaveName = getSaveName(module);
 
             // Initialise HTML document
@@ -278,7 +278,7 @@ public class DocumentationGenerator2 {
 
         page = page.replace("${MAIN_CONTENT}", "ABOUT");
 
-        FileWriter writer = new FileWriter("docs/html/about.html");
+        FileWriter writer = new FileWriter("docs2/html/about.html");
         writer.write(page);
         writer.flush();
         writer.close();
