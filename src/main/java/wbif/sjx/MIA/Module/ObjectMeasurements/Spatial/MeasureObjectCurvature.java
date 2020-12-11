@@ -10,6 +10,8 @@ import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Measurement;
 import wbif.sjx.MIA.Object.Obj;
@@ -300,9 +302,10 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
+    public Category getCategory() {
+        return Categories.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

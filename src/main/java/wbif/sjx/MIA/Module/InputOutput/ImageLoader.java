@@ -45,6 +45,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
@@ -723,9 +725,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
+    public Category getCategory() {
+        return Categories.INPUT_OUTPUT;
     }
 
     @Override

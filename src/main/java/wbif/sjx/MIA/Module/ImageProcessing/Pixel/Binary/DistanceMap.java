@@ -9,6 +9,8 @@ import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
@@ -64,9 +66,10 @@ public class DistanceMap extends Module {
     }
 
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override

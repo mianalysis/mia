@@ -6,9 +6,16 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - ActiveContourObjectDetection",
+            "name": "CodeLens (Launch) - Module",
             "request": "launch",
-            "mainClass": "wbif.sjx.MIA.Module.ObjectProcessing.Identification.ActiveContourObjectDetection",
+            "mainClass": "wbif.sjx.MIA.Module.Module",
+            "projectName": "MIA_"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DocumentationGenerator2",
+            "request": "launch",
+            "mainClass": "wbif.sjx.MIA.Process.DocumentationGenerator2",
             "projectName": "MIA_"
         },
         {

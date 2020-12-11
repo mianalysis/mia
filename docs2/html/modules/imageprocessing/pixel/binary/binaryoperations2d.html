@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>MIA (Modular Image Analysis)</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link href="../../../../../css/style.css" rel="stylesheet">
+  <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">  -->
+
+  <!-- Javascript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand d-none d-sm-block mia-name" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;">Modular Image Analysis</a>
+      <a class="navbar-brand d-block d-sm-none" href="#"><img height="32" src="img/logo_64.png"
+          style="padding-right:8px;"></a> -->
+      <a class="navbar-brand mia-name" href="../../../../../index.html" style="padding-top: 5px;padding-bottom: 0px;"><img
+          height="30" src="../../../../../img/logo_64.png" style="padding-right:8px;">Modular Image Analysis</a>
+      <buton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        style="border: none;">
+        <span class="navbar-toggler-icon"></span>
+      </buton>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item ">
+            <a class="nav-link" href="../../../../../index.html">Home</a>
+          </li>
+          <li class="nav-item dropdown ">
+            <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
+              <a class="dropdown-item" href="#">Getting started</a>
+            </div>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="../../../../../html/modules/modules.html">Modules</a>
+          </li>
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdownModules" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">Modules</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
+              <a class="dropdown-item" href="../../../../../html/modules/modules.html">All categories</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Package 1</a>
+              <a class="dropdown-item" href="#">Package 2</a>
+              <a class="dropdown-item" href="#">Package 3</a>
+            </div>
+          </li> -->
+          <li class="nav-item ">
+            <a class="nav-link" href="../../../../../html/about.html">About</a>
+          </li>
+        </ul>
+        <a class="btn btn-outline-primary ml-2"
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <p class="text-secondary"><a href="../../../../../html/modules/modules.html">Modules</a> ➤ <a href="../../../../../html/modules/imageprocessing/imageprocessing.html">Image processing</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/pixel.html">Pixel</a> ➤ <a href="../../../../../html/modules/imageprocessing/pixel/binary/binary.html">Binary</a></p>
+    <h1 class="display-4">Binary operations 2D</h1>
+    <p class="lead">Applies stock ImageJ binary operations to an image in the workspace.</p>
+</div>
+
+<div class="container mia-text-container">
+    <h2 class="display-6">Description</h2>
+    <p class="mb-4">Applies stock ImageJ binary operations to an image in the workspace.  This image must be 8-bit and have the logic black foreground (intensity 0) and white background (intensity 255).  All operations are performed in 2D, with higher dimensionality stacks being processed slice-by-slice.</p>
+    <h2 class="display-6">Parameters</h2>
+    <p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply binary operation to.  This must be an 8-bit binary image (255 = background, 0 = foreground).<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><br><b>Filter mode</b> (default = "Dilate") Controls which binary operation will be applied.  All operations assume the default ImageJ logic of black objects on a white background.  The operations are described in full at [WEBSITE]:<br><ul><li>"Dilate" Change any foreground-connected background pixels to foreground.  This effectively expands objects by one pixel.</li><li>"Distance map" Create a 32-bit greyscale image where the value of each foreground pixel is equal to its Euclidean distance to the nearest background pixel.</li><li>"Erode" Change any background-connected foreground pixels to background.  This effectively shrinks objects by one pixel.</li><li>"Fill holes" Change all background pixels in a region which is fully enclosed by foreground pixels to foreground.</li><li>"Outline" Convert all non-background-connected foreground pixels to background.  This effectively creates a fully-background image, except for the outer band of foreground pixels.</li><li>"Skeletonise" Repeatedly applies the erode process until each foreground region is a single pixel wide.</li><li>"Ultimate points" Repeatedly applies the erode process until each foreground is reduced to a single pixel.  The value of the remaining, isolated foreground pixels are equal to their equivalent, pre-erosion distance map values.  This process outputs a 32-bit greyscale image.</li><li>"Voronoi" Creates an image subdivided by lines such that all pixels contained within an enclosed region are closest to the same contiguous object in the input binary image.</li><li>"Watershed" Peforms a distance-based watershed transform on the image.  This process is able to split separate regions of a single connected foreground region as long as the sub-regions are connected by narrow necks (e.g. snowman shape).  Background lines are drawn between each sub-region such that they are no longer connected.</li></ul><br><br><b>Number of iterations</b> (default = "1") Number of times the operation will be run on a single image.  For example, this allows objects to be eroded further than one pixel in a single step.<br><br><b>Count</b> (default = "1") The minimum number of connected background or foreground for an erosion or dilation process to occur, respectively.<br><br></p>
+</div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container-fluid padding">
+      <div class="row text-center text-light align-items-center">
+        <div class="col-6 mt-4 mb-4">
+          <a href="http://www.bristol.ac.uk/wolfson-bioimaging/">
+            <img height="48" src="../../../../../img/wbif.png">
+          </a>
+        </div>
+        <div class="col-6 mt-4 mb-4 align-items-center">
+          <a href="https://github.com/sjcross/MIA/">
+            <img height="48" src="../../../../../img/GitHub-Mark-Light-64px.png"><img height="32"
+              src="../../../../../img/GitHub_Logo_White.png" height="32px">
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../../../../js/script.js" type="text/javascript"></script>
+
+</body>
+
+</html>

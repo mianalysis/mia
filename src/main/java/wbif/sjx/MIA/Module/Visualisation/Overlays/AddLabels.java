@@ -15,6 +15,8 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -235,9 +237,10 @@ public class AddLabels extends AbstractOverlay {
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.VISUALISATION_OVERLAYS;
+    public Category getCategory() {
+        return Categories.VISUALISATION_OVERLAYS;
     }
 
     @Override

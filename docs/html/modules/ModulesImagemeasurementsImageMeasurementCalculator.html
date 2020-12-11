@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Image measurement calculator</h1>
+<h2>Description</h2>
+Perform a mathematical operation on measurements associated with an image.  The calculation can replace either or both input image measurements with fixed values.  The resulting measurement is associated with the input image as a new measurement.
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image from the workspace to perform the measurement calculation for.</li><br><li><b>Value mode 1</b> (default = "Measurement") Controls how the first value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 1"is used.</li><li>"Measurement" A measurement associated with the input image and defined by "Measurement 1" is used.</li></ul></li><br><li><b>Fixed value 1</b> (default = "0.0") Fixed value to use in the calculation when "Value mode 1" is in "Fixed" mode.</li><br><li><b>Measurement 1</b> (default = "") Measurement associated with the input image to use in the calculation when "Value mode 1" is in "Measurement" mode.</li><br><li><b>Value mode 2</b> (default = "Measurement") Controls how the second value in the calculation is defined:<br><ul><li>"Fixed" A single, fixed value defined by "Fixed value 2"is used.</li><li>"Measurement" A measurement associated with the input image and defined by "Measurement 2" is used.</li></ul></li><br><li><b>Fixed value 2</b> (default = "0.0") Fixed value to use in the calculation when "Value mode 2" is in "Fixed" mode.</li><br><li><b>Measurement 2</b> (default = "") Measurement associated with the input image to use in the calculation when "Value mode 2" is in "Measurement" mode.</li><br><li><b>Output measurement</b> (default = "") The value resulting from the calculation will be stored as a new measurement with this name.  This output measurement will be associated with the input image</li><br><li><b>Calculation mode</b> (default = "Add value 1 and value 2") Calculation to perform.  Choices are: Add value 1 and value 2, Divide value 1 by value 2, Multiply value 1 and value 2, Subtract value 2 from value 1.</li><br></ul>
+
+</div>
+</body>

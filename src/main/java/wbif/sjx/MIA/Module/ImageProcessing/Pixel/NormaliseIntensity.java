@@ -11,6 +11,8 @@ import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -156,9 +158,10 @@ public class NormaliseIntensity extends Module {
     }
 
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

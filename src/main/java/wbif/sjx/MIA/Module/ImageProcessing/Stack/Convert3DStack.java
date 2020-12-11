@@ -7,6 +7,8 @@ import ij.plugin.HyperStackConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -46,11 +48,12 @@ public class Convert3DStack extends Module {
         super("Convert 3D stack (switch Z and T)", modules);
     }
 
-    @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
-    }
 
+    @Override
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_STACK;
+    }
+    
     @Override
     public String getDescription() {
         return "Emsures 3D stacks (or 4D with multiple channels) are of the expected type (timeseries or Z-stack).  This module verifies the singular dimension of a 3D stack is correct for the specified output type (e.g. single slice when dealing with timeseries).  Any stacks which are not in the expected order have their T and Z axes swapped.";

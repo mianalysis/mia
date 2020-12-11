@@ -3,6 +3,8 @@ package wbif.sjx.MIA.Module.ObjectMeasurements.Miscellaneous;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Measurements.ChildCountMeasurement;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -35,9 +37,10 @@ public class ChildObjectCount extends Module {
         return "COUNT // " + childObjectsName;
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_MISCELLANEOUS;
+    public Category getCategory() {
+        return Categories.OBJECT_MEASUREMENTS_MISCELLANEOUS;
     }
 
     @Override

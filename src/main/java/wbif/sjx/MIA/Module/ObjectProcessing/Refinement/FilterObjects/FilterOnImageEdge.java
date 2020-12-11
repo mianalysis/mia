@@ -7,6 +7,8 @@ import com.drew.lang.annotations.Nullable;
 
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
@@ -107,9 +109,10 @@ public class FilterOnImageEdge extends AbstractObjectFilter {
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_REFINEMENT_FILTER_OBJECTS;
     }
 
     @Override

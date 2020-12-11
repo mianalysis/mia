@@ -12,6 +12,8 @@ import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Text.DoubleP;
@@ -218,9 +220,10 @@ public class ThresholdImage extends Module {
     }
 
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
+    public Category getCategory() {
+        return Categories.DEPRECATED;
     }
 
     @Override
