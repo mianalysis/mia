@@ -14,6 +14,8 @@ import net.imglib2.type.numeric.RealType;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConcatenateStacks;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
@@ -275,9 +277,10 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK_REGISTRATION;
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_STACK_REGISTRATION;
     }
 
     @Override

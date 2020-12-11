@@ -18,6 +18,8 @@ import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
@@ -499,9 +501,10 @@ public class FitSpline extends Module {
         }
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
+    public Category getCategory() {
+        return Categories.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

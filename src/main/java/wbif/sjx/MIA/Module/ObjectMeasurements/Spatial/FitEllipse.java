@@ -10,6 +10,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetObjectSurface;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.MIA.Object.Measurement;
@@ -199,9 +201,10 @@ public class FitEllipse extends Module {
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
+    public Category getCategory() {
+        return Categories.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

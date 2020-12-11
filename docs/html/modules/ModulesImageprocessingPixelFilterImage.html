@@ -1,0 +1,30 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modulelist.html" class="nav1">Modules</a>
+    <a href="../macrolist.html" class="nav1">Macros</a>
+    <!-- <a href="../extendingmia.html" class="nav1">Extending MIA</a> -->
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Filter image</h1>
+<h2>Description</h2>
+Apply intensity filters to an image in the workspace.<br>Note: 3D median filter is currently incompatible with 5D hyperstacks
+<h2>Parameters</h2>
+<ul><li><b>Input image</b> (default = "") Image to apply filter to.</li><br><li><b>Apply to input image</b> (default = "true") Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.</li><br><li><b>Output image</b> (default = "") Name of the output image created during the filtering process.  This image will be added to the workspace.</li><br><li><b>Filter mode</b> (default = "Difference of Gaussian 2D") Filter to be applied to the image.<br><br>- Difference of Gaussian 2D Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".<br><br>- Gaussian 2D.<br><br>- Gaussian 3D.<br><br>- Gradient 2D.<br><br>- Maximum 2D.<br><br>- Maximum 3D.<br><br>- Mean 2D.<br><br>- Mean 3D.<br><br>- Median 2D.<br><br>- Median 3D.<br><br>- Minimum 2D.<br><br>- Minimum 3D.<br><br>- Ridge enhancement 2D enhances ridge-like structures in the image.<br><br>- Rolling frame filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable..<br><br>- Variance 2D.<br><br>- Variance 3D.<br></li><br><li><b>Filter radius</b> (default = "2.0") Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.</li><br><li><b>Calibrated units</b> (default = "false") Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".</li><br><li><b>Rolling filter method</b> (default = "Average") Statistic to apply for rolling frame filtering.</li><br><li><b>Window half width (frames)</b> (default = "1") Number of frames before/after target frame to be used for rolling frame filtering.  For example, averaging over a half window width of 3 will use 3 frames before the target frame, 3 frames after and the target frame itself.</li><br><li><b>Window mode</b> (default = "Both sides") Controls which frames are used in the rolling frame filter calculation</li><br></ul>
+
+</div>
+</body>

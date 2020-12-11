@@ -11,6 +11,8 @@ import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -140,9 +142,10 @@ public class ExtractObjectEdges extends Module {
     }
 
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

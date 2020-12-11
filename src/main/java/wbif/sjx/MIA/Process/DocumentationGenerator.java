@@ -29,6 +29,8 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Macro.MacroHandler;
 import wbif.sjx.MIA.Macro.MacroOperation;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
@@ -70,7 +72,7 @@ public class DocumentationGenerator {
 
     private static void generateIndexPage() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/index.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/index_orig.html")));
         String indexContent = getIndexContent();
         template = template.replace("${INSERT}", indexContent);
 
@@ -83,7 +85,7 @@ public class DocumentationGenerator {
     private static void generateGettingStartedPage() throws IOException {
         // Generate module list HTML document
         String template = new String(
-                Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted.html")));
+                Files.readAllBytes(Paths.get("src/main/resources/templatehtml/gettingstarted_orig.html")));
         String gettingStartedContent = getGettingStartedContent();
         template = template.replace("${INSERT}", gettingStartedContent);
 
@@ -97,7 +99,7 @@ public class DocumentationGenerator {
 
     private static void generateModuleList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modulelist.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modulelist_orig.html")));
         String moduleList = getModuleList();
         template = template.replace("${INSERT}", moduleList);
 
@@ -112,7 +114,7 @@ public class DocumentationGenerator {
     private static void generateModulePages() throws IOException {
         HashSet<Module> modules = getModules();
         for (Module module : modules) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modules.html")));
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/modules_orig.html")));
             String moduleList = getModuleSummary(module);
             template = template.replace("${INSERT}", moduleList);
 
@@ -128,7 +130,7 @@ public class DocumentationGenerator {
 
     private static void generateMacroList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macrolist.html")));
+        String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macrolist_orig.html")));
         String macroList = getMacroList();
         template = template.replace("${INSERT}", macroList);
 
@@ -143,7 +145,7 @@ public class DocumentationGenerator {
     private static void generateMacroPages() throws IOException {
         ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
         for (MacroOperation macro : macros) {
-            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros.html")));
+            String template = new String(Files.readAllBytes(Paths.get("src/main/resources/templatehtml/macros_orig.html")));
             String macroList = getMacroSummary(macro);
             template = template.replace("${INSERT}", macroList);
 
@@ -281,26 +283,41 @@ public class DocumentationGenerator {
 
     }
 
+    private static void addCategories(TreeSet<String> categories, Category category) {
+        if (category != Categories.getRootCategory())
+            categories.add(getCategoryPath(category));
+
+        for (Category childCategory:category.getChildren())
+            addCategories(categories, childCategory);
+
+    }
+    
+    private static String getCategoryPath(Category category) {
+        if (category == null)
+            return "";
+
+        return getCategoryPath(category.getParent()) + "/" + category.getName();
+
+    }
+
     private static String getModuleList() {
         StringBuilder sb = new StringBuilder();
         sb.append("<h1>Modules</h1>");
 
         // Getting a list of unique package names
         LinkedHashSet<Module> modules = getModules();
-        TreeSet<String> packageNames = new TreeSet<>();
+        TreeSet<String> categories= new TreeSet<>();
 
-        for (Module module : modules) {
-            packageNames.add(module.getPackageName());
-        }
+        Category root = Categories.getRootCategory();
+        addCategories(categories, root);
 
         // For each package name, adding a list of the matching Modules
-        for (String packageName : packageNames) {
-            String prettyPackageName = packageName.replace("\\", " / ");
-            sb.append("<h2>").append(prettyPackageName).append("</h2>\r\n").append("<ul>\r\n");
+        for (String category : categories) {            
+            sb.append("<h2>").append(category).append("</h2>\r\n").append("<ul>\r\n");
 
             // For each Module in this package, create a link to the description document
             for (Module module : modules) {
-                if (!module.getPackageName().equals(packageName))
+                if (!getCategoryPath(module.getCategory()).equals(category))
                     continue;
 
                 sb.append("<li><a href=\".").append(getSimpleModulePath(module)).append("\">").append(module.getName())
@@ -364,7 +381,7 @@ public class DocumentationGenerator {
     private static String getSimpleModulePath(Module module) {
         StringBuilder sb = new StringBuilder();
 
-        String simplePackageName = module.getPackageName();
+        String simplePackageName = getCategoryPath(module.getCategory());
         simplePackageName = simplePackageName.replaceAll("[^A-Za-z0-9]", "");
         simplePackageName = simplePackageName.replace(".", "");
 

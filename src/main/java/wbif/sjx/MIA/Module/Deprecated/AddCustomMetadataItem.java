@@ -3,6 +3,8 @@ package wbif.sjx.MIA.Module.Deprecated;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Miscellaneous.GlobalVariables;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -25,9 +27,10 @@ public class AddCustomMetadataItem extends Module {
         super("Add custom metadata item",modules);
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.DEPRECATED;
+    public Category getCategory() {
+        return Categories.DEPRECATED;
     }
 
     @Override

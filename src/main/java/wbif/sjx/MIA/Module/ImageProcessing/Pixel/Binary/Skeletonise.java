@@ -6,6 +6,8 @@ import sc.fiji.skeletonize3D.Skeletonize3D_;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Object.Image;
@@ -63,9 +65,10 @@ public class Skeletonise extends Module {
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override

@@ -3,6 +3,8 @@ package wbif.sjx.MIA.Module.WorkflowHandling;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -58,9 +60,10 @@ public class ModuleIsEnabled extends AbstractWorkspaceHandler {
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.WORKFLOW_HANDLING;
+    public Category getCategory() {
+        return Categories.WORKFLOW_HANDLING;
     }
 
     @Override

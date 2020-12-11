@@ -15,6 +15,8 @@ import mpicbg.ij.clahe.Flat;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
@@ -58,10 +60,12 @@ public class ApplyCLAHE extends Module {
         return "Applies the MPICBG implementation of CLAHE (Contrast Limited Adaptive Histogram Equalization).  This module runs the Image \"<a href=\"https://imagej.net/Enhance_Local_Contrast_(CLAHE)\">CLAHE</a>\" plugin.";
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+    public Category getCategory() {
+        return Categories.IMAGE_PROCESSING_PIXEL;
     }
+    
 
     public void applyCLAHE(ImagePlus inputImagePlus, int blockRadius, int histogramBins, float maxSlope, @Nullable ByteProcessor mask, boolean fastMode, boolean multithread) {
         // Setting up multithreading

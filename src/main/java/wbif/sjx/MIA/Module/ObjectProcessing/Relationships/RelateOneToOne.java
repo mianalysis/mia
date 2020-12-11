@@ -104,6 +104,8 @@ import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Deprecated.ResolveCoOccurrence;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToMany;
 import wbif.sjx.MIA.Module.ObjectProcessing.Relationships.RelateManyToOne;
@@ -328,9 +330,10 @@ public class RelateOneToOne extends Module {
 
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_RELATIONSHIPS;
     }
 
     @Override

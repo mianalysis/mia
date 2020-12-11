@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import com.drew.lang.annotations.NotNull;
-import com.drew.lang.annotations.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -44,6 +45,8 @@ import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.Convert3DStack;
 import wbif.sjx.MIA.Object.Image;
@@ -722,9 +725,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.INPUT_OUTPUT;
+    public Category getCategory() {
+        return Categories.INPUT_OUTPUT;
     }
 
     @Override
@@ -897,7 +901,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     }
                     break;
             }
-        } catch (ServiceException | DependencyException | IOException | FormatException e) {
+        } catch (SecurityException | DependencyException | IOException | FormatException | ServiceException e) {
             MIA.log.writeWarning(e);
             return Status.FAIL;
         }

@@ -65,7 +65,7 @@ public class GUI {
     private static BasicPanel basicPan = new BasicPanel();
     private static EditingPanel editingPan;
     private static MainPanel mainPanel;
-    private static TreeMap<String, Module> availableModules = new TreeMap<>();
+    private static ModuleCollection availableModules = new ModuleCollection();
 
     public GUI() throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -130,9 +130,8 @@ public class GUI {
 
     void initialiseAvailableModules(List<String> detectedModuleNames) {
         // Creating an alphabetically-ordered list of all modules
-        ModuleCollection moduleCollection = new ModuleCollection();
-        availableModules = new TreeMap<>();
-
+        // ModuleCollection moduleCollection = new ModuleCollection();
+        
         for (String detectedModuleName : detectedModuleNames) {
             try {
                 Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(detectedModuleName);
@@ -142,10 +141,11 @@ public class GUI {
                         continue;
 
                     Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
-                    Module module = (Module) constructor.newInstance(moduleCollection);
-                    String packageName = module.getPackageName();
-                    String moduleName = module.getName();
-                    availableModules.put(packageName + moduleName, module);
+                    Module module = (Module) constructor.newInstance(availableModules);
+                    availableModules.add(module);
+                    // String packageName = module.getPackageName();
+                    // String moduleName = module.getName();
+                    // availableModules.put(packageName + moduleName, module);
 
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
@@ -460,7 +460,7 @@ public class GUI {
         return mainPanel.showFileList();
     }
 
-    public static TreeMap<String, Module> getAvailableModules() {
+    public static ModuleCollection getAvailableModules() {
         return availableModules;
     }
 

@@ -21,6 +21,8 @@ import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
@@ -201,9 +203,10 @@ public class SingleClassCluster extends Module {
         }
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_RELATIONSHIPS;
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_RELATIONSHIPS;
     }
 
     @Override
@@ -417,6 +420,7 @@ public class SingleClassCluster extends Module {
 //import wbif.sjx.MIA.Module.ModuleCollection;
 //import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 //import wbif.sjx.MIA.Module.PackageNames;
+//import wbif.sjx.MIA.Module.Category;
 //import wbif.sjx.MIA.Object.*;
 //import wbif.sjx.MIA.Object.Parameters.*;
 //import wbif.sjx.MIA.Object.References.ImageMeasurementRefCollection;

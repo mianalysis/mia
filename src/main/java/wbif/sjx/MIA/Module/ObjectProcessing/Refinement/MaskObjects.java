@@ -9,6 +9,8 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.PackageNames;
+import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -80,9 +82,10 @@ public class MaskObjects <T extends RealType<T> & NativeType<T>> extends Module 
         super("Mask objects", modules);
     }
 
+
     @Override
-    public String getPackageName() {
-        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
+    public Category getCategory() {
+        return Categories.OBJECT_PROCESSING_REFINEMENT;
     }
 
     @Override
