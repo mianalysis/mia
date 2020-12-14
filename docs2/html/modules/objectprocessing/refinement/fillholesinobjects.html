@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Fills holes in all objects in a collection.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Fills holes in all objects in a collection.  Holes are considered as non-object regions bounded on all sides by object coordinates.  This operation is performed on an object-by-object basis, so only holes bounded by coordinates of the same object will be filled.  Holes can be filled slice-by-slice in 2D (considering only coordiantes in a single XY plane using 4-way connectivity) or in full 3D (considering all surrounding coordinates using 6-way connectivity).  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.</p>
+    Fills holes in all objects in a collection.  Holes are considered as non-object regions bounded on all sides by object coordinates.  This operation is performed on an object-by-object basis, so only holes bounded by coordinates of the same object will be filled.  Holes can be filled slice-by-slice in 2D (considering only coordiantes in a single XY plane using 4-way connectivity) or in full 3D (considering all surrounding coordinates using 6-way connectivity).  Input objects can be updated with the post-hole filling coordinates, or all output objects can be stored in the workspace as a new collection.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input objects</b> (default = "") Object collection from the workspace to apply fill holes operation to.<br><br><b>Update input objects</b> (default = "true") When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the "Output objects" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.<br><br><b>Output objects</b> (default = "") If "Update input objects" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.<br><br><b>Method</b> (default = "Fill holes 2D") Controls whether the holes are filled in 2D or 3D:<br><ul><li>"Fill holes 2D" Holes are considered on a slice-by-slice basis (i.e. 4-way connectivity within a slice).  This can be applied to both 2D and 3D objects.</li><li>"Fill holes 2D" Holes are considered in 3D (i.e. 6-way connectivity).  Note: If a 2D object (either from a 2D or 3D source) is loaded, no holes will be filled, as the top and bottom will be considered "open".</li></ul><br><br></p>
+    <b>Input objects</b> (default = "") Object collection from the workspace to apply fill holes operation to.<br><br><b>Update input objects</b> (default = "true") When selected, the post-operation objects will update the input objects in the workspace (all measurements and relationships will be retained).  Otherwise, the objects will be saved to the workspace in a new collection with the name specified by the "Output objects" parameter.  Note: If updating the objects, any previously-measured object properties (e.g. object volume) may become invalid.  To update such measurements it's necessary to re-run the relevant measurement modules.<br><br><b>Output objects</b> (default = "") If "Update input objects" is not selected, the post-operation objects will be saved to the workspace in a new collection with this name.<br><br><b>Method</b> (default = "Fill holes 2D") Controls whether the holes are filled in 2D or 3D:<br><ul><li>"Fill holes 2D" Holes are considered on a slice-by-slice basis (i.e. 4-way connectivity within a slice).  This can be applied to both 2D and 3D objects.</li><li>"Fill holes 2D" Holes are considered in 3D (i.e. 6-way connectivity).  Note: If a 2D object (either from a 2D or 3D source) is loaded, no holes will be filled, as the top and bottom will be considered "open".</li></ul><br>
 </div>
 
   <!-- Footer -->
