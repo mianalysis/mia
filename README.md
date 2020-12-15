@@ -18,8 +18,8 @@ Installation
 > - For MIA versions before 0.11.0: Launch Fiji's [Updater](https://imagej.net/Updater) tool and add the "Biomedgroup" and "IJPB-plugins" (possibly listed as "MorphoLibJ") update sites, then restart Fiji.
 > - For MIA versions 0.11.0 or newer: Start MIA as usual, then click "Yes" when prompted to automatically download the updates.
 
-Creating a new workflow
------
+Create new workflow
+------------
 - In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 > - Select View > "Switch to editing view" from the menu bar
 > - Modules are added and removed from the workflow using the "+" and "-" buttons
@@ -28,8 +28,8 @@ Creating a new workflow
 > - Checkboxes to the right of each module determine if they are visible in the basic view (default view)
 > - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
 
-Using an existing workflow
------
+Use existing workflow
+------------
 - In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file

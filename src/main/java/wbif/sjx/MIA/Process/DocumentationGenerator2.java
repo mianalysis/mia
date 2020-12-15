@@ -72,7 +72,7 @@ public class DocumentationGenerator2 {
         root.mkdir();
 
         generateIndexPage();
-        generateGuidesPage();
+        generateGuidesPages();
 
         // Generating module pages
         Category rootCategory = Categories.getRootCategory();
@@ -132,15 +132,35 @@ public class DocumentationGenerator2 {
 
     }
 
-    public void generateGuidesPage() throws IOException {
+    public void generateGuidesPages() throws IOException {
+        generateGettingStartedPage();
+        
+    }
+
+    public void generateGettingStartedPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-        page = setNavbarActive(page, Page.GUIDES);
+        page = setNavbarActive(page, Page.HOME);
 
-        page = page.replace("${MAIN_CONTENT}", "GUIDES");
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/gettingstartedtemplate.html", pathToRoot);
 
-        FileWriter writer = new FileWriter("docs2/html/guides.html");
+        String gsContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${INSTALLATION}", gsContent);
+
+        gsContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${CREATE_NEW}", gsContent);
+
+        gsContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${USE_EXISTING}", gsContent);
+
+        page = page.replace("${MAIN_CONTENT}", mainContent);
+
+        FileWriter writer = new FileWriter("docs2/html/gettingstarted.html");
         writer.write(page);
         writer.flush();
         writer.close();
@@ -332,12 +352,17 @@ public class DocumentationGenerator2 {
 
             sb.append("About MIA").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md"))));
-
             sb.append("\n\n");
+
+            sb.append("Installation").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md"))));
             sb.append("\n\n");
+
+            sb.append("Create new workflow").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md"))));
             sb.append("\n\n");
+
+            sb.append("Use existing workflow").append("\n").append("------------").append("\n");
             sb.append(new String(
                     Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md"))));
             sb.append("\n\n");

@@ -1,5 +1,3 @@
-Installation
-------------
 - The latest version of the plugin can be downloaded from the [Releases](https://github.com/SJCross/ModularImageAnalysis/releases) page.
 - Place this .jar file into the /plugins directory of the your Fiji installation.
 - MIA requires the "Biomedgroup" and "MorphoLibJ" plugins to be installed.
