@@ -18,7 +18,6 @@ import com.drew.lang.annotations.Nullable;
 
 import ij.ImagePlus;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Visualisation.Overlays.AddLabels;

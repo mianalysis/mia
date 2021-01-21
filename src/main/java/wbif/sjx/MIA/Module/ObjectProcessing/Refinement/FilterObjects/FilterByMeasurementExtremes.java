@@ -3,7 +3,6 @@ package wbif.sjx.MIA.Module.ObjectProcessing.Refinement.FilterObjects;
 import java.util.Iterator;
 
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Measurement;

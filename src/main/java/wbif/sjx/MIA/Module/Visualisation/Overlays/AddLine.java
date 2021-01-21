@@ -7,7 +7,6 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;

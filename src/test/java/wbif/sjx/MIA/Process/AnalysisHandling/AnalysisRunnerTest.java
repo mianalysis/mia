@@ -87,7 +87,7 @@
 //    public void testCheckInputFileValidityMissingFile(@TempDir Path tempPath) throws Exception {
 //        File folder = new File(tempPath+File.separator+"test folder\\");
 //        folder.createNewFile();
-//        String path = folder.getAbsolutePath() + MIA.getSlashes() + "fake file.tif";
+//        String path = folder.getAbsolutePath() + File.separator + "fake file.tif";
 //
 //        boolean actual = AnalysisRunner.checkInputFileValidity(path);
 //
@@ -99,7 +99,7 @@
 //    public void testCheckInputFileValidityMissingFolder(@TempDir Path tempPath) throws Exception {
 //        File folder = new File(tempPath+File.separator+"test folder\\");
 //        folder.createNewFile();
-//        String path = folder.getParent() + MIA.getSlashes() + "test fake folder" + MIA.getSlashes();
+//        String path = folder.getParent() + File.separator + "test fake folder" + File.separator;
 //
 //        boolean actual = AnalysisRunner.checkInputFileValidity(path);
 //
@@ -149,7 +149,7 @@
 //        file.createNewFile();
 //
 //        String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
-//        String expected = file.getParent()+ MIA.getSlashes() + "fake file_S3";
+//        String expected = file.getParent()+ File.separator + "fake file_S3";
 //
 //        assertEquals(expected,actual);
 //
@@ -167,7 +167,7 @@
 //        file.createNewFile();
 //
 //        String actual = AnalysisRunner.getExportName(inputControl,outputControl,file);
-//        String expected = file.getParent()+ MIA.getSlashes() + "fake file";
+//        String expected = file.getParent()+ File.separator + "fake file";
 //
 //        assertEquals(expected,actual);
 //
@@ -188,7 +188,7 @@
 //        folder.createNewFile();
 //
 //        String actual = AnalysisRunner.getExportName(inputControl,outputControl,folder);
-//        String expected = folder+MIA.getSlashes()+folder.getName()+"_S3";
+//        String expected = folder+File.separator+folder.getName()+"_S3";
 //
 //        assertEquals(expected,actual);
 //
@@ -208,7 +208,7 @@
 //        folder.createNewFile();
 //
 //        String actual = AnalysisRunner.getExportName(inputControl,outputControl,folder);
-//        String expected = folder+MIA.getSlashes()+folder.getName();
+//        String expected = folder+File.separator+folder.getName();
 //
 //        assertEquals(expected,actual);
 //

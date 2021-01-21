@@ -13,7 +13,6 @@ import loci.common.services.ServiceException;
 import loci.formats.FormatException;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.OutputControl;
@@ -202,11 +201,11 @@ public class ImageSaver extends AbstractImageSaver {
             case SaveLocations.SAVE_WITH_INPUT:
             default:
                 File rootFile = workspace.getMetadata().getFile();
-                path = rootFile.getParent() + MIA.getSlashes();
+                path = rootFile.getParent() + File.separator;
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:
-                path = filePath + MIA.getSlashes();
+                path = filePath + File.separator;
                 break;
         }
 

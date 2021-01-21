@@ -6,7 +6,6 @@ import java.util.Iterator;
 import com.drew.lang.annotations.Nullable;
 
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Obj;

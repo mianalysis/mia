@@ -12,7 +12,6 @@ import ij.ImagePlus;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
@@ -60,7 +59,7 @@ public class ExportACCDataset extends Module {
     }
 
     static String getFolderName(String rootFolder, String analysisFolderName, String plateName) {
-        return rootFolder + "\\" + plateName + "\\" + analysisFolderName + "\\";
+        return rootFolder + File.separator + plateName + File.separator + analysisFolderName + File.separator;
 
     }
 
