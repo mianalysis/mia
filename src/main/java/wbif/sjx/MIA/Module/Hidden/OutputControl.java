@@ -154,13 +154,13 @@ public class OutputControl extends AbstractMacroRunner {
 
             case IndividualSaveLocations.SAVE_WITH_INPUT:
                 if (inputFile.isFile())
-                    path = inputFile.getParent() + MIA.getSlashes();
+                    path = inputFile.getParent() + File.separator;
                 else
-                    path = inputFile.getAbsolutePath() + MIA.getSlashes();
+                    path = inputFile.getAbsolutePath() + File.separator;
                 break;
 
             case IndividualSaveLocations.SPECIFIC_LOCATION:
-                path = saveFilePath + MIA.getSlashes();
+                path = saveFilePath + File.separator;
                 break;
         }
 
@@ -177,13 +177,13 @@ public class OutputControl extends AbstractMacroRunner {
         StringBuilder sb = new StringBuilder();
         File parentFile = metadata.getFile().getParentFile();
         for (int i = 0; i < fileDepth; i++) {
-            sb.insert(0, parentFile.getName() + MIA.getSlashes());
+            sb.insert(0, parentFile.getName() + File.separator);
             parentFile = parentFile.getParentFile();
         }
 
-        new File(mirroredDirectoryRoot + MIA.getSlashes() + sb).mkdirs();
+        new File(mirroredDirectoryRoot + File.separator + sb).mkdirs();
 
-        return mirroredDirectoryRoot + MIA.getSlashes() + sb;
+        return mirroredDirectoryRoot + File.separator + sb;
 
     }
 
@@ -196,13 +196,13 @@ public class OutputControl extends AbstractMacroRunner {
         switch (saveLocation) {
             case GroupSaveLocations.SAVE_WITH_INPUT:
                 if (inputFile.isFile())
-                    path = inputFile.getParent() + MIA.getSlashes();
+                    path = inputFile.getParent() + File.separator;
                 else
-                    path = inputFile.getAbsolutePath() + MIA.getSlashes();
+                    path = inputFile.getAbsolutePath() + File.separator;
                 break;
 
             case GroupSaveLocations.SPECIFIC_LOCATION:
-                path = saveFilePath + MIA.getSlashes();
+                path = saveFilePath + File.separator;
                 break;
         }
 

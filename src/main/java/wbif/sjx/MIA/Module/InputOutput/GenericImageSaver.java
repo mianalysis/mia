@@ -6,7 +6,6 @@ import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Image;

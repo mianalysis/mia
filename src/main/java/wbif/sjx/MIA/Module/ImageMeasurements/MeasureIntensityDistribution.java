@@ -23,7 +23,6 @@ import ij.process.StackStatistics;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
@@ -473,7 +472,7 @@ public class MeasureIntensityDistribution extends Module {
                 switch (saveProfileMode) {
                     case SaveProfileModes.INDIVIDUAL_FILES:
                         File rootFile =metadata.getFile();
-                        String path = rootFile.getParent()+ MIA.getSlashes() +FilenameUtils.removeExtension(rootFile.getName());
+                        String path = rootFile.getParent()+ File.separator +FilenameUtils.removeExtension(rootFile.getName());
                         path = path + "_S" + metadata.getSeriesNumber()  + profileFileSuffix+ ".xlsx";
                         writeResultsFile(path,distanceBins,cumStats);
                         break;

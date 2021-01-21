@@ -1,15 +1,14 @@
 package wbif.sjx.MIA.Module.InputOutput;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
@@ -72,9 +71,8 @@ public class MetadataExtractor extends Module {
     public static final String REFRESH_BUTTON = "Refresh parameters";
 
     public MetadataExtractor(ModuleCollection modules) {
-        super("Extract metadata",modules);
+        super("Extract metadata", modules);
     }
-
 
     public interface ExtractorModes {
         String FILENAME_MODE = "Filename";
@@ -83,7 +81,7 @@ public class MetadataExtractor extends Module {
         String METADATA_FILE_MODE = "Metadata file";
         String SERIES_NAME = "Series name";
 
-        String[] ALL = new String[]{FILENAME_MODE, FOLDERNAME_MODE, KEYWORD_MODE, METADATA_FILE_MODE, SERIES_NAME};
+        String[] ALL = new String[] { FILENAME_MODE, FOLDERNAME_MODE, KEYWORD_MODE, METADATA_FILE_MODE, SERIES_NAME };
 
     }
 
@@ -95,8 +93,8 @@ public class MetadataExtractor extends Module {
         String OPERA_FILENAME_EXTRACTOR = "Opera filename";
         String YOKOGAWA_FILENAME_EXTRACTOR = "Yokogawa filename";
 
-        String[] ALL = new String[]{GENERIC, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
-                INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR, YOKOGAWA_FILENAME_EXTRACTOR};
+        String[] ALL = new String[] { GENERIC, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
+                INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR, YOKOGAWA_FILENAME_EXTRACTOR };
 
     }
 
@@ -106,15 +104,15 @@ public class MetadataExtractor extends Module {
         String OPERA_FOLDERNAME_EXTRACTOR = "Opera measurement foldername";
         String OPERA_BARCODE_EXTRACTOR = "Opera barcode";
 
-        String[] ALL = new String[]{GENERIC, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR,
-                OPERA_BARCODE_EXTRACTOR};
+        String[] ALL = new String[] { GENERIC, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR,
+                OPERA_BARCODE_EXTRACTOR };
     }
 
     public interface MetadataFileExtractors {
         String CSV_FILE = "CSV file";
         String OPERA_METADATA_FILE_EXTRACTOR = "Opera file (.flex)";
 
-        String[] ALL = new String[]{CSV_FILE, OPERA_METADATA_FILE_EXTRACTOR};
+        String[] ALL = new String[] { CSV_FILE, OPERA_METADATA_FILE_EXTRACTOR };
 
     }
 
@@ -122,7 +120,7 @@ public class MetadataExtractor extends Module {
         String FILENAME = "File name";
         String SERIESNAME = "Series name";
 
-        String[] ALL = new String[]{FILENAME,SERIESNAME};
+        String[] ALL = new String[] { FILENAME, SERIESNAME };
 
     }
 
@@ -130,10 +128,9 @@ public class MetadataExtractor extends Module {
         String FILE_IN_INPUT_FOLDER = "File in input folder";
         String STATIC_FILE = "Static file";
 
-        String[] ALL = new String[]{FILE_IN_INPUT_FOLDER,STATIC_FILE};
+        String[] ALL = new String[] { FILE_IN_INPUT_FOLDER, STATIC_FILE };
 
     }
-
 
     private void extractFilename(Metadata metadata, String filenameExtractorName) {
         NameExtractor filenameExtractor = null;
@@ -171,8 +168,8 @@ public class MetadataExtractor extends Module {
     private void extractGeneric(Metadata metadata, String input, String pattern, String groupString) {
         String[] groups = getGroups(groupString);
 
-        NameExtractor extractor = new GenericExtractor(pattern,groups);
-        extractor.extract(metadata,input);
+        NameExtractor extractor = new GenericExtractor(pattern, groups);
+        extractor.extract(metadata, input);
 
     }
 
@@ -189,11 +186,12 @@ public class MetadataExtractor extends Module {
                 break;
 
             case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
-                metadata.put("Barcode",metadata.getFile().getParentFile().getParentFile().getName());
+                metadata.put("Barcode", metadata.getFile().getParentFile().getParentFile().getName());
                 return;
         }
 
-        if (foldernameExtractor != null) foldernameExtractor.extract(metadata,metadata.getFile().getParent());
+        if (foldernameExtractor != null)
+            foldernameExtractor.extract(metadata, metadata.getFile().getParent());
     }
 
     private void extractKeyword(Metadata metadata, String keywordList, String keywordSource) {
@@ -201,10 +199,10 @@ public class MetadataExtractor extends Module {
 
         switch (keywordSource) {
             case KeywordSources.FILENAME:
-                keywordExtractor.extract(metadata,metadata.getFile().getName());
+                keywordExtractor.extract(metadata, metadata.getFile().getName());
                 break;
             case KeywordSources.SERIESNAME:
-                keywordExtractor.extract(metadata,metadata.getSeriesName());
+                keywordExtractor.extract(metadata, metadata.getSeriesName());
                 break;
         }
     }
@@ -217,7 +215,8 @@ public class MetadataExtractor extends Module {
                 break;
         }
 
-        if (metadataFileExtractor != null) metadataFileExtractor.extract(metadata,metadata.getFile());
+        if (metadataFileExtractor != null)
+            metadataFileExtractor.extract(metadata, metadata.getFile());
     }
 
     private String getExternalMetadataRegex(Metadata metadata, String inputFilePath, String metadataItemToMatch) {
@@ -227,15 +226,17 @@ public class MetadataExtractor extends Module {
             String line = "";
             HashMap<String, String> referenceValues = new HashMap<>();
             while ((line = bufferedReader.readLine()) != null) {
-                line = line.toString().replace("\uFEFF","");
+                line = line.toString().replace("\uFEFF", "");
                 String[] split = line.split(",");
-                if (split.length == 2) referenceValues.put(split[0], split[1]);
+                if (split.length == 2)
+                    referenceValues.put(split[0], split[1]);
             }
             bufferedReader.close();
 
             if (metadata.containsKey(metadataItemToMatch)) {
                 return referenceValues.get(metadata.get(metadataItemToMatch).toString());
-            } else return null;
+            } else
+                return null;
 
         } catch (IOException e) {
             return null;
@@ -243,14 +244,15 @@ public class MetadataExtractor extends Module {
     }
 
     public String[] getGroups(String groupString) {
-        groupString = groupString.replace(" ","");
+        groupString = groupString.replace(" ", "");
 
-        StringTokenizer tokenizer = new StringTokenizer(groupString,",");
+        StringTokenizer tokenizer = new StringTokenizer(groupString, ",");
         int nTokens = tokenizer.countTokens();
 
-        int i=0;
+        int i = 0;
         String[] groups = new String[nTokens];
-        while (tokenizer.hasMoreTokens()) groups[i++] = tokenizer.nextToken();
+        while (tokenizer.hasMoreTokens())
+            groups[i++] = tokenizer.nextToken();
 
         return groups;
 
@@ -260,13 +262,14 @@ public class MetadataExtractor extends Module {
         String[] groups = getGroups(groupString);
 
         Metadata metadata = new Metadata();
-        NameExtractor extractor = new GenericExtractor(pattern,groups);
-        extractor.extract(metadata,exampleString);
+        NameExtractor extractor = new GenericExtractor(pattern, groups);
+        extractor.extract(metadata, exampleString);
 
         StringBuilder stringBuilder = new StringBuilder();
-        for (String group:groups) {
+        for (String group : groups) {
             String value = metadata.getAsString(group);
-            if (value == null) value = "NA";
+            if (value == null)
+                value = "NA";
             stringBuilder.append(group);
             stringBuilder.append(": ");
             stringBuilder.append(value);
@@ -276,8 +279,6 @@ public class MetadataExtractor extends Module {
         return stringBuilder.toString();
 
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -314,7 +315,7 @@ public class MetadataExtractor extends Module {
             case ExtractorModes.FILENAME_MODE:
                 // Getting filename extractor
                 if (filenameExtractorName.equals(FilenameExtractors.GENERIC)) {
-                    extractGeneric(metadata,metadata.getFile().getName(),pattern,groups);
+                    extractGeneric(metadata, metadata.getFile().getName(), pattern, groups);
                 } else {
                     extractFilename(metadata, filenameExtractorName);
                 }
@@ -322,14 +323,14 @@ public class MetadataExtractor extends Module {
 
             case ExtractorModes.FOLDERNAME_MODE:
                 if (foldernameExtractorName.equals(FoldernameExtractors.GENERIC)) {
-                    extractGeneric(metadata,metadata.getFile().getParent(),pattern,groups);
+                    extractGeneric(metadata, metadata.getFile().getParent(), pattern, groups);
                 } else {
                     extractFoldername(metadata, foldernameExtractorName);
                 }
                 break;
 
             case ExtractorModes.KEYWORD_MODE:
-                extractKeyword(metadata,keywordList,keywordSource);
+                extractKeyword(metadata, keywordList, keywordSource);
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
@@ -339,7 +340,7 @@ public class MetadataExtractor extends Module {
                         switch (inputSource) {
                             case InputSources.FILE_IN_INPUT_FOLDER:
                                 metadataSourcePath = workspace.getMetadata().getFile().getParentFile().getPath();
-                                metadataSourcePath = metadataSourcePath + MIA.getSlashes() + metadataFileName;
+                                metadataSourcePath = metadataSourcePath + File.separator + metadataFileName;
                                 break;
                             case InputSources.STATIC_FILE:
                                 metadataSourcePath = metadataFilePath;
@@ -348,25 +349,29 @@ public class MetadataExtractor extends Module {
                             default:
                                 return Status.PASS;
                         }
-                        String metadataString = getExternalMetadataRegex(metadata,metadataSourcePath,metadataItemToMatch);
+                        String metadataString = getExternalMetadataRegex(metadata, metadataSourcePath,
+                                metadataItemToMatch);
                         if (metadataString != null) {
-                            if (regexSplitting) extractGeneric(metadata,metadataString,pattern,groups);
-                            else extractGeneric(metadata,metadataString,"([^s]+)",metadataValueName);
+                            if (regexSplitting)
+                                extractGeneric(metadata, metadataString, pattern, groups);
+                            else
+                                extractGeneric(metadata, metadataString, "([^s]+)", metadataValueName);
                         }
                         break;
 
                     case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
-                        extractMetadataFile(metadata,metadataFileExtractorName);
+                        extractMetadataFile(metadata, metadataFileExtractorName);
                         break;
                 }
                 break;
 
             case ExtractorModes.SERIES_NAME:
-                extractGeneric(metadata,metadata.getSeriesName(),pattern,groups);
+                extractGeneric(metadata, metadata.getSeriesName(), pattern, groups);
                 break;
         }
 
-        if (showOutput) workspace.showMetadata(this);
+        if (showOutput)
+            workspace.showMetadata(this);
 
         return Status.PASS;
 
@@ -374,30 +379,31 @@ public class MetadataExtractor extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(EXTRACTOR_SEPARATOR,this));
-        parameters.add(new ChoiceP(EXTRACTOR_MODE,this,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
+        parameters.add(new SeparatorP(EXTRACTOR_SEPARATOR, this));
+        parameters.add(new ChoiceP(EXTRACTOR_MODE, this, ExtractorModes.FILENAME_MODE, ExtractorModes.ALL));
 
-        parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
-        parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.GENERIC,FoldernameExtractors.ALL));
-        parameters.add(new StringP(KEYWORD_LIST,this));
+        parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this, FilenameExtractors.GENERIC, FilenameExtractors.ALL));
+        parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this, FoldernameExtractors.GENERIC, FoldernameExtractors.ALL));
+        parameters.add(new StringP(KEYWORD_LIST, this));
 
-        parameters.add(new SeparatorP(SOURCE_SEPARATOR,this));
-        parameters.add(new ChoiceP(KEYWORD_SOURCE, this,KeywordSources.FILENAME,KeywordSources.ALL));
-        parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR,this,MetadataFileExtractors.CSV_FILE,MetadataFileExtractors.ALL));
-        parameters.add(new ChoiceP(INPUT_SOURCE,this,InputSources.FILE_IN_INPUT_FOLDER,InputSources.ALL));
-        parameters.add(new FilePathP(METADATA_FILE,this));
-        parameters.add(new StringP(METADATA_FILE_NAME,this));
-        parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH,this));
+        parameters.add(new SeparatorP(SOURCE_SEPARATOR, this));
+        parameters.add(new ChoiceP(KEYWORD_SOURCE, this, KeywordSources.FILENAME, KeywordSources.ALL));
+        parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR, this, MetadataFileExtractors.CSV_FILE,
+                MetadataFileExtractors.ALL));
+        parameters.add(new ChoiceP(INPUT_SOURCE, this, InputSources.FILE_IN_INPUT_FOLDER, InputSources.ALL));
+        parameters.add(new FilePathP(METADATA_FILE, this));
+        parameters.add(new StringP(METADATA_FILE_NAME, this));
+        parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH, this));
 
-        parameters.add(new SeparatorP(REGEX_SEPARATOR,this));
-        parameters.add(new StringP(PATTERN,this));
-        parameters.add(new StringP(GROUPS,this));
-        parameters.add(new BooleanP(SHOW_TEST,this,false));
-        parameters.add(new StringP(EXAMPLE_STRING,this));
-        parameters.add(new TextAreaP(IDENTIFIED_GROUPS,this,false));
-        parameters.add(new BooleanP(REGEX_SPLITTING,this,false));
-        parameters.add(new StringP(METADATA_VALUE_NAME,this));
-        parameters.add(new GenericButtonP(REFRESH_BUTTON,this,"Refresh",GenericButtonP.DefaultModes.REFRESH));
+        parameters.add(new SeparatorP(REGEX_SEPARATOR, this));
+        parameters.add(new StringP(PATTERN, this));
+        parameters.add(new StringP(GROUPS, this));
+        parameters.add(new BooleanP(SHOW_TEST, this, false));
+        parameters.add(new StringP(EXAMPLE_STRING, this));
+        parameters.add(new TextAreaP(IDENTIFIED_GROUPS, this, false));
+        parameters.add(new BooleanP(REGEX_SPLITTING, this, false));
+        parameters.add(new StringP(METADATA_VALUE_NAME, this));
+        parameters.add(new GenericButtonP(REFRESH_BUTTON, this, "Refresh", GenericButtonP.DefaultModes.REFRESH));
 
         addParameterDescriptions();
 
@@ -409,7 +415,7 @@ public class MetadataExtractor extends Module {
 
         returnedParameters.add(parameters.getParameter(EXTRACTOR_SEPARATOR));
         returnedParameters.add(parameters.getParameter(EXTRACTOR_MODE));
-        switch((String) parameters.getValue(EXTRACTOR_MODE)) {
+        switch ((String) parameters.getValue(EXTRACTOR_MODE)) {
             case ExtractorModes.FILENAME_MODE:
                 returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
                 switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
@@ -486,7 +492,7 @@ public class MetadataExtractor extends Module {
             String pattern = parameters.getValue(PATTERN);
             String groups = parameters.getValue(GROUPS);
             String exampleString = parameters.getValue(EXAMPLE_STRING);
-            String groupsString = getTestString(pattern,groups,exampleString);
+            String groupsString = getTestString(pattern, groups, exampleString);
             TextAreaP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
             identifiedGroups.setValue(groupsString);
 
@@ -512,13 +518,14 @@ public class MetadataExtractor extends Module {
     public MetadataRefCollection updateAndGetMetadataReferences() {
         MetadataRefCollection returnedRefs = new MetadataRefCollection();
 
-        switch((String) parameters.getValue(EXTRACTOR_MODE)) {
+        switch ((String) parameters.getValue(EXTRACTOR_MODE)) {
             case ExtractorModes.FILENAME_MODE:
                 switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
                     case FilenameExtractors.GENERIC:
                         String groupString = parameters.getValue(GROUPS);
                         String[] groups = getGroups(groupString);
-                        for (String group:groups) returnedRefs.add(metadataRefs.getOrPut((group)));
+                        for (String group : groups)
+                            returnedRefs.add(metadataRefs.getOrPut((group)));
                         break;
 
                     case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
@@ -578,7 +585,8 @@ public class MetadataExtractor extends Module {
                     case FoldernameExtractors.GENERIC:
                         String groupString = parameters.getValue(GROUPS);
                         String[] groups = getGroups(groupString);
-                        for (String group:groups) returnedRefs.add(metadataRefs.getOrPut((group)));
+                        for (String group : groups)
+                            returnedRefs.add(metadataRefs.getOrPut((group)));
                         break;
 
                     case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
@@ -622,7 +630,8 @@ public class MetadataExtractor extends Module {
                         if ((boolean) parameters.getValue(REGEX_SPLITTING)) {
                             String groupString = parameters.getValue(GROUPS);
                             String[] groups = getGroups(groupString);
-                            for (String group : groups) metadataRefs.getOrPut((group));
+                            for (String group : groups)
+                                metadataRefs.getOrPut((group));
                         } else {
                             returnedRefs.add(metadataRefs.getOrPut((parameters.getValue(METADATA_VALUE_NAME))));
                         }
@@ -633,7 +642,8 @@ public class MetadataExtractor extends Module {
             case ExtractorModes.SERIES_NAME:
                 String groupString = parameters.getValue(GROUPS);
                 String[] groups = getGroups(groupString);
-                for (String group:groups) returnedRefs.add(metadataRefs.getOrPut((group)));
+                for (String group : groups)
+                    returnedRefs.add(metadataRefs.getOrPut((group)));
                 break;
 
         }
@@ -658,41 +668,41 @@ public class MetadataExtractor extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(EXTRACTOR_MODE).setDescription("");
+        parameters.get(EXTRACTOR_MODE).setDescription("");
 
-      parameters.get(FILENAME_EXTRACTOR).setDescription("");
+        parameters.get(FILENAME_EXTRACTOR).setDescription("");
 
-      parameters.get(FOLDERNAME_EXTRACTOR).setDescription("");
+        parameters.get(FOLDERNAME_EXTRACTOR).setDescription("");
 
-      parameters.get(KEYWORD_LIST).setDescription("");
+        parameters.get(KEYWORD_LIST).setDescription("");
 
-      parameters.get(KEYWORD_SOURCE).setDescription("");
+        parameters.get(KEYWORD_SOURCE).setDescription("");
 
-      parameters.get(METADATA_FILE_EXTRACTOR).setDescription("");
+        parameters.get(METADATA_FILE_EXTRACTOR).setDescription("");
 
-      parameters.get(INPUT_SOURCE).setDescription("");
+        parameters.get(INPUT_SOURCE).setDescription("");
 
-      parameters.get(METADATA_FILE).setDescription("");
+        parameters.get(METADATA_FILE).setDescription("");
 
-      parameters.get(METADATA_FILE_NAME).setDescription("");
+        parameters.get(METADATA_FILE_NAME).setDescription("");
 
-      parameters.get(METADATA_ITEM_TO_MATCH).setDescription("");
+        parameters.get(METADATA_ITEM_TO_MATCH).setDescription("");
 
-      parameters.get(PATTERN).setDescription("");
+        parameters.get(PATTERN).setDescription("");
 
-      parameters.get(GROUPS).setDescription("");
+        parameters.get(GROUPS).setDescription("");
 
-      parameters.get(SHOW_TEST).setDescription("");
+        parameters.get(SHOW_TEST).setDescription("");
 
-      parameters.get(EXAMPLE_STRING).setDescription("");
+        parameters.get(EXAMPLE_STRING).setDescription("");
 
-      parameters.get(IDENTIFIED_GROUPS).setDescription("");
+        parameters.get(IDENTIFIED_GROUPS).setDescription("");
 
-      parameters.get(REGEX_SPLITTING).setDescription("");
+        parameters.get(REGEX_SPLITTING).setDescription("");
 
-      parameters.get(METADATA_VALUE_NAME).setDescription("");
+        parameters.get(METADATA_VALUE_NAME).setDescription("");
 
-      parameters.get(REFRESH_BUTTON).setDescription("");
+        parameters.get(REFRESH_BUTTON).setDescription("");
 
     }
 }

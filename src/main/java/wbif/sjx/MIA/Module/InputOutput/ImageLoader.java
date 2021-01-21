@@ -44,7 +44,6 @@ import ome.xml.model.primitives.Color;
 import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Hidden.InputControl;
@@ -635,7 +634,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Constructing a new name using the same name format
         String comment = metadata.getComment();
-        return metadata.getFile().getParent() + MIA.getSlashes() + IncuCyteShortFilenameExtractor.generate(comment,
+        return metadata.getFile().getParent() + File.separator + IncuCyteShortFilenameExtractor.generate(comment,
                 metadata.getWell(), metadata.getAsString(Metadata.FIELD), metadata.getExt());
 
     }

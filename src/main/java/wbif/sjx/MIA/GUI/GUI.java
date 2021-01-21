@@ -143,6 +143,7 @@ public class GUI {
                     Constructor constructor = clazz.getDeclaredConstructor(ModuleCollection.class);
                     Module module = (Module) constructor.newInstance(availableModules);
                     availableModules.add(module);
+                    
                     // String packageName = module.getPackageName();
                     // String moduleName = module.getName();
                     // availableModules.put(packageName + moduleName, module);

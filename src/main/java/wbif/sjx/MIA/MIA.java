@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
@@ -155,16 +154,6 @@ public class MIA implements Command {
 
     public static void setDebug(boolean debug) {
         MIA.debug = debug;
-    }
-
-    public static String getSlashes() {
-        // Setting the file path slashes depending on the operating system
-        if (SystemUtils.IS_OS_WINDOWS) return  "\\";
-        else if (SystemUtils.IS_OS_MAC_OSX) return  "/";
-        else if (SystemUtils.IS_OS_LINUX) return  "/";
-
-        return "\\";
-
     }
 
     public static Log getLog() {
