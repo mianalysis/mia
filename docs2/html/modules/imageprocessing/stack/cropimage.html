@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Crop an input image in X and Y using pre-defined limits.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Crop an input image in X and Y using pre-defined limits.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).</p>
+    Crop an input image in X and Y using pre-defined limits.  Any pixels outside the specified limits are discarded.<br><br>Note: The x-min, y-min, width and height limits used here are in the same order and format as those output by ImageJ's default rectangle region of interest tool (i.e. displayed in the status bar of the ImageJ control panel).
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply crop process to.<br><br><b>Apply to input image</b> (default = "false") Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).<br><br><b>Left coordinate</b> (default = "0") Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><br><b>Top coordinate</b> (default = "0") Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><br><b>Width</b> (default = "512") Width (number of columns) of the output cropped region.  Specified in pixel units.<br><br><b>Height</b> (default = "512") Height (number of rows) of the output cropped region.  Specified in pixel units.<br><br></p>
+    <b>Input image</b> (default = "") Image from workspace to apply crop process to.<br><br><b>Apply to input image</b> (default = "false") Select if the crop should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the cropping process if storing the cropped image as a new image in the workspace ("Apply to input image" parameter).<br><br><b>Left coordinate</b> (default = "0") Left crop coordinate.  All pixels with x-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><br><b>Top coordinate</b> (default = "0") Top crop coordinate.  All pixels with y-coordinates lower than this will be removed.  Specified in pixel units with indexing starting at 0.<br><br><b>Width</b> (default = "512") Width (number of columns) of the output cropped region.  Specified in pixel units.<br><br><b>Height</b> (default = "512") Height (number of rows) of the output cropped region.  Specified in pixel units.<br><br>
 </div>
 
   <!-- Footer -->

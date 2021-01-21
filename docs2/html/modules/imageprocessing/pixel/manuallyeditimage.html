@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Displays an image from the workspace, allowing the user to make manual edits, before saving it back into the workspace.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Displays an image from the workspace, allowing the user to make manual edits, before saving it back into the workspace.  Edited images can either be stored as a new image in the workspace or overwrite the input image.  Once the image has been displayed, the user makes edits until clicking "OK" in the dialog box that appears.  As such, this module is only suitable for running in GUI mode.</p>
+    Displays an image from the workspace, allowing the user to make manual edits, before saving it back into the workspace.  Edited images can either be stored as a new image in the workspace or overwrite the input image.  Once the image has been displayed, the user makes edits until clicking "OK" in the dialog box that appears.  As such, this module is only suitable for running in GUI mode.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input image</b> (default = "") Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the "Apply to input image" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.<br><br><b>Apply to input image</b> (default = "true") When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the edited image will be saved to the workspace with this name.<br><br></p>
+    <b>Input image</b> (default = "") Image from workspace to manually edit.  When this module executes the image will be displayed along with a dialog box allowing the user to identify when editing is complete.  Depending on the "Apply to input image" parameter, the edits will either be applied directly to this input image or stored in a separate image in the workspace.<br><br><b>Apply to input image</b> (default = "true") When selected, the edited image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the edited image will be saved to the workspace with this name.<br><br>
 </div>
 
   <!-- Footer -->

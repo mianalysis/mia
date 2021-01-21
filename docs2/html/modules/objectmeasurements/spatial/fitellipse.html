@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Fit ellipses to all objects in a collection using "<a href="https://imagej.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Fit ellipses to all objects in a collection using "<a href="https://imagej.net/BoneJ">BoneJ</a>".  For 3D objects, a 2D projection in the XY plane is used for fitting.  Fit ellipses can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipse coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</p>
+    Fit ellipses to all objects in a collection using "<a href="https://imagej.net/BoneJ">BoneJ</a>".  For 3D objects, a 2D projection in the XY plane is used for fitting.  Fit ellipses can be stored either as new objects, or replacing the input object coordinates.<br><br>Note: If updating input objects with ellipse coordinates, measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input objects</b> (default = "") Objects from workspace to which ellipses will be fit.  Objects stored in 3D will be projected into the XY 2D plane (using the "Project objects" module) prior to fitting.  If a projected object is used, any output measurements and relationships are still applied to the input object (the projected object is discarded after use).  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipses are also stored as objects.<br><br><b>Fitting mode</b> (default = "Fit to surface") Controls which object coordinates are used for ellipse fitting:<br><ul><li>"Fit to whole" All coordinates for the input object are passed to the ellipse fitter.<.li><li>"Fit to surface" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul><br><br><b>Limit axis length</b> (default = "false") When selected, all axes of the the fit ellipses must be shorter than the length specified by "Maximum axis length".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.<br><br><b>Maximum axis length</b> (default = "1000.0") Maximum length of any fit ellipse axis as measured in pixel units.  This is onyl used if "Limit axis length" is selected.<br><br><b>Object output mode</b> (default = "Do not store") Controls whether the fit ellipse is stored as an object in the workspace:<br><ul><li>"Create new objects" Fit ellipses are stored as new objects in the workspace (name specified by "Output objects").  Ellipses are "solid" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipse objects are children of the input objects to which they were fit.  If outputting ellipse objects, any measurements are still only applied to the corresponding input objects.</li><li>"Do not store" (default) The ellipse coordinates are not stored.</li><li>"Update input objects" The coordinates of the input object are removed and replaced with the fit ellipse coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul><br><br><b>Output objects</b> (default = "") Name assigned to output ellipse objects if "Object output mode" is in "Create new objects" mode.<br><br><b>Enable multithreading</b> (default = "true") Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.<br><br></p>
+    <b>Input objects</b> (default = "") Objects from workspace to which ellipses will be fit.  Objects stored in 3D will be projected into the XY 2D plane (using the "Project objects" module) prior to fitting.  If a projected object is used, any output measurements and relationships are still applied to the input object (the projected object is discarded after use).  Measurements made by this module are associated with these input objects, irrespective of whether the fit ellipses are also stored as objects.<br><br><b>Fitting mode</b> (default = "Fit to surface") Controls which object coordinates are used for ellipse fitting:<br><ul><li>"Fit to whole" All coordinates for the input object are passed to the ellipse fitter.<.li><li>"Fit to surface" (default) Only surface coordinates of the input object are passed to the ellipse fitter.  Surface coordinates are calculated using 4-way connectivity.</li></ul><br><b>Limit axis length</b> (default = "false") When selected, all axes of the the fit ellipses must be shorter than the length specified by "Maximum axis length".  This helps filter out mis-fit ellipses and prevents unnecessary, massive memory use when storing ellipses.<br><br><b>Maximum axis length</b> (default = "1000.0") Maximum length of any fit ellipse axis as measured in pixel units.  This is onyl used if "Limit axis length" is selected.<br><br><b>Object output mode</b> (default = "Do not store") Controls whether the fit ellipse is stored as an object in the workspace:<br><ul><li>"Create new objects" Fit ellipses are stored as new objects in the workspace (name specified by "Output objects").  Ellipses are "solid" objects, irrespective of whether they were only fit to input object surface coordinates.  Ellipse objects are children of the input objects to which they were fit.  If outputting ellipse objects, any measurements are still only applied to the corresponding input objects.</li><li>"Do not store" (default) The ellipse coordinates are not stored.</li><li>"Update input objects" The coordinates of the input object are removed and replaced with the fit ellipse coordinates.  Note: Measurements associated with the input object (e.g. spatial measurements) will still be available, but may no longer be valid.</li></ul><br><b>Output objects</b> (default = "") Name assigned to output ellipse objects if "Object output mode" is in "Create new objects" mode.<br><br><b>Enable multithreading</b> (default = "true") Process multiple input objects simultaneously.  This can provide a speed improvement when working on a computer with a multi-core CPU.<br><br>
 </div>
 
   <!-- Footer -->

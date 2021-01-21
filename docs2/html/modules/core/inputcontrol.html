@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Select which file(s) or folder(s) MIA will process through.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.</p>
+    Select which file(s) or folder(s) MIA will process through.  If a file is selected, that file alone will be processed; however, selecting a folder will cause the system to iterate over all files and sub-folders within that folder.  Each file identified here will initialise its own workspace.  <br><br>It is possible to add filters to limit which files are used.  Multiple filters can be applied.<br><br>n.b. This module simply creates the workspace for subsequent analysis; no images are automatically loaded at this point.  To load image data to the workspace use the "Load image" module.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input path</b> (default = "") The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.<br><br><b>Simultaneous jobs</b> (default = "1") The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.<br><br><b>Series mode</b> (default = "All series") For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul><br><br><b>Series list</b> (default = "1") Comma-separated list of series numbers to be processed.<br><br><b>Only load first file per folder</b> (default = "false") Only load the (alphabetically) first file in each folder.<br><br><b>Add filter</b> (default = "") Add another filename filter.  All images to be processed will pass all filters.<br><b>Filter source</b> (default = "Extension") Type of filter to add.<br><br><b>Filter value</b> (default = "") Value to filter filenames against.<br><br><b>Filter type</b> (default = "Matches partially (include)") Control how the present filter operates:<li>"Matches partially (include)" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li><li>"Matches completely (include)" will process an image if the filter value is exactly the same as the source.</li><li>"Matches partially (exclude)" will not process an image if the filter value is partially present in the source.</li><li>"Matches completely (exclude)" will not process an image if the filter value is exactly the same as the source.</li></ul><br><br><br><b>Spatial units</b> (default = "MICROMETRE") Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<br><br></p>
+    <b>Input path</b> (default = "") The file or folder path to process.  If a file is selected, that file alone will be processed.  If a folder is selected, each file in that folder (and all sub-folders) passing the filters will be processed.<br><br><b>Simultaneous jobs</b> (default = "1") The number of images that will be processed simultaneously.  If this is set to "1" while processing a folder each valid file will still be processed, they will just complete one at a time.  For large images this is best left as "1" unless using a system with large amounts of RAM.<br><br><b>Series mode</b> (default = "All series") For multi-series files, select which series to process:<br><ul><li>"All series" will create a new workspace for each series in the file.</li><li>"Series list" allows a comma-separated list of series numbers to be specified.</li></ul><br><b>Series list</b> (default = "1") Comma-separated list of series numbers to be processed.<br><br><b>Only load first file per folder</b> (default = "false") Only load the (alphabetically) first file in each folder.<br><br><b>Add filter</b> (default = "") Add another filename filter.  All images to be processed will pass all filters.<br><b>Filter source</b> (default = "Extension") Type of filter to add.<br><b>Filter value</b> (default = "") Value to filter filenames against.<br><br><b>Filter type</b> (default = "Matches partially (include)") Control how the present filter operates:<li>"Matches partially (include)" will process an image if the filter value is partially present in the source (e.g. filename or extension).</li><li>"Matches completely (include)" will process an image if the filter value is exactly the same as the source.</li><li>"Matches partially (exclude)" will not process an image if the filter value is partially present in the source.</li><li>"Matches completely (exclude)" will not process an image if the filter value is exactly the same as the source.</li></ul><br><br><b>Spatial units</b> (default = "MICROMETRE") Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here.<br>
 </div>
 
   <!-- Footer -->

@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global <a href="https://imagej.net/Auto_Threshold">auto-thresholding algorithms</a>.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.</p>
+    Binarise an image in the workspace such that the output only has pixel values of 0 and 255.  Uses the built-in ImageJ global <a href="https://imagej.net/Auto_Threshold">auto-thresholding algorithms</a>.<br><br>Note: Currently only works on 8-bit images.  Images with other bit depths will be automatically converted to 8-bit based on the "Fill target range (normalise)" scaling method from the "Image type converter" module.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input image</b> (default = "") Image to apply threshold to.<br><br><b>Output mode</b> (default = "Calculate and apply") Controls if the threshold is applied to the input image or only calculated and stored as a measurement:<br><ul><li>"Calculate and apply" Calculate the threshold and apply it to the input image.  Whether the binarised image updates the input image or is saved as a separate image to the workspace is controlled by the "Apply to input image" parameter.  In this mode the calculated threshold is still stored as a measurement of the input image.</li><li>"Calculate only" Calculate the threshold, but do not apply it to the input image.  The calculated threshold is only stored as a measurement of the input image.</li><br><br><b>Apply to input image</b> (default = "true") Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><br><b>Algorithm</b> (default = "Huang") Global thresholding algorithm to use.  Choices are: Huang, Intermodes, IsoData, Li, MaxEntropy, Mean, MinError, Minimum, Moments, Otsu, Percentile, RenyiEntropy, Shanbhag, Triangle, Yen.<br><br><b>Threshold multiplier</b> (default = "1.0") Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><br><b>Use lower threshold limit</b> (default = "false") Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><br><b>Lower threshold limit</b> (default = "0.0") Lowest absolute threshold value that can be applied.<br><br><b>Black objects/white background</b> (default = "true") Controls the logic of the output image in terms of what is considered foreground and background.<br><br></p>
+    <b>Input image</b> (default = "") Image to apply threshold to.<br><br><b>Output mode</b> (default = "Calculate and apply") Controls if the threshold is applied to the input image or only calculated and stored as a measurement:<br><ul><li>"Calculate and apply" Calculate the threshold and apply it to the input image.  Whether the binarised image updates the input image or is saved as a separate image to the workspace is controlled by the "Apply to input image" parameter.  In this mode the calculated threshold is still stored as a measurement of the input image.</li><li>"Calculate only" Calculate the threshold, but do not apply it to the input image.  The calculated threshold is only stored as a measurement of the input image.</li><br><b>Apply to input image</b> (default = "true") Select if the threshold should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the thresholding process.  This image will be added to the workspace.<br><br><b>Algorithm</b> (default = "Huang") Global thresholding algorithm to use.  Choices are: Huang, Intermodes, IsoData, Li, MaxEntropy, Mean, MinError, Minimum, Moments, Otsu, Percentile, RenyiEntropy, Shanbhag, Triangle, Yen.<br><b>Threshold multiplier</b> (default = "1.0") Prior to application of automatically-calculated thresholds the threshold value is multiplied by this value.  This allows the threshold to be systematically increased or decreased.  For example, a "Threshold multiplier" of 0.9 applied to an automatically-calculated threshold of 200 will see the image thresholded at the level 180.<br><br><b>Use lower threshold limit</b> (default = "false") Limit the lowest threshold that can be applied to the image.  This is used to prevent unintentional segmentation of an image containing only background (i.e. no features present).<br><br><b>Lower threshold limit</b> (default = "0.0") Lowest absolute threshold value that can be applied.<br><br><b>Black objects/white background</b> (default = "true") Controls the logic of the output image in terms of what is considered foreground and background.<br><br>
 </div>
 
   <!-- Footer -->

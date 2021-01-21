@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Apply intensity filters to an image in the workspace.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Apply intensity filters to an image in the workspace.<br>Note: 3D median filter is currently incompatible with 5D hyperstacks</p>
+    Apply intensity filters to an image in the workspace.<br>Note: 3D median filter is currently incompatible with 5D hyperstacks
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input image</b> (default = "") Image to apply filter to.<br><br><b>Apply to input image</b> (default = "true") Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the filtering process.  This image will be added to the workspace.<br><br><b>Filter mode</b> (default = "Difference of Gaussian 2D") Filter to be applied to the image.<br><br>- Difference of Gaussian 2D Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".<br><br>- Gaussian 2D.<br><br>- Gaussian 3D.<br><br>- Gradient 2D.<br><br>- Maximum 2D.<br><br>- Maximum 3D.<br><br>- Mean 2D.<br><br>- Mean 3D.<br><br>- Median 2D.<br><br>- Median 3D.<br><br>- Minimum 2D.<br><br>- Minimum 3D.<br><br>- Ridge enhancement 2D enhances ridge-like structures in the image.<br><br>- Rolling frame filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable..<br><br>- Variance 2D.<br><br>- Variance 3D.<br><br><br><b>Filter radius</b> (default = "2.0") Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.<br><br><b>Calibrated units</b> (default = "false") Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><br><b>Rolling filter method</b> (default = "Average") Statistic to apply for rolling frame filtering.<br><br><b>Window half width (frames)</b> (default = "1") Number of frames before/after target frame to be used for rolling frame filtering.  For example, averaging over a half window width of 3 will use 3 frames before the target frame, 3 frames after and the target frame itself.<br><br><b>Window mode</b> (default = "Both sides") Controls which frames are used in the rolling frame filter calculation<br><br></p>
+    <b>Input image</b> (default = "") Image to apply filter to.<br><br><b>Apply to input image</b> (default = "true") Select if the filter should be applied directly to the input image, or if it should be applied to a duplicate, then stored as a different image in the workspace.<br><br><b>Output image</b> (default = "") Name of the output image created during the filtering process.  This image will be added to the workspace.<br><br><b>Filter mode</b> (default = "Difference of Gaussian 2D") Filter to be applied to the image.<br><br>- Difference of Gaussian 2D Difference of Gaussian filter (2D)  Used to enhance spot-like features of sizes similar to the setting for "Filter radius".<br><br>- Gaussian 2D.<br><br>- Gaussian 3D.<br><br>- Gradient 2D.<br><br>- Maximum 2D.<br><br>- Maximum 3D.<br><br>- Mean 2D.<br><br>- Mean 3D.<br><br>- Median 2D.<br><br>- Median 3D.<br><br>- Minimum 2D.<br><br>- Minimum 3D.<br><br>- Ridge enhancement 2D enhances ridge-like structures in the image.<br><br>- Rolling frame filters the image at each frame based on frames before and/after.  The frame window over which the statistics are calculated is user-controllable..<br><br>- Variance 2D.<br><br>- Variance 3D.<br><br><b>Filter radius</b> (default = "2.0") Range the filter is calculated over.  Often also referred to as "sigma".  Value specified in pixel units, unless "calibrated units" is enabled.<br><br><b>Calibrated units</b> (default = "false") Choose if filter radius is specified in pixel (set to "false") or calibrated (set to "true") units.  What units are used are controlled from "Input control".<br><br><b>Rolling filter method</b> (default = "Average") Statistic to apply for rolling frame filtering.<br><b>Window half width (frames)</b> (default = "1") Number of frames before/after target frame to be used for rolling frame filtering.  For example, averaging over a half window width of 3 will use 3 frames before the target frame, 3 frames after and the target frame itself.<br><br><b>Window mode</b> (default = "Both sides") Controls which frames are used in the rolling frame filter calculation<br>
 </div>
 
   <!-- Footer -->

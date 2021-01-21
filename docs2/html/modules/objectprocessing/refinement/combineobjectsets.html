@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Combines the objects from two collections stored in the workspace.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the "other" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information, but do not contain the relationship or measurement information of the originals.  The original objects are unaffected by this module.</p>
+    Combines the objects from two collections stored in the workspace.  Either the objects from one collection can be added to the other or they can both be combined into a new collection, which is added to the workspace.<br><br>Note: Any objects added to another collection (either the "other" object collection or to a new collection) are duplicates of the original objects.  These duplicates contain the same spatial and temporal information, but do not contain the relationship or measurement information of the originals.  The original objects are unaffected by this module.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input objects 1</b> (default = "") First of two object collections to combine.  Depending on the choice for parameter "Output mode", this collection may be updated to include the objects from the second collection ("Input objects 2").<br><br><b>Input objects 2</b> (default = "") Second of two object collections to combine.  Depending on the choice for parameter "Output mode", this collection may be updated to include the objects from the first collection ("Input objects 2").<br><br><b>Output mode</b> (default = "Create new object set") Controls where the combined object collections are stored:<br><ul><li>"Add set objects 2 to set 1" Duplicates of all objects in the second collection ("Input objects 2") are made and added to the first collection ("Input objects 1").</li><li>"Add set objects 1 to set 2" Duplicates of all objects in the first collection ("Input objects 1") are made and added to the second collection ("Input objects 1").</li><li>"Create new object set". Duplicates of all objects in the first ("Input objects 1") and second ("Input objects 2") collections are made and added to a new collection with name specified by "Output objects"</li></ul><br><br><b>Output objects</b> (default = "") Name of the combined output collection to be added to the workspace if "Output mode" is set to "Create new object set".<br><br></p>
+    <b>Input objects 1</b> (default = "") First of two object collections to combine.  Depending on the choice for parameter "Output mode", this collection may be updated to include the objects from the second collection ("Input objects 2").<br><br><b>Input objects 2</b> (default = "") Second of two object collections to combine.  Depending on the choice for parameter "Output mode", this collection may be updated to include the objects from the first collection ("Input objects 2").<br><br><b>Output mode</b> (default = "Create new object set") Controls where the combined object collections are stored:<br><ul><li>"Add set objects 2 to set 1" Duplicates of all objects in the second collection ("Input objects 2") are made and added to the first collection ("Input objects 1").</li><li>"Add set objects 1 to set 2" Duplicates of all objects in the first collection ("Input objects 1") are made and added to the second collection ("Input objects 1").</li><li>"Create new object set". Duplicates of all objects in the first ("Input objects 1") and second ("Input objects 2") collections are made and added to a new collection with name specified by "Output objects"</li></ul><br><b>Output objects</b> (default = "") Name of the combined output collection to be added to the workspace if "Output mode" is set to "Create new object set".<br><br>
 </div>
 
   <!-- Footer -->

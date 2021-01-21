@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Calculates statistics for a measurement associated with all partner objects of an input object.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Calculates statistics for a measurement associated with all partner objects of an input object.  The calculated statistics are stored as new measurements, associated with the relevant input object.  For example, calculating the summed volume of all partner objects (from a specified collection) of each input object.</p>
+    Calculates statistics for a measurement associated with all partner objects of an input object.  The calculated statistics are stored as new measurements, associated with the relevant input object.  For example, calculating the summed volume of all partner objects (from a specified collection) of each input object.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input objects</b> (default = "") Input object collection from the workspace for which statistics of partner object measurements will be calculated.  This object collection is a partner to those selected by the "Partner objects" parameter.  Statistics for one measurement associated with all partners of each input object will be calculated and added to this object as a new measurement.<br><br><b>Partner objects</b> (default = "") Input object collection from the workspace, where these objects are partners of the collection selected by the "Input objects" parameter.)<br><br><b>Measurement</b> (default = "") Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.<br><br><b>Calculate mean</b> (default = "true") When selected, the mean value of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate standard deviation</b> (default = "true") When selected, the standard deviation of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate minimum</b> (default = "true") When selected, the minimum value of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate maximum</b> (default = "true") When selected, the maximum value of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate sum</b> (default = "true") When selected, the sum of the measurements will be calculated and added to the relevant input object.<br><br></p>
+    <b>Input objects</b> (default = "") Input object collection from the workspace for which statistics of partner object measurements will be calculated.  This object collection is a partner to those selected by the "Partner objects" parameter.  Statistics for one measurement associated with all partners of each input object will be calculated and added to this object as a new measurement.<br><br><b>Partner objects</b> (default = "") Input object collection from the workspace, where these objects are partners of the collection selected by the "Input objects" parameter.)<br><br><b>Measurement</b> (default = "") Measurement associated with the partner objects for which statistics will be calculated.  Statistics will be calculated for all partners of an input object.<br><br><b>Calculate mean</b> (default = "true") When selected, the mean value of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate standard deviation</b> (default = "true") When selected, the standard deviation of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate minimum</b> (default = "true") When selected, the minimum value of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate maximum</b> (default = "true") When selected, the maximum value of the measurements will be calculated and added to the relevant input object.<br><br><b>Calculate sum</b> (default = "true") When selected, the sum of the measurements will be calculated and added to the relevant input object.<br><br>
 </div>
 
   <!-- Footer -->

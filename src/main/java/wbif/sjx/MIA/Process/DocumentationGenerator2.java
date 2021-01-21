@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.MIA.Object.References.Abstract.Ref;
@@ -71,7 +72,7 @@ public class DocumentationGenerator2 {
         root.mkdir();
 
         generateIndexPage();
-        generateGuidesPage();
+        generateGuidesPages();
 
         // Generating module pages
         Category rootCategory = Categories.getRootCategory();
@@ -82,6 +83,7 @@ public class DocumentationGenerator2 {
 
         // Creating README.md
         generateReadmeMarkdown();
+
     }
 
     private void deleteFolders(File root) {
@@ -130,15 +132,35 @@ public class DocumentationGenerator2 {
 
     }
 
-    public void generateGuidesPage() throws IOException {
+    public void generateGuidesPages() throws IOException {
+        generateGettingStartedPage();
+        
+    }
+
+    public void generateGettingStartedPage() throws IOException {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-        page = setNavbarActive(page, Page.GUIDES);
+        page = setNavbarActive(page, Page.HOME);
 
-        page = page.replace("${MAIN_CONTENT}", "GUIDES");
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/gettingstartedtemplate.html", pathToRoot);
 
-        FileWriter writer = new FileWriter("docs2/html/guides.html");
+        String gsContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${INSTALLATION}", gsContent);
+
+        gsContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${CREATE_NEW}", gsContent);
+
+        gsContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md")));
+        gsContent = renderer.render(parser.parse(gsContent));
+        mainContent = mainContent.replace("${USE_EXISTING}", gsContent);
+
+        page = page.replace("${MAIN_CONTENT}", mainContent);
+
+        FileWriter writer = new FileWriter("docs2/html/gettingstarted.html");
         writer.write(page);
         writer.flush();
         writer.close();
@@ -266,7 +288,10 @@ public class DocumentationGenerator2 {
             for (Parameter collectionParam : ((ParameterGroup) parameter).getTemplateParameters().values())
                 sb.append(getParameterSummary(collectionParam));
 
-        return sb.append("<br>").toString();
+        if (!(parameter instanceof ChoiceP))
+            sb.append("<br>");
+
+        return sb.toString();
 
     }
 
@@ -274,9 +299,28 @@ public class DocumentationGenerator2 {
         // Generate module list HTML document
         String pathToRoot = "..";
         String page = getPageTemplate("src/main/resources/templatehtml/pagetemplate.html", pathToRoot);
-        page = setNavbarActive(page, Page.ABOUT);
+        page = setNavbarActive(page, Page.HOME);
 
-        page = page.replace("${MAIN_CONTENT}", "ABOUT");
+        String mainContent = getPageTemplate("src/main/resources/templatehtml/abouttemplate.html", pathToRoot);
+
+        String aboutContent = new String(
+                Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_INTRODUCTION}", aboutContent);
+
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_ACKNOWLEDGEMENTS}", aboutContent);
+
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_CITING}", aboutContent);
+
+        aboutContent = new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md")));
+        aboutContent = renderer.render(parser.parse(aboutContent));
+        mainContent = mainContent.replace("${ABOUT_DEVELOPMENT}", aboutContent);
+
+        page = page.replace("${MAIN_CONTENT}", mainContent);
 
         FileWriter writer = new FileWriter("docs2/html/about.html");
         writer.write(page);
@@ -294,7 +338,7 @@ public class DocumentationGenerator2 {
         return content;
 
     }
-    
+
     public static void generateReadmeMarkdown() {
         try {
             StringBuilder sb = new StringBuilder();
@@ -305,19 +349,33 @@ public class DocumentationGenerator2 {
             sb.append(
                     "[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
             sb.append("\n\n");
+
+            sb.append("About MIA").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md"))));
             sb.append("\n\n");
+
+            sb.append("Installation").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md"))));
             sb.append("\n\n");
+
+            sb.append("Create new workflow").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md"))));
             sb.append("\n\n");
+
+            sb.append("Use existing workflow").append("\n").append("------------").append("\n");
             sb.append(new String(
                     Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md"))));
             sb.append("\n\n");
+
+            sb.append("Acknowledgements").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md"))));
             sb.append("\n\n");
+
+            sb.append("Citing MIA").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md"))));
             sb.append("\n\n");
+
+            sb.append("Ongoing development").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md"))));
             sb.append("\n\n");
 

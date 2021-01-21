@@ -1,5 +1,3 @@
-Using an existing workflow
------
 - In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file

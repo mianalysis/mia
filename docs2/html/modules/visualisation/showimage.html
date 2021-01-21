@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Display any image held in the current workspace.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Display any image held in the current workspace.  Images are displayed using the standard ImageJ image window, so can be accessed/manipulated by any ImageJ/Fiji feature.  Displayed images are duplicates of the image stored in the workspace, so modification of a displayed image won't alter the original.</p>
+    Display any image held in the current workspace.  Images are displayed using the standard ImageJ image window, so can be accessed/manipulated by any ImageJ/Fiji feature.  Displayed images are duplicates of the image stored in the workspace, so modification of a displayed image won't alter the original.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Display image</b> (default = "") Image to display.<br><br><b>Title mode</b> (default = "Image name") Select what title the image window should have.<br><br>- "Image name" Set the image window title to the name of the image.<br><br>- "Filename" Set the image window title to the filename of the root file for this workspace (i.e. the file set in "Input control".<br><br>- "Image and filename" Set the image window title to a composite of the filename of the root file for this workspace and the name of the image.<br><br><b>Quick normalisation</b> (default = "true") Before displaying the image, apply quick normalisation to improve contrast.  The minimum and maximum displayed intensities are simply set to the minimum and maximum pixel intensities contained within the image stack.<br><br><b>Channel mode</b> (default = "Composite") Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the "C" slider at the bottom of the image window).<br><br></p>
+    <b>Display image</b> (default = "") Image to display.<br><br><b>Title mode</b> (default = "Image name") Select what title the image window should have.<br><br>- "Image name" Set the image window title to the name of the image.<br><br>- "Filename" Set the image window title to the filename of the root file for this workspace (i.e. the file set in "Input control".<br><br>- "Image and filename" Set the image window title to a composite of the filename of the root file for this workspace and the name of the image.<br><b>Quick normalisation</b> (default = "true") Before displaying the image, apply quick normalisation to improve contrast.  The minimum and maximum displayed intensities are simply set to the minimum and maximum pixel intensities contained within the image stack.<br><br><b>Channel mode</b> (default = "Composite") Select whether multi-channel images should be displayed as composites (show all channels overlaid) or individually (the displayed channel is controlled by the "C" slider at the bottom of the image window).<br>
 </div>
 
   <!-- Footer -->

@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Filter an object collection based on user-defined list of object ID numbers.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Filter an object collection based on user-defined list of object ID numbers.  When the module executes, the user is presented with a dialog box where they can enter a comma-separated list of object IDs to remove.  Once the list is complete, the user presses "OK" to proceed.  All objects with ID numbers matching those in the list can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  To assist with selection of ID numbers, an optional image can be displayed - this could be pre-prepared to display object ID numbers using the "Add labels" module.  The number of objects specified for removal can be stored as a metadata value.</p>
+    Filter an object collection based on user-defined list of object ID numbers.  When the module executes, the user is presented with a dialog box where they can enter a comma-separated list of object IDs to remove.  Once the list is complete, the user presses "OK" to proceed.  All objects with ID numbers matching those in the list can be removed from the input collection, moved to another collection (and removed from the input collection) or simply counted (but retained in the input collection).  To assist with selection of ID numbers, an optional image can be displayed - this could be pre-prepared to display object ID numbers using the "Add labels" module.  The number of objects specified for removal can be stored as a metadata value.
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input objects</b> (default = "") Objects to be filtered.<br><br><b>Filter mode</b> (default = "Remove filtered objects") Controls what happens to objects which don't pass the filter:<br><ul><li>"Do nothing" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li><li>"Move filtered objects to new class" Objects failing the filter are moved to a new object class.  The name of the class is determined by the "Output (filtered) objects" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li><li>"Remove filtered objects" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul><br><br><b>Output (filtered) objects</b> (default = "") New object collection containing input objects which did not pass the filter.  These objects are only stored if "Filter mode" is set to "Move filtered objects to new class".<br><br><b>Show image</b> (default = "true") When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the "Image to display" parameter.<br><br><b>Image to display</b> (default = "") Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the "Add labels" module.<br><br><b>Store filter results</b> (default = "false") When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName]_BY_ID").<br><br></p>
+    <b>Input objects</b> (default = "") Objects to be filtered.<br><br><b>Filter mode</b> (default = "Remove filtered objects") Controls what happens to objects which don't pass the filter:<br><ul><li>"Do nothing" Retains all input objects, irrespective of whether they passed or failed the filter.  This is useful when also storing the filter results as metadata values (i.e. just counting the number of objects which pass the filter).</li><li>"Move filtered objects to new class" Objects failing the filter are moved to a new object class.  The name of the class is determined by the "Output (filtered) objects" parameter.  All existing measurements and relationships are carried forward into the new object collection.</li><li>"Remove filtered objects" (default) Removes objects failing the filter.  Once removed, these objects are unavailable for further use by modules and won't be included in exported results.</li></ul><br><b>Output (filtered) objects</b> (default = "") New object collection containing input objects which did not pass the filter.  These objects are only stored if "Filter mode" is set to "Move filtered objects to new class".<br><br><b>Show image</b> (default = "true") When selected, a specific image will be displayed when this module executes.  This can be used to display a pre-prepared, object ID-labelled image to the user, thus acting as a reference for which object IDs to remove.  The image to be displayed is set using the "Image to display" parameter.<br><br><b>Image to display</b> (default = "") Image to display when the module executes.  For example, this could be a pre-prepared image with object IDs inserted as text overlays using the "Add labels" module.<br><br><b>Store filter results</b> (default = "false") When selected, the number of removed (or moved) objects is counted and stored as a metadata item (name in the format "FILTER // NUM_[inputObjectsName]_BY_ID").<br><br>
 </div>
 
   <!-- Footer -->

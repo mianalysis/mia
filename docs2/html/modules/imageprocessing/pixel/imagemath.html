@@ -44,10 +44,10 @@
             <a class="nav-link" href="../../../../index.html">Home</a>
           </li>
           <li class="nav-item dropdown ">
-            <a class="nav-link dropdown-toggle" href="../../../../html/gettingstarted.html" id="navbarDropdownModules"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownModules"
               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-              <a class="dropdown-item" href="#">Getting started</a>
+              <a class="dropdown-item" href="../../../../html/gettingstarted.html">Getting started</a>
             </div>
           </li>
           <li class="nav-item active">
@@ -69,7 +69,7 @@
           </li>
         </ul>
         <a class="btn btn-outline-primary ml-2"
-          href="https://github.com/sjcross/MIA/releases/download/v0.15.8/MIA_-0.15.8.jar">Download</a>
+          href="https://github.com/sjcross/MIA/releases/download/v0.15.9/MIA_-0.15.9.jar">Download</a>
       </div>
     </div>
   </nav>
@@ -80,11 +80,14 @@
     <p class="lead">Applies a mathematical operation to all pixels of the input image stack.</p>
 </div>
 
-<div class="container mia-text-container">
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Description</h2>
-    <p class="mb-4">Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract</p>
+    Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract
+</div>
+
+<div class="pt-md-2 pb-md-4 mx-auto">
     <h2 class="display-6">Parameters</h2>
-    <p class="mb-4"><b>Input image</b> (default = "") Image from workspace to apply calculation to.  This image can be of any bit depth.<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><br><b>Calculation</b> (default = "Add") Controls the mathematical operation being applied to all pixels of this image.  Choices are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract<br><br><b>Value source</b> (default = "Fixed value") For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul><li>"Fixed value" A fixed value is specified using the "Value" parameter.  This value is the same for all images processed by this module..</li><li>"Measurement value" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul><br><br><b>Measurement</b> (default = "") If "Value source" is set to "Measurement value", this is the measurement associated with the input image that will be used in the calculation.<br><br><b>Value</b> (default = "1.0") If "Value source" is set to "Fixed value", this is the value that will be used in the calculation.<br><br></p>
+    <b>Input image</b> (default = "") Image from workspace to apply calculation to.  This image can be of any bit depth.<br><br><b>Apply to input image</b> (default = "true") When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the "Output image" parameter.<br><br><b>Output image</b> (default = "") If "Apply to input image" is not selected, the post-operation image will be saved to the workspace with this name.<br><br><b>Calculation</b> (default = "Add") Controls the mathematical operation being applied to all pixels of this image.  Choices are: Absolute, Add, Divide, Multiply, Square, Squareroot, Subtract<br><b>Value source</b> (default = "Fixed value") For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul><li>"Fixed value" A fixed value is specified using the "Value" parameter.  This value is the same for all images processed by this module..</li><li>"Measurement value" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul><br><b>Measurement</b> (default = "") If "Value source" is set to "Measurement value", this is the measurement associated with the input image that will be used in the calculation.<br><br><b>Value</b> (default = "1.0") If "Value source" is set to "Fixed value", this is the value that will be used in the calculation.<br><br>
 </div>
 
   <!-- Footer -->

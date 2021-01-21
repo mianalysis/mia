@@ -414,19 +414,33 @@ public class DocumentationGenerator {
             sb.append(
                     "[![Wolfson Bioimaging](./src/main/resources/Images/Logo_text_UoB_128.png)](http://www.bristol.ac.uk/wolfson-bioimaging/)");
             sb.append("\n\n");
+
+            sb.append("About MIA").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/introduction.md"))));
             sb.append("\n\n");
+
+            sb.append("Installation").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/installation.md"))));
             sb.append("\n\n");
+
+            sb.append("Create new workflow").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/creatingWorkflow.md"))));
             sb.append("\n\n");
+
+            sb.append("Use existing workflow").append("\n").append("------------").append("\n");
             sb.append(new String(
                     Files.readAllBytes(Paths.get("src/main/resources/templatemd/usingExistingWorkflow.md"))));
             sb.append("\n\n");
+
+            sb.append("Acknowledgements").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/acknowledgements.md"))));
             sb.append("\n\n");
+
+            sb.append("Citing MIA").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/citing.md"))));
             sb.append("\n\n");
+
+            sb.append("Ongoing development").append("\n").append("------------").append("\n");
             sb.append(new String(Files.readAllBytes(Paths.get("src/main/resources/templatemd/note.md"))));
             sb.append("\n\n");
 
