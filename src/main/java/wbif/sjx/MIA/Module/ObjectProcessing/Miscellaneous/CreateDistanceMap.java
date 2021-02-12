@@ -16,7 +16,9 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
+import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AbstractRegistrationHandler;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
@@ -85,24 +87,42 @@ public class CreateDistanceMap extends Module {
         int nT = inputImage.getImagePlus().getNFrames();
 
         // Creating a blank image (8-bit, so binary operations work)
-        ImagePlus distanceMap = IJ.createHyperStack(outputImageName, width, height,1,nZ,nT,8);
-        distanceMap.setCalibration(inputImage.getImagePlus().getCalibration());
+        ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height,1,nZ,nT,8);
+        distanceMapIpl.setCalibration(inputImage.getImagePlus().getCalibration());
+        Image distanceMapImage = new Image(outputImageName,distanceMapIpl);
 
         // Adding a spot to the centre of each object
-        for (Obj inputObj:inputObjects.values()) {
+        for (Obj inputObj : inputObjects.values()) {
             int x = (int) Math.round(inputObj.getXMean(true));
             int y = (int) Math.round(inputObj.getYMean(true));
-            int z = (int) Math.round(inputObj.getZMean(true,false));
+            int z = (int) Math.round(inputObj.getZMean(true, false));
             int t = inputObj.getT();
 
-            distanceMap.setPosition(1,z+1,t+1);
-            distanceMap.getProcessor().set(x,y,255);
+            distanceMapIpl.setPosition(1, z + 1, t + 1);
+            distanceMapIpl.getProcessor().set(x, y, 255);
         }
 
-        // Calculating the distance map
-        distanceMap = DistanceMap.getDistanceMap(distanceMap,true);
+        // Calculating the distance map, one frame at a time
+        int count = 0;
+        int nFrames = distanceMapIpl.getNFrames();        
 
-        return new Image(outputImageName,distanceMap);
+        for (int t = 0; t < nFrames; t++) {
+            writeStatus("Processing frame " + (++count) + " of " + nFrames, name);
+
+            // Getting the mask image at this timepoint
+            ImagePlus currentIpl = ExtractSubstack.extractSubstack(distanceMapImage, "Distance", "1", "1", String.valueOf(t + 1)).getImagePlus();
+
+            // Calculating the distance map for this timepoint
+            Image currentImage = new Image(outputImageName, DistanceMap.getDistanceMap(currentIpl, true));
+            currentImage.showImage();
+            IJ.runMacro("waitForUser");
+
+            // Putting the image back into the distanceMapImage
+            AbstractRegistrationHandler.replaceStack(distanceMapImage, currentImage, 0, t);
+
+        }
+
+        return distanceMapImage;
 
     }
 

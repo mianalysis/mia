@@ -49,6 +49,7 @@ public class RidgeDetection extends Module {
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String EXTEND_LINE = "Extend line";
     public static final String ESTIMATE_WIDTH = "Estimate width";
+    public static final String OVERLAP_MODE = "Overlap mode";
 
     public static final String REFINEMENT_SEPARATOR = "Refinement settings";
     public static final String MIN_LENGTH = "Minimum length";
@@ -57,6 +58,14 @@ public class RidgeDetection extends Module {
     public static final String LIMIT_END_MISALIGNMENT = "Limit end misalignment";
     public static final String ALIGNMENT_RANGE = "Alignment range (px)";
     public static final String MAXIMUM_END_MISALIGNMENT = "Maximum end misalignment (degs)";
+
+    public interface OverlapModes {
+        String NONE = "None";
+        String SLOPE = "Slope";
+
+        String[] ALL = new String[] { NONE, SLOPE };
+        
+    }
 
 
     public RidgeDetection(ModuleCollection modules) {
@@ -269,6 +278,7 @@ public class RidgeDetection extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean extendLine = parameters.getValue(EXTEND_LINE);
         boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH);
+        String overlapMode = parameters.getValue(OVERLAP_MODE);
         double minLength = parameters.getValue(MIN_LENGTH);
         double maxLength = parameters.getValue(MAX_LENGTH);
         boolean linkContours = parameters.getValue(LINK_CONTOURS);
@@ -282,6 +292,18 @@ public class RidgeDetection extends Module {
             sigma = calibration.getRawX(sigma);
             minLength = calibration.getRawX(minLength);
             maxLength = calibration.getRawX(maxLength);
+        }
+
+        // Getting overlap mode
+        OverlapOption overlapOption = null;
+        switch (overlapMode) {
+            case OverlapModes.NONE:
+            default:
+                overlapOption = OverlapOption.NONE;
+                break;
+            case OverlapModes.SLOPE:
+                overlapOption = OverlapOption.SLOPE;
+                break;
         }
 
         ImagePlus inputIpl = inputImage.getImagePlus();
@@ -305,7 +327,7 @@ public class RidgeDetection extends Module {
                     // Running the ridge detection
                     Lines lines;
                     try {
-                        lines = lineDetector.detectLines(inputIpl.getProcessor(), sigma, upperThreshold,lowerThreshold, minLength, maxLength, darkLine, true, estimateWidth, extendLine,OverlapOption.NONE);
+                        lines = lineDetector.detectLines(inputIpl.getProcessor(), sigma, upperThreshold,lowerThreshold, minLength, maxLength, darkLine, true, estimateWidth, extendLine, overlapOption);
                     } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
                         continue;
                     }
@@ -374,7 +396,8 @@ public class RidgeDetection extends Module {
         parameters.add(new DoubleP(SIGMA,this, 3d));
         parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
         parameters.add(new BooleanP(EXTEND_LINE,this,false));
-        parameters.add(new BooleanP(ESTIMATE_WIDTH,this,false));
+        parameters.add(new BooleanP(ESTIMATE_WIDTH, this, false));
+        parameters.add(new ChoiceP(OVERLAP_MODE,this,OverlapModes.NONE,OverlapModes.ALL));
 
         parameters.add(new SeparatorP(REFINEMENT_SEPARATOR,this));
         parameters.add(new DoubleP(MIN_LENGTH,this, 0d));
@@ -405,6 +428,7 @@ public class RidgeDetection extends Module {
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(EXTEND_LINE));
         returnedParameters.add(parameters.getParameter(ESTIMATE_WIDTH));
+        returnedParameters.add(parameters.getParameter(OVERLAP_MODE));
 
         returnedParameters.add(parameters.getParameter(REFINEMENT_SEPARATOR));
         returnedParameters.add(parameters.getParameter(MIN_LENGTH));
