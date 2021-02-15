@@ -92,13 +92,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String AVAILABLE_METADATA_FIELDS = "Available metadata fields";
     public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
+    public static final String SERIES_MODE = "Series mode";
+    public static final String SERIES_NUMBER = "Series number";
 
     public static final String RANGE_SEPARATOR = "Dimension ranges and cropping";
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
     public static final String CHANNEL = "Channel";
-    public static final String THREE_D_MODE = "Load 3D stacks as";
+    // public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String CROP_MODE = "Crop mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
@@ -143,13 +145,21 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public interface ThreeDModes {
-        String TIMESERIES = "Timeseries";
-        String ZSTACK = "Z-Stack";
+    public interface SeriesModes {
+        String CURRENT_SERIES = "Current series";
+        String SPECIFIC_SERIES = "Specific series";
 
-        String[] ALL = new String[] { TIMESERIES, ZSTACK };
+        String[] ALL = new String[] { CURRENT_SERIES, SPECIFIC_SERIES };
 
     }
+
+    // public interface ThreeDModes {
+    //     String TIMESERIES = "Timeseries";
+    //     String ZSTACK = "Z-Stack";
+
+    //     String[] ALL = new String[] { TIMESERIES, ZSTACK };
+
+    // }
 
     public interface NameFormats {
         String GENERIC = "Generic (from metadata)";
@@ -465,11 +475,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
     }
 
-    public ImagePlus getImageSequence(String rootName, Metadata metadata, String channels, String slices, String frames,
+    public ImagePlus getImageSequence(String absolutePath, int seriesNumber, String channels, String slices, String frames,
             int[] crop, double[] scaleFactors, String scaleMode, @Nullable double[] intRange, boolean manualCal)
             throws ServiceException, DependencyException, FormatException, IOException {
-
-        String absolutePath = metadata.insertMetadataValues(rootName);
 
         // Number format
         Pattern pattern = Pattern.compile("Z\\{0+}");
@@ -507,7 +515,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         // Determining the dimensions of the input image
         String[] dimRanges = new String[] { channels, slices, "1" };
 
-        ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, 1, dimRanges, crop,
+        ImagePlus rootIpl = getBFImage(nameBefore + df.format(framesList[0]) + nameAfter, seriesNumber, dimRanges, crop,
                 scaleFactors, scaleMode, intRange, manualCal, false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
@@ -724,7 +732,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
     }
 
-
     @Override
     public Category getCategory() {
         return Categories.INPUT_OUTPUT;
@@ -745,6 +752,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
         String genericFormat = parameters.getValue(GENERIC_FORMAT);
+        String seriesMode = parameters.getValue(SERIES_MODE);
         String channels = parameters.getValue(CHANNELS);
         String slices = parameters.getValue(SLICES);
         String frames = parameters.getValue(FRAMES);
@@ -765,10 +773,19 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY);
         double maxIntensity = parameters.getValue(MAX_INPUT_INTENSITY);
         String reader = parameters.getValue(READER);
-        String threeDMode = parameters.getValue(THREE_D_MODE);
+        // String threeDMode = parameters.getValue(THREE_D_MODE);
 
         // Series number comes from the Workspace
-        int seriesNumber = workspace.getMetadata().getSeriesNumber();
+        int seriesNumber = 1;
+        if (reader.equals(Readers.BIOFORMATS))
+            switch (seriesMode) {
+                case SeriesModes.CURRENT_SERIES:
+                    seriesNumber = workspace.getMetadata().getSeriesNumber();
+                    break;
+                case SeriesModes.SPECIFIC_SERIES:
+                    seriesNumber = parameters.getValue(SERIES_NUMBER);
+                    break;
+            }
 
         // ImageJ reader can't use crop
         if (reader.equals(Readers.IMAGEJ))
@@ -834,7 +851,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                 case ImportModes.IMAGE_SEQUENCE:
                     Metadata metadata = (Metadata) workspace.getMetadata().clone();
-                    ipl = getImageSequence(sequenceRootName, metadata, channels, slices, frames, crop, scaleFactors,
+                    String absolutePath = metadata.insertMetadataValues(sequenceRootName);
+                    ipl = getImageSequence(absolutePath, seriesNumber, channels, slices, frames, crop, scaleFactors,
                             scaleMode, intRange, setCalibration);
 
                     break;
@@ -891,7 +909,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
                     switch (reader) {
                         case Readers.BIOFORMATS:
-                            ipl = getBFImage(filePath, 1, dimRanges, crop, scaleFactors, scaleMode, intRange,
+                            ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, scaleFactors, scaleMode, intRange,
                                     setCalibration, true);
                             break;
                         case Readers.IMAGEJ:
@@ -927,17 +945,17 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         if (ipl.getBitDepth() == 24)
             ipl = CompositeConverter.makeComposite(ipl);
 
-        // If either number of slices or timepoints is 1 check it's the right dimension.
-        // This should only be wrong if a Stack rather than Hyperstack was loaded, so if
-        // there are multiple channels it shouldn't be an issue.
-        if (ipl.getNChannels() == 1) {
-            if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
-                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
-                ipl.getCalibration().pixelDepth = 1;
-            } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
-                Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
-            }
-        }
+        // // If either number of slices or timepoints is 1 check it's the right dimension.
+        // // This should only be wrong if a Stack rather than Hyperstack was loaded, so if
+        // // there are multiple channels it shouldn't be an issue.
+        // if (reader.equals(Readers.IMAGEJ) && ipl.getNChannels() == 1) {
+        //     if (threeDMode.equals(ThreeDModes.TIMESERIES) && ipl.getNFrames() == 1 && ipl.getNSlices() > 1) {
+        //         Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_TIMESERIES);
+        //         ipl.getCalibration().pixelDepth = 1;
+        //     } else if (threeDMode.equals(ThreeDModes.ZSTACK) && ipl.getNSlices() == 1 && ipl.getNFrames() > 1) {
+        //         Convert3DStack.process(ipl, Convert3DStack.Modes.OUTPUT_Z_STACK);
+        //     }
+        // }
 
         // Adding image to workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
@@ -972,13 +990,15 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         parameters.add(new TextAreaP(AVAILABLE_METADATA_FIELDS, this, false));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER, this, true));
         parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new ChoiceP(SERIES_MODE, this, SeriesModes.CURRENT_SERIES, SeriesModes.ALL));
+        parameters.add(new IntegerP(SERIES_NUMBER, this, 1));
 
         parameters.add(new SeparatorP(RANGE_SEPARATOR, this));
         parameters.add(new StringP(CHANNELS, this, "1-end"));
         parameters.add(new StringP(SLICES, this, "1-end"));
         parameters.add(new StringP(FRAMES, this, "1-end"));
         parameters.add(new IntegerP(CHANNEL, this, 1));
-        parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL));
+        // parameters.add(new ChoiceP(THREE_D_MODE, this, ThreeDModes.ZSTACK, ThreeDModes.ALL));
         parameters.add(new ChoiceP(CROP_MODE, this, CropModes.NONE, CropModes.ALL));
         parameters.add(new InputImageP(REFERENCE_IMAGE, this));
         parameters.add(new IntegerP(LEFT, this, 0));
@@ -1054,6 +1074,10 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
+            returnedParameters.add(parameters.getParameter(SERIES_MODE));
+            if (parameters.getValue(SERIES_MODE).equals(SeriesModes.SPECIFIC_SERIES))
+                returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
+
             returnedParameters.add(parameters.getParameter(RANGE_SEPARATOR));
             if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)
                     && !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
@@ -1070,7 +1094,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
-        returnedParameters.add(parameters.getParameter(THREE_D_MODE));
+        // returnedParameters.add(parameters.getParameter(THREE_D_MODE));
 
         if (parameters.getValue(READER).equals(Readers.BIOFORMATS)) {
             returnedParameters.add(parameters.getParameter(CROP_MODE));
@@ -1251,8 +1275,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         parameters.get(CHANNEL).setDescription("Channel to load when constructing a \"Yokogawa\" format name.");
 
-        parameters.get(THREE_D_MODE).setDescription(
-                "ImageJ will load 3D tifs as Z-stacks by default.  This control provides a choice between loading as a Z-stack or timeseries.");
+        // parameters.get(THREE_D_MODE).setDescription(
+        //         "ImageJ will load 3D tifs as Z-stacks by default.  This control provides a choice between loading as a Z-stack or timeseries.");
 
         parameters.get(CROP_MODE).setDescription("Choice of loading the entire image, or cropping in XY:<br><ul>"
 

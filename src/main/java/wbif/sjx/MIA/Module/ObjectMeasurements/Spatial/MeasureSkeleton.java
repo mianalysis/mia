@@ -28,6 +28,7 @@ import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Units;
+import wbif.sjx.MIA.Object.VolumeTypesInterface;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.InputObjectsP;
@@ -161,7 +162,7 @@ public class MeasureSkeleton extends Module {
 
         // Converting binary image to loop objects
         ObjCollection tempLoopObjects = IdentifyObjects.process(binaryImage, loopObjectsName, true, false, 6,
-                Image.VolumeTypes.QUADTREE, false, 0, false);
+                VolumeTypesInterface.QUADTREE, false, 0, false);
 
         // Removing any objects on the image edge, as these aren't loops
         FilterOnImageEdge.process(tempLoopObjects, 0, null, false, true, null);

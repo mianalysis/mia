@@ -1,7 +1,9 @@
 package wbif.sjx.MIA.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.Duplicator;
+import ij.process.ImageProcessor;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
@@ -39,7 +41,7 @@ public class ImageMath extends Module {
     public static final String MATH_VALUE = "Value";
 
     public ImageMath(ModuleCollection modules) {
-        super("Image math",modules);
+        super("Image math", modules);
     }
 
     public interface CalculationTypes {
@@ -51,7 +53,7 @@ public class ImageMath extends Module {
         String SQUAREROOT = "Squareroot";
         String SUBTRACT = "Subtract";
 
-        String[] ALL = new String[]{ABSOLUTE,ADD,DIVIDE,MULTIPLY,SQUARE,SQUAREROOT,SUBTRACT};
+        String[] ALL = new String[] { ABSOLUTE, ADD, DIVIDE, MULTIPLY, SQUARE, SQUAREROOT, SUBTRACT };
 
     }
 
@@ -59,59 +61,51 @@ public class ImageMath extends Module {
         String FIXED = "Fixed value";
         String MEASUREMENT = "Measurement value";
 
-        String[] ALL = new String[]{FIXED,MEASUREMENT};
+        String[] ALL = new String[] { FIXED, MEASUREMENT };
+
+    }
+
+    public static void process(Image inputImage, String calculationType, double mathValue) {
+        process(inputImage.getImagePlus(), calculationType, mathValue);
 
     }
 
     public static void process(ImagePlus inputImagePlus, String calculationType, double mathValue) {
-        int nChannels = inputImagePlus.getNChannels();
-        int nSlices = inputImagePlus.getNSlices();
-        int nFrames = inputImagePlus.getNFrames();
+        ImageStack ist = inputImagePlus.getStack();
 
-        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
-        for (int z = 1; z <= nSlices; z++) {
-            for (int c = 1; c <= nChannels; c++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    inputImagePlus.setPosition(c, z, t);
+        for (int i = 0; i < ist.size(); i++) {
+            ImageProcessor ipr = ist.getProcessor(i+1);
+            switch (calculationType) {
+                case CalculationTypes.ABSOLUTE:
+                    ipr.abs();
+                    break;
 
-                    switch (calculationType) {
-                        case CalculationTypes.ABSOLUTE:
-                            inputImagePlus.getProcessor().abs();
-                            break;
+                case CalculationTypes.ADD:
+                    ipr.add(mathValue);
+                    break;
 
-                        case CalculationTypes.ADD:
-                            inputImagePlus.getProcessor().add(mathValue);
-                            break;
+                case CalculationTypes.DIVIDE:
+                    ipr.multiply(1 / mathValue);
+                    break;
 
-                        case CalculationTypes.DIVIDE:
-                            inputImagePlus.getProcessor().multiply(1 / mathValue);
-                            break;
+                case CalculationTypes.MULTIPLY:
+                    ipr.multiply(mathValue);
+                    break;
 
-                        case CalculationTypes.MULTIPLY:
-                            inputImagePlus.getProcessor().multiply(mathValue);
-                            break;
+                case CalculationTypes.SQUARE:
+                    ipr.sqr();
+                    break;
 
-                        case CalculationTypes.SQUARE:
-                            inputImagePlus.getProcessor().sqr();
-                            break;
+                case CalculationTypes.SQUAREROOT:
+                    ipr.sqrt();
+                    break;
 
-                        case CalculationTypes.SQUAREROOT:
-                            inputImagePlus.getProcessor().sqrt();
-                            break;
-
-                        case CalculationTypes.SUBTRACT:
-                            inputImagePlus.getProcessor().subtract(mathValue);
-                            break;
-
-                    }
-                }
+                case CalculationTypes.SUBTRACT:
+                    ipr.subtract(mathValue);
+                    break;
             }
-        }
-
-        inputImagePlus.setPosition(1, 1, 1);
+        }        
     }
-
-
 
     @Override
     public Category getCategory() {
@@ -120,7 +114,8 @@ public class ImageMath extends Module {
 
     @Override
     public String getDescription() {
-        return "Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: "+String.join(", ", CalculationTypes.ALL);
+        return "Applies a mathematical operation to all pixels of the input image stack.  Operations that can be performed are: "
+                + String.join(", ", CalculationTypes.ALL);
     }
 
     @Override
@@ -139,7 +134,9 @@ public class ImageMath extends Module {
         double mathValue = parameters.getValue(MATH_VALUE);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
+        if (!applyToInput) {
+            inputImagePlus = new Duplicator().run(inputImagePlus);
+        }
 
         // Updating value if taken from a measurement
         switch (valueSource) {
@@ -148,17 +145,19 @@ public class ImageMath extends Module {
                 break;
         }
 
-        process(inputImagePlus,calculationType,mathValue);
+        process(inputImagePlus, calculationType, mathValue);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeStatus("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            writeStatus("Adding image (" + outputImageName + ") to workspace");
+            Image outputImage = new Image(outputImageName, inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) outputImage.showImage();
+            if (showOutput)
+                outputImage.showImage();
 
         } else {
-            if (showOutput) inputImage.showImage();
+            if (showOutput)
+                inputImage.showImage();
 
         }
 
@@ -168,17 +167,17 @@ public class ImageMath extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new SeparatorP(INPUT_SEPARATOR,this));
+        parameters.add(new SeparatorP(INPUT_SEPARATOR, this));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this, true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
-        parameters.add(new SeparatorP(CALCULATION_SEPARATOR,this));
-        parameters.add(new ChoiceP(CALCULATION_TYPE,this,CalculationTypes.ADD,CalculationTypes.ALL));
-        parameters.add(new ChoiceP(VALUE_SOURCE,this, ValueSources.FIXED, ValueSources.ALL));
-        parameters.add(new ImageMeasurementP(MEASUREMENT,this));
+        parameters.add(new SeparatorP(CALCULATION_SEPARATOR, this));
+        parameters.add(new ChoiceP(CALCULATION_TYPE, this, CalculationTypes.ADD, CalculationTypes.ALL));
+        parameters.add(new ChoiceP(VALUE_SOURCE, this, ValueSources.FIXED, ValueSources.ALL));
+        parameters.add(new ImageMeasurementP(MEASUREMENT, this));
         parameters.add(new DoubleP(MATH_VALUE, this, 1.0));
-        
+
         addParameterDescriptions();
 
     }
@@ -257,26 +256,34 @@ public class ImageMath extends Module {
     }
 
     void addParameterDescriptions() {
-      parameters.get(INPUT_IMAGE).setDescription(
-              "Image from workspace to apply calculation to.  This image can be of any bit depth.");
+        parameters.get(INPUT_IMAGE)
+                .setDescription("Image from workspace to apply calculation to.  This image can be of any bit depth.");
 
-      parameters.get(APPLY_TO_INPUT).setDescription(
-              "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \"" + OUTPUT_IMAGE + "\" parameter.");
+        parameters.get(APPLY_TO_INPUT).setDescription(
+                "When selected, the post-operation image will overwrite the input image in the workspace.  Otherwise, the image will be saved to the workspace with the name specified by the \""
+                        + OUTPUT_IMAGE + "\" parameter.");
 
-      parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
-              + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
+        parameters.get(OUTPUT_IMAGE).setDescription("If \"" + APPLY_TO_INPUT
+                + "\" is not selected, the post-operation image will be saved to the workspace with this name.");
 
-      parameters.get(CALCULATION_TYPE).setDescription("Controls the mathematical operation being applied to all pixels of this image.  Choices are: "+String.join(", ",CalculationTypes.ALL));
+        parameters.get(CALCULATION_TYPE).setDescription(
+                "Controls the mathematical operation being applied to all pixels of this image.  Choices are: "
+                        + String.join(", ", CalculationTypes.ALL));
 
-      parameters.get(VALUE_SOURCE).setDescription("For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul>"
+        parameters.get(VALUE_SOURCE).setDescription(
+                "For calculations that require a specific value (i.e. addition, subtraction, etc.) this parameter controls how the value is defined:<br><ul>"
 
-      +"<li>\""+ValueSources.FIXED+"\" A fixed value is specified using the \""+MATH_VALUE+"\" parameter.  This value is the same for all images processed by this module..</li>"
+                        + "<li>\"" + ValueSources.FIXED + "\" A fixed value is specified using the \"" + MATH_VALUE
+                        + "\" parameter.  This value is the same for all images processed by this module..</li>"
 
-      +"<li>\""+ValueSources.MEASUREMENT+"\" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul>");
+                        + "<li>\"" + ValueSources.MEASUREMENT
+                        + "\" The value is taken from a measurement associated with the input image.  Values obtained in this way can be different from image to image.</li></ul>");
 
-      parameters.get(MEASUREMENT).setDescription("If \""+VALUE_SOURCE+"\" is set to \""+ValueSources.MEASUREMENT+"\", this is the measurement associated with the input image that will be used in the calculation.");
+        parameters.get(MEASUREMENT).setDescription("If \"" + VALUE_SOURCE + "\" is set to \"" + ValueSources.MEASUREMENT
+                + "\", this is the measurement associated with the input image that will be used in the calculation.");
 
-      parameters.get(MATH_VALUE).setDescription("If \""+VALUE_SOURCE+"\" is set to \""+ValueSources.FIXED+"\", this is the value that will be used in the calculation.");
+        parameters.get(MATH_VALUE).setDescription("If \"" + VALUE_SOURCE + "\" is set to \"" + ValueSources.FIXED
+                + "\", this is the value that will be used in the calculation.");
 
     }
 }

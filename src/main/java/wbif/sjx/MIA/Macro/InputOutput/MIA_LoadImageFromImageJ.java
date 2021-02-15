@@ -48,7 +48,7 @@ public class MIA_LoadImageFromImageJ extends MacroOperation {
         imageLoader.updateParameterValue(ImageLoader.MIN_INPUT_INTENSITY,0d);
         imageLoader.updateParameterValue(ImageLoader.MAX_INPUT_INTENSITY,0d);
         imageLoader.updateParameterValue(ImageLoader.READER,ImageLoader.Readers.BIOFORMATS);
-        imageLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
+        // imageLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
         // Running Module
         imageLoader.process(workspace);

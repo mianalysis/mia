@@ -10,6 +10,7 @@ import wbif.sjx.MIA.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.VolumeTypesInterface;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
 import wbif.sjx.MIA.Object.Parameters.InputImageP;
@@ -36,7 +37,7 @@ public class ConvertImageToObjects extends Module {
         super("Convert image to objects", modules);
     }
 
-    public interface VolumeTypes extends Image.VolumeTypes {
+    public interface VolumeTypes extends VolumeTypesInterface {
     }
 
 

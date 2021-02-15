@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Prefs;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
@@ -105,15 +106,16 @@ public class AddLabels extends AbstractOverlay {
         Image binaryImage = obj.convertObjToImage("Binary");
         InvertIntensity.process(binaryImage);
         BinaryOperations2D.process(binaryImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
-        ImagePlus distanceMap = DistanceMap.getDistanceMap(binaryImage.getImagePlus(), true);
+        ImagePlus distanceIpl = DistanceMap.process(binaryImage, "Distance", true, false).getImagePlus();
+        ImageStack distanceIst = distanceIpl.getStack();
 
         // Get location of largest value
         Point<Integer> bestPoint = null;
         double distance = Double.MIN_VALUE;
         for (Point<Integer> point : obj.getCoordinateSet()) {
-            distanceMap.setPosition(1, point.getZ() + 1, obj.getT() + 1);
-            double currDistance = distanceMap.getProcessor().getPixelValue(point.getX(), point.getY());
-
+            int idx = distanceIpl.getStackIndex(1, point.getZ() + 1, obj.getT() + 1);
+            float currDistance = distanceIst.getProcessor(idx).getf(point.getX(), point.getY());            
+            
             if (currDistance > distance) {
                 distance = currDistance;
                 bestPoint = point;

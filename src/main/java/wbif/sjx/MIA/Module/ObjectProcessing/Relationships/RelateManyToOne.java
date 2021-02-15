@@ -352,10 +352,9 @@ public class RelateManyToOne extends Module {
             Image parentImage = parentObject.convertObjToImage("Parent");
             InvertIntensity.process(parentImage.getImagePlus());
 
-            ImagePlus distIpl = DistanceMap.getDistanceMap(parentImage.getImagePlus(), true);
+            Image distImage = DistanceMap.process(parentImage, "Distance", true, false);
 
-            Image projectedImage = ProjectImage.projectImageInZ(new Image("Dist", distIpl), "Projected",
-                    ProjectImage.ProjectionModes.MAX);
+            Image projectedImage = ProjectImage.projectImageInZ(distImage, "Projected", ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 
             parentObject.addMeasurement(new Measurement("MAX_DIST", maxDist));

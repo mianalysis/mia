@@ -181,7 +181,7 @@ public class FitSpline extends Module {
         // Thresholding the connectivity image to show only values with 1
         ManualThreshold.applyThreshold(connIpl, 1);
         InvertIntensity.process(connIpl);
-        ImageCalculator.process(objectIpl, connIpl, calculationMode, overwriteMode, false, false);
+        ImageCalculator.process(objectIpl, connIpl, calculationMode, overwriteMode, image.getName(), false, false);
 
     }
 

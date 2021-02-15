@@ -6,23 +6,19 @@ import java.util.HashMap;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.process.ImageProcessor;
+import wbif.sjx.MIA.Module.Categories;
+import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
-import wbif.sjx.MIA.Module.Category;
-import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ImageTypeConverter;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.Registration.AbstractRegistrationHandler;
-import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
+import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -49,15 +45,14 @@ public class CreateDistanceMap extends Module {
     public static final String SPATIAL_UNITS = "Spatial units";
 
     public CreateDistanceMap(ModuleCollection modules) {
-        super("Create distance map",modules);
+        super("Create distance map", modules);
     }
-
 
     public interface ReferenceModes {
         String DISTANCE_FROM_CENTROID = "Distance from object centroid";
         String DISTANCE_FROM_EDGE = "Distance from object edge";
 
-        String[] ALL = new String[]{DISTANCE_FROM_CENTROID, DISTANCE_FROM_EDGE};
+        String[] ALL = new String[] { DISTANCE_FROM_CENTROID, DISTANCE_FROM_EDGE };
 
     }
 
@@ -66,7 +61,7 @@ public class CreateDistanceMap extends Module {
         String INSIDE_ONLY = "Inside only";
         String OUTSIDE_ONLY = "Outside only";
 
-        String[] ALL = new String[]{INSIDE_AND_OUTSIDE,INSIDE_ONLY,OUTSIDE_ONLY};
+        String[] ALL = new String[] { INSIDE_AND_OUTSIDE, INSIDE_ONLY, OUTSIDE_ONLY };
 
     }
 
@@ -74,10 +69,9 @@ public class CreateDistanceMap extends Module {
         String CALIBRATED = "Calibrated";
         String PIXELS = "Pixel";
 
-        String[] ALL = new String[]{CALIBRATED,PIXELS};
+        String[] ALL = new String[] { CALIBRATED, PIXELS };
 
     }
-
 
     public static Image getCentroidDistanceMap(Image inputImage, ObjCollection inputObjects, String outputImageName) {
         // Getting image parameters
@@ -87,9 +81,8 @@ public class CreateDistanceMap extends Module {
         int nT = inputImage.getImagePlus().getNFrames();
 
         // Creating a blank image (8-bit, so binary operations work)
-        ImagePlus distanceMapIpl = IJ.createHyperStack(outputImageName, width, height,1,nZ,nT,8);
-        distanceMapIpl.setCalibration(inputImage.getImagePlus().getCalibration());
-        Image distanceMapImage = new Image(outputImageName,distanceMapIpl);
+        ImagePlus distanceMap = IJ.createHyperStack(outputImageName, width, height, 1, nZ, nT, 8);
+        distanceMap.setCalibration(inputImage.getImagePlus().getCalibration());
 
         // Adding a spot to the centre of each object
         for (Obj inputObj : inputObjects.values()) {
@@ -98,85 +91,73 @@ public class CreateDistanceMap extends Module {
             int z = (int) Math.round(inputObj.getZMean(true, false));
             int t = inputObj.getT();
 
-            distanceMapIpl.setPosition(1, z + 1, t + 1);
-            distanceMapIpl.getProcessor().set(x, y, 255);
+            distanceMap.setPosition(1, z + 1, t + 1);
+            distanceMap.getProcessor().set(x, y, 255);
         }
 
-        // Calculating the distance map, one frame at a time
-        int count = 0;
-        int nFrames = distanceMapIpl.getNFrames();        
+        // Calculating the distance map
+        distanceMap = DistanceMap.process(distanceMap, outputImageName, true, false);
 
-        for (int t = 0; t < nFrames; t++) {
-            writeStatus("Processing frame " + (++count) + " of " + nFrames, name);
-
-            // Getting the mask image at this timepoint
-            ImagePlus currentIpl = ExtractSubstack.extractSubstack(distanceMapImage, "Distance", "1", "1", String.valueOf(t + 1)).getImagePlus();
-
-            // Calculating the distance map for this timepoint
-            Image currentImage = new Image(outputImageName, DistanceMap.getDistanceMap(currentIpl, true));
-            currentImage.showImage();
-            IJ.runMacro("waitForUser");
-
-            // Putting the image back into the distanceMapImage
-            AbstractRegistrationHandler.replaceStack(distanceMapImage, currentImage, 0, t);
-
-        }
-
-        return distanceMapImage;
+        return new Image(outputImageName, distanceMap);
 
     }
 
     public static Image getEdgeDistanceMap(ObjCollection inputObjects, String outputImageName, boolean invertInside) {
         // Creating an objects image
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
-        ImagePlus objIpl = inputObjects.convertToImage(outputImageName,hues,8,false).getImagePlus();
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,
+                ColourFactory.SingleColours.WHITE);
+        Image objImage = inputObjects.convertToImage(outputImageName, hues, 8, false);
 
-        // Calculating the distance maps.  The inside map is set to negative
-        ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
-        InvertIntensity.process(objIpl);
-        BinaryOperations2D.process(objIpl,BinaryOperations2D.OperationModes.ERODE,1,1);
-        ImagePlus insideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
+        // Calculating the distance maps. The inside map is set to negative
+        Image outsideDistImage = DistanceMap.process(objImage, "DistanceOutside", true, false);
+        InvertIntensity.process(objImage);
+        BinaryOperations2D.process(objImage, BinaryOperations2D.OperationModes.ERODE, 1, 1);
+        Image insideDistImage = DistanceMap.process(objImage, "DistanceInside", true, false);
 
         // If selected, inverting the inside of the object, so values here are negative
-        if (invertInside) ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
+        if (invertInside)
+            ImageMath.process(insideDistImage, ImageMath.CalculationTypes.MULTIPLY, -1.0);
 
         // Compiling the distance map
-        ImagePlus distanceMap = ImageCalculator.process(insideDistIpl,outsideDistIpl,
-                ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
-
-        return new Image(outputImageName,distanceMap);
+        return ImageCalculator.process(insideDistImage, outsideDistImage, ImageCalculator.CalculationMethods.ADD,
+                ImageCalculator.OverwriteModes.CREATE_NEW, outputImageName, true, true);
 
     }
 
     public static void applyMasking(Image inputImage, ObjCollection inputObjects, String maskingMode) {
         // If the masking mode is set to INSIDE_AND_OUTSIDE skip this method
-        if (maskingMode.equals(MaskingModes.INSIDE_AND_OUTSIDE)) return;
+        if (maskingMode.equals(MaskingModes.INSIDE_AND_OUTSIDE))
+            return;
 
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        // Convert to image (and possibly invert), set to binary image (0 and 1) and multiply as appropriate
-        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
-        ImagePlus objIpl = inputObjects.convertToImage("Objects",hues,8,false).getImagePlus();
+        // Convert to image (and possibly invert), set to binary image (0 and 1) and
+        // multiply as appropriate
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,
+                ColourFactory.SingleColours.WHITE);
+        ImagePlus objIpl = inputObjects.convertToImage("Objects", hues, 8, false).getImagePlus();
 
         // For outside only masks invert the mask
-        if (maskingMode.equals(MaskingModes.OUTSIDE_ONLY)) InvertIntensity.process(objIpl);
+        if (maskingMode.equals(MaskingModes.OUTSIDE_ONLY))
+            InvertIntensity.process(objIpl);
 
         // Normalising the mask
-        ImageMath.process(objIpl,ImageMath.CalculationTypes.DIVIDE,255);
+        ImageMath.process(objIpl, ImageMath.CalculationTypes.DIVIDE, 255);
 
         // Applying the mask
         String calculationMode = ImageCalculator.CalculationMethods.MULTIPLY;
         String overwriteMode = ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1;
-        ImageCalculator.process(inputIpl,objIpl,calculationMode,overwriteMode,false,true);
+        ImageCalculator.process(inputIpl, objIpl, calculationMode, overwriteMode, null, false, true);
 
     }
 
     public static void applyNormalisation(Image inputImage, ObjCollection inputObjects) {
-        // Iterating over each object, calculating the largest distance, then dividing all pixels within that object by
+        // Iterating over each object, calculating the largest distance, then dividing
+        // all pixels within that object by
         // this value
-        for (Obj inputObject:inputObjects.values()) {
+        for (Obj inputObject : inputObjects.values()) {
             double maxDistance = getMaximumDistance(inputImage, inputObject);
-            applyNormalisation(inputImage,inputObject,maxDistance);
+            applyNormalisation(inputImage, inputObject, maxDistance);
         }
     }
 
@@ -187,15 +168,15 @@ public class CreateDistanceMap extends Module {
         int t = inputObject.getT();
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        for (Point<Integer> point:inputObject.getCoordinateSet()) {
+        for (Point<Integer> point : inputObject.getCoordinateSet()) {
             int x = point.getX();
             int y = point.getY();
             int z = point.getZ();
 
-            inputIpl.setPosition(1,z+1,t+1);
-            double currentValue = inputIpl.getProcessor().getPixelValue(x,y);
+            inputIpl.setPosition(1, z + 1, t + 1);
+            double currentValue = inputIpl.getProcessor().getPixelValue(x, y);
 
-            maxDistance = Math.max(Math.abs(currentValue),maxDistance);
+            maxDistance = Math.max(Math.abs(currentValue), maxDistance);
 
         }
 
@@ -207,42 +188,17 @@ public class CreateDistanceMap extends Module {
         int t = inputObject.getT();
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        for (Point<Integer> point:inputObject.getCoordinateSet()) {
+        for (Point<Integer> point : inputObject.getCoordinateSet()) {
             int x = point.getX();
             int y = point.getY();
             int z = point.getZ();
 
-            inputIpl.setPosition(1,z+1,t+1);
-            double currentValue = inputIpl.getProcessor().getPixelValue(x,y);
-            inputIpl.getProcessor().setf(x,y,(float) (currentValue/maxDistance));
-            
+            inputIpl.setPosition(1, z + 1, t + 1);
+            double currentValue = inputIpl.getProcessor().getPixelValue(x, y);
+            inputIpl.getProcessor().setf(x, y, (float) (currentValue / maxDistance));
+
         }
     }
-
-    static void applyCalibratedUnits(Image inputImage, double dppXY) {
-        ImagePlus inputIpl = inputImage.getImagePlus();
-        ImageTypeConverter.applyConversion(inputIpl,32,ImageTypeConverter.ScalingModes.CLIP);
-
-        int width = inputIpl.getWidth();
-        int height = inputIpl.getHeight();
-        int nSlices = inputIpl.getNSlices();
-        int nFrames = inputIpl.getNFrames();
-
-        for (int t=0;t<nFrames;t++) {
-            for (int z=0;z<nSlices;z++) {
-                inputIpl.setPosition(1,z+1,t+1);
-                ImageProcessor inputIpr = inputIpl.getProcessor();
-
-                for (int x=0;x<width;x++) {
-                    for (int y=0;y<height;y++) {
-                        inputIpr.setf(x,y,(float) (inputIpr.getf(x,y)*dppXY));
-                    }
-                }
-            }
-        }
-    }
-
-
 
     @Override
     public Category getCategory() {
@@ -276,31 +232,35 @@ public class CreateDistanceMap extends Module {
         Image distanceMap = null;
         switch (referenceMode) {
             case ReferenceModes.DISTANCE_FROM_CENTROID:
-                distanceMap = getCentroidDistanceMap(inputImage,inputObjects,outputImageName);
+                distanceMap = getCentroidDistanceMap(inputImage, inputObjects, outputImageName);
                 break;
 
             case ReferenceModes.DISTANCE_FROM_EDGE:
-                distanceMap = getEdgeDistanceMap(inputObjects,outputImageName,invertInside);
+                distanceMap = getEdgeDistanceMap(inputObjects, outputImageName, invertInside);
                 break;
         }
 
-        if (distanceMap == null) return Status.PASS;
+        if (distanceMap == null)
+            return Status.PASS;
 
         // Applying masking
-        applyMasking(distanceMap,inputObjects,maskingMode);
+        applyMasking(distanceMap, inputObjects, maskingMode);
 
         // Performing normalisation (only when using inside-only masking)
-        if (maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap) applyNormalisation(distanceMap,inputObjects);
+        if (maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap)
+            applyNormalisation(distanceMap, inputObjects);
 
         // Applying spatial calibration (as long as we're not normalising the map)
-        if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap) {
+        if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap
+                && spatialUnits.equals(SpatialUnits.CALIBRATED)) {
             double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
-            if (spatialUnits.equals(SpatialUnits.CALIBRATED)) applyCalibratedUnits(distanceMap, dppXY);
+            DistanceMap.applyCalibratedUnits(distanceMap, dppXY);
         }
 
         // Adding distance map to output and showing
         workspace.addImage(distanceMap);
-        if (showOutput) distanceMap.showImage();
+        if (showOutput)
+            distanceMap.showImage();
 
         return Status.PASS;
 
@@ -308,13 +268,13 @@ public class CreateDistanceMap extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
-        parameters.add(new InputImageP(INPUT_IMAGE,this));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
-        parameters.add(new ChoiceP(REFERENCE_MODE,this,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
-        parameters.add(new BooleanP(INVERT_MAP_WITHIN_OBJECTS,this,true));
-        parameters.add(new ChoiceP(MASKING_MODE,this,MaskingModes.INSIDE_AND_OUTSIDE,MaskingModes.ALL));
-        parameters.add(new BooleanP(NORMALISE_MAP_PER_OBJECT,this,false));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.DISTANCE_FROM_CENTROID, ReferenceModes.ALL));
+        parameters.add(new BooleanP(INVERT_MAP_WITHIN_OBJECTS, this, true));
+        parameters.add(new ChoiceP(MASKING_MODE, this, MaskingModes.INSIDE_AND_OUTSIDE, MaskingModes.ALL));
+        parameters.add(new BooleanP(NORMALISE_MAP_PER_OBJECT, this, false));
         parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
 
     }
@@ -341,7 +301,8 @@ public class CreateDistanceMap extends Module {
                 break;
         }
 
-        // If we're not using the inside-only masking with normalisation, allow the units to be specified.
+        // If we're not using the inside-only masking with normalisation, allow the
+        // units to be specified.
         if (!parameters.getValue(MASKING_MODE).equals(MaskingModes.INSIDE_ONLY)
                 && !(boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT)) {
             returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));

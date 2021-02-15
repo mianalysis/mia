@@ -138,7 +138,7 @@ public class WekaProbabilityMaps extends Module {
 
             // Converting probability image to specified bit depth (it will be 32-bit by
             // default)
-            ImageTypeConverter.applyConversion(iplSingle, bitDepth, ImageTypeConverter.ScalingModes.SCALE);
+            ImageTypeConverter.process(iplSingle, bitDepth, ImageTypeConverter.ScalingModes.SCALE);
             for (int cl = 1; cl <= nOutputClasses; cl++) {
                 for (int z = 1; z <= (endingBlock - startingBlock + 1); z++) {
                     int[] pos = inputImagePlus.convertIndexToPosition(startingBlock + z - 1);

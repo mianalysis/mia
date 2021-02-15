@@ -24,6 +24,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.VolumeTypesInterface;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -70,7 +71,7 @@ public class IdentifyObjects extends Module {
 
     }
 
-    public interface VolumeTypes extends Image.VolumeTypes {
+    public interface VolumeTypes extends VolumeTypesInterface {
     }
 
     public static ImageStack connectedComponentsLabellingMT(ImageStack ist, int connectivity, int minStripWidth) {
@@ -188,11 +189,11 @@ public class IdentifyObjects extends Module {
         // If number of groups is greater than 65535, switching stack to 32-bit
         if (bitDepth < 32 && maxGroup > 65535) {
             ImagePlus tempIpl = new ImagePlus("Temp", ist);
-            ImageTypeConverter.applyConversion(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
+            ImageTypeConverter.process(tempIpl, 32, ImageTypeConverter.ScalingModes.CLIP);
             ist = tempIpl.getImageStack();
         } else if (bitDepth < 16 && maxGroup > 255) {
             ImagePlus tempIpl = new ImagePlus("Temp", ist);
-            ImageTypeConverter.applyConversion(tempIpl, 16, ImageTypeConverter.ScalingModes.CLIP);
+            ImageTypeConverter.process(tempIpl, 16, ImageTypeConverter.ScalingModes.CLIP);
             ist = tempIpl.getImageStack();
         }
 

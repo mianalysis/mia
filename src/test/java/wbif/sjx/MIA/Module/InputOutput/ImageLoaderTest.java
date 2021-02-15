@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ij.IJ;
-import wbif.sjx.MIA.MIA;
+import ij.ImageJ;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.ModuleTest;
@@ -885,97 +885,97 @@ public class ImageLoaderTest extends ModuleTest {
 
     }
 
-    @Test
-    public void testRunThreeDTimeseries()throws Exception {
-        // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+    // @Test
+    // public void testRunThreeDTimeseries()throws Exception {
+    //     // Getting path to image file
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
 
-        // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+    //     // Initialising a blank workspace
+    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
-        // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
-        imageFileLoader.initialiseParameters();
+    //     // Initialising the ImageFileLoader
+    //     ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+    //     imageFileLoader.initialiseParameters();
 
-        // Setting parameters
-        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.TIMESERIES);
+    //     // Setting parameters
+    //     imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+    //     imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+    //     // imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.TIMESERIES);
 
-        // Running module
-        imageFileLoader.execute(workspace);
+    //     // Running module
+    //     imageFileLoader.execute(workspace);
 
-        // Checking there is one image in the workspace
-        assertEquals(1,workspace.getImages().size());
+    //     // Checking there is one image in the workspace
+    //     assertEquals(1,workspace.getImages().size());
 
-        // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+    //     // Getting the loaded image
+    //     Image image = workspace.getImage("Test_Output_Image");
 
-        // Checking the image has the expected name
-        assertEquals("Test_Output_Image",image.getName());
+    //     // Checking the image has the expected name
+    //     assertEquals("Test_Output_Image",image.getName());
 
-        // Checking there are no measurements associated with this image
-        assertEquals(0,image.getMeasurements().size());
+    //     // Checking there are no measurements associated with this image
+    //     assertEquals(0,image.getMeasurements().size());
 
-        // Checking the dimensions of the image
-        assertEquals(64,image.getImagePlus().getWidth());
-        assertEquals(76,image.getImagePlus().getHeight());
-        assertEquals(1,image.getImagePlus().getNChannels());
-        assertEquals(1,image.getImagePlus().getNSlices());
-        assertEquals(12,image.getImagePlus().getNFrames());
+    //     // Checking the dimensions of the image
+    //     assertEquals(64,image.getImagePlus().getWidth());
+    //     assertEquals(76,image.getImagePlus().getHeight());
+    //     assertEquals(1,image.getImagePlus().getNChannels());
+    //     assertEquals(1,image.getImagePlus().getNSlices());
+    //     assertEquals(12,image.getImagePlus().getNFrames());
 
-        // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
-        assertEquals(1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
-    }
+    //     // Checking the image has the expected calibration
+    //     assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+    //     assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+    //     assertEquals(1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
+    // }
 
-    @Test
-    public void testRunThreeDStack()throws Exception {
-        // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+    // @Test
+    // public void testRunThreeDStack()throws Exception {
+    //     // Getting path to image file
+    //     String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
 
-        // Initialising a blank workspace
-        WorkspaceCollection workspaces = new WorkspaceCollection();
-        Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
+    //     // Initialising a blank workspace
+    //     WorkspaceCollection workspaces = new WorkspaceCollection();
+    //     Workspace workspace = workspaces.getNewWorkspace(new File(pathToImage),1);
 
-        // Initialising the ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
-        imageFileLoader.initialiseParameters();
+    //     // Initialising the ImageFileLoader
+    //     ImageLoader imageFileLoader = new ImageLoader(new ModuleCollection());
+    //     imageFileLoader.initialiseParameters();
 
-        // Setting parameters
-        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
+    //     // Setting parameters
+    //     imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+    //     imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+    //     // imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
-        // Running module
-        imageFileLoader.execute(workspace);
+    //     // Running module
+    //     imageFileLoader.execute(workspace);
 
-        // Checking there is one image in the workspace
-        assertEquals(1,workspace.getImages().size());
+    //     // Checking there is one image in the workspace
+    //     assertEquals(1,workspace.getImages().size());
 
-        // Getting the loaded image
-        Image image = workspace.getImage("Test_Output_Image");
+    //     // Getting the loaded image
+    //     Image image = workspace.getImage("Test_Output_Image");
 
-        // Checking the image has the expected name
-        assertEquals("Test_Output_Image",image.getName());
+    //     // Checking the image has the expected name
+    //     assertEquals("Test_Output_Image",image.getName());
 
-        // Checking there are no measurements associated with this image
-        assertEquals(0,image.getMeasurements().size());
+    //     // Checking there are no measurements associated with this image
+    //     assertEquals(0,image.getMeasurements().size());
 
-        // Checking the dimensions of the image
-        assertEquals(64,image.getImagePlus().getWidth());
-        assertEquals(76,image.getImagePlus().getHeight());
-        assertEquals(1,image.getImagePlus().getNChannels());
-        assertEquals(12,image.getImagePlus().getNSlices());
-        assertEquals(1,image.getImagePlus().getNFrames());
+    //     // Checking the dimensions of the image
+    //     assertEquals(64,image.getImagePlus().getWidth());
+    //     assertEquals(76,image.getImagePlus().getHeight());
+    //     assertEquals(1,image.getImagePlus().getNChannels());
+    //     assertEquals(12,image.getImagePlus().getNSlices());
+    //     assertEquals(1,image.getImagePlus().getNFrames());
 
-        // Checking the image has the expected calibration
-        assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
-        assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
-        assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
-    }
+    //     // Checking the image has the expected calibration
+    //     assertEquals(0.02,image.getImagePlus().getCalibration().pixelWidth,1E-10);
+    //     assertEquals(0.02,image.getImagePlus().getCalibration().pixelHeight,1E-10);
+    //     assertEquals(0.1,image.getImagePlus().getCalibration().pixelDepth,1E-10);
+    // }
 
     @Test
     public void testRunFourDTimeseries()throws Exception {
@@ -993,7 +993,7 @@ public class ImageLoaderTest extends ModuleTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.TIMESERIES);
+        // imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.TIMESERIES);
 
         // Running module
         imageFileLoader.execute(workspace);
@@ -1039,7 +1039,7 @@ public class ImageLoaderTest extends ModuleTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
+        // imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
         // Running module
         imageFileLoader.execute(workspace);
