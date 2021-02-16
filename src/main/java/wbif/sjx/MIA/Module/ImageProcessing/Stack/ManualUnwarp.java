@@ -212,7 +212,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
                     Runnable task = () -> {
                         ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
                         bUnwarpJ_.applyTransformToSource(tempPath, outputImage.getImagePlus(), slice);
-                        ImageTypeConverter.applyConversion(slice, inputIpl.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
+                        ImageTypeConverter.process(slice, inputIpl.getBitDepth(), ImageTypeConverter.ScalingModes.CLIP);
 
                         getSetStack(outputIpl, finalT, finalC, finalZ, slice.getProcessor());
 

@@ -26,6 +26,7 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.MIA.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.LocationWrapper;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
@@ -174,7 +175,7 @@ public class SingleClassCluster extends Module {
         // Initial pass, adding all coordinates to cluster object
         for (Obj child:children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",eps,false,false);
+            Obj region = GetLocalObjectRegion.getLocalRegion(child, "Cluster", eps, false, false);
 
             // Adding coordinates from region to the cluster object
             coordinateSet.addAll(region.getCoordinateSet());
@@ -182,9 +183,10 @@ public class SingleClassCluster extends Module {
         }
 
         // Reducing the size of the cluster area by eps
-        ImagePlus objectIpl = outputObject.convertObjToImage("Object").getImagePlus();
-        InvertIntensity.process(objectIpl);
-        objectIpl = DistanceMap.getDistanceMap(objectIpl,true);
+        Image objectImage = outputObject.convertObjToImage("Object");
+        InvertIntensity.process(objectImage);
+        objectImage = DistanceMap.process(objectImage, "Distance", true, false);
+        ImagePlus objectIpl = objectImage.getImagePlus();
 
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
         Iterator<Point<Integer>> iterator = outputObject.getCoordinateSet().iterator();
@@ -195,7 +197,7 @@ public class SingleClassCluster extends Module {
             // Checking value
             objectIpl.setPosition(1,point.getZ()+1,outputObject.getT()+1);
             ImageProcessor ipr = objectIpl.getProcessor();
-            double value = ipr.getPixelValue(point.getX(),point.getY());
+            double value = ipr.getPixelValue(point.getX(), point.getY());
 
             if (value < (eps-Math.ceil(conv))) iterator.remove();
 

@@ -179,7 +179,7 @@ public class GlobalAutoThreshold extends Module {
 
         // Image must be 8-bit
         if (inputImagePlus.getBitDepth() != 8) {
-            ImageTypeConverter.applyConversion(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
+            ImageTypeConverter.process(inputImagePlus, 8, ImageTypeConverter.ScalingModes.FILL);
         }
 
         // Calculating the threshold based on the selected algorithm

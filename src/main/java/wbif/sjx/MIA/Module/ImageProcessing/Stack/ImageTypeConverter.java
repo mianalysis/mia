@@ -78,7 +78,12 @@ public class ImageTypeConverter extends Module {
 
     }
 
-    public static void applyConversion(ImagePlus inputImagePlus, int outputBitDepth, String scalingMode) {
+    public static void process(Image inputImage, int outputBitDepth, String scalingMode) {
+        process(inputImage.getImagePlus(), outputBitDepth, scalingMode);
+        
+    }
+
+    public static void process(ImagePlus inputImagePlus, int outputBitDepth, String scalingMode) {
         int bitDepth = inputImagePlus.getBitDepth();
 
         // If the image is already the output bit depth, skip this
@@ -222,7 +227,7 @@ public class ImageTypeConverter extends Module {
 
         // Applying the type conversion
         int outputBitDepth = getOutputBitDepth(outputType);
-        applyConversion(inputImagePlus,outputBitDepth,scalingMode);
+        process(inputImagePlus,outputBitDepth,scalingMode);
 
         // Adding output image to workspace if necessary
         if (!applyToInput) {

@@ -175,7 +175,7 @@ public class FilterImage extends Module {
 
         // Variance 3D will output a 32-bit image
         if (filterMode.equals(FilterModes.VARIANCE3D)) {
-            ImageTypeConverter.applyConversion(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+            ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
         }
 
         int count = 0;
@@ -290,7 +290,7 @@ public class FilterImage extends Module {
                     break;
                 case RollingMethods.STDEV:
                     zProjector.setMethod(ZProjector.SD_METHOD);
-                    ImageTypeConverter.applyConversion(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
+                    ImageTypeConverter.process(inputImagePlus, 32, ImageTypeConverter.ScalingModes.CLIP);
                     break;
                 case RollingMethods.SUM:
                     zProjector.setMethod(ZProjector.SUM_METHOD);

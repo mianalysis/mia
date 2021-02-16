@@ -103,7 +103,7 @@ public class ImageCalculator extends Module {
             @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
         ImagePlus ipl1 = inputImage1.getImagePlus();
         ImagePlus ipl2 = inputImage2.getImagePlus();
-        ImagePlus iplOut = process(ipl1, ipl2, calculationMethod, overwriteMode, output32Bit, setNaNToZero);
+        ImagePlus iplOut = process(ipl1, ipl2, calculationMethod, overwriteMode, outputImageName, output32Bit, setNaNToZero);
 
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
@@ -117,11 +117,12 @@ public class ImageCalculator extends Module {
     }
 
     public static ImagePlus process(ImagePlus imagePlus1, ImagePlus imagePlus2, String calculationMethod,
-            String overwriteMode, boolean output32Bit, boolean setNaNToZero) {
+            String overwriteMode, @Nullable String outputImageName, boolean output32Bit, boolean setNaNToZero) {
         // If applying to a new image, the input image is duplicated
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
                 imagePlus1 = new Duplicator().run(imagePlus1);
+                imagePlus1.setTitle(outputImageName);
                 break;
         }
 
@@ -277,7 +278,7 @@ public class ImageCalculator extends Module {
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
 
-        ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, output32Bit,
+        ImagePlus newIpl = process(inputImagePlus1, inputImagePlus2, calculationMethod, overwriteMode, outputImageName, output32Bit,
                 setNaNToZero);
 
         // If the image is being saved as a new image, adding it to the workspace

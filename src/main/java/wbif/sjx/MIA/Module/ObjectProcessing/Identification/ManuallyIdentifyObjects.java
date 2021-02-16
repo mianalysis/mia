@@ -56,6 +56,7 @@ import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Obj;
 import wbif.sjx.MIA.Object.ObjCollection;
 import wbif.sjx.MIA.Object.Status;
+import wbif.sjx.MIA.Object.VolumeTypesInterface;
 import wbif.sjx.MIA.Object.Workspace;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Object.Parameters.ChoiceP;
@@ -155,20 +156,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public interface VolumeTypes extends Image.VolumeTypes {
-    }
-
-    VolumeType getVolumeType(String volumeType) {
-        switch (volumeType) {
-            case Image.VolumeTypes.OCTREE:
-                return VolumeType.OCTREE;
-            // case Image.VolumeTypes.OPTIMISED:
-            default:
-            case Image.VolumeTypes.POINTLIST:
-                return VolumeType.POINTLIST;
-            case Image.VolumeTypes.QUADTREE:
-                return VolumeType.QUADTREE;
-        }
+    public interface VolumeTypes extends VolumeTypesInterface {
     }
 
     void setSelector(String selectorType) {
@@ -785,7 +773,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
-            VolumeType volumeType = getVolumeType(type);
+            VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
             Obj outputObject = new Obj(volumeType, outputObjects.getName(), ID, calibration, nFrames);
             outputObjects.add(outputObject);
 
@@ -825,7 +813,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
             // Creating the new object
             String type = parameters.getValue(VOLUME_TYPE);
-            VolumeType volumeType = getVolumeType(type);
+            VolumeType volumeType = VolumeTypesInterface.getVolumeType(type);
 
             HashMap<Integer, Obj> objectsByT = new HashMap<>();
             for (ObjRoi objRoi : currentRois) {

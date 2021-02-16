@@ -194,7 +194,6 @@ public abstract class AutomaticRegistration<T extends RealType<T> & NativeType<T
         int nFrames = calculationImage.getImagePlus().getNFrames();
 
         for (int t = 0; t < nFrames; t++) {
-            MIA.log.writeDebug(t);
             writeStatus("Processing frame " + (++count) + " of " + nFrames);
 
             // If the reference image is the previous frame, get this now

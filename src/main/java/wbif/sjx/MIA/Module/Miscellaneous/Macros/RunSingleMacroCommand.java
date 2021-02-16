@@ -162,11 +162,9 @@ public class RunSingleMacroCommand extends Module {
         returnedParameters.add(parameters.getParameter(MACRO_TITLE));
         returnedParameters.add(parameters.getParameter(ARGUMENTS));
 
-        String arguments = parameters.getValue(ARGUMENTS);
-        if (arguments.contains("stack")) {
             returnedParameters.add(parameters.getParameter(EXECUTION_SEPARATOR));
             returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
-        }
+        
 
         return returnedParameters;
 

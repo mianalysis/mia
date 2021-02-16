@@ -40,16 +40,6 @@ public class Image <T extends RealType<T> & NativeType<T>> {
     private ImagePlus imagePlus;
     private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
-    public interface VolumeTypes {
-        String OCTREE = "Octree";
-//        String OPTIMISED = "Optimised";
-        String POINTLIST = "Pointlist";
-        String QUADTREE = "Quadtree";
-
-//        String[] ALL = new String[]{OCTREE, OPTIMISED, POINTLIST, QUADTREE};
-        String[] ALL = new String[]{OCTREE, POINTLIST, QUADTREE};
-
-    }
 
     // CONSTRUCTORS
 
@@ -298,14 +288,14 @@ public class Image <T extends RealType<T> & NativeType<T>> {
 
     VolumeType getVolumeType(String volumeType) {
         switch (volumeType) {
-            case VolumeTypes.OCTREE:
+            case VolumeTypesInterface.OCTREE:
                 return VolumeType.OCTREE;
 //            case VolumeTypes.OPTIMISED:
 //                return null;
-            case VolumeTypes.POINTLIST:
+            case VolumeTypesInterface.POINTLIST:
             default:
                 return VolumeType.POINTLIST;
-            case VolumeTypes.QUADTREE:
+            case VolumeTypesInterface.QUADTREE:
                 return VolumeType.QUADTREE;
         }
     }
@@ -313,12 +303,12 @@ public class Image <T extends RealType<T> & NativeType<T>> {
     String getVolumeType(VolumeType volumeType) {
         switch (volumeType) {
             case OCTREE:
-                return VolumeTypes.OCTREE;
+                return VolumeTypesInterface.OCTREE;
             case POINTLIST:
             default:
-                return VolumeTypes.POINTLIST;
+                return VolumeTypesInterface.POINTLIST;
             case QUADTREE:
-                return VolumeTypes.QUADTREE;
+                return VolumeTypesInterface.QUADTREE;
         }
     }
 

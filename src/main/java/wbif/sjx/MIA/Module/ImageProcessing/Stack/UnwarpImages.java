@@ -206,7 +206,7 @@ public class UnwarpImages extends Module {
                     Runnable task = () -> {
                         ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
                         bUnwarpJ_.applyTransformToSource(tempPath, slice, slice);
-                        ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
+                        ImageTypeConverter.process(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
 
                         getSetStack(inputIpl, finalT, finalC, finalZ, slice.getProcessor());
 

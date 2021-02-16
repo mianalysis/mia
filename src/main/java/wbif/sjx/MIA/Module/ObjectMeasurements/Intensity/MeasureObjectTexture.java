@@ -127,7 +127,7 @@ public class MeasureObjectTexture extends Module {
         if (inputImagePlus.getBitDepth() != 8) {
             MIA.log.writeWarning("Texture analysis requires an 8-bit image.  Converting to 8-bit with scaling enabled.");
             inputImagePlus = inputImagePlus.duplicate();
-            ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.SCALE);
+            ImageTypeConverter.process(inputImagePlus,8,ImageTypeConverter.ScalingModes.SCALE);
             inputImage = new Image(inputImage.getName(),inputImagePlus);
         }
 

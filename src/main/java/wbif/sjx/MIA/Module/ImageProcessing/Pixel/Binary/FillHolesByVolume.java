@@ -192,7 +192,7 @@ public class FillHolesByVolume extends Module {
 
         // Ensuring the output is 8-bit
         if (ipl.getBitDepth() > 8) {
-            ImageTypeConverter.applyConversion(ipl, 8, ImageTypeConverter.ScalingModes.CLIP);
+            ImageTypeConverter.process(ipl, 8, ImageTypeConverter.ScalingModes.CLIP);
         }
     }
 

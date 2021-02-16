@@ -269,7 +269,7 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (!thresholdType.equals(ThresholdTypes.MANUAL) && inputImagePlus.getBitDepth() != 8) {
-            ImageTypeConverter.applyConversion(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
+            ImageTypeConverter.process(inputImagePlus,8,ImageTypeConverter.ScalingModes.FILL);
         }
 
         // Calculating the threshold based on the selected algorithm
