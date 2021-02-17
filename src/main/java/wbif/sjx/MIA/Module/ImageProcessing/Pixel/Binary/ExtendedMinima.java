@@ -120,10 +120,12 @@ public class ExtendedMinima extends Module {
             return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices, timepoint + "-" + timepoint).getStack();
         } else {
             for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-                inputImagePlus.setPosition(channel,z,timepoint);
+                inputImagePlus.setPosition(channel, z, timepoint);
                 inputImagePlus.setProcessor(toPut.getProcessor(z));
             }
 
+            inputImagePlus.updateAndDraw();
+            
             return null;
         }
     }

@@ -173,6 +173,7 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
         } else {
             inputImagePlus.setPosition(channel, slice, timepoint);
             inputImagePlus.setProcessor(toPut);
+            inputImagePlus.updateAndDraw();
             return null;
         }
     }
@@ -190,6 +191,7 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
             targetIst.setProcessor(sourceIst.getProcessor(sourceIdx), targetIdx);
 
         }
+        targetImage.getImagePlus().updateAndDraw();
     }
 
     public static void replaceSlice(Image targetImage, Image sourceSlice, int slice) {
@@ -207,6 +209,7 @@ public abstract class AbstractRegistrationHandler<T extends RealType<T> & Native
 
             }
         }
+        targetImage.getImagePlus().updateAndDraw();
     }
 
     @Override

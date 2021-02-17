@@ -191,6 +191,7 @@ public class ThresholdImage extends Module {
             }
         }
         inputImagePlus.setPosition(1,1,1);
+        inputImagePlus.updateAndDraw();
     }
 
     public void applyLocalThreshold3D(ImagePlus inputImagePlus, String algorithm, double localRadius, double thrMult,

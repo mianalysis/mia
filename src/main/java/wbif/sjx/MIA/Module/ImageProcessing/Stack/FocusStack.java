@@ -103,11 +103,11 @@ public class FocusStack extends Module {
         }
 
         outputIpl.setPosition(1,1,1);
-        outputIpl.updateChannelAndDraw();
+        outputIpl.updateAndDraw();
 
         if (outputHeightImageName != null) {
             heightIpl.setPosition(1, 1, 1);
-            heightIpl.updateChannelAndDraw();
+            heightIpl.updateAndDraw();
         }
 
         return images;

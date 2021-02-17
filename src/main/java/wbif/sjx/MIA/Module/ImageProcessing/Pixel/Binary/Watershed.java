@@ -142,6 +142,7 @@ public class Watershed extends Module {
                 inputImagePlus.setPosition(channel,z,timepoint);
                 inputImagePlus.setProcessor(toPut.getProcessor(z));
             }
+            inputImagePlus.updateAndDraw();
             return null;
         }
     }

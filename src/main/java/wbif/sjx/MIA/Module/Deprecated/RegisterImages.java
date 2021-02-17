@@ -436,8 +436,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
         } else {
             inputImagePlus.setPosition(channel, slice, timepoint);
             inputImagePlus.setProcessor(toPut);
+            inputImagePlus.updateAndDraw();
             return null;
-        }
+        }        
     }
 
     public static void replaceStack(Image inputImage, Image newStack, int channel, int timepoint) {
@@ -451,6 +452,9 @@ public class RegisterImages<T extends RealType<T> & NativeType<T>> extends Modul
             inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
 
         }
+
+        inputImagePlus.updateAndDraw();
+        
     }
 
     static void addManualMeasurements(Image image, AbstractAffineModel2D model) {

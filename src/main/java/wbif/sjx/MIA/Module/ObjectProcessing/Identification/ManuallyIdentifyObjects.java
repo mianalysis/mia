@@ -281,8 +281,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.fill = GridBagConstraints.BOTH;
         frame.add(objectsScrollPane, c);
 
-        JCheckBox overlayCheck = new JCheckBox("Display overlay");
-        overlayCheck.setSelected(true);
+        JCheckBox overlayCheck = new JCheckBox("Show all selections");
+        overlayCheck.setSelected(false);
         overlayCheck.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -471,6 +471,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         origOverlay = displayImagePlus.getOverlay();
         overlay = new Overlay();
         displayImagePlus.setOverlay(overlay);
+        displayImagePlus.setHideOverlay(true);
         updateOverlay();
 
         // Initialising output objects

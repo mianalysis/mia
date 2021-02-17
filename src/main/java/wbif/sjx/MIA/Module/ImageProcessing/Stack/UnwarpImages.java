@@ -228,6 +228,7 @@ public class UnwarpImages extends Module {
         } else {
             inputImagePlus.setPosition(channel,slice,timepoint);
             inputImagePlus.setProcessor(toPut);
+            inputImagePlus.updateAndDraw();
             return null;
         }
     }
@@ -236,13 +237,12 @@ public class UnwarpImages extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         ImagePlus newStackImagePlus = newStack.getImagePlus();
 
-        for (int z=1;z<=newStackImagePlus.getNSlices();z++) {
-            inputImagePlus.setPosition(channel,z,timepoint);
-            newStackImagePlus.setPosition(1,z,1);
-
+        for (int z = 1; z <= newStackImagePlus.getNSlices(); z++) {
+            inputImagePlus.setPosition(channel, z, timepoint);
+            newStackImagePlus.setPosition(1, z, 1);
             inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
-
         }
+        inputImagePlus.updateAndDraw();
     }
 
     public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {

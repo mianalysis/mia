@@ -3,10 +3,13 @@ package wbif.sjx.MIA.Module.Visualisation.ImageRendering;
 import java.awt.Color;
 
 import ij.CompositeImage;
+import ij.ImagePlus;
+import ij.ImageStack;
 import ij.process.LUT;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ModuleCollection;
 import wbif.sjx.MIA.Module.Category;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Object.Status;
 import wbif.sjx.MIA.Object.Image;
@@ -126,23 +129,27 @@ public class SetLookupTable extends Module {
     }
 
     public static void setLUT(Image inputImage, LUT lut, String channelMode, int channel) {
+        ImagePlus ipl = inputImage.getImagePlus();
+
         // Single channel images shouldn't be set to composite
-        if (inputImage.getImagePlus().getNChannels() == 1) {
-            inputImage.getImagePlus().setLut(lut);
+        if (ipl.getNChannels() == 1 &! ipl.isComposite()) {
+            ipl.setLut(lut);
             return;
         }
-
+        
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
-                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++)
                     ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut, c);
-                }
                 break;
 
             case ChannelModes.SPECIFIC_CHANNELS:
                 ((CompositeImage) inputImage.getImagePlus()).setChannelLut(lut, channel);
                 break;
         }
+        
+        ipl.updateAndDraw();
+
     }
 
     @Override
@@ -178,14 +185,14 @@ public class SetLookupTable extends Module {
             return Status.PASS;
 
         LUT lut = getLUT(lookupTableName);
-
         switch (displayMode) {
             case DisplayModes.SET_ZERO_TO_BLACK:
                 lut = setZeroToBlack(lut);
                 break;
         }
-
+        
         setLUT(inputImage, lut, channelMode, channel);
+
         inputImage.getImagePlus().updateChannelAndDraw();
 
         if (showOutput)

@@ -9,6 +9,7 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
+import wbif.sjx.MIA.MIA;
 import wbif.sjx.MIA.Module.Categories;
 import wbif.sjx.MIA.Module.Category;
 import wbif.sjx.MIA.Module.Module;
@@ -46,7 +47,7 @@ public class DistanceMap extends Module {
         String[] ALL = new String[] { CALIBRATED, PIXELS };
 
     }
-    
+
     public DistanceMap(ModuleCollection modules) {
         super("Calculate distance map", modules);
     }
@@ -81,18 +82,18 @@ public class DistanceMap extends Module {
             ImagePlus currentIpl = SubHyperstackMaker
                     .makeSubhyperstack(inputIpl, "1", "1-" + nSlices, String.valueOf(t + 1)).duplicate();
             currentIpl.setCalibration(inputIpl.getCalibration());
-
+            
             // If necessary, interpolating the image in Z to match the XY spacing
             if (matchZToXY && nSlices > 1)
                 currentIpl = InterpolateZAxis.matchZToXY(currentIpl);
 
             // Creating a duplicate of the input image to act as a mask
             ImagePlus maskIpl = new Duplicator().run(currentIpl);
-
             IJ.run(maskIpl, "Invert", "stack");
+            
             currentIpl.setStack(
                     new GeodesicDistanceMap3D().process(currentIpl, maskIpl, "Dist", weights, true).getStack());
-
+           
             // If the input image as interpolated, it now needs to be returned to the
             // original scaling
             if (matchZToXY && nSlices > 1) {
@@ -100,24 +101,24 @@ public class DistanceMap extends Module {
                 resizer.setAverageWhenDownsizing(true);
                 currentIpl = resizer.zScale(currentIpl, nSlices, Resizer.IN_PLACE);
             }
-
             // Putting the image back into the distanceMapImage
-            ImageStack sourceIst = currentIpl.getStack();
+            ImageStack currentIst = currentIpl.getStack();
             for (int z = 0; z < currentIpl.getNSlices(); z++) {
-                int sourceIdx = currentIpl.getStackIndex(1, z + 1, 1);
+                int currentIdx = currentIpl.getStackIndex(1, z + 1, 1);
                 int outputIdx = outputIpl.getStackIndex(1, z + 1, t + 1);
-                outputIst.setProcessor(sourceIst.getProcessor(sourceIdx), outputIdx);
+                outputIst.setProcessor(currentIst.getProcessor(currentIdx), outputIdx);
             }
+            outputIpl.updateAndDraw();
         }
 
         return new Image(outputImageName, outputIpl);
 
     }
-       
+
     public static void applyCalibratedUnits(Image inputImage, double dppXY) {
         ImageTypeConverter.process(inputImage, 32, ImageTypeConverter.ScalingModes.CLIP);
-        ImageMath.process(inputImage, ImageMath.CalculationTypes.MULTIPLY,dppXY);
-        
+        ImageMath.process(inputImage, ImageMath.CalculationTypes.MULTIPLY, dppXY);
+
     }
 
     @Override
@@ -136,7 +137,7 @@ public class DistanceMap extends Module {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
-        
+
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
@@ -150,7 +151,7 @@ public class DistanceMap extends Module {
             double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
             applyCalibratedUnits(distanceMap, dppXY);
         }
-        
+
         // If the image is being saved as a new image, adding it to the workspace
         writeStatus("Adding image (" + outputImageName + ") to workspace");
         workspace.addImage(distanceMap);

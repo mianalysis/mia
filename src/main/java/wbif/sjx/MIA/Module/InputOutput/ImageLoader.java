@@ -409,8 +409,8 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
             countZ++;
         }
-
-        // ipl = ipl.duplicate();
+        ipl.setPosition(1, 1, 1);
+        ipl.updateAndDraw();
 
         // Applying LUTs
         HashMap<Integer, LUT> luts = getLUTs(meta, seriesNumber - 1);
@@ -425,6 +425,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             }
         }
         ipl.setPosition(1, 1, 1);
+        ipl.updateAndDraw();
 
         Unit<Length> unit = Units.getOMEUnits();
 
@@ -468,6 +469,9 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
             MIA.log.writeWarning("Can't interpret units for file \"" + new File(path).getName()
                     + "\".  Spatially calibrated values may be wrong");
         }
+
+        ipl.setPosition(1, 1, 1);
+        ipl.updateAndDraw();
 
         reader.close();
 
@@ -542,8 +546,6 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
                     manualCal, false);
             ImageStack tempIst = tempIpl.getStack();
 
-            // tempIpl.updateChannelAndDraw();
-
             for (int c = 0; c < nChannels; c++) {
                 for (int z = 0; z < nSlices; z++) {
                     int tempIdx = tempIpl.getStackIndex(c + 1, z + 1, 1);
@@ -559,7 +561,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
 
         outputIpl.setPosition(1, 1, 1);
         outputIpl.setCalibration(rootIpl.getCalibration());
-        outputIpl.updateChannelAndDraw();
+        outputIpl.updateAndDraw();
 
         return outputIpl;
 
@@ -612,7 +614,7 @@ public class ImageLoader<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         outputIpl.setPosition(1);
-        outputIpl.updateChannelAndDraw();
+        outputIpl.updateAndDraw();
         outputIpl.setCalibration(rootIpl.getCalibration());
 
         return outputIpl;

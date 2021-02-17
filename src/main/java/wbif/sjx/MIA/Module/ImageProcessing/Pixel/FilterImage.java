@@ -234,6 +234,7 @@ public class FilterImage extends Module {
             }
         }
         imagePlus.setPosition(1, 1, 1);
+        inputImagePlus.updateAndDraw();
     }
 
     public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod,
@@ -318,6 +319,7 @@ public class FilterImage extends Module {
         }
 
         inputImagePlus.setPosition(1, 1, 1);
+        inputImagePlus.updateAndDraw();
 
     }
 

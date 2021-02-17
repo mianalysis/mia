@@ -236,6 +236,7 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         } else {
             inputImagePlus.setPosition(channel, slice, timepoint);
             inputImagePlus.setProcessor(toPut);
+            inputImagePlus.updateAndDraw();
             return null;
         }
     }
@@ -247,10 +248,9 @@ public class ManualUnwarp <T extends RealType<T> & NativeType<T>> extends Module
         for (int z = 1; z <= newStackImagePlus.getNSlices(); z++) {
             inputImagePlus.setPosition(channel, z, timepoint);
             newStackImagePlus.setPosition(1, z, 1);
-
             inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
-
         }
+        inputImagePlus.updateAndDraw();
     }
 
     public Image<T> createEmptyTarget(Image<T> inputImage, Image<T> referenceImage, String outputImageName) {
